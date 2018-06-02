@@ -1,0 +1,63 @@
+
+syntax = "proto2";
+package fubble;
+
+option java_package = "com.freckles.of.couple.fubble.proto";
+option java_outer_classname = "WebContainer";
+
+
+message MessageContainer {
+	// room handling
+	optional JoinRoom joinRoom = 1;
+	optional RenameRoom renameRoom = 2;
+	optional RenameUser renameUser = 3;
+	
+	// chat
+	optional ChatMessage chat = 4;
+
+}
+
+message JoinRoom {
+	optional string roomName = 1;
+}
+
+message UserJoined {
+	optional string name = 1;
+	optional string id = 2;
+}
+
+message UserLeft {
+	optional string id = 1;
+}
+
+message JoinedRoom {
+	optional string roomId = 1;
+	optional string userId = 2;
+}
+
+message Error {
+	optional string id = 1;
+	optional string description = 2;
+}
+
+message RenameRoom {
+	optional string roomName = 1;
+}
+
+message RenameUser {
+	optional string name = 1;
+}
+
+message RenamedUser {
+	optional string id = 1;
+	optional string name = 2;
+}
+
+message ChatMessage {
+	optional string content = 1;
+}
+
+
+
+
+
