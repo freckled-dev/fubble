@@ -1,0 +1,12 @@
+-- -- -- -- -- -- -- 
+Generate for client
+-- -- -- -- -- -- -- 
+
+protoc -I="D:\Workspace\GitLab\fubble\proto" --java_out="D:\Workspace\GitLab\fubble\web\backend\FubbleTestClient\src\main\java" "D:\Workspace\GitLab\fubble\proto\fubble_web.proto"
+
+
+-- -- -- -- -- -- -- 
+Generate for server
+-- -- -- -- -- -- -- 
+
+protoc -I="D:\Workspace\GitLab\fubble\proto" --java_out="D:\Workspace\GitLab\fubble\web\backend\FubbleBackend\src\main\java" "D:\Workspace\GitLab\fubble\proto\fubble_web.proto"
