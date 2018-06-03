@@ -32,7 +32,7 @@ sequenceDiagram
 
 
 
-## Join Room
+## Rename User
 
 ```mermaid
 sequenceDiagram

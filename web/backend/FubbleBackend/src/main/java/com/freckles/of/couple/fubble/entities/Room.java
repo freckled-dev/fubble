@@ -30,12 +30,12 @@ public class Room {
         this.users = users;
     }
 
-    public int getCounter() {
+    public int getConnectedCounter() {
         return connectedCounter;
     }
 
-    public void addToCounter() {
-        connectedCounter++;
+    public void setConnectedCounter(int connectedCounter) {
+        this.connectedCounter = connectedCounter;
     }
 
 }
