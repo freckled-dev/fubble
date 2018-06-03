@@ -3,12 +3,8 @@ package com.freckles.of.couple.fubble.entities;
 
 import java.util.Date;
 
-import com.freckles.of.couple.fubble.tools.DateTypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
-
 public class Chat {
 
-    @JsonAdapter(DateTypeAdapter.class)
     private Date   timestamp;
     private String comment;
     private String userName;
