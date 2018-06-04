@@ -13,16 +13,18 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.WebSocketContainer;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * ChatServer Client
- *
- * @author Jiji_Sasidharan
  */
 @ClientEndpoint
 public class FubbleClientEndpoint {
 
-    private Session        userSession = null;
-    private MessageHandler messageHandler;
+    private static final Logger LOGGER      = LogManager.getLogger(FubbleClientEndpoint.class);
+
+    private Session             userSession = null;
 
     public FubbleClientEndpoint(URI endpointURI) {
         try {
@@ -40,7 +42,7 @@ public class FubbleClientEndpoint {
      */
     @OnOpen
     public void onOpen(Session userSession) {
-        System.out.println("opening websocket");
+        LOGGER.info("opening websocket");
         this.userSession = userSession;
     }
 
@@ -52,7 +54,7 @@ public class FubbleClientEndpoint {
      */
     @OnClose
     public void onClose(Session userSession, CloseReason reason) {
-        System.out.println("closing websocket");
+        LOGGER.info("closing websocket");
         this.userSession = null;
     }
 
@@ -63,18 +65,7 @@ public class FubbleClientEndpoint {
      */
     @OnMessage
     public void onMessage(String message) {
-        if (this.messageHandler != null) {
-            this.messageHandler.handleMessage(message);
-        }
-    }
-
-    /**
-     * register message handler
-     *
-     * @param msgHandler
-     */
-    public void addMessageHandler(MessageHandler msgHandler) {
-        this.messageHandler = msgHandler;
+        LOGGER.info(message);
     }
 
     /**
@@ -84,13 +75,11 @@ public class FubbleClientEndpoint {
      */
     public void sendMessage(byte[] message) {
         ByteBuffer binaryMessage = ByteBuffer.wrap(message);
-        this.userSession.getAsyncRemote().sendBinary(binaryMessage);
+        try {
+            this.userSession.getAsyncRemote().sendBinary(binaryMessage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    /**
-     * Message handler.
-     */
-    public static interface MessageHandler {
-        public void handleMessage(String message);
-    }
 }
