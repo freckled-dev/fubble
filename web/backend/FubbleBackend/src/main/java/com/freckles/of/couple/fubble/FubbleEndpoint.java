@@ -14,6 +14,9 @@ import javax.websocket.server.ServerEndpoint;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.freckles.of.couple.fubble.entities.Room;
+import com.freckles.of.couple.fubble.entities.User;
+import com.freckles.of.couple.fubble.handler.CloseHandler;
 import com.freckles.of.couple.fubble.handler.FubbleMessageHandler;
 import com.freckles.of.couple.fubble.handler.JoinRoomHandler;
 import com.freckles.of.couple.fubble.handler.RenameRoomHandler;
@@ -25,10 +28,15 @@ public class FubbleEndpoint {
 
     private static final Logger  LOGGER = LogManager.getLogger(FubbleEndpoint.class);
     private FubbleMessageHandler handler;
+    private CloseHandler         closer = new CloseHandler();
+    private Session              session;
+    private Room                 room;
+    private User                 user;
 
     @OnOpen
     public void onOpen(Session session) {
         LOGGER.info("Server: A new client has connected.");
+        this.session = session;
     }
 
     @OnMessage
@@ -39,11 +47,21 @@ public class FubbleEndpoint {
         ByteBuffer binaryMessage = ByteBuffer.wrap(message);
         MessageContainer container = MessageContainer.parseFrom(binaryMessage);
 
-        handleContainer(container, session);
+        try {
+            if (room != null) {
+                room.getMutex().lock();
+            }
+
+            handleContainer(container);
+        } finally {
+            if (room != null) {
+                room.getMutex().unlock();
+            }
+        }
 
     }
 
-    private void handleContainer(MessageContainer container, Session session) {
+    private void handleContainer(MessageContainer container) {
         MessageTypeCase messageTypeCase = container.getMessageTypeCase();
 
         if (messageTypeCase.equals(MessageTypeCase.JOINROOM)) {
@@ -54,7 +72,28 @@ public class FubbleEndpoint {
             handler = new RenameRoomHandler();
         }
 
-        handler.handleMessage(container, session);
+        handler.handleMessage(container, this);
+    }
+
+    public void setRoom(Room room) {
+        this.room = room;
+        this.room.getMutex().lock();
+    }
+
+    public Session getSession() {
+        return this.session;
+    }
+
+    public Room getRoom() {
+        return this.room;
+    }
+
+    public User getUser() {
+        return this.user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @OnError
@@ -62,6 +101,20 @@ public class FubbleEndpoint {
 
     @OnClose
     public void onClose(Session session)
-        throws IOException {}
+        throws IOException {
+
+        try {
+            if (room != null) {
+                room.getMutex().lock();
+            }
+
+            closer.handleClose(this);
+        } finally {
+            if (room != null) {
+                room.getMutex().unlock();
+            }
+        }
+
+    }
 
 }
