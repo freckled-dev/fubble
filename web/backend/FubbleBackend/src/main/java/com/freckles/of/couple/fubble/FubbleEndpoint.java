@@ -20,8 +20,8 @@ import com.freckles.of.couple.fubble.handler.CloseHandler;
 import com.freckles.of.couple.fubble.handler.FubbleMessageHandler;
 import com.freckles.of.couple.fubble.handler.JoinRoomHandler;
 import com.freckles.of.couple.fubble.handler.RenameRoomHandler;
-import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer;
-import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer.MessageTypeCase;
+import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer;
+import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer.MessageTypeCase;
 
 @ServerEndpoint(value = "/")
 public class FubbleEndpoint {
@@ -45,7 +45,7 @@ public class FubbleEndpoint {
         LOGGER.info("Server: Message received.");
 
         ByteBuffer binaryMessage = ByteBuffer.wrap(message);
-        MessageContainer container = MessageContainer.parseFrom(binaryMessage);
+        MessageContainerServer container = MessageContainerServer.parseFrom(binaryMessage);
 
         try {
             if (room != null) {
@@ -61,7 +61,7 @@ public class FubbleEndpoint {
 
     }
 
-    private void handleContainer(MessageContainer container) {
+    private void handleContainer(MessageContainerServer container) {
         MessageTypeCase messageTypeCase = container.getMessageTypeCase();
 
         if (messageTypeCase.equals(MessageTypeCase.JOINROOM)) {

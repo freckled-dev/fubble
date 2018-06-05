@@ -34,6 +34,7 @@ public class RoomManagementDAOImpl implements RoomManagementDAO {
                 .findFirst().orElse(null);
             if (found != null) {
                 rooms.remove(found);
+                LOGGER.info(String.format("Server: room %s has been deleted.", roomName));
             }
         }
     }

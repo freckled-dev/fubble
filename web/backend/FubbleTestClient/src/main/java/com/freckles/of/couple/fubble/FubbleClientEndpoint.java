@@ -16,6 +16,10 @@ import javax.websocket.WebSocketContainer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient;
+import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient.MessageTypeCase;
+import com.google.protobuf.InvalidProtocolBufferException;
+
 /**
  * ChatServer Client
  */
@@ -42,7 +46,6 @@ public class FubbleClientEndpoint {
      */
     @OnOpen
     public void onOpen(Session userSession) {
-        LOGGER.info("opening websocket");
         this.userSession = userSession;
     }
 
@@ -54,7 +57,6 @@ public class FubbleClientEndpoint {
      */
     @OnClose
     public void onClose(Session userSession, CloseReason reason) {
-        LOGGER.info("closing websocket");
         this.userSession = null;
     }
 
@@ -64,8 +66,20 @@ public class FubbleClientEndpoint {
      * @param message The text message
      */
     @OnMessage
-    public void onMessage(String message) {
-        LOGGER.info(message);
+    public void onMessage(byte[] message) {
+        ByteBuffer binaryMessage = ByteBuffer.wrap(message);
+        try {
+            MessageContainerClient container = MessageContainerClient.parseFrom(binaryMessage);
+            MessageTypeCase messageTypeCase = container.getMessageTypeCase();
+
+            if (MessageTypeCase.JOINEDROOM.equals(messageTypeCase)) {
+                System.out.println("JoinedRoom");
+                System.out.println(container);
+            }
+        } catch (InvalidProtocolBufferException ex) {
+            LOGGER.error(ex);
+        }
+
     }
 
     /**

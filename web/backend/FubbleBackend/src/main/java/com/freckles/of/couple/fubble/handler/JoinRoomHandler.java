@@ -17,7 +17,8 @@ import com.freckles.of.couple.fubble.entities.Room;
 import com.freckles.of.couple.fubble.entities.User;
 import com.freckles.of.couple.fubble.proto.WebContainer.JoinRoom;
 import com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoom;
-import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer;
+import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient;
+import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer;
 import com.freckles.of.couple.fubble.proto.WebContainer.UserJoined;
 import com.freckles.of.couple.fubble.tools.MessageHelper;
 
@@ -31,7 +32,7 @@ public class JoinRoomHandler implements FubbleMessageHandler {
     private FubbleEndpoint      connection;
 
     @Override
-    public void handleMessage(MessageContainer container, FubbleEndpoint connection) {
+    public void handleMessage(MessageContainerServer container, FubbleEndpoint connection) {
         this.connection = connection;
 
         JoinRoom joinRoom = container.getJoinRoom();
@@ -43,7 +44,7 @@ public class JoinRoomHandler implements FubbleMessageHandler {
         sendJoinedRoom(room, user);
 
         // 2. Send Broadcast UserJoined to all users in the room
-        broadcastUserJoined(room, user);
+        // broadcastUserJoined(room, user);
 
     }
 
@@ -53,9 +54,11 @@ public class JoinRoomHandler implements FubbleMessageHandler {
             .setUserId(user.getName()) //
             .build();
 
+        MessageContainerClient clientMsg = MessageContainerClient.newBuilder().setJoinedRoom(joinedRoom).build();
+
         try {
             ByteArrayOutputStream output = new ByteArrayOutputStream();
-            joinedRoom.writeTo(output);
+            clientMsg.writeTo(output);
             messageHelper.sendAsync(user.getSession(), output.toByteArray());
             output.close();
         } catch (Exception e) {

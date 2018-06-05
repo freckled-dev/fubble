@@ -9,14 +9,16 @@ import org.apache.logging.log4j.Logger;
 
 public class FubbleTestProperties {
 
-    private static final Logger         LOGGER          = LogManager.getLogger(FubbleTestProperties.class);
+    private static final Logger         LOGGER           = LogManager.getLogger(FubbleTestProperties.class);
 
-    private static final String         SERVER_LOCATION = "fubble.server.location";
+    private static final String         SERVER_LOCATION  = "fubble.server.location";
+    private static final String         USER_NAME_PREFIX = "user.name.prefix";
 
-    private static FubbleTestProperties instance        = null;
+    private static FubbleTestProperties instance         = null;
     private Properties                  properties;
 
     private String                      serverLocation;
+    private String                      userNamePrefix;
 
     private FubbleTestProperties() {
         properties = new Properties();
@@ -28,11 +30,8 @@ public class FubbleTestProperties {
         }
 
         serverLocation = getValue(SERVER_LOCATION);
+        userNamePrefix = getValue(USER_NAME_PREFIX);
 
-    }
-
-    public String getServerLocation() {
-        return serverLocation;
     }
 
     public static FubbleTestProperties getInstance() {
@@ -44,6 +43,14 @@ public class FubbleTestProperties {
 
     public String getValue(String key) {
         return properties.getProperty(key);
+    }
+
+    public String getServerLocation() {
+        return serverLocation;
+    }
+
+    public String getUserNamePrefix() {
+        return userNamePrefix;
     }
 
 }
