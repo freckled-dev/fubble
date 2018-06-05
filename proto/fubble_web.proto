@@ -5,8 +5,9 @@ package fubble;
 option java_package = "com.freckles.of.couple.fubble.proto";
 option java_outer_classname = "WebContainer";
 
+// SERVER
 
-message MessageContainer {
+message MessageContainerServer {
 	oneof messageType {
 		// room handling
 		JoinRoom joinRoom = 1;
@@ -18,8 +19,34 @@ message MessageContainer {
 	}
 }
 
+
 message JoinRoom {
 	optional string roomName = 1;
+}
+
+message RenameRoom {
+	optional string roomName = 1;
+}
+
+message RenameUser {
+	optional string name = 1;
+}
+
+message ChatMessage {
+	optional string content = 1;
+}
+
+
+// CLIENT
+
+message MessageContainerClient {
+	oneof messageType {
+		UserJoined userJoined = 1;
+		UserLeft userLeft = 2;
+		JoinedRoom joinedRoom = 3;
+		Error errpr = 4;
+		RenamedUser renamedUser = 5;
+	}
 }
 
 message UserJoined {
@@ -41,22 +68,12 @@ message Error {
 	optional string description = 2;
 }
 
-message RenameRoom {
-	optional string roomName = 1;
-}
-
-message RenameUser {
-	optional string name = 1;
-}
-
 message RenamedUser {
 	optional string id = 1;
 	optional string name = 2;
 }
 
-message ChatMessage {
-	optional string content = 1;
-}
+
 
 
 
