@@ -10,6 +10,8 @@
 
 	<properties>
 		<!--<jersey.version>2.25.1</jersey.version> -->
+		<!-- <hibernate.version>5.1.7.Final</hibernate.version>
+		<postgresql.version>9.4-1206-jdbc42</postgresql.version> -->
 	</properties>
 
 	<build>
@@ -37,6 +39,18 @@
 	<dependencies>
 
 		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>5.2.6.Final</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>9.4.1212.jre7</version>
+		</dependency>
+
+		<dependency>
 			<groupId>javax.websocket</groupId>
 			<artifactId>javax.websocket-api</artifactId>
 			<version>1.1</version>
@@ -49,11 +63,11 @@
 		</dependency>
 
 		<dependency>
-		    <groupId>com.google.protobuf</groupId>
+			<groupId>com.google.protobuf</groupId>
 			<artifactId>protobuf-java</artifactId>
 			<version>3.5.1</version>
 		</dependency>
-		
+
 		<!-- Test Dependencies -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -61,6 +75,6 @@
 			<version>4.12</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 	</dependencies>
 </project>

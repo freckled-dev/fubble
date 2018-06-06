@@ -2,6 +2,7 @@
 package com.freckles.of.couple.fubble.handler;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,13 +12,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.freckles.of.couple.dal.RoomManagementDAO;
-import com.freckles.of.couple.dal.cache.RoomManagementDAOImpl;
+import com.freckles.of.couple.dal.RoomManagementImpl;
 import com.freckles.of.couple.fubble.FubbleEndpoint;
 import com.freckles.of.couple.fubble.entities.Room;
 import com.freckles.of.couple.fubble.entities.User;
 import com.freckles.of.couple.fubble.proto.WebContainer.JoinRoom;
 import com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoom;
-import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer;
+import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient;
+import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer;
 import com.freckles.of.couple.fubble.proto.WebContainer.UserJoined;
 import com.freckles.of.couple.fubble.tools.MessageHelper;
 
@@ -25,13 +27,13 @@ public class JoinRoomHandler implements FubbleMessageHandler {
 
     private static final Logger LOGGER        = LogManager.getLogger(JoinRoomHandler.class);
 
-    private RoomManagementDAO   roomDAO       = new RoomManagementDAOImpl();
+    private RoomManagementDAO   roomDAO       = new RoomManagementImpl();
     private UserHandler         userHandler   = new UserHandler();
     private MessageHelper       messageHelper = new MessageHelper();
     private FubbleEndpoint      connection;
 
     @Override
-    public void handleMessage(MessageContainer container, FubbleEndpoint connection) {
+    public void handleMessage(MessageContainerServer container, FubbleEndpoint connection) {
         this.connection = connection;
 
         JoinRoom joinRoom = container.getJoinRoom();
@@ -42,24 +44,53 @@ public class JoinRoomHandler implements FubbleMessageHandler {
         // 1. Send JoinedRoom for the new user
         sendJoinedRoom(room, user);
 
-        // 2. Send Broadcast UserJoined to all users in the room
+        // 2. Send UserJoined for the existing users to the new user
+        broadcastExisting(room, user);
+
+        // 3. Send Broadcast UserJoined to all users in the room
         broadcastUserJoined(room, user);
 
+    }
+
+    private void broadcastExisting(Room room, User user) {
+        List<User> allUsers = new ArrayList<>();
+        allUsers.addAll(room.getUsers());
+        allUsers.remove(user);
+
+        for (User currentUser : allUsers) {
+            UserJoined userJoined = UserJoined.newBuilder() //
+                .setId(currentUser.getId()) //
+                .setName(currentUser.getName()) //
+                .build();
+
+            MessageContainerClient clientMsg = MessageContainerClient.newBuilder().setUserJoined(userJoined).build();
+
+            try {
+                ByteArrayOutputStream output = new ByteArrayOutputStream();
+                clientMsg.writeTo(output);
+                messageHelper.sendAsync(user.getSession(), output.toByteArray());
+                output.close();
+            } catch (Exception ex) {
+                LOGGER.error(ex);
+            }
+        }
     }
 
     private void sendJoinedRoom(Room room, User user) {
         JoinedRoom joinedRoom = JoinedRoom.newBuilder() //
             .setRoomId(room.getId()) //
-            .setUserId(user.getName()) //
+            .setUserId(user.getId()) //
             .build();
+
+        MessageContainerClient clientMsg = MessageContainerClient.newBuilder().setJoinedRoom(joinedRoom).build();
 
         try {
             ByteArrayOutputStream output = new ByteArrayOutputStream();
-            joinedRoom.writeTo(output);
+            clientMsg.writeTo(output);
             messageHelper.sendAsync(user.getSession(), output.toByteArray());
             output.close();
-        } catch (Exception e) {
-            LOGGER.error(e);
+        } catch (Exception ex) {
+            LOGGER.error(ex);
         }
     }
 
@@ -69,14 +100,16 @@ public class JoinRoomHandler implements FubbleMessageHandler {
             .setName(user.getName()) //
             .build();
 
+        MessageContainerClient clientMsg = MessageContainerClient.newBuilder().setUserJoined(userJoined).build();
+
         try {
             ByteArrayOutputStream output = new ByteArrayOutputStream();
-            userJoined.writeTo(output);
+            clientMsg.writeTo(output);
             List<Session> sessions = room.getUsers().stream().map(User::getSession).collect(Collectors.toList());
             messageHelper.broadcastAsync(sessions, output.toByteArray());
             output.close();
-        } catch (Exception e) {
-            LOGGER.error(e);
+        } catch (Exception ex) {
+            LOGGER.error(ex);
         }
     }
 

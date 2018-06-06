@@ -20,8 +20,8 @@ import com.freckles.of.couple.fubble.handler.CloseHandler;
 import com.freckles.of.couple.fubble.handler.FubbleMessageHandler;
 import com.freckles.of.couple.fubble.handler.JoinRoomHandler;
 import com.freckles.of.couple.fubble.handler.RenameRoomHandler;
-import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer;
-import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer.MessageTypeCase;
+import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer;
+import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer.MessageTypeCase;
 
 @ServerEndpoint(value = "/")
 public class FubbleEndpoint {
@@ -40,12 +40,12 @@ public class FubbleEndpoint {
     }
 
     @OnMessage
-    public void onMessage(Session session, byte[] message)
+    public void onMessage(byte[] message)
         throws IOException {
         LOGGER.info("Server: Message received.");
 
         ByteBuffer binaryMessage = ByteBuffer.wrap(message);
-        MessageContainer container = MessageContainer.parseFrom(binaryMessage);
+        MessageContainerServer container = MessageContainerServer.parseFrom(binaryMessage);
 
         try {
             if (room != null) {
@@ -53,6 +53,8 @@ public class FubbleEndpoint {
             }
 
             handleContainer(container);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         } finally {
             if (room != null) {
                 room.getMutex().unlock();
@@ -61,7 +63,7 @@ public class FubbleEndpoint {
 
     }
 
-    private void handleContainer(MessageContainer container) {
+    private void handleContainer(MessageContainerServer container) {
         MessageTypeCase messageTypeCase = container.getMessageTypeCase();
 
         if (messageTypeCase.equals(MessageTypeCase.JOINROOM)) {
@@ -97,10 +99,12 @@ public class FubbleEndpoint {
     }
 
     @OnError
-    public void onError(Session session, Throwable throwable) {}
+    public void onError(Throwable throwable) {
+        LOGGER.error(throwable.getMessage());
+    }
 
     @OnClose
-    public void onClose(Session session)
+    public void onClose()
         throws IOException {
 
         try {
@@ -114,7 +118,6 @@ public class FubbleEndpoint {
                 room.getMutex().unlock();
             }
         }
-
     }
 
 }

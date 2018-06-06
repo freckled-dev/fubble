@@ -7,37 +7,41 @@ import org.junit.Test;
 
 import com.freckles.of.couple.fubble.FubbleClientEndpoint;
 import com.freckles.of.couple.fubble.proto.WebContainer.JoinRoom;
-import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer;
+import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer;
 
 public class JoinRoomTest extends FubbleWebSocketTest {
 
     private static final Logger LOGGER = LogManager.getLogger(JoinRoomTest.class);
 
     @Test
-    public void testJoinRoom() {
+    public void testJoinRoomTwoClients() {
+        // 2 clients join the same room
+        createClients(3);
+
         try {
-            MessageContainer joinRoom = createJoinRoomContainer("martin-loves-dick");
+            MessageContainerServer joinRoom = createJoinRoomContainer("martin-loves-dick");
             ByteArrayOutputStream output = new ByteArrayOutputStream();
             joinRoom.writeTo(output);
 
-            for (FubbleClientEndpoint clientEndPoint : clientEndPoints) {
+            for (int index = 0; index < clientEndPoints.size(); index++) {
+                FubbleClientEndpoint clientEndPoint = clientEndPoints.get(index);
+                clientEndPoint.setUserName("Fubbler" + (index + 1));
                 clientEndPoint.sendMessage(output.toByteArray());
+                Thread.sleep(1000);
             }
 
             output.close();
 
-            Thread.sleep(5000);
-
         } catch (IOException ex) {
             LOGGER.error(ex);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        } catch (InterruptedException ex) {
+            LOGGER.error(ex);
         }
     }
 
-    private static MessageContainer createJoinRoomContainer(String roomName) {
+    private static MessageContainerServer createJoinRoomContainer(String roomName) {
         JoinRoom joinRoom = JoinRoom.newBuilder().setRoomName(roomName).build();
-        return MessageContainer.newBuilder().setJoinRoom(joinRoom).build();
+        return MessageContainerServer.newBuilder().setJoinRoom(joinRoom).build();
     }
 
 }

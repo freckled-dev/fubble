@@ -12,8 +12,8 @@ public final class WebContainer {
         registerAllExtensions((com.google.protobuf.ExtensionRegistryLite) registry);
     }
 
-    public interface MessageContainerOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:fubble.MessageContainer)
+    public interface MessageContainerServerOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:fubble.MessageContainerServer)
         com.google.protobuf.MessageOrBuilder {
 
         /**
@@ -100,30 +100,30 @@ public final class WebContainer {
          */
         com.freckles.of.couple.fubble.proto.WebContainer.ChatMessageOrBuilder getChatOrBuilder();
 
-        public com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer.MessageTypeCase getMessageTypeCase();
+        public com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer.MessageTypeCase getMessageTypeCase();
     }
 
     /**
-     * Protobuf type {@code fubble.MessageContainer}
+     * Protobuf type {@code fubble.MessageContainerServer}
      */
-    public static final class MessageContainer extends com.google.protobuf.GeneratedMessageV3 implements
-        // @@protoc_insertion_point(message_implements:fubble.MessageContainer)
-        MessageContainerOrBuilder {
+    public static final class MessageContainerServer extends com.google.protobuf.GeneratedMessageV3 implements
+        // @@protoc_insertion_point(message_implements:fubble.MessageContainerServer)
+        MessageContainerServerOrBuilder {
         private static final long serialVersionUID = 0L;
 
-        // Use MessageContainer.newBuilder() to construct.
-        private MessageContainer(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+        // Use MessageContainerServer.newBuilder() to construct.
+        private MessageContainerServer(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
             super(builder);
         }
 
-        private MessageContainer() {}
+        private MessageContainerServer() {}
 
         @java.lang.Override
         public final com.google.protobuf.UnknownFieldSet getUnknownFields() {
             return this.unknownFields;
         }
 
-        private MessageContainer(com.google.protobuf.CodedInputStream input, com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        private MessageContainerServer(com.google.protobuf.CodedInputStream input, com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
             this();
             if (extensionRegistry == null) {
@@ -210,13 +210,13 @@ public final class WebContainer {
         }
 
         public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
-            return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_MessageContainer_descriptor;
+            return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_MessageContainerServer_descriptor;
         }
 
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
-            return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_MessageContainer_fieldAccessorTable.ensureFieldAccessorsInitialized(
-                com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer.class,
-                com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer.Builder.class);
+            return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_MessageContainerServer_fieldAccessorTable.ensureFieldAccessorsInitialized(
+                com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer.class,
+                com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer.Builder.class);
         }
 
         private int              bitField0_;
@@ -467,10 +467,10 @@ public final class WebContainer {
             if (obj == this) {
                 return true;
             }
-            if (!(obj instanceof com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer)) {
+            if (!(obj instanceof com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer)) {
                 return super.equals(obj);
             }
-            com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer other = (com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer) obj;
+            com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer other = (com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer) obj;
 
             boolean result = true;
             result = result && getMessageTypeCase().equals(other.getMessageTypeCase());
@@ -528,67 +528,67 @@ public final class WebContainer {
             return hash;
         }
 
-        public static com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer parseFrom(java.nio.ByteBuffer data)
+        public static com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer parseFrom(java.nio.ByteBuffer data)
             throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data);
         }
 
-        public static com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer parseFrom(java.nio.ByteBuffer data,
+        public static com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer parseFrom(java.nio.ByteBuffer data,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data, extensionRegistry);
         }
 
-        public static com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer parseFrom(com.google.protobuf.ByteString data)
+        public static com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer parseFrom(com.google.protobuf.ByteString data)
             throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data);
         }
 
-        public static com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer parseFrom(com.google.protobuf.ByteString data,
+        public static com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer parseFrom(com.google.protobuf.ByteString data,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data, extensionRegistry);
         }
 
-        public static com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer parseFrom(byte[] data)
+        public static com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer parseFrom(byte[] data)
             throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data);
         }
 
-        public static com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer parseFrom(byte[] data,
+        public static com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer parseFrom(byte[] data,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data, extensionRegistry);
         }
 
-        public static com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer parseFrom(java.io.InputStream input)
+        public static com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer parseFrom(java.io.InputStream input)
             throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
         }
 
-        public static com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer parseFrom(java.io.InputStream input,
+        public static com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer parseFrom(java.io.InputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
         }
 
-        public static com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer parseDelimitedFrom(java.io.InputStream input)
+        public static com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer parseDelimitedFrom(java.io.InputStream input)
             throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input);
         }
 
-        public static com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer parseDelimitedFrom(java.io.InputStream input,
+        public static com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer parseDelimitedFrom(java.io.InputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input, extensionRegistry);
         }
 
-        public static com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer parseFrom(com.google.protobuf.CodedInputStream input)
+        public static com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer parseFrom(com.google.protobuf.CodedInputStream input)
             throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
         }
 
-        public static com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer parseFrom(com.google.protobuf.CodedInputStream input,
+        public static com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer parseFrom(com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
@@ -602,7 +602,7 @@ public final class WebContainer {
             return DEFAULT_INSTANCE.toBuilder();
         }
 
-        public static Builder newBuilder(com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer prototype) {
+        public static Builder newBuilder(com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer prototype) {
             return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
         }
 
@@ -617,22 +617,22 @@ public final class WebContainer {
         }
 
         /**
-         * Protobuf type {@code fubble.MessageContainer}
+         * Protobuf type {@code fubble.MessageContainerServer}
          */
         public static final class Builder extends com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-            // @@protoc_insertion_point(builder_implements:fubble.MessageContainer)
-            com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerOrBuilder {
+            // @@protoc_insertion_point(builder_implements:fubble.MessageContainerServer)
+            com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServerOrBuilder {
             public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
-                return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_MessageContainer_descriptor;
+                return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_MessageContainerServer_descriptor;
             }
 
             protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
-                return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_MessageContainer_fieldAccessorTable.ensureFieldAccessorsInitialized(
-                    com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer.class,
-                    com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer.Builder.class);
+                return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_MessageContainerServer_fieldAccessorTable.ensureFieldAccessorsInitialized(
+                    com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer.class,
+                    com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer.Builder.class);
             }
 
-            // Construct using com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer.newBuilder()
+            // Construct using com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer.newBuilder()
             private Builder() {
                 maybeForceBuilderInitialization();
             }
@@ -655,23 +655,23 @@ public final class WebContainer {
             }
 
             public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
-                return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_MessageContainer_descriptor;
+                return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_MessageContainerServer_descriptor;
             }
 
-            public com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer getDefaultInstanceForType() {
-                return com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer.getDefaultInstance();
+            public com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer getDefaultInstanceForType() {
+                return com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer.getDefaultInstance();
             }
 
-            public com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer build() {
-                com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer result = buildPartial();
+            public com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer build() {
+                com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer result = buildPartial();
                 if (!result.isInitialized()) {
                     throw newUninitializedMessageException(result);
                 }
                 return result;
             }
 
-            public com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer buildPartial() {
-                com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer result = new com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer(
+            public com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer buildPartial() {
+                com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer result = new com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer(
                     this);
                 int from_bitField0_ = bitField0_;
                 int to_bitField0_ = 0;
@@ -734,16 +734,16 @@ public final class WebContainer {
             }
 
             public Builder mergeFrom(com.google.protobuf.Message other) {
-                if (other instanceof com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer) {
-                    return mergeFrom((com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer) other);
+                if (other instanceof com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer) {
+                    return mergeFrom((com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer) other);
                 } else {
                     super.mergeFrom(other);
                     return this;
                 }
             }
 
-            public Builder mergeFrom(com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer other) {
-                if (other == com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer.getDefaultInstance())
+            public Builder mergeFrom(com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer other) {
+                if (other == com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer.getDefaultInstance())
                     return this;
                 switch (other.getMessageTypeCase()) {
                     case JOINROOM: {
@@ -777,11 +777,11 @@ public final class WebContainer {
 
             public Builder mergeFrom(com.google.protobuf.CodedInputStream input, com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
-                com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer parsedMessage = null;
+                com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer parsedMessage = null;
                 try {
                     parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
                 } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                    parsedMessage = (com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer) e.getUnfinishedMessage();
+                    parsedMessage = (com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer) e.getUnfinishedMessage();
                     throw e.unwrapIOException();
                 } finally {
                     if (parsedMessage != null) {
@@ -1435,38 +1435,38 @@ public final class WebContainer {
                 return super.mergeUnknownFields(unknownFields);
             }
 
-            // @@protoc_insertion_point(builder_scope:fubble.MessageContainer)
+            // @@protoc_insertion_point(builder_scope:fubble.MessageContainerServer)
         }
 
-        // @@protoc_insertion_point(class_scope:fubble.MessageContainer)
-        private static final com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer DEFAULT_INSTANCE;
+        // @@protoc_insertion_point(class_scope:fubble.MessageContainerServer)
+        private static final com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer DEFAULT_INSTANCE;
         static {
-            DEFAULT_INSTANCE = new com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer();
+            DEFAULT_INSTANCE = new com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer();
         }
 
-        public static com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer getDefaultInstance() {
+        public static com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer getDefaultInstance() {
             return DEFAULT_INSTANCE;
         }
 
         @java.lang.Deprecated
-        public static final com.google.protobuf.Parser<MessageContainer> PARSER = new com.google.protobuf.AbstractParser<MessageContainer>() {
-            public MessageContainer parsePartialFrom(com.google.protobuf.CodedInputStream input,
+        public static final com.google.protobuf.Parser<MessageContainerServer> PARSER = new com.google.protobuf.AbstractParser<MessageContainerServer>() {
+            public MessageContainerServer parsePartialFrom(com.google.protobuf.CodedInputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws com.google.protobuf.InvalidProtocolBufferException {
-                return new MessageContainer(input, extensionRegistry);
+                return new MessageContainerServer(input, extensionRegistry);
             }
         };
 
-        public static com.google.protobuf.Parser<MessageContainer> parser() {
+        public static com.google.protobuf.Parser<MessageContainerServer> parser() {
             return PARSER;
         }
 
         @java.lang.Override
-        public com.google.protobuf.Parser<MessageContainer> getParserForType() {
+        public com.google.protobuf.Parser<MessageContainerServer> getParserForType() {
             return PARSER;
         }
 
-        public com.freckles.of.couple.fubble.proto.WebContainer.MessageContainer getDefaultInstanceForType() {
+        public com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer getDefaultInstanceForType() {
             return DEFAULT_INSTANCE;
         }
 
@@ -2015,6 +2015,3214 @@ public final class WebContainer {
         }
 
         public com.freckles.of.couple.fubble.proto.WebContainer.JoinRoom getDefaultInstanceForType() {
+            return DEFAULT_INSTANCE;
+        }
+
+    }
+
+    public interface RenameRoomOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:fubble.RenameRoom)
+        com.google.protobuf.MessageOrBuilder {
+
+        /**
+         * <code>optional string roomName = 1;</code>
+         */
+        boolean hasRoomName();
+
+        /**
+         * <code>optional string roomName = 1;</code>
+         */
+        java.lang.String getRoomName();
+
+        /**
+         * <code>optional string roomName = 1;</code>
+         */
+        com.google.protobuf.ByteString getRoomNameBytes();
+    }
+
+    /**
+     * Protobuf type {@code fubble.RenameRoom}
+     */
+    public static final class RenameRoom extends com.google.protobuf.GeneratedMessageV3 implements
+        // @@protoc_insertion_point(message_implements:fubble.RenameRoom)
+        RenameRoomOrBuilder {
+        private static final long serialVersionUID = 0L;
+
+        // Use RenameRoom.newBuilder() to construct.
+        private RenameRoom(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+            super(builder);
+        }
+
+        private RenameRoom() {
+            roomName_ = "";
+        }
+
+        @java.lang.Override
+        public final com.google.protobuf.UnknownFieldSet getUnknownFields() {
+            return this.unknownFields;
+        }
+
+        private RenameRoom(com.google.protobuf.CodedInputStream input, com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+            this();
+            if (extensionRegistry == null) {
+                throw new java.lang.NullPointerException();
+            }
+            int mutable_bitField0_ = 0;
+            com.google.protobuf.UnknownFieldSet.Builder unknownFields = com.google.protobuf.UnknownFieldSet.newBuilder();
+            try {
+                boolean done = false;
+                while (!done) {
+                    int tag = input.readTag();
+                    switch (tag) {
+                        case 0:
+                            done = true;
+                            break;
+                        default: {
+                            if (!parseUnknownField(input, unknownFields, extensionRegistry, tag)) {
+                                done = true;
+                            }
+                            break;
+                        }
+                        case 10: {
+                            com.google.protobuf.ByteString bs = input.readBytes();
+                            bitField0_ |= 0x00000001;
+                            roomName_ = bs;
+                            break;
+                        }
+                    }
+                }
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                throw e.setUnfinishedMessage(this);
+            } catch (java.io.IOException e) {
+                throw new com.google.protobuf.InvalidProtocolBufferException(e).setUnfinishedMessage(this);
+            } finally {
+                this.unknownFields = unknownFields.build();
+                makeExtensionsImmutable();
+            }
+        }
+
+        public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
+            return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_RenameRoom_descriptor;
+        }
+
+        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
+            return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_RenameRoom_fieldAccessorTable.ensureFieldAccessorsInitialized(
+                com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom.class,
+                com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom.Builder.class);
+        }
+
+        private int                       bitField0_;
+        public static final int           ROOMNAME_FIELD_NUMBER = 1;
+        private volatile java.lang.Object roomName_;
+
+        /**
+         * <code>optional string roomName = 1;</code>
+         */
+        public boolean hasRoomName() {
+            return ((bitField0_ & 0x00000001) == 0x00000001);
+        }
+
+        /**
+         * <code>optional string roomName = 1;</code>
+         */
+        public java.lang.String getRoomName() {
+            java.lang.Object ref = roomName_;
+            if (ref instanceof java.lang.String) {
+                return (java.lang.String) ref;
+            } else {
+                com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
+                java.lang.String s = bs.toStringUtf8();
+                if (bs.isValidUtf8()) {
+                    roomName_ = s;
+                }
+                return s;
+            }
+        }
+
+        /**
+         * <code>optional string roomName = 1;</code>
+         */
+        public com.google.protobuf.ByteString getRoomNameBytes() {
+            java.lang.Object ref = roomName_;
+            if (ref instanceof java.lang.String) {
+                com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
+                roomName_ = b;
+                return b;
+            } else {
+                return (com.google.protobuf.ByteString) ref;
+            }
+        }
+
+        private byte memoizedIsInitialized = -1;
+
+        public final boolean isInitialized() {
+            byte isInitialized = memoizedIsInitialized;
+            if (isInitialized == 1)
+                return true;
+            if (isInitialized == 0)
+                return false;
+
+            memoizedIsInitialized = 1;
+            return true;
+        }
+
+        public void writeTo(com.google.protobuf.CodedOutputStream output)
+            throws java.io.IOException {
+            if (((bitField0_ & 0x00000001) == 0x00000001)) {
+                com.google.protobuf.GeneratedMessageV3.writeString(output, 1, roomName_);
+            }
+            unknownFields.writeTo(output);
+        }
+
+        public int getSerializedSize() {
+            int size = memoizedSize;
+            if (size != -1)
+                return size;
+
+            size = 0;
+            if (((bitField0_ & 0x00000001) == 0x00000001)) {
+                size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, roomName_);
+            }
+            size += unknownFields.getSerializedSize();
+            memoizedSize = size;
+            return size;
+        }
+
+        @java.lang.Override
+        public boolean equals(final java.lang.Object obj) {
+            if (obj == this) {
+                return true;
+            }
+            if (!(obj instanceof com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom)) {
+                return super.equals(obj);
+            }
+            com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom other = (com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom) obj;
+
+            boolean result = true;
+            result = result && (hasRoomName() == other.hasRoomName());
+            if (hasRoomName()) {
+                result = result && getRoomName().equals(other.getRoomName());
+            }
+            result = result && unknownFields.equals(other.unknownFields);
+            return result;
+        }
+
+        @java.lang.Override
+        public int hashCode() {
+            if (memoizedHashCode != 0) {
+                return memoizedHashCode;
+            }
+            int hash = 41;
+            hash = (19 * hash) + getDescriptor().hashCode();
+            if (hasRoomName()) {
+                hash = (37 * hash) + ROOMNAME_FIELD_NUMBER;
+                hash = (53 * hash) + getRoomName().hashCode();
+            }
+            hash = (29 * hash) + unknownFields.hashCode();
+            memoizedHashCode = hash;
+            return hash;
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom parseFrom(java.nio.ByteBuffer data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+            return PARSER.parseFrom(data);
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom parseFrom(java.nio.ByteBuffer data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+            return PARSER.parseFrom(data, extensionRegistry);
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom parseFrom(com.google.protobuf.ByteString data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+            return PARSER.parseFrom(data);
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom parseFrom(com.google.protobuf.ByteString data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+            return PARSER.parseFrom(data, extensionRegistry);
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom parseFrom(byte[] data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+            return PARSER.parseFrom(data);
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom parseFrom(byte[] data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+            return PARSER.parseFrom(data, extensionRegistry);
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom parseFrom(java.io.InputStream input)
+            throws java.io.IOException {
+            return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom parseFrom(java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+            return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom parseDelimitedFrom(java.io.InputStream input)
+            throws java.io.IOException {
+            return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input);
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom parseDelimitedFrom(java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+            return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom parseFrom(com.google.protobuf.CodedInputStream input)
+            throws java.io.IOException {
+            return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom parseFrom(com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+            return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
+        }
+
+        public Builder newBuilderForType() {
+            return newBuilder();
+        }
+
+        public static Builder newBuilder() {
+            return DEFAULT_INSTANCE.toBuilder();
+        }
+
+        public static Builder newBuilder(com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom prototype) {
+            return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+        }
+
+        public Builder toBuilder() {
+            return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
+        }
+
+        @java.lang.Override
+        protected Builder newBuilderForType(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+            Builder builder = new Builder(parent);
+            return builder;
+        }
+
+        /**
+         * Protobuf type {@code fubble.RenameRoom}
+         */
+        public static final class Builder extends com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:fubble.RenameRoom)
+            com.freckles.of.couple.fubble.proto.WebContainer.RenameRoomOrBuilder {
+            public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
+                return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_RenameRoom_descriptor;
+            }
+
+            protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
+                return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_RenameRoom_fieldAccessorTable.ensureFieldAccessorsInitialized(
+                    com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom.class,
+                    com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom.Builder.class);
+            }
+
+            // Construct using com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom.newBuilder()
+            private Builder() {
+                maybeForceBuilderInitialization();
+            }
+
+            private Builder(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+                super(parent);
+                maybeForceBuilderInitialization();
+            }
+
+            private void maybeForceBuilderInitialization() {
+                if (com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders) {
+                }
+            }
+
+            public Builder clear() {
+                super.clear();
+                roomName_ = "";
+                bitField0_ = (bitField0_ & ~0x00000001);
+                return this;
+            }
+
+            public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+                return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_RenameRoom_descriptor;
+            }
+
+            public com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom getDefaultInstanceForType() {
+                return com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom.getDefaultInstance();
+            }
+
+            public com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom build() {
+                com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom result = buildPartial();
+                if (!result.isInitialized()) {
+                    throw newUninitializedMessageException(result);
+                }
+                return result;
+            }
+
+            public com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom buildPartial() {
+                com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom result = new com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom(
+                    this);
+                int from_bitField0_ = bitField0_;
+                int to_bitField0_ = 0;
+                if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+                    to_bitField0_ |= 0x00000001;
+                }
+                result.roomName_ = roomName_;
+                result.bitField0_ = to_bitField0_;
+                onBuilt();
+                return result;
+            }
+
+            public Builder clone() {
+                return (Builder) super.clone();
+            }
+
+            public Builder setField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
+                return (Builder) super.setField(field, value);
+            }
+
+            public Builder clearField(com.google.protobuf.Descriptors.FieldDescriptor field) {
+                return (Builder) super.clearField(field);
+            }
+
+            public Builder clearOneof(com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+                return (Builder) super.clearOneof(oneof);
+            }
+
+            public Builder setRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, int index, java.lang.Object value) {
+                return (Builder) super.setRepeatedField(field, index, value);
+            }
+
+            public Builder addRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
+                return (Builder) super.addRepeatedField(field, value);
+            }
+
+            public Builder mergeFrom(com.google.protobuf.Message other) {
+                if (other instanceof com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom) {
+                    return mergeFrom((com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom) other);
+                } else {
+                    super.mergeFrom(other);
+                    return this;
+                }
+            }
+
+            public Builder mergeFrom(com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom other) {
+                if (other == com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom.getDefaultInstance())
+                    return this;
+                if (other.hasRoomName()) {
+                    bitField0_ |= 0x00000001;
+                    roomName_ = other.roomName_;
+                    onChanged();
+                }
+                this.mergeUnknownFields(other.unknownFields);
+                onChanged();
+                return this;
+            }
+
+            public final boolean isInitialized() {
+                return true;
+            }
+
+            public Builder mergeFrom(com.google.protobuf.CodedInputStream input, com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws java.io.IOException {
+                com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom parsedMessage = null;
+                try {
+                    parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+                } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                    parsedMessage = (com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom) e.getUnfinishedMessage();
+                    throw e.unwrapIOException();
+                } finally {
+                    if (parsedMessage != null) {
+                        mergeFrom(parsedMessage);
+                    }
+                }
+                return this;
+            }
+
+            private int              bitField0_;
+
+            private java.lang.Object roomName_ = "";
+
+            /**
+             * <code>optional string roomName = 1;</code>
+             */
+            public boolean hasRoomName() {
+                return ((bitField0_ & 0x00000001) == 0x00000001);
+            }
+
+            /**
+             * <code>optional string roomName = 1;</code>
+             */
+            public java.lang.String getRoomName() {
+                java.lang.Object ref = roomName_;
+                if (!(ref instanceof java.lang.String)) {
+                    com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
+                    java.lang.String s = bs.toStringUtf8();
+                    if (bs.isValidUtf8()) {
+                        roomName_ = s;
+                    }
+                    return s;
+                } else {
+                    return (java.lang.String) ref;
+                }
+            }
+
+            /**
+             * <code>optional string roomName = 1;</code>
+             */
+            public com.google.protobuf.ByteString getRoomNameBytes() {
+                java.lang.Object ref = roomName_;
+                if (ref instanceof String) {
+                    com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
+                    roomName_ = b;
+                    return b;
+                } else {
+                    return (com.google.protobuf.ByteString) ref;
+                }
+            }
+
+            /**
+             * <code>optional string roomName = 1;</code>
+             */
+            public Builder setRoomName(java.lang.String value) {
+                if (value == null) {
+                    throw new NullPointerException();
+                }
+                bitField0_ |= 0x00000001;
+                roomName_ = value;
+                onChanged();
+                return this;
+            }
+
+            /**
+             * <code>optional string roomName = 1;</code>
+             */
+            public Builder clearRoomName() {
+                bitField0_ = (bitField0_ & ~0x00000001);
+                roomName_ = getDefaultInstance().getRoomName();
+                onChanged();
+                return this;
+            }
+
+            /**
+             * <code>optional string roomName = 1;</code>
+             */
+            public Builder setRoomNameBytes(com.google.protobuf.ByteString value) {
+                if (value == null) {
+                    throw new NullPointerException();
+                }
+                bitField0_ |= 0x00000001;
+                roomName_ = value;
+                onChanged();
+                return this;
+            }
+
+            public final Builder setUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
+                return super.setUnknownFields(unknownFields);
+            }
+
+            public final Builder mergeUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
+                return super.mergeUnknownFields(unknownFields);
+            }
+
+            // @@protoc_insertion_point(builder_scope:fubble.RenameRoom)
+        }
+
+        // @@protoc_insertion_point(class_scope:fubble.RenameRoom)
+        private static final com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom DEFAULT_INSTANCE;
+        static {
+            DEFAULT_INSTANCE = new com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom();
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom getDefaultInstance() {
+            return DEFAULT_INSTANCE;
+        }
+
+        @java.lang.Deprecated
+        public static final com.google.protobuf.Parser<RenameRoom> PARSER = new com.google.protobuf.AbstractParser<RenameRoom>() {
+            public RenameRoom parsePartialFrom(com.google.protobuf.CodedInputStream input,
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws com.google.protobuf.InvalidProtocolBufferException {
+                return new RenameRoom(input, extensionRegistry);
+            }
+        };
+
+        public static com.google.protobuf.Parser<RenameRoom> parser() {
+            return PARSER;
+        }
+
+        @java.lang.Override
+        public com.google.protobuf.Parser<RenameRoom> getParserForType() {
+            return PARSER;
+        }
+
+        public com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom getDefaultInstanceForType() {
+            return DEFAULT_INSTANCE;
+        }
+
+    }
+
+    public interface RenameUserOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:fubble.RenameUser)
+        com.google.protobuf.MessageOrBuilder {
+
+        /**
+         * <code>optional string name = 1;</code>
+         */
+        boolean hasName();
+
+        /**
+         * <code>optional string name = 1;</code>
+         */
+        java.lang.String getName();
+
+        /**
+         * <code>optional string name = 1;</code>
+         */
+        com.google.protobuf.ByteString getNameBytes();
+    }
+
+    /**
+     * Protobuf type {@code fubble.RenameUser}
+     */
+    public static final class RenameUser extends com.google.protobuf.GeneratedMessageV3 implements
+        // @@protoc_insertion_point(message_implements:fubble.RenameUser)
+        RenameUserOrBuilder {
+        private static final long serialVersionUID = 0L;
+
+        // Use RenameUser.newBuilder() to construct.
+        private RenameUser(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+            super(builder);
+        }
+
+        private RenameUser() {
+            name_ = "";
+        }
+
+        @java.lang.Override
+        public final com.google.protobuf.UnknownFieldSet getUnknownFields() {
+            return this.unknownFields;
+        }
+
+        private RenameUser(com.google.protobuf.CodedInputStream input, com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+            this();
+            if (extensionRegistry == null) {
+                throw new java.lang.NullPointerException();
+            }
+            int mutable_bitField0_ = 0;
+            com.google.protobuf.UnknownFieldSet.Builder unknownFields = com.google.protobuf.UnknownFieldSet.newBuilder();
+            try {
+                boolean done = false;
+                while (!done) {
+                    int tag = input.readTag();
+                    switch (tag) {
+                        case 0:
+                            done = true;
+                            break;
+                        default: {
+                            if (!parseUnknownField(input, unknownFields, extensionRegistry, tag)) {
+                                done = true;
+                            }
+                            break;
+                        }
+                        case 10: {
+                            com.google.protobuf.ByteString bs = input.readBytes();
+                            bitField0_ |= 0x00000001;
+                            name_ = bs;
+                            break;
+                        }
+                    }
+                }
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                throw e.setUnfinishedMessage(this);
+            } catch (java.io.IOException e) {
+                throw new com.google.protobuf.InvalidProtocolBufferException(e).setUnfinishedMessage(this);
+            } finally {
+                this.unknownFields = unknownFields.build();
+                makeExtensionsImmutable();
+            }
+        }
+
+        public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
+            return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_RenameUser_descriptor;
+        }
+
+        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
+            return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_RenameUser_fieldAccessorTable.ensureFieldAccessorsInitialized(
+                com.freckles.of.couple.fubble.proto.WebContainer.RenameUser.class,
+                com.freckles.of.couple.fubble.proto.WebContainer.RenameUser.Builder.class);
+        }
+
+        private int                       bitField0_;
+        public static final int           NAME_FIELD_NUMBER = 1;
+        private volatile java.lang.Object name_;
+
+        /**
+         * <code>optional string name = 1;</code>
+         */
+        public boolean hasName() {
+            return ((bitField0_ & 0x00000001) == 0x00000001);
+        }
+
+        /**
+         * <code>optional string name = 1;</code>
+         */
+        public java.lang.String getName() {
+            java.lang.Object ref = name_;
+            if (ref instanceof java.lang.String) {
+                return (java.lang.String) ref;
+            } else {
+                com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
+                java.lang.String s = bs.toStringUtf8();
+                if (bs.isValidUtf8()) {
+                    name_ = s;
+                }
+                return s;
+            }
+        }
+
+        /**
+         * <code>optional string name = 1;</code>
+         */
+        public com.google.protobuf.ByteString getNameBytes() {
+            java.lang.Object ref = name_;
+            if (ref instanceof java.lang.String) {
+                com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
+                name_ = b;
+                return b;
+            } else {
+                return (com.google.protobuf.ByteString) ref;
+            }
+        }
+
+        private byte memoizedIsInitialized = -1;
+
+        public final boolean isInitialized() {
+            byte isInitialized = memoizedIsInitialized;
+            if (isInitialized == 1)
+                return true;
+            if (isInitialized == 0)
+                return false;
+
+            memoizedIsInitialized = 1;
+            return true;
+        }
+
+        public void writeTo(com.google.protobuf.CodedOutputStream output)
+            throws java.io.IOException {
+            if (((bitField0_ & 0x00000001) == 0x00000001)) {
+                com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
+            }
+            unknownFields.writeTo(output);
+        }
+
+        public int getSerializedSize() {
+            int size = memoizedSize;
+            if (size != -1)
+                return size;
+
+            size = 0;
+            if (((bitField0_ & 0x00000001) == 0x00000001)) {
+                size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
+            }
+            size += unknownFields.getSerializedSize();
+            memoizedSize = size;
+            return size;
+        }
+
+        @java.lang.Override
+        public boolean equals(final java.lang.Object obj) {
+            if (obj == this) {
+                return true;
+            }
+            if (!(obj instanceof com.freckles.of.couple.fubble.proto.WebContainer.RenameUser)) {
+                return super.equals(obj);
+            }
+            com.freckles.of.couple.fubble.proto.WebContainer.RenameUser other = (com.freckles.of.couple.fubble.proto.WebContainer.RenameUser) obj;
+
+            boolean result = true;
+            result = result && (hasName() == other.hasName());
+            if (hasName()) {
+                result = result && getName().equals(other.getName());
+            }
+            result = result && unknownFields.equals(other.unknownFields);
+            return result;
+        }
+
+        @java.lang.Override
+        public int hashCode() {
+            if (memoizedHashCode != 0) {
+                return memoizedHashCode;
+            }
+            int hash = 41;
+            hash = (19 * hash) + getDescriptor().hashCode();
+            if (hasName()) {
+                hash = (37 * hash) + NAME_FIELD_NUMBER;
+                hash = (53 * hash) + getName().hashCode();
+            }
+            hash = (29 * hash) + unknownFields.hashCode();
+            memoizedHashCode = hash;
+            return hash;
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameUser parseFrom(java.nio.ByteBuffer data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+            return PARSER.parseFrom(data);
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameUser parseFrom(java.nio.ByteBuffer data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+            return PARSER.parseFrom(data, extensionRegistry);
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameUser parseFrom(com.google.protobuf.ByteString data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+            return PARSER.parseFrom(data);
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameUser parseFrom(com.google.protobuf.ByteString data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+            return PARSER.parseFrom(data, extensionRegistry);
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameUser parseFrom(byte[] data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+            return PARSER.parseFrom(data);
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameUser parseFrom(byte[] data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+            return PARSER.parseFrom(data, extensionRegistry);
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameUser parseFrom(java.io.InputStream input)
+            throws java.io.IOException {
+            return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameUser parseFrom(java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+            return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameUser parseDelimitedFrom(java.io.InputStream input)
+            throws java.io.IOException {
+            return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input);
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameUser parseDelimitedFrom(java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+            return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameUser parseFrom(com.google.protobuf.CodedInputStream input)
+            throws java.io.IOException {
+            return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameUser parseFrom(com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+            return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
+        }
+
+        public Builder newBuilderForType() {
+            return newBuilder();
+        }
+
+        public static Builder newBuilder() {
+            return DEFAULT_INSTANCE.toBuilder();
+        }
+
+        public static Builder newBuilder(com.freckles.of.couple.fubble.proto.WebContainer.RenameUser prototype) {
+            return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+        }
+
+        public Builder toBuilder() {
+            return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
+        }
+
+        @java.lang.Override
+        protected Builder newBuilderForType(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+            Builder builder = new Builder(parent);
+            return builder;
+        }
+
+        /**
+         * Protobuf type {@code fubble.RenameUser}
+         */
+        public static final class Builder extends com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:fubble.RenameUser)
+            com.freckles.of.couple.fubble.proto.WebContainer.RenameUserOrBuilder {
+            public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
+                return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_RenameUser_descriptor;
+            }
+
+            protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
+                return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_RenameUser_fieldAccessorTable.ensureFieldAccessorsInitialized(
+                    com.freckles.of.couple.fubble.proto.WebContainer.RenameUser.class,
+                    com.freckles.of.couple.fubble.proto.WebContainer.RenameUser.Builder.class);
+            }
+
+            // Construct using com.freckles.of.couple.fubble.proto.WebContainer.RenameUser.newBuilder()
+            private Builder() {
+                maybeForceBuilderInitialization();
+            }
+
+            private Builder(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+                super(parent);
+                maybeForceBuilderInitialization();
+            }
+
+            private void maybeForceBuilderInitialization() {
+                if (com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders) {
+                }
+            }
+
+            public Builder clear() {
+                super.clear();
+                name_ = "";
+                bitField0_ = (bitField0_ & ~0x00000001);
+                return this;
+            }
+
+            public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+                return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_RenameUser_descriptor;
+            }
+
+            public com.freckles.of.couple.fubble.proto.WebContainer.RenameUser getDefaultInstanceForType() {
+                return com.freckles.of.couple.fubble.proto.WebContainer.RenameUser.getDefaultInstance();
+            }
+
+            public com.freckles.of.couple.fubble.proto.WebContainer.RenameUser build() {
+                com.freckles.of.couple.fubble.proto.WebContainer.RenameUser result = buildPartial();
+                if (!result.isInitialized()) {
+                    throw newUninitializedMessageException(result);
+                }
+                return result;
+            }
+
+            public com.freckles.of.couple.fubble.proto.WebContainer.RenameUser buildPartial() {
+                com.freckles.of.couple.fubble.proto.WebContainer.RenameUser result = new com.freckles.of.couple.fubble.proto.WebContainer.RenameUser(
+                    this);
+                int from_bitField0_ = bitField0_;
+                int to_bitField0_ = 0;
+                if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+                    to_bitField0_ |= 0x00000001;
+                }
+                result.name_ = name_;
+                result.bitField0_ = to_bitField0_;
+                onBuilt();
+                return result;
+            }
+
+            public Builder clone() {
+                return (Builder) super.clone();
+            }
+
+            public Builder setField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
+                return (Builder) super.setField(field, value);
+            }
+
+            public Builder clearField(com.google.protobuf.Descriptors.FieldDescriptor field) {
+                return (Builder) super.clearField(field);
+            }
+
+            public Builder clearOneof(com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+                return (Builder) super.clearOneof(oneof);
+            }
+
+            public Builder setRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, int index, java.lang.Object value) {
+                return (Builder) super.setRepeatedField(field, index, value);
+            }
+
+            public Builder addRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
+                return (Builder) super.addRepeatedField(field, value);
+            }
+
+            public Builder mergeFrom(com.google.protobuf.Message other) {
+                if (other instanceof com.freckles.of.couple.fubble.proto.WebContainer.RenameUser) {
+                    return mergeFrom((com.freckles.of.couple.fubble.proto.WebContainer.RenameUser) other);
+                } else {
+                    super.mergeFrom(other);
+                    return this;
+                }
+            }
+
+            public Builder mergeFrom(com.freckles.of.couple.fubble.proto.WebContainer.RenameUser other) {
+                if (other == com.freckles.of.couple.fubble.proto.WebContainer.RenameUser.getDefaultInstance())
+                    return this;
+                if (other.hasName()) {
+                    bitField0_ |= 0x00000001;
+                    name_ = other.name_;
+                    onChanged();
+                }
+                this.mergeUnknownFields(other.unknownFields);
+                onChanged();
+                return this;
+            }
+
+            public final boolean isInitialized() {
+                return true;
+            }
+
+            public Builder mergeFrom(com.google.protobuf.CodedInputStream input, com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws java.io.IOException {
+                com.freckles.of.couple.fubble.proto.WebContainer.RenameUser parsedMessage = null;
+                try {
+                    parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+                } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                    parsedMessage = (com.freckles.of.couple.fubble.proto.WebContainer.RenameUser) e.getUnfinishedMessage();
+                    throw e.unwrapIOException();
+                } finally {
+                    if (parsedMessage != null) {
+                        mergeFrom(parsedMessage);
+                    }
+                }
+                return this;
+            }
+
+            private int              bitField0_;
+
+            private java.lang.Object name_ = "";
+
+            /**
+             * <code>optional string name = 1;</code>
+             */
+            public boolean hasName() {
+                return ((bitField0_ & 0x00000001) == 0x00000001);
+            }
+
+            /**
+             * <code>optional string name = 1;</code>
+             */
+            public java.lang.String getName() {
+                java.lang.Object ref = name_;
+                if (!(ref instanceof java.lang.String)) {
+                    com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
+                    java.lang.String s = bs.toStringUtf8();
+                    if (bs.isValidUtf8()) {
+                        name_ = s;
+                    }
+                    return s;
+                } else {
+                    return (java.lang.String) ref;
+                }
+            }
+
+            /**
+             * <code>optional string name = 1;</code>
+             */
+            public com.google.protobuf.ByteString getNameBytes() {
+                java.lang.Object ref = name_;
+                if (ref instanceof String) {
+                    com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
+                    name_ = b;
+                    return b;
+                } else {
+                    return (com.google.protobuf.ByteString) ref;
+                }
+            }
+
+            /**
+             * <code>optional string name = 1;</code>
+             */
+            public Builder setName(java.lang.String value) {
+                if (value == null) {
+                    throw new NullPointerException();
+                }
+                bitField0_ |= 0x00000001;
+                name_ = value;
+                onChanged();
+                return this;
+            }
+
+            /**
+             * <code>optional string name = 1;</code>
+             */
+            public Builder clearName() {
+                bitField0_ = (bitField0_ & ~0x00000001);
+                name_ = getDefaultInstance().getName();
+                onChanged();
+                return this;
+            }
+
+            /**
+             * <code>optional string name = 1;</code>
+             */
+            public Builder setNameBytes(com.google.protobuf.ByteString value) {
+                if (value == null) {
+                    throw new NullPointerException();
+                }
+                bitField0_ |= 0x00000001;
+                name_ = value;
+                onChanged();
+                return this;
+            }
+
+            public final Builder setUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
+                return super.setUnknownFields(unknownFields);
+            }
+
+            public final Builder mergeUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
+                return super.mergeUnknownFields(unknownFields);
+            }
+
+            // @@protoc_insertion_point(builder_scope:fubble.RenameUser)
+        }
+
+        // @@protoc_insertion_point(class_scope:fubble.RenameUser)
+        private static final com.freckles.of.couple.fubble.proto.WebContainer.RenameUser DEFAULT_INSTANCE;
+        static {
+            DEFAULT_INSTANCE = new com.freckles.of.couple.fubble.proto.WebContainer.RenameUser();
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameUser getDefaultInstance() {
+            return DEFAULT_INSTANCE;
+        }
+
+        @java.lang.Deprecated
+        public static final com.google.protobuf.Parser<RenameUser> PARSER = new com.google.protobuf.AbstractParser<RenameUser>() {
+            public RenameUser parsePartialFrom(com.google.protobuf.CodedInputStream input,
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws com.google.protobuf.InvalidProtocolBufferException {
+                return new RenameUser(input, extensionRegistry);
+            }
+        };
+
+        public static com.google.protobuf.Parser<RenameUser> parser() {
+            return PARSER;
+        }
+
+        @java.lang.Override
+        public com.google.protobuf.Parser<RenameUser> getParserForType() {
+            return PARSER;
+        }
+
+        public com.freckles.of.couple.fubble.proto.WebContainer.RenameUser getDefaultInstanceForType() {
+            return DEFAULT_INSTANCE;
+        }
+
+    }
+
+    public interface ChatMessageOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:fubble.ChatMessage)
+        com.google.protobuf.MessageOrBuilder {
+
+        /**
+         * <code>optional string content = 1;</code>
+         */
+        boolean hasContent();
+
+        /**
+         * <code>optional string content = 1;</code>
+         */
+        java.lang.String getContent();
+
+        /**
+         * <code>optional string content = 1;</code>
+         */
+        com.google.protobuf.ByteString getContentBytes();
+    }
+
+    /**
+     * Protobuf type {@code fubble.ChatMessage}
+     */
+    public static final class ChatMessage extends com.google.protobuf.GeneratedMessageV3 implements
+        // @@protoc_insertion_point(message_implements:fubble.ChatMessage)
+        ChatMessageOrBuilder {
+        private static final long serialVersionUID = 0L;
+
+        // Use ChatMessage.newBuilder() to construct.
+        private ChatMessage(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+            super(builder);
+        }
+
+        private ChatMessage() {
+            content_ = "";
+        }
+
+        @java.lang.Override
+        public final com.google.protobuf.UnknownFieldSet getUnknownFields() {
+            return this.unknownFields;
+        }
+
+        private ChatMessage(com.google.protobuf.CodedInputStream input, com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+            this();
+            if (extensionRegistry == null) {
+                throw new java.lang.NullPointerException();
+            }
+            int mutable_bitField0_ = 0;
+            com.google.protobuf.UnknownFieldSet.Builder unknownFields = com.google.protobuf.UnknownFieldSet.newBuilder();
+            try {
+                boolean done = false;
+                while (!done) {
+                    int tag = input.readTag();
+                    switch (tag) {
+                        case 0:
+                            done = true;
+                            break;
+                        default: {
+                            if (!parseUnknownField(input, unknownFields, extensionRegistry, tag)) {
+                                done = true;
+                            }
+                            break;
+                        }
+                        case 10: {
+                            com.google.protobuf.ByteString bs = input.readBytes();
+                            bitField0_ |= 0x00000001;
+                            content_ = bs;
+                            break;
+                        }
+                    }
+                }
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                throw e.setUnfinishedMessage(this);
+            } catch (java.io.IOException e) {
+                throw new com.google.protobuf.InvalidProtocolBufferException(e).setUnfinishedMessage(this);
+            } finally {
+                this.unknownFields = unknownFields.build();
+                makeExtensionsImmutable();
+            }
+        }
+
+        public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
+            return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_ChatMessage_descriptor;
+        }
+
+        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
+            return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_ChatMessage_fieldAccessorTable.ensureFieldAccessorsInitialized(
+                com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage.class,
+                com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage.Builder.class);
+        }
+
+        private int                       bitField0_;
+        public static final int           CONTENT_FIELD_NUMBER = 1;
+        private volatile java.lang.Object content_;
+
+        /**
+         * <code>optional string content = 1;</code>
+         */
+        public boolean hasContent() {
+            return ((bitField0_ & 0x00000001) == 0x00000001);
+        }
+
+        /**
+         * <code>optional string content = 1;</code>
+         */
+        public java.lang.String getContent() {
+            java.lang.Object ref = content_;
+            if (ref instanceof java.lang.String) {
+                return (java.lang.String) ref;
+            } else {
+                com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
+                java.lang.String s = bs.toStringUtf8();
+                if (bs.isValidUtf8()) {
+                    content_ = s;
+                }
+                return s;
+            }
+        }
+
+        /**
+         * <code>optional string content = 1;</code>
+         */
+        public com.google.protobuf.ByteString getContentBytes() {
+            java.lang.Object ref = content_;
+            if (ref instanceof java.lang.String) {
+                com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
+                content_ = b;
+                return b;
+            } else {
+                return (com.google.protobuf.ByteString) ref;
+            }
+        }
+
+        private byte memoizedIsInitialized = -1;
+
+        public final boolean isInitialized() {
+            byte isInitialized = memoizedIsInitialized;
+            if (isInitialized == 1)
+                return true;
+            if (isInitialized == 0)
+                return false;
+
+            memoizedIsInitialized = 1;
+            return true;
+        }
+
+        public void writeTo(com.google.protobuf.CodedOutputStream output)
+            throws java.io.IOException {
+            if (((bitField0_ & 0x00000001) == 0x00000001)) {
+                com.google.protobuf.GeneratedMessageV3.writeString(output, 1, content_);
+            }
+            unknownFields.writeTo(output);
+        }
+
+        public int getSerializedSize() {
+            int size = memoizedSize;
+            if (size != -1)
+                return size;
+
+            size = 0;
+            if (((bitField0_ & 0x00000001) == 0x00000001)) {
+                size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, content_);
+            }
+            size += unknownFields.getSerializedSize();
+            memoizedSize = size;
+            return size;
+        }
+
+        @java.lang.Override
+        public boolean equals(final java.lang.Object obj) {
+            if (obj == this) {
+                return true;
+            }
+            if (!(obj instanceof com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage)) {
+                return super.equals(obj);
+            }
+            com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage other = (com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage) obj;
+
+            boolean result = true;
+            result = result && (hasContent() == other.hasContent());
+            if (hasContent()) {
+                result = result && getContent().equals(other.getContent());
+            }
+            result = result && unknownFields.equals(other.unknownFields);
+            return result;
+        }
+
+        @java.lang.Override
+        public int hashCode() {
+            if (memoizedHashCode != 0) {
+                return memoizedHashCode;
+            }
+            int hash = 41;
+            hash = (19 * hash) + getDescriptor().hashCode();
+            if (hasContent()) {
+                hash = (37 * hash) + CONTENT_FIELD_NUMBER;
+                hash = (53 * hash) + getContent().hashCode();
+            }
+            hash = (29 * hash) + unknownFields.hashCode();
+            memoizedHashCode = hash;
+            return hash;
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage parseFrom(java.nio.ByteBuffer data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+            return PARSER.parseFrom(data);
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage parseFrom(java.nio.ByteBuffer data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+            return PARSER.parseFrom(data, extensionRegistry);
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage parseFrom(com.google.protobuf.ByteString data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+            return PARSER.parseFrom(data);
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage parseFrom(com.google.protobuf.ByteString data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+            return PARSER.parseFrom(data, extensionRegistry);
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage parseFrom(byte[] data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+            return PARSER.parseFrom(data);
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage parseFrom(byte[] data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+            return PARSER.parseFrom(data, extensionRegistry);
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage parseFrom(java.io.InputStream input)
+            throws java.io.IOException {
+            return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage parseFrom(java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+            return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage parseDelimitedFrom(java.io.InputStream input)
+            throws java.io.IOException {
+            return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input);
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage parseDelimitedFrom(java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+            return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage parseFrom(com.google.protobuf.CodedInputStream input)
+            throws java.io.IOException {
+            return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage parseFrom(com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+            return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
+        }
+
+        public Builder newBuilderForType() {
+            return newBuilder();
+        }
+
+        public static Builder newBuilder() {
+            return DEFAULT_INSTANCE.toBuilder();
+        }
+
+        public static Builder newBuilder(com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage prototype) {
+            return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+        }
+
+        public Builder toBuilder() {
+            return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
+        }
+
+        @java.lang.Override
+        protected Builder newBuilderForType(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+            Builder builder = new Builder(parent);
+            return builder;
+        }
+
+        /**
+         * Protobuf type {@code fubble.ChatMessage}
+         */
+        public static final class Builder extends com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:fubble.ChatMessage)
+            com.freckles.of.couple.fubble.proto.WebContainer.ChatMessageOrBuilder {
+            public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
+                return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_ChatMessage_descriptor;
+            }
+
+            protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
+                return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_ChatMessage_fieldAccessorTable.ensureFieldAccessorsInitialized(
+                    com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage.class,
+                    com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage.Builder.class);
+            }
+
+            // Construct using com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage.newBuilder()
+            private Builder() {
+                maybeForceBuilderInitialization();
+            }
+
+            private Builder(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+                super(parent);
+                maybeForceBuilderInitialization();
+            }
+
+            private void maybeForceBuilderInitialization() {
+                if (com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders) {
+                }
+            }
+
+            public Builder clear() {
+                super.clear();
+                content_ = "";
+                bitField0_ = (bitField0_ & ~0x00000001);
+                return this;
+            }
+
+            public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+                return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_ChatMessage_descriptor;
+            }
+
+            public com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage getDefaultInstanceForType() {
+                return com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage.getDefaultInstance();
+            }
+
+            public com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage build() {
+                com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage result = buildPartial();
+                if (!result.isInitialized()) {
+                    throw newUninitializedMessageException(result);
+                }
+                return result;
+            }
+
+            public com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage buildPartial() {
+                com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage result = new com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage(
+                    this);
+                int from_bitField0_ = bitField0_;
+                int to_bitField0_ = 0;
+                if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+                    to_bitField0_ |= 0x00000001;
+                }
+                result.content_ = content_;
+                result.bitField0_ = to_bitField0_;
+                onBuilt();
+                return result;
+            }
+
+            public Builder clone() {
+                return (Builder) super.clone();
+            }
+
+            public Builder setField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
+                return (Builder) super.setField(field, value);
+            }
+
+            public Builder clearField(com.google.protobuf.Descriptors.FieldDescriptor field) {
+                return (Builder) super.clearField(field);
+            }
+
+            public Builder clearOneof(com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+                return (Builder) super.clearOneof(oneof);
+            }
+
+            public Builder setRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, int index, java.lang.Object value) {
+                return (Builder) super.setRepeatedField(field, index, value);
+            }
+
+            public Builder addRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
+                return (Builder) super.addRepeatedField(field, value);
+            }
+
+            public Builder mergeFrom(com.google.protobuf.Message other) {
+                if (other instanceof com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage) {
+                    return mergeFrom((com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage) other);
+                } else {
+                    super.mergeFrom(other);
+                    return this;
+                }
+            }
+
+            public Builder mergeFrom(com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage other) {
+                if (other == com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage.getDefaultInstance())
+                    return this;
+                if (other.hasContent()) {
+                    bitField0_ |= 0x00000001;
+                    content_ = other.content_;
+                    onChanged();
+                }
+                this.mergeUnknownFields(other.unknownFields);
+                onChanged();
+                return this;
+            }
+
+            public final boolean isInitialized() {
+                return true;
+            }
+
+            public Builder mergeFrom(com.google.protobuf.CodedInputStream input, com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws java.io.IOException {
+                com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage parsedMessage = null;
+                try {
+                    parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+                } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                    parsedMessage = (com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage) e.getUnfinishedMessage();
+                    throw e.unwrapIOException();
+                } finally {
+                    if (parsedMessage != null) {
+                        mergeFrom(parsedMessage);
+                    }
+                }
+                return this;
+            }
+
+            private int              bitField0_;
+
+            private java.lang.Object content_ = "";
+
+            /**
+             * <code>optional string content = 1;</code>
+             */
+            public boolean hasContent() {
+                return ((bitField0_ & 0x00000001) == 0x00000001);
+            }
+
+            /**
+             * <code>optional string content = 1;</code>
+             */
+            public java.lang.String getContent() {
+                java.lang.Object ref = content_;
+                if (!(ref instanceof java.lang.String)) {
+                    com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
+                    java.lang.String s = bs.toStringUtf8();
+                    if (bs.isValidUtf8()) {
+                        content_ = s;
+                    }
+                    return s;
+                } else {
+                    return (java.lang.String) ref;
+                }
+            }
+
+            /**
+             * <code>optional string content = 1;</code>
+             */
+            public com.google.protobuf.ByteString getContentBytes() {
+                java.lang.Object ref = content_;
+                if (ref instanceof String) {
+                    com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
+                    content_ = b;
+                    return b;
+                } else {
+                    return (com.google.protobuf.ByteString) ref;
+                }
+            }
+
+            /**
+             * <code>optional string content = 1;</code>
+             */
+            public Builder setContent(java.lang.String value) {
+                if (value == null) {
+                    throw new NullPointerException();
+                }
+                bitField0_ |= 0x00000001;
+                content_ = value;
+                onChanged();
+                return this;
+            }
+
+            /**
+             * <code>optional string content = 1;</code>
+             */
+            public Builder clearContent() {
+                bitField0_ = (bitField0_ & ~0x00000001);
+                content_ = getDefaultInstance().getContent();
+                onChanged();
+                return this;
+            }
+
+            /**
+             * <code>optional string content = 1;</code>
+             */
+            public Builder setContentBytes(com.google.protobuf.ByteString value) {
+                if (value == null) {
+                    throw new NullPointerException();
+                }
+                bitField0_ |= 0x00000001;
+                content_ = value;
+                onChanged();
+                return this;
+            }
+
+            public final Builder setUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
+                return super.setUnknownFields(unknownFields);
+            }
+
+            public final Builder mergeUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
+                return super.mergeUnknownFields(unknownFields);
+            }
+
+            // @@protoc_insertion_point(builder_scope:fubble.ChatMessage)
+        }
+
+        // @@protoc_insertion_point(class_scope:fubble.ChatMessage)
+        private static final com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage DEFAULT_INSTANCE;
+        static {
+            DEFAULT_INSTANCE = new com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage();
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage getDefaultInstance() {
+            return DEFAULT_INSTANCE;
+        }
+
+        @java.lang.Deprecated
+        public static final com.google.protobuf.Parser<ChatMessage> PARSER = new com.google.protobuf.AbstractParser<ChatMessage>() {
+            public ChatMessage parsePartialFrom(com.google.protobuf.CodedInputStream input,
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws com.google.protobuf.InvalidProtocolBufferException {
+                return new ChatMessage(input, extensionRegistry);
+            }
+        };
+
+        public static com.google.protobuf.Parser<ChatMessage> parser() {
+            return PARSER;
+        }
+
+        @java.lang.Override
+        public com.google.protobuf.Parser<ChatMessage> getParserForType() {
+            return PARSER;
+        }
+
+        public com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage getDefaultInstanceForType() {
+            return DEFAULT_INSTANCE;
+        }
+
+    }
+
+    public interface MessageContainerClientOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:fubble.MessageContainerClient)
+        com.google.protobuf.MessageOrBuilder {
+
+        /**
+         * <code>optional .fubble.UserJoined userJoined = 1;</code>
+         */
+        boolean hasUserJoined();
+
+        /**
+         * <code>optional .fubble.UserJoined userJoined = 1;</code>
+         */
+        com.freckles.of.couple.fubble.proto.WebContainer.UserJoined getUserJoined();
+
+        /**
+         * <code>optional .fubble.UserJoined userJoined = 1;</code>
+         */
+        com.freckles.of.couple.fubble.proto.WebContainer.UserJoinedOrBuilder getUserJoinedOrBuilder();
+
+        /**
+         * <code>optional .fubble.UserLeft userLeft = 2;</code>
+         */
+        boolean hasUserLeft();
+
+        /**
+         * <code>optional .fubble.UserLeft userLeft = 2;</code>
+         */
+        com.freckles.of.couple.fubble.proto.WebContainer.UserLeft getUserLeft();
+
+        /**
+         * <code>optional .fubble.UserLeft userLeft = 2;</code>
+         */
+        com.freckles.of.couple.fubble.proto.WebContainer.UserLeftOrBuilder getUserLeftOrBuilder();
+
+        /**
+         * <code>optional .fubble.JoinedRoom joinedRoom = 3;</code>
+         */
+        boolean hasJoinedRoom();
+
+        /**
+         * <code>optional .fubble.JoinedRoom joinedRoom = 3;</code>
+         */
+        com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoom getJoinedRoom();
+
+        /**
+         * <code>optional .fubble.JoinedRoom joinedRoom = 3;</code>
+         */
+        com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoomOrBuilder getJoinedRoomOrBuilder();
+
+        /**
+         * <code>optional .fubble.Error errpr = 4;</code>
+         */
+        boolean hasErrpr();
+
+        /**
+         * <code>optional .fubble.Error errpr = 4;</code>
+         */
+        com.freckles.of.couple.fubble.proto.WebContainer.Error getErrpr();
+
+        /**
+         * <code>optional .fubble.Error errpr = 4;</code>
+         */
+        com.freckles.of.couple.fubble.proto.WebContainer.ErrorOrBuilder getErrprOrBuilder();
+
+        /**
+         * <code>optional .fubble.RenamedUser renamedUser = 5;</code>
+         */
+        boolean hasRenamedUser();
+
+        /**
+         * <code>optional .fubble.RenamedUser renamedUser = 5;</code>
+         */
+        com.freckles.of.couple.fubble.proto.WebContainer.RenamedUser getRenamedUser();
+
+        /**
+         * <code>optional .fubble.RenamedUser renamedUser = 5;</code>
+         */
+        com.freckles.of.couple.fubble.proto.WebContainer.RenamedUserOrBuilder getRenamedUserOrBuilder();
+
+        public com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient.MessageTypeCase getMessageTypeCase();
+    }
+
+    /**
+     * Protobuf type {@code fubble.MessageContainerClient}
+     */
+    public static final class MessageContainerClient extends com.google.protobuf.GeneratedMessageV3 implements
+        // @@protoc_insertion_point(message_implements:fubble.MessageContainerClient)
+        MessageContainerClientOrBuilder {
+        private static final long serialVersionUID = 0L;
+
+        // Use MessageContainerClient.newBuilder() to construct.
+        private MessageContainerClient(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+            super(builder);
+        }
+
+        private MessageContainerClient() {}
+
+        @java.lang.Override
+        public final com.google.protobuf.UnknownFieldSet getUnknownFields() {
+            return this.unknownFields;
+        }
+
+        private MessageContainerClient(com.google.protobuf.CodedInputStream input, com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+            this();
+            if (extensionRegistry == null) {
+                throw new java.lang.NullPointerException();
+            }
+            int mutable_bitField0_ = 0;
+            com.google.protobuf.UnknownFieldSet.Builder unknownFields = com.google.protobuf.UnknownFieldSet.newBuilder();
+            try {
+                boolean done = false;
+                while (!done) {
+                    int tag = input.readTag();
+                    switch (tag) {
+                        case 0:
+                            done = true;
+                            break;
+                        default: {
+                            if (!parseUnknownField(input, unknownFields, extensionRegistry, tag)) {
+                                done = true;
+                            }
+                            break;
+                        }
+                        case 10: {
+                            com.freckles.of.couple.fubble.proto.WebContainer.UserJoined.Builder subBuilder = null;
+                            if (messageTypeCase_ == 1) {
+                                subBuilder = ((com.freckles.of.couple.fubble.proto.WebContainer.UserJoined) messageType_).toBuilder();
+                            }
+                            messageType_ = input.readMessage(com.freckles.of.couple.fubble.proto.WebContainer.UserJoined.PARSER, extensionRegistry);
+                            if (subBuilder != null) {
+                                subBuilder.mergeFrom((com.freckles.of.couple.fubble.proto.WebContainer.UserJoined) messageType_);
+                                messageType_ = subBuilder.buildPartial();
+                            }
+                            messageTypeCase_ = 1;
+                            break;
+                        }
+                        case 18: {
+                            com.freckles.of.couple.fubble.proto.WebContainer.UserLeft.Builder subBuilder = null;
+                            if (messageTypeCase_ == 2) {
+                                subBuilder = ((com.freckles.of.couple.fubble.proto.WebContainer.UserLeft) messageType_).toBuilder();
+                            }
+                            messageType_ = input.readMessage(com.freckles.of.couple.fubble.proto.WebContainer.UserLeft.PARSER, extensionRegistry);
+                            if (subBuilder != null) {
+                                subBuilder.mergeFrom((com.freckles.of.couple.fubble.proto.WebContainer.UserLeft) messageType_);
+                                messageType_ = subBuilder.buildPartial();
+                            }
+                            messageTypeCase_ = 2;
+                            break;
+                        }
+                        case 26: {
+                            com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoom.Builder subBuilder = null;
+                            if (messageTypeCase_ == 3) {
+                                subBuilder = ((com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoom) messageType_).toBuilder();
+                            }
+                            messageType_ = input.readMessage(com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoom.PARSER, extensionRegistry);
+                            if (subBuilder != null) {
+                                subBuilder.mergeFrom((com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoom) messageType_);
+                                messageType_ = subBuilder.buildPartial();
+                            }
+                            messageTypeCase_ = 3;
+                            break;
+                        }
+                        case 34: {
+                            com.freckles.of.couple.fubble.proto.WebContainer.Error.Builder subBuilder = null;
+                            if (messageTypeCase_ == 4) {
+                                subBuilder = ((com.freckles.of.couple.fubble.proto.WebContainer.Error) messageType_).toBuilder();
+                            }
+                            messageType_ = input.readMessage(com.freckles.of.couple.fubble.proto.WebContainer.Error.PARSER, extensionRegistry);
+                            if (subBuilder != null) {
+                                subBuilder.mergeFrom((com.freckles.of.couple.fubble.proto.WebContainer.Error) messageType_);
+                                messageType_ = subBuilder.buildPartial();
+                            }
+                            messageTypeCase_ = 4;
+                            break;
+                        }
+                        case 42: {
+                            com.freckles.of.couple.fubble.proto.WebContainer.RenamedUser.Builder subBuilder = null;
+                            if (messageTypeCase_ == 5) {
+                                subBuilder = ((com.freckles.of.couple.fubble.proto.WebContainer.RenamedUser) messageType_).toBuilder();
+                            }
+                            messageType_ = input.readMessage(com.freckles.of.couple.fubble.proto.WebContainer.RenamedUser.PARSER, extensionRegistry);
+                            if (subBuilder != null) {
+                                subBuilder.mergeFrom((com.freckles.of.couple.fubble.proto.WebContainer.RenamedUser) messageType_);
+                                messageType_ = subBuilder.buildPartial();
+                            }
+                            messageTypeCase_ = 5;
+                            break;
+                        }
+                    }
+                }
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                throw e.setUnfinishedMessage(this);
+            } catch (java.io.IOException e) {
+                throw new com.google.protobuf.InvalidProtocolBufferException(e).setUnfinishedMessage(this);
+            } finally {
+                this.unknownFields = unknownFields.build();
+                makeExtensionsImmutable();
+            }
+        }
+
+        public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
+            return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_MessageContainerClient_descriptor;
+        }
+
+        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
+            return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_MessageContainerClient_fieldAccessorTable.ensureFieldAccessorsInitialized(
+                com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient.class,
+                com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient.Builder.class);
+        }
+
+        private int              bitField0_;
+        private int              messageTypeCase_ = 0;
+        private java.lang.Object messageType_;
+
+        public enum MessageTypeCase implements com.google.protobuf.Internal.EnumLite {
+            USERJOINED(1), USERLEFT(2), JOINEDROOM(3), ERRPR(4), RENAMEDUSER(5), MESSAGETYPE_NOT_SET(0);
+            private final int value;
+
+            private MessageTypeCase(int value) {
+                this.value = value;
+            }
+
+            /**
+             * @deprecated Use {@link #forNumber(int)} instead.
+             */
+            @java.lang.Deprecated
+            public static MessageTypeCase valueOf(int value) {
+                return forNumber(value);
+            }
+
+            public static MessageTypeCase forNumber(int value) {
+                switch (value) {
+                    case 1:
+                        return USERJOINED;
+                    case 2:
+                        return USERLEFT;
+                    case 3:
+                        return JOINEDROOM;
+                    case 4:
+                        return ERRPR;
+                    case 5:
+                        return RENAMEDUSER;
+                    case 0:
+                        return MESSAGETYPE_NOT_SET;
+                    default:
+                        return null;
+                }
+            }
+
+            public int getNumber() {
+                return this.value;
+            }
+        };
+
+        public MessageTypeCase getMessageTypeCase() {
+            return MessageTypeCase.forNumber(messageTypeCase_);
+        }
+
+        public static final int USERJOINED_FIELD_NUMBER = 1;
+
+        /**
+         * <code>optional .fubble.UserJoined userJoined = 1;</code>
+         */
+        public boolean hasUserJoined() {
+            return messageTypeCase_ == 1;
+        }
+
+        /**
+         * <code>optional .fubble.UserJoined userJoined = 1;</code>
+         */
+        public com.freckles.of.couple.fubble.proto.WebContainer.UserJoined getUserJoined() {
+            if (messageTypeCase_ == 1) {
+                return (com.freckles.of.couple.fubble.proto.WebContainer.UserJoined) messageType_;
+            }
+            return com.freckles.of.couple.fubble.proto.WebContainer.UserJoined.getDefaultInstance();
+        }
+
+        /**
+         * <code>optional .fubble.UserJoined userJoined = 1;</code>
+         */
+        public com.freckles.of.couple.fubble.proto.WebContainer.UserJoinedOrBuilder getUserJoinedOrBuilder() {
+            if (messageTypeCase_ == 1) {
+                return (com.freckles.of.couple.fubble.proto.WebContainer.UserJoined) messageType_;
+            }
+            return com.freckles.of.couple.fubble.proto.WebContainer.UserJoined.getDefaultInstance();
+        }
+
+        public static final int USERLEFT_FIELD_NUMBER = 2;
+
+        /**
+         * <code>optional .fubble.UserLeft userLeft = 2;</code>
+         */
+        public boolean hasUserLeft() {
+            return messageTypeCase_ == 2;
+        }
+
+        /**
+         * <code>optional .fubble.UserLeft userLeft = 2;</code>
+         */
+        public com.freckles.of.couple.fubble.proto.WebContainer.UserLeft getUserLeft() {
+            if (messageTypeCase_ == 2) {
+                return (com.freckles.of.couple.fubble.proto.WebContainer.UserLeft) messageType_;
+            }
+            return com.freckles.of.couple.fubble.proto.WebContainer.UserLeft.getDefaultInstance();
+        }
+
+        /**
+         * <code>optional .fubble.UserLeft userLeft = 2;</code>
+         */
+        public com.freckles.of.couple.fubble.proto.WebContainer.UserLeftOrBuilder getUserLeftOrBuilder() {
+            if (messageTypeCase_ == 2) {
+                return (com.freckles.of.couple.fubble.proto.WebContainer.UserLeft) messageType_;
+            }
+            return com.freckles.of.couple.fubble.proto.WebContainer.UserLeft.getDefaultInstance();
+        }
+
+        public static final int JOINEDROOM_FIELD_NUMBER = 3;
+
+        /**
+         * <code>optional .fubble.JoinedRoom joinedRoom = 3;</code>
+         */
+        public boolean hasJoinedRoom() {
+            return messageTypeCase_ == 3;
+        }
+
+        /**
+         * <code>optional .fubble.JoinedRoom joinedRoom = 3;</code>
+         */
+        public com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoom getJoinedRoom() {
+            if (messageTypeCase_ == 3) {
+                return (com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoom) messageType_;
+            }
+            return com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoom.getDefaultInstance();
+        }
+
+        /**
+         * <code>optional .fubble.JoinedRoom joinedRoom = 3;</code>
+         */
+        public com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoomOrBuilder getJoinedRoomOrBuilder() {
+            if (messageTypeCase_ == 3) {
+                return (com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoom) messageType_;
+            }
+            return com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoom.getDefaultInstance();
+        }
+
+        public static final int ERRPR_FIELD_NUMBER = 4;
+
+        /**
+         * <code>optional .fubble.Error errpr = 4;</code>
+         */
+        public boolean hasErrpr() {
+            return messageTypeCase_ == 4;
+        }
+
+        /**
+         * <code>optional .fubble.Error errpr = 4;</code>
+         */
+        public com.freckles.of.couple.fubble.proto.WebContainer.Error getErrpr() {
+            if (messageTypeCase_ == 4) {
+                return (com.freckles.of.couple.fubble.proto.WebContainer.Error) messageType_;
+            }
+            return com.freckles.of.couple.fubble.proto.WebContainer.Error.getDefaultInstance();
+        }
+
+        /**
+         * <code>optional .fubble.Error errpr = 4;</code>
+         */
+        public com.freckles.of.couple.fubble.proto.WebContainer.ErrorOrBuilder getErrprOrBuilder() {
+            if (messageTypeCase_ == 4) {
+                return (com.freckles.of.couple.fubble.proto.WebContainer.Error) messageType_;
+            }
+            return com.freckles.of.couple.fubble.proto.WebContainer.Error.getDefaultInstance();
+        }
+
+        public static final int RENAMEDUSER_FIELD_NUMBER = 5;
+
+        /**
+         * <code>optional .fubble.RenamedUser renamedUser = 5;</code>
+         */
+        public boolean hasRenamedUser() {
+            return messageTypeCase_ == 5;
+        }
+
+        /**
+         * <code>optional .fubble.RenamedUser renamedUser = 5;</code>
+         */
+        public com.freckles.of.couple.fubble.proto.WebContainer.RenamedUser getRenamedUser() {
+            if (messageTypeCase_ == 5) {
+                return (com.freckles.of.couple.fubble.proto.WebContainer.RenamedUser) messageType_;
+            }
+            return com.freckles.of.couple.fubble.proto.WebContainer.RenamedUser.getDefaultInstance();
+        }
+
+        /**
+         * <code>optional .fubble.RenamedUser renamedUser = 5;</code>
+         */
+        public com.freckles.of.couple.fubble.proto.WebContainer.RenamedUserOrBuilder getRenamedUserOrBuilder() {
+            if (messageTypeCase_ == 5) {
+                return (com.freckles.of.couple.fubble.proto.WebContainer.RenamedUser) messageType_;
+            }
+            return com.freckles.of.couple.fubble.proto.WebContainer.RenamedUser.getDefaultInstance();
+        }
+
+        private byte memoizedIsInitialized = -1;
+
+        public final boolean isInitialized() {
+            byte isInitialized = memoizedIsInitialized;
+            if (isInitialized == 1)
+                return true;
+            if (isInitialized == 0)
+                return false;
+
+            memoizedIsInitialized = 1;
+            return true;
+        }
+
+        public void writeTo(com.google.protobuf.CodedOutputStream output)
+            throws java.io.IOException {
+            if (messageTypeCase_ == 1) {
+                output.writeMessage(1, (com.freckles.of.couple.fubble.proto.WebContainer.UserJoined) messageType_);
+            }
+            if (messageTypeCase_ == 2) {
+                output.writeMessage(2, (com.freckles.of.couple.fubble.proto.WebContainer.UserLeft) messageType_);
+            }
+            if (messageTypeCase_ == 3) {
+                output.writeMessage(3, (com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoom) messageType_);
+            }
+            if (messageTypeCase_ == 4) {
+                output.writeMessage(4, (com.freckles.of.couple.fubble.proto.WebContainer.Error) messageType_);
+            }
+            if (messageTypeCase_ == 5) {
+                output.writeMessage(5, (com.freckles.of.couple.fubble.proto.WebContainer.RenamedUser) messageType_);
+            }
+            unknownFields.writeTo(output);
+        }
+
+        public int getSerializedSize() {
+            int size = memoizedSize;
+            if (size != -1)
+                return size;
+
+            size = 0;
+            if (messageTypeCase_ == 1) {
+                size += com.google.protobuf.CodedOutputStream.computeMessageSize(1,
+                    (com.freckles.of.couple.fubble.proto.WebContainer.UserJoined) messageType_);
+            }
+            if (messageTypeCase_ == 2) {
+                size += com.google.protobuf.CodedOutputStream.computeMessageSize(2,
+                    (com.freckles.of.couple.fubble.proto.WebContainer.UserLeft) messageType_);
+            }
+            if (messageTypeCase_ == 3) {
+                size += com.google.protobuf.CodedOutputStream.computeMessageSize(3,
+                    (com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoom) messageType_);
+            }
+            if (messageTypeCase_ == 4) {
+                size += com.google.protobuf.CodedOutputStream.computeMessageSize(4,
+                    (com.freckles.of.couple.fubble.proto.WebContainer.Error) messageType_);
+            }
+            if (messageTypeCase_ == 5) {
+                size += com.google.protobuf.CodedOutputStream.computeMessageSize(5,
+                    (com.freckles.of.couple.fubble.proto.WebContainer.RenamedUser) messageType_);
+            }
+            size += unknownFields.getSerializedSize();
+            memoizedSize = size;
+            return size;
+        }
+
+        @java.lang.Override
+        public boolean equals(final java.lang.Object obj) {
+            if (obj == this) {
+                return true;
+            }
+            if (!(obj instanceof com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient)) {
+                return super.equals(obj);
+            }
+            com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient other = (com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient) obj;
+
+            boolean result = true;
+            result = result && getMessageTypeCase().equals(other.getMessageTypeCase());
+            if (!result)
+                return false;
+            switch (messageTypeCase_) {
+                case 1:
+                    result = result && getUserJoined().equals(other.getUserJoined());
+                    break;
+                case 2:
+                    result = result && getUserLeft().equals(other.getUserLeft());
+                    break;
+                case 3:
+                    result = result && getJoinedRoom().equals(other.getJoinedRoom());
+                    break;
+                case 4:
+                    result = result && getErrpr().equals(other.getErrpr());
+                    break;
+                case 5:
+                    result = result && getRenamedUser().equals(other.getRenamedUser());
+                    break;
+                case 0:
+                default:
+            }
+            result = result && unknownFields.equals(other.unknownFields);
+            return result;
+        }
+
+        @java.lang.Override
+        public int hashCode() {
+            if (memoizedHashCode != 0) {
+                return memoizedHashCode;
+            }
+            int hash = 41;
+            hash = (19 * hash) + getDescriptor().hashCode();
+            switch (messageTypeCase_) {
+                case 1:
+                    hash = (37 * hash) + USERJOINED_FIELD_NUMBER;
+                    hash = (53 * hash) + getUserJoined().hashCode();
+                    break;
+                case 2:
+                    hash = (37 * hash) + USERLEFT_FIELD_NUMBER;
+                    hash = (53 * hash) + getUserLeft().hashCode();
+                    break;
+                case 3:
+                    hash = (37 * hash) + JOINEDROOM_FIELD_NUMBER;
+                    hash = (53 * hash) + getJoinedRoom().hashCode();
+                    break;
+                case 4:
+                    hash = (37 * hash) + ERRPR_FIELD_NUMBER;
+                    hash = (53 * hash) + getErrpr().hashCode();
+                    break;
+                case 5:
+                    hash = (37 * hash) + RENAMEDUSER_FIELD_NUMBER;
+                    hash = (53 * hash) + getRenamedUser().hashCode();
+                    break;
+                case 0:
+                default:
+            }
+            hash = (29 * hash) + unknownFields.hashCode();
+            memoizedHashCode = hash;
+            return hash;
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient parseFrom(java.nio.ByteBuffer data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+            return PARSER.parseFrom(data);
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient parseFrom(java.nio.ByteBuffer data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+            return PARSER.parseFrom(data, extensionRegistry);
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient parseFrom(com.google.protobuf.ByteString data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+            return PARSER.parseFrom(data);
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient parseFrom(com.google.protobuf.ByteString data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+            return PARSER.parseFrom(data, extensionRegistry);
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient parseFrom(byte[] data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+            return PARSER.parseFrom(data);
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient parseFrom(byte[] data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+            return PARSER.parseFrom(data, extensionRegistry);
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient parseFrom(java.io.InputStream input)
+            throws java.io.IOException {
+            return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient parseFrom(java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+            return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient parseDelimitedFrom(java.io.InputStream input)
+            throws java.io.IOException {
+            return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input);
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient parseDelimitedFrom(java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+            return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient parseFrom(com.google.protobuf.CodedInputStream input)
+            throws java.io.IOException {
+            return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient parseFrom(com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+            return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
+        }
+
+        public Builder newBuilderForType() {
+            return newBuilder();
+        }
+
+        public static Builder newBuilder() {
+            return DEFAULT_INSTANCE.toBuilder();
+        }
+
+        public static Builder newBuilder(com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient prototype) {
+            return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+        }
+
+        public Builder toBuilder() {
+            return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
+        }
+
+        @java.lang.Override
+        protected Builder newBuilderForType(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+            Builder builder = new Builder(parent);
+            return builder;
+        }
+
+        /**
+         * Protobuf type {@code fubble.MessageContainerClient}
+         */
+        public static final class Builder extends com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:fubble.MessageContainerClient)
+            com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClientOrBuilder {
+            public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
+                return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_MessageContainerClient_descriptor;
+            }
+
+            protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
+                return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_MessageContainerClient_fieldAccessorTable.ensureFieldAccessorsInitialized(
+                    com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient.class,
+                    com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient.Builder.class);
+            }
+
+            // Construct using com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient.newBuilder()
+            private Builder() {
+                maybeForceBuilderInitialization();
+            }
+
+            private Builder(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+                super(parent);
+                maybeForceBuilderInitialization();
+            }
+
+            private void maybeForceBuilderInitialization() {
+                if (com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders) {
+                }
+            }
+
+            public Builder clear() {
+                super.clear();
+                messageTypeCase_ = 0;
+                messageType_ = null;
+                return this;
+            }
+
+            public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+                return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_MessageContainerClient_descriptor;
+            }
+
+            public com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient getDefaultInstanceForType() {
+                return com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient.getDefaultInstance();
+            }
+
+            public com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient build() {
+                com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient result = buildPartial();
+                if (!result.isInitialized()) {
+                    throw newUninitializedMessageException(result);
+                }
+                return result;
+            }
+
+            public com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient buildPartial() {
+                com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient result = new com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient(
+                    this);
+                int from_bitField0_ = bitField0_;
+                int to_bitField0_ = 0;
+                if (messageTypeCase_ == 1) {
+                    if (userJoinedBuilder_ == null) {
+                        result.messageType_ = messageType_;
+                    } else {
+                        result.messageType_ = userJoinedBuilder_.build();
+                    }
+                }
+                if (messageTypeCase_ == 2) {
+                    if (userLeftBuilder_ == null) {
+                        result.messageType_ = messageType_;
+                    } else {
+                        result.messageType_ = userLeftBuilder_.build();
+                    }
+                }
+                if (messageTypeCase_ == 3) {
+                    if (joinedRoomBuilder_ == null) {
+                        result.messageType_ = messageType_;
+                    } else {
+                        result.messageType_ = joinedRoomBuilder_.build();
+                    }
+                }
+                if (messageTypeCase_ == 4) {
+                    if (errprBuilder_ == null) {
+                        result.messageType_ = messageType_;
+                    } else {
+                        result.messageType_ = errprBuilder_.build();
+                    }
+                }
+                if (messageTypeCase_ == 5) {
+                    if (renamedUserBuilder_ == null) {
+                        result.messageType_ = messageType_;
+                    } else {
+                        result.messageType_ = renamedUserBuilder_.build();
+                    }
+                }
+                result.bitField0_ = to_bitField0_;
+                result.messageTypeCase_ = messageTypeCase_;
+                onBuilt();
+                return result;
+            }
+
+            public Builder clone() {
+                return (Builder) super.clone();
+            }
+
+            public Builder setField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
+                return (Builder) super.setField(field, value);
+            }
+
+            public Builder clearField(com.google.protobuf.Descriptors.FieldDescriptor field) {
+                return (Builder) super.clearField(field);
+            }
+
+            public Builder clearOneof(com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+                return (Builder) super.clearOneof(oneof);
+            }
+
+            public Builder setRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, int index, java.lang.Object value) {
+                return (Builder) super.setRepeatedField(field, index, value);
+            }
+
+            public Builder addRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
+                return (Builder) super.addRepeatedField(field, value);
+            }
+
+            public Builder mergeFrom(com.google.protobuf.Message other) {
+                if (other instanceof com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient) {
+                    return mergeFrom((com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient) other);
+                } else {
+                    super.mergeFrom(other);
+                    return this;
+                }
+            }
+
+            public Builder mergeFrom(com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient other) {
+                if (other == com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient.getDefaultInstance())
+                    return this;
+                switch (other.getMessageTypeCase()) {
+                    case USERJOINED: {
+                        mergeUserJoined(other.getUserJoined());
+                        break;
+                    }
+                    case USERLEFT: {
+                        mergeUserLeft(other.getUserLeft());
+                        break;
+                    }
+                    case JOINEDROOM: {
+                        mergeJoinedRoom(other.getJoinedRoom());
+                        break;
+                    }
+                    case ERRPR: {
+                        mergeErrpr(other.getErrpr());
+                        break;
+                    }
+                    case RENAMEDUSER: {
+                        mergeRenamedUser(other.getRenamedUser());
+                        break;
+                    }
+                    case MESSAGETYPE_NOT_SET: {
+                        break;
+                    }
+                }
+                this.mergeUnknownFields(other.unknownFields);
+                onChanged();
+                return this;
+            }
+
+            public final boolean isInitialized() {
+                return true;
+            }
+
+            public Builder mergeFrom(com.google.protobuf.CodedInputStream input, com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws java.io.IOException {
+                com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient parsedMessage = null;
+                try {
+                    parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+                } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                    parsedMessage = (com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient) e.getUnfinishedMessage();
+                    throw e.unwrapIOException();
+                } finally {
+                    if (parsedMessage != null) {
+                        mergeFrom(parsedMessage);
+                    }
+                }
+                return this;
+            }
+
+            private int              messageTypeCase_ = 0;
+            private java.lang.Object messageType_;
+
+            public MessageTypeCase getMessageTypeCase() {
+                return MessageTypeCase.forNumber(messageTypeCase_);
+            }
+
+            public Builder clearMessageType() {
+                messageTypeCase_ = 0;
+                messageType_ = null;
+                onChanged();
+                return this;
+            }
+
+            private int                                                                                                                                                                                                                                              bitField0_;
+
+            private com.google.protobuf.SingleFieldBuilderV3<com.freckles.of.couple.fubble.proto.WebContainer.UserJoined, com.freckles.of.couple.fubble.proto.WebContainer.UserJoined.Builder, com.freckles.of.couple.fubble.proto.WebContainer.UserJoinedOrBuilder> userJoinedBuilder_;
+
+            /**
+             * <code>optional .fubble.UserJoined userJoined = 1;</code>
+             */
+            public boolean hasUserJoined() {
+                return messageTypeCase_ == 1;
+            }
+
+            /**
+             * <code>optional .fubble.UserJoined userJoined = 1;</code>
+             */
+            public com.freckles.of.couple.fubble.proto.WebContainer.UserJoined getUserJoined() {
+                if (userJoinedBuilder_ == null) {
+                    if (messageTypeCase_ == 1) {
+                        return (com.freckles.of.couple.fubble.proto.WebContainer.UserJoined) messageType_;
+                    }
+                    return com.freckles.of.couple.fubble.proto.WebContainer.UserJoined.getDefaultInstance();
+                } else {
+                    if (messageTypeCase_ == 1) {
+                        return userJoinedBuilder_.getMessage();
+                    }
+                    return com.freckles.of.couple.fubble.proto.WebContainer.UserJoined.getDefaultInstance();
+                }
+            }
+
+            /**
+             * <code>optional .fubble.UserJoined userJoined = 1;</code>
+             */
+            public Builder setUserJoined(com.freckles.of.couple.fubble.proto.WebContainer.UserJoined value) {
+                if (userJoinedBuilder_ == null) {
+                    if (value == null) {
+                        throw new NullPointerException();
+                    }
+                    messageType_ = value;
+                    onChanged();
+                } else {
+                    userJoinedBuilder_.setMessage(value);
+                }
+                messageTypeCase_ = 1;
+                return this;
+            }
+
+            /**
+             * <code>optional .fubble.UserJoined userJoined = 1;</code>
+             */
+            public Builder setUserJoined(com.freckles.of.couple.fubble.proto.WebContainer.UserJoined.Builder builderForValue) {
+                if (userJoinedBuilder_ == null) {
+                    messageType_ = builderForValue.build();
+                    onChanged();
+                } else {
+                    userJoinedBuilder_.setMessage(builderForValue.build());
+                }
+                messageTypeCase_ = 1;
+                return this;
+            }
+
+            /**
+             * <code>optional .fubble.UserJoined userJoined = 1;</code>
+             */
+            public Builder mergeUserJoined(com.freckles.of.couple.fubble.proto.WebContainer.UserJoined value) {
+                if (userJoinedBuilder_ == null) {
+                    if (messageTypeCase_ == 1 && messageType_ != com.freckles.of.couple.fubble.proto.WebContainer.UserJoined.getDefaultInstance()) {
+                        messageType_ = com.freckles.of.couple.fubble.proto.WebContainer.UserJoined.newBuilder(
+                            (com.freckles.of.couple.fubble.proto.WebContainer.UserJoined) messageType_).mergeFrom(value).buildPartial();
+                    } else {
+                        messageType_ = value;
+                    }
+                    onChanged();
+                } else {
+                    if (messageTypeCase_ == 1) {
+                        userJoinedBuilder_.mergeFrom(value);
+                    }
+                    userJoinedBuilder_.setMessage(value);
+                }
+                messageTypeCase_ = 1;
+                return this;
+            }
+
+            /**
+             * <code>optional .fubble.UserJoined userJoined = 1;</code>
+             */
+            public Builder clearUserJoined() {
+                if (userJoinedBuilder_ == null) {
+                    if (messageTypeCase_ == 1) {
+                        messageTypeCase_ = 0;
+                        messageType_ = null;
+                        onChanged();
+                    }
+                } else {
+                    if (messageTypeCase_ == 1) {
+                        messageTypeCase_ = 0;
+                        messageType_ = null;
+                    }
+                    userJoinedBuilder_.clear();
+                }
+                return this;
+            }
+
+            /**
+             * <code>optional .fubble.UserJoined userJoined = 1;</code>
+             */
+            public com.freckles.of.couple.fubble.proto.WebContainer.UserJoined.Builder getUserJoinedBuilder() {
+                return getUserJoinedFieldBuilder().getBuilder();
+            }
+
+            /**
+             * <code>optional .fubble.UserJoined userJoined = 1;</code>
+             */
+            public com.freckles.of.couple.fubble.proto.WebContainer.UserJoinedOrBuilder getUserJoinedOrBuilder() {
+                if ((messageTypeCase_ == 1) && (userJoinedBuilder_ != null)) {
+                    return userJoinedBuilder_.getMessageOrBuilder();
+                } else {
+                    if (messageTypeCase_ == 1) {
+                        return (com.freckles.of.couple.fubble.proto.WebContainer.UserJoined) messageType_;
+                    }
+                    return com.freckles.of.couple.fubble.proto.WebContainer.UserJoined.getDefaultInstance();
+                }
+            }
+
+            /**
+             * <code>optional .fubble.UserJoined userJoined = 1;</code>
+             */
+            private com.google.protobuf.SingleFieldBuilderV3<com.freckles.of.couple.fubble.proto.WebContainer.UserJoined, com.freckles.of.couple.fubble.proto.WebContainer.UserJoined.Builder, com.freckles.of.couple.fubble.proto.WebContainer.UserJoinedOrBuilder> getUserJoinedFieldBuilder() {
+                if (userJoinedBuilder_ == null) {
+                    if (!(messageTypeCase_ == 1)) {
+                        messageType_ = com.freckles.of.couple.fubble.proto.WebContainer.UserJoined.getDefaultInstance();
+                    }
+                    userJoinedBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<com.freckles.of.couple.fubble.proto.WebContainer.UserJoined, com.freckles.of.couple.fubble.proto.WebContainer.UserJoined.Builder, com.freckles.of.couple.fubble.proto.WebContainer.UserJoinedOrBuilder>(
+                        (com.freckles.of.couple.fubble.proto.WebContainer.UserJoined) messageType_, getParentForChildren(), isClean());
+                    messageType_ = null;
+                }
+                messageTypeCase_ = 1;
+                onChanged();;
+                return userJoinedBuilder_;
+            }
+
+            private com.google.protobuf.SingleFieldBuilderV3<com.freckles.of.couple.fubble.proto.WebContainer.UserLeft, com.freckles.of.couple.fubble.proto.WebContainer.UserLeft.Builder, com.freckles.of.couple.fubble.proto.WebContainer.UserLeftOrBuilder> userLeftBuilder_;
+
+            /**
+             * <code>optional .fubble.UserLeft userLeft = 2;</code>
+             */
+            public boolean hasUserLeft() {
+                return messageTypeCase_ == 2;
+            }
+
+            /**
+             * <code>optional .fubble.UserLeft userLeft = 2;</code>
+             */
+            public com.freckles.of.couple.fubble.proto.WebContainer.UserLeft getUserLeft() {
+                if (userLeftBuilder_ == null) {
+                    if (messageTypeCase_ == 2) {
+                        return (com.freckles.of.couple.fubble.proto.WebContainer.UserLeft) messageType_;
+                    }
+                    return com.freckles.of.couple.fubble.proto.WebContainer.UserLeft.getDefaultInstance();
+                } else {
+                    if (messageTypeCase_ == 2) {
+                        return userLeftBuilder_.getMessage();
+                    }
+                    return com.freckles.of.couple.fubble.proto.WebContainer.UserLeft.getDefaultInstance();
+                }
+            }
+
+            /**
+             * <code>optional .fubble.UserLeft userLeft = 2;</code>
+             */
+            public Builder setUserLeft(com.freckles.of.couple.fubble.proto.WebContainer.UserLeft value) {
+                if (userLeftBuilder_ == null) {
+                    if (value == null) {
+                        throw new NullPointerException();
+                    }
+                    messageType_ = value;
+                    onChanged();
+                } else {
+                    userLeftBuilder_.setMessage(value);
+                }
+                messageTypeCase_ = 2;
+                return this;
+            }
+
+            /**
+             * <code>optional .fubble.UserLeft userLeft = 2;</code>
+             */
+            public Builder setUserLeft(com.freckles.of.couple.fubble.proto.WebContainer.UserLeft.Builder builderForValue) {
+                if (userLeftBuilder_ == null) {
+                    messageType_ = builderForValue.build();
+                    onChanged();
+                } else {
+                    userLeftBuilder_.setMessage(builderForValue.build());
+                }
+                messageTypeCase_ = 2;
+                return this;
+            }
+
+            /**
+             * <code>optional .fubble.UserLeft userLeft = 2;</code>
+             */
+            public Builder mergeUserLeft(com.freckles.of.couple.fubble.proto.WebContainer.UserLeft value) {
+                if (userLeftBuilder_ == null) {
+                    if (messageTypeCase_ == 2 && messageType_ != com.freckles.of.couple.fubble.proto.WebContainer.UserLeft.getDefaultInstance()) {
+                        messageType_ = com.freckles.of.couple.fubble.proto.WebContainer.UserLeft.newBuilder(
+                            (com.freckles.of.couple.fubble.proto.WebContainer.UserLeft) messageType_).mergeFrom(value).buildPartial();
+                    } else {
+                        messageType_ = value;
+                    }
+                    onChanged();
+                } else {
+                    if (messageTypeCase_ == 2) {
+                        userLeftBuilder_.mergeFrom(value);
+                    }
+                    userLeftBuilder_.setMessage(value);
+                }
+                messageTypeCase_ = 2;
+                return this;
+            }
+
+            /**
+             * <code>optional .fubble.UserLeft userLeft = 2;</code>
+             */
+            public Builder clearUserLeft() {
+                if (userLeftBuilder_ == null) {
+                    if (messageTypeCase_ == 2) {
+                        messageTypeCase_ = 0;
+                        messageType_ = null;
+                        onChanged();
+                    }
+                } else {
+                    if (messageTypeCase_ == 2) {
+                        messageTypeCase_ = 0;
+                        messageType_ = null;
+                    }
+                    userLeftBuilder_.clear();
+                }
+                return this;
+            }
+
+            /**
+             * <code>optional .fubble.UserLeft userLeft = 2;</code>
+             */
+            public com.freckles.of.couple.fubble.proto.WebContainer.UserLeft.Builder getUserLeftBuilder() {
+                return getUserLeftFieldBuilder().getBuilder();
+            }
+
+            /**
+             * <code>optional .fubble.UserLeft userLeft = 2;</code>
+             */
+            public com.freckles.of.couple.fubble.proto.WebContainer.UserLeftOrBuilder getUserLeftOrBuilder() {
+                if ((messageTypeCase_ == 2) && (userLeftBuilder_ != null)) {
+                    return userLeftBuilder_.getMessageOrBuilder();
+                } else {
+                    if (messageTypeCase_ == 2) {
+                        return (com.freckles.of.couple.fubble.proto.WebContainer.UserLeft) messageType_;
+                    }
+                    return com.freckles.of.couple.fubble.proto.WebContainer.UserLeft.getDefaultInstance();
+                }
+            }
+
+            /**
+             * <code>optional .fubble.UserLeft userLeft = 2;</code>
+             */
+            private com.google.protobuf.SingleFieldBuilderV3<com.freckles.of.couple.fubble.proto.WebContainer.UserLeft, com.freckles.of.couple.fubble.proto.WebContainer.UserLeft.Builder, com.freckles.of.couple.fubble.proto.WebContainer.UserLeftOrBuilder> getUserLeftFieldBuilder() {
+                if (userLeftBuilder_ == null) {
+                    if (!(messageTypeCase_ == 2)) {
+                        messageType_ = com.freckles.of.couple.fubble.proto.WebContainer.UserLeft.getDefaultInstance();
+                    }
+                    userLeftBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<com.freckles.of.couple.fubble.proto.WebContainer.UserLeft, com.freckles.of.couple.fubble.proto.WebContainer.UserLeft.Builder, com.freckles.of.couple.fubble.proto.WebContainer.UserLeftOrBuilder>(
+                        (com.freckles.of.couple.fubble.proto.WebContainer.UserLeft) messageType_, getParentForChildren(), isClean());
+                    messageType_ = null;
+                }
+                messageTypeCase_ = 2;
+                onChanged();;
+                return userLeftBuilder_;
+            }
+
+            private com.google.protobuf.SingleFieldBuilderV3<com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoom, com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoom.Builder, com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoomOrBuilder> joinedRoomBuilder_;
+
+            /**
+             * <code>optional .fubble.JoinedRoom joinedRoom = 3;</code>
+             */
+            public boolean hasJoinedRoom() {
+                return messageTypeCase_ == 3;
+            }
+
+            /**
+             * <code>optional .fubble.JoinedRoom joinedRoom = 3;</code>
+             */
+            public com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoom getJoinedRoom() {
+                if (joinedRoomBuilder_ == null) {
+                    if (messageTypeCase_ == 3) {
+                        return (com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoom) messageType_;
+                    }
+                    return com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoom.getDefaultInstance();
+                } else {
+                    if (messageTypeCase_ == 3) {
+                        return joinedRoomBuilder_.getMessage();
+                    }
+                    return com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoom.getDefaultInstance();
+                }
+            }
+
+            /**
+             * <code>optional .fubble.JoinedRoom joinedRoom = 3;</code>
+             */
+            public Builder setJoinedRoom(com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoom value) {
+                if (joinedRoomBuilder_ == null) {
+                    if (value == null) {
+                        throw new NullPointerException();
+                    }
+                    messageType_ = value;
+                    onChanged();
+                } else {
+                    joinedRoomBuilder_.setMessage(value);
+                }
+                messageTypeCase_ = 3;
+                return this;
+            }
+
+            /**
+             * <code>optional .fubble.JoinedRoom joinedRoom = 3;</code>
+             */
+            public Builder setJoinedRoom(com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoom.Builder builderForValue) {
+                if (joinedRoomBuilder_ == null) {
+                    messageType_ = builderForValue.build();
+                    onChanged();
+                } else {
+                    joinedRoomBuilder_.setMessage(builderForValue.build());
+                }
+                messageTypeCase_ = 3;
+                return this;
+            }
+
+            /**
+             * <code>optional .fubble.JoinedRoom joinedRoom = 3;</code>
+             */
+            public Builder mergeJoinedRoom(com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoom value) {
+                if (joinedRoomBuilder_ == null) {
+                    if (messageTypeCase_ == 3 && messageType_ != com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoom.getDefaultInstance()) {
+                        messageType_ = com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoom.newBuilder(
+                            (com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoom) messageType_).mergeFrom(value).buildPartial();
+                    } else {
+                        messageType_ = value;
+                    }
+                    onChanged();
+                } else {
+                    if (messageTypeCase_ == 3) {
+                        joinedRoomBuilder_.mergeFrom(value);
+                    }
+                    joinedRoomBuilder_.setMessage(value);
+                }
+                messageTypeCase_ = 3;
+                return this;
+            }
+
+            /**
+             * <code>optional .fubble.JoinedRoom joinedRoom = 3;</code>
+             */
+            public Builder clearJoinedRoom() {
+                if (joinedRoomBuilder_ == null) {
+                    if (messageTypeCase_ == 3) {
+                        messageTypeCase_ = 0;
+                        messageType_ = null;
+                        onChanged();
+                    }
+                } else {
+                    if (messageTypeCase_ == 3) {
+                        messageTypeCase_ = 0;
+                        messageType_ = null;
+                    }
+                    joinedRoomBuilder_.clear();
+                }
+                return this;
+            }
+
+            /**
+             * <code>optional .fubble.JoinedRoom joinedRoom = 3;</code>
+             */
+            public com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoom.Builder getJoinedRoomBuilder() {
+                return getJoinedRoomFieldBuilder().getBuilder();
+            }
+
+            /**
+             * <code>optional .fubble.JoinedRoom joinedRoom = 3;</code>
+             */
+            public com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoomOrBuilder getJoinedRoomOrBuilder() {
+                if ((messageTypeCase_ == 3) && (joinedRoomBuilder_ != null)) {
+                    return joinedRoomBuilder_.getMessageOrBuilder();
+                } else {
+                    if (messageTypeCase_ == 3) {
+                        return (com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoom) messageType_;
+                    }
+                    return com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoom.getDefaultInstance();
+                }
+            }
+
+            /**
+             * <code>optional .fubble.JoinedRoom joinedRoom = 3;</code>
+             */
+            private com.google.protobuf.SingleFieldBuilderV3<com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoom, com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoom.Builder, com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoomOrBuilder> getJoinedRoomFieldBuilder() {
+                if (joinedRoomBuilder_ == null) {
+                    if (!(messageTypeCase_ == 3)) {
+                        messageType_ = com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoom.getDefaultInstance();
+                    }
+                    joinedRoomBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoom, com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoom.Builder, com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoomOrBuilder>(
+                        (com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoom) messageType_, getParentForChildren(), isClean());
+                    messageType_ = null;
+                }
+                messageTypeCase_ = 3;
+                onChanged();;
+                return joinedRoomBuilder_;
+            }
+
+            private com.google.protobuf.SingleFieldBuilderV3<com.freckles.of.couple.fubble.proto.WebContainer.Error, com.freckles.of.couple.fubble.proto.WebContainer.Error.Builder, com.freckles.of.couple.fubble.proto.WebContainer.ErrorOrBuilder> errprBuilder_;
+
+            /**
+             * <code>optional .fubble.Error errpr = 4;</code>
+             */
+            public boolean hasErrpr() {
+                return messageTypeCase_ == 4;
+            }
+
+            /**
+             * <code>optional .fubble.Error errpr = 4;</code>
+             */
+            public com.freckles.of.couple.fubble.proto.WebContainer.Error getErrpr() {
+                if (errprBuilder_ == null) {
+                    if (messageTypeCase_ == 4) {
+                        return (com.freckles.of.couple.fubble.proto.WebContainer.Error) messageType_;
+                    }
+                    return com.freckles.of.couple.fubble.proto.WebContainer.Error.getDefaultInstance();
+                } else {
+                    if (messageTypeCase_ == 4) {
+                        return errprBuilder_.getMessage();
+                    }
+                    return com.freckles.of.couple.fubble.proto.WebContainer.Error.getDefaultInstance();
+                }
+            }
+
+            /**
+             * <code>optional .fubble.Error errpr = 4;</code>
+             */
+            public Builder setErrpr(com.freckles.of.couple.fubble.proto.WebContainer.Error value) {
+                if (errprBuilder_ == null) {
+                    if (value == null) {
+                        throw new NullPointerException();
+                    }
+                    messageType_ = value;
+                    onChanged();
+                } else {
+                    errprBuilder_.setMessage(value);
+                }
+                messageTypeCase_ = 4;
+                return this;
+            }
+
+            /**
+             * <code>optional .fubble.Error errpr = 4;</code>
+             */
+            public Builder setErrpr(com.freckles.of.couple.fubble.proto.WebContainer.Error.Builder builderForValue) {
+                if (errprBuilder_ == null) {
+                    messageType_ = builderForValue.build();
+                    onChanged();
+                } else {
+                    errprBuilder_.setMessage(builderForValue.build());
+                }
+                messageTypeCase_ = 4;
+                return this;
+            }
+
+            /**
+             * <code>optional .fubble.Error errpr = 4;</code>
+             */
+            public Builder mergeErrpr(com.freckles.of.couple.fubble.proto.WebContainer.Error value) {
+                if (errprBuilder_ == null) {
+                    if (messageTypeCase_ == 4 && messageType_ != com.freckles.of.couple.fubble.proto.WebContainer.Error.getDefaultInstance()) {
+                        messageType_ = com.freckles.of.couple.fubble.proto.WebContainer.Error.newBuilder(
+                            (com.freckles.of.couple.fubble.proto.WebContainer.Error) messageType_).mergeFrom(value).buildPartial();
+                    } else {
+                        messageType_ = value;
+                    }
+                    onChanged();
+                } else {
+                    if (messageTypeCase_ == 4) {
+                        errprBuilder_.mergeFrom(value);
+                    }
+                    errprBuilder_.setMessage(value);
+                }
+                messageTypeCase_ = 4;
+                return this;
+            }
+
+            /**
+             * <code>optional .fubble.Error errpr = 4;</code>
+             */
+            public Builder clearErrpr() {
+                if (errprBuilder_ == null) {
+                    if (messageTypeCase_ == 4) {
+                        messageTypeCase_ = 0;
+                        messageType_ = null;
+                        onChanged();
+                    }
+                } else {
+                    if (messageTypeCase_ == 4) {
+                        messageTypeCase_ = 0;
+                        messageType_ = null;
+                    }
+                    errprBuilder_.clear();
+                }
+                return this;
+            }
+
+            /**
+             * <code>optional .fubble.Error errpr = 4;</code>
+             */
+            public com.freckles.of.couple.fubble.proto.WebContainer.Error.Builder getErrprBuilder() {
+                return getErrprFieldBuilder().getBuilder();
+            }
+
+            /**
+             * <code>optional .fubble.Error errpr = 4;</code>
+             */
+            public com.freckles.of.couple.fubble.proto.WebContainer.ErrorOrBuilder getErrprOrBuilder() {
+                if ((messageTypeCase_ == 4) && (errprBuilder_ != null)) {
+                    return errprBuilder_.getMessageOrBuilder();
+                } else {
+                    if (messageTypeCase_ == 4) {
+                        return (com.freckles.of.couple.fubble.proto.WebContainer.Error) messageType_;
+                    }
+                    return com.freckles.of.couple.fubble.proto.WebContainer.Error.getDefaultInstance();
+                }
+            }
+
+            /**
+             * <code>optional .fubble.Error errpr = 4;</code>
+             */
+            private com.google.protobuf.SingleFieldBuilderV3<com.freckles.of.couple.fubble.proto.WebContainer.Error, com.freckles.of.couple.fubble.proto.WebContainer.Error.Builder, com.freckles.of.couple.fubble.proto.WebContainer.ErrorOrBuilder> getErrprFieldBuilder() {
+                if (errprBuilder_ == null) {
+                    if (!(messageTypeCase_ == 4)) {
+                        messageType_ = com.freckles.of.couple.fubble.proto.WebContainer.Error.getDefaultInstance();
+                    }
+                    errprBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<com.freckles.of.couple.fubble.proto.WebContainer.Error, com.freckles.of.couple.fubble.proto.WebContainer.Error.Builder, com.freckles.of.couple.fubble.proto.WebContainer.ErrorOrBuilder>(
+                        (com.freckles.of.couple.fubble.proto.WebContainer.Error) messageType_, getParentForChildren(), isClean());
+                    messageType_ = null;
+                }
+                messageTypeCase_ = 4;
+                onChanged();;
+                return errprBuilder_;
+            }
+
+            private com.google.protobuf.SingleFieldBuilderV3<com.freckles.of.couple.fubble.proto.WebContainer.RenamedUser, com.freckles.of.couple.fubble.proto.WebContainer.RenamedUser.Builder, com.freckles.of.couple.fubble.proto.WebContainer.RenamedUserOrBuilder> renamedUserBuilder_;
+
+            /**
+             * <code>optional .fubble.RenamedUser renamedUser = 5;</code>
+             */
+            public boolean hasRenamedUser() {
+                return messageTypeCase_ == 5;
+            }
+
+            /**
+             * <code>optional .fubble.RenamedUser renamedUser = 5;</code>
+             */
+            public com.freckles.of.couple.fubble.proto.WebContainer.RenamedUser getRenamedUser() {
+                if (renamedUserBuilder_ == null) {
+                    if (messageTypeCase_ == 5) {
+                        return (com.freckles.of.couple.fubble.proto.WebContainer.RenamedUser) messageType_;
+                    }
+                    return com.freckles.of.couple.fubble.proto.WebContainer.RenamedUser.getDefaultInstance();
+                } else {
+                    if (messageTypeCase_ == 5) {
+                        return renamedUserBuilder_.getMessage();
+                    }
+                    return com.freckles.of.couple.fubble.proto.WebContainer.RenamedUser.getDefaultInstance();
+                }
+            }
+
+            /**
+             * <code>optional .fubble.RenamedUser renamedUser = 5;</code>
+             */
+            public Builder setRenamedUser(com.freckles.of.couple.fubble.proto.WebContainer.RenamedUser value) {
+                if (renamedUserBuilder_ == null) {
+                    if (value == null) {
+                        throw new NullPointerException();
+                    }
+                    messageType_ = value;
+                    onChanged();
+                } else {
+                    renamedUserBuilder_.setMessage(value);
+                }
+                messageTypeCase_ = 5;
+                return this;
+            }
+
+            /**
+             * <code>optional .fubble.RenamedUser renamedUser = 5;</code>
+             */
+            public Builder setRenamedUser(com.freckles.of.couple.fubble.proto.WebContainer.RenamedUser.Builder builderForValue) {
+                if (renamedUserBuilder_ == null) {
+                    messageType_ = builderForValue.build();
+                    onChanged();
+                } else {
+                    renamedUserBuilder_.setMessage(builderForValue.build());
+                }
+                messageTypeCase_ = 5;
+                return this;
+            }
+
+            /**
+             * <code>optional .fubble.RenamedUser renamedUser = 5;</code>
+             */
+            public Builder mergeRenamedUser(com.freckles.of.couple.fubble.proto.WebContainer.RenamedUser value) {
+                if (renamedUserBuilder_ == null) {
+                    if (messageTypeCase_ == 5 && messageType_ != com.freckles.of.couple.fubble.proto.WebContainer.RenamedUser.getDefaultInstance()) {
+                        messageType_ = com.freckles.of.couple.fubble.proto.WebContainer.RenamedUser.newBuilder(
+                            (com.freckles.of.couple.fubble.proto.WebContainer.RenamedUser) messageType_).mergeFrom(value).buildPartial();
+                    } else {
+                        messageType_ = value;
+                    }
+                    onChanged();
+                } else {
+                    if (messageTypeCase_ == 5) {
+                        renamedUserBuilder_.mergeFrom(value);
+                    }
+                    renamedUserBuilder_.setMessage(value);
+                }
+                messageTypeCase_ = 5;
+                return this;
+            }
+
+            /**
+             * <code>optional .fubble.RenamedUser renamedUser = 5;</code>
+             */
+            public Builder clearRenamedUser() {
+                if (renamedUserBuilder_ == null) {
+                    if (messageTypeCase_ == 5) {
+                        messageTypeCase_ = 0;
+                        messageType_ = null;
+                        onChanged();
+                    }
+                } else {
+                    if (messageTypeCase_ == 5) {
+                        messageTypeCase_ = 0;
+                        messageType_ = null;
+                    }
+                    renamedUserBuilder_.clear();
+                }
+                return this;
+            }
+
+            /**
+             * <code>optional .fubble.RenamedUser renamedUser = 5;</code>
+             */
+            public com.freckles.of.couple.fubble.proto.WebContainer.RenamedUser.Builder getRenamedUserBuilder() {
+                return getRenamedUserFieldBuilder().getBuilder();
+            }
+
+            /**
+             * <code>optional .fubble.RenamedUser renamedUser = 5;</code>
+             */
+            public com.freckles.of.couple.fubble.proto.WebContainer.RenamedUserOrBuilder getRenamedUserOrBuilder() {
+                if ((messageTypeCase_ == 5) && (renamedUserBuilder_ != null)) {
+                    return renamedUserBuilder_.getMessageOrBuilder();
+                } else {
+                    if (messageTypeCase_ == 5) {
+                        return (com.freckles.of.couple.fubble.proto.WebContainer.RenamedUser) messageType_;
+                    }
+                    return com.freckles.of.couple.fubble.proto.WebContainer.RenamedUser.getDefaultInstance();
+                }
+            }
+
+            /**
+             * <code>optional .fubble.RenamedUser renamedUser = 5;</code>
+             */
+            private com.google.protobuf.SingleFieldBuilderV3<com.freckles.of.couple.fubble.proto.WebContainer.RenamedUser, com.freckles.of.couple.fubble.proto.WebContainer.RenamedUser.Builder, com.freckles.of.couple.fubble.proto.WebContainer.RenamedUserOrBuilder> getRenamedUserFieldBuilder() {
+                if (renamedUserBuilder_ == null) {
+                    if (!(messageTypeCase_ == 5)) {
+                        messageType_ = com.freckles.of.couple.fubble.proto.WebContainer.RenamedUser.getDefaultInstance();
+                    }
+                    renamedUserBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<com.freckles.of.couple.fubble.proto.WebContainer.RenamedUser, com.freckles.of.couple.fubble.proto.WebContainer.RenamedUser.Builder, com.freckles.of.couple.fubble.proto.WebContainer.RenamedUserOrBuilder>(
+                        (com.freckles.of.couple.fubble.proto.WebContainer.RenamedUser) messageType_, getParentForChildren(), isClean());
+                    messageType_ = null;
+                }
+                messageTypeCase_ = 5;
+                onChanged();;
+                return renamedUserBuilder_;
+            }
+
+            public final Builder setUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
+                return super.setUnknownFields(unknownFields);
+            }
+
+            public final Builder mergeUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
+                return super.mergeUnknownFields(unknownFields);
+            }
+
+            // @@protoc_insertion_point(builder_scope:fubble.MessageContainerClient)
+        }
+
+        // @@protoc_insertion_point(class_scope:fubble.MessageContainerClient)
+        private static final com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient DEFAULT_INSTANCE;
+        static {
+            DEFAULT_INSTANCE = new com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient();
+        }
+
+        public static com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient getDefaultInstance() {
+            return DEFAULT_INSTANCE;
+        }
+
+        @java.lang.Deprecated
+        public static final com.google.protobuf.Parser<MessageContainerClient> PARSER = new com.google.protobuf.AbstractParser<MessageContainerClient>() {
+            public MessageContainerClient parsePartialFrom(com.google.protobuf.CodedInputStream input,
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws com.google.protobuf.InvalidProtocolBufferException {
+                return new MessageContainerClient(input, extensionRegistry);
+            }
+        };
+
+        public static com.google.protobuf.Parser<MessageContainerClient> parser() {
+            return PARSER;
+        }
+
+        @java.lang.Override
+        public com.google.protobuf.Parser<MessageContainerClient> getParserForType() {
+            return PARSER;
+        }
+
+        public com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient getDefaultInstanceForType() {
             return DEFAULT_INSTANCE;
         }
 
@@ -4704,1104 +7912,6 @@ public final class WebContainer {
 
     }
 
-    public interface RenameRoomOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:fubble.RenameRoom)
-        com.google.protobuf.MessageOrBuilder {
-
-        /**
-         * <code>optional string roomName = 1;</code>
-         */
-        boolean hasRoomName();
-
-        /**
-         * <code>optional string roomName = 1;</code>
-         */
-        java.lang.String getRoomName();
-
-        /**
-         * <code>optional string roomName = 1;</code>
-         */
-        com.google.protobuf.ByteString getRoomNameBytes();
-    }
-
-    /**
-     * Protobuf type {@code fubble.RenameRoom}
-     */
-    public static final class RenameRoom extends com.google.protobuf.GeneratedMessageV3 implements
-        // @@protoc_insertion_point(message_implements:fubble.RenameRoom)
-        RenameRoomOrBuilder {
-        private static final long serialVersionUID = 0L;
-
-        // Use RenameRoom.newBuilder() to construct.
-        private RenameRoom(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-            super(builder);
-        }
-
-        private RenameRoom() {
-            roomName_ = "";
-        }
-
-        @java.lang.Override
-        public final com.google.protobuf.UnknownFieldSet getUnknownFields() {
-            return this.unknownFields;
-        }
-
-        private RenameRoom(com.google.protobuf.CodedInputStream input, com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-            this();
-            if (extensionRegistry == null) {
-                throw new java.lang.NullPointerException();
-            }
-            int mutable_bitField0_ = 0;
-            com.google.protobuf.UnknownFieldSet.Builder unknownFields = com.google.protobuf.UnknownFieldSet.newBuilder();
-            try {
-                boolean done = false;
-                while (!done) {
-                    int tag = input.readTag();
-                    switch (tag) {
-                        case 0:
-                            done = true;
-                            break;
-                        default: {
-                            if (!parseUnknownField(input, unknownFields, extensionRegistry, tag)) {
-                                done = true;
-                            }
-                            break;
-                        }
-                        case 10: {
-                            com.google.protobuf.ByteString bs = input.readBytes();
-                            bitField0_ |= 0x00000001;
-                            roomName_ = bs;
-                            break;
-                        }
-                    }
-                }
-            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                throw e.setUnfinishedMessage(this);
-            } catch (java.io.IOException e) {
-                throw new com.google.protobuf.InvalidProtocolBufferException(e).setUnfinishedMessage(this);
-            } finally {
-                this.unknownFields = unknownFields.build();
-                makeExtensionsImmutable();
-            }
-        }
-
-        public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
-            return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_RenameRoom_descriptor;
-        }
-
-        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
-            return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_RenameRoom_fieldAccessorTable.ensureFieldAccessorsInitialized(
-                com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom.class,
-                com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom.Builder.class);
-        }
-
-        private int                       bitField0_;
-        public static final int           ROOMNAME_FIELD_NUMBER = 1;
-        private volatile java.lang.Object roomName_;
-
-        /**
-         * <code>optional string roomName = 1;</code>
-         */
-        public boolean hasRoomName() {
-            return ((bitField0_ & 0x00000001) == 0x00000001);
-        }
-
-        /**
-         * <code>optional string roomName = 1;</code>
-         */
-        public java.lang.String getRoomName() {
-            java.lang.Object ref = roomName_;
-            if (ref instanceof java.lang.String) {
-                return (java.lang.String) ref;
-            } else {
-                com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
-                java.lang.String s = bs.toStringUtf8();
-                if (bs.isValidUtf8()) {
-                    roomName_ = s;
-                }
-                return s;
-            }
-        }
-
-        /**
-         * <code>optional string roomName = 1;</code>
-         */
-        public com.google.protobuf.ByteString getRoomNameBytes() {
-            java.lang.Object ref = roomName_;
-            if (ref instanceof java.lang.String) {
-                com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
-                roomName_ = b;
-                return b;
-            } else {
-                return (com.google.protobuf.ByteString) ref;
-            }
-        }
-
-        private byte memoizedIsInitialized = -1;
-
-        public final boolean isInitialized() {
-            byte isInitialized = memoizedIsInitialized;
-            if (isInitialized == 1)
-                return true;
-            if (isInitialized == 0)
-                return false;
-
-            memoizedIsInitialized = 1;
-            return true;
-        }
-
-        public void writeTo(com.google.protobuf.CodedOutputStream output)
-            throws java.io.IOException {
-            if (((bitField0_ & 0x00000001) == 0x00000001)) {
-                com.google.protobuf.GeneratedMessageV3.writeString(output, 1, roomName_);
-            }
-            unknownFields.writeTo(output);
-        }
-
-        public int getSerializedSize() {
-            int size = memoizedSize;
-            if (size != -1)
-                return size;
-
-            size = 0;
-            if (((bitField0_ & 0x00000001) == 0x00000001)) {
-                size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, roomName_);
-            }
-            size += unknownFields.getSerializedSize();
-            memoizedSize = size;
-            return size;
-        }
-
-        @java.lang.Override
-        public boolean equals(final java.lang.Object obj) {
-            if (obj == this) {
-                return true;
-            }
-            if (!(obj instanceof com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom)) {
-                return super.equals(obj);
-            }
-            com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom other = (com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom) obj;
-
-            boolean result = true;
-            result = result && (hasRoomName() == other.hasRoomName());
-            if (hasRoomName()) {
-                result = result && getRoomName().equals(other.getRoomName());
-            }
-            result = result && unknownFields.equals(other.unknownFields);
-            return result;
-        }
-
-        @java.lang.Override
-        public int hashCode() {
-            if (memoizedHashCode != 0) {
-                return memoizedHashCode;
-            }
-            int hash = 41;
-            hash = (19 * hash) + getDescriptor().hashCode();
-            if (hasRoomName()) {
-                hash = (37 * hash) + ROOMNAME_FIELD_NUMBER;
-                hash = (53 * hash) + getRoomName().hashCode();
-            }
-            hash = (29 * hash) + unknownFields.hashCode();
-            memoizedHashCode = hash;
-            return hash;
-        }
-
-        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom parseFrom(java.nio.ByteBuffer data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data);
-        }
-
-        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom parseFrom(java.nio.ByteBuffer data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data, extensionRegistry);
-        }
-
-        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom parseFrom(com.google.protobuf.ByteString data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data);
-        }
-
-        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom parseFrom(com.google.protobuf.ByteString data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data, extensionRegistry);
-        }
-
-        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom parseFrom(byte[] data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data);
-        }
-
-        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom parseFrom(byte[] data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data, extensionRegistry);
-        }
-
-        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom parseFrom(java.io.InputStream input)
-            throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
-        }
-
-        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom parseFrom(java.io.InputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
-        }
-
-        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom parseDelimitedFrom(java.io.InputStream input)
-            throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input);
-        }
-
-        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom parseDelimitedFrom(java.io.InputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-        }
-
-        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom parseFrom(com.google.protobuf.CodedInputStream input)
-            throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
-        }
-
-        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom parseFrom(com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
-        }
-
-        public Builder newBuilderForType() {
-            return newBuilder();
-        }
-
-        public static Builder newBuilder() {
-            return DEFAULT_INSTANCE.toBuilder();
-        }
-
-        public static Builder newBuilder(com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom prototype) {
-            return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-        }
-
-        public Builder toBuilder() {
-            return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
-        }
-
-        @java.lang.Override
-        protected Builder newBuilderForType(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-            Builder builder = new Builder(parent);
-            return builder;
-        }
-
-        /**
-         * Protobuf type {@code fubble.RenameRoom}
-         */
-        public static final class Builder extends com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-            // @@protoc_insertion_point(builder_implements:fubble.RenameRoom)
-            com.freckles.of.couple.fubble.proto.WebContainer.RenameRoomOrBuilder {
-            public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
-                return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_RenameRoom_descriptor;
-            }
-
-            protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
-                return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_RenameRoom_fieldAccessorTable.ensureFieldAccessorsInitialized(
-                    com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom.class,
-                    com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom.Builder.class);
-            }
-
-            // Construct using com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom.newBuilder()
-            private Builder() {
-                maybeForceBuilderInitialization();
-            }
-
-            private Builder(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-                super(parent);
-                maybeForceBuilderInitialization();
-            }
-
-            private void maybeForceBuilderInitialization() {
-                if (com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders) {
-                }
-            }
-
-            public Builder clear() {
-                super.clear();
-                roomName_ = "";
-                bitField0_ = (bitField0_ & ~0x00000001);
-                return this;
-            }
-
-            public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
-                return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_RenameRoom_descriptor;
-            }
-
-            public com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom getDefaultInstanceForType() {
-                return com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom.getDefaultInstance();
-            }
-
-            public com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom build() {
-                com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom result = buildPartial();
-                if (!result.isInitialized()) {
-                    throw newUninitializedMessageException(result);
-                }
-                return result;
-            }
-
-            public com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom buildPartial() {
-                com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom result = new com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom(
-                    this);
-                int from_bitField0_ = bitField0_;
-                int to_bitField0_ = 0;
-                if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-                    to_bitField0_ |= 0x00000001;
-                }
-                result.roomName_ = roomName_;
-                result.bitField0_ = to_bitField0_;
-                onBuilt();
-                return result;
-            }
-
-            public Builder clone() {
-                return (Builder) super.clone();
-            }
-
-            public Builder setField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
-                return (Builder) super.setField(field, value);
-            }
-
-            public Builder clearField(com.google.protobuf.Descriptors.FieldDescriptor field) {
-                return (Builder) super.clearField(field);
-            }
-
-            public Builder clearOneof(com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-                return (Builder) super.clearOneof(oneof);
-            }
-
-            public Builder setRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, int index, java.lang.Object value) {
-                return (Builder) super.setRepeatedField(field, index, value);
-            }
-
-            public Builder addRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
-                return (Builder) super.addRepeatedField(field, value);
-            }
-
-            public Builder mergeFrom(com.google.protobuf.Message other) {
-                if (other instanceof com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom) {
-                    return mergeFrom((com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom) other);
-                } else {
-                    super.mergeFrom(other);
-                    return this;
-                }
-            }
-
-            public Builder mergeFrom(com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom other) {
-                if (other == com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom.getDefaultInstance())
-                    return this;
-                if (other.hasRoomName()) {
-                    bitField0_ |= 0x00000001;
-                    roomName_ = other.roomName_;
-                    onChanged();
-                }
-                this.mergeUnknownFields(other.unknownFields);
-                onChanged();
-                return this;
-            }
-
-            public final boolean isInitialized() {
-                return true;
-            }
-
-            public Builder mergeFrom(com.google.protobuf.CodedInputStream input, com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws java.io.IOException {
-                com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom parsedMessage = null;
-                try {
-                    parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-                } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                    parsedMessage = (com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom) e.getUnfinishedMessage();
-                    throw e.unwrapIOException();
-                } finally {
-                    if (parsedMessage != null) {
-                        mergeFrom(parsedMessage);
-                    }
-                }
-                return this;
-            }
-
-            private int              bitField0_;
-
-            private java.lang.Object roomName_ = "";
-
-            /**
-             * <code>optional string roomName = 1;</code>
-             */
-            public boolean hasRoomName() {
-                return ((bitField0_ & 0x00000001) == 0x00000001);
-            }
-
-            /**
-             * <code>optional string roomName = 1;</code>
-             */
-            public java.lang.String getRoomName() {
-                java.lang.Object ref = roomName_;
-                if (!(ref instanceof java.lang.String)) {
-                    com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
-                    java.lang.String s = bs.toStringUtf8();
-                    if (bs.isValidUtf8()) {
-                        roomName_ = s;
-                    }
-                    return s;
-                } else {
-                    return (java.lang.String) ref;
-                }
-            }
-
-            /**
-             * <code>optional string roomName = 1;</code>
-             */
-            public com.google.protobuf.ByteString getRoomNameBytes() {
-                java.lang.Object ref = roomName_;
-                if (ref instanceof String) {
-                    com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
-                    roomName_ = b;
-                    return b;
-                } else {
-                    return (com.google.protobuf.ByteString) ref;
-                }
-            }
-
-            /**
-             * <code>optional string roomName = 1;</code>
-             */
-            public Builder setRoomName(java.lang.String value) {
-                if (value == null) {
-                    throw new NullPointerException();
-                }
-                bitField0_ |= 0x00000001;
-                roomName_ = value;
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>optional string roomName = 1;</code>
-             */
-            public Builder clearRoomName() {
-                bitField0_ = (bitField0_ & ~0x00000001);
-                roomName_ = getDefaultInstance().getRoomName();
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>optional string roomName = 1;</code>
-             */
-            public Builder setRoomNameBytes(com.google.protobuf.ByteString value) {
-                if (value == null) {
-                    throw new NullPointerException();
-                }
-                bitField0_ |= 0x00000001;
-                roomName_ = value;
-                onChanged();
-                return this;
-            }
-
-            public final Builder setUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
-                return super.setUnknownFields(unknownFields);
-            }
-
-            public final Builder mergeUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
-                return super.mergeUnknownFields(unknownFields);
-            }
-
-            // @@protoc_insertion_point(builder_scope:fubble.RenameRoom)
-        }
-
-        // @@protoc_insertion_point(class_scope:fubble.RenameRoom)
-        private static final com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom DEFAULT_INSTANCE;
-        static {
-            DEFAULT_INSTANCE = new com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom();
-        }
-
-        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom getDefaultInstance() {
-            return DEFAULT_INSTANCE;
-        }
-
-        @java.lang.Deprecated
-        public static final com.google.protobuf.Parser<RenameRoom> PARSER = new com.google.protobuf.AbstractParser<RenameRoom>() {
-            public RenameRoom parsePartialFrom(com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-                return new RenameRoom(input, extensionRegistry);
-            }
-        };
-
-        public static com.google.protobuf.Parser<RenameRoom> parser() {
-            return PARSER;
-        }
-
-        @java.lang.Override
-        public com.google.protobuf.Parser<RenameRoom> getParserForType() {
-            return PARSER;
-        }
-
-        public com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom getDefaultInstanceForType() {
-            return DEFAULT_INSTANCE;
-        }
-
-    }
-
-    public interface RenameUserOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:fubble.RenameUser)
-        com.google.protobuf.MessageOrBuilder {
-
-        /**
-         * <code>optional string name = 1;</code>
-         */
-        boolean hasName();
-
-        /**
-         * <code>optional string name = 1;</code>
-         */
-        java.lang.String getName();
-
-        /**
-         * <code>optional string name = 1;</code>
-         */
-        com.google.protobuf.ByteString getNameBytes();
-    }
-
-    /**
-     * Protobuf type {@code fubble.RenameUser}
-     */
-    public static final class RenameUser extends com.google.protobuf.GeneratedMessageV3 implements
-        // @@protoc_insertion_point(message_implements:fubble.RenameUser)
-        RenameUserOrBuilder {
-        private static final long serialVersionUID = 0L;
-
-        // Use RenameUser.newBuilder() to construct.
-        private RenameUser(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-            super(builder);
-        }
-
-        private RenameUser() {
-            name_ = "";
-        }
-
-        @java.lang.Override
-        public final com.google.protobuf.UnknownFieldSet getUnknownFields() {
-            return this.unknownFields;
-        }
-
-        private RenameUser(com.google.protobuf.CodedInputStream input, com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-            this();
-            if (extensionRegistry == null) {
-                throw new java.lang.NullPointerException();
-            }
-            int mutable_bitField0_ = 0;
-            com.google.protobuf.UnknownFieldSet.Builder unknownFields = com.google.protobuf.UnknownFieldSet.newBuilder();
-            try {
-                boolean done = false;
-                while (!done) {
-                    int tag = input.readTag();
-                    switch (tag) {
-                        case 0:
-                            done = true;
-                            break;
-                        default: {
-                            if (!parseUnknownField(input, unknownFields, extensionRegistry, tag)) {
-                                done = true;
-                            }
-                            break;
-                        }
-                        case 10: {
-                            com.google.protobuf.ByteString bs = input.readBytes();
-                            bitField0_ |= 0x00000001;
-                            name_ = bs;
-                            break;
-                        }
-                    }
-                }
-            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                throw e.setUnfinishedMessage(this);
-            } catch (java.io.IOException e) {
-                throw new com.google.protobuf.InvalidProtocolBufferException(e).setUnfinishedMessage(this);
-            } finally {
-                this.unknownFields = unknownFields.build();
-                makeExtensionsImmutable();
-            }
-        }
-
-        public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
-            return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_RenameUser_descriptor;
-        }
-
-        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
-            return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_RenameUser_fieldAccessorTable.ensureFieldAccessorsInitialized(
-                com.freckles.of.couple.fubble.proto.WebContainer.RenameUser.class,
-                com.freckles.of.couple.fubble.proto.WebContainer.RenameUser.Builder.class);
-        }
-
-        private int                       bitField0_;
-        public static final int           NAME_FIELD_NUMBER = 1;
-        private volatile java.lang.Object name_;
-
-        /**
-         * <code>optional string name = 1;</code>
-         */
-        public boolean hasName() {
-            return ((bitField0_ & 0x00000001) == 0x00000001);
-        }
-
-        /**
-         * <code>optional string name = 1;</code>
-         */
-        public java.lang.String getName() {
-            java.lang.Object ref = name_;
-            if (ref instanceof java.lang.String) {
-                return (java.lang.String) ref;
-            } else {
-                com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
-                java.lang.String s = bs.toStringUtf8();
-                if (bs.isValidUtf8()) {
-                    name_ = s;
-                }
-                return s;
-            }
-        }
-
-        /**
-         * <code>optional string name = 1;</code>
-         */
-        public com.google.protobuf.ByteString getNameBytes() {
-            java.lang.Object ref = name_;
-            if (ref instanceof java.lang.String) {
-                com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
-                name_ = b;
-                return b;
-            } else {
-                return (com.google.protobuf.ByteString) ref;
-            }
-        }
-
-        private byte memoizedIsInitialized = -1;
-
-        public final boolean isInitialized() {
-            byte isInitialized = memoizedIsInitialized;
-            if (isInitialized == 1)
-                return true;
-            if (isInitialized == 0)
-                return false;
-
-            memoizedIsInitialized = 1;
-            return true;
-        }
-
-        public void writeTo(com.google.protobuf.CodedOutputStream output)
-            throws java.io.IOException {
-            if (((bitField0_ & 0x00000001) == 0x00000001)) {
-                com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
-            }
-            unknownFields.writeTo(output);
-        }
-
-        public int getSerializedSize() {
-            int size = memoizedSize;
-            if (size != -1)
-                return size;
-
-            size = 0;
-            if (((bitField0_ & 0x00000001) == 0x00000001)) {
-                size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
-            }
-            size += unknownFields.getSerializedSize();
-            memoizedSize = size;
-            return size;
-        }
-
-        @java.lang.Override
-        public boolean equals(final java.lang.Object obj) {
-            if (obj == this) {
-                return true;
-            }
-            if (!(obj instanceof com.freckles.of.couple.fubble.proto.WebContainer.RenameUser)) {
-                return super.equals(obj);
-            }
-            com.freckles.of.couple.fubble.proto.WebContainer.RenameUser other = (com.freckles.of.couple.fubble.proto.WebContainer.RenameUser) obj;
-
-            boolean result = true;
-            result = result && (hasName() == other.hasName());
-            if (hasName()) {
-                result = result && getName().equals(other.getName());
-            }
-            result = result && unknownFields.equals(other.unknownFields);
-            return result;
-        }
-
-        @java.lang.Override
-        public int hashCode() {
-            if (memoizedHashCode != 0) {
-                return memoizedHashCode;
-            }
-            int hash = 41;
-            hash = (19 * hash) + getDescriptor().hashCode();
-            if (hasName()) {
-                hash = (37 * hash) + NAME_FIELD_NUMBER;
-                hash = (53 * hash) + getName().hashCode();
-            }
-            hash = (29 * hash) + unknownFields.hashCode();
-            memoizedHashCode = hash;
-            return hash;
-        }
-
-        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameUser parseFrom(java.nio.ByteBuffer data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data);
-        }
-
-        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameUser parseFrom(java.nio.ByteBuffer data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data, extensionRegistry);
-        }
-
-        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameUser parseFrom(com.google.protobuf.ByteString data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data);
-        }
-
-        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameUser parseFrom(com.google.protobuf.ByteString data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data, extensionRegistry);
-        }
-
-        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameUser parseFrom(byte[] data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data);
-        }
-
-        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameUser parseFrom(byte[] data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data, extensionRegistry);
-        }
-
-        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameUser parseFrom(java.io.InputStream input)
-            throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
-        }
-
-        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameUser parseFrom(java.io.InputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
-        }
-
-        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameUser parseDelimitedFrom(java.io.InputStream input)
-            throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input);
-        }
-
-        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameUser parseDelimitedFrom(java.io.InputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-        }
-
-        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameUser parseFrom(com.google.protobuf.CodedInputStream input)
-            throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
-        }
-
-        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameUser parseFrom(com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
-        }
-
-        public Builder newBuilderForType() {
-            return newBuilder();
-        }
-
-        public static Builder newBuilder() {
-            return DEFAULT_INSTANCE.toBuilder();
-        }
-
-        public static Builder newBuilder(com.freckles.of.couple.fubble.proto.WebContainer.RenameUser prototype) {
-            return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-        }
-
-        public Builder toBuilder() {
-            return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
-        }
-
-        @java.lang.Override
-        protected Builder newBuilderForType(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-            Builder builder = new Builder(parent);
-            return builder;
-        }
-
-        /**
-         * Protobuf type {@code fubble.RenameUser}
-         */
-        public static final class Builder extends com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-            // @@protoc_insertion_point(builder_implements:fubble.RenameUser)
-            com.freckles.of.couple.fubble.proto.WebContainer.RenameUserOrBuilder {
-            public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
-                return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_RenameUser_descriptor;
-            }
-
-            protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
-                return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_RenameUser_fieldAccessorTable.ensureFieldAccessorsInitialized(
-                    com.freckles.of.couple.fubble.proto.WebContainer.RenameUser.class,
-                    com.freckles.of.couple.fubble.proto.WebContainer.RenameUser.Builder.class);
-            }
-
-            // Construct using com.freckles.of.couple.fubble.proto.WebContainer.RenameUser.newBuilder()
-            private Builder() {
-                maybeForceBuilderInitialization();
-            }
-
-            private Builder(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-                super(parent);
-                maybeForceBuilderInitialization();
-            }
-
-            private void maybeForceBuilderInitialization() {
-                if (com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders) {
-                }
-            }
-
-            public Builder clear() {
-                super.clear();
-                name_ = "";
-                bitField0_ = (bitField0_ & ~0x00000001);
-                return this;
-            }
-
-            public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
-                return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_RenameUser_descriptor;
-            }
-
-            public com.freckles.of.couple.fubble.proto.WebContainer.RenameUser getDefaultInstanceForType() {
-                return com.freckles.of.couple.fubble.proto.WebContainer.RenameUser.getDefaultInstance();
-            }
-
-            public com.freckles.of.couple.fubble.proto.WebContainer.RenameUser build() {
-                com.freckles.of.couple.fubble.proto.WebContainer.RenameUser result = buildPartial();
-                if (!result.isInitialized()) {
-                    throw newUninitializedMessageException(result);
-                }
-                return result;
-            }
-
-            public com.freckles.of.couple.fubble.proto.WebContainer.RenameUser buildPartial() {
-                com.freckles.of.couple.fubble.proto.WebContainer.RenameUser result = new com.freckles.of.couple.fubble.proto.WebContainer.RenameUser(
-                    this);
-                int from_bitField0_ = bitField0_;
-                int to_bitField0_ = 0;
-                if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-                    to_bitField0_ |= 0x00000001;
-                }
-                result.name_ = name_;
-                result.bitField0_ = to_bitField0_;
-                onBuilt();
-                return result;
-            }
-
-            public Builder clone() {
-                return (Builder) super.clone();
-            }
-
-            public Builder setField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
-                return (Builder) super.setField(field, value);
-            }
-
-            public Builder clearField(com.google.protobuf.Descriptors.FieldDescriptor field) {
-                return (Builder) super.clearField(field);
-            }
-
-            public Builder clearOneof(com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-                return (Builder) super.clearOneof(oneof);
-            }
-
-            public Builder setRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, int index, java.lang.Object value) {
-                return (Builder) super.setRepeatedField(field, index, value);
-            }
-
-            public Builder addRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
-                return (Builder) super.addRepeatedField(field, value);
-            }
-
-            public Builder mergeFrom(com.google.protobuf.Message other) {
-                if (other instanceof com.freckles.of.couple.fubble.proto.WebContainer.RenameUser) {
-                    return mergeFrom((com.freckles.of.couple.fubble.proto.WebContainer.RenameUser) other);
-                } else {
-                    super.mergeFrom(other);
-                    return this;
-                }
-            }
-
-            public Builder mergeFrom(com.freckles.of.couple.fubble.proto.WebContainer.RenameUser other) {
-                if (other == com.freckles.of.couple.fubble.proto.WebContainer.RenameUser.getDefaultInstance())
-                    return this;
-                if (other.hasName()) {
-                    bitField0_ |= 0x00000001;
-                    name_ = other.name_;
-                    onChanged();
-                }
-                this.mergeUnknownFields(other.unknownFields);
-                onChanged();
-                return this;
-            }
-
-            public final boolean isInitialized() {
-                return true;
-            }
-
-            public Builder mergeFrom(com.google.protobuf.CodedInputStream input, com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws java.io.IOException {
-                com.freckles.of.couple.fubble.proto.WebContainer.RenameUser parsedMessage = null;
-                try {
-                    parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-                } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                    parsedMessage = (com.freckles.of.couple.fubble.proto.WebContainer.RenameUser) e.getUnfinishedMessage();
-                    throw e.unwrapIOException();
-                } finally {
-                    if (parsedMessage != null) {
-                        mergeFrom(parsedMessage);
-                    }
-                }
-                return this;
-            }
-
-            private int              bitField0_;
-
-            private java.lang.Object name_ = "";
-
-            /**
-             * <code>optional string name = 1;</code>
-             */
-            public boolean hasName() {
-                return ((bitField0_ & 0x00000001) == 0x00000001);
-            }
-
-            /**
-             * <code>optional string name = 1;</code>
-             */
-            public java.lang.String getName() {
-                java.lang.Object ref = name_;
-                if (!(ref instanceof java.lang.String)) {
-                    com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
-                    java.lang.String s = bs.toStringUtf8();
-                    if (bs.isValidUtf8()) {
-                        name_ = s;
-                    }
-                    return s;
-                } else {
-                    return (java.lang.String) ref;
-                }
-            }
-
-            /**
-             * <code>optional string name = 1;</code>
-             */
-            public com.google.protobuf.ByteString getNameBytes() {
-                java.lang.Object ref = name_;
-                if (ref instanceof String) {
-                    com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
-                    name_ = b;
-                    return b;
-                } else {
-                    return (com.google.protobuf.ByteString) ref;
-                }
-            }
-
-            /**
-             * <code>optional string name = 1;</code>
-             */
-            public Builder setName(java.lang.String value) {
-                if (value == null) {
-                    throw new NullPointerException();
-                }
-                bitField0_ |= 0x00000001;
-                name_ = value;
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>optional string name = 1;</code>
-             */
-            public Builder clearName() {
-                bitField0_ = (bitField0_ & ~0x00000001);
-                name_ = getDefaultInstance().getName();
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>optional string name = 1;</code>
-             */
-            public Builder setNameBytes(com.google.protobuf.ByteString value) {
-                if (value == null) {
-                    throw new NullPointerException();
-                }
-                bitField0_ |= 0x00000001;
-                name_ = value;
-                onChanged();
-                return this;
-            }
-
-            public final Builder setUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
-                return super.setUnknownFields(unknownFields);
-            }
-
-            public final Builder mergeUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
-                return super.mergeUnknownFields(unknownFields);
-            }
-
-            // @@protoc_insertion_point(builder_scope:fubble.RenameUser)
-        }
-
-        // @@protoc_insertion_point(class_scope:fubble.RenameUser)
-        private static final com.freckles.of.couple.fubble.proto.WebContainer.RenameUser DEFAULT_INSTANCE;
-        static {
-            DEFAULT_INSTANCE = new com.freckles.of.couple.fubble.proto.WebContainer.RenameUser();
-        }
-
-        public static com.freckles.of.couple.fubble.proto.WebContainer.RenameUser getDefaultInstance() {
-            return DEFAULT_INSTANCE;
-        }
-
-        @java.lang.Deprecated
-        public static final com.google.protobuf.Parser<RenameUser> PARSER = new com.google.protobuf.AbstractParser<RenameUser>() {
-            public RenameUser parsePartialFrom(com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-                return new RenameUser(input, extensionRegistry);
-            }
-        };
-
-        public static com.google.protobuf.Parser<RenameUser> parser() {
-            return PARSER;
-        }
-
-        @java.lang.Override
-        public com.google.protobuf.Parser<RenameUser> getParserForType() {
-            return PARSER;
-        }
-
-        public com.freckles.of.couple.fubble.proto.WebContainer.RenameUser getDefaultInstanceForType() {
-            return DEFAULT_INSTANCE;
-        }
-
-    }
-
     public interface RenamedUserOrBuilder extends
         // @@protoc_insertion_point(interface_extends:fubble.RenamedUser)
         com.google.protobuf.MessageOrBuilder {
@@ -6515,559 +8625,18 @@ public final class WebContainer {
 
     }
 
-    public interface ChatMessageOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:fubble.ChatMessage)
-        com.google.protobuf.MessageOrBuilder {
-
-        /**
-         * <code>optional string content = 1;</code>
-         */
-        boolean hasContent();
-
-        /**
-         * <code>optional string content = 1;</code>
-         */
-        java.lang.String getContent();
-
-        /**
-         * <code>optional string content = 1;</code>
-         */
-        com.google.protobuf.ByteString getContentBytes();
-    }
-
-    /**
-     * Protobuf type {@code fubble.ChatMessage}
-     */
-    public static final class ChatMessage extends com.google.protobuf.GeneratedMessageV3 implements
-        // @@protoc_insertion_point(message_implements:fubble.ChatMessage)
-        ChatMessageOrBuilder {
-        private static final long serialVersionUID = 0L;
-
-        // Use ChatMessage.newBuilder() to construct.
-        private ChatMessage(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-            super(builder);
-        }
-
-        private ChatMessage() {
-            content_ = "";
-        }
-
-        @java.lang.Override
-        public final com.google.protobuf.UnknownFieldSet getUnknownFields() {
-            return this.unknownFields;
-        }
-
-        private ChatMessage(com.google.protobuf.CodedInputStream input, com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-            this();
-            if (extensionRegistry == null) {
-                throw new java.lang.NullPointerException();
-            }
-            int mutable_bitField0_ = 0;
-            com.google.protobuf.UnknownFieldSet.Builder unknownFields = com.google.protobuf.UnknownFieldSet.newBuilder();
-            try {
-                boolean done = false;
-                while (!done) {
-                    int tag = input.readTag();
-                    switch (tag) {
-                        case 0:
-                            done = true;
-                            break;
-                        default: {
-                            if (!parseUnknownField(input, unknownFields, extensionRegistry, tag)) {
-                                done = true;
-                            }
-                            break;
-                        }
-                        case 10: {
-                            com.google.protobuf.ByteString bs = input.readBytes();
-                            bitField0_ |= 0x00000001;
-                            content_ = bs;
-                            break;
-                        }
-                    }
-                }
-            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                throw e.setUnfinishedMessage(this);
-            } catch (java.io.IOException e) {
-                throw new com.google.protobuf.InvalidProtocolBufferException(e).setUnfinishedMessage(this);
-            } finally {
-                this.unknownFields = unknownFields.build();
-                makeExtensionsImmutable();
-            }
-        }
-
-        public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
-            return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_ChatMessage_descriptor;
-        }
-
-        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
-            return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_ChatMessage_fieldAccessorTable.ensureFieldAccessorsInitialized(
-                com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage.class,
-                com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage.Builder.class);
-        }
-
-        private int                       bitField0_;
-        public static final int           CONTENT_FIELD_NUMBER = 1;
-        private volatile java.lang.Object content_;
-
-        /**
-         * <code>optional string content = 1;</code>
-         */
-        public boolean hasContent() {
-            return ((bitField0_ & 0x00000001) == 0x00000001);
-        }
-
-        /**
-         * <code>optional string content = 1;</code>
-         */
-        public java.lang.String getContent() {
-            java.lang.Object ref = content_;
-            if (ref instanceof java.lang.String) {
-                return (java.lang.String) ref;
-            } else {
-                com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
-                java.lang.String s = bs.toStringUtf8();
-                if (bs.isValidUtf8()) {
-                    content_ = s;
-                }
-                return s;
-            }
-        }
-
-        /**
-         * <code>optional string content = 1;</code>
-         */
-        public com.google.protobuf.ByteString getContentBytes() {
-            java.lang.Object ref = content_;
-            if (ref instanceof java.lang.String) {
-                com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
-                content_ = b;
-                return b;
-            } else {
-                return (com.google.protobuf.ByteString) ref;
-            }
-        }
-
-        private byte memoizedIsInitialized = -1;
-
-        public final boolean isInitialized() {
-            byte isInitialized = memoizedIsInitialized;
-            if (isInitialized == 1)
-                return true;
-            if (isInitialized == 0)
-                return false;
-
-            memoizedIsInitialized = 1;
-            return true;
-        }
-
-        public void writeTo(com.google.protobuf.CodedOutputStream output)
-            throws java.io.IOException {
-            if (((bitField0_ & 0x00000001) == 0x00000001)) {
-                com.google.protobuf.GeneratedMessageV3.writeString(output, 1, content_);
-            }
-            unknownFields.writeTo(output);
-        }
-
-        public int getSerializedSize() {
-            int size = memoizedSize;
-            if (size != -1)
-                return size;
-
-            size = 0;
-            if (((bitField0_ & 0x00000001) == 0x00000001)) {
-                size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, content_);
-            }
-            size += unknownFields.getSerializedSize();
-            memoizedSize = size;
-            return size;
-        }
-
-        @java.lang.Override
-        public boolean equals(final java.lang.Object obj) {
-            if (obj == this) {
-                return true;
-            }
-            if (!(obj instanceof com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage)) {
-                return super.equals(obj);
-            }
-            com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage other = (com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage) obj;
-
-            boolean result = true;
-            result = result && (hasContent() == other.hasContent());
-            if (hasContent()) {
-                result = result && getContent().equals(other.getContent());
-            }
-            result = result && unknownFields.equals(other.unknownFields);
-            return result;
-        }
-
-        @java.lang.Override
-        public int hashCode() {
-            if (memoizedHashCode != 0) {
-                return memoizedHashCode;
-            }
-            int hash = 41;
-            hash = (19 * hash) + getDescriptor().hashCode();
-            if (hasContent()) {
-                hash = (37 * hash) + CONTENT_FIELD_NUMBER;
-                hash = (53 * hash) + getContent().hashCode();
-            }
-            hash = (29 * hash) + unknownFields.hashCode();
-            memoizedHashCode = hash;
-            return hash;
-        }
-
-        public static com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage parseFrom(java.nio.ByteBuffer data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data);
-        }
-
-        public static com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage parseFrom(java.nio.ByteBuffer data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data, extensionRegistry);
-        }
-
-        public static com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage parseFrom(com.google.protobuf.ByteString data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data);
-        }
-
-        public static com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage parseFrom(com.google.protobuf.ByteString data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data, extensionRegistry);
-        }
-
-        public static com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage parseFrom(byte[] data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data);
-        }
-
-        public static com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage parseFrom(byte[] data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data, extensionRegistry);
-        }
-
-        public static com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage parseFrom(java.io.InputStream input)
-            throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
-        }
-
-        public static com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage parseFrom(java.io.InputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
-        }
-
-        public static com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage parseDelimitedFrom(java.io.InputStream input)
-            throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input);
-        }
-
-        public static com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage parseDelimitedFrom(java.io.InputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-        }
-
-        public static com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage parseFrom(com.google.protobuf.CodedInputStream input)
-            throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
-        }
-
-        public static com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage parseFrom(com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
-        }
-
-        public Builder newBuilderForType() {
-            return newBuilder();
-        }
-
-        public static Builder newBuilder() {
-            return DEFAULT_INSTANCE.toBuilder();
-        }
-
-        public static Builder newBuilder(com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage prototype) {
-            return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-        }
-
-        public Builder toBuilder() {
-            return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
-        }
-
-        @java.lang.Override
-        protected Builder newBuilderForType(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-            Builder builder = new Builder(parent);
-            return builder;
-        }
-
-        /**
-         * Protobuf type {@code fubble.ChatMessage}
-         */
-        public static final class Builder extends com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-            // @@protoc_insertion_point(builder_implements:fubble.ChatMessage)
-            com.freckles.of.couple.fubble.proto.WebContainer.ChatMessageOrBuilder {
-            public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
-                return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_ChatMessage_descriptor;
-            }
-
-            protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
-                return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_ChatMessage_fieldAccessorTable.ensureFieldAccessorsInitialized(
-                    com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage.class,
-                    com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage.Builder.class);
-            }
-
-            // Construct using com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage.newBuilder()
-            private Builder() {
-                maybeForceBuilderInitialization();
-            }
-
-            private Builder(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-                super(parent);
-                maybeForceBuilderInitialization();
-            }
-
-            private void maybeForceBuilderInitialization() {
-                if (com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders) {
-                }
-            }
-
-            public Builder clear() {
-                super.clear();
-                content_ = "";
-                bitField0_ = (bitField0_ & ~0x00000001);
-                return this;
-            }
-
-            public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
-                return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_ChatMessage_descriptor;
-            }
-
-            public com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage getDefaultInstanceForType() {
-                return com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage.getDefaultInstance();
-            }
-
-            public com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage build() {
-                com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage result = buildPartial();
-                if (!result.isInitialized()) {
-                    throw newUninitializedMessageException(result);
-                }
-                return result;
-            }
-
-            public com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage buildPartial() {
-                com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage result = new com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage(
-                    this);
-                int from_bitField0_ = bitField0_;
-                int to_bitField0_ = 0;
-                if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-                    to_bitField0_ |= 0x00000001;
-                }
-                result.content_ = content_;
-                result.bitField0_ = to_bitField0_;
-                onBuilt();
-                return result;
-            }
-
-            public Builder clone() {
-                return (Builder) super.clone();
-            }
-
-            public Builder setField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
-                return (Builder) super.setField(field, value);
-            }
-
-            public Builder clearField(com.google.protobuf.Descriptors.FieldDescriptor field) {
-                return (Builder) super.clearField(field);
-            }
-
-            public Builder clearOneof(com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-                return (Builder) super.clearOneof(oneof);
-            }
-
-            public Builder setRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, int index, java.lang.Object value) {
-                return (Builder) super.setRepeatedField(field, index, value);
-            }
-
-            public Builder addRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
-                return (Builder) super.addRepeatedField(field, value);
-            }
-
-            public Builder mergeFrom(com.google.protobuf.Message other) {
-                if (other instanceof com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage) {
-                    return mergeFrom((com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage) other);
-                } else {
-                    super.mergeFrom(other);
-                    return this;
-                }
-            }
-
-            public Builder mergeFrom(com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage other) {
-                if (other == com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage.getDefaultInstance())
-                    return this;
-                if (other.hasContent()) {
-                    bitField0_ |= 0x00000001;
-                    content_ = other.content_;
-                    onChanged();
-                }
-                this.mergeUnknownFields(other.unknownFields);
-                onChanged();
-                return this;
-            }
-
-            public final boolean isInitialized() {
-                return true;
-            }
-
-            public Builder mergeFrom(com.google.protobuf.CodedInputStream input, com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws java.io.IOException {
-                com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage parsedMessage = null;
-                try {
-                    parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-                } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                    parsedMessage = (com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage) e.getUnfinishedMessage();
-                    throw e.unwrapIOException();
-                } finally {
-                    if (parsedMessage != null) {
-                        mergeFrom(parsedMessage);
-                    }
-                }
-                return this;
-            }
-
-            private int              bitField0_;
-
-            private java.lang.Object content_ = "";
-
-            /**
-             * <code>optional string content = 1;</code>
-             */
-            public boolean hasContent() {
-                return ((bitField0_ & 0x00000001) == 0x00000001);
-            }
-
-            /**
-             * <code>optional string content = 1;</code>
-             */
-            public java.lang.String getContent() {
-                java.lang.Object ref = content_;
-                if (!(ref instanceof java.lang.String)) {
-                    com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
-                    java.lang.String s = bs.toStringUtf8();
-                    if (bs.isValidUtf8()) {
-                        content_ = s;
-                    }
-                    return s;
-                } else {
-                    return (java.lang.String) ref;
-                }
-            }
-
-            /**
-             * <code>optional string content = 1;</code>
-             */
-            public com.google.protobuf.ByteString getContentBytes() {
-                java.lang.Object ref = content_;
-                if (ref instanceof String) {
-                    com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
-                    content_ = b;
-                    return b;
-                } else {
-                    return (com.google.protobuf.ByteString) ref;
-                }
-            }
-
-            /**
-             * <code>optional string content = 1;</code>
-             */
-            public Builder setContent(java.lang.String value) {
-                if (value == null) {
-                    throw new NullPointerException();
-                }
-                bitField0_ |= 0x00000001;
-                content_ = value;
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>optional string content = 1;</code>
-             */
-            public Builder clearContent() {
-                bitField0_ = (bitField0_ & ~0x00000001);
-                content_ = getDefaultInstance().getContent();
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>optional string content = 1;</code>
-             */
-            public Builder setContentBytes(com.google.protobuf.ByteString value) {
-                if (value == null) {
-                    throw new NullPointerException();
-                }
-                bitField0_ |= 0x00000001;
-                content_ = value;
-                onChanged();
-                return this;
-            }
-
-            public final Builder setUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
-                return super.setUnknownFields(unknownFields);
-            }
-
-            public final Builder mergeUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
-                return super.mergeUnknownFields(unknownFields);
-            }
-
-            // @@protoc_insertion_point(builder_scope:fubble.ChatMessage)
-        }
-
-        // @@protoc_insertion_point(class_scope:fubble.ChatMessage)
-        private static final com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage DEFAULT_INSTANCE;
-        static {
-            DEFAULT_INSTANCE = new com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage();
-        }
-
-        public static com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage getDefaultInstance() {
-            return DEFAULT_INSTANCE;
-        }
-
-        @java.lang.Deprecated
-        public static final com.google.protobuf.Parser<ChatMessage> PARSER = new com.google.protobuf.AbstractParser<ChatMessage>() {
-            public ChatMessage parsePartialFrom(com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-                return new ChatMessage(input, extensionRegistry);
-            }
-        };
-
-        public static com.google.protobuf.Parser<ChatMessage> parser() {
-            return PARSER;
-        }
-
-        @java.lang.Override
-        public com.google.protobuf.Parser<ChatMessage> getParserForType() {
-            return PARSER;
-        }
-
-        public com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage getDefaultInstanceForType() {
-            return DEFAULT_INSTANCE;
-        }
-
-    }
-
-    private static final com.google.protobuf.Descriptors.Descriptor                internal_static_fubble_MessageContainer_descriptor;
-    private static final com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internal_static_fubble_MessageContainer_fieldAccessorTable;
+    private static final com.google.protobuf.Descriptors.Descriptor                internal_static_fubble_MessageContainerServer_descriptor;
+    private static final com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internal_static_fubble_MessageContainerServer_fieldAccessorTable;
     private static final com.google.protobuf.Descriptors.Descriptor                internal_static_fubble_JoinRoom_descriptor;
     private static final com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internal_static_fubble_JoinRoom_fieldAccessorTable;
+    private static final com.google.protobuf.Descriptors.Descriptor                internal_static_fubble_RenameRoom_descriptor;
+    private static final com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internal_static_fubble_RenameRoom_fieldAccessorTable;
+    private static final com.google.protobuf.Descriptors.Descriptor                internal_static_fubble_RenameUser_descriptor;
+    private static final com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internal_static_fubble_RenameUser_fieldAccessorTable;
+    private static final com.google.protobuf.Descriptors.Descriptor                internal_static_fubble_ChatMessage_descriptor;
+    private static final com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internal_static_fubble_ChatMessage_fieldAccessorTable;
+    private static final com.google.protobuf.Descriptors.Descriptor                internal_static_fubble_MessageContainerClient_descriptor;
+    private static final com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internal_static_fubble_MessageContainerClient_fieldAccessorTable;
     private static final com.google.protobuf.Descriptors.Descriptor                internal_static_fubble_UserJoined_descriptor;
     private static final com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internal_static_fubble_UserJoined_fieldAccessorTable;
     private static final com.google.protobuf.Descriptors.Descriptor                internal_static_fubble_UserLeft_descriptor;
@@ -7076,14 +8645,8 @@ public final class WebContainer {
     private static final com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internal_static_fubble_JoinedRoom_fieldAccessorTable;
     private static final com.google.protobuf.Descriptors.Descriptor                internal_static_fubble_Error_descriptor;
     private static final com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internal_static_fubble_Error_fieldAccessorTable;
-    private static final com.google.protobuf.Descriptors.Descriptor                internal_static_fubble_RenameRoom_descriptor;
-    private static final com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internal_static_fubble_RenameRoom_fieldAccessorTable;
-    private static final com.google.protobuf.Descriptors.Descriptor                internal_static_fubble_RenameUser_descriptor;
-    private static final com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internal_static_fubble_RenameUser_fieldAccessorTable;
     private static final com.google.protobuf.Descriptors.Descriptor                internal_static_fubble_RenamedUser_descriptor;
     private static final com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internal_static_fubble_RenamedUser_fieldAccessorTable;
-    private static final com.google.protobuf.Descriptors.Descriptor                internal_static_fubble_ChatMessage_descriptor;
-    private static final com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internal_static_fubble_ChatMessage_fieldAccessorTable;
 
     public static com.google.protobuf.Descriptors.FileDescriptor getDescriptor() {
         return descriptor;
@@ -7091,18 +8654,21 @@ public final class WebContainer {
 
     private static com.google.protobuf.Descriptors.FileDescriptor descriptor;
     static {
-        java.lang.String[] descriptorData = { "\n\020fubble_web.proto\022\006fubble\"\300\001\n\020MessageCo"
-            + "ntainer\022$\n\010joinRoom\030\001 \001(\0132\020.fubble.JoinR" + "oomH\000\022(\n\nrenameRoom\030\002 \001(\0132\022.fubble.Renam"
-            + "eRoomH\000\022(\n\nrenameUser\030\003 \001(\0132\022.fubble.Ren" + "ameUserH\000\022#\n\004chat\030\004 \001(\0132\023.fubble.ChatMes"
-            + "sageH\000B\r\n\013messageType\"\034\n\010JoinRoom\022\020\n\010roo"
-            + "mName\030\001 \001(\t\"&\n\nUserJoined\022\014\n\004name\030\001 \001(\t\022"
-            + "\n\n\002id\030\002 \001(\t\"\026\n\010UserLeft\022\n\n\002id\030\001 \001(\t\",\n\nJ"
-            + "oinedRoom\022\016\n\006roomId\030\001 \001(\t\022\016\n\006userId\030\002 \001("
-            + "\t\"(\n\005Error\022\n\n\002id\030\001 \001(\t\022\023\n\013description\030\002 "
-            + "\001(\t\"\036\n\nRenameRoom\022\020\n\010roomName\030\001 \001(\t\"\032\n\nR"
-            + "enameUser\022\014\n\004name\030\001 \001(\t\"\'\n\013RenamedUser\022\n"
-            + "\n\002id\030\001 \001(\t\022\014\n\004name\030\002 \001(\t\"\036\n\013ChatMessage\022"
-            + "\017\n\007content\030\001 \001(\tB3\n#com.freckles.of.coup" + "le.fubble.protoB\014WebContainer" };
+        java.lang.String[] descriptorData = { "\n\020fubble_web.proto\022\006fubble\"\306\001\n\026MessageCo"
+            + "ntainerServer\022$\n\010joinRoom\030\001 \001(\0132\020.fubble" + ".JoinRoomH\000\022(\n\nrenameRoom\030\002 \001(\0132\022.fubble"
+            + ".RenameRoomH\000\022(\n\nrenameUser\030\003 \001(\0132\022.fubb" + "le.RenameUserH\000\022#\n\004chat\030\004 \001(\0132\023.fubble.C"
+            + "hatMessageH\000B\r\n\013messageType\"\034\n\010JoinRoom\022"
+            + "\020\n\010roomName\030\001 \001(\t\"\036\n\nRenameRoom\022\020\n\010roomN"
+            + "ame\030\001 \001(\t\"\032\n\nRenameUser\022\014\n\004name\030\001 \001(\t\"\036\n"
+            + "\013ChatMessage\022\017\n\007content\030\001 \001(\t\"\355\001\n\026Messag"
+            + "eContainerClient\022(\n\nuserJoined\030\001 \001(\0132\022.f" + "ubble.UserJoinedH\000\022$\n\010userLeft\030\002 \001(\0132\020.f"
+            + "ubble.UserLeftH\000\022(\n\njoinedRoom\030\003 \001(\0132\022.f" + "ubble.JoinedRoomH\000\022\036\n\005errpr\030\004 \001(\0132\r.fubb"
+            + "le.ErrorH\000\022*\n\013renamedUser\030\005 \001(\0132\023.fubble" + ".RenamedUserH\000B\r\n\013messageType\"&\n\nUserJoi"
+            + "ned\022\014\n\004name\030\001 \001(\t\022\n\n\002id\030\002 \001(\t\"\026\n\010UserLef"
+            + "t\022\n\n\002id\030\001 \001(\t\",\n\nJoinedRoom\022\016\n\006roomId\030\001 "
+            + "\001(\t\022\016\n\006userId\030\002 \001(\t\"(\n\005Error\022\n\n\002id\030\001 \001(\t"
+            + "\022\023\n\013description\030\002 \001(\t\"\'\n\013RenamedUser\022\n\n\002"
+            + "id\030\001 \001(\t\022\014\n\004name\030\002 \001(\tB3\n#com.freckles.o" + "f.couple.fubble.protoB\014WebContainer" };
         com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner = new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
             public com.google.protobuf.ExtensionRegistry assignDescriptors(com.google.protobuf.Descriptors.FileDescriptor root) {
                 descriptor = root;
@@ -7111,37 +8677,41 @@ public final class WebContainer {
         };
         com.google.protobuf.Descriptors.FileDescriptor.internalBuildGeneratedFileFrom(descriptorData,
             new com.google.protobuf.Descriptors.FileDescriptor[] {}, assigner);
-        internal_static_fubble_MessageContainer_descriptor = getDescriptor().getMessageTypes().get(0);
-        internal_static_fubble_MessageContainer_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-            internal_static_fubble_MessageContainer_descriptor,
+        internal_static_fubble_MessageContainerServer_descriptor = getDescriptor().getMessageTypes().get(0);
+        internal_static_fubble_MessageContainerServer_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+            internal_static_fubble_MessageContainerServer_descriptor,
             new java.lang.String[] { "JoinRoom", "RenameRoom", "RenameUser", "Chat", "MessageType", });
         internal_static_fubble_JoinRoom_descriptor = getDescriptor().getMessageTypes().get(1);
         internal_static_fubble_JoinRoom_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
             internal_static_fubble_JoinRoom_descriptor, new java.lang.String[] { "RoomName", });
-        internal_static_fubble_UserJoined_descriptor = getDescriptor().getMessageTypes().get(2);
-        internal_static_fubble_UserJoined_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-            internal_static_fubble_UserJoined_descriptor, new java.lang.String[] { "Name", "Id", });
-        internal_static_fubble_UserLeft_descriptor = getDescriptor().getMessageTypes().get(3);
-        internal_static_fubble_UserLeft_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-            internal_static_fubble_UserLeft_descriptor, new java.lang.String[] { "Id", });
-        internal_static_fubble_JoinedRoom_descriptor = getDescriptor().getMessageTypes().get(4);
-        internal_static_fubble_JoinedRoom_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-            internal_static_fubble_JoinedRoom_descriptor, new java.lang.String[] { "RoomId", "UserId", });
-        internal_static_fubble_Error_descriptor = getDescriptor().getMessageTypes().get(5);
-        internal_static_fubble_Error_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-            internal_static_fubble_Error_descriptor, new java.lang.String[] { "Id", "Description", });
-        internal_static_fubble_RenameRoom_descriptor = getDescriptor().getMessageTypes().get(6);
+        internal_static_fubble_RenameRoom_descriptor = getDescriptor().getMessageTypes().get(2);
         internal_static_fubble_RenameRoom_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
             internal_static_fubble_RenameRoom_descriptor, new java.lang.String[] { "RoomName", });
-        internal_static_fubble_RenameUser_descriptor = getDescriptor().getMessageTypes().get(7);
+        internal_static_fubble_RenameUser_descriptor = getDescriptor().getMessageTypes().get(3);
         internal_static_fubble_RenameUser_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
             internal_static_fubble_RenameUser_descriptor, new java.lang.String[] { "Name", });
-        internal_static_fubble_RenamedUser_descriptor = getDescriptor().getMessageTypes().get(8);
-        internal_static_fubble_RenamedUser_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-            internal_static_fubble_RenamedUser_descriptor, new java.lang.String[] { "Id", "Name", });
-        internal_static_fubble_ChatMessage_descriptor = getDescriptor().getMessageTypes().get(9);
+        internal_static_fubble_ChatMessage_descriptor = getDescriptor().getMessageTypes().get(4);
         internal_static_fubble_ChatMessage_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
             internal_static_fubble_ChatMessage_descriptor, new java.lang.String[] { "Content", });
+        internal_static_fubble_MessageContainerClient_descriptor = getDescriptor().getMessageTypes().get(5);
+        internal_static_fubble_MessageContainerClient_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+            internal_static_fubble_MessageContainerClient_descriptor,
+            new java.lang.String[] { "UserJoined", "UserLeft", "JoinedRoom", "Errpr", "RenamedUser", "MessageType", });
+        internal_static_fubble_UserJoined_descriptor = getDescriptor().getMessageTypes().get(6);
+        internal_static_fubble_UserJoined_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+            internal_static_fubble_UserJoined_descriptor, new java.lang.String[] { "Name", "Id", });
+        internal_static_fubble_UserLeft_descriptor = getDescriptor().getMessageTypes().get(7);
+        internal_static_fubble_UserLeft_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+            internal_static_fubble_UserLeft_descriptor, new java.lang.String[] { "Id", });
+        internal_static_fubble_JoinedRoom_descriptor = getDescriptor().getMessageTypes().get(8);
+        internal_static_fubble_JoinedRoom_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+            internal_static_fubble_JoinedRoom_descriptor, new java.lang.String[] { "RoomId", "UserId", });
+        internal_static_fubble_Error_descriptor = getDescriptor().getMessageTypes().get(9);
+        internal_static_fubble_Error_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+            internal_static_fubble_Error_descriptor, new java.lang.String[] { "Id", "Description", });
+        internal_static_fubble_RenamedUser_descriptor = getDescriptor().getMessageTypes().get(10);
+        internal_static_fubble_RenamedUser_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+            internal_static_fubble_RenamedUser_descriptor, new java.lang.String[] { "Id", "Name", });
     }
 
     // @@protoc_insertion_point(outer_class_scope)

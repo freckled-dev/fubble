@@ -6,13 +6,41 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.Transient;
+
+@Entity
 public class Room {
 
+    @Id
+    @Column(name = "id")
     private String     id;
+
+    @Column(name = "NAME")
     private String     name;
-    private List<User> users            = new ArrayList<>();
+
+    @Column(name = "CONNECTEDCOUNTER")
     private int        connectedCounter = 1;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name = "ROOM_USER", //
+        joinColumns = { @JoinColumn(name = "ROOM_ID", nullable = false, updatable = false) }, //
+        inverseJoinColumns = { @JoinColumn(name = "USER_ID", nullable = false, updatable = false) })
+    private List<User> users            = new ArrayList<>();
+
+    @Transient
     private Lock       mutex            = new ReentrantLock();
+
+    public Room() {
+
+    }
 
     public Room(String name) {
         this.name = name;
