@@ -29,6 +29,7 @@ public class FubbleClientEndpoint {
     private static final Logger LOGGER      = LogManager.getLogger(FubbleClientEndpoint.class);
 
     private Session             userSession = null;
+    private String              userName;
 
     public FubbleClientEndpoint(URI endpointURI) {
         try {
@@ -73,13 +74,23 @@ public class FubbleClientEndpoint {
             MessageTypeCase messageTypeCase = container.getMessageTypeCase();
 
             if (MessageTypeCase.JOINEDROOM.equals(messageTypeCase)) {
-                System.out.println("JoinedRoom");
-                System.out.println(container);
+                System.out.println(userName + ":" + container);
+            }
+            if (MessageTypeCase.USERJOINED.equals(messageTypeCase)) {
+                System.out.println(userName + ":" + container);
             }
         } catch (InvalidProtocolBufferException ex) {
             LOGGER.error(ex);
         }
 
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     /**

@@ -1,5 +1,5 @@
 
-package com.freckles.of.couple.dal.cache;
+package com.freckles.of.couple.dal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,23 +8,13 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.freckles.of.couple.dal.RoomManagementDAO;
 import com.freckles.of.couple.fubble.entities.Room;
 
-public class RoomManagementDAOImpl implements RoomManagementDAO {
+public class RoomManagementImpl implements RoomManagementDAO {
 
-    private static final Logger LOGGER = LogManager.getLogger(RoomManagementDAOImpl.class);
+    private static final Logger LOGGER = LogManager.getLogger(RoomManagementImpl.class);
 
     private static List<Room>   rooms  = new ArrayList<>();
-
-    @Override
-    public Room updateRoom(Room room) {
-        synchronized (rooms) {
-            deleteRoom(room.getName());
-            rooms.add(room);
-            return room;
-        }
-    }
 
     @Override
     public void deleteRoom(String roomName) {

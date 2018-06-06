@@ -40,7 +40,7 @@ public class FubbleEndpoint {
     }
 
     @OnMessage
-    public void onMessage(Session session, byte[] message)
+    public void onMessage(byte[] message)
         throws IOException {
         LOGGER.info("Server: Message received.");
 
@@ -53,6 +53,8 @@ public class FubbleEndpoint {
             }
 
             handleContainer(container);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         } finally {
             if (room != null) {
                 room.getMutex().unlock();
@@ -97,10 +99,12 @@ public class FubbleEndpoint {
     }
 
     @OnError
-    public void onError(Session session, Throwable throwable) {}
+    public void onError(Throwable throwable) {
+        LOGGER.error(throwable.getMessage());
+    }
 
     @OnClose
-    public void onClose(Session session)
+    public void onClose()
         throws IOException {
 
         try {
@@ -114,7 +118,6 @@ public class FubbleEndpoint {
                 room.getMutex().unlock();
             }
         }
-
     }
 
 }

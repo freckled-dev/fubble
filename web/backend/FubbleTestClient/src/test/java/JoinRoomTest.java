@@ -16,20 +16,21 @@ public class JoinRoomTest extends FubbleWebSocketTest {
     @Test
     public void testJoinRoomTwoClients() {
         // 2 clients join the same room
-        createClients(1);
+        createClients(3);
 
         try {
             MessageContainerServer joinRoom = createJoinRoomContainer("martin-loves-dick");
             ByteArrayOutputStream output = new ByteArrayOutputStream();
             joinRoom.writeTo(output);
 
-            for (FubbleClientEndpoint clientEndPoint : clientEndPoints) {
+            for (int index = 0; index < clientEndPoints.size(); index++) {
+                FubbleClientEndpoint clientEndPoint = clientEndPoints.get(index);
+                clientEndPoint.setUserName("Fubbler" + (index + 1));
                 clientEndPoint.sendMessage(output.toByteArray());
+                Thread.sleep(1000);
             }
 
             output.close();
-
-            Thread.sleep(50000);
 
         } catch (IOException ex) {
             LOGGER.error(ex);

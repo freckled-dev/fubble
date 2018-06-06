@@ -4,8 +4,7 @@ package com.freckles.of.couple.fubble.handler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.freckles.of.couple.dal.RoomManagementDAO;
-import com.freckles.of.couple.dal.cache.RoomManagementDAOImpl;
+import com.freckles.of.couple.dal.RoomManagementImpl;
 import com.freckles.of.couple.fubble.FubbleEndpoint;
 import com.freckles.of.couple.fubble.entities.Room;
 import com.freckles.of.couple.fubble.entities.User;
@@ -14,7 +13,7 @@ public class CloseHandler {
 
     private static final Logger LOGGER  = LogManager.getLogger(CloseHandler.class);
 
-    private RoomManagementDAO   roomDAO = new RoomManagementDAOImpl();
+    private RoomManagementImpl  roomDAO = new RoomManagementImpl();
 
     public void handleClose(FubbleEndpoint connection) {
         Room room = connection.getRoom();
