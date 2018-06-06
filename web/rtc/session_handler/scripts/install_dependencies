@@ -1,0 +1,9 @@
+#!/bin/bash
+
+pip install \
+  coverage \
+  flask \
+  protobuf \
+  pytest \
+
+

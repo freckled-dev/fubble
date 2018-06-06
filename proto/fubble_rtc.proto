@@ -10,15 +10,15 @@ option java_outer_classname = "RtcMessageContainer";
 
 message RtcMessageRequest {
 	optional JoinRoom joinRoom = 1;
-	optional DeleteRoom deleteRoom = 1;
+	optional DeleteRoom deleteRoom = 2;
 }
 
 message JoinRoom {
-	optional string roomName = 1;
+	optional string id = 1;
 }
 
 message DeleteRoom {
-	optional string roomName = 1;
+	optional string id = 1;
 }
 
 

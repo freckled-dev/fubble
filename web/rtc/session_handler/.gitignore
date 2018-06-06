@@ -12,3 +12,5 @@ htmlcov/
 dist/
 build/
 *.egg-info/
+
+*_pb2.py

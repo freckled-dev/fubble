@@ -1,0 +1,8 @@
+#!/bin/bash
+
+cd "$(dirname "$0")"/..
+
+proto_dir=../../../proto/
+result_dir=server/
+protoc -I=$proto_dir --python_out=$result_dir $proto_dir/fubble_rtc.proto
+
