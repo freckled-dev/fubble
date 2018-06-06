@@ -7,14 +7,15 @@ option java_outer_classname = "WebContainer";
 
 
 message MessageContainer {
-	// room handling
-	optional JoinRoom joinRoom = 1;
-	optional RenameRoom renameRoom = 2;
-	optional RenameUser renameUser = 3;
-	
-	// chat
-	optional ChatMessage chat = 4;
-
+	oneof messageType {
+		// room handling
+		JoinRoom joinRoom = 1;
+		RenameRoom renameRoom = 2;
+		RenameUser renameUser = 3;
+		
+		// chat
+		ChatMessage chat = 4;
+	}
 }
 
 message JoinRoom {
