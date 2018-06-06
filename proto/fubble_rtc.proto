@@ -9,28 +9,28 @@ option java_outer_classname = "RtcMessageContainer";
 // Request
 
 message RtcMessageRequest {
-	optional JoinRoom joinRoom = 1;
-	optional DeleteRoom deleteRoom = 2;
+  oneof messageType {
+    JoinRoom joinRoom = 1;
+    DeleteRoom deleteRoom = 2;
+  }
 }
 
 message JoinRoom {
-	optional string id = 1;
+  optional string id = 1;
 }
 
 message DeleteRoom {
 	optional string id = 1;
 }
 
-
-
-
-
 // Response
 
 message RtcMessageResponse {
-	optional RoomInformation roomInformation = 1;
+  oneof messageType {
+    RoomInformation roomInformation = 1;
+  }
 }
 
 message RoomInformation {
-	optional string rtcServer = 1;
+  optional string rtcServer = 1;
 }
