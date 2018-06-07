@@ -25,4 +25,17 @@ public class FubbleWebSocketTest {
         return endpoints;
     }
 
+    public FubbleClientEndpoint createClient() {
+        String serverLocation = FubbleTestProperties.getInstance().getServerLocation();
+
+        try {
+            FubbleClientEndpoint clientEndPoint = new FubbleClientEndpoint(new URI(serverLocation));
+            return clientEndPoint;
+        } catch (URISyntaxException ex) {
+            ex.printStackTrace();
+        }
+
+        return null;
+    }
+
 }

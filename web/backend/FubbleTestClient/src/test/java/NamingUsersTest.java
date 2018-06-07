@@ -19,6 +19,8 @@ import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer;
 public class NamingUsersTest extends FubbleWebSocketTest {
 
     private static final Logger LOGGER         = LogManager.getLogger(NamingUsersTest.class);
+    private static final String ROOM_NAME_1    = "martin-loves-dick-test1";
+    private static final String ROOM_NAME_2    = "martin-loves-dick-test2";
 
     private static final int    WAITING_PERIOD = 1000;
 
@@ -30,7 +32,7 @@ public class NamingUsersTest extends FubbleWebSocketTest {
             // 5 clients join the same room - Fubbler1, Fubbler2, Fubbler3, Fubbler4, Fubbler5
             for (int index = 0; index < allClients.size(); index++) {
                 FubbleClientEndpoint client = allClients.get(index);
-                joinRoom("martin-loves-dick", client);
+                joinRoom(ROOM_NAME_1, client);
             }
 
             Thread.sleep(WAITING_PERIOD);
@@ -66,7 +68,7 @@ public class NamingUsersTest extends FubbleWebSocketTest {
             allClients.addAll(firstJoins);
 
             for (FubbleClientEndpoint client : firstJoins) {
-                joinRoom("martin-loves-dick", client);
+                joinRoom(ROOM_NAME_2, client);
             }
 
             Thread.sleep(WAITING_PERIOD);
@@ -85,7 +87,7 @@ public class NamingUsersTest extends FubbleWebSocketTest {
             allClients.addAll(secondJoins);
 
             for (FubbleClientEndpoint client : secondJoins) {
-                joinRoom("martin-loves-dick", client);
+                joinRoom(ROOM_NAME_2, client);
             }
 
             Thread.sleep(WAITING_PERIOD);

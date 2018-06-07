@@ -135,4 +135,8 @@ public class FubbleClientEndpoint {
         this.messages = messages;
     }
 
+    public String getUserId() {
+        return userId;
+    }
+
 }
