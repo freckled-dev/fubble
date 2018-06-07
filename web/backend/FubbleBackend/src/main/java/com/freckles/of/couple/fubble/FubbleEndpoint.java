@@ -1,6 +1,7 @@
 
 package com.freckles.of.couple.fubble;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
@@ -27,6 +28,7 @@ import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer.M
 public class FubbleEndpoint {
 
     private static final Logger  LOGGER = LogManager.getLogger(FubbleEndpoint.class);
+
     private FubbleMessageHandler handler;
     private CloseHandler         closer = new CloseHandler();
     private Session              session;
@@ -54,7 +56,7 @@ public class FubbleEndpoint {
 
             handleContainer(container);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOGGER.error(ex);
         } finally {
             if (room != null) {
                 room.getMutex().unlock();
@@ -100,7 +102,12 @@ public class FubbleEndpoint {
 
     @OnError
     public void onError(Throwable throwable) {
-        LOGGER.error(throwable.getMessage());
+        // EOF = user closed their browser, etc
+        if (throwable instanceof EOFException) {
+            return;
+        } else {
+            LOGGER.error(throwable);
+        }
     }
 
     @OnClose

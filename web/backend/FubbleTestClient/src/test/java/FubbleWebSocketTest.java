@@ -8,19 +8,21 @@ import com.freckles.of.couple.fubble.FubbleTestProperties;
 
 public class FubbleWebSocketTest {
 
-    protected List<FubbleClientEndpoint> clientEndPoints = new ArrayList<>();
+    public List<FubbleClientEndpoint> createClients(int numClients) {
+        List<FubbleClientEndpoint> endpoints = new ArrayList<>();
 
-    public void createClients(int numClients) {
         String serverLocation = FubbleTestProperties.getInstance().getServerLocation();
 
         for (int index = 0; index < numClients; index++) {
             try {
                 FubbleClientEndpoint clientEndPoint = new FubbleClientEndpoint(new URI(serverLocation));
-                clientEndPoints.add(clientEndPoint);
+                endpoints.add(clientEndPoint);
             } catch (URISyntaxException ex) {
                 ex.printStackTrace();
             }
         }
+
+        return endpoints;
     }
 
 }

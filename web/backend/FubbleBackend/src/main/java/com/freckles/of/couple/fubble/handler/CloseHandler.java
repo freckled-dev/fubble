@@ -26,6 +26,9 @@ public class CloseHandler {
     }
 
     private void removeRoom(Room room) {
+        if (room == null) {
+            return;
+        }
         if (room.getUsers().isEmpty()) {
             roomDAO.deleteRoom(room.getName());
         }

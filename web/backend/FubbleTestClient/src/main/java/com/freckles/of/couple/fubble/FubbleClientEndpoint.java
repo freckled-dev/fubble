@@ -3,6 +3,8 @@ package com.freckles.of.couple.fubble;
 
 import java.net.URI;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.websocket.ClientEndpoint;
 import javax.websocket.CloseReason;
@@ -16,8 +18,10 @@ import javax.websocket.WebSocketContainer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoom;
 import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient;
 import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient.MessageTypeCase;
+import com.freckles.of.couple.fubble.proto.WebContainer.UserJoined;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 /**
@@ -26,10 +30,13 @@ import com.google.protobuf.InvalidProtocolBufferException;
 @ClientEndpoint
 public class FubbleClientEndpoint {
 
-    private static final Logger LOGGER      = LogManager.getLogger(FubbleClientEndpoint.class);
+    private static final Logger          LOGGER      = LogManager.getLogger(FubbleClientEndpoint.class);
 
-    private Session             userSession = null;
-    private String              userName;
+    private Session                      userSession = null;
+    private String                       userName;
+    private String                       userId;
+
+    private List<MessageContainerClient> messages    = new ArrayList<>();
 
     public FubbleClientEndpoint(URI endpointURI) {
         try {
@@ -71,14 +78,23 @@ public class FubbleClientEndpoint {
         ByteBuffer binaryMessage = ByteBuffer.wrap(message);
         try {
             MessageContainerClient container = MessageContainerClient.parseFrom(binaryMessage);
+
             MessageTypeCase messageTypeCase = container.getMessageTypeCase();
 
             if (MessageTypeCase.JOINEDROOM.equals(messageTypeCase)) {
-                System.out.println(userName + ":" + container);
+                JoinedRoom joinedRoom = container.getJoinedRoom();
+                this.userId = joinedRoom.getUserId();
             }
+
             if (MessageTypeCase.USERJOINED.equals(messageTypeCase)) {
-                System.out.println(userName + ":" + container);
+                UserJoined joinedRoom = container.getUserJoined();
+
+                if (joinedRoom.getId().equals(userId)) {
+                    this.userName = joinedRoom.getName();
+                }
             }
+
+            messages.add(container);
         } catch (InvalidProtocolBufferException ex) {
             LOGGER.error(ex);
         }
@@ -105,6 +121,18 @@ public class FubbleClientEndpoint {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public Session getUserSession() {
+        return userSession;
+    }
+
+    public List<MessageContainerClient> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(List<MessageContainerClient> messages) {
+        this.messages = messages;
     }
 
 }

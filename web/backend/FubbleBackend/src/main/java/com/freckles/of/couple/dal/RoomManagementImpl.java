@@ -40,7 +40,7 @@ public class RoomManagementImpl implements RoomManagementDAO {
                 rooms.add(existing);
                 LOGGER.info(String.format("Server: Room %s has been created.", roomName));
             } else {
-                LOGGER.info(String.format("Server: Room %s already exists.", roomName));
+                // LOGGER.info(String.format("Server: Room %s already exists.", roomName));
             }
 
             return existing;
