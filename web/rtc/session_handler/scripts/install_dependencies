@@ -3,7 +3,7 @@
 set -e
 cd "$(dirname "$0")"/..
 
-pip install \
+pip3 install \
   coverage \
   flask \
   protobuf \
