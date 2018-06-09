@@ -80,7 +80,7 @@ public class RenamingUsersTest extends WebsocketTest {
             // 5 clients join the same room - Fubbler1, Fubbler2, Fubbler3, Fubbler4, Fubbler5
             for (int index = 0; index < allClients.size(); index++) {
                 FubbleClientEndpoint client = allClients.get(index);
-                joinRoom(ROOM_NAME_1, client);
+                joinRoom(ROOM_NAME_2, client);
             }
 
             Thread.sleep(WAITING_PERIOD);

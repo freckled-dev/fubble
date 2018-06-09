@@ -96,7 +96,6 @@ public class FubbleClientEndpoint {
 
             if (MessageTypeCase.RENAMEDUSER.equals(messageTypeCase)) {
                 RenamedUser renamedUser = container.getRenamedUser();
-                System.out.println(container);
 
                 if (renamedUser.getId().equals(userId)) {
                     this.userName = renamedUser.getName();
@@ -127,8 +126,8 @@ public class FubbleClientEndpoint {
         ByteBuffer binaryMessage = ByteBuffer.wrap(message);
         try {
             this.userSession.getAsyncRemote().sendBinary(binaryMessage);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            LOGGER.error(ex);
         }
     }
 
