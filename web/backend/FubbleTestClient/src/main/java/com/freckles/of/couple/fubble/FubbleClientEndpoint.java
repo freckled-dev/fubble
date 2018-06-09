@@ -78,7 +78,6 @@ public class FubbleClientEndpoint {
         ByteBuffer binaryMessage = ByteBuffer.wrap(message);
         try {
             MessageContainerClient container = MessageContainerClient.parseFrom(binaryMessage);
-
             MessageTypeCase messageTypeCase = container.getMessageTypeCase();
 
             if (MessageTypeCase.JOINEDROOM.equals(messageTypeCase)) {

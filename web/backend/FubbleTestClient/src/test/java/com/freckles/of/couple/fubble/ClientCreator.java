@@ -1,3 +1,4 @@
+package com.freckles.of.couple.fubble;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -6,7 +7,7 @@ import java.util.List;
 import com.freckles.of.couple.fubble.FubbleClientEndpoint;
 import com.freckles.of.couple.fubble.FubbleTestProperties;
 
-public class FubbleWebSocketTest {
+public class ClientCreator {
 
     public List<FubbleClientEndpoint> createClients(int numClients) {
         List<FubbleClientEndpoint> endpoints = new ArrayList<>();

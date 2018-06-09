@@ -1,3 +1,4 @@
+package com.freckles.of.couple.fubble;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -16,7 +17,7 @@ import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient.M
 import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer;
 import com.freckles.of.couple.fubble.proto.WebContainer.UserJoined;
 
-public class JoinRoomTest extends FubbleWebSocketTest {
+public class JoinRoomTest extends ClientCreator {
 
     private static final Logger LOGGER         = LogManager.getLogger(JoinRoomTest.class);
 
