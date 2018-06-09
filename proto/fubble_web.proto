@@ -44,7 +44,7 @@ message MessageContainerClient {
 		UserJoined userJoined = 1;
 		UserLeft userLeft = 2;
 		JoinedRoom joinedRoom = 3;
-		Error errpr = 4;
+		Error error = 4;
 		RenamedUser renamedUser = 5;
 	}
 }
