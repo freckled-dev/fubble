@@ -3,21 +3,17 @@ package com.freckles.of.couple.fubble;
 
 import static org.junit.Assert.assertTrue;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
-import com.freckles.of.couple.fubble.proto.WebContainer.JoinRoom;
 import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient;
 import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient.MessageTypeCase;
-import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer;
 import com.freckles.of.couple.fubble.proto.WebContainer.UserLeft;
 
-public class LeaveRoomTest extends ClientCreator {
+public class LeaveRoomTest extends WebsocketTest {
 
     private static final Logger LOGGER         = LogManager.getLogger(LeaveRoomTest.class);
 
@@ -113,22 +109,6 @@ public class LeaveRoomTest extends ClientCreator {
             Thread.sleep(WAITING_PERIOD);
 
         } catch (Exception ex) {
-            LOGGER.error(ex);
-        }
-    }
-
-    private void joinRoom(String roomName, FubbleClientEndpoint client) {
-        try {
-            JoinRoom joinRoom = JoinRoom.newBuilder().setRoomName(roomName).build();
-            MessageContainerServer container = MessageContainerServer.newBuilder().setJoinRoom(joinRoom).build();
-
-            ByteArrayOutputStream output = new ByteArrayOutputStream();
-            container.writeTo(output);
-
-            client.sendMessage(output.toByteArray());
-
-            output.close();
-        } catch (IOException ex) {
             LOGGER.error(ex);
         }
     }

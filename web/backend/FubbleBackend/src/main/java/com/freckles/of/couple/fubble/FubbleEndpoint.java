@@ -21,6 +21,7 @@ import com.freckles.of.couple.fubble.handler.CloseHandler;
 import com.freckles.of.couple.fubble.handler.FubbleMessageHandler;
 import com.freckles.of.couple.fubble.handler.JoinRoomHandler;
 import com.freckles.of.couple.fubble.handler.RenameRoomHandler;
+import com.freckles.of.couple.fubble.handler.RenameUserHandler;
 import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer;
 import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer.MessageTypeCase;
 
@@ -74,6 +75,10 @@ public class FubbleEndpoint {
 
         if (messageTypeCase.equals(MessageTypeCase.RENAMEROOM)) {
             handler = new RenameRoomHandler();
+        }
+
+        if (messageTypeCase.equals(MessageTypeCase.RENAMEUSER)) {
+            handler = new RenameUserHandler();
         }
 
         handler.handleMessage(container, this);
