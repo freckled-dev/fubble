@@ -3741,17 +3741,17 @@ public final class WebContainer {
     com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoomOrBuilder getJoinedRoomOrBuilder();
 
     /**
-     * <code>optional .fubble.Error errpr = 4;</code>
+     * <code>optional .fubble.Error error = 4;</code>
      */
-    boolean hasErrpr();
+    boolean hasError();
     /**
-     * <code>optional .fubble.Error errpr = 4;</code>
+     * <code>optional .fubble.Error error = 4;</code>
      */
-    com.freckles.of.couple.fubble.proto.WebContainer.Error getErrpr();
+    com.freckles.of.couple.fubble.proto.WebContainer.Error getError();
     /**
-     * <code>optional .fubble.Error errpr = 4;</code>
+     * <code>optional .fubble.Error error = 4;</code>
      */
-    com.freckles.of.couple.fubble.proto.WebContainer.ErrorOrBuilder getErrprOrBuilder();
+    com.freckles.of.couple.fubble.proto.WebContainer.ErrorOrBuilder getErrorOrBuilder();
 
     /**
      * <code>optional .fubble.RenamedUser renamedUser = 5;</code>
@@ -3916,7 +3916,7 @@ public final class WebContainer {
       USERJOINED(1),
       USERLEFT(2),
       JOINEDROOM(3),
-      ERRPR(4),
+      ERROR(4),
       RENAMEDUSER(5),
       MESSAGETYPE_NOT_SET(0);
       private final int value;
@@ -3936,7 +3936,7 @@ public final class WebContainer {
           case 1: return USERJOINED;
           case 2: return USERLEFT;
           case 3: return JOINEDROOM;
-          case 4: return ERRPR;
+          case 4: return ERROR;
           case 5: return RENAMEDUSER;
           case 0: return MESSAGETYPE_NOT_SET;
           default: return null;
@@ -4031,26 +4031,26 @@ public final class WebContainer {
       return com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoom.getDefaultInstance();
     }
 
-    public static final int ERRPR_FIELD_NUMBER = 4;
+    public static final int ERROR_FIELD_NUMBER = 4;
     /**
-     * <code>optional .fubble.Error errpr = 4;</code>
+     * <code>optional .fubble.Error error = 4;</code>
      */
-    public boolean hasErrpr() {
+    public boolean hasError() {
       return messageTypeCase_ == 4;
     }
     /**
-     * <code>optional .fubble.Error errpr = 4;</code>
+     * <code>optional .fubble.Error error = 4;</code>
      */
-    public com.freckles.of.couple.fubble.proto.WebContainer.Error getErrpr() {
+    public com.freckles.of.couple.fubble.proto.WebContainer.Error getError() {
       if (messageTypeCase_ == 4) {
          return (com.freckles.of.couple.fubble.proto.WebContainer.Error) messageType_;
       }
       return com.freckles.of.couple.fubble.proto.WebContainer.Error.getDefaultInstance();
     }
     /**
-     * <code>optional .fubble.Error errpr = 4;</code>
+     * <code>optional .fubble.Error error = 4;</code>
      */
-    public com.freckles.of.couple.fubble.proto.WebContainer.ErrorOrBuilder getErrprOrBuilder() {
+    public com.freckles.of.couple.fubble.proto.WebContainer.ErrorOrBuilder getErrorOrBuilder() {
       if (messageTypeCase_ == 4) {
          return (com.freckles.of.couple.fubble.proto.WebContainer.Error) messageType_;
       }
@@ -4171,8 +4171,8 @@ public final class WebContainer {
               .equals(other.getJoinedRoom());
           break;
         case 4:
-          result = result && getErrpr()
-              .equals(other.getErrpr());
+          result = result && getError()
+              .equals(other.getError());
           break;
         case 5:
           result = result && getRenamedUser()
@@ -4206,8 +4206,8 @@ public final class WebContainer {
           hash = (53 * hash) + getJoinedRoom().hashCode();
           break;
         case 4:
-          hash = (37 * hash) + ERRPR_FIELD_NUMBER;
-          hash = (53 * hash) + getErrpr().hashCode();
+          hash = (37 * hash) + ERROR_FIELD_NUMBER;
+          hash = (53 * hash) + getError().hashCode();
           break;
         case 5:
           hash = (37 * hash) + RENAMEDUSER_FIELD_NUMBER;
@@ -4393,10 +4393,10 @@ public final class WebContainer {
           }
         }
         if (messageTypeCase_ == 4) {
-          if (errprBuilder_ == null) {
+          if (errorBuilder_ == null) {
             result.messageType_ = messageType_;
           } else {
-            result.messageType_ = errprBuilder_.build();
+            result.messageType_ = errorBuilder_.build();
           }
         }
         if (messageTypeCase_ == 5) {
@@ -4462,8 +4462,8 @@ public final class WebContainer {
             mergeJoinedRoom(other.getJoinedRoom());
             break;
           }
-          case ERRPR: {
-            mergeErrpr(other.getErrpr());
+          case ERROR: {
+            mergeError(other.getError());
             break;
           }
           case RENAMEDUSER: {
@@ -4926,64 +4926,64 @@ public final class WebContainer {
       }
 
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.freckles.of.couple.fubble.proto.WebContainer.Error, com.freckles.of.couple.fubble.proto.WebContainer.Error.Builder, com.freckles.of.couple.fubble.proto.WebContainer.ErrorOrBuilder> errprBuilder_;
+          com.freckles.of.couple.fubble.proto.WebContainer.Error, com.freckles.of.couple.fubble.proto.WebContainer.Error.Builder, com.freckles.of.couple.fubble.proto.WebContainer.ErrorOrBuilder> errorBuilder_;
       /**
-       * <code>optional .fubble.Error errpr = 4;</code>
+       * <code>optional .fubble.Error error = 4;</code>
        */
-      public boolean hasErrpr() {
+      public boolean hasError() {
         return messageTypeCase_ == 4;
       }
       /**
-       * <code>optional .fubble.Error errpr = 4;</code>
+       * <code>optional .fubble.Error error = 4;</code>
        */
-      public com.freckles.of.couple.fubble.proto.WebContainer.Error getErrpr() {
-        if (errprBuilder_ == null) {
+      public com.freckles.of.couple.fubble.proto.WebContainer.Error getError() {
+        if (errorBuilder_ == null) {
           if (messageTypeCase_ == 4) {
             return (com.freckles.of.couple.fubble.proto.WebContainer.Error) messageType_;
           }
           return com.freckles.of.couple.fubble.proto.WebContainer.Error.getDefaultInstance();
         } else {
           if (messageTypeCase_ == 4) {
-            return errprBuilder_.getMessage();
+            return errorBuilder_.getMessage();
           }
           return com.freckles.of.couple.fubble.proto.WebContainer.Error.getDefaultInstance();
         }
       }
       /**
-       * <code>optional .fubble.Error errpr = 4;</code>
+       * <code>optional .fubble.Error error = 4;</code>
        */
-      public Builder setErrpr(com.freckles.of.couple.fubble.proto.WebContainer.Error value) {
-        if (errprBuilder_ == null) {
+      public Builder setError(com.freckles.of.couple.fubble.proto.WebContainer.Error value) {
+        if (errorBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
           messageType_ = value;
           onChanged();
         } else {
-          errprBuilder_.setMessage(value);
+          errorBuilder_.setMessage(value);
         }
         messageTypeCase_ = 4;
         return this;
       }
       /**
-       * <code>optional .fubble.Error errpr = 4;</code>
+       * <code>optional .fubble.Error error = 4;</code>
        */
-      public Builder setErrpr(
+      public Builder setError(
           com.freckles.of.couple.fubble.proto.WebContainer.Error.Builder builderForValue) {
-        if (errprBuilder_ == null) {
+        if (errorBuilder_ == null) {
           messageType_ = builderForValue.build();
           onChanged();
         } else {
-          errprBuilder_.setMessage(builderForValue.build());
+          errorBuilder_.setMessage(builderForValue.build());
         }
         messageTypeCase_ = 4;
         return this;
       }
       /**
-       * <code>optional .fubble.Error errpr = 4;</code>
+       * <code>optional .fubble.Error error = 4;</code>
        */
-      public Builder mergeErrpr(com.freckles.of.couple.fubble.proto.WebContainer.Error value) {
-        if (errprBuilder_ == null) {
+      public Builder mergeError(com.freckles.of.couple.fubble.proto.WebContainer.Error value) {
+        if (errorBuilder_ == null) {
           if (messageTypeCase_ == 4 &&
               messageType_ != com.freckles.of.couple.fubble.proto.WebContainer.Error.getDefaultInstance()) {
             messageType_ = com.freckles.of.couple.fubble.proto.WebContainer.Error.newBuilder((com.freckles.of.couple.fubble.proto.WebContainer.Error) messageType_)
@@ -4994,18 +4994,18 @@ public final class WebContainer {
           onChanged();
         } else {
           if (messageTypeCase_ == 4) {
-            errprBuilder_.mergeFrom(value);
+            errorBuilder_.mergeFrom(value);
           }
-          errprBuilder_.setMessage(value);
+          errorBuilder_.setMessage(value);
         }
         messageTypeCase_ = 4;
         return this;
       }
       /**
-       * <code>optional .fubble.Error errpr = 4;</code>
+       * <code>optional .fubble.Error error = 4;</code>
        */
-      public Builder clearErrpr() {
-        if (errprBuilder_ == null) {
+      public Builder clearError() {
+        if (errorBuilder_ == null) {
           if (messageTypeCase_ == 4) {
             messageTypeCase_ = 0;
             messageType_ = null;
@@ -5016,22 +5016,22 @@ public final class WebContainer {
             messageTypeCase_ = 0;
             messageType_ = null;
           }
-          errprBuilder_.clear();
+          errorBuilder_.clear();
         }
         return this;
       }
       /**
-       * <code>optional .fubble.Error errpr = 4;</code>
+       * <code>optional .fubble.Error error = 4;</code>
        */
-      public com.freckles.of.couple.fubble.proto.WebContainer.Error.Builder getErrprBuilder() {
-        return getErrprFieldBuilder().getBuilder();
+      public com.freckles.of.couple.fubble.proto.WebContainer.Error.Builder getErrorBuilder() {
+        return getErrorFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .fubble.Error errpr = 4;</code>
+       * <code>optional .fubble.Error error = 4;</code>
        */
-      public com.freckles.of.couple.fubble.proto.WebContainer.ErrorOrBuilder getErrprOrBuilder() {
-        if ((messageTypeCase_ == 4) && (errprBuilder_ != null)) {
-          return errprBuilder_.getMessageOrBuilder();
+      public com.freckles.of.couple.fubble.proto.WebContainer.ErrorOrBuilder getErrorOrBuilder() {
+        if ((messageTypeCase_ == 4) && (errorBuilder_ != null)) {
+          return errorBuilder_.getMessageOrBuilder();
         } else {
           if (messageTypeCase_ == 4) {
             return (com.freckles.of.couple.fubble.proto.WebContainer.Error) messageType_;
@@ -5040,16 +5040,16 @@ public final class WebContainer {
         }
       }
       /**
-       * <code>optional .fubble.Error errpr = 4;</code>
+       * <code>optional .fubble.Error error = 4;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           com.freckles.of.couple.fubble.proto.WebContainer.Error, com.freckles.of.couple.fubble.proto.WebContainer.Error.Builder, com.freckles.of.couple.fubble.proto.WebContainer.ErrorOrBuilder> 
-          getErrprFieldBuilder() {
-        if (errprBuilder_ == null) {
+          getErrorFieldBuilder() {
+        if (errorBuilder_ == null) {
           if (!(messageTypeCase_ == 4)) {
             messageType_ = com.freckles.of.couple.fubble.proto.WebContainer.Error.getDefaultInstance();
           }
-          errprBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+          errorBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
               com.freckles.of.couple.fubble.proto.WebContainer.Error, com.freckles.of.couple.fubble.proto.WebContainer.Error.Builder, com.freckles.of.couple.fubble.proto.WebContainer.ErrorOrBuilder>(
                   (com.freckles.of.couple.fubble.proto.WebContainer.Error) messageType_,
                   getParentForChildren(),
@@ -5058,7 +5058,7 @@ public final class WebContainer {
         }
         messageTypeCase_ = 4;
         onChanged();;
-        return errprBuilder_;
+        return errorBuilder_;
       }
 
       private com.google.protobuf.SingleFieldBuilderV3<
@@ -8771,7 +8771,7 @@ public final class WebContainer {
       "eContainerClient\022(\n\nuserJoined\030\001 \001(\0132\022.f" +
       "ubble.UserJoinedH\000\022$\n\010userLeft\030\002 \001(\0132\020.f" +
       "ubble.UserLeftH\000\022(\n\njoinedRoom\030\003 \001(\0132\022.f" +
-      "ubble.JoinedRoomH\000\022\036\n\005errpr\030\004 \001(\0132\r.fubb" +
+      "ubble.JoinedRoomH\000\022\036\n\005error\030\004 \001(\0132\r.fubb" +
       "le.ErrorH\000\022*\n\013renamedUser\030\005 \001(\0132\023.fubble" +
       ".RenamedUserH\000B\r\n\013messageType\"&\n\nUserJoi" +
       "ned\022\014\n\004name\030\001 \001(\t\022\n\n\002id\030\002 \001(\t\"\026\n\010UserLef" +
@@ -8828,7 +8828,7 @@ public final class WebContainer {
     internal_static_fubble_MessageContainerClient_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_fubble_MessageContainerClient_descriptor,
-        new java.lang.String[] { "UserJoined", "UserLeft", "JoinedRoom", "Errpr", "RenamedUser", "MessageType", });
+        new java.lang.String[] { "UserJoined", "UserLeft", "JoinedRoom", "Error", "RenamedUser", "MessageType", });
     internal_static_fubble_UserJoined_descriptor =
       getDescriptor().getMessageTypes().get(6);
     internal_static_fubble_UserJoined_fieldAccessorTable = new
