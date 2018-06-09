@@ -1,8 +1,9 @@
+
 package com.freckles.of.couple.fubble;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,12 +13,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
-import com.freckles.of.couple.fubble.FubbleClientEndpoint;
-import com.freckles.of.couple.fubble.FubbleTestProperties;
-import com.freckles.of.couple.fubble.proto.WebContainer.JoinRoom;
-import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer;
-
-public class NamingUsersTest extends ClientCreator {
+public class NamingUsersTest extends WebsocketTest {
 
     private static final Logger LOGGER         = LogManager.getLogger(NamingUsersTest.class);
     private static final String ROOM_NAME_1    = "martin-loves-dick-test1";
@@ -111,22 +107,6 @@ public class NamingUsersTest extends ClientCreator {
             Thread.sleep(WAITING_PERIOD);
 
         } catch (InterruptedException | IOException ex) {
-            LOGGER.error(ex);
-        }
-    }
-
-    private void joinRoom(String roomName, FubbleClientEndpoint client) {
-        try {
-            JoinRoom joinRoom = JoinRoom.newBuilder().setRoomName(roomName).build();
-            MessageContainerServer container = MessageContainerServer.newBuilder().setJoinRoom(joinRoom).build();
-
-            ByteArrayOutputStream output = new ByteArrayOutputStream();
-            container.writeTo(output);
-
-            client.sendMessage(output.toByteArray());
-
-            output.close();
-        } catch (IOException ex) {
             LOGGER.error(ex);
         }
     }

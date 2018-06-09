@@ -21,6 +21,7 @@ import org.apache.logging.log4j.Logger;
 import com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoom;
 import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient;
 import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient.MessageTypeCase;
+import com.freckles.of.couple.fubble.proto.WebContainer.RenamedUser;
 import com.freckles.of.couple.fubble.proto.WebContainer.UserJoined;
 import com.google.protobuf.InvalidProtocolBufferException;
 
@@ -86,10 +87,19 @@ public class FubbleClientEndpoint {
             }
 
             if (MessageTypeCase.USERJOINED.equals(messageTypeCase)) {
-                UserJoined joinedRoom = container.getUserJoined();
+                UserJoined userJoined = container.getUserJoined();
 
-                if (joinedRoom.getId().equals(userId)) {
-                    this.userName = joinedRoom.getName();
+                if (userJoined.getId().equals(userId)) {
+                    this.userName = userJoined.getName();
+                }
+            }
+
+            if (MessageTypeCase.RENAMEDUSER.equals(messageTypeCase)) {
+                RenamedUser renamedUser = container.getRenamedUser();
+                System.out.println(container);
+
+                if (renamedUser.getId().equals(userId)) {
+                    this.userName = renamedUser.getName();
                 }
             }
 
