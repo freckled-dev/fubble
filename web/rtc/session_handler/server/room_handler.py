@@ -18,3 +18,8 @@ class RoomHandler:
             raise RoomHandler.NotFoundError()
         return self.rooms[name]
 
+    def remove(self, name):
+        if not name in self.rooms:
+            raise RoomHandler.NotFoundError()
+        del self.rooms[name]
+

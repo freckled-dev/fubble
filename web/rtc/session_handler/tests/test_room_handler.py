@@ -24,10 +24,23 @@ def test_get_fail():
         return
     assert false
 
-def test_get_fail():
+def test_get():
     rooms = create_room_handler()
     rooms.add_or_get("room name")
     got = rooms.get("room name")
     assert got == "prefix_room name"
 
+def test_remove():
+    rooms = create_room_handler()
+    rooms.add_or_get("room name")
+    assert len(rooms.rooms) == 1
+    got = rooms.remove("room name")
+    assert not rooms.rooms
 
+def test_remove_fail():
+    rooms = create_room_handler()
+    try:
+        rooms.remove("room name")
+    except RoomHandler.NotFoundError:
+        return
+    assert false
