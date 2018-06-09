@@ -16,6 +16,14 @@ def test_add_or_get():
     assert added == "prefix_room name"
     assert len(rooms.rooms) == 1
 
+def test_add_two():
+    rooms = create_room_handler()
+    added = rooms.add_or_get("room name 0")
+    added = rooms.add_or_get("room name 1")
+    assert len(rooms.rooms) == 2
+    rooms.get("room name 0")
+    rooms.get("room name 1")
+
 def test_get_fail():
     rooms = create_room_handler()
     try:
