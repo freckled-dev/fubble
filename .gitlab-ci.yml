@@ -1,0 +1,4 @@
+test_rtc_session_handler:
+  image: registry.gitlab.com/acof/fubble/ci/build_build:v0
+  script: ./web/rtc/session_handler/scripts/ci/test
+
