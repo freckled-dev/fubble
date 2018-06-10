@@ -1,0 +1,21 @@
+syntax = "proto2";
+// package fubble_rtc;
+
+option java_package = "com.freckles.of.couple.fubble";
+option java_outer_classname = "RtcMessageContainer";
+
+message JoinRoomRequest {
+  optional string id = 1;
+}
+
+message RoomInformation {
+  optional string rtcServer = 1;
+}
+message DeleteRoomRequest {
+  optional string id = 1;
+}
+
+service Rtc {
+  rpc JoinRoom(JoinRoomRequest) returns (RoomInformation) {}
+}
+
