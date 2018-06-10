@@ -21,6 +21,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.freckles.of.couple.fubble.entities.User;
 import com.freckles.of.couple.fubble.proto.WebContainer.ChatMessageClient;
+import com.freckles.of.couple.fubble.proto.WebContainer.FubbleError;
 import com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoom;
 import com.freckles.of.couple.fubble.proto.WebContainer.LockedRoom;
 import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient;
@@ -135,8 +136,17 @@ public class FubbleClientEndpoint {
             }
 
             if (MessageTypeCase.LOCK_ROOM.equals(messageTypeCase)) {
-                LockedRoom userLeft = container.getLockRoom();
-                System.out.println(userLeft);
+                LockedRoom roomLocked = container.getLockRoom();
+                if (roomLocked.getLock()) {
+                    print(String.format("User %s has locked the room.", roomLocked.getUserId()));
+                } else {
+                    print(String.format("User %s has unlocked the room.", roomLocked.getUserId()));
+                }
+            }
+
+            if (MessageTypeCase.ERROR.equals(messageTypeCase)) {
+                FubbleError error = container.getError();
+                print(error.toString());
             }
 
             messages.add(container);

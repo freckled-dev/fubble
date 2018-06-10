@@ -3385,564 +3385,6 @@ public final class WebContainer {
 
   }
 
-  public interface RenameRoomOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:fubble.RenameRoom)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <code>optional string room_name = 1;</code>
-     */
-    boolean hasRoomName();
-    /**
-     * <code>optional string room_name = 1;</code>
-     */
-    java.lang.String getRoomName();
-    /**
-     * <code>optional string room_name = 1;</code>
-     */
-    com.google.protobuf.ByteString
-        getRoomNameBytes();
-  }
-  /**
-   * Protobuf type {@code fubble.RenameRoom}
-   */
-  public  static final class RenameRoom extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:fubble.RenameRoom)
-      RenameRoomOrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use RenameRoom.newBuilder() to construct.
-    private RenameRoom(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private RenameRoom() {
-      roomName_ = "";
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
-    private RenameRoom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
-      if (extensionRegistry == null) {
-        throw new java.lang.NullPointerException();
-      }
-      int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-            case 10: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000001;
-              roomName_ = bs;
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
-      } finally {
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_RenameRoom_descriptor;
-    }
-
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_RenameRoom_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom.class, com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom.Builder.class);
-    }
-
-    private int bitField0_;
-    public static final int ROOM_NAME_FIELD_NUMBER = 1;
-    private volatile java.lang.Object roomName_;
-    /**
-     * <code>optional string room_name = 1;</code>
-     */
-    public boolean hasRoomName() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    /**
-     * <code>optional string room_name = 1;</code>
-     */
-    public java.lang.String getRoomName() {
-      java.lang.Object ref = roomName_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          roomName_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>optional string room_name = 1;</code>
-     */
-    public com.google.protobuf.ByteString
-        getRoomNameBytes() {
-      java.lang.Object ref = roomName_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        roomName_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    private byte memoizedIsInitialized = -1;
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, roomName_);
-      }
-      unknownFields.writeTo(output);
-    }
-
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, roomName_);
-      }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom)) {
-        return super.equals(obj);
-      }
-      com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom other = (com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom) obj;
-
-      boolean result = true;
-      result = result && (hasRoomName() == other.hasRoomName());
-      if (hasRoomName()) {
-        result = result && getRoomName()
-            .equals(other.getRoomName());
-      }
-      result = result && unknownFields.equals(other.unknownFields);
-      return result;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      if (hasRoomName()) {
-        hash = (37 * hash) + ROOM_NAME_FIELD_NUMBER;
-        hash = (53 * hash) + getRoomName().hashCode();
-      }
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code fubble.RenameRoom}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:fubble.RenameRoom)
-        com.freckles.of.couple.fubble.proto.WebContainer.RenameRoomOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_RenameRoom_descriptor;
-      }
-
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_RenameRoom_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom.class, com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom.Builder.class);
-      }
-
-      // Construct using com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-        }
-      }
-      public Builder clear() {
-        super.clear();
-        roomName_ = "";
-        bitField0_ = (bitField0_ & ~0x00000001);
-        return this;
-      }
-
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_RenameRoom_descriptor;
-      }
-
-      public com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom getDefaultInstanceForType() {
-        return com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom.getDefaultInstance();
-      }
-
-      public com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom build() {
-        com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      public com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom buildPartial() {
-        com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom result = new com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom(this);
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
-        result.roomName_ = roomName_;
-        result.bitField0_ = to_bitField0_;
-        onBuilt();
-        return result;
-      }
-
-      public Builder clone() {
-        return (Builder) super.clone();
-      }
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return (Builder) super.setField(field, value);
-      }
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return (Builder) super.clearField(field);
-      }
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return (Builder) super.clearOneof(oneof);
-      }
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return (Builder) super.setRepeatedField(field, index, value);
-      }
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return (Builder) super.addRepeatedField(field, value);
-      }
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom) {
-          return mergeFrom((com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom other) {
-        if (other == com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom.getDefaultInstance()) return this;
-        if (other.hasRoomName()) {
-          bitField0_ |= 0x00000001;
-          roomName_ = other.roomName_;
-          onChanged();
-        }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
-        return this;
-      }
-
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-      private int bitField0_;
-
-      private java.lang.Object roomName_ = "";
-      /**
-       * <code>optional string room_name = 1;</code>
-       */
-      public boolean hasRoomName() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-      /**
-       * <code>optional string room_name = 1;</code>
-       */
-      public java.lang.String getRoomName() {
-        java.lang.Object ref = roomName_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            roomName_ = s;
-          }
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>optional string room_name = 1;</code>
-       */
-      public com.google.protobuf.ByteString
-          getRoomNameBytes() {
-        java.lang.Object ref = roomName_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          roomName_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>optional string room_name = 1;</code>
-       */
-      public Builder setRoomName(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
-        roomName_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string room_name = 1;</code>
-       */
-      public Builder clearRoomName() {
-        bitField0_ = (bitField0_ & ~0x00000001);
-        roomName_ = getDefaultInstance().getRoomName();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string room_name = 1;</code>
-       */
-      public Builder setRoomNameBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
-        roomName_ = value;
-        onChanged();
-        return this;
-      }
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:fubble.RenameRoom)
-    }
-
-    // @@protoc_insertion_point(class_scope:fubble.RenameRoom)
-    private static final com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom();
-    }
-
-    public static com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<RenameRoom>
-        PARSER = new com.google.protobuf.AbstractParser<RenameRoom>() {
-      public RenameRoom parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new RenameRoom(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<RenameRoom> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<RenameRoom> getParserForType() {
-      return PARSER;
-    }
-
-    public com.freckles.of.couple.fubble.proto.WebContainer.RenameRoom getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
   public interface RenameUserOrBuilder extends
       // @@protoc_insertion_point(interface_extends:fubble.RenameUser)
       com.google.protobuf.MessageOrBuilder {
@@ -5064,25 +4506,11 @@ public final class WebContainer {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>optional string room_name = 1;</code>
-     */
-    boolean hasRoomName();
-    /**
-     * <code>optional string room_name = 1;</code>
-     */
-    java.lang.String getRoomName();
-    /**
-     * <code>optional string room_name = 1;</code>
-     */
-    com.google.protobuf.ByteString
-        getRoomNameBytes();
-
-    /**
-     * <code>optional bool lock = 2;</code>
+     * <code>optional bool lock = 1;</code>
      */
     boolean hasLock();
     /**
-     * <code>optional bool lock = 2;</code>
+     * <code>optional bool lock = 1;</code>
      */
     boolean getLock();
   }
@@ -5099,7 +4527,6 @@ public final class WebContainer {
       super(builder);
     }
     private LockRoom() {
-      roomName_ = "";
       lock_ = false;
     }
 
@@ -5134,14 +4561,8 @@ public final class WebContainer {
               }
               break;
             }
-            case 10: {
-              com.google.protobuf.ByteString bs = input.readBytes();
+            case 8: {
               bitField0_ |= 0x00000001;
-              roomName_ = bs;
-              break;
-            }
-            case 16: {
-              bitField0_ |= 0x00000002;
               lock_ = input.readBool();
               break;
             }
@@ -5170,58 +4591,16 @@ public final class WebContainer {
     }
 
     private int bitField0_;
-    public static final int ROOM_NAME_FIELD_NUMBER = 1;
-    private volatile java.lang.Object roomName_;
+    public static final int LOCK_FIELD_NUMBER = 1;
+    private boolean lock_;
     /**
-     * <code>optional string room_name = 1;</code>
+     * <code>optional bool lock = 1;</code>
      */
-    public boolean hasRoomName() {
+    public boolean hasLock() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>optional string room_name = 1;</code>
-     */
-    public java.lang.String getRoomName() {
-      java.lang.Object ref = roomName_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          roomName_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>optional string room_name = 1;</code>
-     */
-    public com.google.protobuf.ByteString
-        getRoomNameBytes() {
-      java.lang.Object ref = roomName_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        roomName_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int LOCK_FIELD_NUMBER = 2;
-    private boolean lock_;
-    /**
-     * <code>optional bool lock = 2;</code>
-     */
-    public boolean hasLock() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
-    /**
-     * <code>optional bool lock = 2;</code>
+     * <code>optional bool lock = 1;</code>
      */
     public boolean getLock() {
       return lock_;
@@ -5240,10 +4619,7 @@ public final class WebContainer {
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, roomName_);
-      }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeBool(2, lock_);
+        output.writeBool(1, lock_);
       }
       unknownFields.writeTo(output);
     }
@@ -5254,11 +4630,8 @@ public final class WebContainer {
 
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, roomName_);
-      }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(2, lock_);
+          .computeBoolSize(1, lock_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -5276,11 +4649,6 @@ public final class WebContainer {
       com.freckles.of.couple.fubble.proto.WebContainer.LockRoom other = (com.freckles.of.couple.fubble.proto.WebContainer.LockRoom) obj;
 
       boolean result = true;
-      result = result && (hasRoomName() == other.hasRoomName());
-      if (hasRoomName()) {
-        result = result && getRoomName()
-            .equals(other.getRoomName());
-      }
       result = result && (hasLock() == other.hasLock());
       if (hasLock()) {
         result = result && (getLock()
@@ -5297,10 +4665,6 @@ public final class WebContainer {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      if (hasRoomName()) {
-        hash = (37 * hash) + ROOM_NAME_FIELD_NUMBER;
-        hash = (53 * hash) + getRoomName().hashCode();
-      }
       if (hasLock()) {
         hash = (37 * hash) + LOCK_FIELD_NUMBER;
         hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
@@ -5435,10 +4799,8 @@ public final class WebContainer {
       }
       public Builder clear() {
         super.clear();
-        roomName_ = "";
-        bitField0_ = (bitField0_ & ~0x00000001);
         lock_ = false;
-        bitField0_ = (bitField0_ & ~0x00000002);
+        bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
 
@@ -5465,10 +4827,6 @@ public final class WebContainer {
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
           to_bitField0_ |= 0x00000001;
-        }
-        result.roomName_ = roomName_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
         }
         result.lock_ = lock_;
         result.bitField0_ = to_bitField0_;
@@ -5513,11 +4871,6 @@ public final class WebContainer {
 
       public Builder mergeFrom(com.freckles.of.couple.fubble.proto.WebContainer.LockRoom other) {
         if (other == com.freckles.of.couple.fubble.proto.WebContainer.LockRoom.getDefaultInstance()) return this;
-        if (other.hasRoomName()) {
-          bitField0_ |= 0x00000001;
-          roomName_ = other.roomName_;
-          onChanged();
-        }
         if (other.hasLock()) {
           setLock(other.getLock());
         }
@@ -5549,109 +4902,33 @@ public final class WebContainer {
       }
       private int bitField0_;
 
-      private java.lang.Object roomName_ = "";
+      private boolean lock_ ;
       /**
-       * <code>optional string room_name = 1;</code>
+       * <code>optional bool lock = 1;</code>
        */
-      public boolean hasRoomName() {
+      public boolean hasLock() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>optional string room_name = 1;</code>
-       */
-      public java.lang.String getRoomName() {
-        java.lang.Object ref = roomName_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            roomName_ = s;
-          }
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>optional string room_name = 1;</code>
-       */
-      public com.google.protobuf.ByteString
-          getRoomNameBytes() {
-        java.lang.Object ref = roomName_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          roomName_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>optional string room_name = 1;</code>
-       */
-      public Builder setRoomName(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
-        roomName_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string room_name = 1;</code>
-       */
-      public Builder clearRoomName() {
-        bitField0_ = (bitField0_ & ~0x00000001);
-        roomName_ = getDefaultInstance().getRoomName();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string room_name = 1;</code>
-       */
-      public Builder setRoomNameBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
-        roomName_ = value;
-        onChanged();
-        return this;
-      }
-
-      private boolean lock_ ;
-      /**
-       * <code>optional bool lock = 2;</code>
-       */
-      public boolean hasLock() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      /**
-       * <code>optional bool lock = 2;</code>
+       * <code>optional bool lock = 1;</code>
        */
       public boolean getLock() {
         return lock_;
       }
       /**
-       * <code>optional bool lock = 2;</code>
+       * <code>optional bool lock = 1;</code>
        */
       public Builder setLock(boolean value) {
-        bitField0_ |= 0x00000002;
+        bitField0_ |= 0x00000001;
         lock_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional bool lock = 2;</code>
+       * <code>optional bool lock = 1;</code>
        */
       public Builder clearLock() {
-        bitField0_ = (bitField0_ & ~0x00000002);
+        bitField0_ = (bitField0_ & ~0x00000001);
         lock_ = false;
         onChanged();
         return this;
@@ -6356,39 +5633,25 @@ public final class WebContainer {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>optional string room_name = 1;</code>
-     */
-    boolean hasRoomName();
-    /**
-     * <code>optional string room_name = 1;</code>
-     */
-    java.lang.String getRoomName();
-    /**
-     * <code>optional string room_name = 1;</code>
-     */
-    com.google.protobuf.ByteString
-        getRoomNameBytes();
-
-    /**
-     * <code>optional string password = 2;</code>
+     * <code>optional string password = 1;</code>
      */
     boolean hasPassword();
     /**
-     * <code>optional string password = 2;</code>
+     * <code>optional string password = 1;</code>
      */
     java.lang.String getPassword();
     /**
-     * <code>optional string password = 2;</code>
+     * <code>optional string password = 1;</code>
      */
     com.google.protobuf.ByteString
         getPasswordBytes();
 
     /**
-     * <code>optional bool protect = 3;</code>
+     * <code>optional bool protect = 2;</code>
      */
     boolean hasProtect();
     /**
-     * <code>optional bool protect = 3;</code>
+     * <code>optional bool protect = 2;</code>
      */
     boolean getProtect();
   }
@@ -6405,7 +5668,6 @@ public final class WebContainer {
       super(builder);
     }
     private ProtectRoom() {
-      roomName_ = "";
       password_ = "";
       protect_ = false;
     }
@@ -6444,17 +5706,11 @@ public final class WebContainer {
             case 10: {
               com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000001;
-              roomName_ = bs;
-              break;
-            }
-            case 18: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000002;
               password_ = bs;
               break;
             }
-            case 24: {
-              bitField0_ |= 0x00000004;
+            case 16: {
+              bitField0_ |= 0x00000002;
               protect_ = input.readBool();
               break;
             }
@@ -6483,58 +5739,16 @@ public final class WebContainer {
     }
 
     private int bitField0_;
-    public static final int ROOM_NAME_FIELD_NUMBER = 1;
-    private volatile java.lang.Object roomName_;
+    public static final int PASSWORD_FIELD_NUMBER = 1;
+    private volatile java.lang.Object password_;
     /**
-     * <code>optional string room_name = 1;</code>
+     * <code>optional string password = 1;</code>
      */
-    public boolean hasRoomName() {
+    public boolean hasPassword() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>optional string room_name = 1;</code>
-     */
-    public java.lang.String getRoomName() {
-      java.lang.Object ref = roomName_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          roomName_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>optional string room_name = 1;</code>
-     */
-    public com.google.protobuf.ByteString
-        getRoomNameBytes() {
-      java.lang.Object ref = roomName_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        roomName_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int PASSWORD_FIELD_NUMBER = 2;
-    private volatile java.lang.Object password_;
-    /**
-     * <code>optional string password = 2;</code>
-     */
-    public boolean hasPassword() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
-    /**
-     * <code>optional string password = 2;</code>
+     * <code>optional string password = 1;</code>
      */
     public java.lang.String getPassword() {
       java.lang.Object ref = password_;
@@ -6551,7 +5765,7 @@ public final class WebContainer {
       }
     }
     /**
-     * <code>optional string password = 2;</code>
+     * <code>optional string password = 1;</code>
      */
     public com.google.protobuf.ByteString
         getPasswordBytes() {
@@ -6567,16 +5781,16 @@ public final class WebContainer {
       }
     }
 
-    public static final int PROTECT_FIELD_NUMBER = 3;
+    public static final int PROTECT_FIELD_NUMBER = 2;
     private boolean protect_;
     /**
-     * <code>optional bool protect = 3;</code>
+     * <code>optional bool protect = 2;</code>
      */
     public boolean hasProtect() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
+      return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>optional bool protect = 3;</code>
+     * <code>optional bool protect = 2;</code>
      */
     public boolean getProtect() {
       return protect_;
@@ -6595,13 +5809,10 @@ public final class WebContainer {
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, roomName_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, password_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, password_);
-      }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeBool(3, protect_);
+        output.writeBool(2, protect_);
       }
       unknownFields.writeTo(output);
     }
@@ -6612,14 +5823,11 @@ public final class WebContainer {
 
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, roomName_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, password_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, password_);
-      }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(3, protect_);
+          .computeBoolSize(2, protect_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -6637,11 +5845,6 @@ public final class WebContainer {
       com.freckles.of.couple.fubble.proto.WebContainer.ProtectRoom other = (com.freckles.of.couple.fubble.proto.WebContainer.ProtectRoom) obj;
 
       boolean result = true;
-      result = result && (hasRoomName() == other.hasRoomName());
-      if (hasRoomName()) {
-        result = result && getRoomName()
-            .equals(other.getRoomName());
-      }
       result = result && (hasPassword() == other.hasPassword());
       if (hasPassword()) {
         result = result && getPassword()
@@ -6663,10 +5866,6 @@ public final class WebContainer {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      if (hasRoomName()) {
-        hash = (37 * hash) + ROOM_NAME_FIELD_NUMBER;
-        hash = (53 * hash) + getRoomName().hashCode();
-      }
       if (hasPassword()) {
         hash = (37 * hash) + PASSWORD_FIELD_NUMBER;
         hash = (53 * hash) + getPassword().hashCode();
@@ -6805,12 +6004,10 @@ public final class WebContainer {
       }
       public Builder clear() {
         super.clear();
-        roomName_ = "";
-        bitField0_ = (bitField0_ & ~0x00000001);
         password_ = "";
-        bitField0_ = (bitField0_ & ~0x00000002);
+        bitField0_ = (bitField0_ & ~0x00000001);
         protect_ = false;
-        bitField0_ = (bitField0_ & ~0x00000004);
+        bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
 
@@ -6838,13 +6035,9 @@ public final class WebContainer {
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
           to_bitField0_ |= 0x00000001;
         }
-        result.roomName_ = roomName_;
+        result.password_ = password_;
         if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
           to_bitField0_ |= 0x00000002;
-        }
-        result.password_ = password_;
-        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-          to_bitField0_ |= 0x00000004;
         }
         result.protect_ = protect_;
         result.bitField0_ = to_bitField0_;
@@ -6889,13 +6082,8 @@ public final class WebContainer {
 
       public Builder mergeFrom(com.freckles.of.couple.fubble.proto.WebContainer.ProtectRoom other) {
         if (other == com.freckles.of.couple.fubble.proto.WebContainer.ProtectRoom.getDefaultInstance()) return this;
-        if (other.hasRoomName()) {
-          bitField0_ |= 0x00000001;
-          roomName_ = other.roomName_;
-          onChanged();
-        }
         if (other.hasPassword()) {
-          bitField0_ |= 0x00000002;
+          bitField0_ |= 0x00000001;
           password_ = other.password_;
           onChanged();
         }
@@ -6930,91 +6118,15 @@ public final class WebContainer {
       }
       private int bitField0_;
 
-      private java.lang.Object roomName_ = "";
+      private java.lang.Object password_ = "";
       /**
-       * <code>optional string room_name = 1;</code>
+       * <code>optional string password = 1;</code>
        */
-      public boolean hasRoomName() {
+      public boolean hasPassword() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>optional string room_name = 1;</code>
-       */
-      public java.lang.String getRoomName() {
-        java.lang.Object ref = roomName_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            roomName_ = s;
-          }
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>optional string room_name = 1;</code>
-       */
-      public com.google.protobuf.ByteString
-          getRoomNameBytes() {
-        java.lang.Object ref = roomName_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          roomName_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>optional string room_name = 1;</code>
-       */
-      public Builder setRoomName(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
-        roomName_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string room_name = 1;</code>
-       */
-      public Builder clearRoomName() {
-        bitField0_ = (bitField0_ & ~0x00000001);
-        roomName_ = getDefaultInstance().getRoomName();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string room_name = 1;</code>
-       */
-      public Builder setRoomNameBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
-        roomName_ = value;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object password_ = "";
-      /**
-       * <code>optional string password = 2;</code>
-       */
-      public boolean hasPassword() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      /**
-       * <code>optional string password = 2;</code>
+       * <code>optional string password = 1;</code>
        */
       public java.lang.String getPassword() {
         java.lang.Object ref = password_;
@@ -7031,7 +6143,7 @@ public final class WebContainer {
         }
       }
       /**
-       * <code>optional string password = 2;</code>
+       * <code>optional string password = 1;</code>
        */
       public com.google.protobuf.ByteString
           getPasswordBytes() {
@@ -7047,36 +6159,36 @@ public final class WebContainer {
         }
       }
       /**
-       * <code>optional string password = 2;</code>
+       * <code>optional string password = 1;</code>
        */
       public Builder setPassword(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000002;
+  bitField0_ |= 0x00000001;
         password_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string password = 2;</code>
+       * <code>optional string password = 1;</code>
        */
       public Builder clearPassword() {
-        bitField0_ = (bitField0_ & ~0x00000002);
+        bitField0_ = (bitField0_ & ~0x00000001);
         password_ = getDefaultInstance().getPassword();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string password = 2;</code>
+       * <code>optional string password = 1;</code>
        */
       public Builder setPasswordBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000002;
+  bitField0_ |= 0x00000001;
         password_ = value;
         onChanged();
         return this;
@@ -7084,31 +6196,31 @@ public final class WebContainer {
 
       private boolean protect_ ;
       /**
-       * <code>optional bool protect = 3;</code>
+       * <code>optional bool protect = 2;</code>
        */
       public boolean hasProtect() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
+        return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
-       * <code>optional bool protect = 3;</code>
+       * <code>optional bool protect = 2;</code>
        */
       public boolean getProtect() {
         return protect_;
       }
       /**
-       * <code>optional bool protect = 3;</code>
+       * <code>optional bool protect = 2;</code>
        */
       public Builder setProtect(boolean value) {
-        bitField0_ |= 0x00000004;
+        bitField0_ |= 0x00000002;
         protect_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional bool protect = 3;</code>
+       * <code>optional bool protect = 2;</code>
        */
       public Builder clearProtect() {
-        bitField0_ = (bitField0_ & ~0x00000004);
+        bitField0_ = (bitField0_ & ~0x00000002);
         protect_ = false;
         onChanged();
         return this;
@@ -7978,11 +7090,25 @@ public final class WebContainer {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>optional bool muted = 1;</code>
+     * <code>optional string user_id = 1;</code>
+     */
+    boolean hasUserId();
+    /**
+     * <code>optional string user_id = 1;</code>
+     */
+    java.lang.String getUserId();
+    /**
+     * <code>optional string user_id = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getUserIdBytes();
+
+    /**
+     * <code>optional bool muted = 2;</code>
      */
     boolean hasMuted();
     /**
-     * <code>optional bool muted = 1;</code>
+     * <code>optional bool muted = 2;</code>
      */
     boolean getMuted();
   }
@@ -7999,6 +7125,7 @@ public final class WebContainer {
       super(builder);
     }
     private MuteUser() {
+      userId_ = "";
       muted_ = false;
     }
 
@@ -8033,8 +7160,14 @@ public final class WebContainer {
               }
               break;
             }
-            case 8: {
+            case 10: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000001;
+              userId_ = bs;
+              break;
+            }
+            case 16: {
+              bitField0_ |= 0x00000002;
               muted_ = input.readBool();
               break;
             }
@@ -8063,16 +7196,58 @@ public final class WebContainer {
     }
 
     private int bitField0_;
-    public static final int MUTED_FIELD_NUMBER = 1;
-    private boolean muted_;
+    public static final int USER_ID_FIELD_NUMBER = 1;
+    private volatile java.lang.Object userId_;
     /**
-     * <code>optional bool muted = 1;</code>
+     * <code>optional string user_id = 1;</code>
      */
-    public boolean hasMuted() {
+    public boolean hasUserId() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>optional bool muted = 1;</code>
+     * <code>optional string user_id = 1;</code>
+     */
+    public java.lang.String getUserId() {
+      java.lang.Object ref = userId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          userId_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string user_id = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getUserIdBytes() {
+      java.lang.Object ref = userId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        userId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int MUTED_FIELD_NUMBER = 2;
+    private boolean muted_;
+    /**
+     * <code>optional bool muted = 2;</code>
+     */
+    public boolean hasMuted() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>optional bool muted = 2;</code>
      */
     public boolean getMuted() {
       return muted_;
@@ -8091,7 +7266,10 @@ public final class WebContainer {
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeBool(1, muted_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, userId_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeBool(2, muted_);
       }
       unknownFields.writeTo(output);
     }
@@ -8102,8 +7280,11 @@ public final class WebContainer {
 
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, userId_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(1, muted_);
+          .computeBoolSize(2, muted_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -8121,6 +7302,11 @@ public final class WebContainer {
       com.freckles.of.couple.fubble.proto.WebContainer.MuteUser other = (com.freckles.of.couple.fubble.proto.WebContainer.MuteUser) obj;
 
       boolean result = true;
+      result = result && (hasUserId() == other.hasUserId());
+      if (hasUserId()) {
+        result = result && getUserId()
+            .equals(other.getUserId());
+      }
       result = result && (hasMuted() == other.hasMuted());
       if (hasMuted()) {
         result = result && (getMuted()
@@ -8137,6 +7323,10 @@ public final class WebContainer {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasUserId()) {
+        hash = (37 * hash) + USER_ID_FIELD_NUMBER;
+        hash = (53 * hash) + getUserId().hashCode();
+      }
       if (hasMuted()) {
         hash = (37 * hash) + MUTED_FIELD_NUMBER;
         hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
@@ -8271,8 +7461,10 @@ public final class WebContainer {
       }
       public Builder clear() {
         super.clear();
-        muted_ = false;
+        userId_ = "";
         bitField0_ = (bitField0_ & ~0x00000001);
+        muted_ = false;
+        bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
 
@@ -8299,6 +7491,10 @@ public final class WebContainer {
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
           to_bitField0_ |= 0x00000001;
+        }
+        result.userId_ = userId_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
         }
         result.muted_ = muted_;
         result.bitField0_ = to_bitField0_;
@@ -8343,6 +7539,11 @@ public final class WebContainer {
 
       public Builder mergeFrom(com.freckles.of.couple.fubble.proto.WebContainer.MuteUser other) {
         if (other == com.freckles.of.couple.fubble.proto.WebContainer.MuteUser.getDefaultInstance()) return this;
+        if (other.hasUserId()) {
+          bitField0_ |= 0x00000001;
+          userId_ = other.userId_;
+          onChanged();
+        }
         if (other.hasMuted()) {
           setMuted(other.getMuted());
         }
@@ -8374,33 +7575,109 @@ public final class WebContainer {
       }
       private int bitField0_;
 
-      private boolean muted_ ;
+      private java.lang.Object userId_ = "";
       /**
-       * <code>optional bool muted = 1;</code>
+       * <code>optional string user_id = 1;</code>
        */
-      public boolean hasMuted() {
+      public boolean hasUserId() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>optional bool muted = 1;</code>
+       * <code>optional string user_id = 1;</code>
+       */
+      public java.lang.String getUserId() {
+        java.lang.Object ref = userId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            userId_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string user_id = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+          getUserIdBytes() {
+        java.lang.Object ref = userId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          userId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string user_id = 1;</code>
+       */
+      public Builder setUserId(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        userId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string user_id = 1;</code>
+       */
+      public Builder clearUserId() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        userId_ = getDefaultInstance().getUserId();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string user_id = 1;</code>
+       */
+      public Builder setUserIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        userId_ = value;
+        onChanged();
+        return this;
+      }
+
+      private boolean muted_ ;
+      /**
+       * <code>optional bool muted = 2;</code>
+       */
+      public boolean hasMuted() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>optional bool muted = 2;</code>
        */
       public boolean getMuted() {
         return muted_;
       }
       /**
-       * <code>optional bool muted = 1;</code>
+       * <code>optional bool muted = 2;</code>
        */
       public Builder setMuted(boolean value) {
-        bitField0_ |= 0x00000001;
+        bitField0_ |= 0x00000002;
         muted_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional bool muted = 1;</code>
+       * <code>optional bool muted = 2;</code>
        */
       public Builder clearMuted() {
-        bitField0_ = (bitField0_ & ~0x00000001);
+        bitField0_ = (bitField0_ & ~0x00000002);
         muted_ = false;
         onChanged();
         return this;
@@ -9665,17 +8942,17 @@ public final class WebContainer {
     com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoomOrBuilder getJoinedRoomOrBuilder();
 
     /**
-     * <code>optional .fubble.Error error = 4;</code>
+     * <code>optional .fubble.FubbleError error = 4;</code>
      */
     boolean hasError();
     /**
-     * <code>optional .fubble.Error error = 4;</code>
+     * <code>optional .fubble.FubbleError error = 4;</code>
      */
-    com.freckles.of.couple.fubble.proto.WebContainer.Error getError();
+    com.freckles.of.couple.fubble.proto.WebContainer.FubbleError getError();
     /**
-     * <code>optional .fubble.Error error = 4;</code>
+     * <code>optional .fubble.FubbleError error = 4;</code>
      */
-    com.freckles.of.couple.fubble.proto.WebContainer.ErrorOrBuilder getErrorOrBuilder();
+    com.freckles.of.couple.fubble.proto.WebContainer.FubbleErrorOrBuilder getErrorOrBuilder();
 
     /**
      * <code>optional .fubble.RenamedUser renamed_user = 5;</code>
@@ -9909,14 +9186,14 @@ public final class WebContainer {
               break;
             }
             case 34: {
-              com.freckles.of.couple.fubble.proto.WebContainer.Error.Builder subBuilder = null;
+              com.freckles.of.couple.fubble.proto.WebContainer.FubbleError.Builder subBuilder = null;
               if (messageTypeCase_ == 4) {
-                subBuilder = ((com.freckles.of.couple.fubble.proto.WebContainer.Error) messageType_).toBuilder();
+                subBuilder = ((com.freckles.of.couple.fubble.proto.WebContainer.FubbleError) messageType_).toBuilder();
               }
               messageType_ =
-                  input.readMessage(com.freckles.of.couple.fubble.proto.WebContainer.Error.PARSER, extensionRegistry);
+                  input.readMessage(com.freckles.of.couple.fubble.proto.WebContainer.FubbleError.PARSER, extensionRegistry);
               if (subBuilder != null) {
-                subBuilder.mergeFrom((com.freckles.of.couple.fubble.proto.WebContainer.Error) messageType_);
+                subBuilder.mergeFrom((com.freckles.of.couple.fubble.proto.WebContainer.FubbleError) messageType_);
                 messageType_ = subBuilder.buildPartial();
               }
               messageTypeCase_ = 4;
@@ -10213,28 +9490,28 @@ public final class WebContainer {
 
     public static final int ERROR_FIELD_NUMBER = 4;
     /**
-     * <code>optional .fubble.Error error = 4;</code>
+     * <code>optional .fubble.FubbleError error = 4;</code>
      */
     public boolean hasError() {
       return messageTypeCase_ == 4;
     }
     /**
-     * <code>optional .fubble.Error error = 4;</code>
+     * <code>optional .fubble.FubbleError error = 4;</code>
      */
-    public com.freckles.of.couple.fubble.proto.WebContainer.Error getError() {
+    public com.freckles.of.couple.fubble.proto.WebContainer.FubbleError getError() {
       if (messageTypeCase_ == 4) {
-         return (com.freckles.of.couple.fubble.proto.WebContainer.Error) messageType_;
+         return (com.freckles.of.couple.fubble.proto.WebContainer.FubbleError) messageType_;
       }
-      return com.freckles.of.couple.fubble.proto.WebContainer.Error.getDefaultInstance();
+      return com.freckles.of.couple.fubble.proto.WebContainer.FubbleError.getDefaultInstance();
     }
     /**
-     * <code>optional .fubble.Error error = 4;</code>
+     * <code>optional .fubble.FubbleError error = 4;</code>
      */
-    public com.freckles.of.couple.fubble.proto.WebContainer.ErrorOrBuilder getErrorOrBuilder() {
+    public com.freckles.of.couple.fubble.proto.WebContainer.FubbleErrorOrBuilder getErrorOrBuilder() {
       if (messageTypeCase_ == 4) {
-         return (com.freckles.of.couple.fubble.proto.WebContainer.Error) messageType_;
+         return (com.freckles.of.couple.fubble.proto.WebContainer.FubbleError) messageType_;
       }
-      return com.freckles.of.couple.fubble.proto.WebContainer.Error.getDefaultInstance();
+      return com.freckles.of.couple.fubble.proto.WebContainer.FubbleError.getDefaultInstance();
     }
 
     public static final int RENAMED_USER_FIELD_NUMBER = 5;
@@ -10517,7 +9794,7 @@ public final class WebContainer {
         output.writeMessage(3, (com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoom) messageType_);
       }
       if (messageTypeCase_ == 4) {
-        output.writeMessage(4, (com.freckles.of.couple.fubble.proto.WebContainer.Error) messageType_);
+        output.writeMessage(4, (com.freckles.of.couple.fubble.proto.WebContainer.FubbleError) messageType_);
       }
       if (messageTypeCase_ == 5) {
         output.writeMessage(5, (com.freckles.of.couple.fubble.proto.WebContainer.RenamedUser) messageType_);
@@ -10568,7 +9845,7 @@ public final class WebContainer {
       }
       if (messageTypeCase_ == 4) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(4, (com.freckles.of.couple.fubble.proto.WebContainer.Error) messageType_);
+          .computeMessageSize(4, (com.freckles.of.couple.fubble.proto.WebContainer.FubbleError) messageType_);
       }
       if (messageTypeCase_ == 5) {
         size += com.google.protobuf.CodedOutputStream
@@ -11546,33 +10823,33 @@ public final class WebContainer {
       }
 
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.freckles.of.couple.fubble.proto.WebContainer.Error, com.freckles.of.couple.fubble.proto.WebContainer.Error.Builder, com.freckles.of.couple.fubble.proto.WebContainer.ErrorOrBuilder> errorBuilder_;
+          com.freckles.of.couple.fubble.proto.WebContainer.FubbleError, com.freckles.of.couple.fubble.proto.WebContainer.FubbleError.Builder, com.freckles.of.couple.fubble.proto.WebContainer.FubbleErrorOrBuilder> errorBuilder_;
       /**
-       * <code>optional .fubble.Error error = 4;</code>
+       * <code>optional .fubble.FubbleError error = 4;</code>
        */
       public boolean hasError() {
         return messageTypeCase_ == 4;
       }
       /**
-       * <code>optional .fubble.Error error = 4;</code>
+       * <code>optional .fubble.FubbleError error = 4;</code>
        */
-      public com.freckles.of.couple.fubble.proto.WebContainer.Error getError() {
+      public com.freckles.of.couple.fubble.proto.WebContainer.FubbleError getError() {
         if (errorBuilder_ == null) {
           if (messageTypeCase_ == 4) {
-            return (com.freckles.of.couple.fubble.proto.WebContainer.Error) messageType_;
+            return (com.freckles.of.couple.fubble.proto.WebContainer.FubbleError) messageType_;
           }
-          return com.freckles.of.couple.fubble.proto.WebContainer.Error.getDefaultInstance();
+          return com.freckles.of.couple.fubble.proto.WebContainer.FubbleError.getDefaultInstance();
         } else {
           if (messageTypeCase_ == 4) {
             return errorBuilder_.getMessage();
           }
-          return com.freckles.of.couple.fubble.proto.WebContainer.Error.getDefaultInstance();
+          return com.freckles.of.couple.fubble.proto.WebContainer.FubbleError.getDefaultInstance();
         }
       }
       /**
-       * <code>optional .fubble.Error error = 4;</code>
+       * <code>optional .fubble.FubbleError error = 4;</code>
        */
-      public Builder setError(com.freckles.of.couple.fubble.proto.WebContainer.Error value) {
+      public Builder setError(com.freckles.of.couple.fubble.proto.WebContainer.FubbleError value) {
         if (errorBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -11586,10 +10863,10 @@ public final class WebContainer {
         return this;
       }
       /**
-       * <code>optional .fubble.Error error = 4;</code>
+       * <code>optional .fubble.FubbleError error = 4;</code>
        */
       public Builder setError(
-          com.freckles.of.couple.fubble.proto.WebContainer.Error.Builder builderForValue) {
+          com.freckles.of.couple.fubble.proto.WebContainer.FubbleError.Builder builderForValue) {
         if (errorBuilder_ == null) {
           messageType_ = builderForValue.build();
           onChanged();
@@ -11600,13 +10877,13 @@ public final class WebContainer {
         return this;
       }
       /**
-       * <code>optional .fubble.Error error = 4;</code>
+       * <code>optional .fubble.FubbleError error = 4;</code>
        */
-      public Builder mergeError(com.freckles.of.couple.fubble.proto.WebContainer.Error value) {
+      public Builder mergeError(com.freckles.of.couple.fubble.proto.WebContainer.FubbleError value) {
         if (errorBuilder_ == null) {
           if (messageTypeCase_ == 4 &&
-              messageType_ != com.freckles.of.couple.fubble.proto.WebContainer.Error.getDefaultInstance()) {
-            messageType_ = com.freckles.of.couple.fubble.proto.WebContainer.Error.newBuilder((com.freckles.of.couple.fubble.proto.WebContainer.Error) messageType_)
+              messageType_ != com.freckles.of.couple.fubble.proto.WebContainer.FubbleError.getDefaultInstance()) {
+            messageType_ = com.freckles.of.couple.fubble.proto.WebContainer.FubbleError.newBuilder((com.freckles.of.couple.fubble.proto.WebContainer.FubbleError) messageType_)
                 .mergeFrom(value).buildPartial();
           } else {
             messageType_ = value;
@@ -11622,7 +10899,7 @@ public final class WebContainer {
         return this;
       }
       /**
-       * <code>optional .fubble.Error error = 4;</code>
+       * <code>optional .fubble.FubbleError error = 4;</code>
        */
       public Builder clearError() {
         if (errorBuilder_ == null) {
@@ -11641,37 +10918,37 @@ public final class WebContainer {
         return this;
       }
       /**
-       * <code>optional .fubble.Error error = 4;</code>
+       * <code>optional .fubble.FubbleError error = 4;</code>
        */
-      public com.freckles.of.couple.fubble.proto.WebContainer.Error.Builder getErrorBuilder() {
+      public com.freckles.of.couple.fubble.proto.WebContainer.FubbleError.Builder getErrorBuilder() {
         return getErrorFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .fubble.Error error = 4;</code>
+       * <code>optional .fubble.FubbleError error = 4;</code>
        */
-      public com.freckles.of.couple.fubble.proto.WebContainer.ErrorOrBuilder getErrorOrBuilder() {
+      public com.freckles.of.couple.fubble.proto.WebContainer.FubbleErrorOrBuilder getErrorOrBuilder() {
         if ((messageTypeCase_ == 4) && (errorBuilder_ != null)) {
           return errorBuilder_.getMessageOrBuilder();
         } else {
           if (messageTypeCase_ == 4) {
-            return (com.freckles.of.couple.fubble.proto.WebContainer.Error) messageType_;
+            return (com.freckles.of.couple.fubble.proto.WebContainer.FubbleError) messageType_;
           }
-          return com.freckles.of.couple.fubble.proto.WebContainer.Error.getDefaultInstance();
+          return com.freckles.of.couple.fubble.proto.WebContainer.FubbleError.getDefaultInstance();
         }
       }
       /**
-       * <code>optional .fubble.Error error = 4;</code>
+       * <code>optional .fubble.FubbleError error = 4;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.freckles.of.couple.fubble.proto.WebContainer.Error, com.freckles.of.couple.fubble.proto.WebContainer.Error.Builder, com.freckles.of.couple.fubble.proto.WebContainer.ErrorOrBuilder> 
+          com.freckles.of.couple.fubble.proto.WebContainer.FubbleError, com.freckles.of.couple.fubble.proto.WebContainer.FubbleError.Builder, com.freckles.of.couple.fubble.proto.WebContainer.FubbleErrorOrBuilder> 
           getErrorFieldBuilder() {
         if (errorBuilder_ == null) {
           if (!(messageTypeCase_ == 4)) {
-            messageType_ = com.freckles.of.couple.fubble.proto.WebContainer.Error.getDefaultInstance();
+            messageType_ = com.freckles.of.couple.fubble.proto.WebContainer.FubbleError.getDefaultInstance();
           }
           errorBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              com.freckles.of.couple.fubble.proto.WebContainer.Error, com.freckles.of.couple.fubble.proto.WebContainer.Error.Builder, com.freckles.of.couple.fubble.proto.WebContainer.ErrorOrBuilder>(
-                  (com.freckles.of.couple.fubble.proto.WebContainer.Error) messageType_,
+              com.freckles.of.couple.fubble.proto.WebContainer.FubbleError, com.freckles.of.couple.fubble.proto.WebContainer.FubbleError.Builder, com.freckles.of.couple.fubble.proto.WebContainer.FubbleErrorOrBuilder>(
+                  (com.freckles.of.couple.fubble.proto.WebContainer.FubbleError) messageType_,
                   getParentForChildren(),
                   isClean());
           messageType_ = null;
@@ -17161,23 +16438,18 @@ public final class WebContainer {
 
   }
 
-  public interface ErrorOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:fubble.Error)
+  public interface FubbleErrorOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:fubble.FubbleError)
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>optional string error_id = 1;</code>
+     * <code>optional .fubble.FubbleError.ErrorType error_id = 1;</code>
      */
     boolean hasErrorId();
     /**
-     * <code>optional string error_id = 1;</code>
+     * <code>optional .fubble.FubbleError.ErrorType error_id = 1;</code>
      */
-    java.lang.String getErrorId();
-    /**
-     * <code>optional string error_id = 1;</code>
-     */
-    com.google.protobuf.ByteString
-        getErrorIdBytes();
+    com.freckles.of.couple.fubble.proto.WebContainer.FubbleError.ErrorType getErrorId();
 
     /**
      * <code>optional string description = 2;</code>
@@ -17194,19 +16466,19 @@ public final class WebContainer {
         getDescriptionBytes();
   }
   /**
-   * Protobuf type {@code fubble.Error}
+   * Protobuf type {@code fubble.FubbleError}
    */
-  public  static final class Error extends
+  public  static final class FubbleError extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:fubble.Error)
-      ErrorOrBuilder {
+      // @@protoc_insertion_point(message_implements:fubble.FubbleError)
+      FubbleErrorOrBuilder {
   private static final long serialVersionUID = 0L;
-    // Use Error.newBuilder() to construct.
-    private Error(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    // Use FubbleError.newBuilder() to construct.
+    private FubbleError(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private Error() {
-      errorId_ = "";
+    private FubbleError() {
+      errorId_ = 0;
       description_ = "";
     }
 
@@ -17215,7 +16487,7 @@ public final class WebContainer {
     getUnknownFields() {
       return this.unknownFields;
     }
-    private Error(
+    private FubbleError(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -17241,10 +16513,15 @@ public final class WebContainer {
               }
               break;
             }
-            case 10: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000001;
-              errorId_ = bs;
+            case 8: {
+              int rawValue = input.readEnum();
+              com.freckles.of.couple.fubble.proto.WebContainer.FubbleError.ErrorType value = com.freckles.of.couple.fubble.proto.WebContainer.FubbleError.ErrorType.valueOf(rawValue);
+              if (value == null) {
+                unknownFields.mergeVarintField(1, rawValue);
+              } else {
+                bitField0_ |= 0x00000001;
+                errorId_ = rawValue;
+              }
               break;
             }
             case 18: {
@@ -17267,57 +16544,112 @@ public final class WebContainer {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_Error_descriptor;
+      return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_FubbleError_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_Error_fieldAccessorTable
+      return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_FubbleError_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.freckles.of.couple.fubble.proto.WebContainer.Error.class, com.freckles.of.couple.fubble.proto.WebContainer.Error.Builder.class);
+              com.freckles.of.couple.fubble.proto.WebContainer.FubbleError.class, com.freckles.of.couple.fubble.proto.WebContainer.FubbleError.Builder.class);
+    }
+
+    /**
+     * Protobuf enum {@code fubble.FubbleError.ErrorType}
+     */
+    public enum ErrorType
+        implements com.google.protobuf.ProtocolMessageEnum {
+      /**
+       * <code>ROOM_LOCKED = 0;</code>
+       */
+      ROOM_LOCKED(0),
+      ;
+
+      /**
+       * <code>ROOM_LOCKED = 0;</code>
+       */
+      public static final int ROOM_LOCKED_VALUE = 0;
+
+
+      public final int getNumber() {
+        return value;
+      }
+
+      /**
+       * @deprecated Use {@link #forNumber(int)} instead.
+       */
+      @java.lang.Deprecated
+      public static ErrorType valueOf(int value) {
+        return forNumber(value);
+      }
+
+      public static ErrorType forNumber(int value) {
+        switch (value) {
+          case 0: return ROOM_LOCKED;
+          default: return null;
+        }
+      }
+
+      public static com.google.protobuf.Internal.EnumLiteMap<ErrorType>
+          internalGetValueMap() {
+        return internalValueMap;
+      }
+      private static final com.google.protobuf.Internal.EnumLiteMap<
+          ErrorType> internalValueMap =
+            new com.google.protobuf.Internal.EnumLiteMap<ErrorType>() {
+              public ErrorType findValueByNumber(int number) {
+                return ErrorType.forNumber(number);
+              }
+            };
+
+      public final com.google.protobuf.Descriptors.EnumValueDescriptor
+          getValueDescriptor() {
+        return getDescriptor().getValues().get(ordinal());
+      }
+      public final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptorForType() {
+        return getDescriptor();
+      }
+      public static final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptor() {
+        return com.freckles.of.couple.fubble.proto.WebContainer.FubbleError.getDescriptor().getEnumTypes().get(0);
+      }
+
+      private static final ErrorType[] VALUES = values();
+
+      public static ErrorType valueOf(
+          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+        if (desc.getType() != getDescriptor()) {
+          throw new java.lang.IllegalArgumentException(
+            "EnumValueDescriptor is not for this type.");
+        }
+        return VALUES[desc.getIndex()];
+      }
+
+      private final int value;
+
+      private ErrorType(int value) {
+        this.value = value;
+      }
+
+      // @@protoc_insertion_point(enum_scope:fubble.FubbleError.ErrorType)
     }
 
     private int bitField0_;
     public static final int ERROR_ID_FIELD_NUMBER = 1;
-    private volatile java.lang.Object errorId_;
+    private int errorId_;
     /**
-     * <code>optional string error_id = 1;</code>
+     * <code>optional .fubble.FubbleError.ErrorType error_id = 1;</code>
      */
     public boolean hasErrorId() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>optional string error_id = 1;</code>
+     * <code>optional .fubble.FubbleError.ErrorType error_id = 1;</code>
      */
-    public java.lang.String getErrorId() {
-      java.lang.Object ref = errorId_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          errorId_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>optional string error_id = 1;</code>
-     */
-    public com.google.protobuf.ByteString
-        getErrorIdBytes() {
-      java.lang.Object ref = errorId_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        errorId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+    public com.freckles.of.couple.fubble.proto.WebContainer.FubbleError.ErrorType getErrorId() {
+      com.freckles.of.couple.fubble.proto.WebContainer.FubbleError.ErrorType result = com.freckles.of.couple.fubble.proto.WebContainer.FubbleError.ErrorType.valueOf(errorId_);
+      return result == null ? com.freckles.of.couple.fubble.proto.WebContainer.FubbleError.ErrorType.ROOM_LOCKED : result;
     }
 
     public static final int DESCRIPTION_FIELD_NUMBER = 2;
@@ -17375,7 +16707,7 @@ public final class WebContainer {
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, errorId_);
+        output.writeEnum(1, errorId_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 2, description_);
@@ -17389,7 +16721,8 @@ public final class WebContainer {
 
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, errorId_);
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(1, errorId_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, description_);
@@ -17404,16 +16737,15 @@ public final class WebContainer {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof com.freckles.of.couple.fubble.proto.WebContainer.Error)) {
+      if (!(obj instanceof com.freckles.of.couple.fubble.proto.WebContainer.FubbleError)) {
         return super.equals(obj);
       }
-      com.freckles.of.couple.fubble.proto.WebContainer.Error other = (com.freckles.of.couple.fubble.proto.WebContainer.Error) obj;
+      com.freckles.of.couple.fubble.proto.WebContainer.FubbleError other = (com.freckles.of.couple.fubble.proto.WebContainer.FubbleError) obj;
 
       boolean result = true;
       result = result && (hasErrorId() == other.hasErrorId());
       if (hasErrorId()) {
-        result = result && getErrorId()
-            .equals(other.getErrorId());
+        result = result && errorId_ == other.errorId_;
       }
       result = result && (hasDescription() == other.hasDescription());
       if (hasDescription()) {
@@ -17433,7 +16765,7 @@ public final class WebContainer {
       hash = (19 * hash) + getDescriptor().hashCode();
       if (hasErrorId()) {
         hash = (37 * hash) + ERROR_ID_FIELD_NUMBER;
-        hash = (53 * hash) + getErrorId().hashCode();
+        hash = (53 * hash) + errorId_;
       }
       if (hasDescription()) {
         hash = (37 * hash) + DESCRIPTION_FIELD_NUMBER;
@@ -17444,69 +16776,69 @@ public final class WebContainer {
       return hash;
     }
 
-    public static com.freckles.of.couple.fubble.proto.WebContainer.Error parseFrom(
+    public static com.freckles.of.couple.fubble.proto.WebContainer.FubbleError parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.freckles.of.couple.fubble.proto.WebContainer.Error parseFrom(
+    public static com.freckles.of.couple.fubble.proto.WebContainer.FubbleError parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.freckles.of.couple.fubble.proto.WebContainer.Error parseFrom(
+    public static com.freckles.of.couple.fubble.proto.WebContainer.FubbleError parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.freckles.of.couple.fubble.proto.WebContainer.Error parseFrom(
+    public static com.freckles.of.couple.fubble.proto.WebContainer.FubbleError parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.freckles.of.couple.fubble.proto.WebContainer.Error parseFrom(byte[] data)
+    public static com.freckles.of.couple.fubble.proto.WebContainer.FubbleError parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.freckles.of.couple.fubble.proto.WebContainer.Error parseFrom(
+    public static com.freckles.of.couple.fubble.proto.WebContainer.FubbleError parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.freckles.of.couple.fubble.proto.WebContainer.Error parseFrom(java.io.InputStream input)
+    public static com.freckles.of.couple.fubble.proto.WebContainer.FubbleError parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.freckles.of.couple.fubble.proto.WebContainer.Error parseFrom(
+    public static com.freckles.of.couple.fubble.proto.WebContainer.FubbleError parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.freckles.of.couple.fubble.proto.WebContainer.Error parseDelimitedFrom(java.io.InputStream input)
+    public static com.freckles.of.couple.fubble.proto.WebContainer.FubbleError parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static com.freckles.of.couple.fubble.proto.WebContainer.Error parseDelimitedFrom(
+    public static com.freckles.of.couple.fubble.proto.WebContainer.FubbleError parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.freckles.of.couple.fubble.proto.WebContainer.Error parseFrom(
+    public static com.freckles.of.couple.fubble.proto.WebContainer.FubbleError parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.freckles.of.couple.fubble.proto.WebContainer.Error parseFrom(
+    public static com.freckles.of.couple.fubble.proto.WebContainer.FubbleError parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -17518,7 +16850,7 @@ public final class WebContainer {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(com.freckles.of.couple.fubble.proto.WebContainer.Error prototype) {
+    public static Builder newBuilder(com.freckles.of.couple.fubble.proto.WebContainer.FubbleError prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -17533,25 +16865,25 @@ public final class WebContainer {
       return builder;
     }
     /**
-     * Protobuf type {@code fubble.Error}
+     * Protobuf type {@code fubble.FubbleError}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:fubble.Error)
-        com.freckles.of.couple.fubble.proto.WebContainer.ErrorOrBuilder {
+        // @@protoc_insertion_point(builder_implements:fubble.FubbleError)
+        com.freckles.of.couple.fubble.proto.WebContainer.FubbleErrorOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_Error_descriptor;
+        return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_FubbleError_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_Error_fieldAccessorTable
+        return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_FubbleError_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.freckles.of.couple.fubble.proto.WebContainer.Error.class, com.freckles.of.couple.fubble.proto.WebContainer.Error.Builder.class);
+                com.freckles.of.couple.fubble.proto.WebContainer.FubbleError.class, com.freckles.of.couple.fubble.proto.WebContainer.FubbleError.Builder.class);
       }
 
-      // Construct using com.freckles.of.couple.fubble.proto.WebContainer.Error.newBuilder()
+      // Construct using com.freckles.of.couple.fubble.proto.WebContainer.FubbleError.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -17568,7 +16900,7 @@ public final class WebContainer {
       }
       public Builder clear() {
         super.clear();
-        errorId_ = "";
+        errorId_ = 0;
         bitField0_ = (bitField0_ & ~0x00000001);
         description_ = "";
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -17577,23 +16909,23 @@ public final class WebContainer {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_Error_descriptor;
+        return com.freckles.of.couple.fubble.proto.WebContainer.internal_static_fubble_FubbleError_descriptor;
       }
 
-      public com.freckles.of.couple.fubble.proto.WebContainer.Error getDefaultInstanceForType() {
-        return com.freckles.of.couple.fubble.proto.WebContainer.Error.getDefaultInstance();
+      public com.freckles.of.couple.fubble.proto.WebContainer.FubbleError getDefaultInstanceForType() {
+        return com.freckles.of.couple.fubble.proto.WebContainer.FubbleError.getDefaultInstance();
       }
 
-      public com.freckles.of.couple.fubble.proto.WebContainer.Error build() {
-        com.freckles.of.couple.fubble.proto.WebContainer.Error result = buildPartial();
+      public com.freckles.of.couple.fubble.proto.WebContainer.FubbleError build() {
+        com.freckles.of.couple.fubble.proto.WebContainer.FubbleError result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public com.freckles.of.couple.fubble.proto.WebContainer.Error buildPartial() {
-        com.freckles.of.couple.fubble.proto.WebContainer.Error result = new com.freckles.of.couple.fubble.proto.WebContainer.Error(this);
+      public com.freckles.of.couple.fubble.proto.WebContainer.FubbleError buildPartial() {
+        com.freckles.of.couple.fubble.proto.WebContainer.FubbleError result = new com.freckles.of.couple.fubble.proto.WebContainer.FubbleError(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -17636,20 +16968,18 @@ public final class WebContainer {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.freckles.of.couple.fubble.proto.WebContainer.Error) {
-          return mergeFrom((com.freckles.of.couple.fubble.proto.WebContainer.Error)other);
+        if (other instanceof com.freckles.of.couple.fubble.proto.WebContainer.FubbleError) {
+          return mergeFrom((com.freckles.of.couple.fubble.proto.WebContainer.FubbleError)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.freckles.of.couple.fubble.proto.WebContainer.Error other) {
-        if (other == com.freckles.of.couple.fubble.proto.WebContainer.Error.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.freckles.of.couple.fubble.proto.WebContainer.FubbleError other) {
+        if (other == com.freckles.of.couple.fubble.proto.WebContainer.FubbleError.getDefaultInstance()) return this;
         if (other.hasErrorId()) {
-          bitField0_ |= 0x00000001;
-          errorId_ = other.errorId_;
-          onChanged();
+          setErrorId(other.getErrorId());
         }
         if (other.hasDescription()) {
           bitField0_ |= 0x00000002;
@@ -17669,11 +16999,11 @@ public final class WebContainer {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.freckles.of.couple.fubble.proto.WebContainer.Error parsedMessage = null;
+        com.freckles.of.couple.fubble.proto.WebContainer.FubbleError parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.freckles.of.couple.fubble.proto.WebContainer.Error) e.getUnfinishedMessage();
+          parsedMessage = (com.freckles.of.couple.fubble.proto.WebContainer.FubbleError) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -17684,78 +17014,38 @@ public final class WebContainer {
       }
       private int bitField0_;
 
-      private java.lang.Object errorId_ = "";
+      private int errorId_ = 0;
       /**
-       * <code>optional string error_id = 1;</code>
+       * <code>optional .fubble.FubbleError.ErrorType error_id = 1;</code>
        */
       public boolean hasErrorId() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>optional string error_id = 1;</code>
+       * <code>optional .fubble.FubbleError.ErrorType error_id = 1;</code>
        */
-      public java.lang.String getErrorId() {
-        java.lang.Object ref = errorId_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            errorId_ = s;
-          }
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
+      public com.freckles.of.couple.fubble.proto.WebContainer.FubbleError.ErrorType getErrorId() {
+        com.freckles.of.couple.fubble.proto.WebContainer.FubbleError.ErrorType result = com.freckles.of.couple.fubble.proto.WebContainer.FubbleError.ErrorType.valueOf(errorId_);
+        return result == null ? com.freckles.of.couple.fubble.proto.WebContainer.FubbleError.ErrorType.ROOM_LOCKED : result;
       }
       /**
-       * <code>optional string error_id = 1;</code>
+       * <code>optional .fubble.FubbleError.ErrorType error_id = 1;</code>
        */
-      public com.google.protobuf.ByteString
-          getErrorIdBytes() {
-        java.lang.Object ref = errorId_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          errorId_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>optional string error_id = 1;</code>
-       */
-      public Builder setErrorId(
-          java.lang.String value) {
+      public Builder setErrorId(com.freckles.of.couple.fubble.proto.WebContainer.FubbleError.ErrorType value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
-        errorId_ = value;
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000001;
+        errorId_ = value.getNumber();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string error_id = 1;</code>
+       * <code>optional .fubble.FubbleError.ErrorType error_id = 1;</code>
        */
       public Builder clearErrorId() {
         bitField0_ = (bitField0_ & ~0x00000001);
-        errorId_ = getDefaultInstance().getErrorId();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string error_id = 1;</code>
-       */
-      public Builder setErrorIdBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
-        errorId_ = value;
+        errorId_ = 0;
         onChanged();
         return this;
       }
@@ -17846,39 +17136,39 @@ public final class WebContainer {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:fubble.Error)
+      // @@protoc_insertion_point(builder_scope:fubble.FubbleError)
     }
 
-    // @@protoc_insertion_point(class_scope:fubble.Error)
-    private static final com.freckles.of.couple.fubble.proto.WebContainer.Error DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:fubble.FubbleError)
+    private static final com.freckles.of.couple.fubble.proto.WebContainer.FubbleError DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.freckles.of.couple.fubble.proto.WebContainer.Error();
+      DEFAULT_INSTANCE = new com.freckles.of.couple.fubble.proto.WebContainer.FubbleError();
     }
 
-    public static com.freckles.of.couple.fubble.proto.WebContainer.Error getDefaultInstance() {
+    public static com.freckles.of.couple.fubble.proto.WebContainer.FubbleError getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<Error>
-        PARSER = new com.google.protobuf.AbstractParser<Error>() {
-      public Error parsePartialFrom(
+    @java.lang.Deprecated public static final com.google.protobuf.Parser<FubbleError>
+        PARSER = new com.google.protobuf.AbstractParser<FubbleError>() {
+      public FubbleError parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return new Error(input, extensionRegistry);
+        return new FubbleError(input, extensionRegistry);
       }
     };
 
-    public static com.google.protobuf.Parser<Error> parser() {
+    public static com.google.protobuf.Parser<FubbleError> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<Error> getParserForType() {
+    public com.google.protobuf.Parser<FubbleError> getParserForType() {
       return PARSER;
     }
 
-    public com.freckles.of.couple.fubble.proto.WebContainer.Error getDefaultInstanceForType() {
+    public com.freckles.of.couple.fubble.proto.WebContainer.FubbleError getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -22255,11 +21545,6 @@ public final class WebContainer {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_fubble_JoinRoom_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_fubble_RenameRoom_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_fubble_RenameRoom_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_fubble_RenameUser_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -22340,10 +21625,10 @@ public final class WebContainer {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_fubble_JoinedRoom_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_fubble_Error_descriptor;
+    internal_static_fubble_FubbleError_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_fubble_Error_fieldAccessorTable;
+      internal_static_fubble_FubbleError_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_fubble_RenamedUser_descriptor;
   private static final 
@@ -22395,56 +21680,57 @@ public final class WebContainer {
       "(\0132\023.fubble.ReserveRoomH\000\022+\n\014protect_roo" +
       "m\030\t \001(\0132\023.fubble.ProtectRoomH\000\022\'\n\nallow_" +
       "user\030\n \001(\0132\021.fubble.AllowUserH\000B\r\n\013messa" +
-      "geType\"\035\n\010JoinRoom\022\021\n\troom_name\030\001 \001(\t\"\037\n" +
-      "\nRenameRoom\022\021\n\troom_name\030\001 \001(\t\"\036\n\nRename" +
-      "User\022\020\n\010new_name\030\001 \001(\t\"\036\n\013ChatMessage\022\017\n" +
-      "\007content\030\001 \001(\t\"+\n\010LockRoom\022\021\n\troom_name\030" +
-      "\001 \001(\t\022\014\n\004lock\030\002 \001(\010\"3\n\013ReserveRoom\022\021\n\tro" +
-      "om_name\030\001 \001(\t\022\021\n\treserverd\030\002 \001(\010\"C\n\013Prot" +
-      "ectRoom\022\021\n\troom_name\030\001 \001(\t\022\020\n\010password\030\002" +
-      " \001(\t\022\017\n\007protect\030\003 \001(\010\"@\n\tAllowUser\022\021\n\tro" +
-      "om_name\030\001 \001(\t\022\021\n\tuser_name\030\002 \001(\t\022\r\n\005allo" +
-      "w\030\003 \001(\010\"\031\n\010MuteUser\022\r\n\005muted\030\001 \001(\010\"\031\n\006Ha" +
-      "ndUp\022\017\n\007hand_up\030\001 \001(\010\"\224\001\n\014ChangeStatus\022+" +
-      "\n\006status\030\001 \001(\0162\033.fubble.ChangeStatus.Sta" +
-      "tus\022,\n\007message\030\003 \001(\0162\033.fubble.ChangeStat" +
-      "us.Status\")\n\006Status\022\r\n\tAVAILABLE\020\000\022\007\n\003AF" +
-      "K\020\001\022\007\n\003DND\020\002\"\326\004\n\026MessageContainerClient\022" +
-      ")\n\013user_joined\030\001 \001(\0132\022.fubble.UserJoined" +
-      "H\000\022%\n\tuser_left\030\002 \001(\0132\020.fubble.UserLeftH" +
-      "\000\022)\n\013joined_room\030\003 \001(\0132\022.fubble.JoinedRo" +
-      "omH\000\022\036\n\005error\030\004 \001(\0132\r.fubble.ErrorH\000\022+\n\014" +
-      "renamed_user\030\005 \001(\0132\023.fubble.RenamedUserH" +
-      "\000\022\'\n\tlock_room\030\006 \001(\0132\022.fubble.LockedRoom" +
-      "H\000\022\'\n\nmuted_user\030\007 \001(\0132\021.fubble.MutedUse" +
-      "rH\000\022&\n\nhand_is_up\030\010 \001(\0132\020.fubble.HandIsU" +
-      "pH\000\022.\n\rchange_status\030\t \001(\0132\025.fubble.Chan" +
-      "gedStatusH\000\0221\n\014chat_message\030\n \001(\0132\031.fubb" +
-      "le.ChatMessageClientH\000\022,\n\014reserve_room\030\013" +
-      " \001(\0132\024.fubble.ReservedRoomH\000\022-\n\014protect_" +
-      "room\030\014 \001(\0132\025.fubble.ProtectedRoomH\000\022)\n\na" +
-      "llow_user\030\r \001(\0132\023.fubble.AllowedUserH\000B\r" +
-      "\n\013messageType\"\034\n\tMutedUser\022\017\n\007user_id\030\001 " +
-      "\001(\t\"\033\n\010HandIsUp\022\017\n\007user_id\030\001 \001(\t\"\250\001\n\rCha" +
-      "ngedStatus\022\017\n\007user_id\030\001 \001(\t\022,\n\006status\030\002 " +
-      "\001(\0162\034.fubble.ChangedStatus.Status\022-\n\007mes" +
-      "sage\030\003 \001(\0162\034.fubble.ChangedStatus.Status" +
-      "\")\n\006Status\022\r\n\tAVAILABLE\020\000\022\007\n\003AFK\020\001\022\007\n\003DN" +
-      "D\020\002\"0\n\nUserJoined\022\021\n\tuser_name\030\001 \001(\t\022\017\n\007" +
-      "user_id\030\002 \001(\t\"\033\n\010UserLeft\022\017\n\007user_id\030\001 \001" +
-      "(\t\"A\n\nJoinedRoom\022\017\n\007room_id\030\001 \001(\t\022\017\n\007use" +
-      "r_id\030\002 \001(\t\022\021\n\tuser_name\030\003 \001(\t\".\n\005Error\022\020" +
-      "\n\010error_id\030\001 \001(\t\022\023\n\013description\030\002 \001(\t\"0\n" +
-      "\013RenamedUser\022\017\n\007user_id\030\001 \001(\t\022\020\n\010new_nam" +
-      "e\030\002 \001(\t\"5\n\021ChatMessageClient\022\017\n\007content\030" +
-      "\001 \001(\t\022\017\n\007user_id\030\002 \001(\t\">\n\nLockedRoom\022\021\n\t" +
-      "room_name\030\001 \001(\t\022\014\n\004lock\030\002 \001(\010\022\017\n\007user_id" +
-      "\030\003 \001(\t\"3\n\014ReservedRoom\022\021\n\troom_name\030\001 \001(" +
-      "\t\022\020\n\010reserved\030\002 \001(\010\"5\n\rProtectedRoom\022\021\n\t" +
-      "room_name\030\001 \001(\t\022\021\n\tprotected\030\002 \001(\010\"B\n\013Al" +
-      "lowedUser\022\021\n\troom_name\030\001 \001(\t\022\021\n\tuser_nam" +
-      "e\030\002 \001(\t\022\r\n\005allow\030\003 \001(\010B3\n#com.freckles.o" +
-      "f.couple.fubble.protoB\014WebContainer"
+      "geType\"\035\n\010JoinRoom\022\021\n\troom_name\030\001 \001(\t\"\036\n" +
+      "\nRenameUser\022\020\n\010new_name\030\001 \001(\t\"\036\n\013ChatMes" +
+      "sage\022\017\n\007content\030\001 \001(\t\"\030\n\010LockRoom\022\014\n\004loc" +
+      "k\030\001 \001(\010\"3\n\013ReserveRoom\022\021\n\troom_name\030\001 \001(" +
+      "\t\022\021\n\treserverd\030\002 \001(\010\"0\n\013ProtectRoom\022\020\n\010p" +
+      "assword\030\001 \001(\t\022\017\n\007protect\030\002 \001(\010\"@\n\tAllowU" +
+      "ser\022\021\n\troom_name\030\001 \001(\t\022\021\n\tuser_name\030\002 \001(" +
+      "\t\022\r\n\005allow\030\003 \001(\010\"*\n\010MuteUser\022\017\n\007user_id\030" +
+      "\001 \001(\t\022\r\n\005muted\030\002 \001(\010\"\031\n\006HandUp\022\017\n\007hand_u" +
+      "p\030\001 \001(\010\"\224\001\n\014ChangeStatus\022+\n\006status\030\001 \001(\016" +
+      "2\033.fubble.ChangeStatus.Status\022,\n\007message" +
+      "\030\003 \001(\0162\033.fubble.ChangeStatus.Status\")\n\006S" +
+      "tatus\022\r\n\tAVAILABLE\020\000\022\007\n\003AFK\020\001\022\007\n\003DND\020\002\"\334" +
+      "\004\n\026MessageContainerClient\022)\n\013user_joined" +
+      "\030\001 \001(\0132\022.fubble.UserJoinedH\000\022%\n\tuser_lef" +
+      "t\030\002 \001(\0132\020.fubble.UserLeftH\000\022)\n\013joined_ro" +
+      "om\030\003 \001(\0132\022.fubble.JoinedRoomH\000\022$\n\005error\030" +
+      "\004 \001(\0132\023.fubble.FubbleErrorH\000\022+\n\014renamed_" +
+      "user\030\005 \001(\0132\023.fubble.RenamedUserH\000\022\'\n\tloc" +
+      "k_room\030\006 \001(\0132\022.fubble.LockedRoomH\000\022\'\n\nmu" +
+      "ted_user\030\007 \001(\0132\021.fubble.MutedUserH\000\022&\n\nh" +
+      "and_is_up\030\010 \001(\0132\020.fubble.HandIsUpH\000\022.\n\rc" +
+      "hange_status\030\t \001(\0132\025.fubble.ChangedStatu" +
+      "sH\000\0221\n\014chat_message\030\n \001(\0132\031.fubble.ChatM" +
+      "essageClientH\000\022,\n\014reserve_room\030\013 \001(\0132\024.f" +
+      "ubble.ReservedRoomH\000\022-\n\014protect_room\030\014 \001" +
+      "(\0132\025.fubble.ProtectedRoomH\000\022)\n\nallow_use" +
+      "r\030\r \001(\0132\023.fubble.AllowedUserH\000B\r\n\013messag" +
+      "eType\"\034\n\tMutedUser\022\017\n\007user_id\030\001 \001(\t\"\033\n\010H" +
+      "andIsUp\022\017\n\007user_id\030\001 \001(\t\"\250\001\n\rChangedStat" +
+      "us\022\017\n\007user_id\030\001 \001(\t\022,\n\006status\030\002 \001(\0162\034.fu" +
+      "bble.ChangedStatus.Status\022-\n\007message\030\003 \001" +
+      "(\0162\034.fubble.ChangedStatus.Status\")\n\006Stat" +
+      "us\022\r\n\tAVAILABLE\020\000\022\007\n\003AFK\020\001\022\007\n\003DND\020\002\"0\n\nU" +
+      "serJoined\022\021\n\tuser_name\030\001 \001(\t\022\017\n\007user_id\030" +
+      "\002 \001(\t\"\033\n\010UserLeft\022\017\n\007user_id\030\001 \001(\t\"A\n\nJo" +
+      "inedRoom\022\017\n\007room_id\030\001 \001(\t\022\017\n\007user_id\030\002 \001" +
+      "(\t\022\021\n\tuser_name\030\003 \001(\t\"q\n\013FubbleError\022/\n\010" +
+      "error_id\030\001 \001(\0162\035.fubble.FubbleError.Erro" +
+      "rType\022\023\n\013description\030\002 \001(\t\"\034\n\tErrorType\022" +
+      "\017\n\013ROOM_LOCKED\020\000\"0\n\013RenamedUser\022\017\n\007user_" +
+      "id\030\001 \001(\t\022\020\n\010new_name\030\002 \001(\t\"5\n\021ChatMessag" +
+      "eClient\022\017\n\007content\030\001 \001(\t\022\017\n\007user_id\030\002 \001(" +
+      "\t\">\n\nLockedRoom\022\021\n\troom_name\030\001 \001(\t\022\014\n\004lo" +
+      "ck\030\002 \001(\010\022\017\n\007user_id\030\003 \001(\t\"3\n\014ReservedRoo" +
+      "m\022\021\n\troom_name\030\001 \001(\t\022\020\n\010reserved\030\002 \001(\010\"5" +
+      "\n\rProtectedRoom\022\021\n\troom_name\030\001 \001(\t\022\021\n\tpr" +
+      "otected\030\002 \001(\010\"B\n\013AllowedUser\022\021\n\troom_nam" +
+      "e\030\001 \001(\t\022\021\n\tuser_name\030\002 \001(\t\022\r\n\005allow\030\003 \001(" +
+      "\010B3\n#com.freckles.of.couple.fubble.proto" +
+      "B\014WebContainer"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -22470,146 +21756,140 @@ public final class WebContainer {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_fubble_JoinRoom_descriptor,
         new java.lang.String[] { "RoomName", });
-    internal_static_fubble_RenameRoom_descriptor =
-      getDescriptor().getMessageTypes().get(2);
-    internal_static_fubble_RenameRoom_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_fubble_RenameRoom_descriptor,
-        new java.lang.String[] { "RoomName", });
     internal_static_fubble_RenameUser_descriptor =
-      getDescriptor().getMessageTypes().get(3);
+      getDescriptor().getMessageTypes().get(2);
     internal_static_fubble_RenameUser_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_fubble_RenameUser_descriptor,
         new java.lang.String[] { "NewName", });
     internal_static_fubble_ChatMessage_descriptor =
-      getDescriptor().getMessageTypes().get(4);
+      getDescriptor().getMessageTypes().get(3);
     internal_static_fubble_ChatMessage_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_fubble_ChatMessage_descriptor,
         new java.lang.String[] { "Content", });
     internal_static_fubble_LockRoom_descriptor =
-      getDescriptor().getMessageTypes().get(5);
+      getDescriptor().getMessageTypes().get(4);
     internal_static_fubble_LockRoom_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_fubble_LockRoom_descriptor,
-        new java.lang.String[] { "RoomName", "Lock", });
+        new java.lang.String[] { "Lock", });
     internal_static_fubble_ReserveRoom_descriptor =
-      getDescriptor().getMessageTypes().get(6);
+      getDescriptor().getMessageTypes().get(5);
     internal_static_fubble_ReserveRoom_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_fubble_ReserveRoom_descriptor,
         new java.lang.String[] { "RoomName", "Reserverd", });
     internal_static_fubble_ProtectRoom_descriptor =
-      getDescriptor().getMessageTypes().get(7);
+      getDescriptor().getMessageTypes().get(6);
     internal_static_fubble_ProtectRoom_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_fubble_ProtectRoom_descriptor,
-        new java.lang.String[] { "RoomName", "Password", "Protect", });
+        new java.lang.String[] { "Password", "Protect", });
     internal_static_fubble_AllowUser_descriptor =
-      getDescriptor().getMessageTypes().get(8);
+      getDescriptor().getMessageTypes().get(7);
     internal_static_fubble_AllowUser_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_fubble_AllowUser_descriptor,
         new java.lang.String[] { "RoomName", "UserName", "Allow", });
     internal_static_fubble_MuteUser_descriptor =
-      getDescriptor().getMessageTypes().get(9);
+      getDescriptor().getMessageTypes().get(8);
     internal_static_fubble_MuteUser_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_fubble_MuteUser_descriptor,
-        new java.lang.String[] { "Muted", });
+        new java.lang.String[] { "UserId", "Muted", });
     internal_static_fubble_HandUp_descriptor =
-      getDescriptor().getMessageTypes().get(10);
+      getDescriptor().getMessageTypes().get(9);
     internal_static_fubble_HandUp_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_fubble_HandUp_descriptor,
         new java.lang.String[] { "HandUp", });
     internal_static_fubble_ChangeStatus_descriptor =
-      getDescriptor().getMessageTypes().get(11);
+      getDescriptor().getMessageTypes().get(10);
     internal_static_fubble_ChangeStatus_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_fubble_ChangeStatus_descriptor,
         new java.lang.String[] { "Status", "Message", });
     internal_static_fubble_MessageContainerClient_descriptor =
-      getDescriptor().getMessageTypes().get(12);
+      getDescriptor().getMessageTypes().get(11);
     internal_static_fubble_MessageContainerClient_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_fubble_MessageContainerClient_descriptor,
         new java.lang.String[] { "UserJoined", "UserLeft", "JoinedRoom", "Error", "RenamedUser", "LockRoom", "MutedUser", "HandIsUp", "ChangeStatus", "ChatMessage", "ReserveRoom", "ProtectRoom", "AllowUser", "MessageType", });
     internal_static_fubble_MutedUser_descriptor =
-      getDescriptor().getMessageTypes().get(13);
+      getDescriptor().getMessageTypes().get(12);
     internal_static_fubble_MutedUser_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_fubble_MutedUser_descriptor,
         new java.lang.String[] { "UserId", });
     internal_static_fubble_HandIsUp_descriptor =
-      getDescriptor().getMessageTypes().get(14);
+      getDescriptor().getMessageTypes().get(13);
     internal_static_fubble_HandIsUp_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_fubble_HandIsUp_descriptor,
         new java.lang.String[] { "UserId", });
     internal_static_fubble_ChangedStatus_descriptor =
-      getDescriptor().getMessageTypes().get(15);
+      getDescriptor().getMessageTypes().get(14);
     internal_static_fubble_ChangedStatus_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_fubble_ChangedStatus_descriptor,
         new java.lang.String[] { "UserId", "Status", "Message", });
     internal_static_fubble_UserJoined_descriptor =
-      getDescriptor().getMessageTypes().get(16);
+      getDescriptor().getMessageTypes().get(15);
     internal_static_fubble_UserJoined_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_fubble_UserJoined_descriptor,
         new java.lang.String[] { "UserName", "UserId", });
     internal_static_fubble_UserLeft_descriptor =
-      getDescriptor().getMessageTypes().get(17);
+      getDescriptor().getMessageTypes().get(16);
     internal_static_fubble_UserLeft_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_fubble_UserLeft_descriptor,
         new java.lang.String[] { "UserId", });
     internal_static_fubble_JoinedRoom_descriptor =
-      getDescriptor().getMessageTypes().get(18);
+      getDescriptor().getMessageTypes().get(17);
     internal_static_fubble_JoinedRoom_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_fubble_JoinedRoom_descriptor,
         new java.lang.String[] { "RoomId", "UserId", "UserName", });
-    internal_static_fubble_Error_descriptor =
-      getDescriptor().getMessageTypes().get(19);
-    internal_static_fubble_Error_fieldAccessorTable = new
+    internal_static_fubble_FubbleError_descriptor =
+      getDescriptor().getMessageTypes().get(18);
+    internal_static_fubble_FubbleError_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_fubble_Error_descriptor,
+        internal_static_fubble_FubbleError_descriptor,
         new java.lang.String[] { "ErrorId", "Description", });
     internal_static_fubble_RenamedUser_descriptor =
-      getDescriptor().getMessageTypes().get(20);
+      getDescriptor().getMessageTypes().get(19);
     internal_static_fubble_RenamedUser_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_fubble_RenamedUser_descriptor,
         new java.lang.String[] { "UserId", "NewName", });
     internal_static_fubble_ChatMessageClient_descriptor =
-      getDescriptor().getMessageTypes().get(21);
+      getDescriptor().getMessageTypes().get(20);
     internal_static_fubble_ChatMessageClient_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_fubble_ChatMessageClient_descriptor,
         new java.lang.String[] { "Content", "UserId", });
     internal_static_fubble_LockedRoom_descriptor =
-      getDescriptor().getMessageTypes().get(22);
+      getDescriptor().getMessageTypes().get(21);
     internal_static_fubble_LockedRoom_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_fubble_LockedRoom_descriptor,
         new java.lang.String[] { "RoomName", "Lock", "UserId", });
     internal_static_fubble_ReservedRoom_descriptor =
-      getDescriptor().getMessageTypes().get(23);
+      getDescriptor().getMessageTypes().get(22);
     internal_static_fubble_ReservedRoom_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_fubble_ReservedRoom_descriptor,
         new java.lang.String[] { "RoomName", "Reserved", });
     internal_static_fubble_ProtectedRoom_descriptor =
-      getDescriptor().getMessageTypes().get(24);
+      getDescriptor().getMessageTypes().get(23);
     internal_static_fubble_ProtectedRoom_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_fubble_ProtectedRoom_descriptor,
         new java.lang.String[] { "RoomName", "Protected", });
     internal_static_fubble_AllowedUser_descriptor =
-      getDescriptor().getMessageTypes().get(25);
+      getDescriptor().getMessageTypes().get(24);
     internal_static_fubble_AllowedUser_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_fubble_AllowedUser_descriptor,

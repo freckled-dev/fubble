@@ -10,14 +10,16 @@ import java.util.List;
 
 import com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage;
 import com.freckles.of.couple.fubble.proto.WebContainer.JoinRoom;
+import com.freckles.of.couple.fubble.proto.WebContainer.LockRoom;
 import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer;
 import com.freckles.of.couple.fubble.proto.WebContainer.RenameUser;
 
 public class FubbleMain {
 
-    private static final List<String>   QUIT_PARAMS  = Arrays.asList("q", "quit", "exit");
-    private static final List<String>   HELP_PARAMS  = Arrays.asList("h", "help", "info");
-    private static final String         RENAME_PARAM = "rename";
+    private static final List<String>   PARAMS_QUIT  = Arrays.asList("q", "quit", "exit");
+    private static final List<String>   PARAMS_HELP  = Arrays.asList("h", "help", "info");
+    private static final String         PARAM_RENAME = "rename";
+    private static final String         PARAM_LOCK   = "lock";
 
     private static FubbleClientEndpoint client;
 
@@ -36,18 +38,23 @@ public class FubbleMain {
                 String input = br.readLine();
                 input = input.trim();
 
-                if (QUIT_PARAMS.contains(input)) {
+                if (PARAMS_QUIT.contains(input)) {
                     executeExit();
                     continue;
                 }
 
-                if (HELP_PARAMS.contains(input)) {
+                if (PARAMS_HELP.contains(input)) {
                     showInfo();
                     continue;
                 }
 
-                if (input.contains(RENAME_PARAM)) {
+                if (input.contains(PARAM_RENAME)) {
                     renameUser(input);
+                    continue;
+                }
+
+                if (input.contains(PARAM_LOCK)) {
+                    lockRoom(input);
                     continue;
                 }
 
@@ -58,6 +65,27 @@ public class FubbleMain {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    private static void lockRoom(String lockInfo) {
+        String[] split = lockInfo.split(" ");
+        if (split.length != 2 || !split[0].trim().equals(PARAM_LOCK)) {
+            showInfo();
+            return;
+        }
+
+        try {
+            boolean lock = Integer.parseInt(split[1]) == 1;
+
+            LockRoom lockRoom = LockRoom.newBuilder().setLock(lock).build();
+            MessageContainerServer container = MessageContainerServer.newBuilder().setLockRoom(lockRoom).build();
+
+            sendMessage(container);
+        } catch (NumberFormatException ex) {
+            showInfo();
+            return;
+        }
+
     }
 
     private static void joinRoom(String roomName) {
@@ -75,12 +103,12 @@ public class FubbleMain {
 
     private static void renameUser(String input) {
         String[] split = input.split(" ");
-        if (!split[0].trim().equals("rename")) {
+        if (!split[0].trim().equals(PARAM_RENAME)) {
             showInfo();
             return;
         }
 
-        String newName = input.replace("rename", "").trim();
+        String newName = input.replace(PARAM_RENAME, "").trim();
         RenameUser renameUser = RenameUser.newBuilder().setNewName(newName).build();
         MessageContainerServer container = MessageContainerServer.newBuilder().setRenameUser(renameUser).build();
 
@@ -104,6 +132,7 @@ public class FubbleMain {
         System.out.println("q|quit|exit ... exit the program");
         System.out.println("h|help|info ... shows the help");
         System.out.println("rename {new name} ... rename yourself");
+        System.out.println("lock 0|1 ... unlock and lock the room");
     }
 
     private static void executeExit() {
