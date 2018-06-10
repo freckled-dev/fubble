@@ -3,10 +3,20 @@ class RequestHandler:
         self.response_generator = response_generator
         self.room_handler = room_handler
 
-    def handle_join_room(room_id):
+    def handle(self, type_, data):
+        types = {
+                "join": self.handle_join_room,
+                "delete": self.handle_delete_room
+                }
+        method = types[type_]
+        return method(data)
+
+    def handle_join_room(self, room_id):
         room_url = self.room_handler.add_or_get(room_id)
         result = self.response_generator.generateRoomInformation(room_url)
+        return result
 
-    def handle_delete_room(room_id):
+    def handle_delete_room(self, room_id):
         self.room_handler.remove(room_id)
+        return 200
 
