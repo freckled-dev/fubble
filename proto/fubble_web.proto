@@ -129,6 +129,7 @@ message ChangedStatus {
 message UserJoined {
 	optional string user_name = 1;
 	optional string user_id = 2;
+	optional bool already_in_room = 3;
 }
 
 message UserLeft {
