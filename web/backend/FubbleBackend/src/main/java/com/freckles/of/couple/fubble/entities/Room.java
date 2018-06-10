@@ -38,6 +38,8 @@ public class Room {
     @Transient
     private Lock       mutex            = new ReentrantLock();
 
+    private boolean    locked;
+
     public Room() {
 
     }
@@ -80,6 +82,14 @@ public class Room {
 
     public Lock getMutex() {
         return mutex;
+    }
+
+    public boolean isLocked() {
+        return locked;
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
     }
 
 }

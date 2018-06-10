@@ -26,6 +26,7 @@ public class FubbleMain {
 
         try {
             client = new FubbleClientEndpoint(new URI(serverLocation));
+            client.setPrintSysout(true);
 
             joinRoom("we_are_testing");
 
