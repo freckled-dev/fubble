@@ -8,7 +8,9 @@ cd "$(dirname "$0")"
   #flask \
   #protobuf \
   #pytest \
+  #grpcio-tools \
+  #grpcio
 
-pip3 install -r ../requirements.txt
+pip3 install --quiet -r ../requirements.txt
 
 
