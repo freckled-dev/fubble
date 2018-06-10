@@ -17,6 +17,9 @@ class RequestHandler:
         result = self.response_generator.generateRoomInformation(room_url)
         return result
 
-    def handle_delete_room(self, room_id):
+    def handle_delete_room(self, message):
+        room_id = message.id
         self.room_handler.remove(room_id)
+        result = self.response_generator.generateGoogleProtobufEmpty()
+        return result
 

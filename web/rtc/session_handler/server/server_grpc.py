@@ -15,6 +15,9 @@ class ServerGrpc(server.web_rtc_pb2_grpc.RtcServicer):
     def JoinRoom(self, request, context):
         return self.request_handler.handle_join_room(request)
 
+    def DeleteRoom(self, request, context):
+        return self.request_handler.handle_delete_room(request)
+
 def start_server():
     response_generator = ResponseGenerator()
     url_generator = RoomUrlGenerator("https://rtc.fubble.io/")

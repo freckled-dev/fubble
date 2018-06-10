@@ -1,5 +1,6 @@
 syntax = "proto2";
 package server;
+import "google/protobuf/empty.proto";
 
 option java_package = "com.freckles.of.couple.fubble";
 option java_outer_classname = "RtcMessageContainer";
@@ -17,5 +18,6 @@ message DeleteRoomRequest {
 
 service Rtc {
   rpc JoinRoom(JoinRoomRequest) returns (RoomInformation) {}
+  rpc DeleteRoom(DeleteRoomRequest) returns (google.protobuf.Empty) {}
 }
 

@@ -10,3 +10,8 @@ def test_join_room(rtc_stub):
     response = rtc_stub.JoinRoom(server.web_rtc_pb2.JoinRoomRequest(id="room id"))
     assert response.rtcServer == "https://rtc.fubble.io/room id"
 
+def test_delete_room(rtc_stub):
+    response = rtc_stub.JoinRoom(server.web_rtc_pb2.JoinRoomRequest(id="room id"))
+    assert response.rtcServer == "https://rtc.fubble.io/room id"
+    no_response = rtc_stub.DeleteRoom(server.web_rtc_pb2.DeleteRoomRequest(id="room id"))
+
