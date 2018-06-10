@@ -8,11 +8,15 @@ class ServerGrpc(server.web_rtc_pb2_grpc.RtcServicer):
     def JoinRoom(self, request, context):
         print(request.id)
 
-def serve():
+def start_server():
     server_ = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     server.web_rtc_pb2_grpc.add_RtcServicer_to_server(ServerGrpc(), server_)
     server_.add_insecure_port('[::]:20051')
     server_.start()
+    return server_
+
+def serve():
+    server_ = start_server()
     ONE_DAY_IN_SECONDS = 60 * 60 * 24
     try:
         while True:

@@ -1,12 +1,15 @@
 #!/bin/bash
 
+set -ex
 cd "$(dirname "$0")"/..
 
 proto_dir=../../../proto/
-result_dir=server/
+proto_file=web_rtc.proto
+result_dir=server
+cp -v $proto_dir/$proto_file $result_dir
 python -m grpc_tools.protoc \
-  -I=$proto_dir \
-  --python_out=$result_dir \
-  --grpc_python_out=$result_dir \
-  $proto_dir/web_rtc.proto
+  -I. \
+  --python_out=. \
+  --grpc_python_out=. \
+  $result_dir/$proto_file
 
