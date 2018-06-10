@@ -1,6 +1,11 @@
 import os
 
 from flask import Flask
+from server.room_handler import RoomHandler
+from server.room_url_generator import RoomUrlGenerator
+from server.request_handler import RequestHandler
+from server.response_generator import ResponseGenerator
+from server.request_parser import RequestParser
 
 def create_app(test_config=None):
     # create and configure the app
@@ -23,18 +28,21 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    @app.route('/hello')
-    def hello():
-        return 'Hello, World!'
+    room_url_generator = RoomUrlGenerator("https://rtc.fubble.io/")
+    room_handler = RoomHandler(room_url_generator)
+    response_generator = ResponseGenerator()
+    request_handler = RequestHandler(response_generator, room_handler)
+    request_parser = RequestParser()
 
     # a simple page that says hello
-    @app.route('/room/join')
-    def join():
-        return 'join'
+    @app.route('/')
+    def handle():
+        # type_, data = request_parser.parse(request.data)
+        return "hello world", 200
 
-    @app.route('/room/delete')
-    def delete():
-        return 'delete'
+    @app.errorhandler(RoomHandler.NotFoundError)
+    def handle_room_not_found(error):
+        return Response
 
     return app
 
