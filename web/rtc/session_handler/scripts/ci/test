@@ -3,6 +3,7 @@
 set -ex
 
 cd "$(dirname "$0")"
+../install_dependencies
 ../generate_protofiles
 ../generate_protofiles_grpc
 ../install_server
