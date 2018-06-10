@@ -10,7 +10,7 @@ message JoinRoomRequest {
 }
 
 message RoomInformation {
-  optional string rtcServer = 1;
+  optional string rtc_server = 1;
 }
 message DeleteRoomRequest {
   optional string id = 1;
