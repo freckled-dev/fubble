@@ -6,7 +6,8 @@ import server.web_rtc_pb2_grpc
 
 class ServerGrpc(server.web_rtc_pb2_grpc.RtcServicer):
     def JoinRoom(self, request, context):
-        print(request.id)
+        print("wohoooooooooooOO:" + request.id)
+        return server.web_rtc_pb2.RoomInformation(rtcServer="server_url")
 
 def start_server():
     server_ = grpc.server(futures.ThreadPoolExecutor(max_workers=10))

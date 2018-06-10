@@ -2,8 +2,10 @@ import os
 import tempfile
 import pytest
 
+import grpc
 from server import create_app
 from server.server_grpc import start_server
+import server.web_rtc_pb2_grpc
 
 @pytest.fixture
 def app():
@@ -33,4 +35,13 @@ def rtc_server():
     yield server_
 
     server_.stop(0)
+
+@pytest.fixture
+def rtc_stub(rtc_server):
+    channel = grpc.insecure_channel('localhost:20051')
+    stub = server.web_rtc_pb2_grpc.RtcStub(channel)
+
+    yield stub
+
+    channel.close()
 
