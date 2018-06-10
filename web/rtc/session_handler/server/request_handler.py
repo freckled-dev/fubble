@@ -11,12 +11,12 @@ class RequestHandler:
         method = types[type_]
         return method(data)
 
-    def handle_join_room(self, room_id):
+    def handle_join_room(self, message):
+        room_id = message.id
         room_url = self.room_handler.add_or_get(room_id)
         result = self.response_generator.generateRoomInformation(room_url)
         return result
 
     def handle_delete_room(self, room_id):
         self.room_handler.remove(room_id)
-        return 200
 

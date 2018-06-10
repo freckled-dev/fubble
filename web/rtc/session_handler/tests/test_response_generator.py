@@ -6,6 +6,5 @@ def test_construction():
 def test_generate_room_information():
     to_test = ResponseGenerator()
     response = to_test.generateRoomInformation("url")
-    assert response.WhichOneof("messageType") == "roomInformation"
-    assert response.roomInformation.rtcServer == "url"
+    assert response.rtcServer == "url"
 

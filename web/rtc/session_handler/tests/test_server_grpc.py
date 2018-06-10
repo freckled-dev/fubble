@@ -8,4 +8,5 @@ def test_construction_stub(rtc_stub):
 
 def test_join_room(rtc_stub):
     response = rtc_stub.JoinRoom(server.web_rtc_pb2.JoinRoomRequest(id="room id"))
+    assert response.rtcServer == "https://rtc.fubble.io/room id"
 
