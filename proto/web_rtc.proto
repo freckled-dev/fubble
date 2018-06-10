@@ -1,5 +1,5 @@
 syntax = "proto2";
-// package fubble_rtc;
+package server;
 
 option java_package = "com.freckles.of.couple.fubble";
 option java_outer_classname = "RtcMessageContainer";
