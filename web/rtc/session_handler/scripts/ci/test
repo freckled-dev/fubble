@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -e
+
+cd "$(dirname "$0")"
+../generate_protofiles
+../generate_protofiles_grpc
+../install_server
+../run_tests_with_coverage
+
