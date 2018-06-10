@@ -22,6 +22,7 @@ import com.freckles.of.couple.fubble.handler.ChatMessageHandler;
 import com.freckles.of.couple.fubble.handler.CloseHandler;
 import com.freckles.of.couple.fubble.handler.FubbleMessageHandler;
 import com.freckles.of.couple.fubble.handler.JoinRoomHandler;
+import com.freckles.of.couple.fubble.handler.LockRoomHandler;
 import com.freckles.of.couple.fubble.handler.RenameUserHandler;
 import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer;
 import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer.MessageTypeCase;
@@ -46,8 +47,6 @@ public class FubbleEndpoint {
     @OnMessage
     public void onMessage(byte[] message)
         throws IOException {
-        LOGGER.info("Server: Message received.");
-
         ByteBuffer binaryMessage = ByteBuffer.wrap(message);
         MessageContainerServer container = MessageContainerServer.parseFrom(binaryMessage);
 
@@ -64,7 +63,6 @@ public class FubbleEndpoint {
                 room.getMutex().unlock();
             }
         }
-
     }
 
     private void handleContainer(MessageContainerServer container) {
@@ -80,6 +78,10 @@ public class FubbleEndpoint {
 
         if (messageTypeCase.equals(MessageTypeCase.RENAME_USER)) {
             handler = new RenameUserHandler();
+        }
+
+        if (messageTypeCase.equals(MessageTypeCase.LOCK_ROOM)) {
+            handler = new LockRoomHandler();
         }
 
         handler.handleMessage(container, this);

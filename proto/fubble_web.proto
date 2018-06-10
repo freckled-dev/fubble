@@ -12,9 +12,19 @@ message MessageContainerServer {
 		// room handling
 		JoinRoom join_room = 1;
 		RenameUser rename_user = 2;
+		LockRoom lock_room = 3;
+		MuteUser mute_user = 4;
+		HandUp hand_up = 5;
+		ChangeStatus change_status = 6;
+		
 		
 		// chat
-		ChatMessage chat_message = 3;
+		ChatMessage chat_message = 7;
+		
+		// premium features
+		ReserveRoom reserve_room = 8;
+		ProtectRoom protect_room = 9;
+		AllowUser allow_user = 10;
 	}
 }
 
@@ -35,6 +45,47 @@ message ChatMessage {
 	optional string content = 1;
 }
 
+message LockRoom {
+	optional string room_name = 1;
+	optional bool lock = 2;
+}
+
+message ReserveRoom {
+	optional string room_name = 1;
+	optional bool reserverd = 2;
+}
+
+message ProtectRoom {
+	optional string room_name = 1;
+	optional string password = 2;
+	optional bool protect = 3;
+}
+
+message AllowUser {
+	optional string room_name = 1;
+	optional string user_name = 2;
+	optional bool allow = 3;
+}
+
+message MuteUser {
+	optional bool muted = 1;
+}
+
+message HandUp {
+	optional bool hand_up = 1;
+}
+
+message ChangeStatus {
+	enum Status {
+		AVAILABLE = 0;
+		AFK = 1;
+		DND = 2;
+	}
+  
+	optional Status status = 1;
+	optional Status message = 3;
+}
+
 
 // CLIENT
 
@@ -45,11 +96,41 @@ message MessageContainerClient {
 		JoinedRoom joined_room = 3;
 		Error error = 4;
 		RenamedUser renamed_user = 5;
-		
+		LockedRoom lock_room = 6;
+		MutedUser muted_user = 7;
+		HandIsUp hand_is_up = 8;
+		ChangedStatus change_status = 9;
+
 		// chat
-		ChatMessageClient chat_message = 6;
+		ChatMessageClient chat_message = 10;
+		
+		// premium features
+		ReservedRoom reserve_room = 11;
+		ProtectedRoom protect_room = 12;
+		AllowedUser allow_user = 13;
 	}
 }
+
+message MutedUser {
+	optional string user_id = 1;
+}
+
+message HandIsUp {
+	optional string user_id = 1;
+}
+
+message ChangedStatus {
+	optional string user_id = 1;
+	enum Status {
+		AVAILABLE = 0;
+		AFK = 1;
+		DND = 2;
+	}
+  
+	optional Status status = 2;
+	optional Status message = 3;
+}
+
 
 message UserJoined {
 	optional string user_name = 1;
@@ -79,6 +160,28 @@ message RenamedUser {
 message ChatMessageClient {
 	optional string content = 1;
 	optional string user_id = 2;
+}
+
+message LockedRoom {
+	optional string room_name = 1;
+	optional bool lock = 2;
+	optional string user_id = 3;
+}
+
+message ReservedRoom {
+	optional string room_name = 1;
+	optional bool reserved = 2;
+}
+
+message ProtectedRoom {
+	optional string room_name = 1;
+	optional bool protected = 2;
+}
+
+message AllowedUser {
+	optional string room_name = 1;
+	optional string user_name = 2;
+	optional bool allow = 3;
 }
 
 

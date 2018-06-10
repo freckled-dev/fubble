@@ -22,6 +22,7 @@ import org.apache.logging.log4j.Logger;
 import com.freckles.of.couple.fubble.entities.User;
 import com.freckles.of.couple.fubble.proto.WebContainer.ChatMessageClient;
 import com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoom;
+import com.freckles.of.couple.fubble.proto.WebContainer.LockedRoom;
 import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient;
 import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient.MessageTypeCase;
 import com.freckles.of.couple.fubble.proto.WebContainer.RenamedUser;
@@ -43,6 +44,7 @@ public class FubbleClientEndpoint {
 
     private List<MessageContainerClient> messages    = new ArrayList<>();
     private List<User>                   users       = new ArrayList<User>();
+    private boolean                      printSysout = false;
 
     public FubbleClientEndpoint(URI endpointURI) {
         try {
@@ -90,9 +92,10 @@ public class FubbleClientEndpoint {
                 JoinedRoom joinedRoom = container.getJoinedRoom();
                 this.userId = joinedRoom.getUserId();
                 this.userName = joinedRoom.getUserName();
-                System.out.println("-----------------------------------");
-                System.out.println(joinedRoom.getUserName());
-                System.out.println("-----------------------------------");
+
+                print("-----------------------------------");
+                print(joinedRoom.getUserName());
+                print("-----------------------------------");
             }
 
             if (MessageTypeCase.USER_JOINED.equals(messageTypeCase)) {
@@ -101,7 +104,7 @@ public class FubbleClientEndpoint {
                 users.add(new User(userJoined.getUserId(), userJoined.getUserName()));
 
                 if (!userJoined.getUserId().equals(userId)) {
-                    System.out.println(String.format("A new user joined the room - %s.", userJoined.getUserName()));
+                    print(String.format("A new user joined the room - %s.", userJoined.getUserName()));
                 }
             }
 
@@ -114,21 +117,26 @@ public class FubbleClientEndpoint {
 
                 User updateUser = users.stream().filter(user -> user.getId().equals(renamedUser.getUserId())).findFirst().get();
                 updateUser.setName(renamedUser.getNewName());
-                System.out.println(String.format("User %s changed his name to %s.", renamedUser.getUserId(), renamedUser.getNewName()));
+                print(String.format("User %s changed his name to %s.", renamedUser.getUserId(), renamedUser.getNewName()));
             }
 
             if (MessageTypeCase.CHAT_MESSAGE.equals(messageTypeCase)) {
                 ChatMessageClient chat = container.getChatMessage();
                 User chatUser = users.stream().filter(user -> user.getId().equals(chat.getUserId())).findFirst().get();
 
-                System.out.println(String.format("%s: %s", chatUser.getName(), chat.getContent()));
+                print(String.format("%s: %s", chatUser.getName(), chat.getContent()));
             }
 
             if (MessageTypeCase.USER_LEFT.equals(messageTypeCase)) {
                 UserLeft userLeft = container.getUserLeft();
 
                 User left = users.stream().filter(user -> user.getId().equals(userLeft.getUserId())).findFirst().get();
-                System.out.println(String.format("User %s has left the building!", left.getName()));
+                print(String.format("User %s has left the building!", left.getName()));
+            }
+
+            if (MessageTypeCase.LOCK_ROOM.equals(messageTypeCase)) {
+                LockedRoom userLeft = container.getLockRoom();
+                System.out.println(userLeft);
             }
 
             messages.add(container);
@@ -138,12 +146,22 @@ public class FubbleClientEndpoint {
 
     }
 
+    private void print(String sysOut) {
+        if (printSysout) {
+            System.out.println(sysOut);
+        }
+    }
+
     public String getUserName() {
         return userName;
     }
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public void setPrintSysout(boolean printSysout) {
+        this.printSysout = printSysout;
     }
 
     /**
