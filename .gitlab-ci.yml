@@ -1,0 +1,3 @@
+test_rtc_session_handler:
+  image: python:3.6
+  script: ./web/rtc/session_handler/scripts/ci/test
