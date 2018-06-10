@@ -6,10 +6,11 @@ cd "$(dirname "$0")"/..
 proto_dir=../../../proto/
 proto_file=web_rtc.proto
 result_dir=server
-cp -v $proto_dir/$proto_file $result_dir
+cp $proto_dir/$proto_file $result_dir
 python -m grpc_tools.protoc \
   -I. \
   --python_out=. \
   --grpc_python_out=. \
   $result_dir/$proto_file
+rm $result_dir/$proto_file
 
