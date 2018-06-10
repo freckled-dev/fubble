@@ -88,6 +88,10 @@ public class Room {
         return locked;
     }
 
+    public boolean isUnLocked() {
+        return !locked;
+    }
+
     public void setLocked(boolean locked) {
         this.locked = locked;
     }

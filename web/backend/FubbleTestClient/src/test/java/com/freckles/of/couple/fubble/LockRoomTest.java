@@ -21,6 +21,7 @@ public class LockRoomTest extends WebsocketTest {
     private static final Logger LOGGER         = LogManager.getLogger(LockRoomTest.class);
 
     private static final String ROOM_NAME_1    = "dagmar-test-1";
+    private static final String ROOM_NAME_2    = "dagmar-test-2";
 
     private static final int    WAITING_PERIOD = 1000;
 
@@ -89,8 +90,39 @@ public class LockRoomTest extends WebsocketTest {
         }
     }
 
+    @Test
+    public void testJoiningLockedRoom() {
+        try {
+            // 3 clients join
+            List<FubbleClientEndpoint> clients = createClients(3);
+
+            for (FubbleClientEndpoint client : clients) {
+                joinRoom(ROOM_NAME_2, client);
+            }
+
+            Thread.sleep(WAITING_PERIOD);
+
+            // a client locks the room
+            lockRoom(true, clients.get(0));
+
+            Thread.sleep(WAITING_PERIOD);
+
+            // a new client wants to join the locked room
+            FubbleClientEndpoint newJoin = createClient();
+            joinRoom(ROOM_NAME_2, newJoin);
+
+            Thread.sleep(WAITING_PERIOD);
+            assertTrue(newJoin.getMessages().stream() //
+                .filter(message -> message.getMessageTypeCase().equals(MessageTypeCase.ERROR)) //
+                .findFirst().isPresent());
+
+        } catch (Exception ex) {
+            LOGGER.error(ExceptionUtils.getStackTrace(ex));
+        }
+    }
+
     private void lockRoom(boolean lock, FubbleClientEndpoint client) {
-        LockRoom lockRoom = LockRoom.newBuilder().setRoomName(ROOM_NAME_1).setLock(lock).build();
+        LockRoom lockRoom = LockRoom.newBuilder().setLock(lock).build();
         MessageContainerServer container = MessageContainerServer.newBuilder().setLockRoom(lockRoom).build();
         sendMessage(container, client);
     }

@@ -6,7 +6,6 @@ import java.io.IOException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -17,7 +16,7 @@ public class InternTestClients extends WebsocketTest {
 
     private static final Logger LOGGER = LogManager.getLogger(InternTestClients.class);
 
-    @Ignore
+    // @Ignore
     @Test
     public void createClients() {
         Runtime runTime = Runtime.getRuntime();

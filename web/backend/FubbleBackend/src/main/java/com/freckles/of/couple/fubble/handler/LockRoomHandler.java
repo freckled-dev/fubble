@@ -1,13 +1,11 @@
 
 package com.freckles.of.couple.fubble.handler;
 
-import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.websocket.Session;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -60,16 +58,8 @@ public class LockRoomHandler implements FubbleMessageHandler {
             .build();
 
         MessageContainerClient clientMsg = MessageContainerClient.newBuilder().setLockRoom(lockedRoom).build();
-
-        try {
-            ByteArrayOutputStream output = new ByteArrayOutputStream();
-            clientMsg.writeTo(output);
-            List<Session> sessions = room.getUsers().stream().map(User::getSession).collect(Collectors.toList());
-            messageHelper.broadcastAsync(sessions, output.toByteArray());
-            output.close();
-        } catch (Exception ex) {
-            LOGGER.error(ExceptionUtils.getStackTrace(ex));
-        }
+        List<Session> sessions = room.getUsers().stream().map(User::getSession).collect(Collectors.toList());
+        messageHelper.broadcastAsync(sessions, clientMsg);
     }
 
 }

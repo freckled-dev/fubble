@@ -1,14 +1,12 @@
 
 package com.freckles.of.couple.fubble.handler;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.websocket.Session;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,6 +15,8 @@ import com.freckles.of.couple.dal.RoomManagementImpl;
 import com.freckles.of.couple.fubble.FubbleEndpoint;
 import com.freckles.of.couple.fubble.entities.Room;
 import com.freckles.of.couple.fubble.entities.User;
+import com.freckles.of.couple.fubble.proto.WebContainer.FubbleError;
+import com.freckles.of.couple.fubble.proto.WebContainer.FubbleError.ErrorType;
 import com.freckles.of.couple.fubble.proto.WebContainer.JoinRoom;
 import com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoom;
 import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient;
@@ -40,7 +40,13 @@ public class JoinRoomHandler implements FubbleMessageHandler {
         JoinRoom joinRoom = container.getJoinRoom();
 
         Room room = getRoom(joinRoom.getRoomName());
-        User user = joinRoom(room);
+        User user = getUser(room.getConnectedCounter());
+
+        if (room.isLocked()) {
+            handleLockedRoom(room, user);
+        }
+
+        joinRoom(room, user);
 
         // 1. Send JoinedRoom for the new user
         sendJoinedRoom(room, user);
@@ -50,6 +56,26 @@ public class JoinRoomHandler implements FubbleMessageHandler {
 
         // 3. Send Broadcast UserJoined to all users in the room
         broadcastUserJoined(room, user);
+
+    }
+
+    private User getUser(int connectedCounter) {
+        return userHandler.createUser(connection, connectedCounter);
+    }
+
+    private void handleLockedRoom(Room room, User user) {
+        LOGGER.info(String.format("User %s wants to join the locked room %s.", user.getName(), room.getName()));
+
+        // 1. Inform user that the room is locked
+        FubbleError error = FubbleError.newBuilder().setErrorId(ErrorType.ROOM_LOCKED).build();
+        MessageContainerClient container = MessageContainerClient.newBuilder().setError(error).build();
+        messageHelper.sendAsync(user.getSession(), container);
+
+        // 2 Inform other users that a new user wants to join the locked room
+
+        // 3 one of them needs "allow" for the new user to enter
+
+        // 4 user need so be informed as soon as this happens -> then he can join
 
     }
 
@@ -65,15 +91,7 @@ public class JoinRoomHandler implements FubbleMessageHandler {
                 .build();
 
             MessageContainerClient clientMsg = MessageContainerClient.newBuilder().setUserJoined(userJoined).build();
-
-            try {
-                ByteArrayOutputStream output = new ByteArrayOutputStream();
-                clientMsg.writeTo(output);
-                messageHelper.sendAsync(user.getSession(), output.toByteArray());
-                output.close();
-            } catch (Exception ex) {
-                LOGGER.error(ExceptionUtils.getStackTrace(ex));
-            }
+            messageHelper.sendAsync(user.getSession(), clientMsg);
         }
     }
 
@@ -85,15 +103,7 @@ public class JoinRoomHandler implements FubbleMessageHandler {
             .build();
 
         MessageContainerClient clientMsg = MessageContainerClient.newBuilder().setJoinedRoom(joinedRoom).build();
-
-        try {
-            ByteArrayOutputStream output = new ByteArrayOutputStream();
-            clientMsg.writeTo(output);
-            messageHelper.sendAsync(user.getSession(), output.toByteArray());
-            output.close();
-        } catch (Exception ex) {
-            LOGGER.error(ExceptionUtils.getStackTrace(ex));
-        }
+        messageHelper.sendAsync(user.getSession(), clientMsg);
     }
 
     private void broadcastUserJoined(Room room, User user) {
@@ -103,16 +113,8 @@ public class JoinRoomHandler implements FubbleMessageHandler {
             .build();
 
         MessageContainerClient clientMsg = MessageContainerClient.newBuilder().setUserJoined(userJoined).build();
-
-        try {
-            ByteArrayOutputStream output = new ByteArrayOutputStream();
-            clientMsg.writeTo(output);
-            List<Session> sessions = room.getUsers().stream().map(User::getSession).collect(Collectors.toList());
-            messageHelper.broadcastAsync(sessions, output.toByteArray());
-            output.close();
-        } catch (Exception ex) {
-            LOGGER.error(ExceptionUtils.getStackTrace(ex));
-        }
+        List<Session> sessions = room.getUsers().stream().map(User::getSession).collect(Collectors.toList());
+        messageHelper.broadcastAsync(sessions, clientMsg);
     }
 
     private Room getRoom(String roomName) {
@@ -121,12 +123,10 @@ public class JoinRoomHandler implements FubbleMessageHandler {
         return room;
     }
 
-    private User joinRoom(Room room) {
-        User user = userHandler.createUser(connection, room.getConnectedCounter());
+    private void joinRoom(Room room, User user) {
         room.setConnectedCounter(room.getConnectedCounter() + 1);
         room.getUsers().add(user);
         LOGGER.info(String.format("Server: The user %s has entered the room %s.", user.getName(), room.getName()));
-        return user;
     }
 
 }

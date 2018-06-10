@@ -28,12 +28,7 @@ message MessageContainerServer {
 	}
 }
 
-
 message JoinRoom {
-	optional string room_name = 1;
-}
-
-message RenameRoom {
 	optional string room_name = 1;
 }
 
@@ -46,8 +41,7 @@ message ChatMessage {
 }
 
 message LockRoom {
-	optional string room_name = 1;
-	optional bool lock = 2;
+	optional bool lock = 1;
 }
 
 message ReserveRoom {
@@ -56,9 +50,8 @@ message ReserveRoom {
 }
 
 message ProtectRoom {
-	optional string room_name = 1;
-	optional string password = 2;
-	optional bool protect = 3;
+	optional string password = 1;
+	optional bool protect = 2;
 }
 
 message AllowUser {
@@ -68,7 +61,8 @@ message AllowUser {
 }
 
 message MuteUser {
-	optional bool muted = 1;
+	optional string user_id = 1;
+	optional bool muted = 2;
 }
 
 message HandUp {
@@ -94,7 +88,7 @@ message MessageContainerClient {
 		UserJoined user_joined = 1;
 		UserLeft user_left = 2;
 		JoinedRoom joined_room = 3;
-		Error error = 4;
+		FubbleError error = 4;
 		RenamedUser renamed_user = 5;
 		LockedRoom lock_room = 6;
 		MutedUser muted_user = 7;
@@ -147,8 +141,12 @@ message JoinedRoom {
 	optional string user_name = 3;
 }
 
-message Error {
-	optional string error_id = 1;
+message FubbleError {
+	enum ErrorType {
+		ROOM_LOCKED = 0;
+	} 
+	
+	optional ErrorType error_id = 1;
 	optional string description = 2;
 }
 
