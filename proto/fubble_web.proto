@@ -10,26 +10,25 @@ option java_outer_classname = "WebContainer";
 message MessageContainerServer {
 	oneof messageType {
 		// room handling
-		JoinRoom joinRoom = 1;
-		RenameRoom renameRoom = 2;
-		RenameUser renameUser = 3;
+		JoinRoom join_room = 1;
+		RenameUser rename_user = 2;
 		
 		// chat
-		ChatMessage chat = 4;
+		ChatMessage chat_message = 3;
 	}
 }
 
 
 message JoinRoom {
-	optional string roomName = 1;
+	optional string room_name = 1;
 }
 
 message RenameRoom {
-	optional string roomName = 1;
+	optional string room_name = 1;
 }
 
 message RenameUser {
-	optional string name = 1;
+	optional string new_name = 1;
 }
 
 message ChatMessage {
@@ -41,36 +40,45 @@ message ChatMessage {
 
 message MessageContainerClient {
 	oneof messageType {
-		UserJoined userJoined = 1;
-		UserLeft userLeft = 2;
-		JoinedRoom joinedRoom = 3;
+		UserJoined user_joined = 1;
+		UserLeft user_left = 2;
+		JoinedRoom joined_room = 3;
 		Error error = 4;
-		RenamedUser renamedUser = 5;
+		RenamedUser renamed_user = 5;
+		
+		// chat
+		ChatMessageClient chat_message = 6;
 	}
 }
 
 message UserJoined {
-	optional string name = 1;
-	optional string id = 2;
+	optional string user_name = 1;
+	optional string user_id = 2;
 }
 
 message UserLeft {
-	optional string id = 1;
+	optional string user_id = 1;
 }
 
 message JoinedRoom {
-	optional string roomId = 1;
-	optional string userId = 2;
+	optional string room_id = 1;
+	optional string user_id = 2;
+	optional string user_name = 3;
 }
 
 message Error {
-	optional string id = 1;
+	optional string error_id = 1;
 	optional string description = 2;
 }
 
 message RenamedUser {
-	optional string id = 1;
-	optional string name = 2;
+	optional string user_id = 1;
+	optional string new_name = 2;
+}
+
+message ChatMessageClient {
+	optional string content = 1;
+	optional string user_id = 2;
 }
 
 

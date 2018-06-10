@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import javax.websocket.Session;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -59,8 +60,8 @@ public class JoinRoomHandler implements FubbleMessageHandler {
 
         for (User currentUser : allUsers) {
             UserJoined userJoined = UserJoined.newBuilder() //
-                .setId(currentUser.getId()) //
-                .setName(currentUser.getName()) //
+                .setUserId(currentUser.getId()) //
+                .setUserName(currentUser.getName()) //
                 .build();
 
             MessageContainerClient clientMsg = MessageContainerClient.newBuilder().setUserJoined(userJoined).build();
@@ -71,7 +72,7 @@ public class JoinRoomHandler implements FubbleMessageHandler {
                 messageHelper.sendAsync(user.getSession(), output.toByteArray());
                 output.close();
             } catch (Exception ex) {
-                LOGGER.error(ex);
+                LOGGER.error(ExceptionUtils.getStackTrace(ex));
             }
         }
     }
@@ -80,6 +81,7 @@ public class JoinRoomHandler implements FubbleMessageHandler {
         JoinedRoom joinedRoom = JoinedRoom.newBuilder() //
             .setRoomId(room.getId()) //
             .setUserId(user.getId()) //
+            .setUserName(user.getName()) //
             .build();
 
         MessageContainerClient clientMsg = MessageContainerClient.newBuilder().setJoinedRoom(joinedRoom).build();
@@ -90,14 +92,14 @@ public class JoinRoomHandler implements FubbleMessageHandler {
             messageHelper.sendAsync(user.getSession(), output.toByteArray());
             output.close();
         } catch (Exception ex) {
-            LOGGER.error(ex);
+            LOGGER.error(ExceptionUtils.getStackTrace(ex));
         }
     }
 
     private void broadcastUserJoined(Room room, User user) {
         UserJoined userJoined = UserJoined.newBuilder() //
-            .setId(user.getId()) //
-            .setName(user.getName()) //
+            .setUserId(user.getId()) //
+            .setUserName(user.getName()) //
             .build();
 
         MessageContainerClient clientMsg = MessageContainerClient.newBuilder().setUserJoined(userJoined).build();
@@ -109,7 +111,7 @@ public class JoinRoomHandler implements FubbleMessageHandler {
             messageHelper.broadcastAsync(sessions, output.toByteArray());
             output.close();
         } catch (Exception ex) {
-            LOGGER.error(ex);
+            LOGGER.error(ExceptionUtils.getStackTrace(ex));
         }
     }
 

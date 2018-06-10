@@ -14,44 +14,36 @@ import org.apache.logging.log4j.Logger;
 import com.freckles.of.couple.fubble.FubbleEndpoint;
 import com.freckles.of.couple.fubble.entities.Room;
 import com.freckles.of.couple.fubble.entities.User;
+import com.freckles.of.couple.fubble.proto.WebContainer.ChatMessage;
+import com.freckles.of.couple.fubble.proto.WebContainer.ChatMessageClient;
 import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient;
 import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer;
-import com.freckles.of.couple.fubble.proto.WebContainer.RenameUser;
-import com.freckles.of.couple.fubble.proto.WebContainer.RenamedUser;
 import com.freckles.of.couple.fubble.tools.MessageHelper;
 
-public class RenameUserHandler implements FubbleMessageHandler {
+public class ChatMessageHandler implements FubbleMessageHandler {
 
-    private static final Logger LOGGER        = LogManager.getLogger(RenameUserHandler.class);
+    private static final Logger LOGGER        = LogManager.getLogger(FubbleMessageHandler.class);
 
     private MessageHelper       messageHelper = new MessageHelper();
 
     @Override
     public void handleMessage(MessageContainerServer container, FubbleEndpoint connection) {
-        RenameUser renameUser = container.getRenameUser();
+        ChatMessage chatMessage = container.getChatMessage();
 
-        // 1. Rename user
-        String newName = renameUser.getNewName();
-        User user = connection.getRoom().getUsers().stream() //
-            .filter(existingUser -> existingUser.getId().equals(connection.getUser().getId())) //
-            .findFirst().get();
-        String oldName = user.getName();
-        user.setName(newName);
-        connection.getUser().setName(newName);
-        LOGGER.info(String.format("User with id %s has been renamed %s -> %s.", user.getId(), oldName, newName));
-
-        // 2. Broadcast renamed user
-        broadcastUserRenamed(connection.getRoom(), user);
-
+        // broadcast to all users
+        broadcastChatMessage(connection, chatMessage);
     }
 
-    private void broadcastUserRenamed(Room room, User user) {
-        RenamedUser renamedUser = RenamedUser.newBuilder() //
+    private void broadcastChatMessage(FubbleEndpoint connection, ChatMessage message) {
+        Room room = connection.getRoom();
+        User user = connection.getUser();
+
+        ChatMessageClient chatMessage = ChatMessageClient.newBuilder() //
             .setUserId(user.getId()) //
-            .setNewName(user.getName()) //
+            .setContent(message.getContent()) //
             .build();
 
-        MessageContainerClient clientMsg = MessageContainerClient.newBuilder().setRenamedUser(renamedUser).build();
+        MessageContainerClient clientMsg = MessageContainerClient.newBuilder().setChatMessage(chatMessage).build();
 
         try {
             ByteArrayOutputStream output = new ByteArrayOutputStream();

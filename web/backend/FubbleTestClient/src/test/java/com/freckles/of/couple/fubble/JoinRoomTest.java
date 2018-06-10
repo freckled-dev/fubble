@@ -4,6 +4,7 @@ package com.freckles.of.couple.fubble;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Test;
@@ -36,7 +37,7 @@ public class JoinRoomTest extends WebsocketTest {
 
             for (MessageContainerClient message : client1.getMessages()) {
                 MessageTypeCase type = message.getMessageTypeCase();
-                if (MessageTypeCase.JOINEDROOM.equals(type)) {
+                if (MessageTypeCase.JOINED_ROOM.equals(type)) {
                     JoinedRoom joined = message.getJoinedRoom();
                     if (joined.getUserId().equals(client1.getUserId())) {
                         joinedRoomReceived = true;
@@ -59,7 +60,7 @@ public class JoinRoomTest extends WebsocketTest {
 
             for (MessageContainerClient message : client2.getMessages()) {
                 MessageTypeCase type = message.getMessageTypeCase();
-                if (MessageTypeCase.JOINEDROOM.equals(type)) {
+                if (MessageTypeCase.JOINED_ROOM.equals(type)) {
                     JoinedRoom joined = message.getJoinedRoom();
                     if (joined.getUserId().equals(client2.getUserId())) {
                         joinedRoomReceived = true;
@@ -72,7 +73,7 @@ public class JoinRoomTest extends WebsocketTest {
             Thread.sleep(WAITING_PERIOD);
 
         } catch (Exception ex) {
-            LOGGER.error(ex);
+            LOGGER.error(ExceptionUtils.getStackTrace(ex));
         }
     }
 
@@ -88,9 +89,9 @@ public class JoinRoomTest extends WebsocketTest {
             // check if he received a user joined msg for himself
             for (MessageContainerClient message : client1.getMessages()) {
                 MessageTypeCase type = message.getMessageTypeCase();
-                if (MessageTypeCase.USERJOINED.equals(type)) {
+                if (MessageTypeCase.USER_JOINED.equals(type)) {
                     UserJoined joined = message.getUserJoined();
-                    assertEquals(client1.getUserId(), joined.getId());
+                    assertEquals(client1.getUserId(), joined.getUserId());
                 }
             }
 
@@ -106,10 +107,10 @@ public class JoinRoomTest extends WebsocketTest {
             boolean received = false;
             for (MessageContainerClient message : client2.getMessages()) {
                 MessageTypeCase type = message.getMessageTypeCase();
-                if (MessageTypeCase.USERJOINED.equals(type)) {
+                if (MessageTypeCase.USER_JOINED.equals(type)) {
                     UserJoined joined = message.getUserJoined();
 
-                    if (client2.getUserId().equals(joined.getId())) {
+                    if (client2.getUserId().equals(joined.getUserId())) {
                         received = true;
                         break;
                     }
@@ -121,10 +122,10 @@ public class JoinRoomTest extends WebsocketTest {
             received = false;
             for (MessageContainerClient message : client2.getMessages()) {
                 MessageTypeCase type = message.getMessageTypeCase();
-                if (MessageTypeCase.USERJOINED.equals(type)) {
+                if (MessageTypeCase.USER_JOINED.equals(type)) {
                     UserJoined joined = message.getUserJoined();
 
-                    if (client1.getUserId().equals(joined.getId())) {
+                    if (client1.getUserId().equals(joined.getUserId())) {
                         received = true;
                         break;
                     }
@@ -136,10 +137,10 @@ public class JoinRoomTest extends WebsocketTest {
             received = false;
             for (MessageContainerClient message : client1.getMessages()) {
                 MessageTypeCase type = message.getMessageTypeCase();
-                if (MessageTypeCase.USERJOINED.equals(type)) {
+                if (MessageTypeCase.USER_JOINED.equals(type)) {
                     UserJoined joined = message.getUserJoined();
 
-                    if (client2.getUserId().equals(joined.getId())) {
+                    if (client2.getUserId().equals(joined.getUserId())) {
                         received = true;
                         break;
                     }
@@ -159,10 +160,10 @@ public class JoinRoomTest extends WebsocketTest {
             received = false;
             for (MessageContainerClient message : client3.getMessages()) {
                 MessageTypeCase type = message.getMessageTypeCase();
-                if (MessageTypeCase.USERJOINED.equals(type)) {
+                if (MessageTypeCase.USER_JOINED.equals(type)) {
                     UserJoined joined = message.getUserJoined();
 
-                    if (client3.getUserId().equals(joined.getId())) {
+                    if (client3.getUserId().equals(joined.getUserId())) {
                         received = true;
                         break;
                     }
@@ -175,13 +176,13 @@ public class JoinRoomTest extends WebsocketTest {
             boolean received2 = false;
             for (MessageContainerClient message : client3.getMessages()) {
                 MessageTypeCase type = message.getMessageTypeCase();
-                if (MessageTypeCase.USERJOINED.equals(type)) {
+                if (MessageTypeCase.USER_JOINED.equals(type)) {
                     UserJoined joined = message.getUserJoined();
 
-                    if (client1.getUserId().equals(joined.getId())) {
+                    if (client1.getUserId().equals(joined.getUserId())) {
                         received1 = true;
                     }
-                    if (client2.getUserId().equals(joined.getId())) {
+                    if (client2.getUserId().equals(joined.getUserId())) {
                         received2 = true;
                     }
                 }
@@ -193,10 +194,10 @@ public class JoinRoomTest extends WebsocketTest {
             received = false;
             for (MessageContainerClient message : client1.getMessages()) {
                 MessageTypeCase type = message.getMessageTypeCase();
-                if (MessageTypeCase.USERJOINED.equals(type)) {
+                if (MessageTypeCase.USER_JOINED.equals(type)) {
                     UserJoined joined = message.getUserJoined();
 
-                    if (client3.getUserId().equals(joined.getId())) {
+                    if (client3.getUserId().equals(joined.getUserId())) {
                         received = true;
                         break;
                     }
@@ -208,10 +209,10 @@ public class JoinRoomTest extends WebsocketTest {
             received = false;
             for (MessageContainerClient message : client2.getMessages()) {
                 MessageTypeCase type = message.getMessageTypeCase();
-                if (MessageTypeCase.USERJOINED.equals(type)) {
+                if (MessageTypeCase.USER_JOINED.equals(type)) {
                     UserJoined joined = message.getUserJoined();
 
-                    if (client3.getUserId().equals(joined.getId())) {
+                    if (client3.getUserId().equals(joined.getUserId())) {
                         received = true;
                         break;
                     }
@@ -222,7 +223,7 @@ public class JoinRoomTest extends WebsocketTest {
             Thread.sleep(WAITING_PERIOD);
 
         } catch (Exception ex) {
-            LOGGER.error(ex);
+            LOGGER.error(ExceptionUtils.getStackTrace(ex));
         }
     }
 

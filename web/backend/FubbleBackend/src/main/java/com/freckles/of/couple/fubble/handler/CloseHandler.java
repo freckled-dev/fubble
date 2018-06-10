@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.websocket.Session;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -40,7 +41,7 @@ public class CloseHandler {
 
     private void broadcastUserLeft(Room room, User user) {
         UserLeft userLeft = UserLeft.newBuilder() //
-            .setId(user.getId()) //
+            .setUserId(user.getId()) //
             .build();
 
         MessageContainerClient clientMsg = MessageContainerClient.newBuilder().setUserLeft(userLeft).build();
@@ -52,7 +53,7 @@ public class CloseHandler {
             messageHelper.broadcastAsync(sessions, output.toByteArray());
             output.close();
         } catch (Exception ex) {
-            LOGGER.error(ex);
+            LOGGER.error(ExceptionUtils.getStackTrace(ex));
         }
     }
 

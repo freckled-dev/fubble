@@ -4,6 +4,7 @@ package com.freckles.of.couple.fubble.tools;
 import java.io.IOException;
 import java.util.Properties;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,7 +24,7 @@ public class FubbleProperties {
         try {
             properties.load(getClass().getClassLoader().getResourceAsStream("config.properties"));
         } catch (IOException ex) {
-            LOGGER.error(ex);
+            LOGGER.error(ExceptionUtils.getStackTrace(ex));
         }
 
         userNamePrefix = getValue(USER_NAME_PREFIX);

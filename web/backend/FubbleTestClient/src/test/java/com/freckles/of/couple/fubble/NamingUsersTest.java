@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Test;
@@ -51,7 +52,7 @@ public class NamingUsersTest extends WebsocketTest {
             Thread.sleep(WAITING_PERIOD);
 
         } catch (InterruptedException | IOException ex) {
-            LOGGER.error(ex);
+            LOGGER.error(ExceptionUtils.getStackTrace(ex));
         }
     }
 
@@ -107,7 +108,7 @@ public class NamingUsersTest extends WebsocketTest {
             Thread.sleep(WAITING_PERIOD);
 
         } catch (InterruptedException | IOException ex) {
-            LOGGER.error(ex);
+            LOGGER.error(ExceptionUtils.getStackTrace(ex));
         }
     }
 
