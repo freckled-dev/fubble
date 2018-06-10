@@ -1,12 +1,12 @@
 import os
 
-# from flask import Flask, request
-# from server.room_handler import RoomHandler
-# from server.room_url_generator import RoomUrlGenerator
-# from server.request_handler import RequestHandler
-# from server.response_generator import ResponseGenerator
-# from server.request_parser import RequestParser
-# from server.fubble_rtc_pb2 import RtcMessageRequest
+from flask import Flask, request
+from server.room_handler import RoomHandler
+from server.room_url_generator import RoomUrlGenerator
+from server.request_handler import RequestHandler
+from server.response_generator import ResponseGenerator
+from server.request_parser import RequestParser
+from server.fubble_rtc_pb2 import RtcMessageRequest
 
 def create_app(test_config=None):
     # create and configure the app
