@@ -1,0 +1,12 @@
+#!/bin/bash
+
+cd "$(dirname "$0")"/..
+
+proto_dir=../../../proto/
+result_dir=server/
+python -m grpc_tools.protoc \
+  -I=$proto_dir \
+  --python_out=$result_dir \
+  --grpc_python_out=$result_dir \
+  $proto_dir/web_rtc.proto
+
