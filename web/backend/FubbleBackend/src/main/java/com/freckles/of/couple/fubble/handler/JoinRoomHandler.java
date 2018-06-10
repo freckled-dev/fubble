@@ -88,6 +88,7 @@ public class JoinRoomHandler implements FubbleMessageHandler {
             UserJoined userJoined = UserJoined.newBuilder() //
                 .setUserId(currentUser.getId()) //
                 .setUserName(currentUser.getName()) //
+                .setAlreadyInRoom(true) //
                 .build();
 
             MessageContainerClient clientMsg = MessageContainerClient.newBuilder().setUserJoined(userJoined).build();

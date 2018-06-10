@@ -14300,6 +14300,15 @@ public final class WebContainer {
      */
     com.google.protobuf.ByteString
         getUserIdBytes();
+
+    /**
+     * <code>optional bool already_in_room = 3;</code>
+     */
+    boolean hasAlreadyInRoom();
+    /**
+     * <code>optional bool already_in_room = 3;</code>
+     */
+    boolean getAlreadyInRoom();
   }
   /**
    * Protobuf type {@code fubble.UserJoined}
@@ -14316,6 +14325,7 @@ public final class WebContainer {
     private UserJoined() {
       userName_ = "";
       userId_ = "";
+      alreadyInRoom_ = false;
     }
 
     @java.lang.Override
@@ -14359,6 +14369,11 @@ public final class WebContainer {
               com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000002;
               userId_ = bs;
+              break;
+            }
+            case 24: {
+              bitField0_ |= 0x00000004;
+              alreadyInRoom_ = input.readBool();
               break;
             }
           }
@@ -14470,6 +14485,21 @@ public final class WebContainer {
       }
     }
 
+    public static final int ALREADY_IN_ROOM_FIELD_NUMBER = 3;
+    private boolean alreadyInRoom_;
+    /**
+     * <code>optional bool already_in_room = 3;</code>
+     */
+    public boolean hasAlreadyInRoom() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>optional bool already_in_room = 3;</code>
+     */
+    public boolean getAlreadyInRoom() {
+      return alreadyInRoom_;
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -14488,6 +14518,9 @@ public final class WebContainer {
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 2, userId_);
       }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeBool(3, alreadyInRoom_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -14501,6 +14534,10 @@ public final class WebContainer {
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, userId_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(3, alreadyInRoom_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -14528,6 +14565,11 @@ public final class WebContainer {
         result = result && getUserId()
             .equals(other.getUserId());
       }
+      result = result && (hasAlreadyInRoom() == other.hasAlreadyInRoom());
+      if (hasAlreadyInRoom()) {
+        result = result && (getAlreadyInRoom()
+            == other.getAlreadyInRoom());
+      }
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -14546,6 +14588,11 @@ public final class WebContainer {
       if (hasUserId()) {
         hash = (37 * hash) + USER_ID_FIELD_NUMBER;
         hash = (53 * hash) + getUserId().hashCode();
+      }
+      if (hasAlreadyInRoom()) {
+        hash = (37 * hash) + ALREADY_IN_ROOM_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+            getAlreadyInRoom());
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -14680,6 +14727,8 @@ public final class WebContainer {
         bitField0_ = (bitField0_ & ~0x00000001);
         userId_ = "";
         bitField0_ = (bitField0_ & ~0x00000002);
+        alreadyInRoom_ = false;
+        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
 
@@ -14712,6 +14761,10 @@ public final class WebContainer {
           to_bitField0_ |= 0x00000002;
         }
         result.userId_ = userId_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.alreadyInRoom_ = alreadyInRoom_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -14763,6 +14816,9 @@ public final class WebContainer {
           bitField0_ |= 0x00000002;
           userId_ = other.userId_;
           onChanged();
+        }
+        if (other.hasAlreadyInRoom()) {
+          setAlreadyInRoom(other.getAlreadyInRoom());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -14940,6 +14996,38 @@ public final class WebContainer {
   }
   bitField0_ |= 0x00000002;
         userId_ = value;
+        onChanged();
+        return this;
+      }
+
+      private boolean alreadyInRoom_ ;
+      /**
+       * <code>optional bool already_in_room = 3;</code>
+       */
+      public boolean hasAlreadyInRoom() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>optional bool already_in_room = 3;</code>
+       */
+      public boolean getAlreadyInRoom() {
+        return alreadyInRoom_;
+      }
+      /**
+       * <code>optional bool already_in_room = 3;</code>
+       */
+      public Builder setAlreadyInRoom(boolean value) {
+        bitField0_ |= 0x00000004;
+        alreadyInRoom_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional bool already_in_room = 3;</code>
+       */
+      public Builder clearAlreadyInRoom() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        alreadyInRoom_ = false;
         onChanged();
         return this;
       }
@@ -21713,24 +21801,24 @@ public final class WebContainer {
       "us\022\017\n\007user_id\030\001 \001(\t\022,\n\006status\030\002 \001(\0162\034.fu" +
       "bble.ChangedStatus.Status\022-\n\007message\030\003 \001" +
       "(\0162\034.fubble.ChangedStatus.Status\")\n\006Stat" +
-      "us\022\r\n\tAVAILABLE\020\000\022\007\n\003AFK\020\001\022\007\n\003DND\020\002\"0\n\nU" +
+      "us\022\r\n\tAVAILABLE\020\000\022\007\n\003AFK\020\001\022\007\n\003DND\020\002\"I\n\nU" +
       "serJoined\022\021\n\tuser_name\030\001 \001(\t\022\017\n\007user_id\030" +
-      "\002 \001(\t\"\033\n\010UserLeft\022\017\n\007user_id\030\001 \001(\t\"A\n\nJo" +
-      "inedRoom\022\017\n\007room_id\030\001 \001(\t\022\017\n\007user_id\030\002 \001" +
-      "(\t\022\021\n\tuser_name\030\003 \001(\t\"q\n\013FubbleError\022/\n\010" +
-      "error_id\030\001 \001(\0162\035.fubble.FubbleError.Erro" +
-      "rType\022\023\n\013description\030\002 \001(\t\"\034\n\tErrorType\022" +
-      "\017\n\013ROOM_LOCKED\020\000\"0\n\013RenamedUser\022\017\n\007user_" +
-      "id\030\001 \001(\t\022\020\n\010new_name\030\002 \001(\t\"5\n\021ChatMessag" +
-      "eClient\022\017\n\007content\030\001 \001(\t\022\017\n\007user_id\030\002 \001(" +
-      "\t\">\n\nLockedRoom\022\021\n\troom_name\030\001 \001(\t\022\014\n\004lo" +
-      "ck\030\002 \001(\010\022\017\n\007user_id\030\003 \001(\t\"3\n\014ReservedRoo" +
-      "m\022\021\n\troom_name\030\001 \001(\t\022\020\n\010reserved\030\002 \001(\010\"5" +
-      "\n\rProtectedRoom\022\021\n\troom_name\030\001 \001(\t\022\021\n\tpr" +
-      "otected\030\002 \001(\010\"B\n\013AllowedUser\022\021\n\troom_nam" +
-      "e\030\001 \001(\t\022\021\n\tuser_name\030\002 \001(\t\022\r\n\005allow\030\003 \001(" +
-      "\010B3\n#com.freckles.of.couple.fubble.proto" +
-      "B\014WebContainer"
+      "\002 \001(\t\022\027\n\017already_in_room\030\003 \001(\010\"\033\n\010UserLe" +
+      "ft\022\017\n\007user_id\030\001 \001(\t\"A\n\nJoinedRoom\022\017\n\007roo" +
+      "m_id\030\001 \001(\t\022\017\n\007user_id\030\002 \001(\t\022\021\n\tuser_name" +
+      "\030\003 \001(\t\"q\n\013FubbleError\022/\n\010error_id\030\001 \001(\0162" +
+      "\035.fubble.FubbleError.ErrorType\022\023\n\013descri" +
+      "ption\030\002 \001(\t\"\034\n\tErrorType\022\017\n\013ROOM_LOCKED\020" +
+      "\000\"0\n\013RenamedUser\022\017\n\007user_id\030\001 \001(\t\022\020\n\010new" +
+      "_name\030\002 \001(\t\"5\n\021ChatMessageClient\022\017\n\007cont" +
+      "ent\030\001 \001(\t\022\017\n\007user_id\030\002 \001(\t\">\n\nLockedRoom" +
+      "\022\021\n\troom_name\030\001 \001(\t\022\014\n\004lock\030\002 \001(\010\022\017\n\007use" +
+      "r_id\030\003 \001(\t\"3\n\014ReservedRoom\022\021\n\troom_name\030" +
+      "\001 \001(\t\022\020\n\010reserved\030\002 \001(\010\"5\n\rProtectedRoom" +
+      "\022\021\n\troom_name\030\001 \001(\t\022\021\n\tprotected\030\002 \001(\010\"B" +
+      "\n\013AllowedUser\022\021\n\troom_name\030\001 \001(\t\022\021\n\tuser" +
+      "_name\030\002 \001(\t\022\r\n\005allow\030\003 \001(\010B3\n#com.freckl" +
+      "es.of.couple.fubble.protoB\014WebContainer"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -21839,7 +21927,7 @@ public final class WebContainer {
     internal_static_fubble_UserJoined_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_fubble_UserJoined_descriptor,
-        new java.lang.String[] { "UserName", "UserId", });
+        new java.lang.String[] { "UserName", "UserId", "AlreadyInRoom", });
     internal_static_fubble_UserLeft_descriptor =
       getDescriptor().getMessageTypes().get(16);
     internal_static_fubble_UserLeft_fieldAccessorTable = new

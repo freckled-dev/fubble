@@ -105,7 +105,11 @@ public class FubbleClientEndpoint {
                 users.add(new User(userJoined.getUserId(), userJoined.getUserName()));
 
                 if (!userJoined.getUserId().equals(userId)) {
-                    print(String.format("A new user joined the room - %s.", userJoined.getUserName()));
+                    if (!userJoined.getAlreadyInRoom()) {
+                        print(String.format("A new user joined the room - %s.", userJoined.getUserName()));
+                    } else {
+                        print(String.format("Also in the room - %s.", userJoined.getUserName()));
+                    }
                 }
             }
 
