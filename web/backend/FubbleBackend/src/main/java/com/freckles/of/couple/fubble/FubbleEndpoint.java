@@ -12,15 +12,16 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.freckles.of.couple.fubble.entities.Room;
 import com.freckles.of.couple.fubble.entities.User;
+import com.freckles.of.couple.fubble.handler.ChatMessageHandler;
 import com.freckles.of.couple.fubble.handler.CloseHandler;
 import com.freckles.of.couple.fubble.handler.FubbleMessageHandler;
 import com.freckles.of.couple.fubble.handler.JoinRoomHandler;
-import com.freckles.of.couple.fubble.handler.RenameRoomHandler;
 import com.freckles.of.couple.fubble.handler.RenameUserHandler;
 import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer;
 import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer.MessageTypeCase;
@@ -57,7 +58,7 @@ public class FubbleEndpoint {
 
             handleContainer(container);
         } catch (Exception ex) {
-            LOGGER.error(ex);
+            LOGGER.error(ExceptionUtils.getStackTrace(ex));
         } finally {
             if (room != null) {
                 room.getMutex().unlock();
@@ -69,15 +70,15 @@ public class FubbleEndpoint {
     private void handleContainer(MessageContainerServer container) {
         MessageTypeCase messageTypeCase = container.getMessageTypeCase();
 
-        if (messageTypeCase.equals(MessageTypeCase.JOINROOM)) {
+        if (messageTypeCase.equals(MessageTypeCase.JOIN_ROOM)) {
             handler = new JoinRoomHandler();
         }
 
-        if (messageTypeCase.equals(MessageTypeCase.RENAMEROOM)) {
-            handler = new RenameRoomHandler();
+        if (messageTypeCase.equals(MessageTypeCase.CHAT_MESSAGE)) {
+            handler = new ChatMessageHandler();
         }
 
-        if (messageTypeCase.equals(MessageTypeCase.RENAMEUSER)) {
+        if (messageTypeCase.equals(MessageTypeCase.RENAME_USER)) {
             handler = new RenameUserHandler();
         }
 
@@ -111,7 +112,7 @@ public class FubbleEndpoint {
         if (throwable instanceof EOFException) {
             return;
         } else {
-            LOGGER.error(throwable);
+            LOGGER.error(ExceptionUtils.getStackTrace(throwable));
         }
     }
 

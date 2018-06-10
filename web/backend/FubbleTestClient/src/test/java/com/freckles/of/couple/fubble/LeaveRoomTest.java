@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Test;
@@ -47,12 +48,12 @@ public class LeaveRoomTest extends WebsocketTest {
             boolean fubbler2LeftReceived = false;
             boolean fubbler4LeftReceived = false;
             for (MessageContainerClient message : clients.get(0).getMessages()) {
-                if (MessageTypeCase.USERLEFT.equals(message.getMessageTypeCase())) {
+                if (MessageTypeCase.USER_LEFT.equals(message.getMessageTypeCase())) {
                     UserLeft userLeft = message.getUserLeft();
-                    if (userLeft.getId().equals(fubbler2_id)) {
+                    if (userLeft.getUserId().equals(fubbler2_id)) {
                         fubbler2LeftReceived = true;
                     }
-                    if (userLeft.getId().equals(fubbler4_id)) {
+                    if (userLeft.getUserId().equals(fubbler4_id)) {
                         fubbler4LeftReceived = true;
                     }
                 }
@@ -63,9 +64,9 @@ public class LeaveRoomTest extends WebsocketTest {
             // check Fubbler4 (Fubbler2 left first - so Fubbler4 must also get a message before he leaves)
             fubbler2LeftReceived = false;
             for (MessageContainerClient message : clients.get(3).getMessages()) {
-                if (MessageTypeCase.USERLEFT.equals(message.getMessageTypeCase())) {
+                if (MessageTypeCase.USER_LEFT.equals(message.getMessageTypeCase())) {
                     UserLeft userLeft = message.getUserLeft();
-                    if (userLeft.getId().equals(fubbler2_id)) {
+                    if (userLeft.getUserId().equals(fubbler2_id)) {
                         fubbler2LeftReceived = true;
                     }
                 }
@@ -76,12 +77,12 @@ public class LeaveRoomTest extends WebsocketTest {
             fubbler2LeftReceived = false;
             fubbler4LeftReceived = false;
             for (MessageContainerClient message : clients.get(2).getMessages()) {
-                if (MessageTypeCase.USERLEFT.equals(message.getMessageTypeCase())) {
+                if (MessageTypeCase.USER_LEFT.equals(message.getMessageTypeCase())) {
                     UserLeft userLeft = message.getUserLeft();
-                    if (userLeft.getId().equals(fubbler2_id)) {
+                    if (userLeft.getUserId().equals(fubbler2_id)) {
                         fubbler2LeftReceived = true;
                     }
-                    if (userLeft.getId().equals(fubbler4_id)) {
+                    if (userLeft.getUserId().equals(fubbler4_id)) {
                         fubbler4LeftReceived = true;
                     }
                 }
@@ -93,12 +94,12 @@ public class LeaveRoomTest extends WebsocketTest {
             fubbler2LeftReceived = false;
             fubbler4LeftReceived = false;
             for (MessageContainerClient message : clients.get(4).getMessages()) {
-                if (MessageTypeCase.USERLEFT.equals(message.getMessageTypeCase())) {
+                if (MessageTypeCase.USER_LEFT.equals(message.getMessageTypeCase())) {
                     UserLeft userLeft = message.getUserLeft();
-                    if (userLeft.getId().equals(fubbler2_id)) {
+                    if (userLeft.getUserId().equals(fubbler2_id)) {
                         fubbler2LeftReceived = true;
                     }
-                    if (userLeft.getId().equals(fubbler4_id)) {
+                    if (userLeft.getUserId().equals(fubbler4_id)) {
                         fubbler4LeftReceived = true;
                     }
                 }
@@ -109,7 +110,7 @@ public class LeaveRoomTest extends WebsocketTest {
             Thread.sleep(WAITING_PERIOD);
 
         } catch (Exception ex) {
-            LOGGER.error(ex);
+            LOGGER.error(ExceptionUtils.getStackTrace(ex));
         }
     }
 

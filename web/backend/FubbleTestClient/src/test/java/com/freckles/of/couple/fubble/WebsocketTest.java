@@ -8,6 +8,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -60,7 +61,7 @@ public class WebsocketTest {
 
             output.close();
         } catch (IOException ex) {
-            LOGGER.error(ex);
+            LOGGER.error(ExceptionUtils.getStackTrace(ex));
         }
     }
 
@@ -73,7 +74,7 @@ public class WebsocketTest {
 
             output.close();
         } catch (IOException ex) {
-            LOGGER.error(ex);
+            LOGGER.error(ExceptionUtils.getStackTrace(ex));
         }
     }
 

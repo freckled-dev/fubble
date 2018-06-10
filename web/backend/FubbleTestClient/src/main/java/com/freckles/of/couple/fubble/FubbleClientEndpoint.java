@@ -15,14 +15,18 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.WebSocketContainer;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.freckles.of.couple.fubble.entities.User;
+import com.freckles.of.couple.fubble.proto.WebContainer.ChatMessageClient;
 import com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoom;
 import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient;
 import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient.MessageTypeCase;
 import com.freckles.of.couple.fubble.proto.WebContainer.RenamedUser;
 import com.freckles.of.couple.fubble.proto.WebContainer.UserJoined;
+import com.freckles.of.couple.fubble.proto.WebContainer.UserLeft;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 /**
@@ -38,6 +42,7 @@ public class FubbleClientEndpoint {
     private String                       userId;
 
     private List<MessageContainerClient> messages    = new ArrayList<>();
+    private List<User>                   users       = new ArrayList<User>();
 
     public FubbleClientEndpoint(URI endpointURI) {
         try {
@@ -81,30 +86,54 @@ public class FubbleClientEndpoint {
             MessageContainerClient container = MessageContainerClient.parseFrom(binaryMessage);
             MessageTypeCase messageTypeCase = container.getMessageTypeCase();
 
-            if (MessageTypeCase.JOINEDROOM.equals(messageTypeCase)) {
+            if (MessageTypeCase.JOINED_ROOM.equals(messageTypeCase)) {
                 JoinedRoom joinedRoom = container.getJoinedRoom();
                 this.userId = joinedRoom.getUserId();
+                this.userName = joinedRoom.getUserName();
+                System.out.println("-----------------------------------");
+                System.out.println(joinedRoom.getUserName());
+                System.out.println("-----------------------------------");
             }
 
-            if (MessageTypeCase.USERJOINED.equals(messageTypeCase)) {
+            if (MessageTypeCase.USER_JOINED.equals(messageTypeCase)) {
                 UserJoined userJoined = container.getUserJoined();
 
-                if (userJoined.getId().equals(userId)) {
-                    this.userName = userJoined.getName();
+                users.add(new User(userJoined.getUserId(), userJoined.getUserName()));
+
+                if (!userJoined.getUserId().equals(userId)) {
+                    System.out.println(String.format("A new user joined the room - %s.", userJoined.getUserName()));
                 }
             }
 
-            if (MessageTypeCase.RENAMEDUSER.equals(messageTypeCase)) {
+            if (MessageTypeCase.RENAMED_USER.equals(messageTypeCase)) {
                 RenamedUser renamedUser = container.getRenamedUser();
 
-                if (renamedUser.getId().equals(userId)) {
-                    this.userName = renamedUser.getName();
+                if (renamedUser.getUserId().equals(userId)) {
+                    this.userName = renamedUser.getNewName();
                 }
+
+                User updateUser = users.stream().filter(user -> user.getId().equals(renamedUser.getUserId())).findFirst().get();
+                updateUser.setName(renamedUser.getNewName());
+                System.out.println(String.format("User %s changed his name to %s.", renamedUser.getUserId(), renamedUser.getNewName()));
+            }
+
+            if (MessageTypeCase.CHAT_MESSAGE.equals(messageTypeCase)) {
+                ChatMessageClient chat = container.getChatMessage();
+                User chatUser = users.stream().filter(user -> user.getId().equals(chat.getUserId())).findFirst().get();
+
+                System.out.println(String.format("%s: %s", chatUser.getName(), chat.getContent()));
+            }
+
+            if (MessageTypeCase.USER_LEFT.equals(messageTypeCase)) {
+                UserLeft userLeft = container.getUserLeft();
+
+                User left = users.stream().filter(user -> user.getId().equals(userLeft.getUserId())).findFirst().get();
+                System.out.println(String.format("User %s has left the building!", left.getName()));
             }
 
             messages.add(container);
         } catch (InvalidProtocolBufferException ex) {
-            LOGGER.error(ex);
+            LOGGER.error(ExceptionUtils.getStackTrace(ex));
         }
 
     }
@@ -127,7 +156,7 @@ public class FubbleClientEndpoint {
         try {
             this.userSession.getAsyncRemote().sendBinary(binaryMessage);
         } catch (Exception ex) {
-            LOGGER.error(ex);
+            LOGGER.error(ExceptionUtils.getStackTrace(ex));
         }
     }
 

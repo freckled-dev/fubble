@@ -1,6 +1,7 @@
 
 package com.freckles.of.couple.fubble.tools;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.SessionFactory;
@@ -19,7 +20,7 @@ public class HibernateUtil {
             return sessionFactory;
 
         } catch (Throwable ex) {
-            LOGGER.error("Initial SessionFactory creation failed." + ex);
+            LOGGER.error(ExceptionUtils.getStackTrace(ex));
             throw new ExceptionInInitializerError(ex);
         }
     }
