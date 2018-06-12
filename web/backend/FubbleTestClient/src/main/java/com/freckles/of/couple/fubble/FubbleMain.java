@@ -20,6 +20,7 @@ public class FubbleMain {
     private static final List<String>   PARAMS_HELP  = Arrays.asList("h", "help", "info");
     private static final String         PARAM_RENAME = "rename";
     private static final String         PARAM_LOCK   = "lock";
+    private static final String         PARAM_UNLOCK = "unlock";
 
     private static FubbleClientEndpoint client;
 
@@ -58,6 +59,11 @@ public class FubbleMain {
                     continue;
                 }
 
+                if (input.equals(PARAM_UNLOCK)) {
+                    unLockRoom();
+                    continue;
+                }
+
                 sendChatMessage(input);
 
             }
@@ -65,6 +71,13 @@ public class FubbleMain {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    private static void unLockRoom() {
+        LockRoom lockRoom = LockRoom.newBuilder().setPassword("").build();
+        MessageContainerServer container = MessageContainerServer.newBuilder().setLockRoom(lockRoom).build();
+
+        sendMessage(container);
     }
 
     private static void lockRoom(String lockInfo) {
@@ -75,9 +88,7 @@ public class FubbleMain {
         }
 
         try {
-            boolean lock = Integer.parseInt(split[1]) == 1;
-
-            LockRoom lockRoom = LockRoom.newBuilder().setLock(lock).build();
+            LockRoom lockRoom = LockRoom.newBuilder().setPassword(split[1]).build();
             MessageContainerServer container = MessageContainerServer.newBuilder().setLockRoom(lockRoom).build();
 
             sendMessage(container);
@@ -132,7 +143,8 @@ public class FubbleMain {
         System.out.println("q|quit|exit ... exit the program");
         System.out.println("h|help|info ... shows the help");
         System.out.println("rename {new name} ... rename yourself");
-        System.out.println("lock 0|1 ... unlock and lock the room");
+        System.out.println("lock password ... lock the room with a password");
+        System.out.println("unlock ... unlock the room");
     }
 
     private static void executeExit() {

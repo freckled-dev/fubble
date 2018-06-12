@@ -66,8 +66,6 @@ public class RenamingUsersTest extends WebsocketTest {
             assertTrue(userNames.contains(nameNew));
             assertFalse(userNames.contains(nameOld));
 
-            Thread.sleep(WAITING_PERIOD);
-
         } catch (Exception ex) {
             LOGGER.error(ExceptionUtils.getStackTrace(ex));
         }
@@ -104,8 +102,6 @@ public class RenamingUsersTest extends WebsocketTest {
                 MessageContainerClient response = MessageContainerClient.newBuilder().setRenamedUser(renamed).build();
                 assertTrue(messages.contains(response));
             }
-
-            Thread.sleep(WAITING_PERIOD);
 
         } catch (Exception ex) {
             LOGGER.error(ExceptionUtils.getStackTrace(ex));

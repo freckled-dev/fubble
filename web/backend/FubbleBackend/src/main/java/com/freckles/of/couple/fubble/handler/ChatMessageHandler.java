@@ -1,11 +1,6 @@
 
 package com.freckles.of.couple.fubble.handler;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.websocket.Session;
-
 import com.freckles.of.couple.fubble.FubbleEndpoint;
 import com.freckles.of.couple.fubble.entities.Room;
 import com.freckles.of.couple.fubble.entities.User;
@@ -37,8 +32,7 @@ public class ChatMessageHandler implements FubbleMessageHandler {
             .build();
 
         MessageContainerClient clientMsg = MessageContainerClient.newBuilder().setChatMessage(chatMessage).build();
-        List<Session> sessions = room.getUsers().stream().map(User::getSession).collect(Collectors.toList());
-        messageHelper.broadcastAsync(sessions, clientMsg);
+        messageHelper.broadcastAsync(room, clientMsg);
     }
 
 }

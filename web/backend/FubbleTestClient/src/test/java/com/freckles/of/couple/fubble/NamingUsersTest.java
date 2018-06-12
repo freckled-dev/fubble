@@ -17,8 +17,8 @@ import org.junit.Test;
 public class NamingUsersTest extends WebsocketTest {
 
     private static final Logger LOGGER         = LogManager.getLogger(NamingUsersTest.class);
-    private static final String ROOM_NAME_1    = "martin-loves-dick-test1";
-    private static final String ROOM_NAME_2    = "martin-loves-dick-test2";
+    private static final String ROOM_NAME_1    = "martin-loves-games-test1";
+    private static final String ROOM_NAME_2    = "martin-loves-games-test2";
 
     private static final int    WAITING_PERIOD = 1000;
 
@@ -39,19 +39,12 @@ public class NamingUsersTest extends WebsocketTest {
             List<String> userNames = allClients.stream().map(FubbleClientEndpoint::getUserName).collect(Collectors.toList());
             LOGGER.info(userNames);
             assertEquals(5, userNames.size());
+
             for (int index = 0; index < allClients.size(); index++) {
                 assertTrue(userNames.contains(FubbleTestProperties.getInstance().getUserNamePrefix() + (index + 1)));
             }
 
-            for (FubbleClientEndpoint client : allClients) {
-                if (client.getUserSession() != null) {
-                    client.getUserSession().close();
-                }
-            }
-
-            Thread.sleep(WAITING_PERIOD);
-
-        } catch (InterruptedException | IOException ex) {
+        } catch (InterruptedException ex) {
             LOGGER.error(ExceptionUtils.getStackTrace(ex));
         }
     }
@@ -96,16 +89,6 @@ public class NamingUsersTest extends WebsocketTest {
             for (int index = 0; index < allClients.size(); index++) {
                 assertTrue(userNames.contains(FubbleTestProperties.getInstance().getUserNamePrefix() + (index + 1)));
             }
-
-            Thread.sleep(WAITING_PERIOD);
-
-            for (FubbleClientEndpoint client : allClients) {
-                if (client.getUserSession() != null) {
-                    client.getUserSession().close();
-                }
-            }
-
-            Thread.sleep(WAITING_PERIOD);
 
         } catch (InterruptedException | IOException ex) {
             LOGGER.error(ExceptionUtils.getStackTrace(ex));

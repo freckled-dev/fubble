@@ -4,6 +4,8 @@ package com.freckles.of.couple.fubble;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
+
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,6 +22,7 @@ public class JoinRoomTest extends WebsocketTest {
 
     private static final String ROOM_NAME_1    = "kugel_test1";
     private static final String ROOM_NAME_2    = "kugel_test2";
+    private static final String ROOM_NAME_3    = "kugel_test3";
 
     private static final int    WAITING_PERIOD = 1000;
 
@@ -69,8 +72,6 @@ public class JoinRoomTest extends WebsocketTest {
             }
 
             assertTrue(joinedRoomReceived);
-
-            Thread.sleep(WAITING_PERIOD);
 
         } catch (Exception ex) {
             LOGGER.error(ExceptionUtils.getStackTrace(ex));
@@ -220,7 +221,42 @@ public class JoinRoomTest extends WebsocketTest {
             }
             assertTrue(received);
 
+        } catch (Exception ex) {
+            LOGGER.error(ExceptionUtils.getStackTrace(ex));
+        }
+    }
+
+    @Test
+    public void testAlreadyInRoomFlag() {
+        try {
+            // 5 clients join
+            List<FubbleClientEndpoint> clients = createClients(5);
+            for (FubbleClientEndpoint client : clients) {
+                joinRoom(ROOM_NAME_3, client);
+            }
+
             Thread.sleep(WAITING_PERIOD);
+
+            // 6. client joins
+            FubbleClientEndpoint newClient = createClient();
+            joinRoom(ROOM_NAME_3, newClient);
+
+            Thread.sleep(WAITING_PERIOD);
+
+            // check if he received 4 UserJoined messages where the alreadyInRoom flag is set to true
+            int alreadyInRoomCounter = 0;
+
+            for (MessageContainerClient message : newClient.getMessages()) {
+                MessageTypeCase type = message.getMessageTypeCase();
+                if (MessageTypeCase.USER_JOINED.equals(type)) {
+                    UserJoined joined = message.getUserJoined();
+                    if (joined.getAlreadyInRoom()) {
+                        alreadyInRoomCounter++;
+                    }
+                }
+            }
+
+            assertEquals(5, alreadyInRoomCounter);
 
         } catch (Exception ex) {
             LOGGER.error(ExceptionUtils.getStackTrace(ex));
