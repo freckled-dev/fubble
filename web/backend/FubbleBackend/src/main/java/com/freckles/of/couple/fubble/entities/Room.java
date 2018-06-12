@@ -3,7 +3,6 @@ package com.freckles.of.couple.fubble.entities;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import javax.persistence.CascadeType;
@@ -21,24 +20,24 @@ public class Room {
 
     @Id
     @Column(name = "id")
-    private String     id;
+    private String        id;
 
     @Column(name = "NAME")
-    private String     name;
+    private String        name;
 
     @Column(name = "CONNECTEDCOUNTER")
-    private int        connectedCounter = 1;
+    private int           connectedCounter = 1;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "ROOM_USER", //
         joinColumns = { @JoinColumn(name = "ROOM_ID", nullable = false, updatable = false) }, //
         inverseJoinColumns = { @JoinColumn(name = "USER_ID", nullable = false, updatable = false) })
-    private List<User> users            = new ArrayList<>();
+    private List<User>    users            = new ArrayList<>();
+
+    private String        password         = "";
 
     @Transient
-    private Lock       mutex            = new ReentrantLock();
-
-    private boolean    locked;
+    private ReentrantLock mutex            = new ReentrantLock();
 
     public Room() {
 
@@ -80,20 +79,28 @@ public class Room {
         return id;
     }
 
-    public Lock getMutex() {
-        return mutex;
+    public void lock() {
+        mutex.lock();
+    }
+
+    public void unlock() {
+        mutex.unlock();
     }
 
     public boolean isLocked() {
-        return locked;
+        return !password.isEmpty();
     }
 
     public boolean isUnLocked() {
-        return !locked;
+        return password.isEmpty();
     }
 
-    public void setLocked(boolean locked) {
-        this.locked = locked;
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
 }

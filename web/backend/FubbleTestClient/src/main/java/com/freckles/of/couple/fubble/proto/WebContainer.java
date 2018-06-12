@@ -2844,6 +2844,20 @@ public final class WebContainer {
      */
     com.google.protobuf.ByteString
         getRoomNameBytes();
+
+    /**
+     * <code>optional string password = 2;</code>
+     */
+    boolean hasPassword();
+    /**
+     * <code>optional string password = 2;</code>
+     */
+    java.lang.String getPassword();
+    /**
+     * <code>optional string password = 2;</code>
+     */
+    com.google.protobuf.ByteString
+        getPasswordBytes();
   }
   /**
    * Protobuf type {@code fubble.JoinRoom}
@@ -2859,6 +2873,7 @@ public final class WebContainer {
     }
     private JoinRoom() {
       roomName_ = "";
+      password_ = "";
     }
 
     @java.lang.Override
@@ -2896,6 +2911,12 @@ public final class WebContainer {
               com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000001;
               roomName_ = bs;
+              break;
+            }
+            case 18: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000002;
+              password_ = bs;
               break;
             }
           }
@@ -2965,6 +2986,48 @@ public final class WebContainer {
       }
     }
 
+    public static final int PASSWORD_FIELD_NUMBER = 2;
+    private volatile java.lang.Object password_;
+    /**
+     * <code>optional string password = 2;</code>
+     */
+    public boolean hasPassword() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>optional string password = 2;</code>
+     */
+    public java.lang.String getPassword() {
+      java.lang.Object ref = password_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          password_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string password = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+        getPasswordBytes() {
+      java.lang.Object ref = password_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        password_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -2980,6 +3043,9 @@ public final class WebContainer {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 1, roomName_);
       }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, password_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -2990,6 +3056,9 @@ public final class WebContainer {
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, roomName_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, password_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -3012,6 +3081,11 @@ public final class WebContainer {
         result = result && getRoomName()
             .equals(other.getRoomName());
       }
+      result = result && (hasPassword() == other.hasPassword());
+      if (hasPassword()) {
+        result = result && getPassword()
+            .equals(other.getPassword());
+      }
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -3026,6 +3100,10 @@ public final class WebContainer {
       if (hasRoomName()) {
         hash = (37 * hash) + ROOM_NAME_FIELD_NUMBER;
         hash = (53 * hash) + getRoomName().hashCode();
+      }
+      if (hasPassword()) {
+        hash = (37 * hash) + PASSWORD_FIELD_NUMBER;
+        hash = (53 * hash) + getPassword().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -3158,6 +3236,8 @@ public final class WebContainer {
         super.clear();
         roomName_ = "";
         bitField0_ = (bitField0_ & ~0x00000001);
+        password_ = "";
+        bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
 
@@ -3186,6 +3266,10 @@ public final class WebContainer {
           to_bitField0_ |= 0x00000001;
         }
         result.roomName_ = roomName_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.password_ = password_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -3231,6 +3315,11 @@ public final class WebContainer {
         if (other.hasRoomName()) {
           bitField0_ |= 0x00000001;
           roomName_ = other.roomName_;
+          onChanged();
+        }
+        if (other.hasPassword()) {
+          bitField0_ |= 0x00000002;
+          password_ = other.password_;
           onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
@@ -3333,6 +3422,82 @@ public final class WebContainer {
   }
   bitField0_ |= 0x00000001;
         roomName_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object password_ = "";
+      /**
+       * <code>optional string password = 2;</code>
+       */
+      public boolean hasPassword() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>optional string password = 2;</code>
+       */
+      public java.lang.String getPassword() {
+        java.lang.Object ref = password_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            password_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string password = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+          getPasswordBytes() {
+        java.lang.Object ref = password_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          password_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string password = 2;</code>
+       */
+      public Builder setPassword(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        password_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string password = 2;</code>
+       */
+      public Builder clearPassword() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        password_ = getDefaultInstance().getPassword();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string password = 2;</code>
+       */
+      public Builder setPasswordBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        password_ = value;
         onChanged();
         return this;
       }
@@ -4506,13 +4671,30 @@ public final class WebContainer {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>optional bool lock = 1;</code>
+     * <pre>
+     * the room is unlocked again if a blank password is set
+     * </pre>
+     *
+     * <code>optional string password = 1;</code>
      */
-    boolean hasLock();
+    boolean hasPassword();
     /**
-     * <code>optional bool lock = 1;</code>
+     * <pre>
+     * the room is unlocked again if a blank password is set
+     * </pre>
+     *
+     * <code>optional string password = 1;</code>
      */
-    boolean getLock();
+    java.lang.String getPassword();
+    /**
+     * <pre>
+     * the room is unlocked again if a blank password is set
+     * </pre>
+     *
+     * <code>optional string password = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getPasswordBytes();
   }
   /**
    * Protobuf type {@code fubble.LockRoom}
@@ -4527,7 +4709,7 @@ public final class WebContainer {
       super(builder);
     }
     private LockRoom() {
-      lock_ = false;
+      password_ = "";
     }
 
     @java.lang.Override
@@ -4561,9 +4743,10 @@ public final class WebContainer {
               }
               break;
             }
-            case 8: {
+            case 10: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000001;
-              lock_ = input.readBool();
+              password_ = bs;
               break;
             }
           }
@@ -4591,19 +4774,58 @@ public final class WebContainer {
     }
 
     private int bitField0_;
-    public static final int LOCK_FIELD_NUMBER = 1;
-    private boolean lock_;
+    public static final int PASSWORD_FIELD_NUMBER = 1;
+    private volatile java.lang.Object password_;
     /**
-     * <code>optional bool lock = 1;</code>
+     * <pre>
+     * the room is unlocked again if a blank password is set
+     * </pre>
+     *
+     * <code>optional string password = 1;</code>
      */
-    public boolean hasLock() {
+    public boolean hasPassword() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>optional bool lock = 1;</code>
+     * <pre>
+     * the room is unlocked again if a blank password is set
+     * </pre>
+     *
+     * <code>optional string password = 1;</code>
      */
-    public boolean getLock() {
-      return lock_;
+    public java.lang.String getPassword() {
+      java.lang.Object ref = password_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          password_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * the room is unlocked again if a blank password is set
+     * </pre>
+     *
+     * <code>optional string password = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getPasswordBytes() {
+      java.lang.Object ref = password_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        password_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     private byte memoizedIsInitialized = -1;
@@ -4619,7 +4841,7 @@ public final class WebContainer {
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeBool(1, lock_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, password_);
       }
       unknownFields.writeTo(output);
     }
@@ -4630,8 +4852,7 @@ public final class WebContainer {
 
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(1, lock_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, password_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -4649,10 +4870,10 @@ public final class WebContainer {
       com.freckles.of.couple.fubble.proto.WebContainer.LockRoom other = (com.freckles.of.couple.fubble.proto.WebContainer.LockRoom) obj;
 
       boolean result = true;
-      result = result && (hasLock() == other.hasLock());
-      if (hasLock()) {
-        result = result && (getLock()
-            == other.getLock());
+      result = result && (hasPassword() == other.hasPassword());
+      if (hasPassword()) {
+        result = result && getPassword()
+            .equals(other.getPassword());
       }
       result = result && unknownFields.equals(other.unknownFields);
       return result;
@@ -4665,10 +4886,9 @@ public final class WebContainer {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      if (hasLock()) {
-        hash = (37 * hash) + LOCK_FIELD_NUMBER;
-        hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-            getLock());
+      if (hasPassword()) {
+        hash = (37 * hash) + PASSWORD_FIELD_NUMBER;
+        hash = (53 * hash) + getPassword().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -4799,7 +5019,7 @@ public final class WebContainer {
       }
       public Builder clear() {
         super.clear();
-        lock_ = false;
+        password_ = "";
         bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
@@ -4828,7 +5048,7 @@ public final class WebContainer {
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
           to_bitField0_ |= 0x00000001;
         }
-        result.lock_ = lock_;
+        result.password_ = password_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -4871,8 +5091,10 @@ public final class WebContainer {
 
       public Builder mergeFrom(com.freckles.of.couple.fubble.proto.WebContainer.LockRoom other) {
         if (other == com.freckles.of.couple.fubble.proto.WebContainer.LockRoom.getDefaultInstance()) return this;
-        if (other.hasLock()) {
-          setLock(other.getLock());
+        if (other.hasPassword()) {
+          bitField0_ |= 0x00000001;
+          password_ = other.password_;
+          onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -4902,34 +5124,102 @@ public final class WebContainer {
       }
       private int bitField0_;
 
-      private boolean lock_ ;
+      private java.lang.Object password_ = "";
       /**
-       * <code>optional bool lock = 1;</code>
+       * <pre>
+       * the room is unlocked again if a blank password is set
+       * </pre>
+       *
+       * <code>optional string password = 1;</code>
        */
-      public boolean hasLock() {
+      public boolean hasPassword() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>optional bool lock = 1;</code>
+       * <pre>
+       * the room is unlocked again if a blank password is set
+       * </pre>
+       *
+       * <code>optional string password = 1;</code>
        */
-      public boolean getLock() {
-        return lock_;
+      public java.lang.String getPassword() {
+        java.lang.Object ref = password_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            password_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
       }
       /**
-       * <code>optional bool lock = 1;</code>
+       * <pre>
+       * the room is unlocked again if a blank password is set
+       * </pre>
+       *
+       * <code>optional string password = 1;</code>
        */
-      public Builder setLock(boolean value) {
-        bitField0_ |= 0x00000001;
-        lock_ = value;
+      public com.google.protobuf.ByteString
+          getPasswordBytes() {
+        java.lang.Object ref = password_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          password_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * the room is unlocked again if a blank password is set
+       * </pre>
+       *
+       * <code>optional string password = 1;</code>
+       */
+      public Builder setPassword(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        password_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional bool lock = 1;</code>
+       * <pre>
+       * the room is unlocked again if a blank password is set
+       * </pre>
+       *
+       * <code>optional string password = 1;</code>
        */
-      public Builder clearLock() {
+      public Builder clearPassword() {
         bitField0_ = (bitField0_ & ~0x00000001);
-        lock_ = false;
+        password_ = getDefaultInstance().getPassword();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * the room is unlocked again if a blank password is set
+       * </pre>
+       *
+       * <code>optional string password = 1;</code>
+       */
+      public Builder setPasswordBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        password_ = value;
         onChanged();
         return this;
       }
@@ -21768,57 +22058,58 @@ public final class WebContainer {
       "(\0132\023.fubble.ReserveRoomH\000\022+\n\014protect_roo" +
       "m\030\t \001(\0132\023.fubble.ProtectRoomH\000\022\'\n\nallow_" +
       "user\030\n \001(\0132\021.fubble.AllowUserH\000B\r\n\013messa" +
-      "geType\"\035\n\010JoinRoom\022\021\n\troom_name\030\001 \001(\t\"\036\n" +
-      "\nRenameUser\022\020\n\010new_name\030\001 \001(\t\"\036\n\013ChatMes" +
-      "sage\022\017\n\007content\030\001 \001(\t\"\030\n\010LockRoom\022\014\n\004loc" +
-      "k\030\001 \001(\010\"3\n\013ReserveRoom\022\021\n\troom_name\030\001 \001(" +
-      "\t\022\021\n\treserverd\030\002 \001(\010\"0\n\013ProtectRoom\022\020\n\010p" +
-      "assword\030\001 \001(\t\022\017\n\007protect\030\002 \001(\010\"@\n\tAllowU" +
-      "ser\022\021\n\troom_name\030\001 \001(\t\022\021\n\tuser_name\030\002 \001(" +
-      "\t\022\r\n\005allow\030\003 \001(\010\"*\n\010MuteUser\022\017\n\007user_id\030" +
-      "\001 \001(\t\022\r\n\005muted\030\002 \001(\010\"\031\n\006HandUp\022\017\n\007hand_u" +
-      "p\030\001 \001(\010\"\224\001\n\014ChangeStatus\022+\n\006status\030\001 \001(\016" +
-      "2\033.fubble.ChangeStatus.Status\022,\n\007message" +
-      "\030\003 \001(\0162\033.fubble.ChangeStatus.Status\")\n\006S" +
-      "tatus\022\r\n\tAVAILABLE\020\000\022\007\n\003AFK\020\001\022\007\n\003DND\020\002\"\334" +
-      "\004\n\026MessageContainerClient\022)\n\013user_joined" +
-      "\030\001 \001(\0132\022.fubble.UserJoinedH\000\022%\n\tuser_lef" +
-      "t\030\002 \001(\0132\020.fubble.UserLeftH\000\022)\n\013joined_ro" +
-      "om\030\003 \001(\0132\022.fubble.JoinedRoomH\000\022$\n\005error\030" +
-      "\004 \001(\0132\023.fubble.FubbleErrorH\000\022+\n\014renamed_" +
-      "user\030\005 \001(\0132\023.fubble.RenamedUserH\000\022\'\n\tloc" +
-      "k_room\030\006 \001(\0132\022.fubble.LockedRoomH\000\022\'\n\nmu" +
-      "ted_user\030\007 \001(\0132\021.fubble.MutedUserH\000\022&\n\nh" +
-      "and_is_up\030\010 \001(\0132\020.fubble.HandIsUpH\000\022.\n\rc" +
-      "hange_status\030\t \001(\0132\025.fubble.ChangedStatu" +
-      "sH\000\0221\n\014chat_message\030\n \001(\0132\031.fubble.ChatM" +
-      "essageClientH\000\022,\n\014reserve_room\030\013 \001(\0132\024.f" +
-      "ubble.ReservedRoomH\000\022-\n\014protect_room\030\014 \001" +
-      "(\0132\025.fubble.ProtectedRoomH\000\022)\n\nallow_use" +
-      "r\030\r \001(\0132\023.fubble.AllowedUserH\000B\r\n\013messag" +
-      "eType\"\034\n\tMutedUser\022\017\n\007user_id\030\001 \001(\t\"\033\n\010H" +
-      "andIsUp\022\017\n\007user_id\030\001 \001(\t\"\250\001\n\rChangedStat" +
-      "us\022\017\n\007user_id\030\001 \001(\t\022,\n\006status\030\002 \001(\0162\034.fu" +
-      "bble.ChangedStatus.Status\022-\n\007message\030\003 \001" +
-      "(\0162\034.fubble.ChangedStatus.Status\")\n\006Stat" +
-      "us\022\r\n\tAVAILABLE\020\000\022\007\n\003AFK\020\001\022\007\n\003DND\020\002\"I\n\nU" +
-      "serJoined\022\021\n\tuser_name\030\001 \001(\t\022\017\n\007user_id\030" +
-      "\002 \001(\t\022\027\n\017already_in_room\030\003 \001(\010\"\033\n\010UserLe" +
-      "ft\022\017\n\007user_id\030\001 \001(\t\"A\n\nJoinedRoom\022\017\n\007roo" +
-      "m_id\030\001 \001(\t\022\017\n\007user_id\030\002 \001(\t\022\021\n\tuser_name" +
-      "\030\003 \001(\t\"q\n\013FubbleError\022/\n\010error_id\030\001 \001(\0162" +
-      "\035.fubble.FubbleError.ErrorType\022\023\n\013descri" +
-      "ption\030\002 \001(\t\"\034\n\tErrorType\022\017\n\013ROOM_LOCKED\020" +
-      "\000\"0\n\013RenamedUser\022\017\n\007user_id\030\001 \001(\t\022\020\n\010new" +
-      "_name\030\002 \001(\t\"5\n\021ChatMessageClient\022\017\n\007cont" +
-      "ent\030\001 \001(\t\022\017\n\007user_id\030\002 \001(\t\">\n\nLockedRoom" +
-      "\022\021\n\troom_name\030\001 \001(\t\022\014\n\004lock\030\002 \001(\010\022\017\n\007use" +
-      "r_id\030\003 \001(\t\"3\n\014ReservedRoom\022\021\n\troom_name\030" +
-      "\001 \001(\t\022\020\n\010reserved\030\002 \001(\010\"5\n\rProtectedRoom" +
-      "\022\021\n\troom_name\030\001 \001(\t\022\021\n\tprotected\030\002 \001(\010\"B" +
-      "\n\013AllowedUser\022\021\n\troom_name\030\001 \001(\t\022\021\n\tuser" +
-      "_name\030\002 \001(\t\022\r\n\005allow\030\003 \001(\010B3\n#com.freckl" +
-      "es.of.couple.fubble.protoB\014WebContainer"
+      "geType\"/\n\010JoinRoom\022\021\n\troom_name\030\001 \001(\t\022\020\n" +
+      "\010password\030\002 \001(\t\"\036\n\nRenameUser\022\020\n\010new_nam" +
+      "e\030\001 \001(\t\"\036\n\013ChatMessage\022\017\n\007content\030\001 \001(\t\"" +
+      "\034\n\010LockRoom\022\020\n\010password\030\001 \001(\t\"3\n\013Reserve" +
+      "Room\022\021\n\troom_name\030\001 \001(\t\022\021\n\treserverd\030\002 \001" +
+      "(\010\"0\n\013ProtectRoom\022\020\n\010password\030\001 \001(\t\022\017\n\007p" +
+      "rotect\030\002 \001(\010\"@\n\tAllowUser\022\021\n\troom_name\030\001" +
+      " \001(\t\022\021\n\tuser_name\030\002 \001(\t\022\r\n\005allow\030\003 \001(\010\"*" +
+      "\n\010MuteUser\022\017\n\007user_id\030\001 \001(\t\022\r\n\005muted\030\002 \001" +
+      "(\010\"\031\n\006HandUp\022\017\n\007hand_up\030\001 \001(\010\"\224\001\n\014Change" +
+      "Status\022+\n\006status\030\001 \001(\0162\033.fubble.ChangeSt" +
+      "atus.Status\022,\n\007message\030\003 \001(\0162\033.fubble.Ch" +
+      "angeStatus.Status\")\n\006Status\022\r\n\tAVAILABLE" +
+      "\020\000\022\007\n\003AFK\020\001\022\007\n\003DND\020\002\"\334\004\n\026MessageContaine" +
+      "rClient\022)\n\013user_joined\030\001 \001(\0132\022.fubble.Us" +
+      "erJoinedH\000\022%\n\tuser_left\030\002 \001(\0132\020.fubble.U" +
+      "serLeftH\000\022)\n\013joined_room\030\003 \001(\0132\022.fubble." +
+      "JoinedRoomH\000\022$\n\005error\030\004 \001(\0132\023.fubble.Fub" +
+      "bleErrorH\000\022+\n\014renamed_user\030\005 \001(\0132\023.fubbl" +
+      "e.RenamedUserH\000\022\'\n\tlock_room\030\006 \001(\0132\022.fub" +
+      "ble.LockedRoomH\000\022\'\n\nmuted_user\030\007 \001(\0132\021.f" +
+      "ubble.MutedUserH\000\022&\n\nhand_is_up\030\010 \001(\0132\020." +
+      "fubble.HandIsUpH\000\022.\n\rchange_status\030\t \001(\013" +
+      "2\025.fubble.ChangedStatusH\000\0221\n\014chat_messag" +
+      "e\030\n \001(\0132\031.fubble.ChatMessageClientH\000\022,\n\014" +
+      "reserve_room\030\013 \001(\0132\024.fubble.ReservedRoom" +
+      "H\000\022-\n\014protect_room\030\014 \001(\0132\025.fubble.Protec" +
+      "tedRoomH\000\022)\n\nallow_user\030\r \001(\0132\023.fubble.A" +
+      "llowedUserH\000B\r\n\013messageType\"\034\n\tMutedUser" +
+      "\022\017\n\007user_id\030\001 \001(\t\"\033\n\010HandIsUp\022\017\n\007user_id" +
+      "\030\001 \001(\t\"\250\001\n\rChangedStatus\022\017\n\007user_id\030\001 \001(" +
+      "\t\022,\n\006status\030\002 \001(\0162\034.fubble.ChangedStatus" +
+      ".Status\022-\n\007message\030\003 \001(\0162\034.fubble.Change" +
+      "dStatus.Status\")\n\006Status\022\r\n\tAVAILABLE\020\000\022" +
+      "\007\n\003AFK\020\001\022\007\n\003DND\020\002\"I\n\nUserJoined\022\021\n\tuser_" +
+      "name\030\001 \001(\t\022\017\n\007user_id\030\002 \001(\t\022\027\n\017already_i" +
+      "n_room\030\003 \001(\010\"\033\n\010UserLeft\022\017\n\007user_id\030\001 \001(" +
+      "\t\"A\n\nJoinedRoom\022\017\n\007room_id\030\001 \001(\t\022\017\n\007user" +
+      "_id\030\002 \001(\t\022\021\n\tuser_name\030\003 \001(\t\"q\n\013FubbleEr" +
+      "ror\022/\n\010error_id\030\001 \001(\0162\035.fubble.FubbleErr" +
+      "or.ErrorType\022\023\n\013description\030\002 \001(\t\"\034\n\tErr" +
+      "orType\022\017\n\013ROOM_LOCKED\020\000\"0\n\013RenamedUser\022\017" +
+      "\n\007user_id\030\001 \001(\t\022\020\n\010new_name\030\002 \001(\t\"5\n\021Cha" +
+      "tMessageClient\022\017\n\007content\030\001 \001(\t\022\017\n\007user_" +
+      "id\030\002 \001(\t\">\n\nLockedRoom\022\021\n\troom_name\030\001 \001(" +
+      "\t\022\014\n\004lock\030\002 \001(\010\022\017\n\007user_id\030\003 \001(\t\"3\n\014Rese" +
+      "rvedRoom\022\021\n\troom_name\030\001 \001(\t\022\020\n\010reserved\030" +
+      "\002 \001(\010\"5\n\rProtectedRoom\022\021\n\troom_name\030\001 \001(" +
+      "\t\022\021\n\tprotected\030\002 \001(\010\"B\n\013AllowedUser\022\021\n\tr" +
+      "oom_name\030\001 \001(\t\022\021\n\tuser_name\030\002 \001(\t\022\r\n\005all" +
+      "ow\030\003 \001(\010B3\n#com.freckles.of.couple.fubbl" +
+      "e.protoB\014WebContainer"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -21843,7 +22134,7 @@ public final class WebContainer {
     internal_static_fubble_JoinRoom_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_fubble_JoinRoom_descriptor,
-        new java.lang.String[] { "RoomName", });
+        new java.lang.String[] { "RoomName", "Password", });
     internal_static_fubble_RenameUser_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_fubble_RenameUser_fieldAccessorTable = new
@@ -21861,7 +22152,7 @@ public final class WebContainer {
     internal_static_fubble_LockRoom_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_fubble_LockRoom_descriptor,
-        new java.lang.String[] { "Lock", });
+        new java.lang.String[] { "Password", });
     internal_static_fubble_ReserveRoom_descriptor =
       getDescriptor().getMessageTypes().get(5);
     internal_static_fubble_ReserveRoom_fieldAccessorTable = new

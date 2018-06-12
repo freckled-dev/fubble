@@ -15,8 +15,7 @@ message MessageContainerServer {
 		LockRoom lock_room = 3;
 		MuteUser mute_user = 4;
 		HandUp hand_up = 5;
-		ChangeStatus change_status = 6;
-		
+		ChangeStatus change_status = 6;		
 		
 		// chat
 		ChatMessage chat_message = 7;
@@ -30,6 +29,7 @@ message MessageContainerServer {
 
 message JoinRoom {
 	optional string room_name = 1;
+	optional string password = 2;
 }
 
 message RenameUser {
@@ -41,7 +41,8 @@ message ChatMessage {
 }
 
 message LockRoom {
-	optional bool lock = 1;
+	// the room is unlocked again if a blank password is set
+	optional string password = 1;
 }
 
 message ReserveRoom {

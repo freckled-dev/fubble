@@ -40,7 +40,6 @@ public class FubbleEndpoint {
 
     @OnOpen
     public void onOpen(Session session) {
-        LOGGER.info("Server: A new client has connected.");
         this.session = session;
     }
 
@@ -52,7 +51,7 @@ public class FubbleEndpoint {
 
         try {
             if (room != null) {
-                room.getMutex().lock();
+                room.lock();
             }
 
             handleContainer(container);
@@ -60,7 +59,7 @@ public class FubbleEndpoint {
             LOGGER.error(ExceptionUtils.getStackTrace(ex));
         } finally {
             if (room != null) {
-                room.getMutex().unlock();
+                room.unlock();
             }
         }
     }
@@ -88,8 +87,18 @@ public class FubbleEndpoint {
     }
 
     public void setRoom(Room room) {
-        this.room = room;
-        this.room.getMutex().lock();
+        if (room == null) {
+            return;
+        }
+
+        if (this.room == null) {
+            this.room = room;
+            this.room.lock();
+        } else {
+            if (!this.room.equals(room)) {
+                LOGGER.error("TODO"); // böser hacker
+            }
+        }
     }
 
     public Session getSession() {
@@ -121,17 +130,22 @@ public class FubbleEndpoint {
     @OnClose
     public void onClose()
         throws IOException {
+        handleUserQuit();
+    }
+
+    private void handleUserQuit() {
+        if (room == null) {
+            return;
+        }
+
+        room.lock();
 
         try {
-            if (room != null) {
-                room.getMutex().lock();
-            }
-
             closer.handleClose(this);
+        } catch (Exception ex) {
+            LOGGER.error(ExceptionUtils.getStackTrace(ex));
         } finally {
-            if (room != null) {
-                room.getMutex().unlock();
-            }
+            room.unlock();
         }
     }
 

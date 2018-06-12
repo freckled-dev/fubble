@@ -51,8 +51,6 @@ public class ChatMessageTest extends WebsocketTest {
                 assertEquals(greetings, chatMsg.getChatMessage().getContent());
             }
 
-            Thread.sleep(WAITING_PERIOD);
-
         } catch (Exception ex) {
             LOGGER.error(ExceptionUtils.getStackTrace(ex));
         }

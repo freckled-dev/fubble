@@ -73,8 +73,6 @@ public class JoinRoomTest extends WebsocketTest {
 
             assertTrue(joinedRoomReceived);
 
-            Thread.sleep(WAITING_PERIOD);
-
         } catch (Exception ex) {
             LOGGER.error(ExceptionUtils.getStackTrace(ex));
         }
@@ -223,8 +221,6 @@ public class JoinRoomTest extends WebsocketTest {
             }
             assertTrue(received);
 
-            Thread.sleep(WAITING_PERIOD);
-
         } catch (Exception ex) {
             LOGGER.error(ExceptionUtils.getStackTrace(ex));
         }
@@ -261,8 +257,6 @@ public class JoinRoomTest extends WebsocketTest {
             }
 
             assertEquals(5, alreadyInRoomCounter);
-
-            Thread.sleep(WAITING_PERIOD);
 
         } catch (Exception ex) {
             LOGGER.error(ExceptionUtils.getStackTrace(ex));

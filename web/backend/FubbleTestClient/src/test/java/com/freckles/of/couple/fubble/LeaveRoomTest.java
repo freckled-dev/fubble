@@ -107,8 +107,6 @@ public class LeaveRoomTest extends WebsocketTest {
             assertTrue(fubbler2LeftReceived);
             assertTrue(fubbler4LeftReceived);
 
-            Thread.sleep(WAITING_PERIOD);
-
         } catch (Exception ex) {
             LOGGER.error(ExceptionUtils.getStackTrace(ex));
         }

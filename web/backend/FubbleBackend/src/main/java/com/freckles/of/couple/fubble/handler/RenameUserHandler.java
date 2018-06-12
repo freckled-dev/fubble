@@ -1,11 +1,6 @@
 
 package com.freckles.of.couple.fubble.handler;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.websocket.Session;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -50,8 +45,7 @@ public class RenameUserHandler implements FubbleMessageHandler {
             .build();
 
         MessageContainerClient clientMsg = MessageContainerClient.newBuilder().setRenamedUser(renamedUser).build();
-        List<Session> sessions = room.getUsers().stream().map(User::getSession).collect(Collectors.toList());
-        messageHelper.broadcastAsync(sessions, clientMsg);
+        messageHelper.broadcastAsync(room, clientMsg);
 
     }
 

@@ -1,11 +1,6 @@
 
 package com.freckles.of.couple.fubble.handler;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.websocket.Session;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,6 +21,11 @@ public class CloseHandler {
 
     public void handleClose(FubbleEndpoint connection) {
         Room room = connection.getRoom();
+        User user = connection.getUser();
+
+        if (room == null || user == null) {
+            return;
+        }
 
         // 1. Remove user from room
         removeUser(room, connection);
@@ -34,17 +34,19 @@ public class CloseHandler {
         removeRoom(room);
 
         // 3. Send UserLeft to remaining users in the room
-        broadcastUserLeft(room, connection.getUser());
+        broadcastUserLeft(room, user);
     }
 
     private void broadcastUserLeft(Room room, User user) {
+        if (user == null) {
+            LOGGER.error(room.getName());
+        }
         UserLeft userLeft = UserLeft.newBuilder() //
             .setUserId(user.getId()) //
             .build();
 
         MessageContainerClient clientMsg = MessageContainerClient.newBuilder().setUserLeft(userLeft).build();
-        List<Session> sessions = room.getUsers().stream().map(User::getSession).collect(Collectors.toList());
-        messageHelper.broadcastAsync(sessions, clientMsg);
+        messageHelper.broadcastAsync(room, clientMsg);
     }
 
     private void removeRoom(Room room) {
