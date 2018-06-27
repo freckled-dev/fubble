@@ -1,4 +1,30 @@
+stages:
+  - build
+  - package
+
 test_rtc_session_handler:
+  stage: build
   image: registry.gitlab.com/acof/fubble/ci/build_build:v0
   script: ./web/rtc/session_handler/scripts/ci/test
+
+build_rtc_session_handler:
+  stage: build
+  image: registry.gitlab.com/acof/fubble/ci/build_build:v0
+  script: ./web/rtc/session_handler/scripts/build_server
+  artifacts:
+    paths:
+    - ./web/rtc/session_handler/dist/
+    expire_in: 1 week
+
+build_image_rtc_session_handler:
+  stage: package
+  dependencies:
+  - build_rtc_session_handler
+  image: docker:stable
+  services:
+  - docker:dind
+  script:
+  - ./web/rtc/session_handler/scripts/ci/make_package
+
+
 
