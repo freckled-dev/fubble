@@ -36,11 +36,16 @@ def serve(server_):
     try:
         while True:
             time.sleep(ONE_DAY_IN_SECONDS)
-    except KeyboardInterrupt:
+    finally:
+        print("stopping server")
         server_.stop(0)
 
-if __name__ == '__main__':
+def start_and_serve():
+    print("starting and serving")
     server_ = start_server()
     serve(server_)
+
+if __name__ == '__main__':
+    start_and_serve()
 
 
