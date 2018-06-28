@@ -1,7 +1,10 @@
 #!/bin/bash
 
 set -e
-cd "$(dirname "$0")"/..
+cd "$(dirname "$0")"
 
+./install_dependencies
+./generate_protofiles
+./generate_protofiles_grpc
+cd ..
 python3 setup.py bdist_wheel
-
