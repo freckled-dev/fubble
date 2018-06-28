@@ -1,0 +1,4 @@
+#!/bin/bash
+
+ssh-add <(echo "$SSH_DEPLOY_PRIVATE_KEY")
+
