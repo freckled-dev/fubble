@@ -28,7 +28,7 @@ package_rtc_session_handler:
   - ./web/rtc/session_handler/scripts/ci/make_package
 
 deploy_rtc_session_handler:
-  stage: build
+  stage: deploy
   image: ubuntu:18.04
   script:
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
