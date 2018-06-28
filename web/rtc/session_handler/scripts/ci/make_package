@@ -9,4 +9,3 @@ cp -v ../../dist/server-1.0.0-py3-none-any.whl ./package
 docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
 docker build -t $image_name package
 docker push $image_name
-

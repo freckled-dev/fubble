@@ -1,0 +1,9 @@
+#!/bin/bash
+
+cd "$(dirname "$0")"
+
+ssh "$SSH_DEPLOY_SERVER" -p "$SSH_DEPLOY_SERVER_PORT" \
+  -o StrictHostKeyChecking=no \
+  "bash -s" -- < ./restart \
+  gitlab-ci-token "$CI_BUILD_TOKEN" "$deploy_image_name" "$deploy_container_name"
+
