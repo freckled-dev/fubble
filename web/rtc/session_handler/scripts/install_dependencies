@@ -3,14 +3,4 @@
 set -e
 cd "$(dirname "$0")"
 
-#pip3 install \
-  #coverage \
-  #flask \
-  #protobuf \
-  #pytest \
-  #grpcio-tools \
-  #grpcio
-
-pip3 install --quiet -r ../requirements.txt
-
-
+pip3 install -r ../requirements.txt
