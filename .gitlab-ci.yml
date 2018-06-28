@@ -1,6 +1,7 @@
 stages:
   - build
   - package
+  - deploy
 
 test_rtc_session_handler:
   stage: build
@@ -16,7 +17,7 @@ build_rtc_session_handler:
     - ./web/rtc/session_handler/dist/
     expire_in: 1 week
 
-build_image_rtc_session_handler:
+package_rtc_session_handler:
   stage: package
   dependencies:
   - build_rtc_session_handler
@@ -26,5 +27,6 @@ build_image_rtc_session_handler:
   script:
   - ./web/rtc/session_handler/scripts/ci/make_package
 
-
+.deploy_rtc_session_handler:
+  stage: deploy
 
