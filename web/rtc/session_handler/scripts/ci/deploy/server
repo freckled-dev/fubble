@@ -2,6 +2,9 @@
 
 cd "$(dirname "$0")"
 
+deploy_image_name=$CI_REGISTRY_IMAGE/server/session_handler:$CI_COMMIT_REF_NAME
+deploy_container_name=fubble_rtc_session_handler
+
 ssh "$SSH_DEPLOY_SERVER" -p "$SSH_DEPLOY_SERVER_PORT" \
   -o StrictHostKeyChecking=no \
   "bash -s" -- < ./restart \

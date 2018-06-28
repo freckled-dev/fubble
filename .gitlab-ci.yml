@@ -34,6 +34,4 @@ deploy_rtc_session_handler:
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
     - eval $(ssh-agent -s)
     - ./ci/deploy/install_ssh_keys
-    - export proco_deploy_image_name=$CI_REGISTRY_IMAGE/server/session_handler:$CI_COMMIT_REF_NAME
-    - export proco_deploy_container_name=fubble_rtc_session_handler
     - ./web/rtc/session_handler/scripts/ci/deploy/server
