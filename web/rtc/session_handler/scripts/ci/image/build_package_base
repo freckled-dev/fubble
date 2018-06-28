@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -e
+cd "$(dirname "$0")"
+
+docker build -t registry.gitlab.com/acof/fubble/ci/session_handler_base:v0 package_base
+
