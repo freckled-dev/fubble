@@ -13,9 +13,10 @@ build_rtc_session_handler:
   image: registry.gitlab.com/acof/fubble/ci/build_build:v0
   script: ./web/rtc/session_handler/scripts/build_server
   artifacts:
+    name: "${CI_BUILD_NAME}_${CI_BUILD_REF_NAME}"
+    expire_in: 1 week
     paths:
     - ./web/rtc/session_handler/dist/
-    expire_in: 1 week
 
 package_rtc_session_handler:
   stage: package
@@ -35,3 +36,16 @@ deploy_rtc_session_handler:
     - eval $(ssh-agent -s)
     - ./ci/deploy/install_ssh_keys
     - ./web/rtc/session_handler/scripts/ci/deploy/server
+
+build_backend:
+  stage: build
+  image: maven:latest
+  artifacts: 
+    name: "${CI_BUILD_NAME}_${CI_BUILD_REF_NAME}"
+    expire_in: 1 week
+    paths:
+      - web/backend/FubbleBackend/target/FubbleBackend.war
+  script:
+    - cd web/backend/FubbleBackend
+    - mvn install
+
