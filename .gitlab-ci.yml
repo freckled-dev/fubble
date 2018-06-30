@@ -47,5 +47,5 @@ build_backend:
       - web/backend/FubbleBackend/target/FubbleBackend.war
   script:
     - cd web/backend/FubbleBackend
-    - mvn install
+    - mvn install -q -B
 
