@@ -96,7 +96,7 @@ public class FubbleEndpoint {
             this.room.lock();
         } else {
             if (!this.room.equals(room)) {
-                LOGGER.error("TODO"); // böser hacker
+                LOGGER.error("TODO");
             }
         }
     }
