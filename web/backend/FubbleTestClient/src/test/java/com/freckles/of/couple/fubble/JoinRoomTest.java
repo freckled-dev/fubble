@@ -44,6 +44,8 @@ public class JoinRoomTest extends WebsocketTest {
                     JoinedRoom joined = message.getJoinedRoom();
                     if (joined.getUserId().equals(client1.getUserId())) {
                         joinedRoomReceived = true;
+                        assertEquals("Fubbler1", joined.getUserName());
+                        assertEquals("https://rtc.fubble.io/" + joined.getRoomId(), joined.getRtcUrl());
                     }
                 }
             }

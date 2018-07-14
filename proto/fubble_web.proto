@@ -141,6 +141,7 @@ message JoinedRoom {
 	optional string room_id = 1;
 	optional string user_id = 2;
 	optional string user_name = 3;
+	optional string rtc_url = 4;
 }
 
 message FubbleError {

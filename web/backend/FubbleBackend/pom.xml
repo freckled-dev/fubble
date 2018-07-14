@@ -73,6 +73,23 @@
 			<version>3.5.1</version>
 		</dependency>
 
+		<!-- gRPC -->
+		<dependency>
+			<groupId>io.grpc</groupId>
+			<artifactId>grpc-netty</artifactId>
+			<version>1.13.1</version>
+		</dependency>
+		<dependency>
+			<groupId>io.grpc</groupId>
+			<artifactId>grpc-protobuf</artifactId>
+			<version>1.13.1</version>
+		</dependency>
+		<dependency>
+			<groupId>io.grpc</groupId>
+			<artifactId>grpc-stub</artifactId>
+			<version>1.13.1</version>
+		</dependency>
+
 		<!-- Test Dependencies -->
 		<dependency>
 			<groupId>junit</groupId>

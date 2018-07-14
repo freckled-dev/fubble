@@ -1,6 +1,7 @@
 
 package com.freckles.of.couple.fubble.handler;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -8,6 +9,9 @@ import com.freckles.of.couple.dal.RoomManagementImpl;
 import com.freckles.of.couple.fubble.FubbleEndpoint;
 import com.freckles.of.couple.fubble.entities.Room;
 import com.freckles.of.couple.fubble.entities.User;
+import com.freckles.of.couple.fubble.grpc.GrpcChannel;
+import com.freckles.of.couple.fubble.grpc.RtcGrpc.RtcBlockingStub;
+import com.freckles.of.couple.fubble.grpc.RtcMessageContainer.DeleteRoomRequest;
 import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient;
 import com.freckles.of.couple.fubble.proto.WebContainer.UserLeft;
 import com.freckles.of.couple.fubble.tools.MessageHelper;
@@ -53,8 +57,28 @@ public class CloseHandler {
         if (room == null) {
             return;
         }
-        if (room.getUsers().isEmpty()) {
-            roomDAO.deleteRoom(room.getName());
+
+        if (roomIsEmpty(room)) {
+            sendRtcDeleteRoom(room);
+            deleteRoom(room);
+        }
+    }
+
+    private void deleteRoom(Room room) {
+        roomDAO.deleteRoom(room.getName());
+    }
+
+    private boolean roomIsEmpty(Room room) {
+        return room.getUsers().isEmpty();
+    }
+
+    private void sendRtcDeleteRoom(Room room) {
+        RtcBlockingStub blockingStub = GrpcChannel.getInstance().createBlockingStub();
+        DeleteRoomRequest deleteRoom = DeleteRoomRequest.newBuilder().setId(room.getId()).build();
+        try {
+            blockingStub.deleteRoom(deleteRoom);
+        } catch (Exception ex) {
+            ExceptionUtils.getStackTrace(ex);
         }
     }
 

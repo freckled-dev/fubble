@@ -14,6 +14,10 @@ import com.freckles.of.couple.dal.RoomManagementImpl;
 import com.freckles.of.couple.fubble.FubbleEndpoint;
 import com.freckles.of.couple.fubble.entities.Room;
 import com.freckles.of.couple.fubble.entities.User;
+import com.freckles.of.couple.fubble.grpc.GrpcChannel;
+import com.freckles.of.couple.fubble.grpc.RtcGrpc.RtcBlockingStub;
+import com.freckles.of.couple.fubble.grpc.RtcMessageContainer.JoinRoomRequest;
+import com.freckles.of.couple.fubble.grpc.RtcMessageContainer.RoomInformation;
 import com.freckles.of.couple.fubble.proto.WebContainer.FubbleError;
 import com.freckles.of.couple.fubble.proto.WebContainer.FubbleError.ErrorType;
 import com.freckles.of.couple.fubble.proto.WebContainer.JoinRoom;
@@ -94,14 +98,24 @@ public class JoinRoomHandler implements FubbleMessageHandler {
     }
 
     private void sendJoinedRoom(Room room, User user) {
+        String rtcServerUrl = getRtcServerUrl(room);
+
         JoinedRoom joinedRoom = JoinedRoom.newBuilder() //
             .setRoomId(room.getId()) //
             .setUserId(user.getId()) //
+            .setRtcUrl(rtcServerUrl) //
             .setUserName(user.getName()) //
             .build();
 
         MessageContainerClient clientMsg = MessageContainerClient.newBuilder().setJoinedRoom(joinedRoom).build();
         messageHelper.sendAsync(user.getSession(), clientMsg);
+    }
+
+    private String getRtcServerUrl(Room room) {
+        RtcBlockingStub blockingStub = GrpcChannel.getInstance().createBlockingStub();
+        JoinRoomRequest joinRoom = JoinRoomRequest.newBuilder().setId(room.getId()).build();
+        RoomInformation roomInfo = blockingStub.joinRoom(joinRoom);
+        return roomInfo.getRtcServer();
     }
 
     private void broadcastUserJoined(Room room, User user) {

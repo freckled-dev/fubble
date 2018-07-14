@@ -15973,6 +15973,20 @@ public final class WebContainer {
      */
     com.google.protobuf.ByteString
         getUserNameBytes();
+
+    /**
+     * <code>optional string rtc_url = 4;</code>
+     */
+    boolean hasRtcUrl();
+    /**
+     * <code>optional string rtc_url = 4;</code>
+     */
+    java.lang.String getRtcUrl();
+    /**
+     * <code>optional string rtc_url = 4;</code>
+     */
+    com.google.protobuf.ByteString
+        getRtcUrlBytes();
   }
   /**
    * Protobuf type {@code fubble.JoinedRoom}
@@ -15990,6 +16004,7 @@ public final class WebContainer {
       roomId_ = "";
       userId_ = "";
       userName_ = "";
+      rtcUrl_ = "";
     }
 
     @java.lang.Override
@@ -16039,6 +16054,12 @@ public final class WebContainer {
               com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000004;
               userName_ = bs;
+              break;
+            }
+            case 34: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000008;
+              rtcUrl_ = bs;
               break;
             }
           }
@@ -16192,6 +16213,48 @@ public final class WebContainer {
       }
     }
 
+    public static final int RTC_URL_FIELD_NUMBER = 4;
+    private volatile java.lang.Object rtcUrl_;
+    /**
+     * <code>optional string rtc_url = 4;</code>
+     */
+    public boolean hasRtcUrl() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    /**
+     * <code>optional string rtc_url = 4;</code>
+     */
+    public java.lang.String getRtcUrl() {
+      java.lang.Object ref = rtcUrl_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          rtcUrl_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string rtc_url = 4;</code>
+     */
+    public com.google.protobuf.ByteString
+        getRtcUrlBytes() {
+      java.lang.Object ref = rtcUrl_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        rtcUrl_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -16213,6 +16276,9 @@ public final class WebContainer {
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 3, userName_);
       }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, rtcUrl_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -16229,6 +16295,9 @@ public final class WebContainer {
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, userName_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, rtcUrl_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -16261,6 +16330,11 @@ public final class WebContainer {
         result = result && getUserName()
             .equals(other.getUserName());
       }
+      result = result && (hasRtcUrl() == other.hasRtcUrl());
+      if (hasRtcUrl()) {
+        result = result && getRtcUrl()
+            .equals(other.getRtcUrl());
+      }
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -16283,6 +16357,10 @@ public final class WebContainer {
       if (hasUserName()) {
         hash = (37 * hash) + USER_NAME_FIELD_NUMBER;
         hash = (53 * hash) + getUserName().hashCode();
+      }
+      if (hasRtcUrl()) {
+        hash = (37 * hash) + RTC_URL_FIELD_NUMBER;
+        hash = (53 * hash) + getRtcUrl().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -16419,6 +16497,8 @@ public final class WebContainer {
         bitField0_ = (bitField0_ & ~0x00000002);
         userName_ = "";
         bitField0_ = (bitField0_ & ~0x00000004);
+        rtcUrl_ = "";
+        bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
 
@@ -16455,6 +16535,10 @@ public final class WebContainer {
           to_bitField0_ |= 0x00000004;
         }
         result.userName_ = userName_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.rtcUrl_ = rtcUrl_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -16510,6 +16594,11 @@ public final class WebContainer {
         if (other.hasUserName()) {
           bitField0_ |= 0x00000004;
           userName_ = other.userName_;
+          onChanged();
+        }
+        if (other.hasRtcUrl()) {
+          bitField0_ |= 0x00000008;
+          rtcUrl_ = other.rtcUrl_;
           onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
@@ -16764,6 +16853,82 @@ public final class WebContainer {
   }
   bitField0_ |= 0x00000004;
         userName_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object rtcUrl_ = "";
+      /**
+       * <code>optional string rtc_url = 4;</code>
+       */
+      public boolean hasRtcUrl() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      /**
+       * <code>optional string rtc_url = 4;</code>
+       */
+      public java.lang.String getRtcUrl() {
+        java.lang.Object ref = rtcUrl_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            rtcUrl_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string rtc_url = 4;</code>
+       */
+      public com.google.protobuf.ByteString
+          getRtcUrlBytes() {
+        java.lang.Object ref = rtcUrl_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          rtcUrl_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string rtc_url = 4;</code>
+       */
+      public Builder setRtcUrl(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000008;
+        rtcUrl_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string rtc_url = 4;</code>
+       */
+      public Builder clearRtcUrl() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        rtcUrl_ = getDefaultInstance().getRtcUrl();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string rtc_url = 4;</code>
+       */
+      public Builder setRtcUrlBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000008;
+        rtcUrl_ = value;
         onChanged();
         return this;
       }
@@ -22095,21 +22260,21 @@ public final class WebContainer {
       "\007\n\003AFK\020\001\022\007\n\003DND\020\002\"I\n\nUserJoined\022\021\n\tuser_" +
       "name\030\001 \001(\t\022\017\n\007user_id\030\002 \001(\t\022\027\n\017already_i" +
       "n_room\030\003 \001(\010\"\033\n\010UserLeft\022\017\n\007user_id\030\001 \001(" +
-      "\t\"A\n\nJoinedRoom\022\017\n\007room_id\030\001 \001(\t\022\017\n\007user" +
-      "_id\030\002 \001(\t\022\021\n\tuser_name\030\003 \001(\t\"q\n\013FubbleEr" +
-      "ror\022/\n\010error_id\030\001 \001(\0162\035.fubble.FubbleErr" +
-      "or.ErrorType\022\023\n\013description\030\002 \001(\t\"\034\n\tErr" +
-      "orType\022\017\n\013ROOM_LOCKED\020\000\"0\n\013RenamedUser\022\017" +
-      "\n\007user_id\030\001 \001(\t\022\020\n\010new_name\030\002 \001(\t\"5\n\021Cha" +
-      "tMessageClient\022\017\n\007content\030\001 \001(\t\022\017\n\007user_" +
-      "id\030\002 \001(\t\">\n\nLockedRoom\022\021\n\troom_name\030\001 \001(" +
-      "\t\022\014\n\004lock\030\002 \001(\010\022\017\n\007user_id\030\003 \001(\t\"3\n\014Rese" +
-      "rvedRoom\022\021\n\troom_name\030\001 \001(\t\022\020\n\010reserved\030" +
-      "\002 \001(\010\"5\n\rProtectedRoom\022\021\n\troom_name\030\001 \001(" +
-      "\t\022\021\n\tprotected\030\002 \001(\010\"B\n\013AllowedUser\022\021\n\tr" +
-      "oom_name\030\001 \001(\t\022\021\n\tuser_name\030\002 \001(\t\022\r\n\005all" +
-      "ow\030\003 \001(\010B3\n#com.freckles.of.couple.fubbl" +
-      "e.protoB\014WebContainer"
+      "\t\"R\n\nJoinedRoom\022\017\n\007room_id\030\001 \001(\t\022\017\n\007user" +
+      "_id\030\002 \001(\t\022\021\n\tuser_name\030\003 \001(\t\022\017\n\007rtc_url\030" +
+      "\004 \001(\t\"q\n\013FubbleError\022/\n\010error_id\030\001 \001(\0162\035" +
+      ".fubble.FubbleError.ErrorType\022\023\n\013descrip" +
+      "tion\030\002 \001(\t\"\034\n\tErrorType\022\017\n\013ROOM_LOCKED\020\000" +
+      "\"0\n\013RenamedUser\022\017\n\007user_id\030\001 \001(\t\022\020\n\010new_" +
+      "name\030\002 \001(\t\"5\n\021ChatMessageClient\022\017\n\007conte" +
+      "nt\030\001 \001(\t\022\017\n\007user_id\030\002 \001(\t\">\n\nLockedRoom\022" +
+      "\021\n\troom_name\030\001 \001(\t\022\014\n\004lock\030\002 \001(\010\022\017\n\007user" +
+      "_id\030\003 \001(\t\"3\n\014ReservedRoom\022\021\n\troom_name\030\001" +
+      " \001(\t\022\020\n\010reserved\030\002 \001(\010\"5\n\rProtectedRoom\022" +
+      "\021\n\troom_name\030\001 \001(\t\022\021\n\tprotected\030\002 \001(\010\"B\n" +
+      "\013AllowedUser\022\021\n\troom_name\030\001 \001(\t\022\021\n\tuser_" +
+      "name\030\002 \001(\t\022\r\n\005allow\030\003 \001(\010B3\n#com.freckle" +
+      "s.of.couple.fubble.protoB\014WebContainer"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -22230,7 +22395,7 @@ public final class WebContainer {
     internal_static_fubble_JoinedRoom_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_fubble_JoinedRoom_descriptor,
-        new java.lang.String[] { "RoomId", "UserId", "UserName", });
+        new java.lang.String[] { "RoomId", "UserId", "UserName", "RtcUrl", });
     internal_static_fubble_FubbleError_descriptor =
       getDescriptor().getMessageTypes().get(18);
     internal_static_fubble_FubbleError_fieldAccessorTable = new
