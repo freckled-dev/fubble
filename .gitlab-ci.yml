@@ -68,15 +68,16 @@ test_package_backend:
   - package_backend
   image: maven:latest
   services:
-  - $CI_REGISTRY_IMAGE/server/backend:$CI_COMMIT_REF_NAME
+  - name $CI_REGISTRY_IMAGE/server/backend:$CI_COMMIT_REF_NAME
+    alias: backend
   script:
   - ./web/backend/ci/test_package
 
 deploy_backend:
   stage: deploy
   image: ubuntu:18.04
-  # only:
-  #   - master
+  only:
+    - master
   script:
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
     - eval $(ssh-agent -s)
