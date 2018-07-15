@@ -7,7 +7,6 @@ war_file=FubbleBackend.war
 image_name=$CI_REGISTRY_IMAGE/server/backend:$CI_COMMIT_REF_NAME
 
 cp -v ../FubbleBackend/target/$war_file package
-docker build -t ./package
 docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
 docker build -t $image_name package
 docker push $image_name
