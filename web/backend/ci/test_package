@@ -3,6 +3,8 @@
 set -e
 cd "$(dirname "$0")"
 
-cp -v test_package_config.properties ./src/main/resources/config.properties
+cp -v \
+    test_package_config.properties \
+    ../FubbleTestClient/src/main/resources/config.properties
 cd ../FubbleTestClient
 mvn test
