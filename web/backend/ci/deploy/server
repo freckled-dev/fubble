@@ -1,0 +1,13 @@
+#!/bin/bash
+
+set -e
+cd "$(dirname "$0")"
+
+deploy_image_name=$CI_REGISTRY_IMAGE/server/backend:$CI_COMMIT_REF_NAME
+deploy_container_name=fubble_backend
+
+echo "installing $deploy_image_name"
+ssh "$SSH_DEPLOY_SERVER" -p "$SSH_DEPLOY_SERVER_PORT" \
+  -o StrictHostKeyChecking=no \
+  "bash -s" -- < ./restart \
+  gitlab-ci-token "$CI_BUILD_TOKEN" "$deploy_image_name" "$deploy_container_name"

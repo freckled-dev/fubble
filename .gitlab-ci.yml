@@ -1,6 +1,7 @@
 stages:
   - build
   - package
+  - test_package
   - deploy
 
 test_rtc_session_handler:
@@ -50,4 +51,37 @@ build_backend:
   script:
     - cd web/backend/FubbleBackend
     - mvn install -q -B
+
+package_backend:
+  stage: package
+  dependencies:
+  - build_backend
+  image: docker:stable
+  services:
+  - docker:dind
+  script:
+  - ./web/backend/ci/make_package
+
+test_package_backend:
+  stage: test_package
+  dependencies:
+  - package_backend
+  image: maven:latest
+  services:
+  - name: $CI_REGISTRY_IMAGE/server/backend:$CI_COMMIT_REF_NAME
+    alias: backend
+  script:
+  - ./web/backend/ci/test_package
+
+deploy_backend:
+  stage: deploy
+  image: ubuntu:18.04
+  only:
+    - master
+  script:
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - ./ci/deploy/install_ssh_keys
+    - ./web/backend/ci/deploy/server
+
 
