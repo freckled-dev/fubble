@@ -51,3 +51,13 @@ build_backend:
     - cd web/backend/FubbleBackend
     - mvn install -q -B
 
+package_backend:
+  stage: package
+  dependencies:
+  - build_backend
+  image: docker:stable
+  services:
+  - docker:dind
+  script:
+  - ./fubble/web/backend/ci/make_package
+
