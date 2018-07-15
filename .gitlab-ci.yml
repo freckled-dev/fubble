@@ -1,6 +1,7 @@
 stages:
   - build
   - package
+  - test_package
   - deploy
 
 test_rtc_session_handler:
@@ -61,6 +62,16 @@ package_backend:
   script:
   - ./web/backend/ci/make_package
 
+test_package_backend:
+  stage: test_package
+  dependencies:
+  - package_backend
+  image: maven:latest
+  services:
+  - $CI_REGISTRY_IMAGE/server/backend:$CI_COMMIT_REF_NAME
+  script:
+  - ./web/backend/ci/test_package
+
 deploy_backend:
   stage: deploy
   image: ubuntu:18.04
@@ -71,3 +82,5 @@ deploy_backend:
     - eval $(ssh-agent -s)
     - ./ci/deploy/install_ssh_keys
     - ./web/backend/ci/deploy/server
+
+
