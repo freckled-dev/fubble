@@ -61,7 +61,7 @@ package_backend:
   script:
   - ./web/backend/ci/make_package
 
-deploy_rtc_session_handler:
+deploy_backend:
   stage: deploy
   image: ubuntu:18.04
   # only:
@@ -70,4 +70,4 @@ deploy_rtc_session_handler:
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
     - eval $(ssh-agent -s)
     - ./ci/deploy/install_ssh_keys
-    - ./web/rtc/backend/ci/deploy/server
+    - ./web/backend/ci/deploy/server
