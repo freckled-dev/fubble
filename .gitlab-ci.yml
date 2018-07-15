@@ -68,7 +68,7 @@ test_package_backend:
   - package_backend
   image: maven:latest
   services:
-  - name $CI_REGISTRY_IMAGE/server/backend:$CI_COMMIT_REF_NAME
+  - name: $CI_REGISTRY_IMAGE/server/backend:$CI_COMMIT_REF_NAME
     alias: backend
   script:
   - ./web/backend/ci/test_package
