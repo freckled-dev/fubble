@@ -104,6 +104,7 @@ public class JoinRoomHandler implements FubbleMessageHandler {
             .setRoomId(room.getId()) //
             .setUserId(user.getId()) //
             .setRtcUrl(rtcServerUrl) //
+            .setRoomName(room.getName()) //
             .setUserName(user.getName()) //
             .build();
 
