@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">Fubble</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- Main Activity -->
+    <string name="input_room_name_hint">Enter a room name...</string>
+    <string name="btn_join_room_label">Join room</string>
+    <string name="tv_rooms_header">Previous joined rooms</string>
+
+
+    <!-- Error Messages -->
+    <string name="web_server_error">The server is not responding. Please check your internet connection.</string>
+
+    <!-- Room List Adapter -->
+    <string name="tv_connected_before"></string>
+    <string name="tv_connected_hours">" hours"</string>
+    <string name="tv_connected_hour">" hour"</string>
+    <string name="tv_connected_minutes">" minutes"</string>
+    <string name="tv_connected_minute">" minute"</string>
+    <string name="tv_connected_after">" ago"</string>
+
+
+    <!-- Date Time Format -->
+    <string name="date_time_format">dd MMM, yyyy, hh:mm aaa</string>
+
+</resources>
