@@ -50,8 +50,8 @@ dependencies {
     implementation 'com.google.protobuf:protobuf-lite:3.0.0'
     implementation 'com.android.support:recyclerview-v7:27.1.1'
 
-
     // room persistence library
     implementation 'android.arch.persistence.room:runtime:1.0.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
     annotationProcessor 'android.arch.persistence.room:compiler:1.0.0'
 }

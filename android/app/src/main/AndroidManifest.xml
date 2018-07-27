@@ -2,8 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.freckles.of.couple.fubble">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
@@ -24,9 +26,13 @@
         <!-- Room -->
         <activity
             android:name=".RoomActivity"
-            android:launchMode="singleTask"></activity>
-    </application>
+            android:launchMode="singleTask" />
 
-    <uses-permission android:name="android.permission.INTERNET" />
+        <!-- Profile -->
+        <activity
+            android:name=".ProfileActivity"
+            android:launchMode="singleTask" />
+        <activity android:name=".SettingsActivity"></activity>
+    </application>
 
 </manifest>

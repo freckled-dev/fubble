@@ -1,4 +1,6 @@
 <resources>
+
+    <!-- General -->
     <string name="app_name">Fubble</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -25,5 +27,22 @@
 
     <!-- Date Time Format -->
     <string name="date_time_format">dd.MM.yyyy, HH:mm</string>
+
+    <!-- Profile Activity -->
+    <string name="profileHeader">Profil</string>
+    <string name="profile_edit_name_header">Wählen Sie einen Namen...</string>
+
+
+    <!-- Shared Prefs -->
+    <string name="preference_file_key">FUBBLE_PREFS</string>
+    <string name="saved_fubbler_name">FUBBLER_NAME</string>
+
+    <!-- Navigation -->
+    <string name="nav_settings">Einstellungen</string>
+    <string name="nav_security">Datenschutz</string>
+    <string name="nav_about">Info</string>
+
+    <!-- Settings Activity -->
+    <string name="settingsHeader">Einstellungen</string>
 
 </resources>

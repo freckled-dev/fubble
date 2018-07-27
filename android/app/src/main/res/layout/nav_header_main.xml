@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rl_navigation_header"
     android:layout_width="match_parent"
     android:layout_height="@dimen/nav_header_height"
+    android:background="@color/colorPrimary"
+    android:clickable="true"
     android:orientation="vertical"
-    android:paddingTop="10dp"
-    android:background="@color/colorPrimary">
+    android:paddingTop="10dp">
 
     <ImageView
         android:id="@+id/iv_fubbler_icon"
         android:layout_width="wrap_content"
         android:layout_height="100dp"
-        android:contentDescription="@string/nav_header_desc"
         android:paddingTop="10dp"
         app:srcCompat="@mipmap/icon_girl" />
 
@@ -19,9 +20,20 @@
         android:id="@+id/tv_fubbler_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/iv_fubbler_icon"
         android:gravity="center_horizontal"
-        android:textColor="@android:color/white"
         android:paddingTop="10dp"
-        android:text="Fubbler1" />
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
-</LinearLayout>
+    <ImageView
+        android:id="@+id/iv_edit_icon"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="5dp"
+        android:src="@drawable/ic_menu_edit" />
+
+</RelativeLayout>
