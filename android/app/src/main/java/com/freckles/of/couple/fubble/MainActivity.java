@@ -2,16 +2,12 @@ package com.freckles.of.couple.fubble;
 
 import android.app.Activity;
 import android.arch.persistence.room.Room;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Rect;
-import android.graphics.RectF;
-import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -29,33 +25,35 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.freckles.of.couple.fubble.async.DeleteRoomsAsync;
+import com.freckles.of.couple.fubble.async.GetRoomsAsync;
 import com.freckles.of.couple.fubble.entity.FubbleRoom;
 import com.freckles.of.couple.fubble.tools.AppDatabase;
 import com.freckles.of.couple.fubble.tools.DatabaseHolder;
 import com.freckles.of.couple.fubble.tools.JoinRoomHandler;
 import com.freckles.of.couple.fubble.tools.RoomListAdapter;
+import com.freckles.of.couple.fubble.tools.RoomsItemTouchHelper;
 import com.freckles.of.couple.fubble.tools.WebsocketHandler;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    public static final int MARGIN_ITEM_ROW = 20;
-    
-    private Paint paint;
     private Activity activity;
     private JoinRoomHandler handler;
     private Button btnRoomJoin;
     private EditText etRoomName;
     private RecyclerView rvRooms;
     private SwipeRefreshLayout refreshLayout;
-    private Drawable deleteIcon;
 
     private RoomListAdapter adapter;
+
+    private String fubblerName;
+    private TextView tvFubblerName;
 
 
     @Override
@@ -66,12 +64,7 @@ public class MainActivity extends AppCompatActivity
 
         handler = new JoinRoomHandler(this);
 
-        initDatabase();
-        initPaint();
-
-        WebsocketHandler websocket = new WebsocketHandler(this);
-        websocket.open();
-
+        // init views and icons
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -85,26 +78,49 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        deleteIcon = activity.getDrawable(R.drawable.ic_delete);
+        View headerLayout = navigationView.inflateHeaderView(R.layout.nav_header_main);
+        RelativeLayout rlNavigationHeader = headerLayout.findViewById(R.id.rl_navigation_header);
 
+        tvFubblerName = headerLayout.findViewById(R.id.tv_fubbler_name);
         etRoomName = findViewById(R.id.et_enter_room_name);
-        etRoomName.addTextChangedListener(getRoomNameListener());
-
         btnRoomJoin = findViewById(R.id.btn_room_join);
-        btnRoomJoin.setOnClickListener(getRoomJoinListener());
-
         refreshLayout = findViewById(R.id.srl_rooms);
-        refreshLayout.setOnRefreshListener(getRefreshListener());
-
         rvRooms = findViewById(R.id.rv_rooms);
-        new ItemTouchHelper(getItemTouchHelperCallback()).attachToRecyclerView(rvRooms);
+
+
+        initDatabase();
+        initWebSocket();
+        initFubblerName();
+
+        // listeners
+        btnRoomJoin.setOnClickListener(getRoomJoinListener());
+        refreshLayout.setOnRefreshListener(getRefreshListener());
+        etRoomName.addTextChangedListener(getRoomNameListener());
+        rlNavigationHeader.setOnClickListener(getClickProfileListener());
+        new ItemTouchHelper(new RoomsItemTouchHelper(this).create()).attachToRecyclerView(rvRooms);
     }
 
-    private void initPaint() {
-        paint = new Paint();
-        int color = ContextCompat.getColor(activity, R.color.colorRed);
-        paint.setColor(color);
+    private View.OnClickListener getClickProfileListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent profileIntent = new Intent(activity, ProfileActivity.class);
+                startActivity(profileIntent);
+            }
+        };
     }
+
+    private void initWebSocket() {
+        WebsocketHandler websocket = new WebsocketHandler(this);
+        websocket.open();
+    }
+
+    private void initFubblerName() {
+        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        fubblerName = sharedPref.getString(getString(R.string.saved_fubbler_name), "Fubbler");
+        tvFubblerName.setText(fubblerName);
+    }
+
 
     private void initDatabase() {
         DatabaseHolder.database = Room.databaseBuilder(getApplicationContext(),
@@ -127,9 +143,11 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+
     @Override
     public void onResume() {
         super.onResume();
+        initFubblerName();
         etRoomName.setText("");
         btnRoomJoin.setVisibility(View.GONE);
         new GetRoomsAsync(this).execute();
@@ -150,15 +168,12 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.nav_gallery) {
+        if (id == R.id.nav_settings) {
+            Intent settingsIntent = new Intent(activity, SettingsActivity.class);
+            startActivity(settingsIntent);
+        } else if (id == R.id.nav_security) {
 
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_about) {
 
         }
 
@@ -200,11 +215,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void hideKeyboard() {
-        Activity activity = this;
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        //Find the currently focused view, so we can grab the correct window token from it.
         View view = activity.getCurrentFocus();
-        //If no view currently has focus, create a new one, just so we can grab a window token from it
         if (view == null) {
             view = new View(activity);
         }
@@ -221,93 +233,15 @@ public class MainActivity extends AppCompatActivity
         };
     }
 
-    public ItemTouchHelper.SimpleCallback getItemTouchHelperCallback() {
-        return new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
 
-            @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                adapter.onItemDismiss(viewHolder.getAdapterPosition());
-            }
-
-            @Override
-            public void onChildDraw(Canvas canvas, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-                if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
-
-                    View itemView = viewHolder.itemView;
-
-                    if (dX > 0) {
-                        drawBackground(canvas, dX, itemView);
-                        drawIcon(canvas, dX, itemView);
-                    }
-
-                    super.onChildDraw(canvas, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
-                }
-            }
-
-            private void drawIcon(Canvas canvas, float dX, View itemView) {
-                int iconWidth = deleteIcon.getIntrinsicWidth();
-                int iconHeight = deleteIcon.getIntrinsicWidth();
-                int rowHeight = itemView.getBottom() - itemView.getTop();
-                int iconMargin = (rowHeight - iconHeight) / 2;
-
-                int iconLeft = iconMargin;
-                int iconRight = iconWidth + iconMargin;
-                int iconTop = itemView.getTop() + (rowHeight - iconHeight) / 2;
-                int iconBottom = iconTop + iconHeight;
-
-                if (dX > iconRight + MARGIN_ITEM_ROW) {
-                    Rect iconDest = new Rect(iconLeft, iconTop, iconRight, iconBottom);
-                    deleteIcon.setBounds(iconDest);
-                    deleteIcon.draw(canvas);
-                }
-            }
-
-            private void drawBackground(Canvas canvas, float dX, View itemView) {
-                RectF background = new RectF((float) itemView.getLeft(), (float) itemView.getTop(), dX - MARGIN_ITEM_ROW, (float) itemView.getBottom());
-                canvas.drawRect(background, paint);
-            }
-
-            @Override
-            public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-                super.clearView(recyclerView, viewHolder);
-            }
-        };
+    public void createRoomList(List<FubbleRoom> rooms) {
+        adapter = new RoomListAdapter(rooms, activity);
+        rvRooms.setAdapter(adapter);
+        rvRooms.setLayoutManager(new LinearLayoutManager(activity));
+        refreshLayout.setRefreshing(false);
     }
 
-
-    private class GetRoomsAsync extends AsyncTask<Void, Void, List<FubbleRoom>> {
-
-        private Activity activity;
-
-        public GetRoomsAsync(Activity activity) {
-            this.activity = activity;
-        }
-
-        @Override
-        protected List<FubbleRoom> doInBackground(Void... params) {
-            return DatabaseHolder.database.roomDao().getAll();
-        }
-
-        @Override
-        protected void onPostExecute(final List<FubbleRoom> rooms) {
-            Collections.sort(rooms, new Comparator<FubbleRoom>() {
-                @Override
-                public int compare(FubbleRoom r1, FubbleRoom r2) {
-                    return r2.getLastConnected().compareTo(r1.getLastConnected());
-                }
-            });
-
-            adapter = new RoomListAdapter(rooms, activity);
-            rvRooms.setAdapter(adapter);
-
-            rvRooms.setLayoutManager(new LinearLayoutManager(activity));
-
-            refreshLayout.setRefreshing(false);
-        }
+    public void deleteRoom(int position) {
+        new DeleteRoomsAsync(position, adapter).execute();
     }
 }

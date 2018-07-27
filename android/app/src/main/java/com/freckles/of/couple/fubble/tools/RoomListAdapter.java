@@ -1,7 +1,6 @@
 package com.freckles.of.couple.fubble.tools;
 
 import android.app.Activity;
-import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,6 +15,7 @@ import com.freckles.of.couple.fubble.entity.FubbleRoom;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.ViewHolder> implements RecyclerView.OnClickListener {
@@ -25,7 +25,7 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.ViewHo
     private List<FubbleRoom> dataSet;
     private Activity activity;
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements  View.OnClickListener {
         TextView tvRoomName, tvLastConnected;
         LinearLayout background;
 
@@ -35,10 +35,15 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.ViewHo
             tvRoomName = itemView.findViewById(R.id.tv_room_name);
             tvLastConnected = itemView.findViewById(R.id.tv_last_connected);
             background = itemView.findViewById(R.id.ll_room_row);
+            itemView.setOnClickListener(this);
         }
 
-        public LinearLayout getBackground() {
-            return background;
+        @Override
+        public void onClick(View view) {
+            int position = getLayoutPosition();
+            Object object = getItem(position);
+            FubbleRoom room = (FubbleRoom) object;
+            openRoomActivity(room);
         }
     }
 
@@ -47,7 +52,7 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.ViewHo
         this.activity = activity;
 
         String pattern = activity.getResources().getString(R.string.date_time_format);
-        simpleDateFormat = new SimpleDateFormat(pattern);
+        simpleDateFormat = new SimpleDateFormat(pattern, Locale.getDefault());
     }
 
     @NonNull
@@ -78,10 +83,7 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.ViewHo
 
     @Override
     public void onClick(View view) {
-        int position = (Integer) view.getTag();
-        Object object = getItem(position);
-        FubbleRoom room = (FubbleRoom) object;
-        openRoomActivity(room);
+
     }
 
 
@@ -116,32 +118,7 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.ViewHo
         return simpleDateFormat.format(connected);
     }
 
-    public void onItemDismiss(int position) {
-        new DeleteRoomsAsync(position).execute();
+    public List<FubbleRoom> getDataSet() {
+        return dataSet;
     }
-
-
-    private class DeleteRoomsAsync extends AsyncTask<Void, Void, Void> {
-
-        private int position;
-
-        public DeleteRoomsAsync(int position) {
-            this.position = position;
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            FubbleRoom room = dataSet.get(position);
-            DatabaseHolder.database.roomDao().delete(room);
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void param) {
-            dataSet.remove(position);
-            notifyDataSetChanged();
-        }
-
-    }
-
 }

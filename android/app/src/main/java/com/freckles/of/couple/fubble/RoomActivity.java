@@ -11,8 +11,6 @@ import com.freckles.of.couple.fubble.dao.RoomDao;
 import com.freckles.of.couple.fubble.entity.FubbleRoom;
 import com.freckles.of.couple.fubble.tools.DatabaseHolder;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 
 public class RoomActivity extends Activity {
