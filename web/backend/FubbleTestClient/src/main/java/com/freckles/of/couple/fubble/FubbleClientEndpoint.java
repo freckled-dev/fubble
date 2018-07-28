@@ -88,72 +88,84 @@ public class FubbleClientEndpoint {
         try {
             MessageContainerClient container = MessageContainerClient.parseFrom(binaryMessage);
             MessageTypeCase messageTypeCase = container.getMessageTypeCase();
-
-            if (MessageTypeCase.JOINED_ROOM.equals(messageTypeCase)) {
-                JoinedRoom joinedRoom = container.getJoinedRoom();
-                this.userId = joinedRoom.getUserId();
-                this.userName = joinedRoom.getUserName();
-
-                print("-----------------------------------");
-                print(joinedRoom.getUserName());
-                print("-----------------------------------");
-            }
-
-            if (MessageTypeCase.USER_JOINED.equals(messageTypeCase)) {
-                UserJoined userJoined = container.getUserJoined();
-
-                users.add(new User(userJoined.getUserId(), userJoined.getUserName()));
-
-                if (!userJoined.getUserId().equals(userId)) {
-                    if (!userJoined.getAlreadyInRoom()) {
-                        print(String.format("A new user joined the room - %s.", userJoined.getUserName()));
-                    } else {
-                        print(String.format("Also in the room - %s.", userJoined.getUserName()));
-                    }
-                }
-            }
-
-            if (MessageTypeCase.RENAMED_USER.equals(messageTypeCase)) {
-                RenamedUser renamedUser = container.getRenamedUser();
-
-                if (renamedUser.getUserId().equals(userId)) {
-                    this.userName = renamedUser.getNewName();
-                }
-
-                User updateUser = users.stream().filter(user -> user.getId().equals(renamedUser.getUserId())).findFirst().get();
-                updateUser.setName(renamedUser.getNewName());
-                print(String.format("User %s changed his name to %s.", renamedUser.getUserId(), renamedUser.getNewName()));
-            }
-
-            if (MessageTypeCase.CHAT_MESSAGE.equals(messageTypeCase)) {
-                ChatMessageClient chat = container.getChatMessage();
-                User chatUser = users.stream().filter(user -> user.getId().equals(chat.getUserId())).findFirst().get();
-
-                print(String.format("%s: %s", chatUser.getName(), chat.getContent()));
-            }
-
-            if (MessageTypeCase.USER_LEFT.equals(messageTypeCase)) {
-                UserLeft userLeft = container.getUserLeft();
-
-                User left = users.stream().filter(user -> user.getId().equals(userLeft.getUserId())).findFirst().get();
-                print(String.format("User %s has left the building!", left.getName()));
-            }
-
-            if (MessageTypeCase.LOCK_ROOM.equals(messageTypeCase)) {
-                LockedRoom roomLocked = container.getLockRoom();
-                if (roomLocked.getLock()) {
-                    print(String.format("User %s has locked the room.", roomLocked.getUserId()));
-                } else {
-                    print(String.format("User %s has unlocked the room.", roomLocked.getUserId()));
-                }
-            }
-
-            if (MessageTypeCase.ERROR.equals(messageTypeCase)) {
-                FubbleError error = container.getError();
-                print(error.toString());
-            }
-
             messages.add(container);
+
+            switch (messageTypeCase) {
+                case JOINED_ROOM:
+                    JoinedRoom joinedRoom = container.getJoinedRoom();
+                    this.userId = joinedRoom.getUserId();
+                    this.userName = joinedRoom.getUserName();
+
+                    print("-----------------------------------");
+                    print(joinedRoom.getUserName());
+                    print("-----------------------------------");
+                    ResponseCount.countDown();
+                    break;
+
+                case USER_JOINED:
+                    UserJoined userJoined = container.getUserJoined();
+
+                    users.add(new User(userJoined.getUserId(), userJoined.getUserName()));
+
+                    if (!userJoined.getUserId().equals(userId)) {
+                        if (!userJoined.getAlreadyInRoom()) {
+                            print(String.format("A new user joined the room - %s.", userJoined.getUserName()));
+                        } else {
+                            print(String.format("Also in the room - %s.", userJoined.getUserName()));
+                        }
+                    }
+                    ResponseCount.countDown();
+                    break;
+
+                case RENAMED_USER:
+                    RenamedUser renamedUser = container.getRenamedUser();
+
+                    if (renamedUser.getUserId().equals(userId)) {
+                        this.userName = renamedUser.getNewName();
+                    }
+
+                    User updateUser = users.stream().filter(user -> user.getId().equals(renamedUser.getUserId())).findFirst().get();
+                    updateUser.setName(renamedUser.getNewName());
+                    print(String.format("User %s changed his name to %s.", renamedUser.getUserId(), renamedUser.getNewName()));
+                    ResponseCount.countDown();
+                    break;
+
+                case CHAT_MESSAGE:
+                    ChatMessageClient chat = container.getChatMessage();
+                    User chatUser = users.stream().filter(user -> user.getId().equals(chat.getUserId())).findFirst().get();
+
+                    print(String.format("%s: %s", chatUser.getName(), chat.getContent()));
+                    ResponseCount.countDown();
+                    break;
+
+                case USER_LEFT:
+                    UserLeft userLeft = container.getUserLeft();
+
+                    User left = users.stream().filter(user -> user.getId().equals(userLeft.getUserId())).findFirst().get();
+                    print(String.format("User %s has left the building!", left.getName()));
+                    ResponseCount.countDown();
+                    break;
+
+                case LOCK_ROOM:
+                    LockedRoom roomLocked = container.getLockRoom();
+                    if (roomLocked.getLock()) {
+                        print(String.format("User %s has locked the room.", roomLocked.getUserId()));
+                    } else {
+                        print(String.format("User %s has unlocked the room.", roomLocked.getUserId()));
+                    }
+                    ResponseCount.countDown();
+                    break;
+
+                case ERROR:
+                    FubbleError error = container.getError();
+                    print(error.toString());
+                    ResponseCount.countDown();
+                    break;
+
+                default:
+                    LOGGER.error("Message Type not handled...");
+            }
+
         } catch (InvalidProtocolBufferException ex) {
             LOGGER.error(ExceptionUtils.getStackTrace(ex));
         }
@@ -179,14 +191,13 @@ public class FubbleClientEndpoint {
     }
 
     /**
-     * Send a message.
-     *
-     * @param message
+     * Send a message and waits to get #responseCount messages from server
      */
     public void sendMessage(byte[] message) {
         ByteBuffer binaryMessage = ByteBuffer.wrap(message);
         try {
             this.userSession.getAsyncRemote().sendBinary(binaryMessage);
+
         } catch (Exception ex) {
             LOGGER.error(ExceptionUtils.getStackTrace(ex));
         }

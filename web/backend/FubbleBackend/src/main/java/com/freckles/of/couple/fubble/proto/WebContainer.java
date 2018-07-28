@@ -2892,6 +2892,21 @@ public final class WebContainer {
          * <code>optional string password = 2;</code>
          */
         com.google.protobuf.ByteString getPasswordBytes();
+
+        /**
+         * <code>optional string user_name = 3;</code>
+         */
+        boolean hasUserName();
+
+        /**
+         * <code>optional string user_name = 3;</code>
+         */
+        java.lang.String getUserName();
+
+        /**
+         * <code>optional string user_name = 3;</code>
+         */
+        com.google.protobuf.ByteString getUserNameBytes();
     }
 
     /**
@@ -2910,6 +2925,7 @@ public final class WebContainer {
         private JoinRoom() {
             roomName_ = "";
             password_ = "";
+            userName_ = "";
         }
 
         @java.lang.Override
@@ -2949,6 +2965,12 @@ public final class WebContainer {
                             com.google.protobuf.ByteString bs = input.readBytes();
                             bitField0_ |= 0x00000002;
                             password_ = bs;
+                            break;
+                        }
+                        case 26: {
+                            com.google.protobuf.ByteString bs = input.readBytes();
+                            bitField0_ |= 0x00000004;
+                            userName_ = bs;
                             break;
                         }
                     }
@@ -3056,6 +3078,47 @@ public final class WebContainer {
             }
         }
 
+        public static final int           USER_NAME_FIELD_NUMBER = 3;
+        private volatile java.lang.Object userName_;
+
+        /**
+         * <code>optional string user_name = 3;</code>
+         */
+        public boolean hasUserName() {
+            return ((bitField0_ & 0x00000004) == 0x00000004);
+        }
+
+        /**
+         * <code>optional string user_name = 3;</code>
+         */
+        public java.lang.String getUserName() {
+            java.lang.Object ref = userName_;
+            if (ref instanceof java.lang.String) {
+                return (java.lang.String) ref;
+            } else {
+                com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
+                java.lang.String s = bs.toStringUtf8();
+                if (bs.isValidUtf8()) {
+                    userName_ = s;
+                }
+                return s;
+            }
+        }
+
+        /**
+         * <code>optional string user_name = 3;</code>
+         */
+        public com.google.protobuf.ByteString getUserNameBytes() {
+            java.lang.Object ref = userName_;
+            if (ref instanceof java.lang.String) {
+                com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
+                userName_ = b;
+                return b;
+            } else {
+                return (com.google.protobuf.ByteString) ref;
+            }
+        }
+
         private byte memoizedIsInitialized = -1;
 
         public final boolean isInitialized() {
@@ -3077,6 +3140,9 @@ public final class WebContainer {
             if (((bitField0_ & 0x00000002) == 0x00000002)) {
                 com.google.protobuf.GeneratedMessageV3.writeString(output, 2, password_);
             }
+            if (((bitField0_ & 0x00000004) == 0x00000004)) {
+                com.google.protobuf.GeneratedMessageV3.writeString(output, 3, userName_);
+            }
             unknownFields.writeTo(output);
         }
 
@@ -3091,6 +3157,9 @@ public final class WebContainer {
             }
             if (((bitField0_ & 0x00000002) == 0x00000002)) {
                 size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, password_);
+            }
+            if (((bitField0_ & 0x00000004) == 0x00000004)) {
+                size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, userName_);
             }
             size += unknownFields.getSerializedSize();
             memoizedSize = size;
@@ -3116,6 +3185,10 @@ public final class WebContainer {
             if (hasPassword()) {
                 result = result && getPassword().equals(other.getPassword());
             }
+            result = result && (hasUserName() == other.hasUserName());
+            if (hasUserName()) {
+                result = result && getUserName().equals(other.getUserName());
+            }
             result = result && unknownFields.equals(other.unknownFields);
             return result;
         }
@@ -3134,6 +3207,10 @@ public final class WebContainer {
             if (hasPassword()) {
                 hash = (37 * hash) + PASSWORD_FIELD_NUMBER;
                 hash = (53 * hash) + getPassword().hashCode();
+            }
+            if (hasUserName()) {
+                hash = (37 * hash) + USER_NAME_FIELD_NUMBER;
+                hash = (53 * hash) + getUserName().hashCode();
             }
             hash = (29 * hash) + unknownFields.hashCode();
             memoizedHashCode = hash;
@@ -3265,6 +3342,8 @@ public final class WebContainer {
                 bitField0_ = (bitField0_ & ~0x00000001);
                 password_ = "";
                 bitField0_ = (bitField0_ & ~0x00000002);
+                userName_ = "";
+                bitField0_ = (bitField0_ & ~0x00000004);
                 return this;
             }
 
@@ -3297,6 +3376,10 @@ public final class WebContainer {
                     to_bitField0_ |= 0x00000002;
                 }
                 result.password_ = password_;
+                if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+                    to_bitField0_ |= 0x00000004;
+                }
+                result.userName_ = userName_;
                 result.bitField0_ = to_bitField0_;
                 onBuilt();
                 return result;
@@ -3346,6 +3429,11 @@ public final class WebContainer {
                 if (other.hasPassword()) {
                     bitField0_ |= 0x00000002;
                     password_ = other.password_;
+                    onChanged();
+                }
+                if (other.hasUserName()) {
+                    bitField0_ |= 0x00000004;
+                    userName_ = other.userName_;
                     onChanged();
                 }
                 this.mergeUnknownFields(other.unknownFields);
@@ -3523,6 +3611,82 @@ public final class WebContainer {
                 }
                 bitField0_ |= 0x00000002;
                 password_ = value;
+                onChanged();
+                return this;
+            }
+
+            private java.lang.Object userName_ = "";
+
+            /**
+             * <code>optional string user_name = 3;</code>
+             */
+            public boolean hasUserName() {
+                return ((bitField0_ & 0x00000004) == 0x00000004);
+            }
+
+            /**
+             * <code>optional string user_name = 3;</code>
+             */
+            public java.lang.String getUserName() {
+                java.lang.Object ref = userName_;
+                if (!(ref instanceof java.lang.String)) {
+                    com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
+                    java.lang.String s = bs.toStringUtf8();
+                    if (bs.isValidUtf8()) {
+                        userName_ = s;
+                    }
+                    return s;
+                } else {
+                    return (java.lang.String) ref;
+                }
+            }
+
+            /**
+             * <code>optional string user_name = 3;</code>
+             */
+            public com.google.protobuf.ByteString getUserNameBytes() {
+                java.lang.Object ref = userName_;
+                if (ref instanceof String) {
+                    com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
+                    userName_ = b;
+                    return b;
+                } else {
+                    return (com.google.protobuf.ByteString) ref;
+                }
+            }
+
+            /**
+             * <code>optional string user_name = 3;</code>
+             */
+            public Builder setUserName(java.lang.String value) {
+                if (value == null) {
+                    throw new NullPointerException();
+                }
+                bitField0_ |= 0x00000004;
+                userName_ = value;
+                onChanged();
+                return this;
+            }
+
+            /**
+             * <code>optional string user_name = 3;</code>
+             */
+            public Builder clearUserName() {
+                bitField0_ = (bitField0_ & ~0x00000004);
+                userName_ = getDefaultInstance().getUserName();
+                onChanged();
+                return this;
+            }
+
+            /**
+             * <code>optional string user_name = 3;</code>
+             */
+            public Builder setUserNameBytes(com.google.protobuf.ByteString value) {
+                if (value == null) {
+                    throw new NullPointerException();
+                }
+                bitField0_ |= 0x00000004;
+                userName_ = value;
                 onChanged();
                 return this;
             }
@@ -22236,49 +22400,49 @@ public final class WebContainer {
             + ".ChangeStatusH\000\022+\n\014chat_message\030\007 \001(\0132\023." + "fubble.ChatMessageH\000\022+\n\014reserve_room\030\010 \001"
             + "(\0132\023.fubble.ReserveRoomH\000\022+\n\014protect_roo" + "m\030\t \001(\0132\023.fubble.ProtectRoomH\000\022\'\n\nallow_"
             + "user\030\n \001(\0132\021.fubble.AllowUserH\000B\r\n\013messa"
-            + "geType\"/\n\010JoinRoom\022\021\n\troom_name\030\001 \001(\t\022\020\n"
-            + "\010password\030\002 \001(\t\"\036\n\nRenameUser\022\020\n\010new_nam"
-            + "e\030\001 \001(\t\"\036\n\013ChatMessage\022\017\n\007content\030\001 \001(\t\""
-            + "\034\n\010LockRoom\022\020\n\010password\030\001 \001(\t\"3\n\013Reserve"
-            + "Room\022\021\n\troom_name\030\001 \001(\t\022\021\n\treserverd\030\002 \001"
-            + "(\010\"0\n\013ProtectRoom\022\020\n\010password\030\001 \001(\t\022\017\n\007p"
-            + "rotect\030\002 \001(\010\"@\n\tAllowUser\022\021\n\troom_name\030\001"
-            + " \001(\t\022\021\n\tuser_name\030\002 \001(\t\022\r\n\005allow\030\003 \001(\010\"*"
-            + "\n\010MuteUser\022\017\n\007user_id\030\001 \001(\t\022\r\n\005muted\030\002 \001"
-            + "(\010\"\031\n\006HandUp\022\017\n\007hand_up\030\001 \001(\010\"\224\001\n\014Change"
-            + "Status\022+\n\006status\030\001 \001(\0162\033.fubble.ChangeSt" + "atus.Status\022,\n\007message\030\003 \001(\0162\033.fubble.Ch"
-            + "angeStatus.Status\")\n\006Status\022\r\n\tAVAILABLE"
-            + "\020\000\022\007\n\003AFK\020\001\022\007\n\003DND\020\002\"\334\004\n\026MessageContaine"
-            + "rClient\022)\n\013user_joined\030\001 \001(\0132\022.fubble.Us" + "erJoinedH\000\022%\n\tuser_left\030\002 \001(\0132\020.fubble.U"
-            + "serLeftH\000\022)\n\013joined_room\030\003 \001(\0132\022.fubble."
-            + "JoinedRoomH\000\022$\n\005error\030\004 \001(\0132\023.fubble.Fub"
-            + "bleErrorH\000\022+\n\014renamed_user\030\005 \001(\0132\023.fubbl" + "e.RenamedUserH\000\022\'\n\tlock_room\030\006 \001(\0132\022.fub"
-            + "ble.LockedRoomH\000\022\'\n\nmuted_user\030\007 \001(\0132\021.f" + "ubble.MutedUserH\000\022&\n\nhand_is_up\030\010 \001(\0132\020."
-            + "fubble.HandIsUpH\000\022.\n\rchange_status\030\t \001(\013" + "2\025.fubble.ChangedStatusH\000\0221\n\014chat_messag"
-            + "e\030\n \001(\0132\031.fubble.ChatMessageClientH\000\022,\n\014" + "reserve_room\030\013 \001(\0132\024.fubble.ReservedRoom"
-            + "H\000\022-\n\014protect_room\030\014 \001(\0132\025.fubble.Protec" + "tedRoomH\000\022)\n\nallow_user\030\r \001(\0132\023.fubble.A"
-            + "llowedUserH\000B\r\n\013messageType\"\034\n\tMutedUser"
-            + "\022\017\n\007user_id\030\001 \001(\t\"\033\n\010HandIsUp\022\017\n\007user_id"
-            + "\030\001 \001(\t\"\250\001\n\rChangedStatus\022\017\n\007user_id\030\001 \001("
-            + "\t\022,\n\006status\030\002 \001(\0162\034.fubble.ChangedStatus" + ".Status\022-\n\007message\030\003 \001(\0162\034.fubble.Change"
-            + "dStatus.Status\")\n\006Status\022\r\n\tAVAILABLE\020\000\022"
-            + "\007\n\003AFK\020\001\022\007\n\003DND\020\002\"I\n\nUserJoined\022\021\n\tuser_"
-            + "name\030\001 \001(\t\022\017\n\007user_id\030\002 \001(\t\022\027\n\017already_i"
-            + "n_room\030\003 \001(\010\"\033\n\010UserLeft\022\017\n\007user_id\030\001 \001("
-            + "\t\"e\n\nJoinedRoom\022\017\n\007room_id\030\001 \001(\t\022\017\n\007user"
-            + "_id\030\002 \001(\t\022\021\n\tuser_name\030\003 \001(\t\022\017\n\007rtc_url\030"
-            + "\004 \001(\t\022\021\n\troom_name\030\005 \001(\t\"q\n\013FubbleError\022"
-            + "/\n\010error_id\030\001 \001(\0162\035.fubble.FubbleError.E" + "rrorType\022\023\n\013description\030\002 \001(\t\"\034\n\tErrorTy"
-            + "pe\022\017\n\013ROOM_LOCKED\020\000\"0\n\013RenamedUser\022\017\n\007us"
-            + "er_id\030\001 \001(\t\022\020\n\010new_name\030\002 \001(\t\"5\n\021ChatMes"
-            + "sageClient\022\017\n\007content\030\001 \001(\t\022\017\n\007user_id\030\002"
-            + " \001(\t\">\n\nLockedRoom\022\021\n\troom_name\030\001 \001(\t\022\014\n"
-            + "\004lock\030\002 \001(\010\022\017\n\007user_id\030\003 \001(\t\"3\n\014Reserved"
-            + "Room\022\021\n\troom_name\030\001 \001(\t\022\020\n\010reserved\030\002 \001("
-            + "\010\"5\n\rProtectedRoom\022\021\n\troom_name\030\001 \001(\t\022\021\n"
-            + "\tprotected\030\002 \001(\010\"B\n\013AllowedUser\022\021\n\troom_"
-            + "name\030\001 \001(\t\022\021\n\tuser_name\030\002 \001(\t\022\r\n\005allow\030\003" + " \001(\010B3\n#com.freckles.of.couple.fubble.pr"
-            + "otoB\014WebContainer" };
+            + "geType\"B\n\010JoinRoom\022\021\n\troom_name\030\001 \001(\t\022\020\n"
+            + "\010password\030\002 \001(\t\022\021\n\tuser_name\030\003 \001(\t\"\036\n\nRe"
+            + "nameUser\022\020\n\010new_name\030\001 \001(\t\"\036\n\013ChatMessag"
+            + "e\022\017\n\007content\030\001 \001(\t\"\034\n\010LockRoom\022\020\n\010passwo"
+            + "rd\030\001 \001(\t\"3\n\013ReserveRoom\022\021\n\troom_name\030\001 \001"
+            + "(\t\022\021\n\treserverd\030\002 \001(\010\"0\n\013ProtectRoom\022\020\n\010"
+            + "password\030\001 \001(\t\022\017\n\007protect\030\002 \001(\010\"@\n\tAllow"
+            + "User\022\021\n\troom_name\030\001 \001(\t\022\021\n\tuser_name\030\002 \001"
+            + "(\t\022\r\n\005allow\030\003 \001(\010\"*\n\010MuteUser\022\017\n\007user_id"
+            + "\030\001 \001(\t\022\r\n\005muted\030\002 \001(\010\"\031\n\006HandUp\022\017\n\007hand_"
+            + "up\030\001 \001(\010\"\224\001\n\014ChangeStatus\022+\n\006status\030\001 \001("
+            + "\0162\033.fubble.ChangeStatus.Status\022,\n\007messag" + "e\030\003 \001(\0162\033.fubble.ChangeStatus.Status\")\n\006"
+            + "Status\022\r\n\tAVAILABLE\020\000\022\007\n\003AFK\020\001\022\007\n\003DND\020\002\""
+            + "\334\004\n\026MessageContainerClient\022)\n\013user_joine" + "d\030\001 \001(\0132\022.fubble.UserJoinedH\000\022%\n\tuser_le"
+            + "ft\030\002 \001(\0132\020.fubble.UserLeftH\000\022)\n\013joined_r"
+            + "oom\030\003 \001(\0132\022.fubble.JoinedRoomH\000\022$\n\005error"
+            + "\030\004 \001(\0132\023.fubble.FubbleErrorH\000\022+\n\014renamed" + "_user\030\005 \001(\0132\023.fubble.RenamedUserH\000\022\'\n\tlo"
+            + "ck_room\030\006 \001(\0132\022.fubble.LockedRoomH\000\022\'\n\nm" + "uted_user\030\007 \001(\0132\021.fubble.MutedUserH\000\022&\n\n"
+            + "hand_is_up\030\010 \001(\0132\020.fubble.HandIsUpH\000\022.\n\r" + "change_status\030\t \001(\0132\025.fubble.ChangedStat"
+            + "usH\000\0221\n\014chat_message\030\n \001(\0132\031.fubble.Chat" + "MessageClientH\000\022,\n\014reserve_room\030\013 \001(\0132\024."
+            + "fubble.ReservedRoomH\000\022-\n\014protect_room\030\014 " + "\001(\0132\025.fubble.ProtectedRoomH\000\022)\n\nallow_us"
+            + "er\030\r \001(\0132\023.fubble.AllowedUserH\000B\r\n\013messa"
+            + "geType\"\034\n\tMutedUser\022\017\n\007user_id\030\001 \001(\t\"\033\n\010"
+            + "HandIsUp\022\017\n\007user_id\030\001 \001(\t\"\250\001\n\rChangedSta"
+            + "tus\022\017\n\007user_id\030\001 \001(\t\022,\n\006status\030\002 \001(\0162\034.f"
+            + "ubble.ChangedStatus.Status\022-\n\007message\030\003 " + "\001(\0162\034.fubble.ChangedStatus.Status\")\n\006Sta"
+            + "tus\022\r\n\tAVAILABLE\020\000\022\007\n\003AFK\020\001\022\007\n\003DND\020\002\"I\n\n"
+            + "UserJoined\022\021\n\tuser_name\030\001 \001(\t\022\017\n\007user_id"
+            + "\030\002 \001(\t\022\027\n\017already_in_room\030\003 \001(\010\"\033\n\010UserL"
+            + "eft\022\017\n\007user_id\030\001 \001(\t\"e\n\nJoinedRoom\022\017\n\007ro"
+            + "om_id\030\001 \001(\t\022\017\n\007user_id\030\002 \001(\t\022\021\n\tuser_nam"
+            + "e\030\003 \001(\t\022\017\n\007rtc_url\030\004 \001(\t\022\021\n\troom_name\030\005 "
+            + "\001(\t\"q\n\013FubbleError\022/\n\010error_id\030\001 \001(\0162\035.f" + "ubble.FubbleError.ErrorType\022\023\n\013descripti"
+            + "on\030\002 \001(\t\"\034\n\tErrorType\022\017\n\013ROOM_LOCKED\020\000\"0"
+            + "\n\013RenamedUser\022\017\n\007user_id\030\001 \001(\t\022\020\n\010new_na"
+            + "me\030\002 \001(\t\"5\n\021ChatMessageClient\022\017\n\007content"
+            + "\030\001 \001(\t\022\017\n\007user_id\030\002 \001(\t\">\n\nLockedRoom\022\021\n"
+            + "\troom_name\030\001 \001(\t\022\014\n\004lock\030\002 \001(\010\022\017\n\007user_i"
+            + "d\030\003 \001(\t\"3\n\014ReservedRoom\022\021\n\troom_name\030\001 \001"
+            + "(\t\022\020\n\010reserved\030\002 \001(\010\"5\n\rProtectedRoom\022\021\n"
+            + "\troom_name\030\001 \001(\t\022\021\n\tprotected\030\002 \001(\010\"B\n\013A"
+            + "llowedUser\022\021\n\troom_name\030\001 \001(\t\022\021\n\tuser_na"
+            + "me\030\002 \001(\t\022\r\n\005allow\030\003 \001(\010B3\n#com.freckles." + "of.couple.fubble.protoB\014WebContainer" };
         com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner = new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
             public com.google.protobuf.ExtensionRegistry assignDescriptors(com.google.protobuf.Descriptors.FileDescriptor root) {
                 descriptor = root;
@@ -22293,7 +22457,7 @@ public final class WebContainer {
                 "HandUp", "ChangeStatus", "ChatMessage", "ReserveRoom", "ProtectRoom", "AllowUser", "MessageType", });
         internal_static_fubble_JoinRoom_descriptor = getDescriptor().getMessageTypes().get(1);
         internal_static_fubble_JoinRoom_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-            internal_static_fubble_JoinRoom_descriptor, new java.lang.String[] { "RoomName", "Password", });
+            internal_static_fubble_JoinRoom_descriptor, new java.lang.String[] { "RoomName", "Password", "UserName", });
         internal_static_fubble_RenameUser_descriptor = getDescriptor().getMessageTypes().get(2);
         internal_static_fubble_RenameUser_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
             internal_static_fubble_RenameUser_descriptor, new java.lang.String[] { "NewName", });

@@ -1,6 +1,8 @@
 
 package com.freckles.of.couple.fubble.handler;
 
+import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,22 +36,25 @@ public class CloseHandler {
         // 1. Remove user from room
         removeUser(room, connection);
 
+        // 2. Send UserLeft to remaining users in the room
+        broadcastUserLeft(room, user);
+
         // 2. Remove room, if no more user is present
         removeRoom(room);
 
-        // 3. Send UserLeft to remaining users in the room
-        broadcastUserLeft(room, user);
     }
 
     private void broadcastUserLeft(Room room, User user) {
         if (user == null) {
-            LOGGER.error(room.getName());
+            LOGGER.error("Could not broadcast userLeft for room " + room.getName());
         }
         UserLeft userLeft = UserLeft.newBuilder() //
             .setUserId(user.getId()) //
             .build();
 
         MessageContainerClient clientMsg = MessageContainerClient.newBuilder().setUserLeft(userLeft).build();
+        int size = room.getUsers().stream().map(User::getSession).collect(Collectors.toList()).size();
+        System.out.println(String.format("Broadcast user %s left to %s clients.", user.getName(), size));
         messageHelper.broadcastAsync(room, clientMsg);
     }
 
