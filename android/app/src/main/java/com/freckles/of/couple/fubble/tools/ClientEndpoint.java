@@ -4,7 +4,7 @@ package com.freckles.of.couple.fubble.tools;
 import android.content.Context;
 import android.util.Log;
 
-import com.freckles.of.couple.fubble.clientHandler.MessageSwitch;
+import com.freckles.of.couple.fubble.wsResponse.MessageSwitch;
 import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;

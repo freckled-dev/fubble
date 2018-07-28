@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.freckles.of.couple.fubble.R;
 import com.freckles.of.couple.fubble.entity.FubbleRoom;
+import com.freckles.of.couple.fubble.wsRequest.JoinRoomHandler;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

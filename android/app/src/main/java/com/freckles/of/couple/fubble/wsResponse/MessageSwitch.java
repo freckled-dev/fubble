@@ -1,4 +1,4 @@
-package com.freckles.of.couple.fubble.clientHandler;
+package com.freckles.of.couple.fubble.wsResponse;
 
 import android.content.Context;
 
@@ -12,7 +12,7 @@ public class MessageSwitch {
         MessageHandler handler = null;
 
         if (MessageTypeCase.JOINED_ROOM.equals(messageTypeCase)) {
-            handler = new JoinRoomHandler();
+            handler = new JoinedRoomHandler();
         }
 
         if (MessageTypeCase.USER_JOINED.equals(messageTypeCase)) {

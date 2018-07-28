@@ -19,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,7 +34,7 @@ import com.freckles.of.couple.fubble.async.GetRoomsAsync;
 import com.freckles.of.couple.fubble.entity.FubbleRoom;
 import com.freckles.of.couple.fubble.tools.AppDatabase;
 import com.freckles.of.couple.fubble.tools.DatabaseHolder;
-import com.freckles.of.couple.fubble.tools.JoinRoomHandler;
+import com.freckles.of.couple.fubble.wsRequest.JoinRoomHandler;
 import com.freckles.of.couple.fubble.tools.RoomListAdapter;
 import com.freckles.of.couple.fubble.tools.RoomsItemTouchHelper;
 import com.freckles.of.couple.fubble.tools.WebsocketHandler;
@@ -111,8 +112,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initWebSocket() {
-        WebsocketHandler websocket = new WebsocketHandler(this);
-        websocket.open();
+        try {
+            WebsocketHandler websocket = new WebsocketHandler(this);
+            websocket.open();
+        } catch (Exception e) {
+            Log.e(MainActivity.class.getName(), "Error opening websocket");
+        }
     }
 
     private void initFubblerName() {

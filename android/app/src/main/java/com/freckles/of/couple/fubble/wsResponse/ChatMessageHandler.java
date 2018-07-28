@@ -1,4 +1,4 @@
-package com.freckles.of.couple.fubble.clientHandler;
+package com.freckles.of.couple.fubble.wsResponse;
 
 import android.content.Context;
 import android.util.Log;

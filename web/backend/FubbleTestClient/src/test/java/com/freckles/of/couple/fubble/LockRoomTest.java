@@ -9,8 +9,10 @@ import java.util.List;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Test;
 
+import com.freckles.of.couple.fubble.helper.NumResponseCalculator;
 import com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoom;
 import com.freckles.of.couple.fubble.proto.WebContainer.LockRoom;
 import com.freckles.of.couple.fubble.proto.WebContainer.LockedRoom;
@@ -20,14 +22,12 @@ import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer;
 
 public class LockRoomTest extends WebsocketTest {
 
-    private static final Logger LOGGER         = LogManager.getLogger(LockRoomTest.class);
+    private static final Logger LOGGER      = LogManager.getLogger(LockRoomTest.class);
 
-    private static final String ROOM_NAME_1    = "dagmar-test-1";
-    private static final String ROOM_NAME_2    = "dagmar-test-2";
-    private static final String ROOM_NAME_3    = "dagmar-test-3";
-    private static final String ROOM_NAME_4    = "dagmar-test-4";
-
-    private static final int    WAITING_PERIOD = 1000;
+    private static final String ROOM_NAME_1 = "dagmar-test-1";
+    private static final String ROOM_NAME_2 = "dagmar-test-2";
+    private static final String ROOM_NAME_3 = "dagmar-test-3";
+    private static final String ROOM_NAME_4 = "dagmar-test-4";
 
     @Test
     public void testReceiveLockedRoom() {
@@ -35,16 +35,17 @@ public class LockRoomTest extends WebsocketTest {
             // 3 clients join
             List<FubbleClientEndpoint> clients = createClients(3);
 
-            for (FubbleClientEndpoint client : clients) {
+            for (int index = 0; index < clients.size(); index++) {
+                FubbleClientEndpoint client = clients.get(index);
+                ResponseCount.startLatch(NumResponseCalculator.numJoinRoomResponses(index));
                 joinRoom(ROOM_NAME_1, client);
+                ResponseCount.await();
             }
 
-            Thread.sleep(WAITING_PERIOD);
-
             // a client locks the room
+            ResponseCount.startLatch(NumResponseCalculator.numLockRoomResponses(clients.size()));
             lockRoom("SuperSecurePassword1234", clients.get(0));
-
-            Thread.sleep(WAITING_PERIOD);
+            ResponseCount.await();
 
             // all clients should get the message - room is locked
             for (FubbleClientEndpoint client : clients) {
@@ -63,12 +64,10 @@ public class LockRoomTest extends WebsocketTest {
                 assertTrue(lockedRoomReceived);
             }
 
-            Thread.sleep(WAITING_PERIOD);
-
             // a client unlocks the room
+            ResponseCount.startLatch(NumResponseCalculator.numLockRoomResponses(clients.size()));
             unlockRoom(clients.get(1));
-
-            Thread.sleep(WAITING_PERIOD);
+            ResponseCount.await();
 
             // all clients should get the message - room is unlocked
             for (FubbleClientEndpoint client : clients) {
@@ -89,6 +88,7 @@ public class LockRoomTest extends WebsocketTest {
 
         } catch (Exception ex) {
             LOGGER.error(ExceptionUtils.getStackTrace(ex));
+            Assert.fail();
         }
     }
 
@@ -98,28 +98,32 @@ public class LockRoomTest extends WebsocketTest {
             // 3 clients join
             List<FubbleClientEndpoint> clients = createClients(3);
 
-            for (FubbleClientEndpoint client : clients) {
+            for (int index = 0; index < clients.size(); index++) {
+                FubbleClientEndpoint client = clients.get(index);
+                ResponseCount.startLatch(NumResponseCalculator.numJoinRoomResponses(index));
                 joinRoom(ROOM_NAME_2, client);
+                ResponseCount.await();
             }
 
-            Thread.sleep(WAITING_PERIOD);
-
             // a client locks the room
+            ResponseCount.startLatch(NumResponseCalculator.numLockRoomResponses(clients.size()));
             lockRoom("Password123", clients.get(0));
-
-            Thread.sleep(WAITING_PERIOD);
+            ResponseCount.await();
 
             // a new client wants to join the locked room
             FubbleClientEndpoint newJoin = createClient();
+            ResponseCount.startLatch(NumResponseCalculator.numRoomLockedResponses(1));
             joinRoom(ROOM_NAME_2, newJoin);
+            ResponseCount.await();
+            allClients.remove(newJoin);
 
-            Thread.sleep(WAITING_PERIOD);
             assertTrue(newJoin.getMessages().stream() //
                 .filter(message -> message.getMessageTypeCase().equals(MessageTypeCase.ERROR)) //
                 .findFirst().isPresent());
 
         } catch (Exception ex) {
             LOGGER.error(ExceptionUtils.getStackTrace(ex));
+            Assert.fail();
         }
     }
 
@@ -129,33 +133,35 @@ public class LockRoomTest extends WebsocketTest {
             // 3 clients join
             List<FubbleClientEndpoint> clients = createClients(3);
 
-            for (FubbleClientEndpoint client : clients) {
+            for (int index = 0; index < clients.size(); index++) {
+                FubbleClientEndpoint client = clients.get(index);
+                ResponseCount.startLatch(NumResponseCalculator.numJoinRoomResponses(index));
                 joinRoom(ROOM_NAME_3, client);
+                ResponseCount.await();
             }
-
-            Thread.sleep(WAITING_PERIOD);
 
             // a client locks the room
             String password = "HalliHallo";
+            ResponseCount.startLatch(NumResponseCalculator.numLockRoomResponses(clients.size()));
             lockRoom(password, clients.get(0));
-
-            Thread.sleep(WAITING_PERIOD);
+            ResponseCount.await();
 
             // a new client wants to join the locked room
             FubbleClientEndpoint newJoin = createClient();
+            ResponseCount.startLatch(NumResponseCalculator.numRoomLockedResponses(1));
             joinRoom(ROOM_NAME_3, newJoin);
+            ResponseCount.await();
+            allClients.remove(newJoin);
 
-            Thread.sleep(WAITING_PERIOD);
             assertTrue(newJoin.getMessages().stream() //
                 .filter(message -> message.getMessageTypeCase().equals(MessageTypeCase.ERROR)) //
                 .findFirst().isPresent());
 
-            Thread.sleep(WAITING_PERIOD);
-
-            // the new client tries again - now with password
-            joinRoom(ROOM_NAME_3, newJoin, password);
-
-            Thread.sleep(WAITING_PERIOD);
+            // the new client tries again - now with correct password
+            ResponseCount.startLatch(NumResponseCalculator.numJoinRoomResponses(3));
+            joinRoom(ROOM_NAME_3, newJoin, password, "");
+            ResponseCount.await();
+            allClients.add(newJoin);
 
             // verify if he got in
             boolean joinedRoomReceived = false;
@@ -174,6 +180,7 @@ public class LockRoomTest extends WebsocketTest {
 
         } catch (Exception ex) {
             LOGGER.error(ExceptionUtils.getStackTrace(ex));
+            Assert.fail();
         }
     }
 
@@ -183,24 +190,26 @@ public class LockRoomTest extends WebsocketTest {
             // 3 clients join
             List<FubbleClientEndpoint> clients = createClients(3);
 
-            for (FubbleClientEndpoint client : clients) {
+            for (int index = 0; index < clients.size(); index++) {
+                FubbleClientEndpoint client = clients.get(index);
+                ResponseCount.startLatch(NumResponseCalculator.numJoinRoomResponses(index));
                 joinRoom(ROOM_NAME_4, client);
+                ResponseCount.await();
             }
-
-            Thread.sleep(WAITING_PERIOD);
 
             // a client locks the room
             String password = "HalliHallo";
+            ResponseCount.startLatch(NumResponseCalculator.numLockRoomResponses(clients.size()));
             lockRoom(password, clients.get(0));
-
-            Thread.sleep(WAITING_PERIOD);
+            ResponseCount.await();
 
             // a new client wants to join the locked room - he has the password and sends this immediately
             FubbleClientEndpoint newJoin = createClient();
-            joinRoom(ROOM_NAME_4, newJoin, password);
+            ResponseCount.startLatch(NumResponseCalculator.numJoinRoomResponses(3));
+            joinRoom(ROOM_NAME_4, newJoin, password, "");
+            ResponseCount.await();
 
             // no error
-            Thread.sleep(WAITING_PERIOD);
             assertFalse(newJoin.getMessages().stream() //
                 .filter(message -> message.getMessageTypeCase().equals(MessageTypeCase.ERROR)) //
                 .findFirst().isPresent());
@@ -222,6 +231,7 @@ public class LockRoomTest extends WebsocketTest {
 
         } catch (Exception ex) {
             LOGGER.error(ExceptionUtils.getStackTrace(ex));
+            Assert.fail();
         }
     }
 

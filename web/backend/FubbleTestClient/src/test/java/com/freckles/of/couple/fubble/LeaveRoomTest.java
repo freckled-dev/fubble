@@ -8,19 +8,19 @@ import java.util.List;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Test;
 
+import com.freckles.of.couple.fubble.helper.NumResponseCalculator;
 import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient;
 import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient.MessageTypeCase;
 import com.freckles.of.couple.fubble.proto.WebContainer.UserLeft;
 
 public class LeaveRoomTest extends WebsocketTest {
 
-    private static final Logger LOGGER         = LogManager.getLogger(LeaveRoomTest.class);
+    private static final Logger LOGGER      = LogManager.getLogger(LeaveRoomTest.class);
 
-    private static final String ROOM_NAME_1    = "martin_test1";
-
-    private static final int    WAITING_PERIOD = 1000;
+    private static final String ROOM_NAME_1 = "martin_test1";
 
     @Test
     public void testReceiveUserLeft() {
@@ -28,21 +28,28 @@ public class LeaveRoomTest extends WebsocketTest {
             // 5 clients join
             List<FubbleClientEndpoint> clients = createClients(5);
 
-            for (FubbleClientEndpoint client : clients) {
+            for (int index = 0; index < clients.size(); index++) {
+                FubbleClientEndpoint client = clients.get(index);
+                ResponseCount.startLatch(NumResponseCalculator.numJoinRoomResponses(index));
                 joinRoom(ROOM_NAME_1, client);
+                ResponseCount.await();
             }
 
-            Thread.sleep(WAITING_PERIOD);
-
             // 2 clients leave (Fubbler2 + Fubbler4) - check if the other 3 get the user left messages
-            clients.get(1).getUserSession().close();
-            Thread.sleep(WAITING_PERIOD);
-            clients.get(3).getUserSession().close();
+            FubbleClientEndpoint fubbler2 = clients.get(1);
+            ResponseCount.startLatch(NumResponseCalculator.numUserLeftResponses(4));
+            fubbler2.getUserSession().close();
+            ResponseCount.await();
+            allClients.remove(fubbler2);
 
-            String fubbler2_id = clients.get(1).getUserId();
-            String fubbler4_id = clients.get(3).getUserId();
+            FubbleClientEndpoint fubbler4 = clients.get(3);
+            ResponseCount.startLatch(NumResponseCalculator.numUserLeftResponses(3));
+            fubbler4.getUserSession().close();
+            ResponseCount.await();
+            allClients.remove(fubbler4);
 
-            Thread.sleep(WAITING_PERIOD);
+            String fubbler2_id = fubbler2.getUserId();
+            String fubbler4_id = fubbler4.getUserId();
 
             // check Fubbler1
             boolean fubbler2LeftReceived = false;
@@ -63,7 +70,7 @@ public class LeaveRoomTest extends WebsocketTest {
 
             // check Fubbler4 (Fubbler2 left first - so Fubbler4 must also get a message before he leaves)
             fubbler2LeftReceived = false;
-            for (MessageContainerClient message : clients.get(3).getMessages()) {
+            for (MessageContainerClient message : fubbler4.getMessages()) {
                 if (MessageTypeCase.USER_LEFT.equals(message.getMessageTypeCase())) {
                     UserLeft userLeft = message.getUserLeft();
                     if (userLeft.getUserId().equals(fubbler2_id)) {
@@ -109,6 +116,7 @@ public class LeaveRoomTest extends WebsocketTest {
 
         } catch (Exception ex) {
             LOGGER.error(ExceptionUtils.getStackTrace(ex));
+            Assert.fail();
         }
     }
 

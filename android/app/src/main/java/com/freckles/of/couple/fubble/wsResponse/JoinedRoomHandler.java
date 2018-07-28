@@ -1,4 +1,4 @@
-package com.freckles.of.couple.fubble.clientHandler;
+package com.freckles.of.couple.fubble.wsResponse;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,7 +13,7 @@ import com.freckles.of.couple.fubble.tools.DatabaseHolder;
 
 import java.util.Date;
 
-public class JoinRoomHandler implements MessageHandler {
+public class JoinedRoomHandler implements MessageHandler {
 
     private Context context;
 
@@ -23,7 +23,6 @@ public class JoinRoomHandler implements MessageHandler {
         this.context = context;
 
         JoinedRoom joinedRoom = container.getJoinedRoom();
-        Log.i(MessageSwitch.class.getName(), joinedRoom.toString());
 
         updateOrInsertRoom(joinedRoom);
         openRoomActivity(joinedRoom);
