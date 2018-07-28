@@ -27,7 +27,7 @@ import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer;
 @RunWith(Parameterized.class)
 public class WebsocketTest {
 
-    private static final int             NUM_REPEAT_TESTS = 50;
+    private static final int             NUM_REPEAT_TESTS = 1;
 
     private static final Logger          LOGGER           = LogManager.getLogger(WebsocketTest.class);
 
