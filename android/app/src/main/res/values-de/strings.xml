@@ -1,0 +1,48 @@
+<resources>
+
+    <!-- General -->
+    <string name="app_name">Fubble</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- Main Activity -->
+    <string name="input_room_name_hint">Raum Namen eingeben...</string>
+    <string name="btn_join_room_label">Raum beitreten</string>
+    <string name="tv_rooms_header">Früher beigetretene Räume</string>
+
+    <!-- Error Messages -->
+    <string name="web_server_error">Der Server antwortet nicht. Bitte die Internet Verbindung überprüfen.</string>
+
+    <!-- Room List Adapter -->
+    <string name="tv_connected_before">"vor "</string>
+    <string name="tv_connected_hours">" Stunden"</string>
+    <string name="tv_connected_hour">" Stunde"</string>
+    <string name="tv_connected_minutes">" Minuten"</string>
+    <string name="tv_connected_minute">" Minute"</string>
+    <string name="tv_connected_after"></string>
+
+    <!-- Date Time Format -->
+    <string name="date_time_format">dd.MM.yyyy, HH:mm</string>
+
+    <!-- Profile Activity -->
+    <string name="profileHeader">Profil</string>
+    <string name="profile_edit_name_header">Wählen Sie einen Namen...</string>
+
+
+    <!-- Shared Prefs -->
+    <string name="preference_file_key">FUBBLE_PREFS</string>
+    <string name="saved_fubbler_name">FUBBLER_NAME</string>
+
+    <!-- Navigation -->
+    <string name="nav_settings">Einstellungen</string>
+    <string name="nav_security">Datenschutz</string>
+    <string name="nav_about">Info</string>
+
+    <!-- Settings Activity -->
+    <string name="settingsHeader">Einstellungen</string>
+
+</resources>

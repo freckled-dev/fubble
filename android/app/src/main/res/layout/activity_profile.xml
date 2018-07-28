@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ProfileActivity">
+
+    <ImageView
+        android:id="@+id/iv_profile_fubbler_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="150dp"
+        android:paddingTop="20dp"
+        android:layout_centerHorizontal="true"
+        app:srcCompat="@mipmap/icon_girl" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/iv_profile_fubbler_icon"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/layout_border"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/tv_profile_fubbler_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fubbler1"
+            android:layout_centerVertical="true"
+            android:textSize="16sp" />
+
+        <ImageView
+            android:id="@+id/iv_profile_edit_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            app:srcCompat="@drawable/ic_menu_edit_gray" />
+
+    </RelativeLayout>
+
+</RelativeLayout>
