@@ -89,9 +89,6 @@ public class FubbleClientEndpoint {
             MessageContainerClient container = MessageContainerClient.parseFrom(binaryMessage);
             MessageTypeCase messageTypeCase = container.getMessageTypeCase();
             messages.add(container);
-            // if (!MessageTypeCase.USER_LEFT.equals(messageTypeCase)) {
-            System.out.println(messageTypeCase);
-            // }
 
             switch (messageTypeCase) {
                 case JOINED_ROOM:

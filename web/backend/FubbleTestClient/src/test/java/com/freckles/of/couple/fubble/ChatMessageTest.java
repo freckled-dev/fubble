@@ -17,7 +17,7 @@ import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient;
 import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient.MessageTypeCase;
 import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer;
 
-public class ChatMessageTest extends WebsocketTest {
+public class ChatMessageTest extends WebsocketTestRunner {
 
     private static final Logger LOGGER      = LogManager.getLogger(ChatMessageTest.class);
 

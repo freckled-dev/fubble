@@ -16,7 +16,7 @@ import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient;
 import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient.MessageTypeCase;
 import com.freckles.of.couple.fubble.proto.WebContainer.UserLeft;
 
-public class LeaveRoomTest extends WebsocketTest {
+public class LeaveRoomTest extends WebsocketTestRunner {
 
     private static final Logger LOGGER      = LogManager.getLogger(LeaveRoomTest.class);
 

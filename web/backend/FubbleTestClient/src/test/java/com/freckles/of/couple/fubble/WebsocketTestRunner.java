@@ -25,11 +25,11 @@ import com.freckles.of.couple.fubble.proto.WebContainer.JoinRoom;
 import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer;
 
 @RunWith(Parameterized.class)
-public class WebsocketTest {
+public class WebsocketTestRunner {
 
     private static final int             NUM_REPEAT_TESTS = 1;
 
-    private static final Logger          LOGGER           = LogManager.getLogger(WebsocketTest.class);
+    private static final Logger          LOGGER           = LogManager.getLogger(WebsocketTestRunner.class);
 
     protected List<FubbleClientEndpoint> allClients       = new ArrayList<>();
 

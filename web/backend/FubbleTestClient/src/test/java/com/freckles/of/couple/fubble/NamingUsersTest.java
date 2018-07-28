@@ -15,7 +15,7 @@ import org.junit.Test;
 
 import com.freckles.of.couple.fubble.helper.NumResponseCalculator;
 
-public class NamingUsersTest extends WebsocketTest {
+public class NamingUsersTest extends WebsocketTestRunner {
 
     private static final Logger LOGGER      = LogManager.getLogger(NamingUsersTest.class);
     private static final String ROOM_NAME_1 = "martin-loves-games-test1";

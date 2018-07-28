@@ -20,7 +20,7 @@ import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer;
 import com.freckles.of.couple.fubble.proto.WebContainer.RenameUser;
 import com.freckles.of.couple.fubble.proto.WebContainer.RenamedUser;
 
-public class RenamingUsersTest extends WebsocketTest {
+public class RenamingUsersTest extends WebsocketTestRunner {
 
     private static final Logger LOGGER      = LogManager.getLogger(RenamingUsersTest.class);
     private static final String ROOM_NAME_1 = "hello_markus_1";

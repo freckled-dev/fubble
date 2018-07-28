@@ -20,7 +20,7 @@ import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient;
 import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient.MessageTypeCase;
 import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerServer;
 
-public class LockRoomTest extends WebsocketTest {
+public class LockRoomTest extends WebsocketTestRunner {
 
     private static final Logger LOGGER      = LogManager.getLogger(LockRoomTest.class);
 
