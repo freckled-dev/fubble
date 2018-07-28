@@ -11,6 +11,7 @@ pkg_check_modules(GST REQUIRED
   gstreamer-sdp-1.0>=1.4
   gstreamer-video-1.0>=1.4
   gstreamer-app-1.0>=1.4
+  gstreamer-webrtc-1.0>=1.4
   )
 add_library(gstreamer INTERFACE)
 target_include_directories(gstreamer INTERFACE SYSTEM

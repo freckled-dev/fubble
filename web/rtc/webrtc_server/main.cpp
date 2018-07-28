@@ -5,6 +5,9 @@
 #include <string_view>
 extern "C" {
 #include <gst/gst.h>
+#include <gst/sdp/sdp.h>
+#define GST_USE_UNSTABLE_API
+#include <gst/webrtc/webrtc.h>
 }
 
 // tutorial
@@ -58,9 +61,34 @@ static void check_plugins() {
   throw_if_not_all_plugins_found(all_found);
 }
 
-static void on_negotiation_needed(GstElement * /*element*/,
-                                  gpointer /*user_data*/) {
+static void on_offer_created(GstPromise *promise, gpointer /*user_data*/) {
+  std::cout << "on_offer_created" << std::endl;
+  assert(gst_promise_wait(promise) == GST_PROMISE_RESULT_REPLIED);
+  const GstStructure *reply = gst_promise_get_reply(promise);
+  GstWebRTCSessionDescription *offer{nullptr};
+  gst_structure_get(reply, "offer", GST_TYPE_WEBRTC_SESSION_DESCRIPTION, &offer,
+                    nullptr);
+  gst_promise_unref(promise);
+
+  //  promise = gst_promise_new();
+  //  g_signal_emit_by_name(webrtc1, "set-local-description", offer, promise);
+  //  gst_promise_interrupt(promise);
+  //  gst_promise_unref(promise);
+
+  //  /* Send offer to peer */
+  //  send_sdp_offer(offer);
+  //  gst_webrtc_session_description_free(offer);
+}
+
+static void create_offer(GstElement *webrtc) {
+  GstPromise *promise =
+      gst_promise_new_with_change_func(on_offer_created, nullptr, nullptr);
+  g_signal_emit_by_name(webrtc, "create-offer", NULL, promise);
+}
+
+static void on_negotiation_needed(GstElement *webrtc, gpointer /*user_data*/) {
   std::cout << "on_negotiation_needed" << std::endl;
+  create_offer(webrtc);
 }
 
 static void on_ice_candidate(GstElement * /*webrtc*/, guint /*mlineindex*/,
@@ -71,9 +99,9 @@ static void on_ice_candidate(GstElement * /*webrtc*/, guint /*mlineindex*/,
 static void on_pad_added(GstElement * /*webrtc*/, GstPad * /*pad*/,
                          GstElement * /*pipe*/) {}
 
-static void setup_pipeline() {
+static GstElement *setup_pipeline() {
   GError *error{nullptr};
-  GstElement *pipe1 = gst_parse_launch(
+  GstElement *main_pipe = gst_parse_launch(
       "webrtcbin name=sendrecv stun-server=stun://stun.l.google.com:19302 "
       "videotestsrc pattern=ball ! videoconvert ! queue ! "
       "vp8enc deadline=1 ! rtpvp8pay ! "
@@ -86,7 +114,7 @@ static void setup_pipeline() {
       &error);
   free_and_throw_if_error(error, "gst_parse_launch");
 
-  GstElement *webrtc1 = gst_bin_get_by_name(GST_BIN(pipe1), "sendrecv");
+  GstElement *webrtc1 = gst_bin_get_by_name(GST_BIN(main_pipe), "sendrecv");
   assert(webrtc1);
 
   /* This is the gstwebrtc entry point where we create the offer and so on. It
@@ -99,15 +127,16 @@ static void setup_pipeline() {
   g_signal_connect(webrtc1, "on-ice-candidate", G_CALLBACK(on_ice_candidate),
                    nullptr);
   /* Incoming streams will be exposed via this signal */
-  g_signal_connect(webrtc1, "pad-added", G_CALLBACK(on_pad_added), pipe1);
+  g_signal_connect(webrtc1, "pad-added", G_CALLBACK(on_pad_added), main_pipe);
   /* Lifetime is the same as the pipeline itself */
   gst_object_unref(webrtc1);
 
   g_print("Starting pipeline\n");
-  GstStateChangeReturn ret =
-      gst_element_set_state(GST_ELEMENT(pipe1), GST_STATE_PLAYING);
-  if (ret == GST_STATE_CHANGE_FAILURE)
+  const GstStateChangeReturn state_change_result =
+      gst_element_set_state(GST_ELEMENT(main_pipe), GST_STATE_PLAYING);
+  if (state_change_result == GST_STATE_CHANGE_FAILURE)
     throw std::runtime_error("gst_element_set_state, GST_STATE_PLAYING");
+  return main_pipe;
 }
 
 int main(int argc, char *argv[]) {
@@ -115,6 +144,12 @@ int main(int argc, char *argv[]) {
   print_gstreamer_version();
   initialise_gstreamer(&argc, &argv);
   check_plugins();
-  setup_pipeline();
+  GstElement *pipeline = setup_pipeline();
+  GstBus *bus = gst_element_get_bus(pipeline);
+  GstMessageType filter =
+      static_cast<GstMessageType>(GST_MESSAGE_ERROR | GST_MESSAGE_EOS);
+  //  GstMessage *message =
+  gst_bus_timed_pop_filtered(bus, GST_CLOCK_TIME_NONE, filter);
+  std::cout << "shutting down" << std::endl;
   return 0;
 }
