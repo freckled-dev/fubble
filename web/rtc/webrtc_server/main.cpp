@@ -1,17 +1,17 @@
+#include <gst/gst.h>
+#include <gst/sdp/sdp.h>
 #include <array>
 #include <cassert>
 #include <iostream>
 #include <sstream>
 #include <string_view>
-extern "C" {
-#include <gst/gst.h>
-#include <gst/sdp/sdp.h>
 #define GST_USE_UNSTABLE_API
 #include <gst/webrtc/webrtc.h>
-}
 
 // tutorial
 // https://github.com/centricular/gstwebrtc-demos/blob/master/sendrecv/gst/webrtc-sendrecv.c
+
+static GstElement *webrtc_element;
 
 std::ostream &operator<<(std::ostream &out, const GError &error) {
   return out << "{domain:" << error.domain << ", code:" << error.code
@@ -61,39 +61,46 @@ static void check_plugins() {
   throw_if_not_all_plugins_found(all_found);
 }
 
+static void set_local_description(GstWebRTCSessionDescription *offer) {
+  GstPromise *promise = gst_promise_new();
+  g_signal_emit_by_name(webrtc_element, "set-local-description", offer,
+                        promise);
+  gst_promise_interrupt(promise);
+  gst_promise_unref(promise);
+}
+
 static void on_offer_created(GstPromise *promise, gpointer /*user_data*/) {
   std::cout << "on_offer_created" << std::endl;
   assert(gst_promise_wait(promise) == GST_PROMISE_RESULT_REPLIED);
   const GstStructure *reply = gst_promise_get_reply(promise);
   GstWebRTCSessionDescription *offer{nullptr};
-  gst_structure_get(reply, "offer", GST_TYPE_WEBRTC_SESSION_DESCRIPTION, &offer,
-                    nullptr);
+  if (!gst_structure_get(reply, "offer", GST_TYPE_WEBRTC_SESSION_DESCRIPTION,
+                         &offer, nullptr))
+    throw std::runtime_error("gst_structure_get(offer");
   gst_promise_unref(promise);
-
-  //  promise = gst_promise_new();
-  //  g_signal_emit_by_name(webrtc1, "set-local-description", offer, promise);
-  //  gst_promise_interrupt(promise);
-  //  gst_promise_unref(promise);
+  set_local_description(offer);
 
   //  /* Send offer to peer */
   //  send_sdp_offer(offer);
   //  gst_webrtc_session_description_free(offer);
 }
 
-static void create_offer(GstElement *webrtc) {
+static void create_offer() {
   GstPromise *promise =
       gst_promise_new_with_change_func(on_offer_created, nullptr, nullptr);
-  g_signal_emit_by_name(webrtc, "create-offer", NULL, promise);
+  g_signal_emit_by_name(webrtc_element, "create-offer", NULL, promise);
 }
 
-static void on_negotiation_needed(GstElement *webrtc, gpointer /*user_data*/) {
+static void on_negotiation_needed(GstElement * /*webrtc*/,
+                                  gpointer /*user_data*/) {
   std::cout << "on_negotiation_needed" << std::endl;
-  create_offer(webrtc);
+  create_offer();
 }
 
-static void on_ice_candidate(GstElement * /*webrtc*/, guint /*mlineindex*/,
-                             gchar * /*candidate*/, gpointer /*user_data*/) {
-  std::cout << "on_ice_candidate" << std::endl;
+static void on_ice_candidate(GstElement * /*webrtc*/, guint mlineindex,
+                             gchar *candidate, gpointer /*user_data*/) {
+  std::cout << "on_ice_candidate, mlineindex:" << mlineindex
+            << " candidate:" << candidate << std::endl;
 }
 
 static void on_pad_added(GstElement * /*webrtc*/, GstPad * /*pad*/,
@@ -114,22 +121,23 @@ static GstElement *setup_pipeline() {
       &error);
   free_and_throw_if_error(error, "gst_parse_launch");
 
-  GstElement *webrtc1 = gst_bin_get_by_name(GST_BIN(main_pipe), "sendrecv");
-  assert(webrtc1);
+  webrtc_element = gst_bin_get_by_name(GST_BIN(main_pipe), "sendrecv");
+  assert(webrtc_element);
 
   /* This is the gstwebrtc entry point where we create the offer and so on. It
    * will be called when the pipeline goes to PLAYING. */
-  g_signal_connect(webrtc1, "on-negotiation-needed",
+  g_signal_connect(webrtc_element, "on-negotiation-needed",
                    G_CALLBACK(on_negotiation_needed), nullptr);
   /* We need to transmit this ICE candidate to the browser via the websockets
    * signalling server. Incoming ice candidates from the browser need to be
    * added by us too, see on_server_message() */
-  g_signal_connect(webrtc1, "on-ice-candidate", G_CALLBACK(on_ice_candidate),
-                   nullptr);
+  g_signal_connect(webrtc_element, "on-ice-candidate",
+                   G_CALLBACK(on_ice_candidate), nullptr);
   /* Incoming streams will be exposed via this signal */
-  g_signal_connect(webrtc1, "pad-added", G_CALLBACK(on_pad_added), main_pipe);
+  g_signal_connect(webrtc_element, "pad-added", G_CALLBACK(on_pad_added),
+                   main_pipe);
   /* Lifetime is the same as the pipeline itself */
-  gst_object_unref(webrtc1);
+  gst_object_unref(webrtc_element);
 
   g_print("Starting pipeline\n");
   const GstStateChangeReturn state_change_result =
