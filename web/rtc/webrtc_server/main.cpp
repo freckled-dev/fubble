@@ -69,6 +69,14 @@ static void set_local_description(GstWebRTCSessionDescription *offer) {
   gst_promise_unref(promise);
 }
 
+static void save_offer(GstWebRTCSessionDescription *offer) {
+  gchar *text = gst_sdp_message_as_text(offer->sdp);
+  std::string text_casted(text);
+  std::cout << "save_offer, text_casted.size():" << text_casted.size()
+            << std::endl;
+  g_free(text);
+}
+
 static void on_offer_created(GstPromise *promise, gpointer /*user_data*/) {
   std::cout << "on_offer_created" << std::endl;
   assert(gst_promise_wait(promise) == GST_PROMISE_RESULT_REPLIED);
@@ -80,9 +88,9 @@ static void on_offer_created(GstPromise *promise, gpointer /*user_data*/) {
   gst_promise_unref(promise);
   set_local_description(offer);
 
-  //  /* Send offer to peer */
-  //  send_sdp_offer(offer);
-  //  gst_webrtc_session_description_free(offer);
+  save_offer(offer);
+
+  gst_webrtc_session_description_free(offer);
 }
 
 static void create_offer() {
@@ -99,8 +107,8 @@ static void on_negotiation_needed(GstElement * /*webrtc*/,
 
 static void on_ice_candidate(GstElement * /*webrtc*/, guint mlineindex,
                              gchar *candidate, gpointer /*user_data*/) {
-  std::cout << "on_ice_candidate, mlineindex:" << mlineindex
-            << " candidate:" << candidate << std::endl;
+  //  std::cout << "on_ice_candidate, mlineindex:" << mlineindex
+  //            << " candidate:" << candidate << std::endl;
 }
 
 static void on_pad_added(GstElement * /*webrtc*/, GstPad * /*pad*/,
