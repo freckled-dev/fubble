@@ -5,8 +5,11 @@
 #include <iostream>
 #include <sstream>
 #include <string_view>
+#include <thread>
 #define GST_USE_UNSTABLE_API
 #include <gst/webrtc/webrtc.h>
+#include "connection.hpp"
+#include "websocket/server.hpp"
 
 // tutorial
 // https://github.com/centricular/gstwebrtc-demos/blob/master/sendrecv/gst/webrtc-sendrecv.c
@@ -78,7 +81,8 @@ static void save_offer(GstWebRTCSessionDescription *offer) {
 }
 
 static void on_offer_created(GstPromise *promise, gpointer /*user_data*/) {
-  std::cout << "on_offer_created" << std::endl;
+  std::cout << "on_offer_created, thread_id:" << std::this_thread::get_id()
+            << std::endl;
   assert(gst_promise_wait(promise) == GST_PROMISE_RESULT_REPLIED);
   const GstStructure *reply = gst_promise_get_reply(promise);
   GstWebRTCSessionDescription *offer{nullptr};
@@ -101,14 +105,16 @@ static void create_offer() {
 
 static void on_negotiation_needed(GstElement * /*webrtc*/,
                                   gpointer /*user_data*/) {
-  std::cout << "on_negotiation_needed" << std::endl;
+  std::cout << "on_negotiation_needed, thread_id:" << std::this_thread::get_id()
+            << std::endl;
   create_offer();
 }
 
 static void on_ice_candidate(GstElement * /*webrtc*/, guint mlineindex,
                              gchar *candidate, gpointer /*user_data*/) {
   //  std::cout << "on_ice_candidate, mlineindex:" << mlineindex
-  //            << " candidate:" << candidate << std::endl;
+  //            << " candidate:" << candidate
+  //            << ", thread_id:" << std::this_thread::get_id() << std::endl;
 }
 
 static void on_pad_added(GstElement * /*webrtc*/, GstPad * /*pad*/,
@@ -156,6 +162,17 @@ static GstElement *setup_pipeline() {
 }
 
 int main(int argc, char *argv[]) {
+  boost::asio::io_context context;
+  constexpr port port_{8765};
+  server::async_accept_callback callback = [](std::unique_ptr<connection> &&) {
+    std::cout << "accepted a new websocket connection" << std::endl;
+  };
+  websocket::server server_{context, port_, callback};
+  server_.start();
+  context.run();
+  return 0;
+
+  std::cout << "main thread_id:" << std::this_thread::get_id() << std::endl;
   static_assert(__cplusplus >= 201703L);
   print_gstreamer_version();
   initialise_gstreamer(&argc, &argv);
