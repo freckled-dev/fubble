@@ -72,11 +72,19 @@ static void set_local_description(GstWebRTCSessionDescription *offer) {
   gst_promise_unref(promise);
 }
 
+static std::unique_ptr<connection> connection_web;
+static std::string sdp;
+struct ice_canditate {
+  int mlineindex;
+  std::string candidate;
+};
+static std::vector<ice_canditate> ice_canditates;
+
 static void save_offer(GstWebRTCSessionDescription *offer) {
   gchar *text = gst_sdp_message_as_text(offer->sdp);
   std::string text_casted(text);
-  std::cout << "save_offer, text_casted.size():" << text_casted.size()
-            << std::endl;
+  sdp = std::move(text_casted);
+  std::cout << "save_offer, sdp:" << sdp << std::endl;
   g_free(text);
 }
 
@@ -112,9 +120,11 @@ static void on_negotiation_needed(GstElement * /*webrtc*/,
 
 static void on_ice_candidate(GstElement * /*webrtc*/, guint mlineindex,
                              gchar *candidate, gpointer /*user_data*/) {
-  //  std::cout << "on_ice_candidate, mlineindex:" << mlineindex
-  //            << " candidate:" << candidate
-  //            << ", thread_id:" << std::this_thread::get_id() << std::endl;
+  const int mlineindex_casted = static_cast<int>(mlineindex);
+  std::string canditate_casted = candidate;
+  std::cout << "on_ice_candidate, mlineindex_casted:" << mlineindex_casted
+            << ", canditate_casted:" << canditate_casted << std::endl;
+  ice_canditates.push_back({mlineindex_casted, std::move(canditate_casted)});
 }
 
 static void on_pad_added(GstElement * /*webrtc*/, GstPad * /*pad*/,
@@ -164,13 +174,15 @@ static GstElement *setup_pipeline() {
 int main(int argc, char *argv[]) {
   boost::asio::io_context context;
   constexpr port port_{8765};
-  server::async_accept_callback callback = [](std::unique_ptr<connection> &&) {
-    std::cout << "accepted a new websocket connection" << std::endl;
-  };
+  server::async_accept_callback callback =
+      [](std::unique_ptr<connection> &&connection_) {
+        std::cout << "accepted a new websocket connection" << std::endl;
+        connection_web = std::move(connection_);
+        connection_web->read_async([](std::string) {});
+      };
   websocket::server server_{context, port_, callback};
   server_.start();
-  context.run();
-  return 0;
+  std::thread server_thread([&context] { context.run(); });
 
   std::cout << "main thread_id:" << std::this_thread::get_id() << std::endl;
   static_assert(__cplusplus >= 201703L);
@@ -184,5 +196,7 @@ int main(int argc, char *argv[]) {
   //  GstMessage *message =
   gst_bus_timed_pop_filtered(bus, GST_CLOCK_TIME_NONE, filter);
   std::cout << "shutting down" << std::endl;
+  server_thread.join();
+
   return 0;
 }
