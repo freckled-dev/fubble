@@ -19,6 +19,7 @@ class connection : public ::connection {
   ~connection() override;
 
   void read_async(const callback_message_type &callback_message) override;
+  void write(const message_type &message) override;
 
  private:
   void read_async(boost::asio::yield_context yield);

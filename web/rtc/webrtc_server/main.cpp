@@ -1,6 +1,9 @@
 #include <gst/gst.h>
 #include <gst/sdp/sdp.h>
 #include <array>
+#include <boost/algorithm/string/replace.hpp>
+#include <boost/property_tree/json_parser.hpp>
+#include <boost/property_tree/ptree.hpp>
 #include <cassert>
 #include <iostream>
 #include <sstream>
@@ -80,6 +83,47 @@ struct ice_canditate {
 };
 static std::vector<ice_canditate> ice_canditates;
 
+static void send_string(connection &connection_,
+                        const std::string_view to_send) {
+  const std::vector<char> message(to_send.cbegin(), to_send.cend());
+  connection_.write(message);
+}
+
+static void send_itc_canditate(connection &connection_,
+                               const ice_canditate &candidate) {
+  const std::string json =
+      "{\"candidate\":{"
+      "  \"candidate\":\"" +
+      candidate.candidate +
+      "\","
+      //      "\"sdpMid\":\"video\","
+      "\"sdpMLineIndex\":" +
+      std::to_string(candidate.mlineindex) + "}}";
+  send_string(connection_, json);
+}
+
+static void send_last_itc_canditate(connection &connection_) {
+  const std::string json = "{\"candidate\":null}";
+  send_string(connection_, json);
+}
+
+static void send_itc_canditates(connection &connection_) {
+  for (const auto &canditate : ice_canditates)
+    send_itc_canditate(connection_, canditate);
+  //  send_last_itc_canditate(connection_);
+}
+
+static void send_sdp(connection &connection_) {
+  std::string json =
+      "{\"sdp\":{"
+      "  \"type\":\"offer\","
+      "  \"sdp\":\"" +
+      sdp + "\"}}";
+  boost::algorithm::replace_all(json, "\r", "\\r");
+  boost::algorithm::replace_all(json, "\n", "\\n");
+  send_string(connection_, json);
+}
+
 static void save_offer(GstWebRTCSessionDescription *offer) {
   gchar *text = gst_sdp_message_as_text(offer->sdp);
   std::string text_casted(text);
@@ -122,26 +166,84 @@ static void on_ice_candidate(GstElement * /*webrtc*/, guint mlineindex,
                              gchar *candidate, gpointer /*user_data*/) {
   const int mlineindex_casted = static_cast<int>(mlineindex);
   std::string canditate_casted = candidate;
-  std::cout << "on_ice_candidate, mlineindex_casted:" << mlineindex_casted
-            << ", canditate_casted:" << canditate_casted << std::endl;
+  //  std::cout << "on_ice_candidate, mlineindex_casted:" << mlineindex_casted
+  //            << ", canditate_casted:" << canditate_casted << std::endl;
   ice_canditates.push_back({mlineindex_casted, std::move(canditate_casted)});
 }
 
-static void on_pad_added(GstElement * /*webrtc*/, GstPad * /*pad*/,
-                         GstElement * /*pipe*/) {}
+static void handle_media_stream(GstPad *pad, GstElement *pipe,
+                                const char *convert_name,
+                                const char *sink_name) {
+  std::cout << "Trying to handle stream with " << convert_name << " ! "
+            << sink_name << std::endl;
+
+  GstElement *q = gst_element_factory_make("queue", nullptr);
+  assert(q != nullptr);
+  GstElement *conv = gst_element_factory_make(convert_name, nullptr);
+  assert(conv != nullptr);
+  GstElement *sink = gst_element_factory_make(sink_name, nullptr);
+  assert(sink != nullptr);
+
+  if (g_strcmp0(convert_name, "audioconvert") == 0) {
+    /* Might also need to resample, so add it just in case.
+     * Will be a no-op if it's not required. */
+    GstElement *resample = gst_element_factory_make("audioresample", nullptr);
+    assert(resample != nullptr);
+    gst_bin_add_many(GST_BIN(pipe), q, conv, resample, sink, nullptr);
+    gst_element_sync_state_with_parent(q);
+    gst_element_sync_state_with_parent(conv);
+    gst_element_sync_state_with_parent(resample);
+    gst_element_sync_state_with_parent(sink);
+    gst_element_link_many(q, conv, resample, sink, nullptr);
+  } else {
+    gst_bin_add_many(GST_BIN(pipe), q, conv, sink, nullptr);
+    gst_element_sync_state_with_parent(q);
+    gst_element_sync_state_with_parent(conv);
+    gst_element_sync_state_with_parent(sink);
+    gst_element_link_many(q, conv, sink, NULL);
+  }
+
+  GstPad *qpad = gst_element_get_static_pad(q, "sink");
+
+  GstPadLinkReturn ret = gst_pad_link(pad, qpad);
+  assert(ret == GST_PAD_LINK_OK);
+}
+
+static void on_pad_added(GstElement * /*decodebin*/, GstPad *pad,
+                         GstElement *pipe) {
+  std::cout << "on_pad_added" << std::endl;
+  if (!gst_pad_has_current_caps(pad)) {
+    std::cout << "Pad has no caps, can't do anything, ignoring:"
+              << GST_PAD_NAME(pad) << std::endl;
+    return;
+  }
+
+  GstCaps *caps = gst_pad_get_current_caps(pad);
+  const gchar *name = gst_structure_get_name(gst_caps_get_structure(caps, 0));
+
+  if (g_str_has_prefix(name, "video")) {
+    handle_media_stream(pad, pipe, "videoconvert", "autovideosink");
+  } else if (g_str_has_prefix(name, "audio")) {
+    handle_media_stream(pad, pipe, "audioconvert", "autoaudiosink");
+  } else {
+    std::cout << "Unknown pad, ignoring:" << GST_PAD_NAME(pad) << std::endl;
+  }
+}
 
 static GstElement *setup_pipeline() {
   GError *error{nullptr};
   GstElement *main_pipe = gst_parse_launch(
-      "webrtcbin name=sendrecv stun-server=stun://stun.l.google.com:19302 "
+      "webrtcbin name=sendrecv "
+      //      "stun-server=stun://stun.l.google.com:19302 "
       "videotestsrc pattern=ball ! videoconvert ! queue ! "
       "vp8enc deadline=1 ! rtpvp8pay ! "
       "queue ! application/x-rtp,media=video,encoding-name=VP8,payload=96 ! "
       "sendrecv. "
-      "audiotestsrc wave=red-noise ! audioconvert ! "
+      /*"audiotestsrc wave=red-noise ! audioconvert ! "
       "audioresample ! queue ! opusenc ! rtpopuspay ! "
       "queue ! application/x-rtp,media=audio,encoding-name=OPUS,payload=97 ! "
-      "sendrecv. ",
+      "sendrecv. "*/
+      ,
       &error);
   free_and_throw_if_error(error, "gst_parse_launch");
 
@@ -171,6 +273,57 @@ static GstElement *setup_pipeline() {
   return main_pipe;
 }
 
+static void handle_sdp(const boost::property_tree::ptree &json) {
+  int return_value;
+  GstSDPMessage *sdp;
+  GstWebRTCSessionDescription *answer;
+  return_value = gst_sdp_message_new(&sdp);
+  assert(return_value == GST_SDP_OK);
+
+  std::string sdp_value = json.get<std::string>("sdp");
+  const guint8 *sdp_data = reinterpret_cast<const guint8 *>(sdp_value.data());
+  const guint sdp_data_size = static_cast<guint>(sdp_value.length());
+  return_value = gst_sdp_message_parse_buffer(sdp_data, sdp_data_size, sdp);
+  assert(return_value == GST_SDP_OK);
+
+  answer = gst_webrtc_session_description_new(GST_WEBRTC_SDP_TYPE_ANSWER, sdp);
+  assert(answer != nullptr);
+
+  /* Set remote description on our pipeline */
+  {
+    GstPromise *promise = gst_promise_new();
+    g_signal_emit_by_name(webrtc_element, "set-remote-description", answer,
+                          promise);
+    gst_promise_interrupt(promise);
+    gst_promise_unref(promise);
+  }
+}
+
+static void handle_ice_candidate(const boost::property_tree::ptree &json) {
+  const boost::optional<std::string> candidate =
+      json.get_optional<std::string>("candidate");
+  if (!candidate) return;
+  const gint sdpmlineindex = json.get<gint>("sdpMLineIndex");
+  g_signal_emit_by_name(webrtc_element, "add-ice-candidate", sdpmlineindex,
+                        candidate->c_str());
+}
+
+static void handle_json_message(std::string message) {
+  boost::property_tree::ptree properties;
+  std::stringstream stream;
+  stream << message;
+  boost::property_tree::read_json(stream, properties);
+  const auto sdp = properties.get_child_optional("sdp");
+  if (sdp) {
+    handle_sdp(*sdp);
+    return;
+  }
+  const auto candidate = properties.get_child_optional("candidate");
+  if (candidate) {
+    handle_ice_candidate(*candidate);
+  }
+}
+
 int main(int argc, char *argv[]) {
   boost::asio::io_context context;
   constexpr port port_{8765};
@@ -178,7 +331,11 @@ int main(int argc, char *argv[]) {
       [](std::unique_ptr<connection> &&connection_) {
         std::cout << "accepted a new websocket connection" << std::endl;
         connection_web = std::move(connection_);
-        connection_web->read_async([](std::string) {});
+        connection_web->read_async([](std::string message) {
+          handle_json_message(std::move(message));
+        });
+        send_sdp(*connection_web);
+        send_itc_canditates(*connection_web);
       };
   websocket::server server_{context, port_, callback};
   server_.start();

@@ -19,6 +19,11 @@ void websocket::connection::read_async(
   });
 }
 
+void websocket::connection::write(const connection::message_type& message) {
+  const auto buffer = boost::asio::buffer(message);
+  stream.write(buffer);
+}
+
 void websocket::connection::read_async(boost::asio::yield_context yield) {
   while (true) {
     boost::beast::multi_buffer buffer;
@@ -26,5 +31,6 @@ void websocket::connection::read_async(boost::asio::yield_context yield) {
     std::string message_casted = boost::beast::buffers_to_string(buffer.data());
     std::cout << "connection::read_async, message_casted:" << message_casted
               << std::endl;
+    callback_message(message_casted);
   }
 }

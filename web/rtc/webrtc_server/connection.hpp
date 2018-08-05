@@ -9,11 +9,12 @@ class connection {
 
   connection();
   virtual ~connection();
+  connection(const connection&) = delete;
 
   virtual void read_async(const callback_message_type& callback_message) = 0;
 
- protected:
-  callback_message_type callback_message;
+  using message_type = std::vector<char>;
+  virtual void write(const message_type& message) = 0;
 };
 
 #endif  // CONNECTION_HPP
