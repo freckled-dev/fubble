@@ -209,9 +209,9 @@ static void handle_media_stream(GstPad *pad, GstElement *pipe,
   assert(ret == GST_PAD_LINK_OK);
 }
 
-static void on_pad_added(GstElement * /*decodebin*/, GstPad *pad,
-                         GstElement *pipe) {
-  std::cout << "on_pad_added" << std::endl;
+static void on_incoming_decodebin_stream(GstElement * /*decodebin*/,
+                                         GstPad *pad, GstElement *pipe) {
+  std::cout << "on_incoming_decodebin_stream" << std::endl;
   if (!gst_pad_has_current_caps(pad)) {
     std::cout << "Pad has no caps, can't do anything, ignoring:"
               << GST_PAD_NAME(pad) << std::endl;
@@ -228,6 +228,20 @@ static void on_pad_added(GstElement * /*decodebin*/, GstPad *pad,
   } else {
     std::cout << "Unknown pad, ignoring:" << GST_PAD_NAME(pad) << std::endl;
   }
+}
+
+static void on_pad_added(GstElement * /*decodebin*/, GstPad *pad,
+                         GstElement *pipe) {
+  std::cout << "on_pad_added" << std::endl;
+
+  if (GST_PAD_DIRECTION(pad) != GST_PAD_SRC) return;
+
+  GstElement *decodebin = gst_element_factory_make("decodebin", nullptr);
+  g_signal_connect(decodebin, "pad-added",
+                   G_CALLBACK(on_incoming_decodebin_stream), pipe);
+  gst_bin_add(GST_BIN(pipe), decodebin);
+  gst_element_sync_state_with_parent(decodebin);
+  gst_element_link(webrtc_element, decodebin);
 }
 
 static GstElement *setup_pipeline() {
