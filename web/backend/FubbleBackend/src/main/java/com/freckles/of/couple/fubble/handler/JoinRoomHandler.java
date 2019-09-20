@@ -52,7 +52,7 @@ public class JoinRoomHandler implements FubbleMessageHandler {
             }
         }
 
-        User user = getUser(room.getConnectedCounter());
+        User user = getUser(room.getConnectedCounter(), joinRoom.getUserName());
 
         joinRoom(room, user);
 
@@ -67,8 +67,8 @@ public class JoinRoomHandler implements FubbleMessageHandler {
 
     }
 
-    private User getUser(int connectedCounter) {
-        return userHandler.createUser(connection, connectedCounter);
+    private User getUser(int connectedCounter, String userName) {
+        return userHandler.createUser(connection, connectedCounter, userName);
     }
 
     private void handleLockedRoom(Session session) {

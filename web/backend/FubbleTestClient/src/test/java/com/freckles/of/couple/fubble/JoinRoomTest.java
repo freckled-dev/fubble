@@ -9,31 +9,35 @@ import java.util.List;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Test;
 
+import com.freckles.of.couple.fubble.helper.NumResponseCalculator;
 import com.freckles.of.couple.fubble.proto.WebContainer.JoinedRoom;
 import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient;
 import com.freckles.of.couple.fubble.proto.WebContainer.MessageContainerClient.MessageTypeCase;
 import com.freckles.of.couple.fubble.proto.WebContainer.UserJoined;
 
-public class JoinRoomTest extends WebsocketTest {
+public class JoinRoomTest extends WebsocketTestRunner {
 
-    private static final Logger LOGGER         = LogManager.getLogger(JoinRoomTest.class);
+    private static final Logger LOGGER       = LogManager.getLogger(JoinRoomTest.class);
 
-    private static final String ROOM_NAME_1    = "kugel_test1";
-    private static final String ROOM_NAME_2    = "kugel_test2";
-    private static final String ROOM_NAME_3    = "kugel_test3";
+    private static final String ROOM_NAME_1  = "kugel_test1";
+    private static final String ROOM_NAME_2  = "kugel_test2";
+    private static final String ROOM_NAME_3  = "kugel_test3";
+    private static final String ROOM_NAME_4  = "kugel_test4";
 
-    private static final int    WAITING_PERIOD = 1000;
+    private static final String FUBBLER_NAME = "Tamrielle";
 
     @Test
     public void testReceiveJoinedRoom() {
         try {
             // 1. client joins
             FubbleClientEndpoint client1 = createClient();
-            joinRoom(ROOM_NAME_1, client1);
 
-            Thread.sleep(WAITING_PERIOD);
+            ResponseCount.startLatch(NumResponseCalculator.numJoinRoomResponses(0));
+            joinRoom(ROOM_NAME_1, client1);
+            ResponseCount.await();
 
             // check if he received a joined room msg for himself
             boolean joinedRoomReceived = false;
@@ -46,20 +50,19 @@ public class JoinRoomTest extends WebsocketTest {
                         joinedRoomReceived = true;
                         assertEquals("Fubbler1", joined.getUserName());
                         assertEquals("https://rtc.fubble.io/" + joined.getRoomId(), joined.getRtcUrl());
-                        // assertEquals(ROOM_NAME_1, joined.getRoomName());
+                        assertEquals(ROOM_NAME_1, joined.getRoomName());
                     }
                 }
             }
 
             assertTrue(joinedRoomReceived);
 
-            Thread.sleep(WAITING_PERIOD);
-
             // 2. client joins
             FubbleClientEndpoint client2 = createClient();
-            joinRoom(ROOM_NAME_1, client2);
 
-            Thread.sleep(WAITING_PERIOD);
+            ResponseCount.startLatch(NumResponseCalculator.numJoinRoomResponses(1));
+            joinRoom(ROOM_NAME_1, client2);
+            ResponseCount.await();
 
             // check if he received a joined room msg for himself
             joinedRoomReceived = false;
@@ -78,6 +81,38 @@ public class JoinRoomTest extends WebsocketTest {
 
         } catch (Exception ex) {
             LOGGER.error(ExceptionUtils.getStackTrace(ex));
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void testJoinRoomWithUserName() {
+        try {
+            FubbleClientEndpoint client1 = createClient();
+            ResponseCount.startLatch(NumResponseCalculator.numJoinRoomResponses(0));
+            joinRoom(ROOM_NAME_2, client1, "", FUBBLER_NAME);
+            ResponseCount.await();
+
+            boolean joinedRoomReceived = false;
+
+            for (MessageContainerClient message : client1.getMessages()) {
+                MessageTypeCase type = message.getMessageTypeCase();
+                if (MessageTypeCase.JOINED_ROOM.equals(type)) {
+                    JoinedRoom joined = message.getJoinedRoom();
+                    if (joined.getUserId().equals(client1.getUserId())) {
+                        joinedRoomReceived = true;
+                        assertEquals(FUBBLER_NAME, joined.getUserName());
+                        assertEquals("https://rtc.fubble.io/" + joined.getRoomId(), joined.getRtcUrl());
+                        assertEquals(ROOM_NAME_2, joined.getRoomName());
+                    }
+                }
+            }
+
+            assertTrue(joinedRoomReceived);
+
+        } catch (Exception ex) {
+            LOGGER.error(ExceptionUtils.getStackTrace(ex));
+            Assert.fail();
         }
     }
 
@@ -86,9 +121,9 @@ public class JoinRoomTest extends WebsocketTest {
         try {
             // 1. client joins
             FubbleClientEndpoint client1 = createClient();
-            joinRoom(ROOM_NAME_2, client1);
-
-            Thread.sleep(WAITING_PERIOD);
+            ResponseCount.startLatch(NumResponseCalculator.numJoinRoomResponses(0));
+            joinRoom(ROOM_NAME_3, client1);
+            ResponseCount.await();
 
             // check if he received a user joined msg for himself
             for (MessageContainerClient message : client1.getMessages()) {
@@ -99,13 +134,11 @@ public class JoinRoomTest extends WebsocketTest {
                 }
             }
 
-            Thread.sleep(WAITING_PERIOD);
-
             // 2. client joins
             FubbleClientEndpoint client2 = createClient();
-            joinRoom(ROOM_NAME_2, client2);
-
-            Thread.sleep(WAITING_PERIOD);
+            ResponseCount.startLatch(NumResponseCalculator.numJoinRoomResponses(1));
+            joinRoom(ROOM_NAME_3, client2);
+            ResponseCount.await();
 
             // check if client2 received a user joined msg for himself
             boolean received = false;
@@ -152,13 +185,11 @@ public class JoinRoomTest extends WebsocketTest {
             }
             assertTrue(received);
 
-            Thread.sleep(WAITING_PERIOD);
-
             // 3. client joins
             FubbleClientEndpoint client3 = createClient();
-            joinRoom(ROOM_NAME_2, client3);
-
-            Thread.sleep(WAITING_PERIOD);
+            ResponseCount.startLatch(NumResponseCalculator.numJoinRoomResponses(2));
+            joinRoom(ROOM_NAME_3, client3);
+            ResponseCount.await();
 
             // check if client3 received a user joined msg for himself
             received = false;
@@ -226,6 +257,7 @@ public class JoinRoomTest extends WebsocketTest {
 
         } catch (Exception ex) {
             LOGGER.error(ExceptionUtils.getStackTrace(ex));
+            Assert.fail();
         }
     }
 
@@ -234,17 +266,19 @@ public class JoinRoomTest extends WebsocketTest {
         try {
             // 5 clients join
             List<FubbleClientEndpoint> clients = createClients(5);
-            for (FubbleClientEndpoint client : clients) {
-                joinRoom(ROOM_NAME_3, client);
-            }
 
-            Thread.sleep(WAITING_PERIOD);
+            for (int index = 0; index < clients.size(); index++) {
+                FubbleClientEndpoint client = clients.get(index);
+                ResponseCount.startLatch(NumResponseCalculator.numJoinRoomResponses(index));
+                joinRoom(ROOM_NAME_4, client);
+                ResponseCount.await();
+            }
 
             // 6. client joins
             FubbleClientEndpoint newClient = createClient();
-            joinRoom(ROOM_NAME_3, newClient);
-
-            Thread.sleep(WAITING_PERIOD);
+            ResponseCount.startLatch(NumResponseCalculator.numJoinRoomResponses(5));
+            joinRoom(ROOM_NAME_4, newClient);
+            ResponseCount.await();
 
             // check if he received 4 UserJoined messages where the alreadyInRoom flag is set to true
             int alreadyInRoomCounter = 0;
@@ -263,6 +297,7 @@ public class JoinRoomTest extends WebsocketTest {
 
         } catch (Exception ex) {
             LOGGER.error(ExceptionUtils.getStackTrace(ex));
+            Assert.fail();
         }
     }
 
