@@ -1,0 +1,10 @@
+#!/bin/bash
+
+script_dir="$(dirname "$0")"
+source_dir="${script_dir}/.."
+
+conan install \
+  --build missing \
+  --install-folder . \
+  "$source_dir"
+
