@@ -1,0 +1,57 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.google.protobuf'
+
+android {
+    compileSdkVersion 27
+    defaultConfig {
+        applicationId "com.freckles.of.couple.fubble"
+        minSdkVersion 21
+        targetSdkVersion 27
+        versionCode 1
+        versionName "1.0"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
+    }
+}
+
+protobuf {
+    protoc {
+        // You still need protoc like in the non-Android case
+        artifact = 'com.google.protobuf:protoc:3.0.0'
+    }
+    plugins {
+        javalite {
+            // The codegen for lite comes as a separate artifact
+            artifact = 'com.google.protobuf:protoc-gen-javalite:3.0.0'
+        }
+    }
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                // In most cases you don't need the full Java output
+                // if you use the lite output.
+                remove java
+            }
+            task.plugins {
+                javalite {}
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation 'com.android.support:support-v4:27.1.1'
+    implementation 'org.java-websocket:Java-WebSocket:1.3.8'
+    implementation 'com.android.support:design:27.1.1'
+    implementation 'com.google.protobuf:protobuf-lite:3.0.0'
+    implementation 'com.android.support:recyclerview-v7:27.1.1'
+
+    // room persistence library
+    implementation 'android.arch.persistence.room:runtime:1.0.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
+    annotationProcessor 'android.arch.persistence.room:compiler:1.0.0'
+}
