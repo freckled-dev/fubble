@@ -248,15 +248,27 @@ static GstElement *setup_pipeline() {
   GError *error{nullptr};
   GstElement *main_pipe = gst_parse_launch(
       "webrtcbin name=sendrecv "
-      //      "stun-server=stun://stun.l.google.com:19302 "
-      "videotestsrc pattern=ball ! videoconvert ! queue ! "
+  //      "stun-server=stun://stun.l.google.com:19302 "
+#if 1
+      "videotestsrc ! "
+      "videoconvert ! queue ! "
       "vp8enc deadline=1 ! rtpvp8pay ! "
       "queue ! application/x-rtp,media=video,encoding-name=VP8,payload=96 ! "
+      "fakesink "
+#endif
+#if 0
+      "videotestsrc pattern=ball ! "
+      "videoconvert ! "
+      "vp8enc deadline=1 ! rtpvp8pay ! "
+      "application/x-rtp,media=video,encoding-name=VP8,payload=98 ! "
       "sendrecv. "
-      /*"audiotestsrc wave=red-noise ! audioconvert ! "
+#endif
+#if 0
+      "audiotestsrc wave=red-noise ! audioconvert ! "
       "audioresample ! queue ! opusenc ! rtpopuspay ! "
       "queue ! application/x-rtp,media=audio,encoding-name=OPUS,payload=97 ! "
-      "sendrecv. "*/
+      "sendrecv. "
+#endif
       ,
       &error);
   free_and_throw_if_error(error, "gst_parse_launch");
