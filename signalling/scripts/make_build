@@ -1,0 +1,25 @@
+#!/bin/bash
+
+set -ex
+cd "$(dirname "$0")"
+
+scripts_dir="$(pwd)"
+source_dir="$(realpath ..)"
+project_root_dir="$(git rev-parse --show-toplevel)"
+build_dir="$project_root_dir/../signalling_build"
+prefix_dir="$build_dir/install"
+dependencies_dir="$build_dir/dependencies"
+
+mkdir -p $build_dir
+cd $build_dir
+
+mkdir $dependencies_dir
+cd $dependencies_dir
+$scripts_dir/get_dependencies_conan
+
+cd $build_dir
+export PKG_CONFIG_PATH="${dependencies_dir}"
+export BOOST_ROOT=$(pkg-config --variable=prefix boost)
+meson "$source_dir" meson --prefix="$prefix_dir"
+
+
