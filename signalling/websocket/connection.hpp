@@ -11,7 +11,7 @@ public:
   connection(boost::asio::io_context &context);
 
   void send(boost::asio::yield_context yield, std::string_view message);
-  std::function<void(std::string_view)> on_message;
+  std::string read(boost::asio::yield_context yield);
 
   using stream_type =
       boost::beast::websocket::stream<boost::asio::ip::tcp::socket>;
@@ -19,6 +19,7 @@ public:
 
 private:
   stream_type stream;
+  boost::beast::flat_buffer buffer;
 };
 } // namespace websocket
 
