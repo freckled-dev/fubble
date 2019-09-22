@@ -13,7 +13,7 @@ dependencies_dir="$build_dir/dependencies"
 mkdir -p $build_dir
 cd $build_dir
 
-mkdir $dependencies_dir
+mkdir -p $dependencies_dir
 cd $dependencies_dir
 $scripts_dir/get_dependencies_conan
 
@@ -21,5 +21,5 @@ cd $build_dir
 export PKG_CONFIG_PATH="${dependencies_dir}"
 export BOOST_ROOT=$(pkg-config --variable=prefix boost)
 meson "$source_dir" meson --prefix="$prefix_dir"
-
+ln -rs meson/compile_commands.json ..
 
