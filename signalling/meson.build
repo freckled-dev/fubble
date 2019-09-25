@@ -2,9 +2,13 @@ project('signalling', 'cpp',
   meson_version : '>=0.51.0',
   default_options : ['cpp_std=c++17', 'werror=true'])
 
-boost_dep = dependency('boost', modules : [
+boost_dep_pkg = dependency('boost', modules : [
   'thread', 'program_options', 'regex', 'coroutine', 'context'
   ])
+boost_dep = declare_dependency(
+    compile_args : '-DBOOST_THREAD_VERSION=5',
+    dependencies : [boost_dep_pkg]
+    )
 gtest_dep = dependency('gtest')
 
 websocket = library('websocket',
@@ -21,8 +25,8 @@ websocket_test = executable('websocket_test',
 test('websocket test', websocket_test)
 
 signalling = library('signalling',
-  [ 'signalling.cpp' ],
-  dependencies : [ boost_dep ],
+  [ 'signalling/registration_handler.cpp', 'signalling/connection.cpp' ],
+  dependencies : [boost_dep],
   install : true
   )
 signalling_test = executable('signalling_test',
