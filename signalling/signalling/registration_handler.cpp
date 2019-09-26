@@ -1,5 +1,6 @@
 #include "registration_handler.hpp"
 #include "connection.hpp"
+#include <fmt/format.h>
 
 using namespace signalling;
 
@@ -16,7 +17,9 @@ void registration_handler::on_register(const connection_ptr &connection_,
   try {
     const registration registration_ = result.get();
   } catch (const boost::system::system_error &error) {
-    boost::log::sources::severity_logger logger;
-    BOOST_LOG_SEV(logger, logging::severity::warning) << "fun";
+    BOOST_LOG_SEV(logger, logging::severity::warning)
+        << fmt::format("an error occured, while trying to get the register "
+                       "result. Description: '{}'",
+                       error.what());
   }
 }

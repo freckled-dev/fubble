@@ -10,6 +10,7 @@ boost_dep = declare_dependency(
     dependencies : [boost_dep_pkg]
     )
 gtest_dep = dependency('gtest')
+fmt_dep = dependency('fmt')
 
 websocket = library('websocket',
   ['websocket/acceptor.cpp', 'websocket/connection.cpp',
@@ -28,7 +29,7 @@ signalling = library('signalling',
   ['signalling/registration_handler.cpp',
     'signalling/connection.cpp', 'signalling/device/creator.cpp',
     'signalling/device/offering.cpp', 'signalling/device/answering.cpp'],
-  dependencies : [boost_dep],
+  dependencies : [boost_dep, fmt_dep],
   install : true
   )
 signalling_test = executable('signalling_test',

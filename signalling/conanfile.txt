@@ -1,9 +1,9 @@
 [requires]
 boost/1.71.0@conan/stable
 gtest/1.8.1@bincrafters/stable
+fmt/6.0.0
 
 [generators]
-cmake
 pkg_config
 
 [options]
