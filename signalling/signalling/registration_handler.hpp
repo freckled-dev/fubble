@@ -2,6 +2,7 @@
 #define SIGNALLING_REGISTRATION_HANDLER_HPP
 
 #include "connection_ptr.hpp"
+#include "logging/logger.hpp"
 #include <boost/thread/future.hpp>
 #include <memory>
 #include <vector>
@@ -21,6 +22,7 @@ private:
   void on_register(const connection_ptr &connection_,
                    boost::future<registration> &);
 
+  logging::logger logger;
   device::creator &device_creator_;
   struct registered_device {
     std::string key;
