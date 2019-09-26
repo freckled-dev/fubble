@@ -21,6 +21,9 @@ public:
 private:
   void on_register(const connection_ptr &connection_,
                    boost::future<registration> &);
+  void register_(const connection_ptr &connection_, const registration &);
+  void register_as_offering(const connection_ptr &connection_);
+  void register_as_answering(const connection_ptr &connection_);
 
   logging::logger logger;
   device::creator &device_creator_;
