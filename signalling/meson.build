@@ -40,3 +40,15 @@ signalling_test = executable('signalling_test',
   )
 test('signalling test', signalling_test)
 
+utils = library('utils',
+  ['executor_asio.cpp'],
+  dependencies : [boost_dep],
+  install: true
+  )
+utils_test = executable('utils_test',
+  ['executor_asio_test.cpp'],
+  dependencies: [gtest_dep, boost_dep],
+  link_with: [utils]
+  )
+test('utils test', utils_test)
+

@@ -5,6 +5,7 @@
 #include "logging/logger.hpp"
 #include "signalling/device/offering_ptr.hpp"
 #include <boost/signals2/connection.hpp>
+#include <boost/thread/executors/generic_executor_ref.hpp>
 #include <boost/thread/future.hpp>
 #include <vector>
 
@@ -16,7 +17,8 @@ class offering;
 struct registration;
 class registration_handler {
 public:
-  registration_handler(device::creator &device_creator_);
+  registration_handler(boost::generic_executor_ref &executor,
+                       device::creator &device_creator_);
 
   void add(connection_ptr connection_);
   struct registered_device {
@@ -39,6 +41,7 @@ private:
   devices_type::iterator find(const std::string &key);
 
   logging::logger logger;
+  boost::generic_executor_ref &executor;
   device::creator &device_creator_;
   devices_type devices;
 };
