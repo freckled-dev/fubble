@@ -8,7 +8,7 @@ using namespace signalling;
 
 registration_handler::registration_handler(
     boost::generic_executor_ref &executor_, device::creator &device_creator_)
-    : executor(executor_), device_creator_(device_creator_) {}
+    : executor{executor_}, device_creator_(device_creator_) {}
 
 void registration_handler::add(connection_ptr connection_) {
   auto result = connection_->read_registration();

@@ -12,7 +12,6 @@
 namespace signalling {
 namespace device {
 class creator;
-class offering;
 } // namespace device
 struct registration;
 class registration_handler {
@@ -41,7 +40,7 @@ private:
   devices_type::iterator find(const std::string &key);
 
   logging::logger logger;
-  boost::generic_executor_ref &executor;
+  boost::generic_executor_ref executor;
   device::creator &device_creator_;
   devices_type devices;
 };
