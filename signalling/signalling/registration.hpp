@@ -5,7 +5,7 @@
 
 namespace signalling {
 struct registration {
-  const std::string key;
+  std::string key;
 };
 } // namespace signalling
 

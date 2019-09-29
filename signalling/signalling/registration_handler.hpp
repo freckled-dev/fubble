@@ -3,35 +3,44 @@
 
 #include "connection_ptr.hpp"
 #include "logging/logger.hpp"
+#include "signalling/device/offering_ptr.hpp"
+#include <boost/signals2/connection.hpp>
 #include <boost/thread/future.hpp>
-#include <memory>
 #include <vector>
 
 namespace signalling {
 namespace device {
 class creator;
-}
+class offering;
+} // namespace device
 struct registration;
 class registration_handler {
 public:
   registration_handler(device::creator &device_creator_);
 
   void add(connection_ptr connection_);
+  struct registered_device {
+    std::string key;
+    device::offering_ptr device;
+    boost::signals2::scoped_connection on_close_handle;
+  };
+  using devices_type = std::vector<registered_device>;
+  const devices_type &get_registered() const;
 
 private:
   void on_register(const connection_ptr &connection_,
                    boost::future<registration> &);
   void register_(const connection_ptr &connection_, const registration &);
-  void register_as_offering(const connection_ptr &connection_);
-  void register_as_answering(const connection_ptr &connection_);
+  void register_as_offering(const connection_ptr &connection_,
+                            const std::string &key);
+  void register_as_answering(const connection_ptr &connection_,
+                             const devices_type::iterator &offering);
+  void on_offering_device_closed(const std::string &key);
+  devices_type::iterator find(const std::string &key);
 
   logging::logger logger;
   device::creator &device_creator_;
-  struct registered_device {
-    std::string key;
-    connection_ptr device;
-  };
-  std::vector<registered_device> devices;
+  devices_type devices;
 };
 } // namespace signalling
 
