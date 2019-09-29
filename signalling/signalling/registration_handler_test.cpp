@@ -9,7 +9,9 @@
 
 TEST(RegistrationHandler, Setup) {
   signalling::device::creator creator;
-  signalling::registration_handler handler{creator};
+  boost::inline_executor executor;
+  boost::generic_executor_ref executor_ref{executor};
+  signalling::registration_handler handler{executor_ref, creator};
 }
 
 struct mock_connection : signalling::connection {
@@ -63,6 +65,15 @@ TEST(Executor, LoopExecutor) {
   EXPECT_TRUE(called);
 }
 
+TEST(Executor, GenericExecutorRefCopy) {
+  boost::inline_executor executor;
+  boost::generic_executor_ref generic{executor};
+  boost::generic_executor_ref copy{generic};
+  bool called{};
+  copy.submit([&] { called = true; });
+  EXPECT_TRUE(called);
+}
+
 TEST(Executor, FutureThenOnExecutor) {
   boost::loop_executor executor;
   bool called{};
@@ -85,13 +96,14 @@ TEST(Exetutor, TypeErasure) {
   EXPECT_TRUE(called);
 }
 
-#if 0
 TEST(RegistrationHandler, AddOffering) {
   signalling::device::creator creator;
-  signalling::registration_handler handler{creator};
+  boost::inline_executor executor;
+  boost::generic_executor_ref executor_ref{executor};
+  signalling::registration_handler handler{executor_ref, creator};
   auto connection = std::make_shared<mock_connection>();
   EXPECT_TRUE(handler.get_registered().empty());
   handler.add(connection);
   EXPECT_EQ(handler.get_registered().size(), std::size_t{1});
 }
-#endif
+
