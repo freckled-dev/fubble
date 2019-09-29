@@ -52,3 +52,9 @@ utils_test = executable('utils_test',
   )
 test('utils test', utils_test)
 
+dependencies_test = executable('dependencies_test',
+  ['dependency_thread_test.cpp'],
+  dependencies: [boost_dep, gtest_dep]
+  )
+test('dependencies test', dependencies_test)
+
