@@ -11,6 +11,7 @@ boost_dep = declare_dependency(
     )
 gtest_dep = dependency('gtest')
 fmt_dep = dependency('fmt')
+json_dep = dependency('jsonformoderncpp')
 
 websocket = library('websocket',
   ['websocket/acceptor.cpp', 'websocket/connection.cpp',
@@ -28,8 +29,9 @@ test('websocket test', websocket_test)
 signalling = library('signalling',
   ['signalling/registration_handler.cpp',
     'signalling/connection.cpp', 'signalling/device/creator.cpp',
+    'signalling/json_message.cpp',
     'signalling/device/offering.cpp', 'signalling/device/answering.cpp'],
-  dependencies : [boost_dep, fmt_dep],
+  dependencies : [boost_dep, fmt_dep, json_dep],
   install : true
   )
 signalling_test = executable('signalling_test',
