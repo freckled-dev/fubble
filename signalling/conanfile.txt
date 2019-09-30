@@ -2,6 +2,7 @@
 boost/1.71.0@conan/stable
 gtest/1.8.1@bincrafters/stable
 fmt/6.0.0
+jsonformoderncpp/3.7.0@vthiery/stable
 
 [generators]
 pkg_config
