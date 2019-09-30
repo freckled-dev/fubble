@@ -11,11 +11,10 @@ registration_handler::registration_handler(
     : executor{executor_}, device_creator_(device_creator_) {}
 
 void registration_handler::add(connection_ptr connection_) {
-  auto result = connection_->read_registration();
-  result.then(executor, [this, connection_](auto result) {
-    on_register(connection_, result);
-    return result.get();
-  });
+  connection_->on_registration =
+      [this, connection_ = std::weak_ptr(connection_)](auto result) {
+        on_register(connection_.lock(), result);
+      };
 }
 
 const registration_handler::devices_type &
@@ -24,10 +23,9 @@ registration_handler::get_registered() const {
 }
 
 void registration_handler::on_register(const connection_ptr &connection_,
-                                       boost::future<registration> &result) {
+                                       const registration &registration_) {
   BOOST_ASSERT(connection_);
   try {
-    const registration registration_ = result.get();
     register_(connection_, registration_);
   } catch (const boost::system::system_error &error) {
     BOOST_LOG_SEV(logger, logging::severity::warning)
@@ -52,7 +50,8 @@ void registration_handler::register_(const connection_ptr &connection_,
 void registration_handler::register_as_offering(
     const connection_ptr &connection_, const std::string &key) {
   auto offering_device = device_creator_.create_offering(connection_);
-  auto connection_on_close = offering_device->on_closed.connect([] {});
+  auto connection_on_close = connection_->on_closed.connect(
+      [this, key] { on_offering_device_closed(key); });
   registered_device device_{key, offering_device,
                             std::move(connection_on_close)};
   devices.push_back(std::move(device_));

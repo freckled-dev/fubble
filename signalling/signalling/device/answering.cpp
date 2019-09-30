@@ -2,5 +2,5 @@
 
 using namespace signalling::device;
 
-answering::answering(connection_ptr) {}
-
+answering::answering(boost::generic_executor_ref &executor,
+                     connection_ptr connection_) {}
