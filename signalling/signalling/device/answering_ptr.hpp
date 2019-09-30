@@ -6,6 +6,7 @@
 namespace signalling::device {
 class answering;
 using answering_ptr = std::shared_ptr<answering>;
+using answering_wptr = std::weak_ptr<answering>;
 } // namespace signalling::device
 
 #endif
