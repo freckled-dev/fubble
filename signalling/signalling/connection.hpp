@@ -14,9 +14,11 @@ public:
 
   boost::signals2::signal<void()> on_closed;
 
-  std::function<void(const registration &)> on_registration;
-  std::function<void(const offer &)> on_offer;
-  std::function<void(const ice_candidate &)> on_ice_candidate;
+  using on_registration_type =
+      boost::signals2::signal<void(const registration &)>;
+  on_registration_type on_registration;
+  boost::signals2::signal<void(const offer &)> on_offer;
+  boost::signals2::signal<void(const ice_candidate &)> on_ice_candidate;
 
   virtual void send_offer(const offer &send) = 0;
   virtual void send_ice_candidate(const ice_candidate &candidate) = 0;

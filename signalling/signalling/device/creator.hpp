@@ -12,7 +12,8 @@ public:
   creator(boost::generic_executor_ref &executor);
   virtual ~creator() = default;
   virtual offering_ptr create_offering(connection_ptr connection_);
-  virtual answering_ptr create_answering(connection_ptr connection_);
+  virtual answering_ptr create_answering(connection_ptr connection_,
+                                         offering_ptr partner);
 
 protected:
   boost::generic_executor_ref executor;

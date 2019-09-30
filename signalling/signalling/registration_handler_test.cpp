@@ -12,6 +12,7 @@ struct RegistrationHandler : testing::Test {
 };
 
 struct mock_connection : signalling::connection {
+  ~mock_connection() final { on_closed(); }
   std::optional<signalling::offer> offer;
   void send_offer(const signalling::offer &send) final {
     EXPECT_FALSE(offer);
@@ -49,9 +50,13 @@ TEST_F(RegistrationHandler, OfferingState) {
 }
 
 TEST_F(RegistrationHandler, AddOfferAnswer) {
-  add_connection(handler);
-  add_connection(handler);
+  auto first = add_connection(handler);
+  auto second = add_connection(handler);
+  EXPECT_EQ(handler.get_registered().size(), std::size_t{1});
+  first->on_closed();
   EXPECT_TRUE(handler.get_registered().empty());
+  EXPECT_TRUE(first.unique());
+  EXPECT_TRUE(second.unique());
 }
 
 TEST_F(RegistrationHandler, OfferingClose) {
@@ -60,3 +65,4 @@ TEST_F(RegistrationHandler, OfferingClose) {
   EXPECT_TRUE(handler.get_registered().empty());
   EXPECT_TRUE(connection.unique());
 }
+
