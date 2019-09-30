@@ -17,7 +17,9 @@ public:
   virtual ~offering();
 
   void set_partner(const answering_wptr &partner);
+
   void send_answer(const answer &answer_);
+  void send_ice_candidate(const ice_candidate &candidate);
 
 protected:
   virtual void on_offer(const offer &offer_);

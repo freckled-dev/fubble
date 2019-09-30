@@ -18,8 +18,14 @@ struct mock_connection : signalling::connection {
     EXPECT_FALSE(offer);
     offer = send;
   }
-  void send_ice_candidate(const signalling::ice_candidate &candidate) final {}
-  void send_answer() final {}
+  std::vector<signalling::ice_candidate> candidates;
+  void send_ice_candidate(const signalling::ice_candidate &candidate) final {
+    candidates.push_back(candidate);
+  }
+  std::optional<signalling::answer> answer;
+  void send_answer(const signalling::answer &answer_) final {
+    answer = answer_;
+  }
   bool state_offering_called{};
   void send_state_offering() final { state_offering_called = true; }
   bool state_answering_called{};
@@ -66,3 +72,75 @@ TEST_F(RegistrationHandler, OfferingClose) {
   EXPECT_TRUE(connection.unique());
 }
 
+TEST_F(RegistrationHandler, OfferingStateSend) {
+  const auto connection = add_connection(handler);
+  EXPECT_TRUE(connection->state_offering_called);
+  EXPECT_FALSE(connection->state_answering_called);
+}
+
+TEST_F(RegistrationHandler, AnsweringStateSend) {
+  add_connection(handler);
+  const auto connection = add_connection(handler);
+  EXPECT_FALSE(connection->state_offering_called);
+  EXPECT_TRUE(connection->state_answering_called);
+}
+
+TEST_F(RegistrationHandler, OfferSend) {
+  const auto offering = add_connection(handler);
+  const auto answering = add_connection(handler);
+  const signalling::offer offer{"sdp"};
+  offering->on_offer(offer);
+  EXPECT_EQ(offer.sdp, answering->offer.value().sdp);
+  EXPECT_FALSE(offering->offer);
+}
+
+TEST_F(RegistrationHandler, OfferLateSend) {
+  const auto offering = add_connection(handler);
+  const signalling::offer offer{"sdp"};
+  offering->on_offer(offer);
+  const auto answering = add_connection(handler);
+  EXPECT_EQ(offer.sdp, answering->offer.value().sdp);
+  EXPECT_FALSE(offering->offer);
+}
+
+TEST_F(RegistrationHandler, AnswerSend) {
+  const auto offering = add_connection(handler);
+  const auto answering = add_connection(handler);
+  const signalling::answer answer{"sdp"};
+  answering->on_answer(answer);
+  EXPECT_EQ(answer.sdp, offering->answer.value().sdp);
+  EXPECT_FALSE(answering->answer);
+}
+
+TEST_F(RegistrationHandler, IceCandidateToAnswer) {
+  const auto offering = add_connection(handler);
+  const auto answering = add_connection(handler);
+  signalling::ice_candidate candidate{"candidate"};
+  offering->on_ice_candidate(candidate);
+  EXPECT_EQ(answering->candidates.front().sdp, candidate.sdp);
+}
+
+TEST_F(RegistrationHandler, IceCandidateToOffer) {
+  const auto offering = add_connection(handler);
+  const auto answering = add_connection(handler);
+  signalling::ice_candidate candidate{"candidate"};
+  answering->on_ice_candidate(candidate);
+  EXPECT_EQ(offering->candidates.front().sdp, candidate.sdp);
+}
+
+TEST_F(RegistrationHandler, IceCandidateLateToAnswer) {
+  const auto offering = add_connection(handler);
+  signalling::ice_candidate candidate{"candidate"};
+  offering->on_ice_candidate(candidate);
+  const auto answering = add_connection(handler);
+  EXPECT_EQ(answering->candidates.size(), std::size_t{1});
+}
+
+TEST_F(RegistrationHandler, IceCandidatesToAnswer) {
+  const auto offering = add_connection(handler);
+  const auto answering = add_connection(handler);
+  signalling::ice_candidate candidate{"candidate"};
+  offering->on_ice_candidate(candidate);
+  offering->on_ice_candidate(candidate);
+  EXPECT_EQ(answering->candidates.size(), std::size_t{2});
+}

@@ -6,6 +6,7 @@
 #include "signalling/connection_ptr.hpp"
 #include "signalling/ice_candidate.hpp"
 #include "signalling/offer.hpp"
+#include <boost/signals2/connection.hpp>
 #include <boost/thread/executors/generic_executor_ref.hpp>
 
 namespace signalling::device {
@@ -14,7 +15,6 @@ public:
   answering(connection_ptr connection_, offering_ptr partner);
   virtual ~answering();
 
-  void partner_closed();
   void send_offer(const offer &offer);
   void send_ice_candidate(const ice_candidate &candidate);
 
@@ -24,6 +24,8 @@ protected:
 
   connection_ptr connection_;
   offering_wptr partner;
+
+  std::vector<boost::signals2::scoped_connection> callback_connections;
 };
 } // namespace signalling::device
 
