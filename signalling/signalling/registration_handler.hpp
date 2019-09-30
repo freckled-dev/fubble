@@ -29,8 +29,7 @@ public:
   const devices_type &get_registered() const;
 
 private:
-  void on_register(const connection_ptr &connection_,
-                   boost::future<registration> &);
+  void on_register(const connection_ptr &connection_, const registration &);
   void register_(const connection_ptr &connection_, const registration &);
   void register_as_offering(const connection_ptr &connection_,
                             const std::string &key);
