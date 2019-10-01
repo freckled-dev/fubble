@@ -90,7 +90,7 @@ TEST_F(RegistrationHandler, OfferSend) {
   const auto answering = add_connection(handler);
   const signalling::offer offer{"sdp"};
   offering->on_offer(offer);
-  EXPECT_EQ(offer.sdp, answering->offer.value().sdp);
+  EXPECT_EQ(offer, answering->offer.value());
   EXPECT_FALSE(offering->offer);
 }
 
@@ -99,7 +99,7 @@ TEST_F(RegistrationHandler, OfferLateSend) {
   const signalling::offer offer{"sdp"};
   offering->on_offer(offer);
   const auto answering = add_connection(handler);
-  EXPECT_EQ(offer.sdp, answering->offer.value().sdp);
+  EXPECT_EQ(offer, answering->offer.value());
   EXPECT_FALSE(offering->offer);
 }
 
@@ -108,7 +108,7 @@ TEST_F(RegistrationHandler, AnswerSend) {
   const auto answering = add_connection(handler);
   const signalling::answer answer{"sdp"};
   answering->on_answer(answer);
-  EXPECT_EQ(answer.sdp, offering->answer.value().sdp);
+  EXPECT_EQ(answer, offering->answer.value());
   EXPECT_FALSE(answering->answer);
 }
 
@@ -117,7 +117,7 @@ TEST_F(RegistrationHandler, IceCandidateToAnswer) {
   const auto answering = add_connection(handler);
   signalling::ice_candidate candidate{"candidate"};
   offering->on_ice_candidate(candidate);
-  EXPECT_EQ(answering->candidates.front().sdp, candidate.sdp);
+  EXPECT_EQ(answering->candidates.front(), candidate);
 }
 
 TEST_F(RegistrationHandler, IceCandidateToOffer) {
@@ -125,7 +125,7 @@ TEST_F(RegistrationHandler, IceCandidateToOffer) {
   const auto answering = add_connection(handler);
   signalling::ice_candidate candidate{"candidate"};
   answering->on_ice_candidate(candidate);
-  EXPECT_EQ(offering->candidates.front().sdp, candidate.sdp);
+  EXPECT_EQ(offering->candidates.front(), candidate);
 }
 
 TEST_F(RegistrationHandler, IceCandidateLateToAnswer) {

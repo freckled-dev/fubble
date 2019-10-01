@@ -29,13 +29,14 @@ test('websocket test', websocket_test)
 signalling = library('signalling',
   ['signalling/registration_handler.cpp',
     'signalling/connection.cpp', 'signalling/device/creator.cpp',
-    'signalling/json_message.cpp',
+    'signalling/json_message.cpp', 'signalling/offer.cpp',
+    'signalling/answer.cpp', 'signalling/ice_candidate.cpp',
     'signalling/device/offering.cpp', 'signalling/device/answering.cpp'],
   dependencies : [boost_dep, fmt_dep, json_dep],
   install : true
   )
 signalling_test = executable('signalling_test',
-  ['signalling_test.cpp',
+  ['signalling_test.cpp', 'signalling/json_message_test.cpp',
     'signalling/registration_handler_test.cpp'],
   dependencies : [gtest_dep, boost_dep],
   link_with: [signalling, websocket]
