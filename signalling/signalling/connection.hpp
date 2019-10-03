@@ -15,9 +15,7 @@ public:
 
   boost::signals2::signal<void()> on_closed;
 
-  using on_registration_type =
-      boost::signals2::signal<void(const registration &)>;
-  on_registration_type on_registration;
+  boost::signals2::signal<void(const registration &)> on_registration;
   boost::signals2::signal<void(const offer &)> on_offer;
   boost::signals2::signal<void(const answer &)> on_answer;
   boost::signals2::signal<void(const ice_candidate &)> on_ice_candidate;

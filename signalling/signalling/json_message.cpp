@@ -1,7 +1,12 @@
 #include "json_message.hpp"
+#include <fmt/format.h>
 #include <nlohmann/json.hpp>
 
 using namespace signalling;
+
+json_message::invalid_type::invalid_type(const std::string &type)
+    : std::runtime_error(
+          fmt::format("invalid json message type. type:'{}'", type)) {}
 
 std::variant<offer, answer, ice_candidate>
 json_message::parse(const std::string &message) const {
@@ -23,7 +28,7 @@ json_message::parse(const std::string &message) const {
     result.sdp = json["sdp"];
     return result;
   }
-  return result;
+  throw invalid_type(type);
 }
 std::string json_message::serialize(const offer &offer_) const {
   nlohmann::json result = {{"type", "offer"}, {"sdp", offer_.sdp}};

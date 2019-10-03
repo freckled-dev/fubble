@@ -4,11 +4,16 @@
 #include "answer.hpp"
 #include "ice_candidate.hpp"
 #include "offer.hpp"
+#include <stdexcept>
 #include <variant>
 
 namespace signalling {
 class json_message {
 public:
+  struct invalid_type : std::runtime_error {
+    invalid_type(const std::string &type);
+  };
+
   std::variant<offer, answer, ice_candidate>
   parse(const std::string &message) const;
 

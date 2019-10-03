@@ -61,3 +61,16 @@ dependencies_test = executable('dependencies_test',
   )
 test('dependencies test', dependencies_test)
 
+server = library('server',
+  ['server/server.cpp', 'server/connection.cpp',
+    'server/connection_creator.cpp'],
+  dependencies: [boost_dep, fmt_dep],
+  link_with: [websocket, signalling]
+  )
+server_test = executable('server_test',
+  ['server/server_test.cpp'],
+  dependencies: [boost_dep, gtest_dep],
+  link_with: [server, signalling, websocket]
+  )
+test('server test', server_test)
+

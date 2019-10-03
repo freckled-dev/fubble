@@ -4,6 +4,10 @@ BUILD=time -f 'finished after %E' ninja -C ../../signalling_build/meson
 all:
 	${BUILD}
 
+.PHONY: clean
+clean:
+	${BUILD} clean
+
 .PHONY: install
 install:
 	${BUILD} install
