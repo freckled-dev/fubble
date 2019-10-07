@@ -3,6 +3,7 @@
 
 #include "logging/logger.hpp"
 #include "websocket/acceptor.hpp"
+#include "websocket/connection_ptr.hpp"
 #include <boost/asio/io_service.hpp>
 #include <boost/asio/spawn.hpp>
 
@@ -19,7 +20,7 @@ public:
   void close();
 
 protected:
-  void handle_connection(websocket::connection &connection,
+  void handle_connection(const websocket::connection_ptr &connection,
                          boost::asio::yield_context yield);
   void handle_connection(connection &connection_,
                          boost::asio::yield_context yield);

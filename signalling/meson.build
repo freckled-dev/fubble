@@ -13,39 +13,9 @@ gtest_dep = dependency('gtest')
 fmt_dep = dependency('fmt')
 json_dep = dependency('jsonformoderncpp')
 
-websocket = library('websocket',
-  ['websocket/acceptor.cpp', 'websocket/connection.cpp',
-    'websocket/connection_creator.cpp', 'websocket/connector.cpp'],
-  dependencies : [boost_dep],
-  install: true
-  )
-websocket_test = executable('websocket_test',
-  ['websocket/test.cpp'],
-  dependencies : [gtest_dep, boost_dep],
-  link_with: [websocket]
-  )
-test('websocket test', websocket_test)
-
-signalling = library('signalling',
-  ['signalling/registration_handler.cpp',
-    'signalling/connection.cpp', 'signalling/device/creator.cpp',
-    'signalling/json_message.cpp', 'signalling/offer.cpp',
-    'signalling/answer.cpp', 'signalling/ice_candidate.cpp',
-    'signalling/device/offering.cpp', 'signalling/device/answering.cpp'],
-  dependencies : [boost_dep, fmt_dep, json_dep],
-  install : true
-  )
-signalling_test = executable('signalling_test',
-  ['signalling_test.cpp', 'signalling/json_message_test.cpp',
-    'signalling/registration_handler_test.cpp'],
-  dependencies : [gtest_dep, boost_dep],
-  link_with: [signalling, websocket]
-  )
-test('signalling test', signalling_test)
-
 utils = library('utils',
-  ['executor_asio.cpp'],
-  dependencies : [boost_dep],
+  ['executor_asio.cpp', 'logging/logger.cpp'],
+  dependencies: [boost_dep],
   install: true
   )
 utils_test = executable('utils_test',
@@ -55,22 +25,62 @@ utils_test = executable('utils_test',
   )
 test('utils test', utils_test)
 
+websocket = library('websocket',
+  ['websocket/acceptor.cpp', 'websocket/connection.cpp',
+    'websocket/connection_creator.cpp', 'websocket/connector.cpp'],
+  dependencies : [boost_dep, fmt_dep],
+  link_with: [utils],
+  install: true
+  )
+websocket_test = executable('websocket_test',
+  ['websocket/test.cpp'],
+  dependencies : [gtest_dep, boost_dep],
+  link_with: [websocket, utils]
+  )
+test('websocket test', websocket_test)
+
+signalling = library('signalling',
+  ['signalling/registration_handler.cpp',
+    'signalling/connection.cpp', 'signalling/device/creator.cpp',
+    'signalling/json_message.cpp', 'signalling/offer.cpp',
+    'signalling/answer.cpp', 'signalling/ice_candidate.cpp',
+    'signalling/device/offering.cpp', 'signalling/device/answering.cpp'],
+  dependencies: [boost_dep, fmt_dep, json_dep],
+  link_with: [utils],
+  install : true
+  )
+signalling_test = executable('signalling_test',
+  ['signalling_test.cpp', 'signalling/json_message_test.cpp',
+    'signalling/registration_handler_test.cpp'],
+  dependencies : [gtest_dep, boost_dep],
+  link_with: [signalling, websocket, utils]
+  )
+test('signalling test', signalling_test)
+
 dependencies_test = executable('dependencies_test',
   ['dependency_thread_test.cpp'],
-  dependencies: [boost_dep, gtest_dep]
+  dependencies: [boost_dep, gtest_dep],
+  link_with: [utils]
   )
 test('dependencies test', dependencies_test)
+
+client = library('client',
+  ['client/client.cpp', 'client/connection.cpp',
+    'client/connection_creator.cpp'],
+  dependencies: [boost_dep, fmt_dep],
+  link_with: [websocket, signalling, utils]
+  )
 
 server = library('server',
   ['server/server.cpp', 'server/connection.cpp',
     'server/connection_creator.cpp'],
   dependencies: [boost_dep, fmt_dep],
-  link_with: [websocket, signalling]
+  link_with: [websocket, signalling, utils]
   )
 server_test = executable('server_test',
   ['server/server_test.cpp'],
-  dependencies: [boost_dep, gtest_dep],
-  link_with: [server, signalling, websocket]
+  dependencies: [boost_dep, gtest_dep, fmt_dep],
+  link_with: [server, signalling, websocket, client, utils]
   )
-test('server test', server_test)
+test('server test', server_test, timeout: 2)
 

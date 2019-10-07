@@ -16,6 +16,8 @@ acceptor::acceptor(boost::asio::io_context &context,
   acceptor_.listen();
 }
 
+void acceptor::close() { acceptor_.close(); }
+
 std::unique_ptr<connection> acceptor::
 operator()(boost::asio::yield_context yield) {
   auto result = creator();

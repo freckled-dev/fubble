@@ -4,15 +4,17 @@
 #include "logging/logger.hpp"
 #include "signalling/connection.hpp"
 #include "signalling/json_message.hpp"
+#include "websocket/connection_ptr.hpp"
 #include <boost/asio/spawn.hpp>
 
 namespace websocket {
 class connection;
 }
 namespace server {
-class connection : public signalling::connection {
+class connection : public signalling::connection,
+                   std::enable_shared_from_this<connection> {
 public:
-  connection(websocket::connection &connection,
+  connection(const websocket::connection_ptr &connection,
              signalling::json_message &message_parser);
   void run(boost::asio::yield_context context);
 
@@ -26,7 +28,7 @@ private:
   void send(const std::string &message);
   void send(boost::asio::yield_context yield, const std::string &message);
 
-  websocket::connection &connection_;
+  websocket::connection_ptr connection_;
   signalling::json_message &message_parser;
   logging::logger logger;
 };
