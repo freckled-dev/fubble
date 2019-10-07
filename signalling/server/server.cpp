@@ -8,7 +8,9 @@ server::server::server(boost::asio::io_context &context,
                        websocket::acceptor &acceptor,
                        connection_creator &connection_creator_)
     : context(context), acceptor(acceptor),
-      connection_creator_(connection_creator_) {}
+      connection_creator_(connection_creator_) {
+  run();
+}
 
 void server::server::run() {
   boost::asio::spawn(context, [this](auto yield) { run(yield); });
@@ -17,13 +19,12 @@ void server::server::run() {
 void server::server::run(boost::asio::yield_context yield) {
   try {
     while (true) {
-      auto websocket_connection = acceptor(yield);
+      websocket::connection_ptr websocket_connection = acceptor(yield);
       BOOST_ASSERT(websocket_connection);
-      boost::asio::spawn(context,
-                         [this, connection = std::move(websocket_connection)](
-                             boost::asio::yield_context yield) {
-                           handle_connection(*connection, yield);
-                         });
+      boost::asio::spawn(context, [this, websocket_connection](
+                                      boost::asio::yield_context yield) {
+        handle_connection(websocket_connection, yield);
+      });
     }
   } catch (boost::system::system_error &error) {
     BOOST_LOG_SEV(logger, logging::severity::warning) << fmt::format(
@@ -32,13 +33,16 @@ void server::server::run(boost::asio::yield_context yield) {
   }
 }
 
-void server::server::close() {}
+void server::server::close() {
+  BOOST_LOG_SEV(logger, logging::severity::info) << "closing server";
+  acceptor.close();
+}
 
 void server::server::handle_connection(
-    websocket::connection &websocket_connection,
+    const websocket::connection_ptr &websocket_connection,
     boost::asio::yield_context yield) {
   try {
-    auto connection_ = connection_creator_(websocket_connection);
+    connection_ptr connection_ = connection_creator_(websocket_connection);
     handle_connection(*connection_, yield);
   } catch (const std::exception &error) {
     BOOST_LOG_SEV(logger, logging::severity::warning)

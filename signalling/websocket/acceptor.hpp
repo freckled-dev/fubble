@@ -15,6 +15,7 @@ public:
   };
   acceptor(boost::asio::io_context &context, connection_creator &creator,
            const config &config_);
+  void close();
   std::unique_ptr<connection> operator()(boost::asio::yield_context yield);
   std::uint16_t get_port() const;
 

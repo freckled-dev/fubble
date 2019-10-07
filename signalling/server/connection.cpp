@@ -4,7 +4,7 @@
 
 using namespace server;
 
-connection::connection(websocket::connection &connection_,
+connection::connection(const websocket::connection_ptr &connection_,
                        signalling::json_message &message_parser)
     : connection_(connection_), message_parser(message_parser) {}
 
@@ -25,7 +25,8 @@ struct message_visitor {
 
 void connection::run(boost::asio::yield_context yield) {
   while (true) {
-    auto message = connection_.read(yield);
+    BOOST_LOG_SEV(logger, logging::severity::trace) << "reading next message";
+    auto message = connection_->read(yield);
     auto parsed = message_parser.parse(message);
     std::visit(message_visitor{*this}, parsed);
   }
@@ -49,13 +50,15 @@ void connection::send_state_offering() {}
 void connection::send_state_answering() {}
 
 void connection::send(const std::string &message) {
-  boost::asio::spawn([this, message](auto yield) { send(yield, message); });
+  boost::asio::spawn([this, thiz = shared_from_this(), message](auto yield) {
+    send(yield, message);
+  });
 }
 
 void connection::send(boost::asio::yield_context yield,
                       const std::string &message) {
   boost::system::error_code error;
-  connection_.send(yield[error], message);
+  connection_->send(yield[error], message);
   if (!error)
     return;
   BOOST_LOG_SEV(logger, logging::severity::warning) << fmt::format(
