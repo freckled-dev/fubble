@@ -3,17 +3,17 @@
 
 #include "logging/logger.hpp"
 #include <boost/asio/ip/tcp.hpp>
-#include <boost/asio/spawn.hpp>
 #include <boost/beast/websocket/stream.hpp>
+#include <boost/thread/future.hpp>
 
 namespace websocket {
 class connection {
 public:
   connection(boost::asio::io_context &context);
 
-  void send(boost::asio::yield_context yield, std::string_view message);
-  std::string read(boost::asio::yield_context yield);
-  void close(boost::asio::yield_context yield);
+  boost::future<void> send(std::string_view message);
+  boost::future<std::string> read();
+  boost::future<void> close();
 
   using stream_type =
       boost::beast::websocket::stream<boost::asio::ip::tcp::socket>;
@@ -21,6 +21,7 @@ public:
 
 private:
   logging::logger logger;
+  boost::asio::io_context &context;
   stream_type stream;
   boost::beast::flat_buffer buffer;
 };

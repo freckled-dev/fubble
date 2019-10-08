@@ -6,9 +6,9 @@
 
 using namespace signalling;
 
-registration_handler::registration_handler(
-    boost::generic_executor_ref &executor_, device::creator &device_creator_)
-    : executor{executor_}, device_creator_(device_creator_) {}
+registration_handler::registration_handler(boost::executor &executor_,
+                                           device::creator &device_creator_)
+    : executor(executor_), device_creator_(device_creator_) {}
 
 void registration_handler::add(connection_ptr connection_) {
   connection_->on_registration.connect(
@@ -90,4 +90,3 @@ registration_handler::find(const std::string &key) {
   return std::find_if(devices.begin(), devices.end(),
                       [&](const auto &check) { return check.key == key; });
 }
-

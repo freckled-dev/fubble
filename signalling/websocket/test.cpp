@@ -2,23 +2,14 @@
 #include "connection.hpp"
 #include "connection_creator.hpp"
 #include "connector.hpp"
+#include "executor_asio.hpp"
 #include <boost/beast/websocket/error.hpp>
 #include <gtest/gtest.h>
-
-static void spawn(std::function<void(boost::asio::yield_context)> to_call) {
-  boost::asio::spawn([to_call](auto yield) {
-    try {
-      to_call(yield);
-    } catch (const std::exception &error) {
-      std::cout << error.what() << std::endl;
-      throw error;
-    }
-  });
-}
 
 struct Websocket : ::testing::Test {
   virtual ~Websocket() = default;
   boost::asio::io_context context;
+  executor_asio executor{context};
   websocket::connection_creator connection_creator{context};
   websocket::acceptor::config acceptor_config;
   websocket::acceptor acceptor{context, connection_creator, acceptor_config};
@@ -26,18 +17,16 @@ struct Websocket : ::testing::Test {
 
 TEST_F(Websocket, ConnectionCreation) {
   websocket::connector connector{context, connection_creator};
-  spawn([&](auto yield) {
-    auto connection = acceptor(yield);
-    EXPECT_TRUE(connection);
-  });
+  acceptor.on_connection.connect(
+      [&](auto connection) { EXPECT_TRUE(connection); });
   bool connected{};
-  spawn([&](auto yield) {
-    websocket::connector::config connector_config;
-    connector_config.service = std::to_string(acceptor.get_port());
-    connector_config.url = "localhost";
-    auto connection = connector(connector_config, yield);
-    EXPECT_TRUE(connection);
+  websocket::connector::config connector_config;
+  connector_config.service = std::to_string(acceptor.get_port());
+  connector_config.url = "localhost";
+  connector(connector_config).then(executor, [&](auto connection) {
+    EXPECT_TRUE(connection.get());
     connected = true;
+    acceptor.close();
   });
   context.run();
   EXPECT_TRUE(connected);
@@ -45,14 +34,15 @@ TEST_F(Websocket, ConnectionCreation) {
 
 struct WebsocketOpenConnection : Websocket {
   websocket::connector connector{context, connection_creator};
-  std::unique_ptr<websocket::connection> first;
-  std::unique_ptr<websocket::connection> second;
+  websocket::connection_ptr first;
+  websocket::connection_ptr second;
   WebsocketOpenConnection() {
-    spawn([&](auto yield) { first = acceptor(yield); });
-    spawn([&](auto yield) {
-      websocket::connector::config connector_config{
-          std::to_string(acceptor.get_port()), "localhost"};
-      second = connector(connector_config, yield);
+    acceptor.on_connection.connect([&](auto result) { first = result; });
+    websocket::connector::config connector_config{
+        std::to_string(acceptor.get_port()), "localhost"};
+    connector(connector_config).then(executor, [&](auto result) {
+      second = result.get();
+      acceptor.close();
     });
     context.run();
     context.reset();
@@ -61,28 +51,26 @@ struct WebsocketOpenConnection : Websocket {
 TEST_F(WebsocketOpenConnection, SendReceive) {
   const std::string compare = "hello world";
   bool got_message{};
-  spawn([&](boost::asio::yield_context yield) {
-    auto message = first->read(yield);
+  first->read().then(executor, [&](auto result) {
+    auto message = result.get();
     EXPECT_EQ(compare, message);
     got_message = true;
   });
-  spawn(
-      [&](boost::asio::yield_context yield) { second->send(yield, compare); });
+  second->send(compare);
   context.run();
   EXPECT_TRUE(got_message);
 }
-
 TEST_F(WebsocketOpenConnection, Close) {
   bool got_called{};
-  spawn([&](boost::asio::yield_context yield) {
+  first->read().then(executor, [&](auto result) {
     try {
-      first->read(yield);
+      result.get();
     } catch (boost::system::system_error &error) {
       EXPECT_EQ(error.code(), boost::beast::websocket::error::closed);
       got_called = true;
     }
   });
-  spawn([&](boost::asio::yield_context yield) { second->close(yield); });
+  second->close();
   context.run();
   EXPECT_TRUE(got_called);
 }

@@ -4,7 +4,7 @@ executor_asio::executor_asio(boost::asio::io_context &context)
     : context(context) {}
 
 void executor_asio::submit(std::function<void()> &&call) {
-  context.dispatch(std::move(call));
+  context.post(std::move(call));
 }
 
 void executor_asio::close() { BOOST_ASSERT_MSG(false, "must not reached"); }
