@@ -73,6 +73,6 @@ void connection::send_state_answering() {}
 
 void connection::send(const std::string &message) {
   auto future = connection_->send(message);
-  future.then(executor, [thiz = shared_from_this()](auto) {});
+  future.then(executor, [connection_ = connection_](auto) {});
 }
 

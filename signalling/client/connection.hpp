@@ -8,13 +8,14 @@
 #include "websocket/connection_ptr.hpp"
 #include <boost/signals2/signal.hpp>
 #include <boost/thread/executors/executor.hpp>
+#include <boost/thread/future.hpp>
 
 namespace signalling {
 class json_message;
 }
 
 namespace client {
-class connection : public std::enable_shared_from_this<connection> {
+class connection {
 public:
   connection(boost::executor &executor,
              const websocket::connection_ptr &connection,
@@ -35,9 +36,11 @@ public:
   boost::signals2::signal<void()> on_create_offer;
   boost::signals2::signal<void()> on_create_answer;
 
-  void run();
+  boost::future<void> run();
 
 private:
+  void run(boost::promise<void> &&promise);
+
   void send(const std::string &message);
   void parse_message(const std::string &message);
 

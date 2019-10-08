@@ -9,17 +9,15 @@ connection::connection(boost::executor &executor,
                        const websocket::connection_ptr &connection,
                        signalling::json_message &message_parser)
     : executor(executor), connection_(connection),
-      message_parser(message_parser) {
-  // run();
-}
+      message_parser(message_parser) {}
 
 connection::~connection() {
-  BOOST_LOG_SEV(logger, logging::severity::trace) << "~connection()";
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "client ~connection()";
 }
 
 void connection::close() {
   BOOST_LOG_SEV(logger, logging::severity::info) << "closing connection";
-  connection_->close().then(executor, [thiz = shared_from_this()](auto) {});
+  connection_->close().then(executor, [connection_ = connection_](auto) {});
 }
 
 void connection::send_offer(const signalling::offer &send_) {
@@ -35,23 +33,35 @@ void connection::send_answer(const signalling::answer &answer_) {
   auto serialized = message_parser.serialize(answer_);
   send(serialized);
 }
-void connection::run() {
-  connection_->read().then(
-      executor, [this, thiz = shared_from_this()](auto message_future) {
-        try {
-          auto message = message_future.get();
-          parse_message(message);
-          run();
-        } catch (const boost::system::system_error &error) {
-          BOOST_LOG_SEV(logger, logging::severity::warning)
-              << "an error occured while running, error:" << error.what();
-        }
-        on_closed();
-      });
+boost::future<void> connection::run() {
+  boost::promise<void> promise;
+  auto result = promise.get_future();
+  run(std::move(promise));
+  return result;
 }
+void connection::run(boost::promise<void> &&promise) {
+  connection_->read().then(executor, [this, promise = std::move(promise)](
+                                         auto message_future) mutable {
+    try {
+      auto message = message_future.get();
+      parse_message(message);
+      run(std::move(promise));
+    } catch (const boost::system::system_error &error) {
+      on_closed();
+      if (error.code() == boost::asio::error::operation_aborted) {
+        promise.set_value();
+        return;
+      }
+      BOOST_LOG_SEV(logger, logging::severity::warning)
+          << "an error occured while running, error:" << error.what();
+      promise.set_exception(error);
+    }
+  });
+}
+
 void connection::send(const std::string &message) {
   connection_->send(message).then(executor,
-                                  [thiz = shared_from_this()](auto) {});
+                                  [connection_ = connection_](auto) {});
 }
 
 namespace {

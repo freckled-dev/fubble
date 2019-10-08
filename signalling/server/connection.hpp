@@ -10,14 +10,13 @@ namespace websocket {
 class connection;
 }
 namespace server {
-class connection : public signalling::connection,
-                   public std::enable_shared_from_this<connection> {
+class connection : public signalling::connection {
 public:
   connection(boost::executor &executor,
              const websocket::connection_ptr &connection,
              signalling::json_message &message_parser);
   ~connection();
-  boost::future<void> run();
+  [[nodiscard]] boost::future<void> run();
 
   void send_offer(const signalling::offer &send) final;
   void send_ice_candidate(const signalling::ice_candidate &candidate) final;

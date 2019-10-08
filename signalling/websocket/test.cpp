@@ -4,19 +4,20 @@
 #include "connector.hpp"
 #include "executor_asio.hpp"
 #include <boost/beast/websocket/error.hpp>
+#include <boost/thread/executors/executor_adaptor.hpp>
 #include <gtest/gtest.h>
 
 struct Websocket : ::testing::Test {
   virtual ~Websocket() = default;
   boost::asio::io_context context;
-  executor_asio executor{context};
+  boost::executor_adaptor<executor_asio> executor{context};
   websocket::connection_creator connection_creator{context};
   websocket::acceptor::config acceptor_config;
   websocket::acceptor acceptor{context, connection_creator, acceptor_config};
 };
 
 TEST_F(Websocket, ConnectionCreation) {
-  websocket::connector connector{context, connection_creator};
+  websocket::connector connector{context, executor, connection_creator};
   acceptor.on_connection.connect(
       [&](auto connection) { EXPECT_TRUE(connection); });
   bool connected{};
@@ -33,7 +34,7 @@ TEST_F(Websocket, ConnectionCreation) {
 }
 
 struct WebsocketOpenConnection : Websocket {
-  websocket::connector connector{context, connection_creator};
+  websocket::connector connector{context, executor, connection_creator};
   websocket::connection_ptr first;
   websocket::connection_ptr second;
   WebsocketOpenConnection() {
