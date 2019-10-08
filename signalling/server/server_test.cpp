@@ -25,46 +25,40 @@ struct Server : testing::Test {
   server::connection_creator server_connection_creator{context, executor,
                                                        json_message};
   server::server server_{executor, acceptor, server_connection_creator};
+  websocket::connector connector{context, executor,
+                                 websocket_connection_creator};
+  client::connection_creator client_connection_creator{context, executor,
+                                                       json_message};
+  client::client client_{executor, connector, client_connection_creator};
 };
 
-#if 1
-TEST_F(Server, SetUps) {
-  server_.close();
-  context.run();
-}
-#endif
-
-#if 1
 TEST_F(Server, SetUp) {
   server_.close();
   context.run();
 }
-#endif
 
-#if 1
 TEST_F(Server, SingleConnect) {
-  //  boost::log::add_console_log(std::cout,
-  //                              boost::log::keywords::auto_flush = true);
-  websocket::connector connector{context, websocket_connection_creator};
-  client::connection_creator client_connection_creator{context, executor,
-                                                       json_message};
-  client::client client_{executor, connector, client_connection_creator};
-  auto connection_future =
-      client_("localhost", std::to_string(acceptor.get_port()));
   bool connected{};
-  connection_future.then(executor, [&](auto connection_future) {
-    try {
-      auto connection = connection_future.get();
-      EXPECT_TRUE(connection);
-      connected = true;
-      connection->close();
-    } catch (const std::exception &error) {
-      std::cout << "an error occured:" << error.what() << std::endl;
-      EXPECT_TRUE(false);
-    }
+  client_.on_connected.connect([&] {
+    auto connection = client_.get_connection();
+    EXPECT_TRUE(connection);
+    connected = true;
+    connection->close();
     server_.close();
   });
+  client_("localhost", std::to_string(acceptor.get_port()));
   context.run();
   EXPECT_TRUE(connected);
 }
-#endif
+
+TEST_F(Server, CantConnect) {
+  server_.close();
+  bool called{};
+  client_.on_error.connect([&](auto error) {
+    called = true;
+    EXPECT_EQ(error.code(), boost::asio::error::connection_refused);
+  });
+  client_("localhost", "");
+  context.run();
+  EXPECT_TRUE(called);
+}

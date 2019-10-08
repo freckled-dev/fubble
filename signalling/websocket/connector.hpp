@@ -4,6 +4,7 @@
 #include "connection_ptr.hpp"
 #include "logging/logger.hpp"
 #include <boost/asio/ip/tcp.hpp>
+#include <boost/thread/executors/executor.hpp>
 #include <boost/thread/future.hpp>
 
 namespace websocket {
@@ -15,7 +16,8 @@ public:
     std::string url;
     std::string path = "/";
   };
-  connector(boost::asio::io_context &context, connection_creator &creator);
+  connector(boost::asio::io_context &context, boost::executor &executor,
+            connection_creator &creator);
   using future_type = boost::future<connection_ptr>;
   future_type operator()(const config &config_);
 
@@ -29,6 +31,7 @@ private:
 
   logging::logger logger;
   boost::asio::io_context &context;
+  boost::executor &executor;
   boost::asio::ip::tcp::resolver resolver;
   connection_creator &creator;
 };

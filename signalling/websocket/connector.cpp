@@ -7,26 +7,29 @@
 using namespace websocket;
 
 connector::connector(boost::asio::io_context &context,
-                     connection_creator &creator)
-    : context(context), resolver(context), creator(creator) {}
+                     boost::executor &executor, connection_creator &creator)
+    : context(context), executor(executor), resolver(context),
+      creator(creator) {}
 
 boost::future<connection_ptr> connector::operator()(const config &config_) {
   BOOST_LOG_SEV(logger, logging::severity::info) << fmt::format(
       "connecting to host: '{}', service:'{}'", config_.url, config_.service);
   auto resolved = resolve(config_);
-  future_type connected = resolved
-                              .then([this](auto result) {
-                                BOOST_LOG_SEV(logger, logging::severity::info)
-                                    << "resolved";
-                                return connect_to_endpoints(result.get());
-                              })
-                              .unwrap();
+  future_type connected =
+      resolved
+          .then(executor,
+                [this](auto result) {
+                  BOOST_LOG_SEV(logger, logging::severity::info) << "resolved";
+                  return connect_to_endpoints(result.get());
+                })
+          .unwrap();
   future_type handshake_done =
       connected
-          .then([this, config_](auto result) {
-            BOOST_LOG_SEV(logger, logging::severity::info) << "connected";
-            return handshake(result.get(), config_);
-          })
+          .then(executor,
+                [this, config_](auto result) {
+                  BOOST_LOG_SEV(logger, logging::severity::info) << "connected";
+                  return handshake(result.get(), config_);
+                })
           .unwrap();
   return handshake_done;
 }
