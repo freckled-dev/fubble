@@ -77,3 +77,18 @@ TEST(Exetutor, TypeErasure) {
   executor.run_queued_closures();
   EXPECT_TRUE(called);
 }
+
+TEST(Executor, DestroyedFuture) {
+  boost::loop_executor executor;
+  boost::promise<void> fullfill_later;
+  bool called{};
+  {
+    auto future = fullfill_later.get_future();
+    future.then(executor, [&](auto) { called = true; });
+  }
+  fullfill_later.set_value();
+  EXPECT_FALSE(called);
+  executor.run_queued_closures();
+  EXPECT_TRUE(called);
+}
+

@@ -3,7 +3,7 @@ project('signalling', 'cpp',
   default_options : ['cpp_std=c++17', 'werror=true'])
 
 boost_dep_pkg = dependency('boost', modules : [
-  'thread', 'program_options', 'regex', 'coroutine', 'context', 'log'
+  'thread', 'program_options', 'regex', 'log'
   ])
 boost_dep = declare_dependency(
     compile_args : '-DBOOST_THREAD_VERSION=5',
@@ -37,7 +37,7 @@ websocket_test = executable('websocket_test',
   dependencies : [gtest_dep, boost_dep],
   link_with: [websocket, utils]
   )
-test('websocket test', websocket_test)
+test('websocket test', websocket_test, timeout: 1)
 
 signalling = library('signalling',
   ['signalling/registration_handler.cpp',
@@ -82,5 +82,5 @@ server_test = executable('server_test',
   dependencies: [boost_dep, gtest_dep, fmt_dep],
   link_with: [server, signalling, websocket, client, utils]
   )
-test('server test', server_test, timeout: 2)
+test('server test', server_test, timeout: 1)
 

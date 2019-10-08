@@ -1,12 +1,13 @@
 #ifndef WEBSOCKET_ACCEPTOR_HPP
 #define WEBSOCKET_ACCEPTOR_HPP
 
+#include "connection_ptr.hpp"
+#include "logging/logger.hpp"
 #include <boost/asio/io_context.hpp>
 #include <boost/asio/ip/tcp.hpp>
-#include <boost/asio/spawn.hpp>
+#include <boost/signals2/signal.hpp>
 
 namespace websocket {
-class connection;
 class connection_creator;
 class acceptor {
 public:
@@ -16,10 +17,15 @@ public:
   acceptor(boost::asio::io_context &context, connection_creator &creator,
            const config &config_);
   void close();
-  std::unique_ptr<connection> operator()(boost::asio::yield_context yield);
   std::uint16_t get_port() const;
+  boost::signals2::signal<void(connection_ptr)> on_connection;
 
 private:
+  void run();
+  void successful_tcp(connection_ptr connection_);
+
+  logging::logger logger;
+  boost::asio::io_context &context;
   boost::asio::ip::tcp::acceptor acceptor_;
   connection_creator &creator;
 };

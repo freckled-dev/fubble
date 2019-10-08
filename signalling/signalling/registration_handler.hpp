@@ -6,7 +6,7 @@
 #include "signalling/device/answering_ptr.hpp"
 #include "signalling/device/offering_ptr.hpp"
 #include <boost/signals2/connection.hpp>
-#include <boost/thread/executors/generic_executor_ref.hpp>
+#include <boost/thread/executors/executor.hpp>
 #include <boost/thread/future.hpp>
 #include <vector>
 
@@ -17,7 +17,7 @@ class creator;
 struct registration;
 class registration_handler {
 public:
-  registration_handler(boost::generic_executor_ref &executor,
+  registration_handler(boost::executor &executor,
                        device::creator &device_creator_);
 
   void add(connection_ptr connection_);
@@ -43,7 +43,7 @@ private:
   devices_type::iterator find(const std::string &key);
 
   logging::logger logger;
-  boost::generic_executor_ref executor;
+  boost::executor &executor;
   device::creator &device_creator_;
   devices_type devices;
 };

@@ -6,17 +6,17 @@
 #include "signalling/ice_candidate.hpp"
 #include "signalling/offer.hpp"
 #include "websocket/connection_ptr.hpp"
-#include <boost/asio/spawn.hpp>
 #include <boost/signals2/signal.hpp>
+#include <boost/thread/executors/executor.hpp>
 
 namespace signalling {
 class json_message;
 }
 
 namespace client {
-class connection : std::enable_shared_from_this<connection> {
+class connection : public std::enable_shared_from_this<connection> {
 public:
-  connection(boost::asio::io_context &context,
+  connection(boost::executor &executor,
              const websocket::connection_ptr &connection,
              signalling::json_message &message_parser);
   ~connection();
@@ -35,13 +35,14 @@ public:
   boost::signals2::signal<void()> on_create_offer;
   boost::signals2::signal<void()> on_create_answer;
 
+  void run();
+
 private:
-  void run(boost::asio::yield_context yield);
   void send(const std::string &message);
   void parse_message(const std::string &message);
 
   logging::logger logger;
-  boost::asio::io_context &context;
+  boost::executor &executor;
   websocket::connection_ptr connection_;
   signalling::json_message &message_parser;
 };

@@ -7,7 +7,7 @@
 #include "signalling/ice_candidate.hpp"
 #include "signalling/offer.hpp"
 #include <boost/signals2/connection.hpp>
-#include <boost/thread/executors/generic_executor_ref.hpp>
+#include <boost/thread/executors/executor.hpp>
 
 namespace signalling::device {
 class answering {

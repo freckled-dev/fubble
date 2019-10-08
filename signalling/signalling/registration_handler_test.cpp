@@ -5,10 +5,9 @@
 #include <gtest/gtest.h>
 
 struct RegistrationHandler : testing::Test {
-  boost::inline_executor executor;
-  boost::generic_executor_ref executor_ref{executor};
-  signalling::device::creator creator{executor_ref};
-  signalling::registration_handler handler{executor_ref, creator};
+  boost::executor_adaptor<boost::inline_executor> executor;
+  signalling::device::creator creator{executor};
+  signalling::registration_handler handler{executor, creator};
 };
 
 struct mock_connection : signalling::connection {

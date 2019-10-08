@@ -4,7 +4,7 @@
 
 using namespace signalling::device;
 
-creator::creator(boost::generic_executor_ref &executor) : executor(executor) {}
+creator::creator(boost::executor &executor) : executor(executor) {}
 
 offering_ptr creator::create_offering(connection_ptr connection_) {
   return std::make_unique<offering>(connection_);
