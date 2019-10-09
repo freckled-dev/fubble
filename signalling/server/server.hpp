@@ -6,13 +6,17 @@
 #include "websocket/connection_ptr.hpp"
 #include <boost/thread/executors/executor.hpp>
 
+namespace signalling {
+class registration_handler;
+}
 namespace server {
 class connection;
 class connection_creator;
 class server {
 public:
   server(boost::executor &executor, websocket::acceptor &acceptor,
-         connection_creator &connection_creator_);
+         connection_creator &connection_creator_,
+         signalling::registration_handler &registration_handler);
   ~server();
   void close();
 
@@ -22,6 +26,7 @@ protected:
   boost::executor &executor;
   websocket::acceptor &acceptor;
   connection_creator &connection_creator_;
+  signalling::registration_handler &registration_handler;
   logging::logger logger;
 };
 } // namespace server
