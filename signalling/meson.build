@@ -3,7 +3,7 @@ project('signalling', 'cpp',
   default_options : ['cpp_std=c++17', 'werror=true'])
 
 boost_dep_pkg = dependency('boost', modules : [
-  'thread', 'program_options', 'regex', 'log'
+  'thread', 'program_options', 'regex', 'log', 'log_setup'
   ])
 boost_dep = declare_dependency(
     compile_args : '-DBOOST_THREAD_VERSION=5',
@@ -78,7 +78,7 @@ server = library('server',
   link_with: [websocket, signalling, utils]
   )
 server_test = executable('server_test',
-  ['server/server_test.cpp'],
+  ['server/server_test.cpp', 'test_main.cpp'],
   dependencies: [boost_dep, gtest_dep, fmt_dep],
   link_with: [server, signalling, websocket, client, utils]
   )

@@ -14,6 +14,7 @@ class connection {
 public:
   virtual ~connection() = default;
 
+  // remove? instead make method remove. a pedon to add
   boost::signals2::signal<void()> on_closed;
 
   boost::signals2::signal<void(const registration &)> on_registration;

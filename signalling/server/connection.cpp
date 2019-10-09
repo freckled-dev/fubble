@@ -26,6 +26,15 @@ struct message_visitor {
   void operator()(const signalling::ice_candidate &candidate) {
     connection_.on_ice_candidate(candidate);
   }
+  void operator()(const signalling::registration &registration_) {
+    connection_.on_registration(registration_);
+  }
+  void operator()(const signalling::create_offer &candidate) {
+    BOOST_ASSERT_MSG(false, "must not be received");
+  }
+  void operator()(const signalling::create_answer &candidate) {
+    BOOST_ASSERT_MSG(false, "must not be received");
+  }
 };
 } // namespace
 
@@ -37,6 +46,7 @@ boost::future<void> connection::run() {
 }
 
 void connection::run(boost::promise<void> &&promise) {
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "reading next message";
   connection_->read().then(executor, [this, promise = std::move(promise)](
                                          auto message_future) mutable {
     try {
@@ -67,9 +77,13 @@ void connection::send_answer(const signalling::answer &answer_) {
   send(message_parser.serialize(answer_));
 }
 
-void connection::send_state_offering() {}
+void connection::send_state_offering() {
+  send(message_parser.serialize(signalling::create_offer{}));
+}
 
-void connection::send_state_answering() {}
+void connection::send_state_answering() {
+  send(message_parser.serialize(signalling::create_answer{}));
+}
 
 void connection::send(const std::string &message) {
   auto future = connection_->send(message);

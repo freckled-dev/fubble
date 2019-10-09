@@ -5,6 +5,7 @@
 #include "signalling/answer.hpp"
 #include "signalling/ice_candidate.hpp"
 #include "signalling/offer.hpp"
+#include "signalling/registration.hpp"
 #include "websocket/connection_ptr.hpp"
 #include <boost/signals2/signal.hpp>
 #include <boost/thread/executors/executor.hpp>
@@ -23,8 +24,10 @@ public:
   ~connection();
 
   void close();
+  // TODO remove. run future end is end of connection!
   boost::signals2::signal<void()> on_closed;
 
+  void send_registration(const signalling::registration &send);
   void send_offer(const signalling::offer &send);
   void send_ice_candidate(const signalling::ice_candidate &candidate);
   void send_answer(const signalling::answer &answer_);

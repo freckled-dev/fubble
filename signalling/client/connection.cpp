@@ -20,6 +20,11 @@ void connection::close() {
   connection_->close().then(executor, [connection_ = connection_](auto) {});
 }
 
+void connection::send_registration(const signalling::registration &send_) {
+  auto serialized = message_parser.serialize(send_);
+  send(serialized);
+}
+
 void connection::send_offer(const signalling::offer &send_) {
   auto serialized = message_parser.serialize(send_);
   send(serialized);
@@ -40,6 +45,7 @@ boost::future<void> connection::run() {
   return result;
 }
 void connection::run(boost::promise<void> &&promise) {
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "reading next message";
   connection_->read().then(executor, [this, promise = std::move(promise)](
                                          auto message_future) mutable {
     try {
@@ -75,6 +81,16 @@ struct message_visitor {
   }
   void operator()(const signalling::ice_candidate &candidate) {
     connection_.on_ice_candidate(candidate);
+  }
+  void operator()(const signalling::create_offer &offering) {
+    connection_.on_create_offer();
+  }
+  void operator()(const signalling::create_answer &answering) {
+    connection_.on_create_answer();
+  }
+  void operator()(const signalling::registration &registration_) {
+    BOOST_ASSERT_MSG(false,
+                     "registration must not be send to client connection");
   }
 };
 } // namespace
