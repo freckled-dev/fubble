@@ -23,7 +23,11 @@ public:
   boost::signals2::signal<void()> on_create_offer;
   boost::signals2::signal<void()> on_create_answer;
   boost::signals2::signal<void(const signalling::offer &)> on_offer;
+  boost::signals2::signal<void(const signalling::answer &)> on_answer;
+  boost::signals2::signal<void(const signalling::ice_candidate &)>
+      on_ice_candidate;
   boost::signals2::signal<void(const boost::system::system_error &)> on_error;
+
   void send_offer(const signalling::offer &offer_);
   void send_answer(const signalling::answer &answer_);
   void send_ice_candidate(const signalling::ice_candidate &candidate);
