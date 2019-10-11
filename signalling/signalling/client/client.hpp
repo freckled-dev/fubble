@@ -10,6 +10,7 @@
 #include <boost/signals2/signal.hpp>
 #include <boost/thread/future.hpp>
 
+namespace signalling {
 namespace client {
 class connection_creator;
 class connection;
@@ -50,5 +51,6 @@ private:
   connection_ptr connection_;
 };
 } // namespace client
+} // namespace signalling
 
 #endif

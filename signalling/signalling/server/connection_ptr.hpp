@@ -3,9 +3,9 @@
 
 #include <memory>
 
-namespace server {
+namespace signalling::server {
 class connection;
 using connection_ptr = std::shared_ptr<connection>;
-} // namespace server
+} // namespace signalling::server
 
 #endif

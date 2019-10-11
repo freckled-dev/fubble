@@ -8,7 +8,7 @@
 
 namespace signalling {
 class registration_handler;
-}
+
 namespace server {
 class connection;
 class connection_creator;
@@ -30,5 +30,6 @@ protected:
   logging::logger logger;
 };
 } // namespace server
+} // namespace signalling
 
 #endif

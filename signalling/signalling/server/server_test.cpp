@@ -1,9 +1,9 @@
-#include "client/client.hpp"
-#include "client/connection.hpp"
-#include "client/connection_creator.hpp"
+#include "connection_creator.hpp"
 #include "executor_asio.hpp"
 #include "server.hpp"
-#include "server/connection_creator.hpp"
+#include "signalling/client/client.hpp"
+#include "signalling/client/connection.hpp"
+#include "signalling/client/connection_creator.hpp"
 #include "signalling/device/creator.hpp"
 #include "signalling/json_message.hpp"
 #include "signalling/registration_handler.hpp"
@@ -25,22 +25,23 @@ struct Server : testing::Test {
   websocket::acceptor acceptor{context, websocket_connection_creator,
                                acceptor_config};
   signalling::json_message json_message;
-  server::connection_creator server_connection_creator{context, executor,
-                                                       json_message};
+  signalling::server::connection_creator server_connection_creator{
+      context, executor, json_message};
   signalling::device::creator device_creator{executor};
   signalling::registration_handler registration_handler{executor,
                                                         device_creator};
-  server::server server_{executor, acceptor, server_connection_creator,
-                         registration_handler};
+  signalling::server::server server_{
+      executor, acceptor, server_connection_creator, registration_handler};
   websocket::connector connector{context, executor,
                                  websocket_connection_creator};
-  client::connection_creator client_connection_creator{context, executor,
-                                                       json_message};
-  client::client client_{executor, connector, client_connection_creator};
-  client::client client_answering{executor, connector,
-                                  client_connection_creator};
+  signalling::client::connection_creator client_connection_creator{
+      context, executor, json_message};
+  signalling::client::client client_{executor, connector,
+                                     client_connection_creator};
+  signalling::client::client client_answering{executor, connector,
+                                              client_connection_creator};
 
-  void connect(client::client &client) const {
+  void connect(signalling::client::client &client) const {
     auto service = std::to_string(acceptor.get_port());
     client("localhost", service, session_key);
   }

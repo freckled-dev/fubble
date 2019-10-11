@@ -2,7 +2,7 @@
 #include "websocket/connection.hpp"
 #include <fmt/format.h>
 
-using namespace server;
+using namespace signalling::server;
 
 connection::connection(boost::executor &executor,
                        const websocket::connection_ptr &connection_,

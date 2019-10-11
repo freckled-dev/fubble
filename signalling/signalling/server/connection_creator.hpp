@@ -1,5 +1,5 @@
-#ifndef SIGNALLING_CLIENT_CONNECTION_CREATOR_HPP
-#define SIGNALLING_CLIENT_CONNECTION_CREATOR_HPP
+#ifndef SERVER_CONNECTION_CREATOR_HPP
+#define SERVER_CONNECTION_CREATOR_HPP
 
 #include "connection_ptr.hpp"
 #include "websocket/connection_ptr.hpp"
@@ -8,21 +8,24 @@
 
 namespace signalling {
 class json_message;
-}
-namespace client {
+
+namespace server {
 class connection_creator {
 public:
   connection_creator(boost::asio::io_context &context,
                      boost::executor &executor,
                      signalling::json_message &message_parser);
+  virtual ~connection_creator();
+
   connection_ptr
   operator()(const websocket::connection_ptr &websocket_connection);
 
-protected:
+private:
   boost::asio::io_context &context;
   boost::executor &executor;
   signalling::json_message &message_parser;
 };
-} // namespace client
+} // namespace server
+} // namespace signalling
 
 #endif
