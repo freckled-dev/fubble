@@ -37,6 +37,11 @@ struct Server : testing::Test {
   client::connection_creator client_connection_creator{context, executor,
                                                        json_message};
   client::client client_{executor, connector, client_connection_creator};
+
+  void connect(client::client &client) const {
+    auto service = std::to_string(acceptor.get_port());
+    client("localhost", service, session_key);
+  }
 };
 
 TEST_F(Server, SetUp) {
@@ -49,13 +54,46 @@ TEST_F(Server, SingleConnect) {
   client_.on_connected.connect([&] {
     auto connection = client_.get_connection();
     EXPECT_TRUE(connection);
+    EXPECT_FALSE(connected);
     connected = true;
     connection->close();
     server_.close();
   });
-  client_("localhost", std::to_string(acceptor.get_port()), session_key);
+  connect(client_);
   context.run();
   EXPECT_TRUE(connected);
+}
+
+TEST_F(Server, ClientClose) {
+  bool connected{};
+  client_.on_connected.connect([&] {
+    EXPECT_FALSE(connected);
+    connected = true;
+    client_.close();
+    server_.close();
+  });
+  connect(client_);
+  context.run();
+  EXPECT_TRUE(connected);
+}
+
+TEST_F(Server, DoubleConnect) {
+  client::client client2{executor, connector, client_connection_creator};
+  int connected{};
+  auto connected_callback = [&] {
+    ++connected;
+    if (connected != 2)
+      return;
+    client_.close();
+    client2.close();
+    server_.close();
+  };
+  client_.on_connected.connect(connected_callback);
+  client2.on_connected.connect(connected_callback);
+  connect(client_);
+  connect(client2);
+  context.run();
+  EXPECT_EQ(connected, 2);
 }
 
 TEST_F(Server, CantConnect) {
@@ -81,3 +119,41 @@ TEST_F(Server, StateOffering) {
   context.run();
   EXPECT_TRUE(called);
 }
+
+TEST_F(Server, StateAnswering) {
+  connect(client_);
+  client::client client_answering{executor, connector,
+                                  client_connection_creator};
+  connect(client_answering);
+  bool called{};
+  client_answering.on_create_answer.connect([&] {
+    EXPECT_FALSE(called);
+    called = true;
+    client_.close();
+    client_answering.close();
+    server_.close();
+  });
+  context.run();
+  EXPECT_TRUE(called);
+}
+
+TEST_F(Server, SendReceiveOffer) {
+  connect(client_);
+  client::client client_answering{executor, connector,
+                                  client_connection_creator};
+  connect(client_answering);
+  bool called{};
+  const std::string sdp = "fun sdp";
+  client_answering.on_offer.connect([&](const auto offer) {
+    EXPECT_FALSE(called);
+    called = true;
+    EXPECT_EQ(offer.sdp, sdp);
+    client_.close();
+    client_answering.close();
+    server_.close();
+  });
+  client_.on_create_offer.connect([&] { client_.send_offer({sdp}); });
+  context.run();
+  EXPECT_TRUE(called);
+}
+

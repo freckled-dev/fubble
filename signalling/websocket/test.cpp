@@ -61,6 +61,20 @@ TEST_F(WebsocketOpenConnection, SendReceive) {
   context.run();
   EXPECT_TRUE(got_message);
 }
+TEST_F(WebsocketOpenConnection, SendTwice) {
+  bool got_messages{};
+  first->read().then(executor, [&](auto result) {
+    EXPECT_EQ(result.get(), "hello");
+    first->read().then(executor, [&](auto result) {
+      got_messages = true;
+      EXPECT_EQ(result.get(), "world");
+    });
+  });
+  second->send("hello");
+  second->send("world");
+  context.run();
+  EXPECT_TRUE(got_messages);
+}
 TEST_F(WebsocketOpenConnection, Close) {
   bool got_called{};
   first->read().then(executor, [&](auto result) {

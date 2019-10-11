@@ -53,7 +53,6 @@ void connection::run(boost::promise<void> &&promise) {
       parse_message(message);
       run(std::move(promise));
     } catch (const boost::system::system_error &error) {
-      on_closed();
       if (error.code() == boost::asio::error::operation_aborted) {
         promise.set_value();
         return;

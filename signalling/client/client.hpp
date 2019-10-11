@@ -3,6 +3,9 @@
 
 #include "connection_ptr.hpp"
 #include "logging/logger.hpp"
+#include "signalling/answer.hpp"
+#include "signalling/ice_candidate.hpp"
+#include "signalling/offer.hpp"
 #include "websocket/connector.hpp"
 #include <boost/signals2/signal.hpp>
 #include <boost/thread/future.hpp>
@@ -18,7 +21,12 @@ public:
   void close();
   boost::signals2::signal<void()> on_connected;
   boost::signals2::signal<void()> on_create_offer;
+  boost::signals2::signal<void()> on_create_answer;
+  boost::signals2::signal<void(const signalling::offer &)> on_offer;
   boost::signals2::signal<void(const boost::system::system_error &)> on_error;
+  void send_offer(const signalling::offer &offer_);
+  void send_answer(const signalling::answer &answer_);
+  void send_ice_candidate(const signalling::ice_candidate &candidate);
 
   void operator()(const std::string &host, const std::string &service,
                   const std::string &key);
