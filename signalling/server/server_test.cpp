@@ -44,6 +44,17 @@ struct Server : testing::Test {
     auto service = std::to_string(acceptor.get_port());
     client("localhost", service, session_key);
   }
+  void close() {
+    if (client_.get_connection())
+      client_.close();
+    if (client_answering.get_connection())
+      client_answering.close();
+    try {
+      server_.close();
+    } catch (...) {
+      // ignore already closed
+    }
+  }
 };
 
 TEST_F(Server, SetUp) {
@@ -58,8 +69,7 @@ TEST_F(Server, SingleConnect) {
     EXPECT_TRUE(connection);
     EXPECT_FALSE(connected);
     connected = true;
-    connection->close();
-    server_.close();
+    close();
   });
   connect(client_);
   context.run();
@@ -71,8 +81,7 @@ TEST_F(Server, ClientClose) {
   client_.on_connected.connect([&] {
     EXPECT_FALSE(connected);
     connected = true;
-    client_.close();
-    server_.close();
+    close();
   });
   connect(client_);
   context.run();
@@ -80,20 +89,17 @@ TEST_F(Server, ClientClose) {
 }
 
 TEST_F(Server, DoubleConnect) {
-  client::client client2{executor, connector, client_connection_creator};
   int connected{};
   auto connected_callback = [&] {
     ++connected;
     if (connected != 2)
       return;
-    client_.close();
-    client2.close();
-    server_.close();
+    close();
   };
   client_.on_connected.connect(connected_callback);
-  client2.on_connected.connect(connected_callback);
+  client_answering.on_connected.connect(connected_callback);
   connect(client_);
-  connect(client2);
+  connect(client_answering);
   context.run();
   EXPECT_EQ(connected, 2);
 }
@@ -114,8 +120,7 @@ TEST_F(Server, StateOffering) {
   bool called{};
   client_.on_create_offer.connect([&] {
     called = true;
-    client_.close();
-    server_.close();
+    close();
   });
   client_("localhost", std::to_string(acceptor.get_port()), session_key);
   context.run();
@@ -129,9 +134,7 @@ TEST_F(Server, StateAnswering) {
   client_answering.on_create_answer.connect([&] {
     EXPECT_FALSE(called);
     called = true;
-    client_.close();
-    client_answering.close();
-    server_.close();
+    close();
   });
   context.run();
   EXPECT_TRUE(called);
@@ -146,9 +149,7 @@ TEST_F(Server, SendReceiveOffer) {
     EXPECT_FALSE(called);
     called = true;
     EXPECT_EQ(offer.sdp, sdp);
-    client_.close();
-    client_answering.close();
-    server_.close();
+    close();
   });
   client_.on_create_offer.connect([&] { client_.send_offer({sdp}); });
   context.run();
@@ -164,9 +165,7 @@ TEST_F(Server, SendReceiveAnswer) {
     EXPECT_FALSE(called);
     called = true;
     EXPECT_EQ(answer_.sdp, sdp);
-    client_.close();
-    client_answering.close();
-    server_.close();
+    close();
   });
   client_answering.on_create_answer.connect(
       [&] { client_answering.send_answer({sdp}); });
@@ -183,9 +182,7 @@ TEST_F(Server, SendReceiveIceCandidate) {
     EXPECT_FALSE(called);
     called = true;
     EXPECT_EQ(candidate.sdp, sdp);
-    client_.close();
-    client_answering.close();
-    server_.close();
+    close();
   });
   client_.on_create_offer.connect([&] { client_.send_ice_candidate({sdp}); });
   context.run();
