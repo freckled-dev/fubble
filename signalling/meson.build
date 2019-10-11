@@ -19,7 +19,7 @@ utils = library('utils',
   install: true
   )
 utils_test = executable('utils_test',
-  ['executor_asio_test.cpp'],
+  ['test_main.cpp', 'executor_asio_test.cpp'],
   dependencies: [gtest_dep, boost_dep],
   link_with: [utils]
   )
@@ -33,7 +33,7 @@ websocket = library('websocket',
   install: true
   )
 websocket_test = executable('websocket_test',
-  ['websocket/test.cpp'],
+  ['test_main.cpp', 'websocket/test.cpp'],
   dependencies : [gtest_dep, boost_dep],
   link_with: [websocket, utils]
   )
@@ -50,7 +50,7 @@ signalling = library('signalling',
   install : true
   )
 signalling_test = executable('signalling_test',
-  ['signalling_test.cpp', 'signalling/json_message_test.cpp',
+  ['test_main.cpp', 'signalling/json_message_test.cpp',
     'signalling/registration_handler_test.cpp'],
   dependencies : [gtest_dep, boost_dep],
   link_with: [signalling, websocket, utils]
@@ -58,7 +58,7 @@ signalling_test = executable('signalling_test',
 test('signalling test', signalling_test)
 
 dependencies_test = executable('dependencies_test',
-  ['dependency_thread_test.cpp'],
+  ['test_main.cpp', 'dependency_thread_test.cpp'],
   dependencies: [boost_dep, gtest_dep],
   link_with: [utils]
   )
