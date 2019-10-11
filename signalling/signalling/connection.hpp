@@ -9,7 +9,6 @@
 #include <boost/thread/future.hpp>
 
 namespace signalling {
-// TODO belongs to registration. make registraion namespace
 class connection {
 public:
   virtual ~connection() = default;

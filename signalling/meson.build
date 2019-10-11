@@ -65,20 +65,20 @@ dependencies_test = executable('dependencies_test',
 test('dependencies test', dependencies_test)
 
 client = library('client',
-  ['client/client.cpp', 'client/connection.cpp',
-    'client/connection_creator.cpp'],
+  ['signalling/client/client.cpp', 'signalling/client/connection.cpp',
+    'signalling/client/connection_creator.cpp'],
   dependencies: [boost_dep, fmt_dep],
   link_with: [websocket, signalling, utils]
   )
 
 server = library('server',
-  ['server/server.cpp', 'server/connection.cpp',
-    'server/connection_creator.cpp'],
+  ['signalling/server/server.cpp', 'signalling/server/connection.cpp',
+    'signalling/server/connection_creator.cpp'],
   dependencies: [boost_dep, fmt_dep],
   link_with: [websocket, signalling, utils]
   )
 server_test = executable('server_test',
-  ['server/server_test.cpp', 'test_main.cpp'],
+  ['signalling/server/server_test.cpp', 'test_main.cpp'],
   dependencies: [boost_dep, gtest_dep, fmt_dep],
   link_with: [server, signalling, websocket, client, utils]
   )

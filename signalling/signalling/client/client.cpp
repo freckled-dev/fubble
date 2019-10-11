@@ -5,6 +5,8 @@
 #include <fmt/format.h>
 #include <iostream>
 
+using namespace signalling;
+
 client::client::client(boost::executor &executor_,
                        websocket::connector &connector_,
                        connection_creator &connection_creator_)

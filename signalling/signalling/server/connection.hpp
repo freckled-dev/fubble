@@ -9,7 +9,8 @@
 namespace websocket {
 class connection;
 }
-namespace server {
+
+namespace signalling::server {
 class connection : public signalling::connection {
 public:
   connection(boost::executor &executor,
@@ -33,6 +34,6 @@ private:
   signalling::json_message &message_parser;
   logging::logger logger;
 };
-} // namespace server
+} // namespace signalling::server
 
 #endif

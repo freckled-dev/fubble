@@ -3,9 +3,11 @@
 
 #include <memory>
 
+namespace signalling {
 namespace client {
 class connection;
 using connection_ptr = std::shared_ptr<connection>;
 } // namespace client
+} // namespace signalling
 
 #endif

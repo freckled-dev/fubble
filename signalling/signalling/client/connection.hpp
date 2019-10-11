@@ -13,7 +13,6 @@
 
 namespace signalling {
 class json_message;
-}
 
 namespace client {
 class connection {
@@ -51,5 +50,6 @@ private:
   signalling::json_message &message_parser;
 };
 } // namespace client
+} // namespace signalling
 
 #endif
