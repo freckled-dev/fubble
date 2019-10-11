@@ -37,6 +37,8 @@ struct Server : testing::Test {
   client::connection_creator client_connection_creator{context, executor,
                                                        json_message};
   client::client client_{executor, connector, client_connection_creator};
+  client::client client_answering{executor, connector,
+                                  client_connection_creator};
 
   void connect(client::client &client) const {
     auto service = std::to_string(acceptor.get_port());
@@ -122,8 +124,6 @@ TEST_F(Server, StateOffering) {
 
 TEST_F(Server, StateAnswering) {
   connect(client_);
-  client::client client_answering{executor, connector,
-                                  client_connection_creator};
   connect(client_answering);
   bool called{};
   client_answering.on_create_answer.connect([&] {
@@ -139,8 +139,6 @@ TEST_F(Server, StateAnswering) {
 
 TEST_F(Server, SendReceiveOffer) {
   connect(client_);
-  client::client client_answering{executor, connector,
-                                  client_connection_creator};
   connect(client_answering);
   bool called{};
   const std::string sdp = "fun sdp";
@@ -157,3 +155,39 @@ TEST_F(Server, SendReceiveOffer) {
   EXPECT_TRUE(called);
 }
 
+TEST_F(Server, SendReceiveAnswer) {
+  connect(client_);
+  connect(client_answering);
+  bool called{};
+  const std::string sdp = "fun sdp";
+  client_.on_answer.connect([&](const auto answer_) {
+    EXPECT_FALSE(called);
+    called = true;
+    EXPECT_EQ(answer_.sdp, sdp);
+    client_.close();
+    client_answering.close();
+    server_.close();
+  });
+  client_answering.on_create_answer.connect(
+      [&] { client_answering.send_answer({sdp}); });
+  context.run();
+  EXPECT_TRUE(called);
+}
+
+TEST_F(Server, SendReceiveIceCandidate) {
+  connect(client_);
+  connect(client_answering);
+  bool called{};
+  const std::string sdp = "fun sdp";
+  client_answering.on_ice_candidate.connect([&](const auto candidate) {
+    EXPECT_FALSE(called);
+    called = true;
+    EXPECT_EQ(candidate.sdp, sdp);
+    client_.close();
+    client_answering.close();
+    server_.close();
+  });
+  client_.on_create_offer.connect([&] { client_.send_ice_candidate({sdp}); });
+  context.run();
+  EXPECT_TRUE(called);
+}

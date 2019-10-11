@@ -71,6 +71,10 @@ void client::client::connect_signals(const connection_ptr &connection_) const {
   connection_->on_create_answer.connect([this] { on_create_answer(); });
   connection_->on_offer.connect(
       [this](const auto &offer_) { on_offer(offer_); });
+  connection_->on_answer.connect(
+      [this](const auto &answer_) { on_answer(answer_); });
+  connection_->on_ice_candidate.connect(
+      [this](const auto &candidate) { on_ice_candidate(candidate); });
 }
 
 void client::client::run_done(boost::future<void> &result) {
