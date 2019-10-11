@@ -24,8 +24,6 @@ public:
   ~connection();
 
   void close();
-  // TODO remove. run future end is end of connection!
-  boost::signals2::signal<void()> on_closed;
 
   void send_registration(const signalling::registration &send);
   void send_offer(const signalling::offer &send);

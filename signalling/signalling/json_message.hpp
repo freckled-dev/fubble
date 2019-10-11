@@ -5,6 +5,7 @@
 #include "create_answer.hpp"
 #include "create_offer.hpp"
 #include "ice_candidate.hpp"
+#include "logging/logger.hpp"
 #include "offer.hpp"
 #include "registration.hpp"
 #include <stdexcept>
@@ -27,6 +28,9 @@ public:
   std::string serialize(const create_offer &offering) const;
   std::string serialize(const create_answer &answering) const;
   std::string serialize(const registration &registration_) const;
+
+private:
+  mutable logging::logger logger;
 };
 } // namespace signalling
 

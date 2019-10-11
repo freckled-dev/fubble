@@ -86,7 +86,8 @@ void connection::send_state_answering() {
 }
 
 void connection::send(const std::string &message) {
+  BOOST_LOG_SEV(logger, logging::severity::trace)
+      << fmt::format("sending message '{}'", message);
   auto future = connection_->send(message);
   future.then(executor, [connection_ = connection_](auto) {});
 }
-

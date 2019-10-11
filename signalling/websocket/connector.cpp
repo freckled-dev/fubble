@@ -19,7 +19,7 @@ boost::future<connection_ptr> connector::operator()(const config &config_) {
       resolved
           .then(executor,
                 [this](auto result) {
-                  BOOST_LOG_SEV(logger, logging::severity::info) << "resolved";
+                  BOOST_LOG_SEV(logger, logging::severity::trace) << "resolved";
                   return connect_to_endpoints(result.get());
                 })
           .unwrap();
@@ -27,7 +27,8 @@ boost::future<connection_ptr> connector::operator()(const config &config_) {
       connected
           .then(executor,
                 [this, config_](auto result) {
-                  BOOST_LOG_SEV(logger, logging::severity::info) << "connected";
+                  BOOST_LOG_SEV(logger, logging::severity::trace)
+                      << "connected";
                   return handshake(result.get(), config_);
                 })
           .unwrap();
@@ -82,7 +83,7 @@ connector::future_type connector::handshake(connection_ptr connection_,
       config_.url, config_.path,
       [this, promise = std::move(promise),
        connection_](const auto &error) mutable {
-        BOOST_LOG_SEV(logger, logging::severity::info) << "did handshake";
+        BOOST_LOG_SEV(logger, logging::severity::trace) << "did handshake";
         if (error) {
           promise.set_exception(boost::system::system_error(error));
           return;

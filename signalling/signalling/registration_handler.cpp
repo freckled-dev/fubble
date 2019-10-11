@@ -49,6 +49,8 @@ void registration_handler::register_(const connection_ptr &connection_,
 
 void registration_handler::register_as_offering(
     const connection_ptr &connection_, const std::string &key) {
+  BOOST_LOG_SEV(logger, logging::severity::trace) << fmt::format(
+      "a device wants to register itself as offering, key:'{}'", key);
   auto offering_device = device_creator_.create_offering(connection_);
   auto connection_on_close = connection_->on_closed.connect(
       [this, key] { on_offering_device_closed(key); });
@@ -60,6 +62,9 @@ void registration_handler::register_as_offering(
 }
 void registration_handler::register_as_answering(
     const connection_ptr &connection_, const devices_type::iterator &offering) {
+  BOOST_LOG_SEV(logger, logging::severity::trace)
+      << fmt::format("a device wants to register itself as answering, key:'{}'",
+                     offering->key);
   auto offering_device = offering->offering_device;
   auto answering_device =
       device_creator_.create_answering(connection_, offering_device);

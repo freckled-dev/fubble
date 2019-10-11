@@ -82,5 +82,5 @@ server_test = executable('server_test',
   dependencies: [boost_dep, gtest_dep, fmt_dep],
   link_with: [server, signalling, websocket, client, utils]
   )
-test('server test', server_test, timeout: 1)
+test('server test', server_test, timeout: 2)
 

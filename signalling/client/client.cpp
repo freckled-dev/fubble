@@ -16,9 +16,23 @@ void client::client::close() {
   connection_->close();
 }
 
+void client::client::send_offer(const signalling::offer &offer_) {
+  connection_->send_offer(offer_);
+}
+
+void client::client::send_answer(const signalling::answer &answer_) {
+  connection_->send_answer(answer_);
+}
+
+void client::client::send_ice_candidate(
+    const signalling::ice_candidate &candidate) {
+  connection_->send_ice_candidate(candidate);
+}
+
 void client::client::operator()(const std::string &host,
                                 const std::string &service,
                                 const std::string &key) {
+  BOOST_ASSERT(!connection_);
   websocket::connector::config connector_config;
   connector_config.url = host;
   connector_config.service = service;
@@ -32,8 +46,8 @@ void client::client::connected(boost::future<websocket::connection_ptr> &result,
   BOOST_LOG_SEV(logger, logging::severity::info) << "client connected";
   try {
     auto websocket_connection = result.get();
-    connection_ptr connection_ = connection_creator_(websocket_connection);
-    this->connection_ = connection_;
+    BOOST_ASSERT(!connection_);
+    connection_ = connection_creator_(websocket_connection);
     connect_signals(connection_);
     on_connected();
     connection_->send_registration(signalling::registration{key});
@@ -54,6 +68,9 @@ client::connection_ptr client::client::get_connection() const {
 
 void client::client::connect_signals(const connection_ptr &connection_) const {
   connection_->on_create_offer.connect([this] { on_create_offer(); });
+  connection_->on_create_answer.connect([this] { on_create_answer(); });
+  connection_->on_offer.connect(
+      [this](const auto &offer_) { on_offer(offer_); });
 }
 
 void client::client::run_done(boost::future<void> &result) {

@@ -5,13 +5,14 @@
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/beast/websocket/stream.hpp>
 #include <boost/thread/future.hpp>
+#include <queue>
 
 namespace websocket {
 class connection {
 public:
   connection(boost::asio::io_context &context);
 
-  boost::future<void> send(std::string_view message);
+  boost::future<void> send(const std::string &message);
   boost::future<std::string> read();
   boost::future<void> close();
 
@@ -20,10 +21,20 @@ public:
   stream_type &get_native();
 
 private:
+  void send_next_from_queue();
+  void on_send(const boost::system::error_code &error, std::size_t);
+
   logging::logger logger;
   boost::asio::io_context &context;
   stream_type stream;
   boost::beast::flat_buffer buffer;
+
+  struct send_item {
+    std::string message;
+    boost::promise<void> completion;
+  };
+  std::queue<send_item> send_queue;
+  bool sending{};
 };
 } // namespace websocket
 
