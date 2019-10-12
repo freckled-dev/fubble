@@ -12,6 +12,7 @@ boost_dep = declare_dependency(
 gtest_dep = dependency('gtest')
 fmt_dep = dependency('fmt')
 json_dep = dependency('jsonformoderncpp')
+boost_di_dep = dependency('boost-di')
 
 utils = library('utils',
   ['executor_asio.cpp', 'logging/logger.cpp'],
@@ -79,7 +80,7 @@ server = library('server',
   )
 server_test = executable('server_test',
   ['signalling/server/server_test.cpp', 'test_main.cpp'],
-  dependencies: [boost_dep, gtest_dep, fmt_dep],
+  dependencies: [boost_dep, gtest_dep, fmt_dep, boost_di_dep],
   link_with: [server, signalling, websocket, client, utils]
   )
 test('server test', server_test, timeout: 2)

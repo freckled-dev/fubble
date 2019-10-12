@@ -1,3 +1,4 @@
+#include "boost_di_extension_scopes_session.hpp"
 #include "connection_creator.hpp"
 #include "executor_asio.hpp"
 #include "server.hpp"
@@ -8,6 +9,7 @@
 #include "signalling/json_message.hpp"
 #include "signalling/registration_handler.hpp"
 #include "websocket/connection_creator.hpp"
+#include <boost/di.hpp>
 #include <boost/log/keywords/auto_flush.hpp>
 #include <boost/log/utility/setup/console.hpp>
 #include <boost/thread/executors/executor_adaptor.hpp>
@@ -16,30 +18,26 @@
 #include <gtest/gtest.h>
 #include <thread>
 
+static auto make_injector(boost::asio::io_context &context) {
+  namespace di = boost::di;
+  using executor_type = boost::executor_adaptor<executor_asio>;
+  return di::make_injector<di::extension::shared_config>(
+      di::bind<boost::asio::io_context>.to(context),
+      di::bind<boost::executor>.to(std::make_shared<executor_type>(context)));
+}
+
 struct Server : testing::Test {
   const std::string session_key = "fun session key";
   boost::asio::io_context context;
+  decltype(make_injector(context)) injector = make_injector(context);
   boost::executor_adaptor<executor_asio> executor{context};
-  websocket::acceptor::config acceptor_config;
-  websocket::connection_creator websocket_connection_creator{context};
-  websocket::acceptor acceptor{context, websocket_connection_creator,
-                               acceptor_config};
-  signalling::json_message json_message;
-  signalling::server::connection_creator server_connection_creator{
-      context, executor, json_message};
-  signalling::device::creator device_creator{executor};
-  signalling::registration_handler registration_handler{executor,
-                                                        device_creator};
-  signalling::server::server server_{
-      executor, acceptor, server_connection_creator, registration_handler};
-  websocket::connector connector{context, executor,
-                                 websocket_connection_creator};
-  signalling::client::connection_creator client_connection_creator{
-      context, executor, json_message};
-  signalling::client::client client_{executor, connector,
-                                     client_connection_creator};
-  signalling::client::client client_answering{executor, connector,
-                                              client_connection_creator};
+  websocket::acceptor &acceptor = injector.create<websocket::acceptor &>();
+  signalling::server::server &server_ =
+      injector.create<signalling::server::server &>();
+  signalling::client::client client_ =
+      injector.create<signalling::client::client>();
+  signalling::client::client client_answering =
+      injector.create<signalling::client::client>();
 
   void connect(signalling::client::client &client) const {
     auto service = std::to_string(acceptor.get_port());
