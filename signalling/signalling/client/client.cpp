@@ -2,6 +2,7 @@
 #include "connection.hpp"
 #include "connection_creator.hpp"
 #include "websocket/connection.hpp"
+#include "websocket/connector.hpp"
 #include <fmt/format.h>
 #include <iostream>
 

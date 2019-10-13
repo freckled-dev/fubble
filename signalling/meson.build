@@ -79,7 +79,7 @@ server = library('server',
   link_with: [websocket, signalling, utils]
   )
 server_test = executable('server_test',
-  ['signalling/server/server_test.cpp', 'test_main.cpp'],
+  ['di_websocket.cpp', 'signalling/server/server_test.cpp', 'test_main.cpp'],
   dependencies: [boost_dep, gtest_dep, fmt_dep, boost_di_dep],
   link_with: [server, signalling, websocket, client, utils]
   )
