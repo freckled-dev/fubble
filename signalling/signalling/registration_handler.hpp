@@ -39,6 +39,7 @@ private:
                              const devices_type::iterator &offering);
   void on_offering_device_closed(const std::string &key);
   void on_answering_device_closed(const std::string &key);
+  void on_device_closed(const std::string &key);
   void remove_by_key(const std::string &key);
   devices_type::iterator find(const std::string &key);
 

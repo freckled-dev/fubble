@@ -15,6 +15,8 @@ answering::answering(connection_ptr connection_, offering_ptr offering)
 
 answering::~answering() = default;
 
+void answering::close() { connection_->close(); }
+
 void answering::send_offer(const offer &offer) {
   connection_->send_offer(offer);
 }

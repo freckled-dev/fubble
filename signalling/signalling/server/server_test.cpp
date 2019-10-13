@@ -185,3 +185,22 @@ TEST_F(Server, SendReceiveIceCandidate) {
   context.run();
   EXPECT_TRUE(called);
 }
+
+TEST_F(Server, Close) {
+  connect(client_);
+  connect(client_answering);
+  bool called{};
+  const std::string sdp = "fun sdp";
+  client_.on_closed.connect([&]() {
+    EXPECT_FALSE(called);
+    called = true;
+    server_.close();
+  });
+  client_answering.on_create_answer.connect([&] {
+    // sadad
+    client_answering.close();
+  });
+  context.run();
+  EXPECT_TRUE(called);
+}
+

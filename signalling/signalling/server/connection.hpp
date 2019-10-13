@@ -19,6 +19,7 @@ public:
   ~connection();
   [[nodiscard]] boost::future<void> run();
 
+  void close() final;
   void send_offer(const signalling::offer &send) final;
   void send_ice_candidate(const signalling::ice_candidate &candidate) final;
   void send_answer(const signalling::answer &answer_) final;

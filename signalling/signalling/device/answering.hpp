@@ -15,6 +15,7 @@ public:
   answering(connection_ptr connection_, offering_ptr partner);
   virtual ~answering();
 
+  void close();
   void send_offer(const offer &offer);
   void send_ice_candidate(const ice_candidate &candidate);
 

@@ -55,7 +55,7 @@ void client::client::connected(boost::future<websocket::connection_ptr> &result,
     on_connected();
     connection_->send_registration(signalling::registration{key});
     connection_->run().then(
-        [this](boost::future<void> result) { run_done(result); });
+        executor, [this](boost::future<void> result) { run_done(result); });
   } catch (const boost::system::system_error &error) {
     BOOST_LOG_SEV(logger, logging::severity::info)
         << "an error occured, what:" << error.what();
@@ -88,7 +88,11 @@ void client::client::run_done(boost::future<void> &result) {
   } catch (const boost::system::system_error &error) {
     BOOST_LOG_SEV(logger, logging::severity::info)
         << "connection stopped running with error:" << error.what();
+    on_error(error);
   } catch (...) {
     BOOST_ASSERT(false);
   }
+  BOOST_LOG_SEV(logger, logging::severity::info)
+      << "stopped reading from connection";
+  on_closed();
 }

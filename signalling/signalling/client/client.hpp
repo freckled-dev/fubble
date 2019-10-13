@@ -22,6 +22,7 @@ public:
          connection_creator &connection_creator_);
 
   void close();
+  boost::signals2::signal<void()> on_closed;
   boost::signals2::signal<void()> on_connected;
   boost::signals2::signal<void()> on_create_offer;
   boost::signals2::signal<void()> on_create_answer;

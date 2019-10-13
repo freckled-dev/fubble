@@ -55,13 +55,18 @@ void connection::run(boost::promise<void> &&promise) {
       std::visit(message_visitor{*this}, parsed);
       run(std::move(promise));
     } catch (const boost::system::system_error &error) {
-      if (error.code() == boost::asio::error::operation_aborted) {
+      on_closed();
+      if (error.code() == boost::asio::error::operation_aborted)
         promise.set_value();
-        return;
-      }
-      promise.set_exception(error);
+      else
+        promise.set_exception(error);
     }
   });
+}
+
+void connection::close() {
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "close";
+  connection_->close().then(executor, [connection_ = connection_](auto) {});
 }
 
 void connection::send_offer(const signalling::offer &offer) {
