@@ -20,7 +20,6 @@ $scripts_dir/get_dependencies_conan
 cd $build_dir
 export PKG_CONFIG_PATH="${dependencies_dir}"
 export BOOST_ROOT=$(pkg-config --variable=prefix boost)
-meson "$source_dir" meson --prefix="$prefix_dir"
-# -Db_sanitize=address
+meson "$source_dir" meson --prefix="$prefix_dir" -Db_sanitize=address
 ln -frs meson/compile_commands.json ..
 
