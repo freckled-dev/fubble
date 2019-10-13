@@ -2,10 +2,12 @@
 #define SERVER_SERVER_HPP
 
 #include "logging/logger.hpp"
-#include "websocket/acceptor.hpp"
 #include "websocket/connection_ptr.hpp"
 #include <boost/thread/executors/executor.hpp>
 
+namespace websocket {
+class acceptor;
+}
 namespace signalling {
 class registration_handler;
 

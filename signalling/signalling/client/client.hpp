@@ -10,8 +10,10 @@
 #include <boost/signals2/signal.hpp>
 #include <boost/thread/future.hpp>
 
-namespace signalling {
-namespace client {
+namespace websocket {
+class connector;
+}
+namespace signalling::client {
 class connection_creator;
 class connection;
 class client {
@@ -50,7 +52,6 @@ private:
 
   connection_ptr connection_;
 };
-} // namespace client
-} // namespace signalling
+} // namespace signalling::client
 
 #endif

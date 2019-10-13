@@ -1,5 +1,6 @@
 #include "boost_di_extension_scopes_session.hpp"
 #include "connection_creator.hpp"
+#include "di_websocket.hpp"
 #include "executor_asio.hpp"
 #include "server.hpp"
 #include "signalling/client/client.hpp"
@@ -8,21 +9,20 @@
 #include "signalling/device/creator.hpp"
 #include "signalling/json_message.hpp"
 #include "signalling/registration_handler.hpp"
+#include "websocket/acceptor.hpp"
 #include "websocket/connection_creator.hpp"
-#include <boost/di.hpp>
 #include <boost/log/keywords/auto_flush.hpp>
 #include <boost/log/utility/setup/console.hpp>
 #include <boost/thread/executors/executor_adaptor.hpp>
 #include <fmt/format.h>
-#include <fmt/ostream.h>
 #include <gtest/gtest.h>
-#include <thread>
 
 static auto make_injector(boost::asio::io_context &context) {
   namespace di = boost::di;
   using executor_type = boost::executor_adaptor<executor_asio>;
   return di::make_injector<di::extension::shared_config>(
       di::bind<boost::asio::io_context>.to(context),
+      di_websocket::make(context),
       di::bind<boost::executor>.to(std::make_shared<executor_type>(context)));
 }
 
