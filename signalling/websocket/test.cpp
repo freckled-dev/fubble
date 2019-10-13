@@ -75,6 +75,18 @@ TEST_F(WebsocketOpenConnection, SendTwice) {
   context.run();
   EXPECT_TRUE(got_messages);
 }
+TEST_F(WebsocketOpenConnection, SendCloseAtOnce) {
+  bool got_message{};
+  first->read().then(executor, [&](auto result) {
+    got_message = true;
+    // this read is necessary, else the close fragment won't be read
+    first->read().then(executor, [&](auto result) {});
+  });
+  second->send("hello");
+  second->close();
+  context.run();
+  EXPECT_TRUE(got_message);
+}
 TEST_F(WebsocketOpenConnection, Close) {
   bool got_called{};
   first->read().then(executor, [&](auto result) {
