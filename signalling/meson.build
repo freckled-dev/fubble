@@ -48,7 +48,7 @@ signalling = library('signalling',
     'signalling/device/offering.cpp', 'signalling/device/answering.cpp'],
   dependencies: [boost_dep, fmt_dep, json_dep],
   link_with: [utils],
-  install : true
+  install: true
   )
 signalling_test = executable('signalling_test',
   ['test_main.cpp', 'signalling/json_message_test.cpp',
@@ -76,12 +76,19 @@ server = library('server',
   ['signalling/server/server.cpp', 'signalling/server/connection.cpp',
     'signalling/server/connection_creator.cpp'],
   dependencies: [boost_dep, fmt_dep],
-  link_with: [websocket, signalling, utils]
+  link_with: [websocket, signalling, utils],
+  install: true
   )
 server_test = executable('server_test',
-  ['di_websocket.cpp', 'signalling/server/server_test.cpp', 'test_main.cpp'],
+  ['signalling/server/server_test.cpp', 'test_main.cpp'],
   dependencies: [boost_dep, gtest_dep, fmt_dep, boost_di_dep],
   link_with: [server, signalling, websocket, client, utils]
   )
 test('server test', server_test, timeout: 2)
+server_exec = executable('server',
+  ['app/server.cpp'],
+  dependencies: [boost_dep, fmt_dep, boost_di_dep],
+  link_with: [server, websocket, signalling, utils],
+  install: true
+  )
 

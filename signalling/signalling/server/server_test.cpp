@@ -1,6 +1,5 @@
 #include "boost_di_extension_scopes_session.hpp"
 #include "connection_creator.hpp"
-#include "di_websocket.hpp"
 #include "executor_asio.hpp"
 #include "server.hpp"
 #include "signalling/client/client.hpp"
@@ -22,7 +21,6 @@ static auto make_injector(boost::asio::io_context &context) {
   using executor_type = boost::executor_adaptor<executor_asio>;
   return di::make_injector<di::extension::shared_config>(
       di::bind<boost::asio::io_context>.to(context),
-      di_websocket::make(context),
       di::bind<boost::executor>.to(std::make_shared<executor_type>(context)));
 }
 

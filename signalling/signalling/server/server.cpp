@@ -35,3 +35,5 @@ void clazz::close() {
   BOOST_LOG_SEV(logger, logging::severity::info) << "closing server";
   acceptor.close();
 }
+
+int clazz ::port() { return acceptor.get_port(); }

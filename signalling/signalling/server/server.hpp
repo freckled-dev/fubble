@@ -21,6 +21,7 @@ public:
          signalling::registration_handler &registration_handler);
   ~server();
   void close();
+  int port();
 
 protected:
   void on_connection(websocket::connection_ptr connection_);
