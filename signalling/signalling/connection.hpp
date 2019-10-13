@@ -21,6 +21,7 @@ public:
   boost::signals2::signal<void(const answer &)> on_answer;
   boost::signals2::signal<void(const ice_candidate &)> on_ice_candidate;
 
+  virtual void close() = 0;
   virtual void send_offer(const offer &send) = 0;
   virtual void send_ice_candidate(const ice_candidate &candidate) = 0;
   virtual void send_answer(const signalling::answer &answer_) = 0;

@@ -29,6 +29,11 @@ struct mock_connection : signalling::connection {
   void send_state_offering() final { state_offering_called = true; }
   bool state_answering_called{};
   void send_state_answering() final { state_answering_called = true; }
+  bool close_called{};
+  void close() final {
+    EXPECT_FALSE(close_called);
+    close_called = true;
+  }
 };
 
 static std::shared_ptr<mock_connection>
@@ -142,4 +147,11 @@ TEST_F(RegistrationHandler, IceCandidatesToAnswer) {
   offering->on_ice_candidate(candidate);
   offering->on_ice_candidate(candidate);
   EXPECT_EQ(answering->candidates.size(), std::size_t{2});
+}
+
+TEST_F(RegistrationHandler, Close) {
+  const auto offering = add_connection(handler);
+  const auto answering = add_connection(handler);
+  offering->on_closed();
+  EXPECT_TRUE(answering->close_called);
 }

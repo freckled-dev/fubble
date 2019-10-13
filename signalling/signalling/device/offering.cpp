@@ -28,6 +28,8 @@ void offering::send_answer(const answer &offer) {
   connection_->send_answer(offer);
 }
 
+void offering::close() { connection_->close(); }
+
 void offering::send_ice_candidate(const ice_candidate &candidate) {
   connection_->send_ice_candidate(candidate);
 }

@@ -18,6 +18,7 @@ public:
 
   void set_partner(const answering_wptr &partner);
 
+  void close();
   void send_answer(const answer &answer_);
   void send_ice_candidate(const ice_candidate &candidate);
 

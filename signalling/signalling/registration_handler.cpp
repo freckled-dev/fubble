@@ -1,5 +1,6 @@
 #include "registration_handler.hpp"
 #include "connection.hpp"
+#include "signalling/device/answering.hpp"
 #include "signalling/device/creator.hpp"
 #include "signalling/device/offering.hpp"
 #include <fmt/format.h>
@@ -77,14 +78,27 @@ void registration_handler::register_as_answering(
 void registration_handler::on_offering_device_closed(const std::string &key) {
   BOOST_LOG_SEV(logger, logging::severity::info)
       << fmt::format("an offering device disconnected. key:'{}'", key);
-  remove_by_key(key);
+  auto found = find(key);
+  BOOST_ASSERT(found != devices.cend());
+  if (found->answering_device)
+    found->answering_device->close();
+  on_device_closed(key);
 }
 
 void registration_handler::on_answering_device_closed(const std::string &key) {
   BOOST_LOG_SEV(logger, logging::severity::info)
       << fmt::format("an answering device disconnected. key:'{}'", key);
+  auto found = find(key);
+  BOOST_ASSERT(found != devices.cend());
+  if (found->offering_device)
+    found->offering_device->close();
+  on_device_closed(key);
+}
+
+void registration_handler::on_device_closed(const std::string &key) {
   remove_by_key(key);
 }
+
 void registration_handler::remove_by_key(const std::string &key) {
   auto found = find(key);
   BOOST_ASSERT(found != devices.cend());
