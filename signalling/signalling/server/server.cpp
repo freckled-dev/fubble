@@ -28,7 +28,7 @@ void clazz::on_connection(websocket::connection_ptr websocket_connection) {
   BOOST_LOG_SEV(logger, logging::severity::info) << "got a server connection";
   connection_ptr connection_ = connection_creator_(websocket_connection);
   registration_handler.add(connection_);
-  connection_->run().then(executor, [connection_](auto result) {});
+  connection_->run().then(executor, [connection_](auto) {});
 }
 
 void clazz::close() {

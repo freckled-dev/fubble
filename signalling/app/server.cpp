@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
       << fmt::format("server is listening on port {}", server.port());
 
   boost::asio::signal_set signals{context, SIGINT, SIGTERM};
-  signals.async_wait([&server](const auto &error, auto signal) {
+  signals.async_wait([&server](const auto &error, auto) {
     if (error == boost::asio::error::operation_aborted)
       return;
     server.close();
