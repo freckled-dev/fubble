@@ -81,13 +81,13 @@ struct message_visitor {
   void operator()(const signalling::ice_candidate &candidate) {
     connection_.on_ice_candidate(candidate);
   }
-  void operator()(const signalling::create_offer &offering) {
+  void operator()(const signalling::create_offer &) {
     connection_.on_create_offer();
   }
-  void operator()(const signalling::create_answer &answering) {
+  void operator()(const signalling::create_answer &) {
     connection_.on_create_answer();
   }
-  void operator()(const signalling::registration &registration_) {
+  void operator()(const signalling::registration &) {
     BOOST_ASSERT_MSG(false,
                      "registration must not be send to client connection");
   }

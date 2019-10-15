@@ -29,10 +29,10 @@ struct message_visitor {
   void operator()(const signalling::registration &registration_) {
     connection_.on_registration(registration_);
   }
-  void operator()(const signalling::create_offer &candidate) {
+  void operator()(const signalling::create_offer &) {
     BOOST_ASSERT_MSG(false, "must not be received");
   }
-  void operator()(const signalling::create_answer &candidate) {
+  void operator()(const signalling::create_answer &) {
     BOOST_ASSERT_MSG(false, "must not be received");
   }
 };
