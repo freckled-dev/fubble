@@ -8,8 +8,7 @@ using namespace websocket;
 
 connector::connector(boost::asio::io_context &context,
                      boost::executor &executor, connection_creator &creator)
-    : context(context), executor(executor), resolver(context),
-      creator(creator) {}
+    : executor(executor), resolver(context), creator(creator) {}
 
 boost::future<connection_ptr> connector::operator()(const config &config_) {
   BOOST_LOG_SEV(logger, logging::severity::info) << fmt::format(

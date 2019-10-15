@@ -25,7 +25,6 @@ private:
   void on_send(const boost::system::error_code &error, std::size_t);
 
   logging::logger logger;
-  boost::asio::io_context &context;
   stream_type stream;
   boost::beast::flat_buffer buffer;
 
