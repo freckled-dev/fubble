@@ -25,7 +25,6 @@ private:
   void successful_tcp(connection_ptr connection_);
 
   logging::logger logger;
-  boost::asio::io_context &context;
   boost::asio::ip::tcp::acceptor acceptor_;
   connection_creator &creator;
 };

@@ -7,9 +7,8 @@
 
 using namespace signalling;
 
-registration_handler::registration_handler(boost::executor &executor_,
-                                           device::creator &device_creator_)
-    : executor(executor_), device_creator_(device_creator_) {}
+registration_handler::registration_handler(device::creator &device_creator_)
+    : device_creator_(device_creator_) {}
 
 void registration_handler::add(connection_ptr connection_) {
   connection_->on_registration.connect(

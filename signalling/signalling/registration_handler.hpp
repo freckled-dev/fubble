@@ -17,8 +17,7 @@ class creator;
 struct registration;
 class registration_handler {
 public:
-  registration_handler(boost::executor &executor,
-                       device::creator &device_creator_);
+  registration_handler(device::creator &device_creator_);
 
   void add(connection_ptr connection_);
   struct registered_connection {
@@ -44,7 +43,6 @@ private:
   devices_type::iterator find(const std::string &key);
 
   logging::logger logger;
-  boost::executor &executor;
   device::creator &device_creator_;
   devices_type devices;
 };
