@@ -1,40 +1,274 @@
 extern "C" {
 #include <gst/gst.h>
+#include <gst/gstpromise.h>
 #include <gst/sdp/sdp.h>
 #define GST_USE_UNSTABLE_API
 #include <gst/webrtc/webrtc.h>
 }
+#include "logging/logger.hpp"
+#include <boost/assert.hpp>
+#include <boost/log/keywords/auto_flush.hpp>
+#include <boost/log/keywords/format.hpp>
+#include <boost/log/utility/setup/common_attributes.hpp>
+#include <boost/log/utility/setup/console.hpp>
+#include <fmt/format.h>
 // #include "signalling/client.hpp"
 
-__attribute__((no_sanitize_address)) bool init() {
-  GError *error{};
-  if (!gst_init_check(nullptr, nullptr, &error))
-    return false;
-  return true;
-}
+namespace {
+struct peer {
+  GstElement *pipe{};
+  GstElement *webrtc{};
+  guint bus_watch_id{};
+};
+struct offering {
+  peer peer_;
+};
+struct answering {
+  peer peer_;
+};
+} // namespace
+static void print_gerror(GError *error) { (void)error; }
+static void check_plugins();
+static void check_version();
+static void init_offering();
+static void init_answering();
+static void init_peer(peer &peer_);
+static void on_negotiation_needed(GstElement *webrtc, gpointer user_data);
+static void on_ice_candidate(GstElement * /*webrtc*/, guint mlineindex,
+                             gchar *candidate, gpointer /*user_data*/);
+static void on_offer_created(GstPromise *promise, gpointer webrtc);
+static gboolean on_pipe_bus_message(GstBus *bus, GstMessage *message,
+                                    gpointer data);
+static void on_incoming_stream(GstElement *webrtc, GstPad *pad,
+                               GstElement *pipe);
+// static void on_offer_created(GstPromise *promise, GstElement *webrtc);
+
+static logging::logger logger;
+static offering offering_;
+static answering answering_;
+static GMainLoop *loop;
 
 int main(int argc, char *argv[]) {
-  (void)argc;
-  (void)argv;
-  init();
+  boost::log::add_common_attributes();
+  boost::log::add_console_log(
+      std::cout, boost::log::keywords::auto_flush = true,
+      boost::log::keywords::format = "%TimeStamp% %Severity% %Message%");
 
-#if 0
-  GstElement *pipe = gst_parse_launch(
-      "v4l2src ! queue ! vp8enc ! rtpvp8pay ! "
-      "application/x-rtp,media=video,encoding-name=VP8,payload=96 !"
-      " webrtcbin name=sendrecv",
-      NULL);
+  GError *error{};
+  if (!gst_init_check(&argc, &argv, &error)) {
+    print_gerror(error);
+    return 1;
+  }
+  check_plugins();
+  check_version();
+  init_offering();
+  init_answering();
 
-  GstElement *webrtc = gst_bin_get_by_name(GST_BIN(pipe), "sendrecv");
-  g_assert(webrtc != NULL);
+  BOOST_LOG_SEV(logger, logging::severity::info) << "done, with init";
 
-  gst_object_unref(webrtc);
-  gst_object_unref(pipe);
-#endif
+  loop = g_main_loop_new(nullptr, false);
+  g_main_loop_run(loop);
 
-#if 1
+  BOOST_LOG_SEV(logger, logging::severity::info) << "done";
   gst_deinit();
-#endif
 
   return 0;
+}
+static void init_offering() { init_peer(offering_.peer_); }
+static void init_answering() { init_peer(answering_.peer_); }
+
+static void init_peer(peer &peer_) {
+  GError *error{};
+  GstElement *pipe = gst_parse_launch(
+      "videotestsrc ! "
+      "videoconvert ! queue ! "
+      "vp8enc deadline=1 ! rtpvp8pay ! "
+      "application/x-rtp,media=video,encoding-name=VP8,payload=96 ! "
+      "webrtcbin name=sendrecv",
+      &error);
+  if (!pipe)
+    throw std::runtime_error(fmt::format(
+        "failed to parse launch. error message: '{}'", error->message));
+  GstElement *webrtc = gst_bin_get_by_name(GST_BIN(pipe), "sendrecv");
+  if (!webrtc)
+    throw std::runtime_error("could not get webrtc element");
+  peer_.pipe = pipe;
+  peer_.webrtc = webrtc;
+
+  /* This is the gstwebrtc entry point where we create the offer.
+   * It will be called when the pipeline goes to PLAYING. */
+  g_signal_connect(webrtc, "on-negotiation-needed",
+                   G_CALLBACK(on_negotiation_needed), &peer_);
+  /* We will transmit this ICE candidate to the remote using some
+   * signalling. Incoming ICE candidates from the remote need to be
+   * added by us too. */
+  g_signal_connect(webrtc, "on-ice-candidate", G_CALLBACK(on_ice_candidate),
+                   &peer_);
+  /* Incoming streams will be exposed via this signal */
+  g_signal_connect(webrtc, "pad-added", G_CALLBACK(on_incoming_stream), &peer_);
+  // g_signal_connect (webrtc, "on-data-channel", G_CALLBACK (on_data_channel),
+  // NULL);
+
+  auto bus = gst_pipeline_get_bus(GST_PIPELINE(pipe));
+  peer_.bus_watch_id = gst_bus_add_watch(bus, on_pipe_bus_message, &peer_);
+  gst_object_unref(bus);
+#if 0
+  gst_element_set_state(pipe, GST_STATE_READY);
+
+  static GObject *send_channel;
+  g_signal_emit_by_name(webrtc, "create-data-channel", "channel", NULL,
+                        &send_channel);
+  if (!send_channel) {
+    BOOST_LOG_SEV(logger, logging::severity::error)
+        << "could not create data channel";
+    return 1;
+  }
+#endif
+  const GstStateChangeReturn state_change_result =
+      gst_element_set_state(GST_ELEMENT(pipe), GST_STATE_PLAYING);
+  if (state_change_result == GST_STATE_CHANGE_FAILURE)
+    throw std::runtime_error("gst_element_set_state, GST_STATE_PLAYING");
+}
+static void throw_if_not_all_plugins_found(bool all_found) {
+  if (all_found)
+    return;
+  throw std::runtime_error("could not find all needed plugins");
+}
+static void check_plugins() {
+  static constexpr std::array needed = {
+      "opus", "vpx",        "nice",         "webrtc",      "dtls",
+      "srtp", "rtpmanager", "videotestsrc", "audiotestsrc"};
+  GstRegistry *registry = gst_registry_get();
+  bool all_found = true;
+  for (const auto &check : needed) {
+    GstPlugin *plugin = gst_registry_find_plugin(registry, check);
+    if (!plugin) {
+      BOOST_LOG_SEV(logger, logging::severity::error)
+          << "Required gstreamer plugin '" << check << "' not found";
+      all_found = false;
+      continue;
+    }
+    gst_object_unref(plugin);
+  }
+  throw_if_not_all_plugins_found(all_found);
+}
+static void check_version() {
+  BOOST_LOG_SEV(logger, logging::severity::info)
+      << fmt::format("gst version: '{}'", gst_version_string());
+  guint major, minor, patch, micro;
+  gst_version(&major, &minor, &patch, &micro);
+  BOOST_ASSERT(major == 1);
+  if (minor < 16)
+    BOOST_LOG_SEV(logger, logging::severity::warning) << fmt::format(
+        "gstreamers minor version is less that '16({})'. there'll be no "
+        "data-channel support. "
+        "https://github.com/centricular/gstwebrtc-demos/issues/94",
+        minor);
+}
+
+static void on_negotiation_needed(GstElement *webrtc, gpointer user_data) {
+  BOOST_LOG_SEV(logger, logging::severity::info) << "on_negotiation_needed";
+  BOOST_ASSERT(webrtc);
+  if (user_data == &answering_.peer_) {
+    BOOST_LOG_SEV(logger, logging::severity::info)
+        << "answering device will wait for offer";
+    return;
+  }
+  GstPromise *promise =
+      gst_promise_new_with_change_func(on_offer_created, user_data, nullptr);
+  g_signal_emit_by_name(webrtc, "create-offer", NULL, promise);
+}
+
+static void set_local_description(peer &peer_,
+                                  GstWebRTCSessionDescription *sdp) {
+  auto promise_set_local_description = gst_promise_new();
+  g_signal_emit_by_name(peer_.webrtc, "set-local-description", sdp,
+                        promise_set_local_description);
+  gst_promise_interrupt(promise_set_local_description);
+  gst_promise_unref(promise_set_local_description);
+}
+
+static void set_remote_description(peer &peer_,
+                                   GstWebRTCSessionDescription *sdp) {
+  auto promise_set_local_description = gst_promise_new();
+  g_signal_emit_by_name(peer_.webrtc, "set-remote-description", sdp,
+                        promise_set_local_description);
+  gst_promise_interrupt(promise_set_local_description);
+  gst_promise_unref(promise_set_local_description);
+}
+
+static void send_offer(GstWebRTCSessionDescription *offer) {
+  gchar *text = gst_sdp_message_as_text(offer->sdp);
+  const std::string sdp_text = text;
+  g_free(text);
+  BOOST_LOG_SEV(logger, logging::severity::info)
+      << fmt::format("got an offer sdp: '{}'", sdp_text);
+
+  GstSDPMessage *sdp{};
+  GstSDPResult result = gst_sdp_message_new(&sdp);
+  BOOST_ASSERT(result == GstSDPResult::GST_SDP_OK);
+  static_assert(sizeof(char) == sizeof(guint8));
+  result = gst_sdp_message_parse_buffer(
+      reinterpret_cast<const guint8 *>(sdp_text.data()), sdp_text.size(), sdp);
+  BOOST_ASSERT(result == GstSDPResult::GST_SDP_OK);
+  GstWebRTCSessionDescription *offer_sdp =
+      gst_webrtc_session_description_new(GST_WEBRTC_SDP_TYPE_OFFER, sdp);
+  BOOST_ASSERT(offer_sdp);
+  set_remote_description(answering_.peer_, offer_sdp);
+  // no deref?
+}
+
+static void on_offer_created(GstPromise *promise, gpointer user_data) {
+  (void)user_data;
+  const GstStructure *reply = gst_promise_get_reply(promise);
+  GstWebRTCSessionDescription *offer{};
+  gst_structure_get(reply, "offer", GST_TYPE_WEBRTC_SESSION_DESCRIPTION, &offer,
+                    nullptr);
+  gst_promise_unref(promise);
+  BOOST_ASSERT(offer);
+
+  set_local_description(offering_.peer_, offer);
+
+  BOOST_LOG_SEV(logger, logging::severity::info) << "got an offer";
+  send_offer(offer);
+  gst_webrtc_session_description_free(offer);
+}
+
+static void on_ice_candidate(GstElement *webrtc, guint mlineindex,
+                             gchar *candidate, gpointer /*user_data*/) {
+  std::string kind =
+      webrtc == offering_.peer_.webrtc ? "offering" : "answering";
+  BOOST_LOG_SEV(logger, logging::severity::info) << fmt::format(
+      "on_ice_candidate, kind:'{}', mlineindex:'{}', candidate:'{}'", kind,
+      candidate, mlineindex);
+}
+static void on_incoming_stream(GstElement *webrtc, GstPad *pad,
+                               GstElement *pipe) {
+  (void)webrtc;
+  (void)pad;
+  (void)pipe;
+  BOOST_LOG_SEV(logger, logging::severity::info) << "on_incoming_stream";
+}
+
+static gboolean on_pipe_bus_message(GstBus *bus, GstMessage *message,
+                                    gpointer data) {
+  (void)bus;
+  (void)data;
+  //  BOOST_LOG_SEV(logger, logging::severity::info) << fmt::format(
+  //      "on_pipe_bus_message, got message: '{}'",
+  //      GST_MESSAGE_TYPE_NAME(message));
+  switch (GST_MESSAGE_TYPE(message)) {
+  case GST_MESSAGE_ERROR:
+    GError *error;
+    gchar *debug;
+    gst_message_parse_error(message, &error, &debug);
+    BOOST_LOG_SEV(logger, logging::severity::error)
+        << fmt::format("error: '{}', debug: '{}'", error->message, debug);
+    g_error_free(error);
+    g_free(debug);
+    break;
+  default:;
+    // BOOST_LOG_SEV(logger, logging::severity::info) << "unhandled message";
+  }
+  return true;
 }

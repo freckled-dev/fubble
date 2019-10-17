@@ -13,7 +13,11 @@ gtest_dep = dependency('gtest')
 fmt_dep = dependency('fmt')
 json_dep = dependency('jsonformoderncpp')
 boost_di_dep = dependency('boost-di')
-gstreamer_webrtc_dep = dependency('gstreamer-webrtc-1.0')
+gstreamer_webrtc_dep_pkg = dependency('gstreamer-webrtc-1.0')
+gstreamer_sdp_dep = dependency('gstreamer-sdp-1.0')
+gstreamer_webrtc_dep = declare_dependency(
+  dependencies: [gstreamer_webrtc_dep_pkg, gstreamer_sdp_dep]
+  )
 
 subdir('utils')
 subdir('signalling')
