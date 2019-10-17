@@ -32,7 +32,7 @@ static void check_plugins();
 static void check_version();
 static void init_offering();
 static void init_answering();
-static void init_peer(peer &peer_);
+static void init_peer(peer &peer_, const std::string &pattern);
 static void on_negotiation_needed(GstElement *webrtc, gpointer user_data);
 static void on_ice_candidate(GstElement * /*webrtc*/, guint mlineindex,
                              gchar *candidate, gpointer /*user_data*/);
@@ -74,20 +74,23 @@ int main(int argc, char *argv[]) {
 
   return 0;
 }
-static void init_offering() { init_peer(offering_.peer_); }
-static void init_answering() { init_peer(answering_.peer_); }
+static void init_offering() { init_peer(offering_.peer_, "ball"); }
+static void init_answering() { init_peer(answering_.peer_, "smpte"); }
 
-static void init_peer(peer &peer_) {
+static void init_peer(peer &peer_, const std::string &pattern) {
   GError *error{};
-  GstElement *pipe = gst_parse_launch(
+  std::string launch_text = fmt::format(
       "webrtcbin name=sendrecv "
-      "videotestsrc is-live=true pattern=ball ! "
-      "video/x-raw,width=1000,height=1000 ! "
-      "videoconvert ! queue ! "
+      "videotestsrc is-live=true pattern={} ! "
+      "videoconvert ! "
+      "video/x-raw,width=500,height=500,framerate=50/1 ! "
+      "clockoverlay ! "
+      "queue ! "
       "vp8enc deadline=1 ! rtpvp8pay ! queue ! "
       "application/x-rtp,media=video,encoding-name=VP8,payload=96 ! "
       "sendrecv. ",
-      &error);
+      pattern);
+  GstElement *pipe = gst_parse_launch(launch_text.c_str(), &error);
   if (!pipe)
     throw std::runtime_error(fmt::format(
         "failed to parse launch. error message: '{}'", error->message));
@@ -286,7 +289,8 @@ static void handle_video_stream(GstPad *pad, GstElement *pipe) {
   BOOST_LOG_SEV(logger, logging::severity::info) << "handle_video_stream";
   auto queue = gst_element_factory_make("queue", nullptr);
   auto videoconvert = gst_element_factory_make("videoconvert", nullptr);
-  auto autovideosink = gst_element_factory_make("autovideosink", nullptr);
+  // ubuntu 18.04. autovideosink does not work. shows black screen.
+  auto autovideosink = gst_element_factory_make("ximagesink", nullptr);
   BOOST_ASSERT(queue && videoconvert && autovideosink);
   gst_bin_add_many(GST_BIN(pipe), queue, videoconvert, autovideosink, nullptr);
   gst_element_sync_state_with_parent(queue);
