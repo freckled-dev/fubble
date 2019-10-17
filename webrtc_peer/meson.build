@@ -10,6 +10,7 @@ test('webrtc_peer test',
   env: [
     'ASAN_OPTIONS=fast_unwind_on_malloc=0',
     suppr_option
-    ]
+    ],
+  timeout: 2
   )
 # 'LSAN_OPTIONS=exitcode=23'

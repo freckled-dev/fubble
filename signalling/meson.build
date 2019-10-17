@@ -55,6 +55,7 @@ client = library('client',
   )
 signalling_client_dep = declare_dependency(
   include_directories: '.',
+  dependencies: [fmt_dep, websocket_dep, signalling_dep, boost_dep],
   link_with: [client]
   )
 
