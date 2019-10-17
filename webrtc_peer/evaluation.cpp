@@ -40,7 +40,7 @@ static void on_offer_created(GstPromise *promise, gpointer webrtc);
 static gboolean on_pipe_bus_message(GstBus *bus, GstMessage *message,
                                     gpointer data);
 static void on_incoming_stream(GstElement *webrtc, GstPad *pad,
-                               GstElement *pipe);
+                               gpointer user_data);
 // static void on_offer_created(GstPromise *promise, GstElement *webrtc);
 
 static logging::logger logger;
@@ -80,11 +80,13 @@ static void init_answering() { init_peer(answering_.peer_); }
 static void init_peer(peer &peer_) {
   GError *error{};
   GstElement *pipe = gst_parse_launch(
-      "videotestsrc ! "
+      "webrtcbin name=sendrecv "
+      "videotestsrc is-live=true pattern=ball ! "
+      "video/x-raw,width=1000,height=1000 ! "
       "videoconvert ! queue ! "
-      "vp8enc deadline=1 ! rtpvp8pay ! "
+      "vp8enc deadline=1 ! rtpvp8pay ! queue ! "
       "application/x-rtp,media=video,encoding-name=VP8,payload=96 ! "
-      "webrtcbin name=sendrecv",
+      "sendrecv. ",
       &error);
   if (!pipe)
     throw std::runtime_error(fmt::format(
@@ -94,6 +96,8 @@ static void init_peer(peer &peer_) {
     throw std::runtime_error("could not get webrtc element");
   peer_.pipe = pipe;
   peer_.webrtc = webrtc;
+
+  gst_element_set_state(pipe, GST_STATE_READY);
 
   /* This is the gstwebrtc entry point where we create the offer.
    * It will be called when the pipeline goes to PLAYING. */
@@ -197,6 +201,32 @@ static void set_remote_description(peer &peer_,
   gst_promise_unref(promise_set_local_description);
 }
 
+static void on_answer_created(GstPromise *promise, gpointer user_data) {
+  (void)user_data;
+  BOOST_LOG_SEV(logger, logging::severity::info) << "on_answer_created";
+  auto reply = gst_promise_get_reply(promise);
+  GstWebRTCSessionDescription *answer;
+  gst_structure_get(reply, "answer", GST_TYPE_WEBRTC_SESSION_DESCRIPTION,
+                    &answer, nullptr);
+
+  gchar *text = gst_sdp_message_as_text(answer->sdp);
+  const std::string sdp_text = text;
+  g_free(text);
+  BOOST_LOG_SEV(logger, logging::severity::info)
+      << fmt::format("answer sdp: '{}'", sdp_text);
+
+  gst_promise_unref(promise);
+  set_local_description(answering_.peer_, answer);
+  set_remote_description(offering_.peer_, answer);
+}
+
+static void create_answer() {
+  auto promise =
+      gst_promise_new_with_change_func(on_answer_created, nullptr, nullptr);
+  g_signal_emit_by_name(answering_.peer_.webrtc, "create-answer", nullptr,
+                        promise);
+}
+
 static void send_offer(GstWebRTCSessionDescription *offer) {
   gchar *text = gst_sdp_message_as_text(offer->sdp);
   const std::string sdp_text = text;
@@ -214,8 +244,10 @@ static void send_offer(GstWebRTCSessionDescription *offer) {
   GstWebRTCSessionDescription *offer_sdp =
       gst_webrtc_session_description_new(GST_WEBRTC_SDP_TYPE_OFFER, sdp);
   BOOST_ASSERT(offer_sdp);
-  set_remote_description(answering_.peer_, offer_sdp);
+  if (true) // TODO set false, to test promise error
+    set_remote_description(answering_.peer_, offer_sdp);
   // no deref?
+  create_answer();
 }
 
 static void on_offer_created(GstPromise *promise, gpointer user_data) {
@@ -236,18 +268,75 @@ static void on_offer_created(GstPromise *promise, gpointer user_data) {
 
 static void on_ice_candidate(GstElement *webrtc, guint mlineindex,
                              gchar *candidate, gpointer /*user_data*/) {
-  std::string kind =
-      webrtc == offering_.peer_.webrtc ? "offering" : "answering";
+  const bool is_offering = webrtc == offering_.peer_.webrtc;
+  const std::string kind = is_offering ? "offering" : "answering";
   BOOST_LOG_SEV(logger, logging::severity::info) << fmt::format(
       "on_ice_candidate, kind:'{}', mlineindex:'{}', candidate:'{}'", kind,
       candidate, mlineindex);
+  auto other_webrtc =
+      is_offering ? answering_.peer_.webrtc : offering_.peer_.webrtc;
+  BOOST_ASSERT(other_webrtc);
+  g_signal_emit_by_name(other_webrtc, "add-ice-candidate", mlineindex,
+                        candidate);
 }
+
+static void handle_video_stream(GstPad *pad, GstElement *pipe) {
+  BOOST_ASSERT(pad);
+  BOOST_ASSERT(pipe);
+  BOOST_LOG_SEV(logger, logging::severity::info) << "handle_video_stream";
+  auto queue = gst_element_factory_make("queue", nullptr);
+  auto videoconvert = gst_element_factory_make("videoconvert", nullptr);
+  auto autovideosink = gst_element_factory_make("autovideosink", nullptr);
+  BOOST_ASSERT(queue && videoconvert && autovideosink);
+  gst_bin_add_many(GST_BIN(pipe), queue, videoconvert, autovideosink, nullptr);
+  gst_element_sync_state_with_parent(queue);
+  gst_element_sync_state_with_parent(videoconvert);
+  gst_element_sync_state_with_parent(autovideosink);
+  gst_element_link_many(queue, videoconvert, autovideosink, nullptr);
+  GstPad *queue_pad = gst_element_get_static_pad(queue, "sink");
+  [[maybe_unused]] auto result = gst_pad_link(pad, queue_pad);
+  BOOST_ASSERT(result == GST_PAD_LINK_OK);
+  BOOST_LOG_SEV(logger, logging::severity::info) << "there should be a video";
+}
+
+static void on_incoming_decodebin_stream(GstElement *decodebin, GstPad *pad,
+                                         gpointer user_data) {
+  (void)decodebin;
+  BOOST_LOG_SEV(logger, logging::severity::info) << fmt::format(
+      "on_incoming_decodebin_stream, pad_name: '{}'", GST_PAD_NAME(pad));
+  if (!gst_pad_has_current_caps(pad))
+    throw std::runtime_error("!gst_pad_has_current_caps(pad)");
+  GstCaps *caps = gst_pad_get_current_caps(pad);
+  BOOST_ASSERT(caps);
+  const gchar *name = gst_structure_get_name(gst_caps_get_structure(caps, 0));
+  BOOST_ASSERT(name);
+  BOOST_LOG_SEV(logger, logging::severity::info)
+      << fmt::format("caps name:{}", name);
+  peer &peer_ = *static_cast<peer *>(user_data);
+  bool is_offering = &peer_ == &offering_.peer_;
+  BOOST_LOG_SEV(logger, logging::severity::info) << fmt::format(
+      "on_incoming_decodebin_stream is_offering:{}", is_offering);
+  handle_video_stream(pad, peer_.pipe);
+
+  gst_caps_unref(caps);
+}
+
 static void on_incoming_stream(GstElement *webrtc, GstPad *pad,
-                               GstElement *pipe) {
+                               gpointer user_data) {
   (void)webrtc;
-  (void)pad;
-  (void)pipe;
-  BOOST_LOG_SEV(logger, logging::severity::info) << "on_incoming_stream";
+  BOOST_LOG_SEV(logger, logging::severity::info)
+      << fmt::format("on_incoming_stream, pad_name: '{}'", GST_PAD_NAME(pad));
+  BOOST_ASSERT(GST_PAD_DIRECTION(pad) == GST_PAD_SRC);
+
+  GstElement *decodebin = gst_element_factory_make("decodebin", nullptr);
+  peer &peer_ = *static_cast<peer *>(user_data);
+  g_signal_connect(decodebin, "pad-added",
+                   G_CALLBACK(on_incoming_decodebin_stream), user_data);
+  gst_bin_add(GST_BIN(peer_.pipe), decodebin);
+  gst_element_sync_state_with_parent(decodebin);
+  GstPad *sinkpad = gst_element_get_static_pad(decodebin, "sink");
+  gst_pad_link(pad, sinkpad);
+  gst_object_unref(sinkpad);
 }
 
 static gboolean on_pipe_bus_message(GstBus *bus, GstMessage *message,
