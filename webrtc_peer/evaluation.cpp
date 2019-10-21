@@ -80,22 +80,20 @@ static void init_peer(peer &peer_, const std::string &pattern) {
   bool is_offering = &peer_ == &offering_.peer_;
   std::string picture_description = is_offering ? "offering" : "answering";
   GError *error{};
-  std::string launch_text =
-      fmt::format("webrtcbin name=sendrecv "
-                  "videotestsrc is-live=true pattern={} ! "
-                  "video/x-raw,width=500,height=500,framerate=60/1 ! "
-                  "videoconvert ! "
-                  "clockoverlay halignment=right valignment=top text=\"{}\" "
-                  "shaded-background=true font-desc=\" Sans 36 \" ! "
-                  "queue ! "
-                  "vp8enc deadline=1 ! "
-                  "rtpvp8pay ! "
-                  "queue ! "
-                  "application/"
-                  "x-rtp,media=video,encoding-"
-                  "name=VP8,payload=96 ! "
-                  "sendrecv. ",
-                  pattern, picture_description);
+  std::string launch_text = fmt::format(
+      "webrtcbin name=sendrecv "
+      "videotestsrc is-live=true pattern={} ! "
+      "video/x-raw,width=500,height=500,framerate=60/1 ! "
+      "videoconvert ! "
+      "clockoverlay halignment=right valignment=top text=\"{}\" "
+      "shaded-background=true font-desc=\" Sans 36 \" ! "
+      "queue ! "
+      "vp8enc deadline=1 ! "
+      "rtpvp8pay ! "
+      "queue ! "
+      "application/x-rtp,media=video,encoding-name=VP8,payload=96 ! "
+      "sendrecv. ",
+      pattern, picture_description);
   GstElement *pipe = gst_parse_launch(launch_text.c_str(), &error);
   if (!pipe)
     throw std::runtime_error(fmt::format(
