@@ -84,13 +84,14 @@ static void init_peer(peer &peer_, const std::string &pattern) {
   std::string launch_text =
       fmt::format("webrtcbin name=sendrecv "
                   "videotestsrc is-live=true pattern={} ! "
-                  "video/x-raw,width=500,height=500,framerate=50/1 ! "
+                  "video/x-raw,width=500,height=500,framerate=60/1 ! "
                   "videoconvert ! "
                   "clockoverlay halignment=right valignment=top text=\"{}\" "
                   "shaded-background=true font-desc=\" Sans 36 \" ! "
                   "queue ! "
                   "vp8enc deadline=1 ! "
-                  "rtpvp8pay ! queue ! "
+                  "rtpvp8pay ! "
+                  "queue ! "
                   "application/"
                   "x-rtp,media=video,encoding-"
                   "name=VP8,payload=96 ! "
@@ -307,16 +308,18 @@ static void handle_video_stream(GstPad *pad, GstElement *pipe) {
   gst_element_sync_state_with_parent(autovideosink);
   gst_element_link_many(queue, videoconvert, clockoverlay, autovideosink,
                         nullptr);
+  auto destination = queue;
   // config clockoverlay
   {
     // https://gstreamer.freedesktop.org/documentation/pango/clockoverlay.html
     g_object_set(clockoverlay, "shaded-background", 1, nullptr);
     g_object_set(clockoverlay, "font-desc", "Sans 36", nullptr);
     g_object_set(clockoverlay, "text", "local", nullptr);
-    g_object_set(clockoverlay, "ypad", 36 + 25 + 20, nullptr);
+    g_object_set(clockoverlay, "ypad", 36 + 25 + 36 / 2, nullptr);
     g_object_set(clockoverlay, "halignment", 2, nullptr);
   }
-  GstPad *queue_pad = gst_element_get_static_pad(queue, "sink");
+  { g_object_set(autovideosink, "sync", 0, nullptr); }
+  GstPad *queue_pad = gst_element_get_static_pad(destination, "sink");
   [[maybe_unused]] auto result = gst_pad_link(pad, queue_pad);
   BOOST_ASSERT(result == GST_PAD_LINK_OK);
   BOOST_LOG_SEV(logger, logging::severity::info) << "there should be a video";
