@@ -12,7 +12,6 @@ extern "C" {
 #include <boost/log/utility/setup/common_attributes.hpp>
 #include <boost/log/utility/setup/console.hpp>
 #include <fmt/format.h>
-// #include "signalling/client.hpp"
 
 namespace {
 struct peer {
