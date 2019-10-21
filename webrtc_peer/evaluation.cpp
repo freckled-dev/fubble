@@ -78,18 +78,24 @@ static void init_offering() { init_peer(offering_.peer_, "ball"); }
 static void init_answering() { init_peer(answering_.peer_, "smpte"); }
 
 static void init_peer(peer &peer_, const std::string &pattern) {
+  bool is_offering = &peer_ == &offering_.peer_;
+  std::string picture_description = is_offering ? "offering" : "answering";
   GError *error{};
-  std::string launch_text = fmt::format(
-      "webrtcbin name=sendrecv "
-      "videotestsrc is-live=true pattern={} ! "
-      "videoconvert ! "
-      "video/x-raw,width=500,height=500,framerate=50/1 ! "
-      "clockoverlay ! "
-      "queue ! "
-      "vp8enc deadline=1 ! rtpvp8pay ! queue ! "
-      "application/x-rtp,media=video,encoding-name=VP8,payload=96 ! "
-      "sendrecv. ",
-      pattern);
+  std::string launch_text =
+      fmt::format("webrtcbin name=sendrecv "
+                  "videotestsrc is-live=true pattern={} ! "
+                  "video/x-raw,width=500,height=500,framerate=50/1 ! "
+                  "videoconvert ! "
+                  "clockoverlay halignment=right valignment=top text=\"{}\" "
+                  "shaded-background=true font-desc=\" Sans 36 \" ! "
+                  "queue ! "
+                  "vp8enc deadline=1 ! "
+                  "rtpvp8pay ! queue ! "
+                  "application/"
+                  "x-rtp,media=video,encoding-"
+                  "name=VP8,payload=96 ! "
+                  "sendrecv. ",
+                  pattern, picture_description);
   GstElement *pipe = gst_parse_launch(launch_text.c_str(), &error);
   if (!pipe)
     throw std::runtime_error(fmt::format(
@@ -289,14 +295,27 @@ static void handle_video_stream(GstPad *pad, GstElement *pipe) {
   BOOST_LOG_SEV(logger, logging::severity::info) << "handle_video_stream";
   auto queue = gst_element_factory_make("queue", nullptr);
   auto videoconvert = gst_element_factory_make("videoconvert", nullptr);
+  auto clockoverlay = gst_element_factory_make("clockoverlay", nullptr);
   // ubuntu 18.04. autovideosink does not work. shows black screen.
   auto autovideosink = gst_element_factory_make("ximagesink", nullptr);
-  BOOST_ASSERT(queue && videoconvert && autovideosink);
-  gst_bin_add_many(GST_BIN(pipe), queue, videoconvert, autovideosink, nullptr);
+  BOOST_ASSERT(queue && videoconvert && clockoverlay && autovideosink);
+  gst_bin_add_many(GST_BIN(pipe), queue, videoconvert, clockoverlay,
+                   autovideosink, nullptr);
   gst_element_sync_state_with_parent(queue);
   gst_element_sync_state_with_parent(videoconvert);
+  gst_element_sync_state_with_parent(clockoverlay);
   gst_element_sync_state_with_parent(autovideosink);
-  gst_element_link_many(queue, videoconvert, autovideosink, nullptr);
+  gst_element_link_many(queue, videoconvert, clockoverlay, autovideosink,
+                        nullptr);
+  // config clockoverlay
+  {
+    // https://gstreamer.freedesktop.org/documentation/pango/clockoverlay.html
+    g_object_set(clockoverlay, "shaded-background", 1, nullptr);
+    g_object_set(clockoverlay, "font-desc", "Sans 36", nullptr);
+    g_object_set(clockoverlay, "text", "local", nullptr);
+    g_object_set(clockoverlay, "ypad", 36 + 25 + 20, nullptr);
+    g_object_set(clockoverlay, "halignment", 2, nullptr);
+  }
   GstPad *queue_pad = gst_element_get_static_pad(queue, "sink");
   [[maybe_unused]] auto result = gst_pad_link(pad, queue_pad);
   BOOST_ASSERT(result == GST_PAD_LINK_OK);
