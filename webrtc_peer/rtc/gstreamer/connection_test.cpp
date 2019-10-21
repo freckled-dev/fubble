@@ -49,7 +49,10 @@ TEST_F(GstreamerConnection, CreateOffer) {
   bool called{};
   logging::logger logger;
   offer.then(executor, [&](auto result) {
-    result.get();
+    auto description = result.get();
+    BOOST_LOG_SEV(logger, logging::severity::info)
+        << "got session_description, sdp:" << description.sdp;
+    EXPECT_FALSE(description.sdp.empty());
     g_main_loop_quit(main_loop);
     called = true;
   });
