@@ -26,6 +26,24 @@ public:
   boost::future<void>
   set_remote_description(const session_description &) override;
   void add_track(track_ptr) override;
+  enum struct state {
+    new_,
+    connecting,
+    connected,
+    disconnected,
+    failed,
+    closed
+  };
+  state get_state();
+  enum struct signalling_state {
+    stable,
+    closed,
+    have_local_offer,
+    have_remote_offer,
+    have_local_pranswer,
+    have_remote_pranswer
+  };
+  signalling_state get_signalling_state();
 
 private:
   static void on_negotiation_needed(GstElement *webrtc, gpointer user_data);

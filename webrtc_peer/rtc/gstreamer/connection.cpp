@@ -61,6 +61,45 @@ connection::set_remote_description(const session_description &) {
 }
 void connection::add_track(track_ptr) {}
 
+connection::state connection::get_state() {
+  int cast{};
+  g_object_get(webrtc, "connection-state", &cast, nullptr);
+  switch (cast) {
+  case 0:
+    return state::new_;
+  case 1:
+    return state::connecting;
+  case 2:
+    return state::connected;
+  case 3:
+    return state::disconnected;
+  case 4:
+    return state::failed;
+  case 5:
+    return state::closed;
+  }
+  BOOST_ASSERT(false);
+}
+
+connection::signalling_state connection::get_signalling_state() {
+  int cast{};
+  g_object_get(webrtc, "signaling-state", &cast, nullptr);
+  switch (cast) {
+  case 0:
+    return signalling_state::stable;
+  case 1:
+    return signalling_state::closed;
+  case 2:
+    return signalling_state::have_local_offer;
+  case 3:
+    return signalling_state::have_remote_offer;
+  case 4:
+    return signalling_state::have_local_pranswer;
+  case 5:
+    return signalling_state::have_remote_pranswer;
+  }
+  BOOST_ASSERT(false);
+}
 connection *connection::cast_user_data_to_connection(gpointer user_data) {
   BOOST_ASSERT(user_data);
   return static_cast<connection *>(user_data);
