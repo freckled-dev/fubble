@@ -2,11 +2,18 @@
 #include "rtc/connection.hpp"
 extern "C" {
 #include <gst/gst.h>
+#define GST_USE_UNSTABLE_API
+#include <gst/webrtc/webrtc.h>
 }
 
 namespace rtc::gstreamer {
 struct gst_element_deleter {
   void operator()(GstElement *delete_me);
+};
+
+struct invalid_session_description_sdp : std::runtime_error {
+  invalid_session_description_sdp(const std::string &sdp)
+      : std::runtime_error(sdp) {}
 };
 
 class connection : public rtc::connection {
@@ -23,7 +30,10 @@ public:
 private:
   static void on_negotiation_needed(GstElement *webrtc, gpointer user_data);
   static void on_offer_created(GstPromise *promise, gpointer user_data);
+  static void on_description_set(GstPromise *promise, gpointer user_data);
   static connection *cast_user_data_to_connection(gpointer user_data);
+  static GstWebRTCSessionDescription *
+  cast_session_description_to_gst(const session_description &description);
   GstBin *pipeline_as_bin() const;
   void connect_signals();
 

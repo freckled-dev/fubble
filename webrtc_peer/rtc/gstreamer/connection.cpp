@@ -2,8 +2,6 @@
 extern "C" {
 #include <gst/gstpromise.h>
 #include <gst/sdp/sdp.h>
-#define GST_USE_UNSTABLE_API
-#include <gst/webrtc/webrtc.h>
 }
 
 using namespace rtc::gstreamer;
@@ -40,9 +38,18 @@ boost::future<rtc::session_description> connection::create_offer() {
 }
 
 boost::future<void>
-connection::set_local_description(const session_description &) {
-  boost::promise<void> promise;
-  auto result = promise.get_future();
+connection::set_local_description(const session_description &description) {
+  auto promise = std::make_unique<boost::promise<void>>();
+  auto result = promise->get_future();
+  try {
+    auto sdp = cast_session_description_to_gst(description);
+    auto promise_gst = gst_promise_new_with_change_func(
+        on_description_set, promise.release(), nullptr);
+    g_signal_emit_by_name(webrtc, "set-local-description", sdp, promise_gst);
+    gst_webrtc_session_description_free(sdp);
+  } catch (const invalid_session_description_sdp &error) {
+    promise->set_exception(error);
+  }
   return result;
 }
 
@@ -82,8 +89,22 @@ void connection::on_offer_created(GstPromise *gst_promise, gpointer user_data) {
   gst_webrtc_session_description_free(offer);
   session_description result;
   result.sdp = sdp_text;
+  result.type_ = session_description::type::offer;
   promise->set_value(result);
   delete promise;
+}
+
+void connection::on_description_set(GstPromise *promise_gst,
+                                    gpointer user_data) {
+  BOOST_ASSERT(promise_gst);
+  BOOST_ASSERT(user_data);
+  std::unique_ptr<boost::promise<void>> promise{
+      static_cast<boost::promise<void> *>(user_data)};
+  [[maybe_unused]] const GstStructure *reply =
+      gst_promise_get_reply(promise_gst);
+  BOOST_ASSERT(!reply);
+  gst_promise_unref(promise_gst);
+  promise->set_value();
 }
 
 void connection::connect_signals() {
@@ -97,4 +118,31 @@ void connection::connect_signals() {
 GstBin *connection::pipeline_as_bin() const {
   BOOST_ASSERT(pipeline);
   return GST_BIN(pipeline.get());
+}
+
+GstWebRTCSessionDescription *connection::cast_session_description_to_gst(
+    const session_description &description) {
+  GstSDPMessage *sdp{};
+  GstSDPResult result = gst_sdp_message_new(&sdp);
+  BOOST_ASSERT(result == GstSDPResult::GST_SDP_OK);
+  static_assert(sizeof(char) == sizeof(guint8));
+  result = gst_sdp_message_parse_buffer(
+      reinterpret_cast<const guint8 *>(description.sdp.data()),
+      description.sdp.size(), sdp);
+  if (result != GstSDPResult::GST_SDP_OK) {
+    gst_sdp_message_free(sdp);
+    throw invalid_session_description_sdp(description.sdp);
+  }
+  GstWebRTCSDPType type_casted = [&] {
+    switch (description.type_) {
+    case session_description::type::answer:
+      return GST_WEBRTC_SDP_TYPE_ANSWER;
+    case session_description::type::offer:
+      return GST_WEBRTC_SDP_TYPE_OFFER;
+    }
+  }();
+  GstWebRTCSessionDescription *sdp_casted =
+      gst_webrtc_session_description_new(type_casted, sdp);
+  BOOST_ASSERT(sdp_casted);
+  return sdp_casted;
 }
