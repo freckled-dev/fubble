@@ -42,7 +42,11 @@ struct GstreamerConnection : ::testing::Test {
   ~GstreamerConnection() { g_main_loop_unref(main_loop); }
 };
 
-TEST_F(GstreamerConnection, SetUp) {}
+TEST_F(GstreamerConnection, SetUp) {
+  EXPECT_EQ(connection.get_state(), rtc::gstreamer::connection::state::new_);
+  EXPECT_EQ(connection.get_signalling_state(),
+            rtc::gstreamer::connection::signalling_state::stable);
+}
 
 TEST_F(GstreamerConnection, CreateOffer) {
   auto offer = connection.create_offer();
@@ -70,6 +74,9 @@ TEST_F(GstreamerConnection, SetLocalDescription) {
       .unwrap()
       .then(executor, [&](auto result) {
         EXPECT_NO_THROW(result.get());
+        EXPECT_EQ(
+            connection.get_signalling_state(),
+            rtc::gstreamer::connection::signalling_state::have_local_offer);
         g_main_loop_quit(main_loop);
         called = true;
       });
@@ -113,4 +120,3 @@ TEST_F(GstreamerConnection, SetDescriptionTwice) {
   EXPECT_TRUE(called);
 }
 #endif
-
