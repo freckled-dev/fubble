@@ -5,6 +5,8 @@
 
 namespace rtc {
 struct session_description {
+  enum class type { offer, answer };
+  type type_;
   std::string sdp;
 };
 } // namespace rtc

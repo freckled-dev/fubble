@@ -59,3 +59,58 @@ TEST_F(GstreamerConnection, CreateOffer) {
   g_main_loop_run(main_loop);
   EXPECT_TRUE(called);
 }
+
+TEST_F(GstreamerConnection, SetLocalDescription) {
+  bool called{};
+  connection.create_offer()
+      .then(executor,
+            [&](auto result) -> boost::future<void> {
+              return connection.set_local_description(result.get());
+            })
+      .unwrap()
+      .then(executor, [&](auto result) {
+        EXPECT_NO_THROW(result.get());
+        g_main_loop_quit(main_loop);
+        called = true;
+      });
+  g_main_loop_run(main_loop);
+  EXPECT_TRUE(called);
+}
+
+TEST_F(GstreamerConnection, SetInvalidDescription) {
+  rtc::session_description invalid;
+  invalid.type_ = rtc::session_description::type::answer;
+  invalid.sdp = "";
+  bool called{};
+  connection.set_local_description(invalid).then([&](auto result) {
+    EXPECT_TRUE(result.has_exception());
+    called = true;
+    g_main_loop_quit(main_loop);
+  });
+  g_main_loop_run(main_loop);
+  EXPECT_TRUE(called);
+}
+
+#if 0 // gstreamer webrtc does not return errors - only logs them
+TEST_F(GstreamerConnection, SetDescriptionTwice) {
+  rtc::session_description invalid;
+  invalid.type_ = rtc::session_description::type::answer;
+  invalid.sdp = "abc";
+  bool called{};
+  connection.set_local_description(invalid)
+      .then([&](auto result) {
+        result.get();
+        invalid.type_ = rtc::session_description::type::offer;
+        return connection.set_local_description(invalid);
+      })
+      .unwrap()
+      .then([&](auto result) {
+        EXPECT_TRUE(result.has_exception());
+        called = true;
+        g_main_loop_quit(main_loop);
+      });
+  g_main_loop_run(main_loop);
+  EXPECT_TRUE(called);
+}
+#endif
+
