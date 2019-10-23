@@ -6,10 +6,6 @@ extern "C" {
 
 using namespace rtc::gstreamer;
 
-void gst_element_deleter::operator()(GstElement *delete_me) {
-  gst_object_unref(delete_me);
-}
-
 static GstElement *create_element(const std::string &name) {
   auto result = gst_element_factory_make(name.c_str(), nullptr);
   BOOST_ASSERT(result);
@@ -24,6 +20,13 @@ connection::connection() {
   [[maybe_unused]] auto added = gst_bin_add(pipeline_as_bin(), webrtc);
   BOOST_ASSERT(added);
   connect_signals();
+  gst_element_set_state(pipeline.get(), GST_STATE_READY);
+#if 0
+  const GstStateChangeReturn state_change_result =
+      gst_element_set_state(GST_ELEMENT(pipeline.get()), GST_STATE_PLAYING);
+  if (state_change_result == GST_STATE_CHANGE_FAILURE)
+    throw std::runtime_error("gst_element_set_state, GST_STATE_PLAYING");
+#endif
 }
 
 connection::~connection() = default;
@@ -39,13 +42,26 @@ boost::future<rtc::session_description> connection::create_offer() {
 
 boost::future<void>
 connection::set_local_description(const session_description &description) {
+  BOOST_LOG_SEV(logger, logging::severity::info)
+      << "set_local_description, sdp:" << description.sdp;
+  return set_description("set-local-description", description);
+}
+
+boost::future<void>
+connection::set_remote_description(const session_description &description) {
+  return set_description("set-remote-description", description);
+}
+
+boost::future<void>
+connection::set_description(const std::string &kind,
+                            const session_description &description) {
   auto promise = std::make_unique<boost::promise<void>>();
   auto result = promise->get_future();
   try {
     auto sdp = cast_session_description_to_gst(description);
     auto promise_gst = gst_promise_new_with_change_func(
         on_description_set, promise.release(), nullptr);
-    g_signal_emit_by_name(webrtc, "set-local-description", sdp, promise_gst);
+    g_signal_emit_by_name(webrtc, kind.c_str(), sdp, promise_gst);
     gst_webrtc_session_description_free(sdp);
   } catch (const invalid_session_description_sdp &error) {
     promise->set_exception(error);
@@ -53,13 +69,9 @@ connection::set_local_description(const session_description &description) {
   return result;
 }
 
-boost::future<void>
-connection::set_remote_description(const session_description &) {
-  boost::promise<void> promise;
-  auto result = promise.get_future();
-  return result;
+void connection::add_track(track_ptr) {
+  BOOST_ASSERT_MSG(false, "not implemented");
 }
-void connection::add_track(track_ptr) {}
 
 connection::state connection::get_state() {
   int cast{};
@@ -100,17 +112,34 @@ connection::signalling_state connection::get_signalling_state() {
   }
   BOOST_ASSERT(false);
 }
+
+connection::ice_gathering_state connection::get_ice_gathering_state() {
+  int cast{};
+  g_object_get(webrtc, "ice-gathering-state", &cast, nullptr);
+  switch (cast) {
+  case 0:
+    return ice_gathering_state::new_;
+  case 1:
+    return ice_gathering_state::gathering;
+  case 2:
+    return ice_gathering_state::complete;
+  }
+  BOOST_ASSERT(false);
+}
+
 connection *connection::cast_user_data_to_connection(gpointer user_data) {
   BOOST_ASSERT(user_data);
   return static_cast<connection *>(user_data);
 }
 
-void connection::on_negotiation_needed(GstElement *webrtc, gpointer user_data) {
+void connection::on_gst_negotiation_needed(GstElement *webrtc,
+                                           gpointer user_data) {
   BOOST_ASSERT(webrtc);
   auto self = cast_user_data_to_connection(user_data);
   BOOST_ASSERT(self->webrtc == webrtc);
   BOOST_LOG_SEV(self->logger, logging::severity::info)
       << "on_negotiation_needed";
+  self->on_negotiation_needed();
 }
 
 void connection::on_offer_created(GstPromise *gst_promise, gpointer user_data) {
@@ -135,6 +164,8 @@ void connection::on_offer_created(GstPromise *gst_promise, gpointer user_data) {
 
 void connection::on_description_set(GstPromise *promise_gst,
                                     gpointer user_data) {
+  logging::logger logger;
+  BOOST_LOG_SEV(logger, logging::severity::info) << "on_description_set";
   BOOST_ASSERT(promise_gst);
   BOOST_ASSERT(user_data);
   std::unique_ptr<boost::promise<void>> promise{
@@ -146,12 +177,23 @@ void connection::on_description_set(GstPromise *promise_gst,
   promise->set_value();
 }
 
+void connection::on_gst_ice_candidate(GstElement *, guint mlineindex,
+                                      gchar *candidate, gpointer user_data) {
+  ice_candidate result{static_cast<int>(mlineindex), candidate};
+  BOOST_ASSERT(user_data);
+  auto self = cast_user_data_to_connection(user_data);
+  BOOST_LOG_SEV(self->logger, logging::severity::info)
+      << "on_gst_ice_candidate";
+  self->on_ice_candidate(result);
+}
+
 void connection::connect_signals() {
   g_signal_connect(webrtc, "on-negotiation-needed",
-                   G_CALLBACK(on_negotiation_needed), this);
-  // g_signal_connect(webrtc, "on-ice-candidate", G_CALLBACK(on_ice_candidate),
-  // this); g_signal_connect(webrtc, "pad-added",
-  // G_CALLBACK(on_incoming_stream), this);
+                   G_CALLBACK(on_gst_negotiation_needed), this);
+  g_signal_connect(webrtc, "on-ice-candidate", G_CALLBACK(on_gst_ice_candidate),
+                   this);
+  // g_signal_connect(webrtc, "pad-added", G_CALLBACK(on_incoming_stream),
+  // this);
 }
 
 GstBin *connection::pipeline_as_bin() const {
@@ -185,3 +227,8 @@ GstWebRTCSessionDescription *connection::cast_session_description_to_gst(
   BOOST_ASSERT(sdp_casted);
   return sdp_casted;
 }
+
+connection::natives connection::get_natives() {
+  return natives{pipeline.get(), webrtc};
+}
+
