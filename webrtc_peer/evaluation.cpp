@@ -40,7 +40,6 @@ static gboolean on_pipe_bus_message(GstBus *bus, GstMessage *message,
                                     gpointer data);
 static void on_incoming_stream(GstElement *webrtc, GstPad *pad,
                                gpointer user_data);
-// static void on_offer_created(GstPromise *promise, GstElement *webrtc);
 
 static logging::logger logger;
 static offering offering_;
