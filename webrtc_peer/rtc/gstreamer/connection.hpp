@@ -1,16 +1,15 @@
+#ifndef RTC_GSTREAMER_CONNECTION_HPP
+#define RTC_GSTREAMER_CONNECTION_HPP
+
+#include "gst_element_deleter.hpp"
 #include "logging/logger.hpp"
 #include "rtc/connection.hpp"
 extern "C" {
-#include <gst/gst.h>
 #define GST_USE_UNSTABLE_API
 #include <gst/webrtc/webrtc.h>
 }
 
 namespace rtc::gstreamer {
-struct gst_element_deleter {
-  void operator()(GstElement *delete_me);
-};
-
 struct invalid_session_description_sdp : std::runtime_error {
   invalid_session_description_sdp(const std::string &sdp)
       : std::runtime_error(sdp) {}
@@ -20,12 +19,12 @@ class connection : public rtc::connection {
 public:
   connection();
   ~connection() override;
+  void add_track(track_ptr) override;
   boost::future<session_description> create_offer() override;
   boost::future<void>
   set_local_description(const session_description &) override;
   boost::future<void>
   set_remote_description(const session_description &) override;
-  void add_track(track_ptr) override;
   enum struct state {
     new_,
     connecting,
@@ -44,11 +43,22 @@ public:
     have_remote_pranswer
   };
   signalling_state get_signalling_state();
+  enum struct ice_gathering_state { new_, gathering, complete };
+  ice_gathering_state get_ice_gathering_state();
+  struct natives {
+    GstElement *pipeline;
+    GstElement *webrtc;
+  };
+  natives get_natives();
 
 private:
-  static void on_negotiation_needed(GstElement *webrtc, gpointer user_data);
+  boost::future<void> set_description(const std::string &kind,
+                                      const session_description &description);
+  static void on_gst_negotiation_needed(GstElement *webrtc, gpointer user_data);
   static void on_offer_created(GstPromise *promise, gpointer user_data);
   static void on_description_set(GstPromise *promise, gpointer user_data);
+  static void on_gst_ice_candidate(GstElement *webrtc, guint mlineindex,
+                                   gchar *candidate, gpointer user_data);
   static connection *cast_user_data_to_connection(gpointer user_data);
   static GstWebRTCSessionDescription *
   cast_session_description_to_gst(const session_description &description);
@@ -60,3 +70,5 @@ private:
   GstElement *webrtc;
 };
 } // namespace rtc::gstreamer
+
+#endif
