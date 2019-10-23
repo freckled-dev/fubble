@@ -11,6 +11,12 @@ static GstElement *create_element(const std::string &name) {
   BOOST_ASSERT(result);
   return result;
 }
+static void set_gst_state(GstElement *pipeline, const GstState state) {
+  const GstStateChangeReturn state_change_result =
+      gst_element_set_state(pipeline, state);
+  if (state_change_result == GST_STATE_CHANGE_FAILURE)
+    throw std::runtime_error("gst_element_set_state, GST_STATE_PLAYING");
+}
 
 connection::connection() {
   BOOST_ASSERT(gst_is_initialized());
@@ -20,16 +26,24 @@ connection::connection() {
   [[maybe_unused]] auto added = gst_bin_add(pipeline_as_bin(), webrtc);
   BOOST_ASSERT(added);
   connect_signals();
-  gst_element_set_state(pipeline.get(), GST_STATE_READY);
-#if 0
-  const GstStateChangeReturn state_change_result =
-      gst_element_set_state(GST_ELEMENT(pipeline.get()), GST_STATE_PLAYING);
-  if (state_change_result == GST_STATE_CHANGE_FAILURE)
-    throw std::runtime_error("gst_element_set_state, GST_STATE_PLAYING");
-#endif
 }
 
-connection::~connection() = default;
+connection::~connection() {
+  try {
+    set_gst_state(pipeline.get(), GST_STATE_NULL);
+  } catch (std::runtime_error &error) {
+    BOOST_LOG_SEV(logger, logging::severity::error)
+        << "could not stop pipeline";
+  }
+}
+
+boost::future<void> connection::run() {
+  set_gst_state(pipeline.get(), GST_STATE_READY);
+#if 0
+  set_gst_state(pipeline.get(), GST_STATE_PLAYING);
+#endif
+  return boost::make_ready_future();
+}
 
 boost::future<rtc::session_description> connection::create_offer() {
   auto promise = new boost::promise<rtc::session_description>();
@@ -231,4 +245,3 @@ GstWebRTCSessionDescription *connection::cast_session_description_to_gst(
 connection::natives connection::get_natives() {
   return natives{pipeline.get(), webrtc};
 }
-

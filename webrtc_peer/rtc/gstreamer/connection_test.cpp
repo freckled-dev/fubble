@@ -74,11 +74,15 @@ TEST_F(GstreamerConnection, SetUp) {
   EXPECT_EQ(connection.get_state(), rtc::gstreamer::connection::state::new_);
   EXPECT_EQ(connection.get_signalling_state(),
             rtc::gstreamer::connection::signalling_state::stable);
+}
+
+TEST_F(GstreamerConnection, NegotiationNeeded) {
   bool called{};
   connection.on_negotiation_needed.connect([&] {
     called = true;
     g_main_loop_quit(main_loop);
   });
+  connection.run();
   g_main_loop_run(main_loop);
   EXPECT_TRUE(called);
 }
@@ -95,6 +99,7 @@ TEST_F(GstreamerConnection, CreateOffer) {
       called = true;
     });
   });
+  connection.run();
   g_main_loop_run(main_loop);
   EXPECT_TRUE(called);
 }
@@ -117,6 +122,7 @@ TEST_F(GstreamerConnection, SetLocalDescription) {
           called = true;
         });
   });
+  connection.run();
   g_main_loop_run(main_loop);
   EXPECT_TRUE(called);
 }
@@ -126,11 +132,16 @@ TEST_F(GstreamerConnection, SetInvalidDescription) {
   invalid.type_ = rtc::session_description::type::answer;
   invalid.sdp = "";
   bool called{};
-  connection.set_local_description(invalid).then([&](auto result) {
-    EXPECT_TRUE(result.has_exception());
-    called = true;
-    g_main_loop_quit(main_loop);
+  connection.on_negotiation_needed.connect([&] {
+    connection.set_local_description(invalid).then([&](auto result) {
+      BOOST_LOG_SEV(logger, logging::severity::info)
+          << "did set local description";
+      EXPECT_TRUE(result.has_exception());
+      called = true;
+      g_main_loop_quit(main_loop);
+    });
   });
+  connection.run();
   g_main_loop_run(main_loop);
   EXPECT_TRUE(called);
 }
@@ -153,6 +164,7 @@ TEST_F(GstreamerConnection, SetDescriptionTwice) {
         called = true;
         g_main_loop_quit(main_loop);
       });
+  connection.run();
   g_main_loop_run(main_loop);
   EXPECT_TRUE(called);
 }
@@ -169,6 +181,7 @@ TEST_F(GstreamerConnection, IceCandidates) {
         rtc::gstreamer::connection::ice_gathering_state::complete)
       g_main_quit(main_loop);
   });
+  connection.run();
   g_main_loop_run(main_loop);
   EXPECT_FALSE(candidates.empty());
 }

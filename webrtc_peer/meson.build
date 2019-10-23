@@ -4,7 +4,9 @@ evaluation = executable('webrtc_peer_evaluation',
   install: true
   )
 webrtc_peer = library('webrtc_peer',
-  ['rtc/connection.cpp', 'rtc/gstreamer/connection.cpp'],
+  ['rtc/connection.cpp', 'rtc/gstreamer/connection.cpp',
+    'rtc/gstreamer/video_track.cpp', 'rtc/gstreamer/gst_element_deleter.cpp'
+    ],
   dependencies: [utils_dep, gstreamer_webrtc_dep, signalling_client_dep],
   install: true
   )
@@ -25,5 +27,6 @@ test('webrtc_peer test',
     'ASAN_OPTIONS=fast_unwind_on_malloc=0',
     suppr_option
     ],
+  args: ['--gst-debug=*:3'],
   timeout: 2
   )

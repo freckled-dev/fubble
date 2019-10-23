@@ -19,6 +19,7 @@ class connection : public rtc::connection {
 public:
   connection();
   ~connection() override;
+  boost::future<void> run();
   void add_track(track_ptr) override;
   boost::future<session_description> create_offer() override;
   boost::future<void>
