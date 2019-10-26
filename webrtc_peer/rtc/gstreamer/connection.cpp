@@ -17,6 +17,8 @@ static GstElement *create_element(const std::string &name) {
 static void set_gst_state(GstElement *pipeline, const GstState state) {
   const GstStateChangeReturn state_change_result =
       gst_element_set_state(pipeline, state);
+  BOOST_ASSERT(state_change_result != GST_STATE_CHANGE_ASYNC);
+  BOOST_ASSERT(state_change_result == GST_STATE_CHANGE_SUCCESS);
   if (state_change_result == GST_STATE_CHANGE_FAILURE)
     throw std::runtime_error("gst_element_set_state, GST_STATE_PLAYING");
 }
@@ -48,8 +50,8 @@ gboolean connection::on_pipe_bus_message(GstBus *, GstMessage *message,
                                          gpointer data) {
   auto self = static_cast<connection *>(data);
   BOOST_ASSERT(self);
-  // BOOST_LOG_SEV(self->logger, logging::severity::info) << fmt::format(
-  // "on_pipe_bus_message, got message: '{}'", GST_MESSAGE_TYPE_NAME(message));
+  BOOST_LOG_SEV(self->logger, logging::severity::info) << fmt::format(
+      "on_pipe_bus_message, got message: '{}'", GST_MESSAGE_TYPE_NAME(message));
   switch (GST_MESSAGE_TYPE(message)) {
   case GST_MESSAGE_ERROR:
     GError *error;
@@ -78,6 +80,7 @@ boost::future<void> connection::run() {
 }
 
 void connection::close() {
+  BOOST_LOG_SEV(logger, logging::severity::info) << "close";
   disconnect_signals();
   set_gst_state(pipeline.get(), GST_STATE_NULL);
 }
