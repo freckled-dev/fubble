@@ -23,6 +23,7 @@ public:
   boost::signals2::signal<void()> on_negotiation_needed;
   boost::signals2::signal<void(track_ptr)> on_track;
   boost::signals2::signal<void(ice_candidate)> on_ice_candidate;
+  boost::signals2::signal<void()> on_closed;
 };
 } // namespace rtc
 

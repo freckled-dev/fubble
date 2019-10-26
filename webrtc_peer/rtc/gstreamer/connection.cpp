@@ -1,4 +1,7 @@
 #include "connection.hpp"
+#include "rtc/track.hpp"
+#include "video_track.hpp"
+#include <fmt/format.h>
 extern "C" {
 #include <gst/gstpromise.h>
 #include <gst/sdp/sdp.h>
@@ -18,7 +21,7 @@ static void set_gst_state(GstElement *pipeline, const GstState state) {
     throw std::runtime_error("gst_element_set_state, GST_STATE_PLAYING");
 }
 
-connection::connection() {
+connection::connection(boost::executor &executor) : executor(executor) {
   BOOST_ASSERT(gst_is_initialized());
   pipeline.reset(gst_pipeline_new(nullptr));
   BOOST_ASSERT(pipeline);
@@ -26,23 +29,57 @@ connection::connection() {
   [[maybe_unused]] auto added = gst_bin_add(pipeline_as_bin(), webrtc);
   BOOST_ASSERT(added);
   connect_signals();
+  auto bus = gst_pipeline_get_bus(GST_PIPELINE(pipeline.get()));
+  bus_watch_id = gst_bus_add_watch(bus, on_pipe_bus_message, this);
+  gst_object_unref(bus);
 }
 
 connection::~connection() {
+  BOOST_LOG_SEV(logger, logging::severity::info) << "~connection()";
   try {
-    set_gst_state(pipeline.get(), GST_STATE_NULL);
+    close();
   } catch (std::runtime_error &error) {
     BOOST_LOG_SEV(logger, logging::severity::error)
         << "could not stop pipeline";
   }
 }
 
+gboolean connection::on_pipe_bus_message(GstBus *, GstMessage *message,
+                                         gpointer data) {
+  auto self = static_cast<connection *>(data);
+  BOOST_ASSERT(self);
+  // BOOST_LOG_SEV(self->logger, logging::severity::info) << fmt::format(
+  // "on_pipe_bus_message, got message: '{}'", GST_MESSAGE_TYPE_NAME(message));
+  switch (GST_MESSAGE_TYPE(message)) {
+  case GST_MESSAGE_ERROR:
+    GError *error;
+    gchar *debug;
+    gst_message_parse_error(message, &error, &debug);
+    BOOST_LOG_SEV(self->logger, logging::severity::error)
+        << fmt::format("error: '{}', debug: '{}'", error->message, debug);
+    g_error_free(error);
+    g_free(debug);
+    break;
+  case GST_MESSAGE_EOS:
+    BOOST_LOG_SEV(self->logger, logging::severity::info) << "GST_MESSAGE_EOS";
+    self->on_closed();
+  default:;
+    // BOOST_LOG_SEV(logger, logging::severity::info) << "unhandled message";
+  }
+  return true;
+}
+
 boost::future<void> connection::run() {
   set_gst_state(pipeline.get(), GST_STATE_READY);
-#if 0
+#if 1
   set_gst_state(pipeline.get(), GST_STATE_PLAYING);
 #endif
   return boost::make_ready_future();
+}
+
+void connection::close() {
+  disconnect_signals();
+  set_gst_state(pipeline.get(), GST_STATE_NULL);
 }
 
 boost::future<rtc::session_description> connection::create_offer() {
@@ -83,8 +120,10 @@ connection::set_description(const std::string &kind,
   return result;
 }
 
-void connection::add_track(track_ptr) {
-  BOOST_ASSERT_MSG(false, "not implemented");
+void connection::add_track(track_ptr track_) {
+  auto track_casted = dynamic_cast<video_track *>(track_.get());
+  BOOST_ASSERT(track_casted);
+  track_casted->link_to_webrtc(get_natives());
 }
 
 connection::state connection::get_state() {
@@ -141,6 +180,28 @@ connection::ice_gathering_state connection::get_ice_gathering_state() {
   BOOST_ASSERT(false);
 }
 
+connection::ice_connection_state connection::get_ice_connection_state() {
+  int cast{};
+  g_object_get(webrtc, "ice-connection-state", &cast, nullptr);
+  switch (cast) {
+  case 0:
+    return ice_connection_state::new_;
+  case 1:
+    return ice_connection_state::checking;
+  case 2:
+    return ice_connection_state::connected;
+  case 3:
+    return ice_connection_state::completed;
+  case 4:
+    return ice_connection_state::failed;
+  case 5:
+    return ice_connection_state::disconnected;
+  case 6:
+    return ice_connection_state::closed;
+  }
+  BOOST_ASSERT(false);
+}
+
 connection *connection::cast_user_data_to_connection(gpointer user_data) {
   BOOST_ASSERT(user_data);
   return static_cast<connection *>(user_data);
@@ -149,11 +210,16 @@ connection *connection::cast_user_data_to_connection(gpointer user_data) {
 void connection::on_gst_negotiation_needed(GstElement *webrtc,
                                            gpointer user_data) {
   BOOST_ASSERT(webrtc);
+  BOOST_ASSERT(user_data);
   auto self = cast_user_data_to_connection(user_data);
-  BOOST_ASSERT(self->webrtc == webrtc);
   BOOST_LOG_SEV(self->logger, logging::severity::info)
-      << "on_negotiation_needed";
-  self->on_negotiation_needed();
+      << "on_gst_negotiation_needed";
+  self->executor.submit([self, webrtc] {
+    BOOST_ASSERT(self->webrtc == webrtc);
+    BOOST_LOG_SEV(self->logger, logging::severity::info)
+        << "on_negotiation_needed";
+    self->on_negotiation_needed();
+  });
 }
 
 void connection::on_offer_created(GstPromise *gst_promise, gpointer user_data) {
@@ -193,21 +259,37 @@ void connection::on_description_set(GstPromise *promise_gst,
 
 void connection::on_gst_ice_candidate(GstElement *, guint mlineindex,
                                       gchar *candidate, gpointer user_data) {
-  ice_candidate result{static_cast<int>(mlineindex), candidate};
-  BOOST_ASSERT(user_data);
   auto self = cast_user_data_to_connection(user_data);
+  const ice_candidate result{static_cast<int>(mlineindex), candidate};
   BOOST_LOG_SEV(self->logger, logging::severity::info)
-      << "on_gst_ice_candidate";
-  self->on_ice_candidate(result);
+      << "on_gst_ice_candidate, candidate:" << result;
+  BOOST_ASSERT(user_data);
+  self->executor.submit([self, result] {
+    BOOST_LOG_SEV(self->logger, logging::severity::info)
+        << "on_gst_ice_candidate submit, candidate:" << result;
+    self->on_ice_candidate(result);
+  });
 }
 
 void connection::connect_signals() {
-  g_signal_connect(webrtc, "on-negotiation-needed",
-                   G_CALLBACK(on_gst_negotiation_needed), this);
-  g_signal_connect(webrtc, "on-ice-candidate", G_CALLBACK(on_gst_ice_candidate),
-                   this);
+  BOOST_ASSERT(signal_connections.empty());
+  connect_signal("on-negotiation-needed",
+                 G_CALLBACK(on_gst_negotiation_needed));
+  connect_signal("on-ice-candidate", G_CALLBACK(on_gst_ice_candidate));
   // g_signal_connect(webrtc, "pad-added", G_CALLBACK(on_incoming_stream),
   // this);
+}
+
+void connection::connect_signal(const std::string &name, GCallback function) {
+  const auto id = g_signal_connect(webrtc, name.c_str(), function, this);
+  BOOST_ASSERT(id > 0);
+  signal_connections.push_back(id);
+}
+
+void connection::disconnect_signals() {
+  for (const auto id : signal_connections)
+    g_signal_handler_disconnect(webrtc, id);
+  signal_connections.clear();
 }
 
 GstBin *connection::pipeline_as_bin() const {
