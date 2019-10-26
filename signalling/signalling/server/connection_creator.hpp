@@ -12,8 +12,7 @@ class json_message;
 namespace server {
 class connection_creator {
 public:
-  connection_creator(boost::asio::io_context &context,
-                     boost::executor &executor,
+  connection_creator(boost::executor &executor,
                      signalling::json_message &message_parser);
   virtual ~connection_creator();
 
@@ -21,7 +20,6 @@ public:
   operator()(const websocket::connection_ptr &websocket_connection);
 
 private:
-  boost::asio::io_context &context;
   boost::executor &executor;
   signalling::json_message &message_parser;
 };

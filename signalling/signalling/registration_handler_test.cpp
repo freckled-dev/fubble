@@ -7,7 +7,7 @@
 struct RegistrationHandler : testing::Test {
   boost::executor_adaptor<boost::inline_executor> executor;
   signalling::device::creator creator{executor};
-  signalling::registration_handler handler{executor, creator};
+  signalling::registration_handler handler{creator};
 };
 
 struct mock_connection : signalling::connection {

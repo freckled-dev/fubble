@@ -57,11 +57,11 @@ std::string json_message::serialize(const ice_candidate &candidate) const {
   nlohmann::json result = {{"type", "ice_candidate"}, {"sdp", candidate.sdp}};
   return result.dump();
 }
-std::string json_message::serialize(const create_offer &offering) const {
+std::string json_message::serialize(const create_offer &) const {
   nlohmann::json result = {{"type", "create_offer"}};
   return result.dump();
 }
-std::string json_message::serialize(const create_answer &answering) const {
+std::string json_message::serialize(const create_answer &) const {
   nlohmann::json result = {{"type", "create_answer"}};
   return result.dump();
 }

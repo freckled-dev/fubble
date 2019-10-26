@@ -6,7 +6,7 @@ cd "$(dirname "$0")"
 scripts_dir="$(pwd)"
 source_dir="$(realpath ..)"
 project_root_dir="$(git rev-parse --show-toplevel)"
-build_dir="$project_root_dir/../signalling_build"
+build_dir="$project_root_dir/../fubble_build"
 prefix_dir="$build_dir/install"
 dependencies_dir="$build_dir/dependencies"
 
@@ -20,6 +20,18 @@ $scripts_dir/get_dependencies_conan
 cd $build_dir
 export PKG_CONFIG_PATH="${dependencies_dir}"
 export BOOST_ROOT=$(pkg-config --variable=prefix boost)
-meson "$source_dir" meson --prefix="$prefix_dir" -Db_sanitize=address
+export CC=clang
+export CXX=clang++
+meson "$source_dir" meson \
+  --prefix="$prefix_dir" \
+  --fatal-meson-warnings \
+  -Db_sanitize=address \
+  -Db_lundef=false \
+  -Dwarning_level=3 \
+  -Dwerror=true
+
+#  -Db_coverage=true \
+#  -Ddefault_library=static \
+
 ln -frs meson/compile_commands.json ..
 
