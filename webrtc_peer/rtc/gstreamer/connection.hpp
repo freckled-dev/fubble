@@ -22,7 +22,9 @@ public:
   boost::future<void> run();
   void close();
   void add_track(track_ptr) override;
+  void add_ice_candidate(const ice_candidate &candidate);
   boost::future<session_description> create_offer() override;
+  boost::future<session_description> create_answer();
   boost::future<void>
   set_local_description(const session_description &) override;
   boost::future<void>
@@ -68,6 +70,7 @@ private:
                                       const session_description &description);
   static void on_gst_negotiation_needed(GstElement *webrtc, gpointer user_data);
   static void on_offer_created(GstPromise *promise, gpointer user_data);
+  static void on_answer_created(GstPromise *promise, gpointer user_data);
   static void on_description_set(GstPromise *promise, gpointer user_data);
   static void on_gst_ice_candidate(GstElement *webrtc, guint mlineindex,
                                    gchar *candidate, gpointer user_data);

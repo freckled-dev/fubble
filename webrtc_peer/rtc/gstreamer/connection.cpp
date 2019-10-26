@@ -91,6 +91,15 @@ boost::future<rtc::session_description> connection::create_offer() {
   return result;
 }
 
+boost::future<rtc::session_description> connection::create_answer() {
+  auto promise = new boost::promise<rtc::session_description>();
+  auto result = promise->get_future();
+  GstPromise *gst_promise =
+      gst_promise_new_with_change_func(on_answer_created, promise, nullptr);
+  g_signal_emit_by_name(webrtc, "create-answer", nullptr, gst_promise);
+  return result;
+}
+
 boost::future<void>
 connection::set_local_description(const session_description &description) {
   BOOST_LOG_SEV(logger, logging::severity::info)
@@ -124,6 +133,14 @@ void connection::add_track(track_ptr track_) {
   auto track_casted = dynamic_cast<video_track *>(track_.get());
   BOOST_ASSERT(track_casted);
   track_casted->link_to_webrtc(get_natives());
+}
+
+void connection::add_ice_candidate(const ice_candidate &candidate) {
+  BOOST_LOG_SEV(logger, logging::severity::info)
+      << "adding ice_candidate:" << candidate;
+  auto mlineindex_casted = static_cast<gint>(candidate.mlineindex);
+  g_signal_emit_by_name(webrtc, "add-ice-candidate", mlineindex_casted,
+                        candidate.sdp.c_str());
 }
 
 connection::state connection::get_state() {
@@ -238,6 +255,27 @@ void connection::on_offer_created(GstPromise *gst_promise, gpointer user_data) {
   session_description result;
   result.sdp = sdp_text;
   result.type_ = session_description::type::offer;
+  promise->set_value(result);
+  delete promise;
+}
+
+void connection::on_answer_created(GstPromise *gst_promise,
+                                   gpointer user_data) {
+  BOOST_ASSERT(gst_promise);
+  BOOST_ASSERT(user_data);
+  auto promise = static_cast<boost::promise<session_description> *>(user_data);
+  const GstStructure *reply = gst_promise_get_reply(gst_promise);
+  GstWebRTCSessionDescription *answer{};
+  gst_structure_get(reply, "answer", GST_TYPE_WEBRTC_SESSION_DESCRIPTION,
+                    &answer, nullptr);
+  gst_promise_unref(gst_promise);
+  gchar *text = gst_sdp_message_as_text(answer->sdp);
+  const std::string sdp_text = text;
+  g_free(text);
+  gst_webrtc_session_description_free(answer);
+  session_description result;
+  result.sdp = sdp_text;
+  result.type_ = session_description::type::answer;
   promise->set_value(result);
   delete promise;
 }

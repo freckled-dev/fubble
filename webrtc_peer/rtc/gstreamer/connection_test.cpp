@@ -62,7 +62,6 @@ struct glib_executor {
     return false;
   }
 };
-} // namespace
 
 using executor_type = boost::executor_adaptor<glib_executor>;
 
@@ -70,33 +69,66 @@ struct GstreamerConnection : ::testing::Test {
   logging::logger logger;
   GMainLoop *main_loop = g_main_loop_new(nullptr, false);
   executor_type executor;
+  std::thread::id main_thread_id = std::this_thread::get_id();
   rtc::gstreamer::connection connection{executor};
   ~GstreamerConnection() { g_main_loop_unref(main_loop); }
 };
 
 struct create_offer_and_set_local_description {
-  rtc::gstreamer::connection &connection;
-  executor_type &executor;
-  boost::promise<void> promise;
+  GstreamerConnection &test;
+  boost::promise<rtc::session_description> promise;
   boost::signals2::scoped_connection negotiation_needed_connection;
-  create_offer_and_set_local_description(rtc::gstreamer::connection &connection,
-                                         executor_type &executor)
-      : connection(connection), executor(executor) {
-    negotiation_needed_connection = connection.on_negotiation_needed.connect(
-        [this] { negotiation_needed(); });
+  rtc::session_description result;
+  create_offer_and_set_local_description(GstreamerConnection &test)
+      : test(test) {
+    negotiation_needed_connection =
+        test.connection.on_negotiation_needed.connect(
+            [this] { negotiation_needed(); });
   }
-  boost::future<void> operator()() { return promise.get_future(); }
+  boost::future<rtc::session_description> operator()() {
+    return promise.get_future();
+  }
   void negotiation_needed() {
+    EXPECT_EQ(std::this_thread::get_id(), test.main_thread_id);
     negotiation_needed_connection.disconnect();
-    connection.create_offer()
-        .then(executor,
-              [this](auto result) {
-                return connection.set_local_description(result.get());
+    test.connection.create_offer()
+        .then(test.executor,
+              [this](auto result_) {
+                result = result_.get();
+                return test.connection.set_local_description(result);
               })
         .unwrap()
-        .then(executor, [this](auto) { promise.set_value(); });
+        .then(test.executor, [this](auto) { promise.set_value(result); });
   }
 };
+
+struct create_connection {
+  create_offer_and_set_local_description &setup;
+  rtc::gstreamer::connection &answering;
+  void operator()() {
+    auto offer = setup();
+    auto &offering = setup.test.connection;
+    auto &executor = setup.test.executor;
+    auto &logger = setup.test.logger;
+    offering.on_ice_candidate.connect(
+        [&](auto candidate) { answering.add_ice_candidate(candidate); });
+    answering.on_ice_candidate.connect(
+        [&](auto candidate) { offering.add_ice_candidate(candidate); });
+    auto on_answer = [&](boost::future<rtc::session_description> answer_) {
+      auto answer = answer_.get();
+      BOOST_LOG_SEV(logger, logging::severity::info)
+          << "got an answer, sdp:" << answer.sdp;
+      answering.set_local_description(answer);
+      offering.set_remote_description(answer);
+    };
+    offer.then(executor, [&](auto description) {
+      answering.set_remote_description(description.get());
+      answering.create_answer().then(executor, std::move(on_answer));
+    });
+  }
+};
+
+} // namespace
 
 TEST_F(GstreamerConnection, SetUp) {
   EXPECT_EQ(connection.get_state(), rtc::gstreamer::connection::state::new_);
@@ -201,11 +233,12 @@ TEST_F(GstreamerConnection, SetDescriptionTwice) {
 TEST_F(GstreamerConnection, IceCandidates) {
   BOOST_LOG_SEV(logger, logging::severity::debug)
       << "thread_id:" << std::this_thread::get_id();
-  create_offer_and_set_local_description setup{connection, executor};
+  create_offer_and_set_local_description setup{*this};
   setup();
   std::vector<rtc::ice_candidate> candidates;
   auto connection_on_ice_candidate = connection.on_ice_candidate.connect(
       [&](const rtc::ice_candidate &candidate) {
+        EXPECT_EQ(main_thread_id, std::this_thread::get_id());
         if (candidates.empty()) {
           connection.close();
           g_main_quit(main_loop);
@@ -227,12 +260,40 @@ TEST_F(GstreamerConnection, IceCandidates) {
   EXPECT_FALSE(candidates.empty());
 }
 
-#if 0
-TEST_F(GstreamerConnection, VideoTrack) {
-  create_offer_and_set_local_description setup{connection, executor};
-  setup();
+TEST_F(GstreamerConnection, Answer) {
+  create_offer_and_set_local_description setup{*this};
+  auto offer = setup();
+  auto track = std::make_shared<rtc::gstreamer::video_track>();
+  connection.add_track(track);
+  rtc::gstreamer::connection answering{executor};
+  connection.on_ice_candidate.connect(
+      [&](auto candidate) { answering.add_ice_candidate(candidate); });
+  auto on_answer = [&](boost::future<rtc::session_description> answer_) {
+    auto answer = answer_.get();
+    EXPECT_EQ(answer.type_, rtc::session_description::type::answer);
+    EXPECT_FALSE(answer.sdp.empty());
+    BOOST_LOG_SEV(logger, logging::severity::info)
+        << "got an answer, sdp:" << answer.sdp;
+    connection.close();
+    answering.close();
+    g_main_quit(main_loop);
+  };
+  offer.then(executor, [&](auto description) {
+    answering.set_remote_description(description.get());
+    answering.create_answer().then(executor, std::move(on_answer));
+  });
+
   connection.run();
+  answering.run();
   g_main_loop_run(main_loop);
+}
+
+#if 0
+TEST_F(GstreamerConnection, Connection) {
+  create_offer_and_set_local_description setup{*this};
+  rtc::gstreamer::connection answering{executor};
+  create_connection connection_creator{setup, answering};
+  connection_creator();
 }
 #endif
 
