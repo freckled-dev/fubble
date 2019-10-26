@@ -1,4 +1,4 @@
-BUILD=time -f 'finished after %E' ninja -C ../../signalling_build/meson
+BUILD=time -f 'finished after %E' ninja -C ../fubble_build/meson
 
 .PHONY: all
 all:

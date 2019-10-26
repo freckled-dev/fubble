@@ -30,7 +30,6 @@ private:
   future_type handshake(connection_ptr connection_, const config &config_);
 
   logging::logger logger;
-  boost::asio::io_context &context;
   boost::executor &executor;
   boost::asio::ip::tcp::resolver resolver;
   connection_creator &creator;
