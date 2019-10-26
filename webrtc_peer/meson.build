@@ -29,6 +29,6 @@ test('webrtc_peer test',
     'ASAN_OPTIONS=fast_unwind_on_malloc=0',
     suppr_option
     ],
-  args: ['--gst-debug=*:3'],
+  args: ['--gst-debug=*:3', '--gtest_shuffle'],
   timeout: 10
   )
