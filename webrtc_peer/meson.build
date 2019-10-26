@@ -5,7 +5,8 @@ evaluation = executable('webrtc_peer_evaluation',
   )
 webrtc_peer = library('webrtc_peer',
   ['rtc/connection.cpp', 'rtc/gstreamer/connection.cpp',
-    'rtc/gstreamer/video_track.cpp', 'rtc/gstreamer/gst_element_deleter.cpp'
+    'rtc/gstreamer/video_track.cpp', 'rtc/gstreamer/gst_element_deleter.cpp',
+    'rtc/ice_candidate.cpp'
     ],
   dependencies: [utils_dep, gstreamer_webrtc_dep, signalling_client_dep],
   install: true
@@ -16,8 +17,9 @@ webrtc_peer_dep = declare_dependency(
   dependencies: [boost_dep, gstreamer_webrtc_dep]
   )
 webrtc_peer_test = executable('webrtc_peer_test',
-  ['rtc/test_main.cpp', 'rtc/gstreamer/connection_test.cpp'],
-  dependencies: [gtest_dep, webrtc_peer_dep, utils_dep]
+  ['rtc/test_main.cpp', 'rtc/gstreamer/connection_test.cpp',
+    'rtc/gstreamer/video_track_test.cpp'],
+  dependencies: [gtest_dep, webrtc_peer_dep, utils_dep, fmt_dep]
   )
 suppr_file = meson.source_root() / 'webrtc_peer/lsan_suppressions'
 suppr_option = 'LSAN_OPTIONS=suppressions=' + suppr_file
@@ -28,5 +30,5 @@ test('webrtc_peer test',
     suppr_option
     ],
   args: ['--gst-debug=*:3'],
-  timeout: 2
+  timeout: 10
   )
