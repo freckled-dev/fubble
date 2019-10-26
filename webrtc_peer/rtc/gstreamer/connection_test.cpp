@@ -260,6 +260,8 @@ TEST_F(GstreamerConnection, IceCandidates) {
   EXPECT_FALSE(candidates.empty());
 }
 
+#if 0 // leads to thread races to heap-use-after-free
+
 TEST_F(GstreamerConnection, Answer) {
   create_offer_and_set_local_description setup{*this};
   auto offer = setup();
@@ -287,6 +289,7 @@ TEST_F(GstreamerConnection, Answer) {
   answering.run();
   g_main_loop_run(main_loop);
 }
+#endif
 
 #if 0
 TEST_F(GstreamerConnection, Connection) {
