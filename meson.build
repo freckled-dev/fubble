@@ -18,6 +18,9 @@ gstreamer_sdp_dep = dependency('gstreamer-sdp-1.0')
 gstreamer_webrtc_dep = declare_dependency(
   dependencies: [gstreamer_webrtc_dep_pkg, gstreamer_sdp_dep]
   )
+google_webrtc_dep = declare_dependency()
+
+disabled = disabler()
 
 subdir('utils')
 subdir('signalling')
