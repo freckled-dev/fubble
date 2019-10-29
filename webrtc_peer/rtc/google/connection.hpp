@@ -3,6 +3,7 @@
 
 #include "logging/logger.hpp"
 #include "rtc/connection.hpp"
+#include <api/candidate.h>
 
 namespace rtc::google {
 class connection : public rtc::connection {
