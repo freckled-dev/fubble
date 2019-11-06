@@ -1,12 +1,16 @@
 project('fubble', 'cpp',
-  meson_version : '>=0.51.0',
+  meson_version : '=0.51.2',
   default_options : ['cpp_std=c++17'])
+# there is a bug in meson 0.52.0. cant use boost with meson
+# https://github.com/mesonbuild/meson/issues/6003
 
 boost_dep_pkg = dependency('boost', modules : [
-  'thread', 'program_options', 'regex', 'log', 'log_setup'
+  'thread', 'program_options', 'regex', 'log', 'log_setup', 'filesystem'
   ])
 boost_dep = declare_dependency(
-    compile_args : '-DBOOST_THREAD_VERSION=5',
+    compile_args : ['-DBOOST_THREAD_VERSION=5'
+      # , '-DBOOST_LOG_DYN_LINK'
+      ],
     dependencies : [boost_dep_pkg]
     )
 gtest_dep = dependency('gtest')

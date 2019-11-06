@@ -9,7 +9,7 @@ project_root_dir="$(git rev-parse --show-toplevel)"
 build_dir="$project_root_dir/../fubble_build"
 prefix_dir="$build_dir/install"
 dependencies_dir="$build_dir/dependencies"
-google_webrtc_dir="$project_root_dir/../google_webrtc"
+google_webrtc_dir="$project_root_dir/.."
 
 rm -rf $build_dir
 mkdir -p $build_dir
@@ -22,8 +22,8 @@ $scripts_dir/get_dependencies_conan
 cd $build_dir
 export PKG_CONFIG_PATH="${dependencies_dir}:${google_webrtc_dir}"
 export BOOST_ROOT=$(pkg-config --variable=prefix boost)
-export CC="ccache clang"
-export CXX="ccache clang++"
+# export CC="ccache clang"
+# export CXX="ccache clang++"
 meson "$source_dir" meson \
   --prefix="$prefix_dir" \
   --fatal-meson-warnings \
@@ -36,4 +36,5 @@ meson "$source_dir" meson \
 #  -Ddefault_library=static \
 
 ln -frs meson/compile_commands.json ..
+ninja -C meson
 
