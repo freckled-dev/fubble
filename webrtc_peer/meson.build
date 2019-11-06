@@ -1,8 +1,3 @@
-evaluation = executable('webrtc_peer_evaluation',
-  ['evaluation.cpp'],
-  dependencies: [utils_dep, gstreamer_webrtc_dep, signalling_client_dep],
-  install: true
-  )
 webrtc_peer = library('webrtc_peer',
   ['rtc/connection.cpp', 'rtc/ice_candidate.cpp'
     ],
