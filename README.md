@@ -6,7 +6,8 @@ conan remote add inexorgame https://api.bintray.com/conan/inexorgame/inexor-cona
 # fedora
 sudo dnf install -y \
   gstreamer1-plugins-bad-free-devel \
-  libasan
+  libasan \
+  libX11-devel
 ```
 
 # conan
