@@ -37,3 +37,11 @@ git checkout -b my_branch refs/remotes/branch-heads/m79
 gclient sync
 ```
 
+list all build args
+```
+gn args --list out/Default
+# the following line will bring up an editor with the set values
+# more information: https://chromium.googlesource.com/chromium/src/tools/gn/+/48062805e19b4697c5fbd926dc649c78b6aaa138/docs/quick_start.md
+gn args out/Default
+```
+

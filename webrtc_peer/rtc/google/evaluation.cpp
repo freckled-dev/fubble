@@ -5,6 +5,10 @@
 #include <api/peer_connection_interface.h>
 #include <api/video_codecs/builtin_video_decoder_factory.h>
 #include <api/video_codecs/builtin_video_encoder_factory.h>
+#include <boost/log/keywords/auto_flush.hpp>
+#include <boost/log/keywords/format.hpp>
+#include <boost/log/utility/setup/common_attributes.hpp>
+#include <boost/log/utility/setup/console.hpp>
 #include <boost/signals2/signal.hpp>
 #include <rtc_base/ssl_adapter.h>
 // #include <modules/audio_device/include/audio_device.h>
@@ -69,15 +73,10 @@ operator<<(std::ostream &out,
 
 class signaling {
 public:
-  void send_ice_candidate(const std::string &candidate,
-                          const std::string &sdp_mid,
-                          const int sdp_mline_index) {
-    (void)candidate;
-    (void)sdp_mid;
-    (void)sdp_mline_index;
-  }
-  void send_offer(const std::string &sdp) { (void)sdp; }
-  void send_answer(const std::string &sdp) { (void)sdp; }
+  boost::signals2::signal<void(const std::string &candidate,
+                               const std::string &sdp_mid,
+                               const int sdp_mline_index)>
+      on_ice_candidate;
   boost::signals2::signal<void(std::string)> on_offer;
   boost::signals2::signal<void(std::string)> on_answer;
 };
@@ -86,9 +85,18 @@ class data_channel_observer : public webrtc::DataChannelObserver {
 public:
   rtc::scoped_refptr<webrtc::DataChannelInterface> data_channel;
   logging::logger logger;
+  bool did_send_echo{};
 
   void OnStateChange() override {
-    BOOST_LOG_SEV(logger, logging::severity::info) << "OnStateChange";
+    BOOST_LOG_SEV(logger, logging::severity::info)
+        << "datachannel OnStateChange";
+    auto state = data_channel->state();
+    if (state != webrtc::DataChannelInterface::DataState::kOpen)
+      return;
+    std::string message{"hello data channel"};
+    webrtc::DataBuffer message_wrapper{message};
+    BOOST_LOG_SEV(logger, logging::severity::info) << "sending a message";
+    data_channel->Send(message_wrapper);
   }
   void OnMessage(const webrtc::DataBuffer &buffer) override {
     const std::string message(buffer.data.data<char>(), buffer.data.size());
@@ -96,6 +104,9 @@ public:
         << "OnMessage, buffer.binary:" << buffer.binary
         << ", message.size():" << message.size();
     BOOST_LOG_SEV(logger, logging::severity::info) << message;
+    if (did_send_echo)
+      return;
+    did_send_echo = true;
     const std::string answer = "got the message:" + message;
     const webrtc::DataBuffer send_buffer{answer};
     const bool result = data_channel->Send(send_buffer);
@@ -154,7 +165,7 @@ public:
         << "OnIceCandidate:" << candidate_send;
     const std::string sdpMid = candidate->sdp_mid();
     const int sdpMLineIndex = candidate->sdp_mline_index();
-    signaling_.send_ice_candidate(candidate_send, sdpMid, sdpMLineIndex);
+    signaling_.on_ice_candidate(candidate_send, sdpMid, sdpMLineIndex);
   }
 
   // PeerConnectionObserver interface
@@ -261,10 +272,10 @@ public:
     BOOST_LOG_SEV(logger, logging::severity::info)
         << "local description, sdp: " << sdp;
     if (offering) {
-      signaling_.send_offer(sdp);
+      signaling_.on_offer(sdp);
       return;
     }
-    signaling_.send_answer(sdp);
+    signaling_.on_answer(sdp);
   }
   void OnFailure(const std::string &error) override {
     BOOST_LOG_SEV(logger, logging::severity::info)
@@ -277,6 +288,62 @@ public:
   rtc::scoped_refptr<set_session_description_observer> observer;
   const bool offering;
   logging::logger logger;
+};
+
+struct connection {
+  logging::logger logger;
+  signaling &signaling_client;
+  data_channel_observer data_channel_observer_;
+  peer_connection_observer observer{signaling_client, data_channel_observer_};
+  rtc::scoped_refptr<webrtc::PeerConnectionInterface> peer_connection;
+  rtc::scoped_refptr<set_remote_description_observer>
+      set_remote_description_observer_;
+  rtc::scoped_refptr<create_session_description_observer>
+      create_session_description_observer_;
+  rtc::scoped_refptr<webrtc::DataChannelInterface> data_channel;
+
+  connection(signaling &signaling_client,
+             webrtc::PeerConnectionFactoryInterface &peer_connection_factory)
+      : signaling_client(signaling_client) {
+    webrtc::PeerConnectionInterface::RTCConfiguration configuration;
+    configuration.sdp_semantics = webrtc::SdpSemantics::kUnifiedPlan;
+    webrtc::PeerConnectionInterface::IceServer ice_server;
+    ice_server.uri = "stun:stun.l.google.com:19302";
+    // configuration.servers.push_back(ice_server);
+    // should not be done! for testing purposes only! I suddently had to set it.
+    // sctp, dtls https://www.tutorialspoint.com/webrtc/webrtc_sctp
+    // configuration.enable_dtls_srtp.emplace(false);
+    webrtc::PeerConnectionDependencies peer_dependencies{&observer};
+    peer_connection = peer_connection_factory.CreatePeerConnection(
+        configuration, std::move(peer_dependencies));
+    if (!peer_connection)
+      throw std::runtime_error("!peer_connection");
+    set_remote_description_observer_ =
+        new rtc::RefCountedObject<set_remote_description_observer>();
+  }
+  void offer() {
+    bool offering{true};
+    BOOST_LOG_SEV(logger, logging::severity::info) << "creating offer";
+    create_session_description_observer_ =
+        new rtc::RefCountedObject<create_session_description_observer>(
+            signaling_client, peer_connection, offering);
+    data_channel = peer_connection->CreateDataChannel("funny", nullptr);
+    data_channel_observer_.data_channel = data_channel;
+    data_channel->RegisterObserver(&data_channel_observer_);
+    const webrtc::PeerConnectionInterface::RTCOfferAnswerOptions offer_options;
+    peer_connection->CreateOffer(create_session_description_observer_,
+                                 offer_options);
+  }
+  void answer() {
+    BOOST_LOG_SEV(logger, logging::severity::info) << "creating answer";
+    bool offering{false};
+    create_session_description_observer_ =
+        new rtc::RefCountedObject<create_session_description_observer>(
+            signaling_client, peer_connection, offering);
+    const webrtc::PeerConnectionInterface::RTCOfferAnswerOptions answer_options;
+    peer_connection->CreateAnswer(create_session_description_observer_,
+                                  answer_options);
+  }
 };
 
 } // namespace
@@ -292,27 +359,27 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
   // - https://webrtc-review.googlesource.com/c/src/+/89002/4/audio/BUILD.gn
   // - https://webrtc-review.googlesource.com/c/src/+/89062/4/BUILD.gn
 
-  const bool do_offer = false;
-  //  std::cerr << "hello wbrtc, do_offer:" << std::boolalpha << do_offer
-  //            << std::endl;
   // rtc::FlagList::SetFlagsFromCommandLine(&argc, argv, true);
   // rtc::FlagList::Print(nullptr, true);
 
+  boost::log::add_common_attributes();
+  boost::log::add_console_log(
+      std::cout, boost::log::keywords::auto_flush = true,
+      boost::log::keywords::format = "%TimeStamp% %Severity% %Message%");
+
   logging::logger logger;
+  BOOST_LOG_SEV(logger, logging::severity::info) << "starting";
   rtc::InitializeSSL();
-  constexpr bool use_webrtc_threads{/*true*/};
 
   std::unique_ptr<rtc::Thread> network_thread;
   std::unique_ptr<rtc::Thread> worker_thread;
   std::unique_ptr<rtc::Thread> signaling_thread;
-  if (use_webrtc_threads) {
-    network_thread = rtc::Thread::CreateWithSocketServer();
-    worker_thread = rtc::Thread::Create();
-    signaling_thread = rtc::Thread::Create();
-    network_thread->Start();
-    worker_thread->Start();
-    signaling_thread->Start();
-  }
+  network_thread = rtc::Thread::CreateWithSocketServer();
+  worker_thread = rtc::Thread::Create();
+  signaling_thread = rtc::Thread::Create();
+  network_thread->Start();
+  worker_thread->Start();
+  signaling_thread->Start();
 
   rtc::scoped_refptr<webrtc::AudioDeviceModule> default_adm;
   rtc::scoped_refptr<webrtc::AudioMixer> audio_mixer;
@@ -330,118 +397,75 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
   if (!peer_connection_factory)
     throw std::runtime_error("!peer_connection_factory");
 
-  webrtc::PeerConnectionInterface::RTCConfiguration configuration;
-  configuration.sdp_semantics = webrtc::SdpSemantics::kUnifiedPlan;
-  webrtc::PeerConnectionInterface::IceServer ice_server;
-  ice_server.uri = "stun:stun.l.google.com:19302";
-  // configuration.servers.push_back(ice_server);
-  // should not be done! for testing purposes only! I suddently had to set it.
-  // sctp, dtls https://www.tutorialspoint.com/webrtc/webrtc_sctp
-  // configuration.enable_dtls_srtp.emplace(false);
+  std::mutex wait_for_end;
+  wait_for_end.lock();
 
-  signaling signaling_client;
+  signaling signaling_offering;
+  connection offering{signaling_offering, *peer_connection_factory};
 
-  data_channel_observer data_channel_observer_;
-  peer_connection_observer observer{signaling_client, data_channel_observer_};
-  webrtc::PeerConnectionDependencies peer_dependencies{&observer};
+  signaling signaling_answering;
+  connection answering{signaling_answering, *peer_connection_factory};
 
-  BOOST_LOG_SEV(logger, logging::severity::info)
-      << "configuration.servers.size():" << configuration.servers.size();
+  signaling_offering.on_offer.connect([&](const auto &sdp) {
+    webrtc::SdpParseError error;
+    BOOST_LOG_SEV(logger, logging::severity::info)
+        << "we got us an offer, setting sdp:" << sdp;
+    std::unique_ptr<webrtc::SessionDescriptionInterface> session_description(
+        webrtc::CreateSessionDescription(webrtc::SdpType::kOffer, sdp, &error));
+    if (!session_description)
+      throw sdp_parse_error("failed to parse sdp", error);
+    // `SetRemoteDescription` takes ownership of `session_description`
+    BOOST_LOG_SEV(logger, logging::severity::info)
+        << "session_description->type():" << session_description->type();
+    answering.peer_connection->SetRemoteDescription(
+        std::move(session_description),
+        answering.set_remote_description_observer_);
+    answering.answer();
+  });
 
-  [[maybe_unused]] const bool has_value =
-      configuration.ice_check_interval_weak_connectivity.has_value();
-
-  rtc::scoped_refptr<webrtc::PeerConnectionInterface> peer_connection =
-      peer_connection_factory->CreatePeerConnection(
-          configuration, std::move(peer_dependencies));
-  if (!peer_connection)
-    throw std::runtime_error("!peer_connection");
-  rtc::scoped_refptr<set_remote_description_observer>
-      set_remote_description_observer_ =
-          new rtc::RefCountedObject<set_remote_description_observer>();
-
-  rtc::scoped_refptr<create_session_description_observer>
-      create_session_description_observer_ =
-          new rtc::RefCountedObject<create_session_description_observer>(
-              signaling_client, peer_connection, do_offer);
-
-  rtc::scoped_refptr<webrtc::DataChannelInterface> data_channel;
-  if (do_offer) {
-#if 0
-    signaling_client.on_logged_in.connect([&]() {
-      BOOST_LOG_SEV(logger, logging::severity::info) << "creating offer";
-      data_channel = peer_connection->CreateDataChannel("funny", nullptr);
-      data_channel_observer_.data_channel = data_channel;
-      data_channel->RegisterObserver(&data_channel_observer_);
-      const webrtc::PeerConnectionInterface::RTCOfferAnswerOptions
-          offer_options;
-      peer_connection->CreateOffer(create_session_description_observer_,
-                                   offer_options);
-    });
-#endif
-  }
-
-#if 0
-  signaling_client.on_message.connect([&](const nlohmann::json &message) {
-    const auto type = message["type"];
-    if (type == "offer") {
-      const std::string sdp = message["offer"]["sdp"];
-      webrtc::SdpParseError error;
-      std::cerr << "we got us an offer, setting sdp:" << sdp << std::endl;
-      std::unique_ptr<webrtc::SessionDescriptionInterface> session_description(
-          webrtc::CreateSessionDescription(webrtc::SdpType::kOffer, sdp,
-                                           &error));
-      if (!session_description)
-        throw sdp_parse_error("failed to parse sdp", error);
-      // `SetRemoteDescription` takes ownership of `session_description`
-      std::cerr << "session_description->type():" << session_description->type()
-                << std::endl;
-      peer_connection->SetRemoteDescription(std::move(session_description),
-                                            set_remote_description_observer_);
-      const webrtc::PeerConnectionInterface::RTCOfferAnswerOptions
-          answer_options;
-      std::cerr << "creating answer" << std::endl;
-      peer_connection->CreateAnswer(create_session_description_observer_,
-                                    answer_options);
-    }
-    if (type == "answer") {
-      const std::string sdp = message["answer"]["sdp"];
-      webrtc::SdpParseError error;
-      std::cerr << "we got us an answer, setting sdp:" << sdp << std::endl;
-      std::unique_ptr<webrtc::SessionDescriptionInterface> session_description(
-          webrtc::CreateSessionDescription(webrtc::SdpType::kAnswer, sdp,
-                                           &error));
-      if (!session_description)
-        throw sdp_parse_error("failed to parse sdp", error);
-      // `SetRemoteDescription` takes ownership of `session_description`
-      std::cerr << "session_description->type():" << session_description->type()
-                << std::endl;
-      peer_connection->SetRemoteDescription(std::move(session_description),
-                                            set_remote_description_observer_);
-    }
-    if (type == "candidate") {
-      std::cerr << "we got us a candidate" << std::endl;
-      const auto candidate_json = message["candidate"];
-      if (candidate_json.find("sdpMid") == candidate_json.cend())
+  signaling_answering.on_answer.connect([&](const auto &sdp) {
+    webrtc::SdpParseError error;
+    std::cerr << "we got us an answer, setting sdp:" << sdp << std::endl;
+    std::unique_ptr<webrtc::SessionDescriptionInterface> session_description(
+        webrtc::CreateSessionDescription(webrtc::SdpType::kAnswer, sdp,
+                                         &error));
+    if (!session_description)
+      throw sdp_parse_error("failed to parse sdp", error);
+    // `SetRemoteDescription` takes ownership of `session_description`
+    std::cerr << "session_description->type():" << session_description->type()
+              << std::endl;
+    offering.peer_connection->SetRemoteDescription(
+        std::move(session_description),
+        offering.set_remote_description_observer_);
+  });
+  struct on_ice_candidate {
+    connection &connection_;
+    void operator()(const std::string &candidate, const std::string &sdp_mid,
+                    const int sdp_mline_index) {
+      logging::logger logger;
+      BOOST_LOG_SEV(logger, logging::severity::info) << "we got us a candidate";
+      if (candidate.empty())
         return;
-      const auto canditate = candidate_json["candidate"];
-      const std::string canditate_string = canditate;
-      if (canditate_string.empty())
-        return;
-      const auto sdpMid = candidate_json["sdpMid"];
-      const auto sdpMLineIndex = candidate_json["sdpMLineIndex"];
-      // const auto usernameFragment = candidate_json["usernameFragment"];
       webrtc::SdpParseError error;
       auto candidate_parsed = webrtc::CreateIceCandidate(
-          sdpMid, sdpMLineIndex, canditate_string, &error);
+          sdp_mid, sdp_mline_index, candidate, &error);
       if (!candidate_parsed)
         throw sdp_parse_error("failed to parse ice-candidate", error);
-      const bool success = peer_connection->AddIceCandidate(candidate_parsed);
+      const bool success =
+          connection_.peer_connection->AddIceCandidate(candidate_parsed);
       if (!success)
         throw std::runtime_error("peer_connection->AddIceCandidate failed");
     }
-  });
-#endif
+  };
+  on_ice_candidate on_ice_candidate_offering{answering};
+  on_ice_candidate on_ice_candidate_answering{offering};
+  signaling_offering.on_ice_candidate.connect(on_ice_candidate_offering);
+  signaling_answering.on_ice_candidate.connect(on_ice_candidate_answering);
+
+  offering.offer();
+  BOOST_LOG_SEV(logger, logging::severity::info) << "wait_for_end.lock()";
+  wait_for_end.lock();
+  // signaling_thread->Run();
 
   BOOST_LOG_SEV(logger, logging::severity::info)
       << "this is the end as we know it";
