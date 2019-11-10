@@ -11,7 +11,9 @@
 #include <boost/log/utility/setup/common_attributes.hpp>
 #include <boost/log/utility/setup/console.hpp>
 #include <boost/signals2/signal.hpp>
+#include <fmt/format.h>
 #include <media/base/adapted_video_track_source.h>
+#include <modules/video_capture/video_capture_factory.h>
 #include <rtc_base/ssl_adapter.h>
 
 // #include <modules/audio_device/include/audio_device.h>
@@ -309,6 +311,38 @@ struct connection {
     }
 
     {
+      std::unique_ptr<webrtc::VideoCaptureModule::DeviceInfo> info(
+          webrtc::VideoCaptureFactory::CreateDeviceInfo());
+      if (!info)
+        throw std::runtime_error("deviveinfo could not be initialised");
+      int num_devices = info->NumberOfDevices();
+      BOOST_LOG_SEV(logger, logging::severity::info)
+          << "num_devices:" << num_devices;
+      std::vector<std::string> devices;
+      for (int index = 0; index < num_devices; ++index) {
+        constexpr std::size_t string_length = 256;
+        char name[256];
+        char id[256];
+        if (!info->GetDeviceName(index, name, string_length, id, string_length))
+          throw std::runtime_error("could not get device name");
+        BOOST_LOG_SEV(logger, logging::severity::info)
+            << fmt::format("device, id:'{}', name:'{}'", name, id);
+        devices.emplace_back(id);
+      }
+      if (devices.empty())
+        throw std::runtime_error("no camera attached");
+      auto device_id = devices.front();
+      rtc::scoped_refptr<webrtc::VideoCaptureModule> video_device =
+          webrtc::VideoCaptureFactory::Create(device_id.c_str());
+      struct video_device_observer
+          : rtc::VideoSinkInterface<webrtc::VideoFrame> {};
+      video_device_observer video_device_observer_;
+      video_device->RegisterCaptureDataCallback(&video_device_observer_);
+      // TODO register callback
+      // TODO start capture
+    }
+#if 0
+    {
       rtc::scoped_refptr<webrtc::VideoTrackSourceInterface> video_device_ =
           new rtc::RefCountedObject<video_device>();
       rtc::scoped_refptr<webrtc::VideoTrackInterface> video_track_(
@@ -324,6 +358,7 @@ struct connection {
             << result.error().message();
       }
     }
+#endif
 
     const webrtc::PeerConnectionInterface::RTCOfferAnswerOptions offer_options;
     peer_connection->CreateOffer(create_session_description_observer_,
