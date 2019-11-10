@@ -2,6 +2,7 @@
 #include <api/audio_codecs/builtin_audio_decoder_factory.h>
 #include <api/audio_codecs/builtin_audio_encoder_factory.h>
 #include <api/create_peerconnection_factory.h>
+// #include <api/media_stream_interface.h>
 #include <api/peer_connection_interface.h>
 #include <api/video_codecs/builtin_video_decoder_factory.h>
 #include <api/video_codecs/builtin_video_encoder_factory.h>
@@ -10,67 +11,13 @@
 #include <boost/log/utility/setup/common_attributes.hpp>
 #include <boost/log/utility/setup/console.hpp>
 #include <boost/signals2/signal.hpp>
+#include <media/base/adapted_video_track_source.h>
 #include <rtc_base/ssl_adapter.h>
+
 // #include <modules/audio_device/include/audio_device.h>
 // #include <modules/audio_processing/include/audio_processing.h>
-// #include <rtc_base/flags.h>
-// #include <rtc_base/ssladapter.h>
-// #include <api/create_peerconnection_factory.h>
-// #include <api/peer_connection_interface.h>
 
 namespace {
-#if 0
-std::ostream &
-operator<<(std::ostream &out,
-           const webrtc::PeerConnectionInterface::SignalingState print) {
-  const auto render = [&](const std::string &name) -> std::ostream & {
-    return out << name << "(" << static_cast<int>(print) << ")";
-  };
-  switch (print) {
-  case webrtc::PeerConnectionInterface::kStable:
-    return render("kStable");
-  case webrtc::PeerConnectionInterface::kHaveLocalOffer:
-    return render("kHaveLocalOffer");
-  case webrtc::PeerConnectionInterface::kHaveLocalPrAnswer:
-    return render("kHaveLocalPrAnswer");
-  case webrtc::PeerConnectionInterface::kHaveRemoteOffer:
-    return render("kHaveRemoteOffer");
-  case webrtc::PeerConnectionInterface::kHaveRemotePrAnswer:
-    return render("kHaveRemotePrAnswer");
-  case webrtc::PeerConnectionInterface::kClosed:
-    return render("kClosed");
-  }
-  return out << "<undefined>";
-}
-
-std::ostream &
-operator<<(std::ostream &out,
-           const webrtc::PeerConnectionInterface::IceConnectionState print) {
-  const auto render = [&](const std::string &name) -> std::ostream & {
-    return out << name << "(" << static_cast<int>(print) << ")";
-  };
-  switch (print) {
-  case webrtc::PeerConnectionInterface::IceConnectionState::kIceConnectionNew:
-    return render("kIceConnectionNew");
-  case webrtc::PeerConnectionInterface::kIceConnectionChecking:
-    return render("kIceConnectionChecking");
-  case webrtc::PeerConnectionInterface::kIceConnectionConnected:
-    return render("kIceConnectionConnected");
-  case webrtc::PeerConnectionInterface::kIceConnectionCompleted:
-    return render("kIceConnectionCompleted");
-  case webrtc::PeerConnectionInterface::kIceConnectionFailed:
-    return render("kIceConnectionFailed");
-  case webrtc::PeerConnectionInterface::kIceConnectionDisconnected:
-    return render("kIceConnectionDisconnected");
-  case webrtc::PeerConnectionInterface::kIceConnectionClosed:
-    return render("kIceConnectionClosed");
-  case webrtc::PeerConnectionInterface::kIceConnectionMax:
-    return render("kIceConnectionMax");
-  }
-  return out << "<undefined>";
-}
-#endif
-
 class signaling {
 public:
   boost::signals2::signal<void(const std::string &candidate,
@@ -290,6 +237,32 @@ public:
   logging::logger logger;
 };
 
+// struct video_device : webrtc::VideoTrackSourceInterface {};
+struct video_device : rtc::AdaptedVideoTrackSource {
+  ~video_device() override = default;
+  SourceState state() const override {
+    return webrtc::MediaSourceInterface::kLive;
+  }
+  bool remote() const override {
+    // TODO check what this bool indicates
+    return true;
+  }
+
+  // Indicates that parameters suitable for screencasts should be automatically
+  // applied to RtpSenders.
+  // TODO(perkj): Remove these once all known applications have moved to
+  // explicitly setting suitable parameters for screencasts and don't need this
+  // implicit behavior.
+  bool is_screencast() const override { return true; }
+
+  // Indicates that the encoder should denoise video before encoding it.
+  // If it is not set, the default configuration is used which is different
+  // depending on video codec.
+  // TODO(perkj): Remove this once denoising is done by the source, and not by
+  // the encoder.
+  absl::optional<bool> needs_denoising() const override { return {}; }
+};
+
 struct connection {
   logging::logger logger;
   signaling &signaling_client;
@@ -301,10 +274,12 @@ struct connection {
   rtc::scoped_refptr<create_session_description_observer>
       create_session_description_observer_;
   rtc::scoped_refptr<webrtc::DataChannelInterface> data_channel;
+  webrtc::PeerConnectionFactoryInterface &peer_connection_factory;
 
   connection(signaling &signaling_client,
              webrtc::PeerConnectionFactoryInterface &peer_connection_factory)
-      : signaling_client(signaling_client) {
+      : signaling_client(signaling_client),
+        peer_connection_factory(peer_connection_factory) {
     webrtc::PeerConnectionInterface::RTCConfiguration configuration;
     configuration.sdp_semantics = webrtc::SdpSemantics::kUnifiedPlan;
     webrtc::PeerConnectionInterface::IceServer ice_server;
@@ -324,12 +299,32 @@ struct connection {
   void offer() {
     bool offering{true};
     BOOST_LOG_SEV(logger, logging::severity::info) << "creating offer";
-    create_session_description_observer_ =
-        new rtc::RefCountedObject<create_session_description_observer>(
-            signaling_client, peer_connection, offering);
-    data_channel = peer_connection->CreateDataChannel("funny", nullptr);
-    data_channel_observer_.data_channel = data_channel;
-    data_channel->RegisterObserver(&data_channel_observer_);
+    {
+      create_session_description_observer_ =
+          new rtc::RefCountedObject<create_session_description_observer>(
+              signaling_client, peer_connection, offering);
+      data_channel = peer_connection->CreateDataChannel("funny", nullptr);
+      data_channel_observer_.data_channel = data_channel;
+      data_channel->RegisterObserver(&data_channel_observer_);
+    }
+
+    {
+      rtc::scoped_refptr<webrtc::VideoTrackSourceInterface> video_device_ =
+          new rtc::RefCountedObject<video_device>();
+      rtc::scoped_refptr<webrtc::VideoTrackInterface> video_track_(
+          peer_connection_factory.CreateVideoTrack("video_track",
+                                                   video_device_.get()));
+      // main_wnd_->StartLocalRenderer(video_track_);
+
+      std::string stream_id = "stream_id";
+      auto result = peer_connection->AddTrack(video_track_, {stream_id});
+      if (!result.ok()) {
+        BOOST_LOG_SEV(logger, logging::severity::error)
+            << "Failed to add video track to PeerConnection: "
+            << result.error().message();
+      }
+    }
+
     const webrtc::PeerConnectionInterface::RTCOfferAnswerOptions offer_options;
     peer_connection->CreateOffer(create_session_description_observer_,
                                  offer_options);
@@ -465,7 +460,6 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
   offering.offer();
   BOOST_LOG_SEV(logger, logging::severity::info) << "wait_for_end.lock()";
   wait_for_end.lock();
-  // signaling_thread->Run();
 
   BOOST_LOG_SEV(logger, logging::severity::info)
       << "this is the end as we know it";
