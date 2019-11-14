@@ -2,7 +2,6 @@
 #include <api/audio_codecs/builtin_audio_decoder_factory.h>
 #include <api/audio_codecs/builtin_audio_encoder_factory.h>
 #include <api/create_peerconnection_factory.h>
-// #include <api/media_stream_interface.h>
 #include <api/peer_connection_interface.h>
 #include <api/video_codecs/builtin_video_decoder_factory.h>
 #include <api/video_codecs/builtin_video_encoder_factory.h>
@@ -15,9 +14,6 @@
 #include <media/base/adapted_video_track_source.h>
 #include <modules/video_capture/video_capture_factory.h>
 #include <rtc_base/ssl_adapter.h>
-
-// #include <modules/audio_device/include/audio_device.h>
-// #include <modules/audio_processing/include/audio_processing.h>
 
 namespace {
 class signaling {
@@ -71,11 +67,21 @@ public:
   }
 };
 
+struct video_receiver : rtc::VideoSinkInterface<webrtc::VideoFrame> {
+  logging::logger logger;
+  void OnFrame(const webrtc::VideoFrame &frame) {
+    BOOST_LOG_SEV(logger, logging::severity::info) << fmt::format(
+        "reveiver OnFrame(const VideoFrameT& frame), width:'{}', height:'{}'",
+        frame.width(), frame.height());
+  }
+};
+
 class peer_connection_observer : public ::webrtc::PeerConnectionObserver {
 public:
   signaling &signaling_;
   data_channel_observer &data_channel_observer_;
   logging::logger logger;
+  video_receiver video_receiver_;
 
   peer_connection_observer(signaling &signaling_,
                            data_channel_observer &data_channel_observer_)
@@ -128,7 +134,16 @@ public:
   OnAddTrack(rtc::scoped_refptr<webrtc::RtpReceiverInterface> receiver,
              const std::vector<rtc::scoped_refptr<webrtc::MediaStreamInterface>>
                  &streams) override {
-    BOOST_LOG_SEV(logger, logging::severity::info) << "OnAddTrack";
+    rtc::scoped_refptr<webrtc::MediaStreamTrackInterface> track =
+        receiver->track();
+    BOOST_LOG_SEV(logger, logging::severity::info)
+        << "OnAddTrack, streams.size():" << streams.size()
+        << ", kind:" << track->kind();
+    auto track_casted =
+        dynamic_cast<webrtc::VideoTrackInterface *>(track.release());
+    if (track_casted == nullptr)
+      throw std::runtime_error("only video is supported");
+    track_casted->AddOrUpdateSink(&video_receiver_, rtc::VideoSinkWants());
     ::webrtc::PeerConnectionObserver::OnAddTrack(receiver, streams);
   }
   void OnTrack(rtc::scoped_refptr<webrtc::RtpTransceiverInterface> transceiver)
@@ -249,20 +264,26 @@ struct video_device : rtc::AdaptedVideoTrackSource {
     // TODO check what this bool indicates
     return true;
   }
+  void handleFrame(const webrtc::VideoFrame &frame) { OnFrame(frame); }
 
   // Indicates that parameters suitable for screencasts should be automatically
   // applied to RtpSenders.
-  // TODO(perkj): Remove these once all known applications have moved to
-  // explicitly setting suitable parameters for screencasts and don't need this
-  // implicit behavior.
   bool is_screencast() const override { return true; }
 
   // Indicates that the encoder should denoise video before encoding it.
   // If it is not set, the default configuration is used which is different
   // depending on video codec.
-  // TODO(perkj): Remove this once denoising is done by the source, and not by
-  // the encoder.
   absl::optional<bool> needs_denoising() const override { return {}; }
+};
+
+struct video_device_observer : rtc::VideoSinkInterface<webrtc::VideoFrame> {
+  video_device *sink{};
+  logging::logger logger;
+  void OnFrame(const webrtc::VideoFrame &frame) override {
+    BOOST_LOG_SEV(logger, logging::severity::info) << fmt::format(
+        "OnFrame width:{}, height:{}", frame.width(), frame.height());
+    sink->handleFrame(frame);
+  }
 };
 
 struct connection {
@@ -277,6 +298,8 @@ struct connection {
       create_session_description_observer_;
   rtc::scoped_refptr<webrtc::DataChannelInterface> data_channel;
   webrtc::PeerConnectionFactoryInterface &peer_connection_factory;
+  rtc::scoped_refptr<webrtc::VideoCaptureModule> camera;
+  video_device_observer camera_observer;
 
   connection(signaling &signaling_client,
              webrtc::PeerConnectionFactoryInterface &peer_connection_factory)
@@ -320,31 +343,34 @@ struct connection {
           << "num_devices:" << num_devices;
       std::vector<std::string> devices;
       for (int index = 0; index < num_devices; ++index) {
-        constexpr std::size_t string_length = 256;
-        char name[256];
-        char id[256];
-        if (!info->GetDeviceName(index, name, string_length, id, string_length))
-          throw std::runtime_error("could not get device name");
+        constexpr std::size_t device_name_size =
+            webrtc::kVideoCaptureDeviceNameLength;
+        char name[device_name_size];
+        constexpr std::size_t id_size = webrtc::kVideoCaptureUniqueNameLength;
+        char id[id_size];
+        info->GetDeviceName(index, name, device_name_size, id, id_size);
         BOOST_LOG_SEV(logger, logging::severity::info)
-            << fmt::format("device, id:'{}', name:'{}'", name, id);
+            << fmt::format("device, id:'{}', name:'{}'", id, name);
         devices.emplace_back(id);
       }
       if (devices.empty())
         throw std::runtime_error("no camera attached");
       auto device_id = devices.front();
-      rtc::scoped_refptr<webrtc::VideoCaptureModule> video_device =
-          webrtc::VideoCaptureFactory::Create(device_id.c_str());
-      struct video_device_observer
-          : rtc::VideoSinkInterface<webrtc::VideoFrame> {};
-      video_device_observer video_device_observer_;
-      video_device->RegisterCaptureDataCallback(&video_device_observer_);
-      // TODO register callback
-      // TODO start capture
-    }
+      camera = webrtc::VideoCaptureFactory::Create(device_id.c_str());
+      camera->RegisterCaptureDataCallback(&camera_observer);
+      webrtc::VideoCaptureCapability capabilities;
 #if 0
+      capabilities.height = 1080;
+      capabilities.width = 1920;
+      capabilities.maxFPS = 30;
+#endif
+      camera->StartCapture(capabilities);
+    }
     {
-      rtc::scoped_refptr<webrtc::VideoTrackSourceInterface> video_device_ =
+      // rtc::scoped_refptr<webrtc::VideoTrackSourceInterface> video_device_ =
+      rtc::scoped_refptr<video_device> video_device_ =
           new rtc::RefCountedObject<video_device>();
+      camera_observer.sink = video_device_.get();
       rtc::scoped_refptr<webrtc::VideoTrackInterface> video_track_(
           peer_connection_factory.CreateVideoTrack("video_track",
                                                    video_device_.get()));
@@ -358,7 +384,6 @@ struct connection {
             << result.error().message();
       }
     }
-#endif
 
     const webrtc::PeerConnectionInterface::RTCOfferAnswerOptions offer_options;
     peer_connection->CreateOffer(create_session_description_observer_,
