@@ -351,6 +351,17 @@ struct connection {
         info->GetDeviceName(index, name, device_name_size, id, id_size);
         BOOST_LOG_SEV(logger, logging::severity::info)
             << fmt::format("device, id:'{}', name:'{}'", id, name);
+        auto capabilitiesCount = info->NumberOfCapabilities(id);
+        for (auto capabilityIndex = 0; capabilityIndex < capabilitiesCount;
+             ++capabilityIndex) {
+          webrtc::VideoCaptureCapability capability;
+          info->GetCapability(id, capabilityIndex, capability);
+          BOOST_LOG_SEV(logger, logging::severity::info) << fmt::format(
+              "capability, width:{}, height:{}, maxFPS:{}, videoType:{}, "
+              "interlaced:{}",
+              capability.width, capability.height, capability.maxFPS,
+              capability.videoType, capability.interlaced);
+        }
         devices.emplace_back(id);
       }
       if (devices.empty())
