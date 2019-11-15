@@ -241,7 +241,7 @@ TEST_F(GstreamerConnection, IceCandidates) {
         EXPECT_EQ(main_thread_id, std::this_thread::get_id());
         if (candidates.empty()) {
           connection.close();
-          g_main_quit(main_loop);
+          g_main_loop_quit(main_loop);
         }
         candidates.push_back(candidate);
         auto ice_gathering_state = connection.get_ice_gathering_state();
@@ -260,7 +260,7 @@ TEST_F(GstreamerConnection, IceCandidates) {
   EXPECT_FALSE(candidates.empty());
 }
 
-#if 0 // leads to thread races to heap-use-after-free
+#if 1 // leads to thread races to heap-use-after-free
 
 TEST_F(GstreamerConnection, Answer) {
   create_offer_and_set_local_description setup{*this};
@@ -278,7 +278,7 @@ TEST_F(GstreamerConnection, Answer) {
         << "got an answer, sdp:" << answer.sdp;
     connection.close();
     answering.close();
-    g_main_quit(main_loop);
+    g_main_loop_quit(main_loop);
   };
   offer.then(executor, [&](auto description) {
     answering.set_remote_description(description.get());
