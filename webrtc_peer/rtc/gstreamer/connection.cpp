@@ -65,8 +65,10 @@ gboolean connection::on_pipe_bus_message(GstBus *, GstMessage *message,
   case GST_MESSAGE_EOS:
     BOOST_LOG_SEV(self->logger, logging::severity::info) << "GST_MESSAGE_EOS";
     self->on_closed();
-  default:;
+    break;
+  default:
     // BOOST_LOG_SEV(logger, logging::severity::info) << "unhandled message";
+    break;
   }
   return true;
 }
@@ -358,6 +360,7 @@ GstWebRTCSessionDescription *connection::cast_session_description_to_gst(
     case session_description::type::offer:
       return GST_WEBRTC_SDP_TYPE_OFFER;
     }
+    BOOST_ASSERT(false);
   }();
   GstWebRTCSessionDescription *sdp_casted =
       gst_webrtc_session_description_new(type_casted, sdp);
