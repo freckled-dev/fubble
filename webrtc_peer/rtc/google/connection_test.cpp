@@ -1,5 +1,6 @@
 #include "connection.hpp"
 #include "connection_creator.hpp"
+#include "data_channel.hpp"
 #include <boost/thread/executors/inline_executor.hpp>
 #include <fmt/format.h>
 #include <gtest/gtest.h>
@@ -42,6 +43,12 @@ struct test_peer {
                 return instance->set_remote_description(description.get());
               })
         .unwrap();
+  }
+  void connect_ice_candidates(test_peer &other) {
+    instance->on_ice_candidate.connect(
+        [&](auto candidate) { other.instance->add_ice_candidate(candidate); });
+    other.instance->on_ice_candidate.connect(
+        [&](auto candidate) { instance->add_ice_candidate(candidate); });
   }
 };
 struct wait_for_event {
@@ -118,3 +125,19 @@ TEST_F(GoogleConnection, Answer) {
   EXPECT_EQ(description.type_, ::rtc::session_description::type::answer);
 }
 
+TEST_F(GoogleConnection, DataConnection) {
+  wait_for_event waiter;
+  test_peer offering{creator};
+  test_peer answering{creator};
+  offering.connect_ice_candidates(answering);
+  auto data_channel = offering.instance->create_data_channel();
+  data_channel->on_opened.connect([&] { waiter.event(); });
+  auto offer = offering.create_offer();
+  offering.set_local_description(offer);
+  boost::shared_future<rtc::session_description> answer =
+      answering.set_remote_description(offer).then(
+          [&](auto) { return answering.create_answer().get(); });
+  answering.set_local_description(answer);
+  offering.set_remote_description(answer);
+  waiter.wait();
+}

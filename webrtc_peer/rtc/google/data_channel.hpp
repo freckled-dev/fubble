@@ -11,6 +11,8 @@ public:
   data_channel(::rtc::scoped_refptr<webrtc::DataChannelInterface> native_);
   ~data_channel() override;
 
+  boost::signals2::signal<void()> on_opened;
+
 protected:
   void OnStateChange() override;
   void OnMessage(const webrtc::DataBuffer &buffer) override;
