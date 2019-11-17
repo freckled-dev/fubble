@@ -89,6 +89,21 @@ connection::set_remote_description(const session_description &description) {
   }
 }
 
+void connection::add_ice_candidate(const ice_candidate &candidate) {
+  BOOST_LOG_SEV(logger, logging::severity::info) << "on_ice_candidate";
+  webrtc::SdpParseError error;
+  std::unique_ptr<webrtc::IceCandidateInterface> parsed{
+      webrtc::CreateIceCandidate(candidate.mid, candidate.mlineindex,
+                                 candidate.sdp, &error)};
+  if (!parsed) {
+    auto error_description = fmt::format(
+        "could not parse ice_candidate, description:'{}', line:'{}'",
+        error.description, error.line);
+    throw std::runtime_error(error_description);
+  }
+  native->AddIceCandidate(parsed.get());
+}
+
 void connection::add_track(track_ptr) {}
 
 connection::data_channel_ptr connection::create_data_channel() {
@@ -138,6 +153,7 @@ void connection::OnIceCandidate(
   BOOST_LOG_SEV(logger, logging::severity::info) << "OnIceCandidate";
   ice_candidate result;
   result.mlineindex = candidate->sdp_mline_index();
+  result.mid = candidate->sdp_mid();
   candidate->ToString(&result.sdp);
   on_ice_candidate(result);
 }

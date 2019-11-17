@@ -24,6 +24,6 @@ test('webrtc_google_peer test',
   env: [
     'ASAN_OPTIONS=fast_unwind_on_malloc=0', suppr_option
     ],
-  timeout: 2)
+  timeout: 4)
 
 

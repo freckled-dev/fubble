@@ -303,7 +303,7 @@ void connection::on_description_set(GstPromise *promise_gst,
 void connection::on_gst_ice_candidate(GstElement *, guint mlineindex,
                                       gchar *candidate, gpointer user_data) {
   auto self = cast_user_data_to_connection(user_data);
-  const ice_candidate result{static_cast<int>(mlineindex), candidate};
+  const ice_candidate result{static_cast<int>(mlineindex), "", candidate};
   BOOST_LOG_SEV(self->logger, logging::severity::info)
       << "on_gst_ice_candidate, candidate:" << result;
   BOOST_ASSERT(user_data);

@@ -33,6 +33,8 @@ void data_channel::OnStateChange() {
   const webrtc::DataChannelInterface::DataState state = native->state();
   BOOST_LOG_SEV(logger, logging::severity::info)
       << "OnStateChange, state:" << to_string(state);
+  if (state == webrtc::DataChannelInterface::DataState::kOpen)
+    on_opened();
 }
 
 void data_channel::OnMessage(const webrtc::DataBuffer &buffer) {
