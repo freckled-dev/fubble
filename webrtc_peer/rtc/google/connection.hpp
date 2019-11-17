@@ -14,6 +14,7 @@ public:
   ~connection() override;
   void initialise(rtc::scoped_refptr<::webrtc::PeerConnectionInterface> native);
   boost::future<session_description> create_offer() override;
+  boost::future<session_description> create_answer();
   boost::future<void>
   set_local_description(const session_description &) override;
   boost::future<void>
