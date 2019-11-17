@@ -47,12 +47,17 @@ protected:
     void OnSuccess(webrtc::SessionDescriptionInterface *description) override;
     void OnFailure(const std::string &error) override;
   };
+  struct set_session_description_observer
+      : public webrtc::SetSessionDescriptionObserver {
+    boost::promise<void> promise;
+    logging::logger logger;
+    void OnSuccess() override;
+    void OnFailure(const std::string &error) override;
+  };
 
   logging::logger logger;
   rtc::scoped_refptr<::webrtc::PeerConnectionInterface> native;
   std::vector<data_channel_ptr> data_channels;
-  rtc::scoped_refptr<create_session_description_observer>
-      create_session_description_observer_;
 };
 } // namespace rtc::google
 

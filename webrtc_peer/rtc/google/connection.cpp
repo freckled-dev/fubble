@@ -2,8 +2,33 @@
 #include "data_channel.hpp"
 #include <boost/uuid/random_generator.hpp>
 #include <boost/uuid/uuid_io.hpp>
+#include <fmt/format.h>
 
 using namespace rtc::google;
+
+namespace {
+std::unique_ptr<::webrtc::SessionDescriptionInterface>
+cast_session_description(const rtc::session_description &description) {
+  webrtc::SdpParseError error;
+  auto type_casted = [&] {
+    if (description.type_ == rtc::session_description::type::answer)
+      return webrtc::SdpType::kAnswer;
+    return webrtc::SdpType::kOffer;
+  }();
+  auto casted =
+      webrtc::CreateSessionDescription(type_casted, description.sdp, &error);
+  if (casted)
+    return casted;
+  auto error_description =
+      fmt::format("sdp parsing error, description:'{}', line:{}",
+                  error.description, error.line);
+  throw std::runtime_error(error_description);
+#if 0
+    return boost::make_exceptional_future<void>(
+        std::runtime_error(error_description));
+#endif
+}
+} // namespace
 
 connection::~connection() = default;
 
@@ -15,28 +40,43 @@ void connection::initialise(
 }
 
 boost::future<rtc::session_description> connection::create_offer() {
-  create_session_description_observer_ =
+  auto observer =
       new rtc::RefCountedObject<create_session_description_observer>();
-  create_session_description_observer_->result.type_ =
-      ::rtc::session_description::type::offer;
-  auto result = create_session_description_observer_->promise.get_future();
+  observer->result.type_ = ::rtc::session_description::type::offer;
+  auto result = observer->promise.get_future();
   const webrtc::PeerConnectionInterface::RTCOfferAnswerOptions offer_options;
-  native->CreateOffer(create_session_description_observer_, offer_options);
+  native->CreateOffer(observer, offer_options);
   return result;
 }
 
 boost::future<void>
-connection::set_local_description(const session_description &) {
-  boost::promise<void> promise;
-  auto result = promise.get_future();
-  return result;
+connection::set_local_description(const session_description &description) {
+  BOOST_LOG_SEV(logger, logging::severity::info) << "set_local_description";
+  try {
+    auto casted = cast_session_description(description);
+    auto observer =
+        new rtc::RefCountedObject<set_session_description_observer>();
+    // watchout. `SetLocalDescription` takes ownerhip
+    native->SetLocalDescription(observer, casted.release());
+    return observer->promise.get_future();
+  } catch (...) {
+    return boost::make_exceptional_future<void>();
+  }
 }
 
 boost::future<void>
-connection::set_remote_description(const session_description &) {
-  boost::promise<void> promise;
-  auto result = promise.get_future();
-  return result;
+connection::set_remote_description(const session_description &description) {
+  BOOST_LOG_SEV(logger, logging::severity::info) << "set_remote_description";
+  try {
+    auto casted = cast_session_description(description);
+    auto observer =
+        new rtc::RefCountedObject<set_session_description_observer>();
+    // watchout. `SetRemoteDescription` takes ownerhip
+    native->SetRemoteDescription(observer, casted.release());
+    return observer->promise.get_future();
+  } catch (...) {
+    return boost::make_exceptional_future<void>();
+  }
 }
 
 void connection::add_track(track_ptr) {}
@@ -102,6 +142,20 @@ void connection::create_session_description_observer::OnFailure(
     const std::string &error) {
   BOOST_LOG_SEV(logger, logging::severity::info)
       << "connection::create_session_description_observer::OnFailure, error:"
+      << error;
+  promise.set_exception(std::runtime_error(error));
+}
+
+void connection::set_session_description_observer::OnSuccess() {
+  BOOST_LOG_SEV(logger, logging::severity::info)
+      << "connection::set_session_description_observer::OnSuccess";
+  promise.set_value();
+}
+
+void connection::set_session_description_observer::OnFailure(
+    const std::string &error) {
+  BOOST_LOG_SEV(logger, logging::severity::info)
+      << "connection::set_session_description_observer::OnFailure, error:"
       << error;
   promise.set_exception(std::runtime_error(error));
 }
