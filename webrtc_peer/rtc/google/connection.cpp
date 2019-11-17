@@ -40,13 +40,23 @@ void connection::initialise(
 }
 
 boost::future<rtc::session_description> connection::create_offer() {
+  BOOST_LOG_SEV(logger, logging::severity::info) << "create_offer";
   auto observer =
       new rtc::RefCountedObject<create_session_description_observer>();
   observer->result.type_ = ::rtc::session_description::type::offer;
-  auto result = observer->promise.get_future();
-  const webrtc::PeerConnectionInterface::RTCOfferAnswerOptions offer_options;
-  native->CreateOffer(observer, offer_options);
-  return result;
+  const webrtc::PeerConnectionInterface::RTCOfferAnswerOptions options;
+  native->CreateOffer(observer, options);
+  return observer->promise.get_future();
+}
+
+boost::future<rtc::session_description> connection::create_answer() {
+  BOOST_LOG_SEV(logger, logging::severity::info) << "create_answer";
+  auto observer =
+      new rtc::RefCountedObject<create_session_description_observer>();
+  observer->result.type_ = ::rtc::session_description::type::answer;
+  const webrtc::PeerConnectionInterface::RTCOfferAnswerOptions options;
+  native->CreateAnswer(observer, options);
+  return observer->promise.get_future();
 }
 
 boost::future<void>
@@ -119,12 +129,17 @@ void connection::OnRenegotiationNeeded() {
 
 void connection::OnIceGatheringChange(
     webrtc::PeerConnectionInterface::IceGatheringState new_state) {
+  BOOST_LOG_SEV(logger, logging::severity::info) << "OnIceGatheringChange";
   (void)new_state;
 }
 
 void connection::OnIceCandidate(
     const ::webrtc::IceCandidateInterface *candidate) {
-  (void)candidate;
+  BOOST_LOG_SEV(logger, logging::severity::info) << "OnIceCandidate";
+  ice_candidate result;
+  result.mlineindex = candidate->sdp_mline_index();
+  candidate->ToString(&result.sdp);
+  on_ice_candidate(result);
 }
 
 void connection::create_session_description_observer::OnSuccess(

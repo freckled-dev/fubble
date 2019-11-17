@@ -15,9 +15,14 @@ struct test_peer {
   std::unique_ptr<rtc::google::connection> instance;
 
   test_peer(rtc::google::connection_creator &creator) : instance(creator()) {}
+  ~test_peer() { instance->close(); }
 
   boost::shared_future<rtc::session_description> create_offer() {
     return instance->create_offer();
+  }
+
+  boost::shared_future<rtc::session_description> create_answer() {
+    return instance->create_answer();
   }
 
   boost::future<void> set_local_description(
@@ -64,7 +69,6 @@ TEST_F(GoogleConnection, Offer) {
       [&] { offer = peer.instance->create_offer(); });
   peer.instance->create_data_channel();
   const ::rtc::session_description description = offer.get();
-  peer.instance->close();
   EXPECT_FALSE(description.sdp.empty());
   EXPECT_EQ(description.type_, ::rtc::session_description::type::offer);
 }
@@ -76,10 +80,22 @@ TEST_F(GoogleConnection, SetLocalDescription) {
       [&] { done = peer.set_local_description(peer.create_offer()); });
   peer.instance->create_data_channel();
   done.get();
-  peer.instance->close();
 }
 
-#if 1
+TEST_F(GoogleConnection, IceCandidate) {
+  wait_for_event waiter;
+  test_peer peer{creator};
+  boost::signals2::connection signal_connection =
+      peer.instance->on_ice_candidate.connect([&](auto candidate) {
+        signal_connection.disconnect();
+        EXPECT_FALSE(candidate.sdp.empty());
+        waiter.event();
+      });
+  peer.instance->create_data_channel();
+  peer.set_local_description(peer.create_offer());
+  waiter.wait();
+}
+
 TEST_F(GoogleConnection, SetRemoteDescription) {
   test_peer offering{creator};
   test_peer answering{creator};
@@ -87,8 +103,18 @@ TEST_F(GoogleConnection, SetRemoteDescription) {
   boost::future<void> done =
       answering.set_remote_description(offering.create_offer());
   done.get();
-  offering.instance->close();
-  answering.instance->close();
 }
-#endif
+
+TEST_F(GoogleConnection, Answer) {
+  test_peer offering{creator};
+  test_peer answering{creator};
+  offering.instance->create_data_channel();
+  auto offer = offering.create_offer();
+  offering.set_local_description(offer);
+  auto answer = answering.set_remote_description(offer).then(
+      [&](auto) { return answering.create_answer().get(); });
+  auto description = answer.get();
+  EXPECT_FALSE(description.sdp.empty());
+  EXPECT_EQ(description.type_, ::rtc::session_description::type::answer);
+}
 
