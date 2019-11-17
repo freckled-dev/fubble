@@ -7,6 +7,7 @@
 #include <api/peer_connection_interface.h>
 
 namespace rtc::google {
+class data_channel;
 class connection : public rtc::connection,
                    public ::webrtc::PeerConnectionObserver {
 public:
@@ -18,6 +19,10 @@ public:
   boost::future<void>
   set_remote_description(const session_description &) override;
   void add_track(track_ptr) override;
+  using data_channel_ptr = std::shared_ptr<data_channel>;
+  // seems like data channels can't be removed!
+  data_channel_ptr create_data_channel();
+  void close();
 
 protected:
   void OnSignalingChange(
@@ -34,9 +39,20 @@ protected:
   void
   OnIceCandidate(const ::webrtc::IceCandidateInterface *candidate) override;
 
-private:
+  struct create_session_description_observer
+      : webrtc::CreateSessionDescriptionObserver {
+    boost::promise<::rtc::session_description> promise;
+    session_description result;
+    logging::logger logger;
+    void OnSuccess(webrtc::SessionDescriptionInterface *description) override;
+    void OnFailure(const std::string &error) override;
+  };
+
   logging::logger logger;
   rtc::scoped_refptr<::webrtc::PeerConnectionInterface> native;
+  std::vector<data_channel_ptr> data_channels;
+  rtc::scoped_refptr<create_session_description_observer>
+      create_session_description_observer_;
 };
 } // namespace rtc::google
 
