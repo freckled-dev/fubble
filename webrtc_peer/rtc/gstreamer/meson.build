@@ -22,7 +22,7 @@ webrtc_gstreamer_peer_test = executable('webrtc_peer_test',
     , disabled
     ]
   )
-suppr_file = meson.source_root() / 'webrtc_peer/lsan_suppressions'
+suppr_file = meson.source_root() / 'webrtc_peer/lsan_suppressions_gstreamer'
 suppr_option = 'LSAN_OPTIONS=suppressions=' + suppr_file
 test('webrtc_gstreamer_peer test',
   webrtc_gstreamer_peer_test,

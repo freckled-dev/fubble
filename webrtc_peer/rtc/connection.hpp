@@ -1,6 +1,7 @@
 #ifndef RTC_CONNECTION_HPP
 #define RTC_CONNECTION_HPP
 
+#include "data_channel_ptr.hpp"
 #include "ice_candidate.hpp"
 #include "session_description.hpp"
 #include "track_ptr.hpp"
@@ -8,9 +9,6 @@
 #include <boost/thread/future.hpp>
 
 namespace rtc {
-class track;
-using track_ptr = std::shared_ptr<track>;
-
 class connection {
 public:
   virtual ~connection();
@@ -22,6 +20,7 @@ public:
   virtual void add_track(track_ptr) = 0;
   boost::signals2::signal<void()> on_negotiation_needed;
   boost::signals2::signal<void(track_ptr)> on_track;
+  boost::signals2::signal<void(data_channel_ptr)> on_data_channel;
   boost::signals2::signal<void(ice_candidate)> on_ice_candidate;
   boost::signals2::signal<void()> on_closed;
 };

@@ -7,6 +7,7 @@
 namespace rtc {
 struct ice_candidate {
   int mlineindex{};
+  std::string mid;
   std::string sdp;
 };
 std::ostream &operator<<(std::ostream &out, const ice_candidate &print);
