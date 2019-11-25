@@ -23,10 +23,6 @@ cast_session_description(const rtc::session_description &description) {
       fmt::format("sdp parsing error, description:'{}', line:{}",
                   error.description, error.line);
   throw std::runtime_error(error_description);
-#if 0
-    return boost::make_exceptional_future<void>(
-        std::runtime_error(error_description));
-#endif
 }
 } // namespace
 
