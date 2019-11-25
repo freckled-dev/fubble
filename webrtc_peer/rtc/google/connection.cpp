@@ -133,8 +133,10 @@ void connection::OnAddTrack(
 }
 
 void connection::OnDataChannel(
-    ::rtc::scoped_refptr<::webrtc::DataChannelInterface> data_channel) {
-  (void)data_channel;
+    ::rtc::scoped_refptr<::webrtc::DataChannelInterface> data_channel_) {
+  auto result = std::make_shared<data_channel>(data_channel_);
+  data_channels.push_back(result);
+  on_data_channel(result);
 }
 
 void connection::OnRenegotiationNeeded() {
