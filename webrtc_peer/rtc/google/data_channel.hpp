@@ -2,16 +2,17 @@
 #define RTC_GOOGLE_DATA_CHANNEL_HPP
 
 #include "logging/logger.hpp"
+#include "rtc/data_channel.hpp"
 #include <api/data_channel_interface.h>
-#include <boost/signals2/signal.hpp>
 
 namespace rtc::google {
-class data_channel : protected ::webrtc::DataChannelObserver {
+class data_channel : protected ::webrtc::DataChannelObserver,
+                     public ::rtc::data_channel {
 public:
   data_channel(::rtc::scoped_refptr<webrtc::DataChannelInterface> native_);
   ~data_channel() override;
 
-  boost::signals2::signal<void()> on_opened;
+  void send(const message &message_) override;
 
 protected:
   void OnStateChange() override;

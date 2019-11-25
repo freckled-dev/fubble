@@ -51,6 +51,47 @@ struct test_peer {
         [&](auto candidate) { instance->add_ice_candidate(candidate); });
   }
 };
+struct connection {
+  test_peer offering;
+  test_peer answering;
+  connection(rtc::google::connection_creator &creator)
+      : offering{creator}, answering{creator} {
+    offering.connect_ice_candidates(answering);
+  }
+  boost::future<void> operator()() {
+    auto offer = offering.create_offer();
+    offering.set_local_description(offer);
+    boost::shared_future<rtc::session_description> answer =
+        answering.set_remote_description(offer).then(
+            [&](auto) { return answering.create_answer().get(); });
+    answering.set_local_description(answer);
+    return offering.set_remote_description(answer);
+  }
+};
+struct add_data_channel {
+private:
+  boost::promise<void> promise_open;
+  boost::promise<void> promise_answering;
+
+public:
+  rtc::data_channel_ptr offering;
+  rtc::data_channel_ptr answering;
+
+  add_data_channel(connection &connection_) {
+    offering = connection_.offering.instance->create_data_channel();
+    connection_.answering.instance->on_data_channel.connect(
+        [this](auto data_channel) {
+          answering = data_channel;
+          promise_answering.set_value();
+        });
+  }
+
+  auto operator()() {
+    offering->on_opened.connect([this]() { promise_open.set_value(); });
+    return boost::when_all(promise_open.get_future(),
+                           promise_answering.get_future());
+  }
+};
 struct wait_for_event {
   std::mutex mutex;
   wait_for_event() { mutex.lock(); }
@@ -126,18 +167,29 @@ TEST_F(GoogleConnection, Answer) {
 }
 
 TEST_F(GoogleConnection, DataConnection) {
+  connection connection_{creator};
+  add_data_channel data_channels{connection_};
+  auto open = data_channels();
+  connection_();
+  open.get();
+  EXPECT_TRUE(data_channels.answering);
+}
+
+TEST_F(GoogleConnection, DataExchange) {
+  connection connection_{creator};
+  add_data_channel data_channels{connection_};
+  auto open = data_channels();
+  connection_();
+  open.get();
+  std::string message{"message"};
   wait_for_event waiter;
-  test_peer offering{creator};
-  test_peer answering{creator};
-  offering.connect_ice_candidates(answering);
-  auto data_channel = offering.instance->create_data_channel();
-  data_channel->on_opened.connect([&] { waiter.event(); });
-  auto offer = offering.create_offer();
-  offering.set_local_description(offer);
-  boost::shared_future<rtc::session_description> answer =
-      answering.set_remote_description(offer).then(
-          [&](auto) { return answering.create_answer().get(); });
-  answering.set_local_description(answer);
-  offering.set_remote_description(answer);
+  data_channels.answering->on_message.connect([&](auto received) {
+    EXPECT_FALSE(received.binary);
+    auto verify = received.to_string();
+    EXPECT_EQ(verify, message);
+    waiter.event();
+  });
+  data_channels.offering->send(message);
   waiter.wait();
 }
+
