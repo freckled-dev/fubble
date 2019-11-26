@@ -1,0 +1,3 @@
+subdir('app')
+subdir('client')
+
