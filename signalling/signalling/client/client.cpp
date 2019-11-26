@@ -15,7 +15,8 @@ client::client::client(boost::executor &executor_,
       connection_creator_(connection_creator_) {}
 
 void client::client::close() {
-  BOOST_ASSERT(connection_);
+  if (!connection_)
+    return;
   connection_->close();
 }
 
