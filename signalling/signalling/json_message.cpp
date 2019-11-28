@@ -28,6 +28,8 @@ json_message::parse(const std::string &message) const {
   if (type == "ice_candidate") {
     ice_candidate result;
     result.sdp = json["sdp"];
+    result.mlineindex = json["mlineindex"];
+    result.mid = json["mid"];
     return result;
   }
   if (type == "create_offer") {
@@ -54,7 +56,10 @@ std::string json_message::serialize(const answer &answer_) const {
   return result.dump();
 }
 std::string json_message::serialize(const ice_candidate &candidate) const {
-  nlohmann::json result = {{"type", "ice_candidate"}, {"sdp", candidate.sdp}};
+  nlohmann::json result = {{"type", "ice_candidate"},
+                           {"sdp", candidate.sdp},
+                           {"mlineindex", candidate.mlineindex},
+                           {"mid", candidate.mid}};
   return result.dump();
 }
 std::string json_message::serialize(const create_offer &) const {
