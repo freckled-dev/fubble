@@ -21,3 +21,5 @@ void exit_signals::async_wait(callback_type callback) {
     callback(error);
   });
 }
+
+void exit_signals::close() { impl->waiter.cancel(); }

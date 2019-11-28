@@ -11,6 +11,7 @@ public:
 
   using callback_type = std::function<void(const boost::system::error_code &)>;
   void async_wait(callback_type callback);
+  void close();
 
 private:
   logging::logger logger;

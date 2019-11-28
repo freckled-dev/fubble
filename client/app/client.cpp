@@ -23,6 +23,8 @@ int main(int argc, char *argv[]) {
   boost::asio::executor executor{context.get_executor()};
   boost::executor_adaptor<executor_asio> boost_executor{context};
 
+  exit_signals signals_{executor};
+
   websocket::connection_creator websocket_connection_creator{context};
   websocket::connector websocket_connector{context, boost_executor,
                                            websocket_connection_creator};
@@ -33,10 +35,10 @@ int main(int argc, char *argv[]) {
   signalling::client::client signaling_client{
       boost_executor, websocket_connector, signalling_connection_creator};
 
+  signaling_client.on_error.connect([&](auto /*error*/) { signals_.close(); });
   signaling_client(config_.signalling_.host, config_.signalling_.service,
                    config_.signalling_.id);
 
-  exit_signals signals_{executor};
   signals_.async_wait([&](auto &error) {
     if (error)
       return;
