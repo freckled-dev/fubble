@@ -181,7 +181,9 @@ TEST_F(Server, SendReceiveIceCandidate) {
     EXPECT_EQ(candidate.sdp, sdp);
     close();
   });
-  client_.on_create_offer.connect([&] { client_.send_ice_candidate({sdp}); });
+  client_.on_create_offer.connect([&] {
+    client_.send_ice_candidate({0, "mline", sdp});
+  });
   context.run();
   EXPECT_TRUE(called);
 }
@@ -203,4 +205,3 @@ TEST_F(Server, Close) {
   context.run();
   EXPECT_TRUE(called);
 }
-

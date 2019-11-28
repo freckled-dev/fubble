@@ -14,12 +14,12 @@ public:
   ~connection() override;
   void initialise(rtc::scoped_refptr<::webrtc::PeerConnectionInterface> native);
   boost::future<session_description> create_offer() override;
-  boost::future<session_description> create_answer();
+  boost::future<session_description> create_answer() override;
   boost::future<void>
   set_local_description(const session_description &) override;
   boost::future<void>
   set_remote_description(const session_description &) override;
-  void add_ice_candidate(const ice_candidate &candidate);
+  void add_ice_candidate(const ice_candidate &candidate) override;
   void add_track(track_ptr) override;
   using data_channel_ptr = std::shared_ptr<data_channel>;
   // seems like data channels can't be removed!

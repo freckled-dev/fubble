@@ -119,7 +119,7 @@ TEST_F(RegistrationHandler, AnswerSend) {
 TEST_F(RegistrationHandler, IceCandidateToAnswer) {
   const auto offering = add_connection(handler);
   const auto answering = add_connection(handler);
-  signalling::ice_candidate candidate{"candidate"};
+  signalling::ice_candidate candidate{0, "mline", "candidate"};
   offering->on_ice_candidate(candidate);
   EXPECT_EQ(answering->candidates.front(), candidate);
 }
@@ -127,14 +127,14 @@ TEST_F(RegistrationHandler, IceCandidateToAnswer) {
 TEST_F(RegistrationHandler, IceCandidateToOffer) {
   const auto offering = add_connection(handler);
   const auto answering = add_connection(handler);
-  signalling::ice_candidate candidate{"candidate"};
+  signalling::ice_candidate candidate{0, "mline", "candidate"};
   answering->on_ice_candidate(candidate);
   EXPECT_EQ(offering->candidates.front(), candidate);
 }
 
 TEST_F(RegistrationHandler, IceCandidateLateToAnswer) {
   const auto offering = add_connection(handler);
-  signalling::ice_candidate candidate{"candidate"};
+  signalling::ice_candidate candidate{0, "mline", "candidate"};
   offering->on_ice_candidate(candidate);
   const auto answering = add_connection(handler);
   EXPECT_EQ(answering->candidates.size(), std::size_t{1});
@@ -143,7 +143,7 @@ TEST_F(RegistrationHandler, IceCandidateLateToAnswer) {
 TEST_F(RegistrationHandler, IceCandidatesToAnswer) {
   const auto offering = add_connection(handler);
   const auto answering = add_connection(handler);
-  signalling::ice_candidate candidate{"candidate"};
+  signalling::ice_candidate candidate{0, "mline", "candidate"};
   offering->on_ice_candidate(candidate);
   offering->on_ice_candidate(candidate);
   EXPECT_EQ(answering->candidates.size(), std::size_t{2});

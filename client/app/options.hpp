@@ -8,7 +8,7 @@ struct config {
   struct signalling {
     std::string host{"localhost"};
     std::string service{"http"};
-    std::string id;
+    std::string id{"test"};
   };
   signalling signalling_;
 };

@@ -14,7 +14,7 @@ connection_creator::connection_creator() {
   instance_factory();
 }
 
-std::unique_ptr<connection> connection_creator::operator()() {
+std::unique_ptr<rtc::connection> connection_creator::operator()() {
   webrtc::PeerConnectionInterface::RTCConfiguration configuration;
 #if 0
   configuration.sdp_semantics = webrtc::SdpSemantics::kUnifiedPlan;
