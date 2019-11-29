@@ -102,7 +102,7 @@ void connection::add_ice_candidate(const ice_candidate &candidate) {
 
 void connection::add_track(track_ptr) {}
 
-connection::data_channel_ptr connection::create_data_channel() {
+rtc::data_channel_ptr connection::create_data_channel() {
   auto label = boost::uuids::random_generator()();
   auto label_string = boost::uuids::to_string(label);
   BOOST_LOG_SEV(logger, logging::severity::info)
