@@ -4,6 +4,81 @@
 #include <boost/uuid/uuid_io.hpp>
 #include <fmt/format.h>
 
+namespace std {
+std::ostream &
+operator<<(std::ostream &out,
+           const webrtc::PeerConnectionInterface::SignalingState print) {
+  const auto render = [&](const std::string &name) -> std::ostream & {
+    return out << name << "(" << static_cast<int>(print) << ")";
+  };
+  switch (print) {
+  case webrtc::PeerConnectionInterface::kStable:
+    return render("kStable");
+  case webrtc::PeerConnectionInterface::kHaveLocalOffer:
+    return render("kHaveLocalOffer");
+  case webrtc::PeerConnectionInterface::kHaveLocalPrAnswer:
+    return render("kHaveLocalPrAnswer");
+  case webrtc::PeerConnectionInterface::kHaveRemoteOffer:
+    return render("kHaveRemoteOffer");
+  case webrtc::PeerConnectionInterface::kHaveRemotePrAnswer:
+    return render("kHaveRemotePrAnswer");
+  case webrtc::PeerConnectionInterface::kClosed:
+    return render("kClosed");
+  }
+  BOOST_ASSERT(false && "must not reach");
+  return out << "<undefined>";
+}
+std::ostream &
+operator<<(std::ostream &out,
+           const webrtc::PeerConnectionInterface::PeerConnectionState print) {
+  const auto render = [&](const std::string &name) -> std::ostream & {
+    return out << name << "(" << static_cast<int>(print) << ")";
+  };
+  switch (print) {
+  case webrtc::PeerConnectionInterface::PeerConnectionState::kClosed:
+    return render("kClosed");
+  case webrtc::PeerConnectionInterface::PeerConnectionState::kConnected:
+    return render("kConnected");
+  case webrtc::PeerConnectionInterface::PeerConnectionState::kConnecting:
+    return render("kConnecting");
+  case webrtc::PeerConnectionInterface::PeerConnectionState::kDisconnected:
+    return render("kDisconnected");
+  case webrtc::PeerConnectionInterface::PeerConnectionState::kFailed:
+    return render("kFailed");
+  case webrtc::PeerConnectionInterface::PeerConnectionState::kNew:
+    return render("kNew");
+  }
+  BOOST_ASSERT(false && "must not reach");
+  return out << "<undefined>";
+}
+std::ostream &
+operator<<(std::ostream &out,
+           const webrtc::PeerConnectionInterface::IceConnectionState print) {
+  const auto render = [&](const std::string &name) -> std::ostream & {
+    return out << name << "(" << static_cast<int>(print) << ")";
+  };
+  switch (print) {
+  case webrtc::PeerConnectionInterface::IceConnectionState::kIceConnectionNew:
+    return render("kIceConnectionNew");
+  case webrtc::PeerConnectionInterface::kIceConnectionChecking:
+    return render("kIceConnectionChecking");
+  case webrtc::PeerConnectionInterface::kIceConnectionConnected:
+    return render("kIceConnectionConnected");
+  case webrtc::PeerConnectionInterface::kIceConnectionCompleted:
+    return render("kIceConnectionCompleted");
+  case webrtc::PeerConnectionInterface::kIceConnectionFailed:
+    return render("kIceConnectionFailed");
+  case webrtc::PeerConnectionInterface::kIceConnectionDisconnected:
+    return render("kIceConnectionDisconnected");
+  case webrtc::PeerConnectionInterface::kIceConnectionClosed:
+    return render("kIceConnectionClosed");
+  case webrtc::PeerConnectionInterface::kIceConnectionMax:
+    return render("kIceConnectionMax");
+  }
+  return out << "<undefined>";
+}
+} // namespace std
+
 using namespace rtc::google;
 
 namespace {
@@ -100,7 +175,7 @@ void connection::add_ice_candidate(const ice_candidate &candidate) {
   native->AddIceCandidate(parsed.get());
 }
 
-void connection::add_track(track_ptr) {}
+void connection::add_track(track_ptr) { BOOST_ASSERT(false && "implement"); }
 
 rtc::data_channel_ptr connection::create_data_channel() {
   auto label = boost::uuids::random_generator()();
@@ -115,9 +190,15 @@ rtc::data_channel_ptr connection::create_data_channel() {
 
 void connection::close() { native->Close(); }
 
+void connection::OnConnectionChange(
+    webrtc::PeerConnectionInterface::PeerConnectionState new_state) {
+  BOOST_LOG_SEV(logger, logging::severity::info)
+      << "OnConnectionChange, new_state:" << new_state;
+}
 void connection::OnSignalingChange(
     ::webrtc::PeerConnectionInterface::SignalingState new_state) {
-  (void)new_state;
+  BOOST_LOG_SEV(logger, logging::severity::info)
+      << "OnSignalingChange, new_state:" << new_state;
 }
 
 void connection::OnAddTrack(

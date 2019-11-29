@@ -204,5 +204,6 @@ int main(int argc, char *argv[]) {
   });
 
   context.run();
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "context.run() ended";
   return 0;
 }
