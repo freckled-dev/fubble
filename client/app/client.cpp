@@ -4,24 +4,29 @@
 #include "logging/initialser.hpp"
 #include "options.hpp"
 #include "rtc/connection.hpp"
+#include "rtc/data_channel.hpp"
 #include "rtc/google/connection_creator.hpp"
 #include "signalling/client/connection_creator.hpp"
 #include "signalling/json_message.hpp"
 #include "websocket/connection_creator.hpp"
 #include <boost/asio/io_context.hpp>
+#include <boost/asio/posix/stream_descriptor.hpp>
+#include <boost/asio/read_until.hpp>
+#include <boost/asio/streambuf.hpp>
+#include <iostream>
 
 namespace {
 struct offer_answer_handler {
   boost::executor &executor;
   signalling::client::client &signalling_client;
   rtc::connection &rtc_connection;
-  bool offering{true};
+  bool offering{false};
 
   offer_answer_handler(boost::executor &executor,
                        signalling::client::client &signalling_client,
-                       rtc::connection &rtc_connection, bool offering)
+                       rtc::connection &rtc_connection)
       : executor(executor), signalling_client(signalling_client),
-        rtc_connection(rtc_connection), offering(offering) {
+        rtc_connection(rtc_connection) {
     rtc_connection.on_negotiation_needed.connect([this] { renegotiate(); });
     signalling_client.on_offer.connect([&](auto sdp) { on_offer(sdp); });
     signalling_client.on_answer.connect([&](auto sdp) { on_answer(sdp); });
@@ -79,6 +84,70 @@ struct ice_candidate_handler {
     rtc_connection.add_ice_candidate(candidate_casted);
   }
 };
+struct data_channel_handler {
+  rtc::connection &rtc_connection;
+  rtc::data_channel_ptr data_channel;
+  boost::signals2::signal<void()> on_opened;
+  boost::signals2::signal<void(rtc::message)> on_message;
+
+  data_channel_handler(rtc::connection &rtc_connection)
+      : rtc_connection(rtc_connection) {
+    rtc_connection.on_data_channel.connect([this](auto channel) {
+      BOOST_ASSERT(!data_channel);
+      data_channel = channel;
+      connect_signals();
+    });
+  }
+
+  void add() {
+    BOOST_ASSERT(!data_channel);
+    data_channel = rtc_connection.create_data_channel();
+    connect_signals();
+  }
+
+  void connect_signals() {
+    BOOST_ASSERT(data_channel);
+    data_channel->on_opened.connect([this] { on_opened(); });
+    data_channel->on_message.connect(
+        [this](rtc::message message) { on_message(message); });
+  }
+};
+struct message_writer {
+  boost::asio::posix::stream_descriptor input;
+  data_channel_handler &data_channel;
+  std::vector<std::byte> line;
+
+  message_writer(boost::asio::executor &executor,
+                 data_channel_handler &data_channel)
+      : input{executor, ::dup(STDIN_FILENO)}, data_channel(data_channel) {
+    data_channel.on_opened.connect([&] {
+      start_reading();
+      data_channel.data_channel->on_message.connect(
+          [this](auto message_) { message(message_); });
+    });
+  }
+
+  void message(const rtc::message &message) {
+    std::cout << message.to_string() << std::flush;
+  }
+
+  void start_reading() {
+    boost::asio::async_read_until(
+        input, boost::asio::dynamic_buffer(line), '\n',
+        [this](auto error, auto transferred) { read(error, transferred); });
+  }
+
+  void close() { input.close(); }
+
+  void read(boost::system::error_code error, std::size_t transferred) {
+    if (error)
+      return;
+    rtc::message message{line, false};
+    data_channel.data_channel->send(message);
+    line.erase(line.cbegin(), line.cbegin() + transferred);
+    start_reading();
+  }
+};
 } // namespace
 
 int main(int argc, char *argv[]) {
@@ -105,23 +174,33 @@ int main(int argc, char *argv[]) {
   signalling::json_message signalling_json;
   signalling::client::connection_creator signalling_connection_creator{
       context, boost_executor, signalling_json};
-  signalling::client::client signaling_client{
+  signalling::client::client signalling_client{
       boost_executor, websocket_connector, signalling_connection_creator};
-  signaling_client.on_error.connect([&](auto /*error*/) { signals_.close(); });
+  signalling_client.on_error.connect([&](auto /*error*/) { signals_.close(); });
 
   rtc::google::connection_creator rtc_connection_creator;
   std::unique_ptr<rtc::connection> rtc_connection = rtc_connection_creator();
 
-  signaling_client.on_create_offer.connect([&] {
-    // TODO create rtc connection
+  ice_candidate_handler ice_candidate_handler_{signalling_client,
+                                               *rtc_connection};
+  offer_answer_handler offer_answer_handler_{boost_executor, signalling_client,
+                                             *rtc_connection};
+  data_channel_handler data_channel_handler_{*rtc_connection};
+  message_writer message_writer_{executor, data_channel_handler_};
+
+  signalling_client.on_create_offer.connect([&] {
+    offer_answer_handler_.offering = true;
+    data_channel_handler_.add();
   });
-  signaling_client(config_.signalling_.host, config_.signalling_.service,
-                   config_.signalling_.id);
+  signalling_client(config_.signalling_.host, config_.signalling_.service,
+                    config_.signalling_.id);
 
   signals_.async_wait([&](auto &error) {
     if (error)
       return;
-    signaling_client.close();
+    message_writer_.close();
+    rtc_connection->close();
+    signalling_client.close();
   });
 
   context.run();

@@ -7,7 +7,6 @@
 #include <api/peer_connection_interface.h>
 
 namespace rtc::google {
-class data_channel;
 class connection : public rtc::connection,
                    public ::webrtc::PeerConnectionObserver {
 public:
@@ -21,10 +20,9 @@ public:
   set_remote_description(const session_description &) override;
   void add_ice_candidate(const ice_candidate &candidate) override;
   void add_track(track_ptr) override;
-  using data_channel_ptr = std::shared_ptr<data_channel>;
   // seems like data channels can't be removed!
-  data_channel_ptr create_data_channel();
-  void close();
+  rtc::data_channel_ptr create_data_channel() override;
+  void close() override;
 
 protected:
   void OnSignalingChange(
