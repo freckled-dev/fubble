@@ -10,6 +10,7 @@ namespace google {
 class connection_creator {
 public:
   connection_creator();
+  ~connection_creator();
 
   std::unique_ptr<connection> operator()();
 

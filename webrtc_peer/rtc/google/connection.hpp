@@ -25,6 +25,8 @@ public:
   void close() override;
 
 protected:
+  void OnConnectionChange(
+      webrtc::PeerConnectionInterface::PeerConnectionState new_state) override;
   void OnSignalingChange(
       ::webrtc::PeerConnectionInterface::SignalingState new_state) override;
   void

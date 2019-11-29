@@ -14,6 +14,14 @@ connection_creator::connection_creator() {
   instance_factory();
 }
 
+connection_creator::~connection_creator() {
+#if 0
+  network_thread->Stop();
+  worker_thread->Stop();
+  signaling_thread->Stop();
+#endif
+}
+
 std::unique_ptr<rtc::connection> connection_creator::operator()() {
   webrtc::PeerConnectionInterface::RTCConfiguration configuration;
 #if 0
