@@ -58,7 +58,7 @@ operator<<(std::ostream &out,
     return out << name << "(" << static_cast<int>(print) << ")";
   };
   switch (print) {
-  case webrtc::PeerConnectionInterface::IceConnectionState::kIceConnectionNew:
+  case webrtc::PeerConnectionInterface::kIceConnectionNew:
     return render("kIceConnectionNew");
   case webrtc::PeerConnectionInterface::kIceConnectionChecking:
     return render("kIceConnectionChecking");
@@ -188,7 +188,13 @@ rtc::data_channel_ptr connection::create_data_channel() {
   return result;
 }
 
-void connection::close() { native->Close(); }
+void connection::close() {
+#if 0
+  for (auto &channel : data_channels)
+    channel->close();
+#endif
+  native->Close();
+}
 
 void connection::OnConnectionChange(
     webrtc::PeerConnectionInterface::PeerConnectionState new_state) {
@@ -201,16 +207,24 @@ void connection::OnSignalingChange(
       << "OnSignalingChange, new_state:" << new_state;
 }
 
+void connection::OnStandardizedIceConnectionChange(
+    webrtc::PeerConnectionInterface::IceConnectionState new_state) {
+  BOOST_LOG_SEV(logger, logging::severity::info)
+      << "OnStandardizedIceConnectionChange, new_state:" << new_state;
+}
+
 void connection::OnAddTrack(
     rtc::scoped_refptr<webrtc::RtpReceiverInterface> receiver,
     const std::vector<rtc::scoped_refptr<webrtc::MediaStreamInterface>>
         &streams) {
+  BOOST_LOG_SEV(logger, logging::severity::info) << "OnAddTrack";
   (void)receiver;
   (void)streams;
 }
 
 void connection::OnDataChannel(
     ::rtc::scoped_refptr<::webrtc::DataChannelInterface> data_channel_) {
+  BOOST_LOG_SEV(logger, logging::severity::info) << "OnDataChannel";
   auto result = std::make_shared<data_channel>(data_channel_);
   data_channels.push_back(result);
   on_data_channel(result);
