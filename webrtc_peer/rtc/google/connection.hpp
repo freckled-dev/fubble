@@ -61,6 +61,9 @@ protected:
 
   logging::logger logger;
   rtc::scoped_refptr<::webrtc::PeerConnectionInterface> native;
+  // if we don't save the data_channels, RTCConnection will crash in clode().
+  // Because of pure virtual DataChannel.
+  // It does not help, if we close the data_channel inside its constructor
   std::vector<data_channel_ptr> data_channels;
 };
 } // namespace rtc::google
