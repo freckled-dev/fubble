@@ -21,6 +21,6 @@ TEST_F(JsonMessage, Answer) {
   test_serialziation(parser, answer);
 }
 TEST_F(JsonMessage, IceCandidate) {
-  signalling::ice_candidate ice_candidate{"ice_candidate"};
+  signalling::ice_candidate ice_candidate{0, "mline", "sdp"};
   test_serialziation(parser, ice_candidate);
 }

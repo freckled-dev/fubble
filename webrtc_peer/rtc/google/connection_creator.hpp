@@ -4,11 +4,13 @@
 #include <api/create_peerconnection_factory.h>
 #include <memory>
 
-namespace rtc::google {
+namespace rtc {
 class connection;
+namespace google {
 class connection_creator {
 public:
   connection_creator();
+  ~connection_creator();
 
   std::unique_ptr<connection> operator()();
 
@@ -30,6 +32,7 @@ private:
   std::unique_ptr<webrtc::VideoEncoderFactory> video_encoder;
   rtc::scoped_refptr<webrtc::PeerConnectionFactoryInterface> factory;
 };
-} // namespace rtc::google
+} // namespace google
+} // namespace rtc
 
 #endif

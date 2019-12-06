@@ -3,8 +3,10 @@ test_main = static_library('test_main',
   dependencies: [gtest_dep, boost_dep])
 
 utils = library('utils',
-  ['executor_asio.cpp', 'logging/logger.cpp'],
-  dependencies: [boost_dep],
+  ['executor_asio.cpp', 'logging/logger.cpp', 'logging/initialser.cpp',
+    'exit_signals.cpp'
+    ],
+  dependencies: [boost_dep, fmt_dep],
   install: true
   )
 utils_dep = declare_dependency(
