@@ -189,10 +189,7 @@ rtc::data_channel_ptr connection::create_data_channel() {
 }
 
 void connection::close() {
-#if 0
-  for (auto &channel : data_channels)
-    channel->close();
-#endif
+  // closes and destorys the data channels
   native->Close();
 }
 
