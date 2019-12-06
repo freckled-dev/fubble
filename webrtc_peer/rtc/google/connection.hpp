@@ -7,26 +7,28 @@
 #include <api/peer_connection_interface.h>
 
 namespace rtc::google {
-class data_channel;
 class connection : public rtc::connection,
                    public ::webrtc::PeerConnectionObserver {
 public:
   ~connection() override;
   void initialise(rtc::scoped_refptr<::webrtc::PeerConnectionInterface> native);
   boost::future<session_description> create_offer() override;
-  boost::future<session_description> create_answer();
+  boost::future<session_description> create_answer() override;
   boost::future<void>
   set_local_description(const session_description &) override;
   boost::future<void>
   set_remote_description(const session_description &) override;
-  void add_ice_candidate(const ice_candidate &candidate);
+  void add_ice_candidate(const ice_candidate &candidate) override;
   void add_track(track_ptr) override;
-  using data_channel_ptr = std::shared_ptr<data_channel>;
   // seems like data channels can't be removed!
-  data_channel_ptr create_data_channel();
-  void close();
+  rtc::data_channel_ptr create_data_channel() override;
+  void close() override;
 
 protected:
+  void OnConnectionChange(
+      webrtc::PeerConnectionInterface::PeerConnectionState new_state) override;
+  void OnStandardizedIceConnectionChange(
+      webrtc::PeerConnectionInterface::IceConnectionState new_state) override;
   void OnSignalingChange(
       ::webrtc::PeerConnectionInterface::SignalingState new_state) override;
   void
@@ -59,6 +61,9 @@ protected:
 
   logging::logger logger;
   rtc::scoped_refptr<::webrtc::PeerConnectionInterface> native;
+  // if we don't save the data_channels, RTCConnection will crash in clode().
+  // Because of pure virtual DataChannel.
+  // It does not help, if we close the data_channel inside its constructor
   std::vector<data_channel_ptr> data_channels;
 };
 } // namespace rtc::google

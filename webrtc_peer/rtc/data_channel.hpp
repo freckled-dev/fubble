@@ -8,6 +8,7 @@ namespace rtc {
 class data_channel {
 public:
   virtual ~data_channel() = default;
+  virtual void close() = 0;
   boost::signals2::signal<void()> on_opened;
   boost::signals2::signal<void(const message &)> on_message;
   void send(const std::string &message);
@@ -17,4 +18,3 @@ public:
 } // namespace rtc
 
 #endif
-

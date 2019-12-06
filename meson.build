@@ -29,4 +29,5 @@ disabled = disabler()
 subdir('utils')
 subdir('signalling')
 subdir('webrtc_peer')
+subdir('client')
 

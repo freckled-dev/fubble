@@ -29,6 +29,8 @@ data_channel::data_channel(
 
 data_channel::~data_channel() = default;
 
+void data_channel::close() { native->Close(); }
+
 void data_channel::send(const message &message_) {
   const char *data_ptr = reinterpret_cast<const char *>(message_.data.data());
   rtc::CopyOnWriteBuffer buffer{data_ptr, message_.data.size()};
@@ -40,7 +42,7 @@ void data_channel::send(const message &message_) {
 void data_channel::OnStateChange() {
   const webrtc::DataChannelInterface::DataState state = native->state();
   BOOST_LOG_SEV(logger, logging::severity::info)
-      << "OnStateChange, state:" << to_string(state);
+      << "data channel OnStateChange, state:" << to_string(state);
   if (state == webrtc::DataChannelInterface::DataState::kOpen)
     on_opened();
 }
