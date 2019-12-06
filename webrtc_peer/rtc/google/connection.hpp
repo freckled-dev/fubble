@@ -27,6 +27,8 @@ public:
 protected:
   void OnConnectionChange(
       webrtc::PeerConnectionInterface::PeerConnectionState new_state) override;
+  void OnStandardizedIceConnectionChange(
+      webrtc::PeerConnectionInterface::IceConnectionState new_state) override;
   void OnSignalingChange(
       ::webrtc::PeerConnectionInterface::SignalingState new_state) override;
   void

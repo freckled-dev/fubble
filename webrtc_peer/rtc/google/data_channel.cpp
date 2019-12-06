@@ -29,6 +29,8 @@ data_channel::data_channel(
 
 data_channel::~data_channel() = default;
 
+void data_channel::close() { native->Close(); }
+
 void data_channel::send(const message &message_) {
   const char *data_ptr = reinterpret_cast<const char *>(message_.data.data());
   rtc::CopyOnWriteBuffer buffer{data_ptr, message_.data.size()};

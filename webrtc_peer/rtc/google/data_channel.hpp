@@ -12,6 +12,7 @@ public:
   data_channel(::rtc::scoped_refptr<webrtc::DataChannelInterface> native_);
   ~data_channel() override;
 
+  void close() override;
   void send(const message &message_) override;
 
 protected:

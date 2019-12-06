@@ -137,7 +137,10 @@ struct message_writer {
         [this](auto error, auto transferred) { read(error, transferred); });
   }
 
-  void close() { input.close(); }
+  void close() {
+    boost::system::error_code ignore_error;
+    input.close(ignore_error);
+  }
 
   void read(boost::system::error_code error, std::size_t transferred) {
     if (error)
@@ -191,6 +194,10 @@ int main(int argc, char *argv[]) {
   signalling_client.on_create_offer.connect([&] {
     offer_answer_handler_.offering = true;
     data_channel_handler_.add();
+  });
+  signalling_client.on_closed.connect([&] {
+    message_writer_.close();
+    rtc_connection->close();
   });
   signalling_client(config_.signalling_.host, config_.signalling_.service,
                     config_.signalling_.id);
