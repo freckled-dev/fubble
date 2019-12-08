@@ -9,5 +9,13 @@ boost-di/1.1.0@inexorgame/stable
 pkg_config
 
 [options]
-# boost:shared=True
+boost:shared=True
+# we need to disable context, because cross compilation for arm gets annoying
+boost:without_context=True
+# context only get disabled if fiber and coroutine also get disabled
+boost:without_coroutine=True
+boost:without_fiber=True
+boost:zlib=False
+boost:bzip2=False
+# boost:fPIC=False
 
