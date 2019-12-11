@@ -18,13 +18,19 @@ gtest_dep = dependency('gtest')
 fmt_dep = dependency('fmt')
 json_dep = dependency('jsonformoderncpp')
 boost_di_dep = dependency('boost-di')
-gstreamer_webrtc_dep_pkg = dependency('gstreamer-webrtc-1.0')
-gstreamer_sdp_dep = dependency('gstreamer-sdp-1.0')
+gstreamer_webrtc_dep_pkg = dependency('gstreamer-webrtc-1.0', required : false)
+gstreamer_sdp_dep = dependency('gstreamer-sdp-1.0', required : false)
+if gstreamer_webrtc_dep_pkg.found()
+  gstreamer_webrtc_found = gstreamer_webrtc_dep_pkg
+else
+  gstreamer_webrtc_found = disabled
+endif
 gstreamer_webrtc_dep = declare_dependency(
-  dependencies: [gstreamer_webrtc_dep_pkg, gstreamer_sdp_dep, disabled]
+  dependencies: [gstreamer_webrtc_dep_pkg, gstreamer_sdp_dep,
+    gstreamer_webrtc_found
+    ]
   )
 google_webrtc_dep = dependency('google-webrtc')
-
 
 subdir('utils')
 subdir('signalling')

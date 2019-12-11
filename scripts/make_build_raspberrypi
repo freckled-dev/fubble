@@ -10,6 +10,7 @@ build_dir="$project_root_dir/../fubble_build_raspberrypi"
 prefix_dir="$build_dir/install"
 dependencies_dir="$build_dir/dependencies"
 google_webrtc_dir="$project_root_dir/../google_webrtc/webrtc-checkout/src"
+sysroot="$google_webrtc_dir/build/linux/debian_sid_arm-sysroot"
 
 rm -rf $build_dir
 mkdir -p $build_dir
@@ -25,7 +26,11 @@ rdmd $scripts_dir/google-webrtc_pkg-config_generator/source/app.d \
   > $dependencies_dir/google-webrtc.pc
 
 cd $build_dir
-export PKG_CONFIG_PATH="${dependencies_dir}:$google_webrtc_dir/build/linux/debian_sid_arm-sysroot/usr/lib/pkgconfig"
+# https://autotools.io/pkgconfig/cross-compiling.html
+export PKG_CONFIG_DIR=
+export PKG_CONFIG_SYSROOT_DIR=
+export PKG_CONFIG_PATH="${dependencies_dir}"
+export PKG_CONFIG_LIBDIR="$sysroot/usr/lib/pkgconfig:$sysroot/usr/share/pkgconfig"
 export BOOST_ROOT=$(pkg-config --variable=prefix boost)
 # export CC="ccache clang"
 # export CXX="ccache clang++"
