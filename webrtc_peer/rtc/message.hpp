@@ -1,6 +1,7 @@
 #ifndef RTC_MESSAGE_HPP
 #define RTC_MESSAGE_HPP
 
+#include <cstddef>
 #include <string>
 #include <vector>
 

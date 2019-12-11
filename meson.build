@@ -4,6 +4,7 @@ project('fubble', 'cpp',
 # there is a bug in meson 0.52.0. cant use boost with meson
 # https://github.com/mesonbuild/meson/issues/6003
 
+disabled = disabler()
 boost_dep_pkg = dependency('boost', modules : [
   'thread', 'program_options', 'regex', 'log', 'log_setup', 'filesystem'
   ])
@@ -20,11 +21,10 @@ boost_di_dep = dependency('boost-di')
 gstreamer_webrtc_dep_pkg = dependency('gstreamer-webrtc-1.0')
 gstreamer_sdp_dep = dependency('gstreamer-sdp-1.0')
 gstreamer_webrtc_dep = declare_dependency(
-  dependencies: [gstreamer_webrtc_dep_pkg, gstreamer_sdp_dep]
+  dependencies: [gstreamer_webrtc_dep_pkg, gstreamer_sdp_dep, disabled]
   )
 google_webrtc_dep = dependency('google-webrtc')
 
-disabled = disabler()
 
 subdir('utils')
 subdir('signalling')

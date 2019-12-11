@@ -6,10 +6,16 @@ list possible arguments
 ```
 gn args --list out/my_build
 ```
+notable flags: `rtc_use_x11`, `rtc_use_h264`, `rtc_use_gtk`
 
 ## linux
 
 dependencies: run `install-build-deps.sh` or checkout https://chromium.googlesource.com/chromium/src/+/master/docs/linux_build_instructions.md#notes
+
+because of the abi change https://docs.conan.io/en/latest/howtos/manage_gcc_abi.html#how-to-manage-the-gcc-5-abi
+the define `_GLIBCXX_USE_CXX11_ABI` must be set.
+`use_custom_libcxx_for_host` and `use_custom_libcxx` do that.
+https://stackoverflow.com/questions/47348330/error-linking-webrtc-native-due-to-undefined-reference-to-methods-having-stdst/47384787
 
 ### x64
 ```bash
@@ -22,10 +28,10 @@ https://gn.googlesource.com/gn/+/master/docs/cross_compiles.md
 
 ```bash
 ./build/linux/sysroot_scripts/install-sysroot.py --arch=arm
-gn gen out/arm --args='target_os="linux" target_cpu="arm" is_debug=true cc_wrapper="ccache" use_rtti=true'
+gn gen out/arm --args='target_os="linux" target_cpu="arm" is_debug=true cc_wrapper="ccache" use_rtti=true use_custom_libcxx_for_host=false'
 # arm64
 ./build/linux/sysroot_scripts/install-sysroot.py --arch=arm64
-gn gen out/arm64 --args='target_os="linux" target_cpu="arm64" is_debug=true cc_wrapper="ccache" use_rtti=true'
+gn gen out/arm64 --args='target_os="linux" target_cpu="arm64" is_debug=true cc_wrapper="ccache" use_rtti=true use_custom_libcxx_for_host=false'
 ```
 
 # Notes
