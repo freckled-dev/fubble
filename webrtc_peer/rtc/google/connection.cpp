@@ -116,8 +116,9 @@ boost::future<rtc::session_description> connection::create_offer() {
       new rtc::RefCountedObject<create_session_description_observer>();
   observer->result.type_ = ::rtc::session_description::type::offer;
   const webrtc::PeerConnectionInterface::RTCOfferAnswerOptions options;
+  auto result = observer->promise.get_future();
   native->CreateOffer(observer, options);
-  return observer->promise.get_future();
+  return result;
 }
 
 boost::future<rtc::session_description> connection::create_answer() {
@@ -126,8 +127,9 @@ boost::future<rtc::session_description> connection::create_answer() {
       new rtc::RefCountedObject<create_session_description_observer>();
   observer->result.type_ = ::rtc::session_description::type::answer;
   const webrtc::PeerConnectionInterface::RTCOfferAnswerOptions options;
+  auto result = observer->promise.get_future();
   native->CreateAnswer(observer, options);
-  return observer->promise.get_future();
+  return result;
 }
 
 boost::future<void>
@@ -138,8 +140,9 @@ connection::set_local_description(const session_description &description) {
     auto observer =
         new rtc::RefCountedObject<set_session_description_observer>();
     // watchout. `SetLocalDescription` takes ownerhip
+    auto result = observer->promise.get_future();
     native->SetLocalDescription(observer, casted.release());
-    return observer->promise.get_future();
+    return result;
   } catch (...) {
     return boost::make_exceptional_future<void>();
   }
@@ -153,8 +156,9 @@ connection::set_remote_description(const session_description &description) {
     auto observer =
         new rtc::RefCountedObject<set_session_description_observer>();
     // watchout. `SetRemoteDescription` takes ownerhip
+    auto result = observer->promise.get_future();
     native->SetRemoteDescription(observer, casted.release());
-    return observer->promise.get_future();
+    return result;
   } catch (...) {
     return boost::make_exceptional_future<void>();
   }
