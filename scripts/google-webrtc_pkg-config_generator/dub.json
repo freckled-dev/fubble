@@ -1,0 +1,9 @@
+{
+	"authors": [
+		"Markus Lanner"
+	],
+	"copyright": "Copyright © 2019, Markus Lanner",
+	"description": "A minimal D application.",
+	"license": "proprietary",
+	"name": "google-webrtc_pkg-config_generator"
+}

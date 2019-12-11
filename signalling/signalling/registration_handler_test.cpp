@@ -10,7 +10,7 @@ struct RegistrationHandler : testing::Test {
   signalling::registration_handler handler{creator};
 };
 
-struct mock_connection : signalling::connection {
+struct mock_connection final : signalling::connection {
   ~mock_connection() final { on_closed(); }
   std::optional<signalling::offer> offer;
   void send_offer(const signalling::offer &send) final {

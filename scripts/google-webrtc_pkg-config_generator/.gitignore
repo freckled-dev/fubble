@@ -1,0 +1,15 @@
+.dub
+docs.json
+__dummy.html
+docs/
+/google-webrtc_pkg-config_generator
+google-webrtc_pkg-config_generator.so
+google-webrtc_pkg-config_generator.dylib
+google-webrtc_pkg-config_generator.dll
+google-webrtc_pkg-config_generator.a
+google-webrtc_pkg-config_generator.lib
+google-webrtc_pkg-config_generator-test-*
+*.exe
+*.o
+*.obj
+*.lst

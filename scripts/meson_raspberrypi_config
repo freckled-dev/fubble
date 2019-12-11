@@ -1,0 +1,19 @@
+[binaries]
+c = '/home/mlanner/Development/projects/fubble/google_webrtc/webrtc-checkout/src/third_party/llvm-build/Release+Asserts/bin/clang'
+cpp = '/home/mlanner/Development/projects/fubble/google_webrtc/webrtc-checkout/src/third_party/llvm-build/Release+Asserts/bin/clang++'
+ar = '/home/mlanner/Development/projects/fubble/google_webrtc/webrtc-checkout/src/third_party/llvm-build/Release+Asserts/bin/llvm-ar'
+pkgconfig = '/usr/bin/pkg-config'
+strip = '/usr/bin/strip'
+
+[properties]
+sys_root = '/home/mlanner/Development/projects/fubble/google_webrtc/webrtc-checkout/src/build/linux/debian_sid_arm-sysroot'
+c_link_args = '-fuse-ld=ld.lld'
+cpp_link_args = ['-fuse-ld=/home/mlanner/Development/projects/fubble/google_webrtc/webrtc-checkout/src/third_party/llvm-build/Release+Asserts/bin/ld.lld', '-target', 'arm-linux-gnueabihf', '--sysroot=/home/mlanner/Development/projects/fubble/google_webrtc/webrtc-checkout/src/build/linux/debian_sid_arm-sysroot']
+cpp_args = ['-target', 'arm-linux-gnueabihf', '--sysroot=/home/mlanner/Development/projects/fubble/google_webrtc/webrtc-checkout/src/build/linux/debian_sid_arm-sysroot' ]
+
+[host_machine]
+system = 'linux'
+cpu_family = 'arm'
+cpu = 'armv7hf'
+endian = 'little'
+

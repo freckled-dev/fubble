@@ -6,10 +6,11 @@ cd "$(dirname "$0")"
 scripts_dir="$(pwd)"
 source_dir="$(realpath ..)"
 project_root_dir="$(git rev-parse --show-toplevel)"
-build_dir="$project_root_dir/../fubble_build"
+build_dir="$project_root_dir/../fubble_build_raspberrypi"
 prefix_dir="$build_dir/install"
 dependencies_dir="$build_dir/dependencies"
 google_webrtc_dir="$project_root_dir/../google_webrtc/webrtc-checkout/src"
+sysroot="$google_webrtc_dir/build/linux/debian_sid_arm-sysroot"
 
 rm -rf $build_dir
 mkdir -p $build_dir
@@ -17,30 +18,35 @@ cd $build_dir
 
 mkdir -p $dependencies_dir
 cd $dependencies_dir
-$scripts_dir/get_dependencies_conan
+$scripts_dir/get_dependencies_conan_raspberrypi
 
 # generate google webrtc pkg-config file
 rdmd $scripts_dir/google-webrtc_pkg-config_generator/source/app.d \
-  -s "$google_webrtc_dir" -b "$google_webrtc_dir/out/Default" \
+  -s "$google_webrtc_dir" -b "$google_webrtc_dir/out/arm" \
   > $dependencies_dir/google-webrtc.pc
 
 cd $build_dir
-# multiple paths with `:`
+# https://autotools.io/pkgconfig/cross-compiling.html
+export PKG_CONFIG_DIR=
+export PKG_CONFIG_SYSROOT_DIR=
 export PKG_CONFIG_PATH="${dependencies_dir}"
+export PKG_CONFIG_LIBDIR="$sysroot/usr/lib/pkgconfig:$sysroot/usr/share/pkgconfig"
 export BOOST_ROOT=$(pkg-config --variable=prefix boost)
 # export CC="ccache clang"
 # export CXX="ccache clang++"
 meson "$source_dir" meson \
+  --cross-file="$scripts_dir/meson_raspberrypi_config" \
   --prefix="$prefix_dir" \
   --fatal-meson-warnings \
-  -Db_sanitize=address \
   -Db_lundef=false \
   -Dwarning_level=3 \
   -Dwerror=true
 
+#  -Db_sanitize=address \
 #  -Db_coverage=true \
 #  -Ddefault_library=static \
 
-ln -frs meson/compile_commands.json ..
+# ln -frs meson/compile_commands.json ..
 ninja -C meson
+
 
