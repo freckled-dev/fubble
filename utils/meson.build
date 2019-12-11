@@ -11,12 +11,13 @@ utils = library('utils',
   )
 utils_dep = declare_dependency(
   include_directories: '.',
-  link_with: [utils]
+  link_with: [utils],
+  dependencies: [boost_dep]
   )
 utils_test = executable('utils_test',
   ['executor_asio_test.cpp'],
-  dependencies: [gtest_dep, boost_dep],
-  link_with: [utils, test_main]
+  dependencies: [gtest_dep, utils_dep],
+  link_with: [test_main]
   )
 test('utils test', utils_test)
 
