@@ -16,7 +16,7 @@ webrtc_gstreamer_peer_dep = declare_dependency(
   dependencies: [boost_dep, webrtc_peer_dep, gstreamer_webrtc_dep]
   )
 webrtc_gstreamer_peer_test = executable('webrtc_peer_test',
-  ['../test_main.cpp', 'connection_test.cpp',
+  ['test_main.cpp', 'connection_test.cpp',
     'video_track_test.cpp'],
   dependencies: [gtest_dep, webrtc_gstreamer_peer_dep, utils_dep, fmt_dep
     , disabled

@@ -1,0 +1,31 @@
+target_host=arm-linux-gnueabihf
+standalone_toolchain=/home/mlanner/Development/projects/fubble/google_webrtc/webrtc-checkout/src/build/linux/debian_sid_arm-sysroot
+compiler_path=/home/mlanner/Development/projects/fubble/google_webrtc/webrtc-checkout/src/third_party/llvm-build/Release+Asserts
+sysroot=/home/mlanner/Development/projects/fubble/google_webrtc/webrtc-checkout/src/build/linux/debian_sid_arm-sysroot
+cc_compiler=clang
+cxx_compiler=clang++
+
+[settings]
+os=Linux
+arch=armv7
+compiler=clang
+compiler.version=10
+compiler.libcxx=libstdc++11
+build_type=Debug
+
+[env]
+# CONAN_CMAKE_FIND_ROOT_PATH=$standalone_toolchain/$target_host/sysroot
+PATH=[$compiler_path/bin]
+# CHOST=$target_host
+# AR=$target_host-ar
+# AS=$target_host-as
+# RANLIB=$target_host-ranlib
+# LD=$compiler_path/bin/lld
+# STRIP=$target_host-strip
+CC=$compiler_path/bin/clang
+CXX=$compiler_path/bin/clang++
+CFLAGS=-target $target_host --sysroot $sysroot -march=armv7-a
+CXXFLAGS=-target $target_host --sysroot $sysroot -march=armv7-a
+LDFLAGS=-target $target_host --sysroot $sysroot -march=armv7-a -fuse-ld=$compiler_path/bin/ld.lld
+# -fPIC -fuse-ld=lld
+

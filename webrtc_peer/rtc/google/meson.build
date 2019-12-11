@@ -14,8 +14,9 @@ webrtc_google_peer_dep = declare_dependency(
   dependencies: [boost_dep, webrtc_peer_dep, google_webrtc_dep]
   )
 webrtc_google_peer_test = executable('google_peer_test',
-  ['../test_main.cpp', 'connection_test.cpp'],
-  dependencies: [gtest_dep, webrtc_google_peer_dep, fmt_dep]
+  ['connection_test.cpp'],
+  dependencies: [gtest_dep, webrtc_google_peer_dep, fmt_dep],
+  link_with: [test_main]
   )
 suppr_file = meson.source_root() / 'webrtc_peer/lsan_suppressions_google'
 suppr_option = 'LSAN_OPTIONS=suppressions=' + suppr_file
