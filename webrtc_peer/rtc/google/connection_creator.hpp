@@ -7,12 +7,17 @@
 namespace rtc {
 class connection;
 namespace google {
+class video_track;
+class video_track_source;
 class connection_creator {
 public:
   connection_creator();
   ~connection_creator();
 
-  std::unique_ptr<connection> operator()();
+  std::unique_ptr<connection> create_connection();
+  // TODO take a source (`video_track_adapter`)
+  std::unique_ptr<video_track>
+  create_video_track(const std::shared_ptr<video_track_source> &source);
 
 private:
   void instance_threads();

@@ -5,7 +5,8 @@ evaluation = executable('webrtc_google_peer_evaluation',
   )
 
 webrtc_google_peer = library('webrtc_google_peer',
-  ['connection.cpp', 'connection_creator.cpp', 'data_channel.cpp'
+  ['connection.cpp', 'connection_creator.cpp', 'data_channel.cpp',
+    'video_track.cpp', 'video_track_source.cpp'
     ],
   dependencies: [webrtc_peer_dep, utils_dep, fmt_dep, google_webrtc_dep]
   )

@@ -1,9 +1,13 @@
 #include "connection_creator.hpp"
 #include "connection.hpp"
+#include "video_track.hpp"
+#include "video_track_source.hpp"
 #include <api/audio_codecs/builtin_audio_decoder_factory.h>
 #include <api/audio_codecs/builtin_audio_encoder_factory.h>
 #include <api/video_codecs/builtin_video_decoder_factory.h>
 #include <api/video_codecs/builtin_video_encoder_factory.h>
+#include <boost/uuid/random_generator.hpp>
+#include <boost/uuid/uuid_io.hpp>
 
 using namespace rtc::google;
 
@@ -22,7 +26,7 @@ connection_creator::~connection_creator() {
 #endif
 }
 
-std::unique_ptr<rtc::connection> connection_creator::operator()() {
+std::unique_ptr<rtc::connection> connection_creator::create_connection() {
   webrtc::PeerConnectionInterface::RTCConfiguration configuration;
 #if 0
   configuration.sdp_semantics = webrtc::SdpSemantics::kUnifiedPlan;
@@ -37,6 +41,20 @@ std::unique_ptr<rtc::connection> connection_creator::operator()() {
   if (!native)
     throw std::runtime_error("!peer_connection");
   result->initialise(native);
+  return result;
+}
+
+std::unique_ptr<video_track> connection_creator::create_video_track(
+    const std::shared_ptr<video_track_source> &source) {
+  auto label = boost::uuids::random_generator()();
+  auto label_string = boost::uuids::to_string(label);
+  auto source_adapter = source->source_adapter();
+  rtc::scoped_refptr<webrtc::VideoTrackInterface> native(
+      factory->CreateVideoTrack(label_string, source_adapter.get()));
+  assert(native);
+  if (!native)
+    throw std::runtime_error("could not create video track");
+  auto result = std::make_unique<video_track>(native, source);
   return result;
 }
 

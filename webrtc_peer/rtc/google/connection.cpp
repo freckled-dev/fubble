@@ -1,5 +1,6 @@
 #include "connection.hpp"
 #include "data_channel.hpp"
+#include "track.hpp"
 #include <boost/uuid/random_generator.hpp>
 #include <boost/uuid/uuid_io.hpp>
 #include <fmt/format.h>
@@ -179,7 +180,12 @@ void connection::add_ice_candidate(const ice_candidate &candidate) {
   native->AddIceCandidate(parsed.get());
 }
 
-void connection::add_track(track_ptr) { BOOST_ASSERT(false && "implement"); }
+void connection::add_track(rtc::track_ptr track_) {
+  auto track_casted = std::dynamic_pointer_cast<track>(track_);
+  assert(track_casted);
+  auto native_track = track_casted->native_track();
+  native->AddTrack(native_track, {});
+}
 
 rtc::data_channel_ptr connection::create_data_channel() {
   auto label = boost::uuids::random_generator()();
@@ -193,7 +199,7 @@ rtc::data_channel_ptr connection::create_data_channel() {
 }
 
 void connection::close() {
-  // closes and destorys the data channels
+  // closes and destroys the data channels
   native->Close();
 }
 

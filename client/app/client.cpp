@@ -6,6 +6,7 @@
 #include "rtc/connection.hpp"
 #include "rtc/data_channel.hpp"
 #include "rtc/google/connection_creator.hpp"
+#include "rtc/track_ptr.hpp"
 #include "signalling/client/connection_creator.hpp"
 #include "signalling/json_message.hpp"
 #include "websocket/connection_creator.hpp"
@@ -83,6 +84,26 @@ struct ice_candidate_handler {
                                         candidate.sdp};
     rtc_connection.add_ice_candidate(candidate_casted);
   }
+};
+struct video_track_handler {
+  rtc::connection &rtc_connection;
+  rtc::track_ptr video_track;
+
+  video_track_handler(rtc::connection &rtc_connection)
+      : rtc_connection(rtc_connection) {
+    rtc_connection.on_track.connect([this](auto track) {
+      BOOST_ASSERT(!video_track);
+      video_track = track;
+      connect_signals();
+    });
+  }
+
+  void add() {
+    BOOST_ASSERT(!video_track);
+    // data_channel = rtc_connection.create_data_channel();
+    connect_signals();
+  }
+  void connect_signals() {}
 };
 struct data_channel_handler {
   rtc::connection &rtc_connection;
@@ -182,7 +203,8 @@ int main(int argc, char *argv[]) {
   signalling_client.on_error.connect([&](auto /*error*/) { signals_.close(); });
 
   rtc::google::connection_creator rtc_connection_creator;
-  std::unique_ptr<rtc::connection> rtc_connection = rtc_connection_creator();
+  std::unique_ptr<rtc::connection> rtc_connection =
+      rtc_connection_creator.create_connection();
 
   ice_candidate_handler ice_candidate_handler_{signalling_client,
                                                *rtc_connection};
