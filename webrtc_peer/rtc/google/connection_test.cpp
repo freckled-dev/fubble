@@ -1,6 +1,8 @@
 #include "connection.hpp"
 #include "connection_creator.hpp"
 #include "data_channel.hpp"
+#include "video_track.hpp"
+#include "video_track_source.hpp"
 #include <boost/thread/executors/inline_executor.hpp>
 #include <fmt/format.h>
 #include <gtest/gtest.h>
@@ -15,7 +17,8 @@ struct test_peer {
   boost::inline_executor executor;
   std::unique_ptr<rtc::google::connection> instance;
 
-  test_peer(rtc::google::connection_creator &creator) : instance(creator()) {}
+  test_peer(rtc::google::connection_creator &creator)
+      : instance(creator.create_connection()) {}
   ~test_peer() { instance->close(); }
 
   boost::shared_future<rtc::session_description> create_offer() {
@@ -92,6 +95,13 @@ public:
                            promise_answering.get_future());
   }
 };
+#if 0
+struct add_video_channel {
+  add_video_channel(connection& connection_) {
+    rtc::track_ptr track = 
+  }
+};
+#endif
 struct wait_for_event {
   std::mutex mutex;
   wait_for_event() { mutex.lock(); }
@@ -193,3 +203,10 @@ TEST_F(GoogleConnection, DataExchange) {
   waiter.wait();
 }
 
+TEST_F(GoogleConnection, VideoTrackCreation) {
+  // connection connection_{creator};
+  auto source = std::make_shared<rtc::google::video_track_source>();
+  auto track = creator.create_video_track(source);
+  EXPECT_TRUE(track);
+  // connection_();
+}
