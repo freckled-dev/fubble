@@ -204,9 +204,18 @@ TEST_F(GoogleConnection, DataExchange) {
 }
 
 TEST_F(GoogleConnection, VideoTrackCreation) {
-  // connection connection_{creator};
   auto source = std::make_shared<rtc::google::video_track_source>();
   auto track = creator.create_video_track(source);
   EXPECT_TRUE(track);
-  // connection_();
 }
+
+TEST_F(GoogleConnection, VideoTrackInOffer) {
+  auto source = std::make_shared<rtc::google::video_track_source>();
+  std::shared_ptr<rtc::track> track = creator.create_video_track(source);
+  auto connection = creator.create_connection();
+  connection->add_track(track);
+  auto offer = connection->create_offer();
+  auto offer_ = offer.get();
+  EXPECT_NE(offer_.sdp.find("video"), std::string::npos);
+}
+
