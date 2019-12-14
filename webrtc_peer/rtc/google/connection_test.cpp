@@ -1,6 +1,6 @@
 #include "connection.hpp"
-#include "connection_creator.hpp"
 #include "data_channel.hpp"
+#include "factory.hpp"
 #include "video_track.hpp"
 #include "video_track_source.hpp"
 #include <boost/thread/executors/inline_executor.hpp>
@@ -11,13 +11,13 @@
 namespace {
 struct GoogleConnection : ::testing::Test {
   logging::logger logger;
-  rtc::google::connection_creator creator;
+  rtc::google::factory creator;
 };
 struct test_peer {
   boost::inline_executor executor;
   std::unique_ptr<rtc::google::connection> instance;
 
-  test_peer(rtc::google::connection_creator &creator)
+  test_peer(rtc::google::factory &creator)
       : instance(creator.create_connection()) {}
   ~test_peer() { instance->close(); }
 
@@ -57,7 +57,7 @@ struct test_peer {
 struct connection {
   test_peer offering;
   test_peer answering;
-  connection(rtc::google::connection_creator &creator)
+  connection(rtc::google::factory &creator)
       : offering{creator}, answering{creator} {
     offering.connect_ice_candidates(answering);
   }

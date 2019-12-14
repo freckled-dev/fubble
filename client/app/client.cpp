@@ -5,7 +5,7 @@
 #include "options.hpp"
 #include "rtc/connection.hpp"
 #include "rtc/data_channel.hpp"
-#include "rtc/google/connection_creator.hpp"
+#include "rtc/google/factory.hpp"
 #include "rtc/track_ptr.hpp"
 #include "signalling/client/connection_creator.hpp"
 #include "signalling/json_message.hpp"
@@ -202,7 +202,7 @@ int main(int argc, char *argv[]) {
       boost_executor, websocket_connector, signalling_connection_creator};
   signalling_client.on_error.connect([&](auto /*error*/) { signals_.close(); });
 
-  rtc::google::connection_creator rtc_connection_creator;
+  rtc::google::factory rtc_connection_creator;
   std::unique_ptr<rtc::connection> rtc_connection =
       rtc_connection_creator.create_connection();
 

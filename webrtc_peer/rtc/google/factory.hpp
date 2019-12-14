@@ -1,5 +1,5 @@
-#ifndef RTC_GOOGLE_CONNECTION_CREATOR_HPP
-#define RTC_GOOGLE_CONNECTION_CREATOR_HPP
+#ifndef RTC_GOOGLE_FACTORY_HPP
+#define RTC_GOOGLE_FACTORY_HPP
 
 #include <api/create_peerconnection_factory.h>
 #include <memory>
@@ -9,13 +9,12 @@ class connection;
 namespace google {
 class video_track;
 class video_track_source;
-class connection_creator {
+class factory {
 public:
-  connection_creator();
-  ~connection_creator();
+  factory();
+  ~factory();
 
   std::unique_ptr<connection> create_connection();
-  // TODO take a source (`video_track_adapter`)
   std::unique_ptr<video_track>
   create_video_track(const std::shared_ptr<video_track_source> &source);
 
@@ -35,7 +34,7 @@ private:
   rtc::scoped_refptr<webrtc::AudioEncoderFactory> audio_encoder;
   std::unique_ptr<webrtc::VideoDecoderFactory> video_decoder;
   std::unique_ptr<webrtc::VideoEncoderFactory> video_encoder;
-  rtc::scoped_refptr<webrtc::PeerConnectionFactoryInterface> factory;
+  rtc::scoped_refptr<webrtc::PeerConnectionFactoryInterface> factory_;
 };
 } // namespace google
 } // namespace rtc
