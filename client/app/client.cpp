@@ -156,6 +156,13 @@ int main(int argc, char *argv[]) {
 
   if (config_.video_.send) {
     rtc::google::capture::video::enumerator enumerator;
+    auto devices = enumerator();
+    for (const auto device : devices)
+      BOOST_LOG_SEV(logger, logging::severity::debug)
+          << "capture device:" << device.name;
+    if (devices.empty())
+      throw std::runtime_error("no video capture devices available");
+    return 0;
   }
 
   signalling_client.on_create_offer.connect(
