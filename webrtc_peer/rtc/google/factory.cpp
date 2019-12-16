@@ -1,5 +1,6 @@
 #include "factory.hpp"
 #include "connection.hpp"
+#include "video_source.hpp"
 #include "video_track.hpp"
 #include "video_track_source.hpp"
 #include <api/audio_codecs/builtin_audio_decoder_factory.h>
@@ -39,16 +40,18 @@ std::unique_ptr<rtc::connection> factory::create_connection() {
 }
 
 std::unique_ptr<video_track>
-factory::create_video_track(const std::shared_ptr<video_track_source> &source) {
+factory::create_video_track(const std::shared_ptr<video_source> &source) {
   auto label = boost::uuids::random_generator()();
   auto label_string = boost::uuids::to_string(label);
-  auto source_adapter = source->source_adapter();
+  rtc::scoped_refptr<video_track_source::adapter> source_adapter =
+      new rtc::RefCountedObject<video_track_source::adapter>;
   rtc::scoped_refptr<webrtc::VideoTrackInterface> native(
       factory_->CreateVideoTrack(label_string, source_adapter.get()));
   assert(native);
   if (!native)
     throw std::runtime_error("could not create video track");
-  auto result = std::make_unique<video_track>(native, source);
+  auto result =
+      std::make_unique<video_track_source>(native, source_adapter, source);
   return result;
 }
 

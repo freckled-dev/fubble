@@ -8,6 +8,7 @@
 #include <api/peer_connection_interface.h>
 
 namespace rtc::google {
+// TODO class uses make_shared for tracks instead of extrusive factory
 class connection : public rtc::connection,
                    public ::webrtc::PeerConnectionObserver {
 public:

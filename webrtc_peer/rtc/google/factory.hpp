@@ -8,7 +8,7 @@ namespace rtc {
 class connection;
 namespace google {
 class video_track;
-class video_track_source;
+class video_source;
 class factory {
 public:
   factory();
@@ -16,7 +16,7 @@ public:
 
   std::unique_ptr<connection> create_connection();
   std::unique_ptr<video_track>
-  create_video_track(const std::shared_ptr<video_track_source> &source);
+  create_video_track(const std::shared_ptr<video_source> &source);
 
 private:
   void instance_threads();

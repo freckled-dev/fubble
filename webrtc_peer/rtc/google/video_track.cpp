@@ -4,9 +4,8 @@
 using namespace rtc::google;
 
 video_track::video_track(
-    const rtc::scoped_refptr<webrtc::VideoTrackInterface> &track,
-    const std::shared_ptr<video_track_source> &source)
-    : track(track), source(source) {}
+    const rtc::scoped_refptr<webrtc::VideoTrackInterface> &track)
+    : track(track) {}
 
 video_track::~video_track() = default;
 
