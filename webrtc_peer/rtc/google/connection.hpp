@@ -3,7 +3,7 @@
 
 #include "logging/logger.hpp"
 #include "rtc/connection.hpp"
-#include "track_ptr.hpp"
+#include "video_track_ptr.hpp"
 #include <api/candidate.h>
 #include <api/peer_connection_interface.h>
 
@@ -25,6 +25,7 @@ public:
   // seems like data channels can't be removed!
   rtc::data_channel_ptr create_data_channel() override;
   void close() override;
+  boost::signals2::signal<void(track_ptr)> on_video_track;
 
 protected:
   void OnConnectionChange(
