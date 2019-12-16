@@ -15,7 +15,7 @@ void device::start() {
 
 void device::stop() { device_->StopCapture(); }
 
-void device::OnFrame(const webrtc::VideoFrame &frame) { signal_frame(frame); }
+void device::OnFrame(const webrtc::VideoFrame &frame) { on_frame(frame); }
 
 void device::OnDiscardedFrame() {
   BOOST_LOG_SEV(logger, logging::severity::debug) << "OnDiscardedFrame()";

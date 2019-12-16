@@ -103,7 +103,9 @@ struct video_track_handler {
     // data_channel = rtc_connection.create_data_channel();
     connect_signals();
   }
-  void connect_signals() {}
+  void connect_signals() {
+    // video_track->
+  }
 };
 struct data_channel_handler {
   rtc::connection &rtc_connection;

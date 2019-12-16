@@ -5,11 +5,9 @@
 #include <media/base/adapted_video_track_source.h>
 
 namespace rtc::google {
-class video_track_source;
 class video_track : public track {
 public:
-  video_track(const rtc::scoped_refptr<webrtc::VideoTrackInterface> &track,
-              const std::shared_ptr<video_track_source> &source);
+  video_track(const rtc::scoped_refptr<webrtc::VideoTrackInterface> &track);
   ~video_track();
 
 protected:
@@ -17,9 +15,7 @@ protected:
   native_track() const override;
 
   const rtc::scoped_refptr<webrtc::VideoTrackInterface> track;
-  const std::shared_ptr<video_track_source> source;
 };
 } // namespace rtc::google
 
 #endif
-

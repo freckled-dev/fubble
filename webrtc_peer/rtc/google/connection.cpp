@@ -1,6 +1,7 @@
 #include "connection.hpp"
 #include "data_channel.hpp"
 #include "track.hpp"
+#include "video_track_sink.hpp"
 #include <boost/uuid/random_generator.hpp>
 #include <boost/uuid/uuid_io.hpp>
 #include <fmt/format.h>
@@ -223,10 +224,18 @@ void connection::OnStandardizedIceConnectionChange(
 void connection::OnAddTrack(
     rtc::scoped_refptr<webrtc::RtpReceiverInterface> receiver,
     const std::vector<rtc::scoped_refptr<webrtc::MediaStreamInterface>>
-        &streams) {
+        & /*streams*/) {
   BOOST_LOG_SEV(logger, logging::severity::info) << "OnAddTrack";
-  (void)receiver;
-  (void)streams;
+  rtc::scoped_refptr<webrtc::MediaStreamTrackInterface> track =
+      receiver->track();
+  auto track_casted =
+      dynamic_cast<webrtc::VideoTrackInterface *>(track.release());
+  assert(track_casted != nullptr);
+  if (track_casted == nullptr)
+    return;
+  auto result = std::make_shared<video_track_sink>(track_casted);
+  tracks.push_back(result);
+  on_track(result);
 }
 
 void connection::OnDataChannel(

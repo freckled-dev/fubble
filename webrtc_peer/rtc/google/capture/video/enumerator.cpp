@@ -19,31 +19,11 @@ std::vector<information> enumerator::operator()() {
     constexpr std::size_t id_size = webrtc::kVideoCaptureUniqueNameLength;
     char id[id_size];
     info->GetDeviceName(index, name, device_name_size, id, id_size);
-#if 0
-    auto capabilitiesCount = info->NumberOfCapabilities(id);
-    for (auto capabilityIndex = 0; capabilityIndex < capabilitiesCount;
-         ++capabilityIndex) {
-      webrtc::VideoCaptureCapability capability;
-      info->GetCapability(id, capabilityIndex, capability);
-    }
-#endif
     information item;
     item.id = id;
     item.name = name;
     result.emplace_back(item);
   }
   return result;
-#if 0
-  auto device_id = devices.front();
-  auto camera = webrtc::VideoCaptureFactory::Create(device_id.c_str());
-  camera->RegisterCaptureDataCallback(&camera_observer);
-  webrtc::VideoCaptureCapability capabilities;
-#if 0
-      capabilities.height = 1080;
-      capabilities.width = 1920;
-      capabilities.maxFPS = 30;
-#endif
-  camera->StartCapture(capabilities);
-#endif
 }
 
