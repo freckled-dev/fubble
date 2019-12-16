@@ -47,7 +47,7 @@ dependencies_test = executable('dependencies_test',
   )
 test('dependencies test', dependencies_test)
 
-client = library('client',
+signalling_client = library('signalling_client',
   ['signalling/client/client.cpp', 'signalling/client/connection.cpp',
     'signalling/client/connection_creator.cpp'],
   dependencies: [fmt_dep, websocket_dep, signalling_dep],
@@ -56,7 +56,7 @@ client = library('client',
 signalling_client_dep = declare_dependency(
   include_directories: '.',
   dependencies: [fmt_dep, websocket_dep, signalling_dep, boost_dep],
-  link_with: [client]
+  link_with: [signalling_client]
   )
 
 server = library('server',
@@ -74,7 +74,7 @@ server_dep = declare_dependency(
 server_test = executable('server_test',
   ['signalling/server/server_test.cpp'],
   dependencies: [boost_dep, gtest_dep, fmt_dep, boost_di_dep, server_dep],
-  link_with: [client, test_main]
+  link_with: [signalling_client, test_main]
   )
 test('server test', server_test, timeout: 2)
 

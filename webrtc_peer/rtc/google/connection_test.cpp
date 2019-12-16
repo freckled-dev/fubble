@@ -99,13 +99,6 @@ public:
                            promise_answering.get_future());
   }
 };
-#if 0
-struct add_video_channel {
-  add_video_channel(connection& connection_) {
-    rtc::track_ptr track = 
-  }
-};
-#endif
 struct wait_for_event {
   std::mutex mutex;
   wait_for_event() { mutex.lock(); }
@@ -238,3 +231,4 @@ TEST_F(GoogleConnection, OnVideoTrack) {
   connected.get();
   waiter.wait();
 }
+

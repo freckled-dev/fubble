@@ -1,3 +1,3 @@
-subdir('app')
 subdir('client')
+subdir('app')
 

@@ -3,8 +3,13 @@
 #include "exit_signals.hpp"
 #include "logging/initialser.hpp"
 #include "options.hpp"
+#include "p2p/negotiation/ice_candidates.hpp"
+#include "p2p/negotiation/offer_answer.hpp"
 #include "rtc/connection.hpp"
 #include "rtc/data_channel.hpp"
+#include "rtc/google/capture/video/device.hpp"
+#include "rtc/google/capture/video/enumerator.hpp"
+#include "rtc/google/connection.hpp"
 #include "rtc/google/factory.hpp"
 #include "rtc/track_ptr.hpp"
 #include "signalling/client/connection_creator.hpp"
@@ -17,81 +22,14 @@
 #include <iostream>
 
 namespace {
-struct offer_answer_handler {
-  boost::executor &executor;
-  signalling::client::client &signalling_client;
-  rtc::connection &rtc_connection;
-  bool offering{false};
-
-  offer_answer_handler(boost::executor &executor,
-                       signalling::client::client &signalling_client,
-                       rtc::connection &rtc_connection)
-      : executor(executor), signalling_client(signalling_client),
-        rtc_connection(rtc_connection) {
-    rtc_connection.on_negotiation_needed.connect([this] { renegotiate(); });
-    signalling_client.on_offer.connect([&](auto sdp) { on_offer(sdp); });
-    signalling_client.on_answer.connect([&](auto sdp) { on_answer(sdp); });
-  }
-
-  void renegotiate() {
-    if (!offering)
-      return;
-    auto sdp = rtc_connection.create_offer();
-    sdp.then(executor, [this](auto offer_future) {
-      auto offer = offer_future.get();
-      rtc_connection.set_local_description(offer);
-      signalling::offer offer_casted{offer.sdp};
-      signalling_client.send_offer(offer_casted);
-    });
-  }
-
-  void on_answer(signalling::answer sdp) {
-    rtc::session_description answer_casted{
-        rtc::session_description::type::answer, sdp.sdp};
-    rtc_connection.set_remote_description(answer_casted);
-  }
-
-  void on_offer(signalling::offer sdp) {
-    rtc::session_description sdp_casted{rtc::session_description::type::offer,
-                                        sdp.sdp};
-    rtc_connection.set_remote_description(sdp_casted);
-    rtc_connection.create_answer().then(executor, [this](auto answer_future) {
-      auto answer = answer_future.get();
-      rtc_connection.set_local_description(answer);
-      signalling::answer answer_casted{answer.sdp};
-      signalling_client.send_answer(answer_casted);
-    });
-  }
-};
-struct ice_candidate_handler {
-  signalling::client::client &signalling_client;
-  rtc::connection &rtc_connection;
-  ice_candidate_handler(signalling::client::client &signalling_client,
-                        rtc::connection &rtc_connection)
-      : signalling_client(signalling_client), rtc_connection(rtc_connection) {
-    rtc_connection.on_ice_candidate.connect(
-        [this](const rtc::ice_candidate &candidate) { rtc(candidate); });
-    signalling_client.on_ice_candidate.connect(
-        [this](auto candidate) { signalling(candidate); });
-  }
-  void rtc(const rtc::ice_candidate &candidate) {
-    signalling::ice_candidate candidate_casted{candidate.mlineindex,
-                                               candidate.mid, candidate.sdp};
-    signalling_client.send_ice_candidate(candidate_casted);
-  }
-  void signalling(const signalling::ice_candidate &candidate) {
-    rtc::ice_candidate candidate_casted{candidate.mlineindex, candidate.mid,
-                                        candidate.sdp};
-    rtc_connection.add_ice_candidate(candidate_casted);
-  }
-};
+#if 0
 struct video_track_handler {
-  rtc::connection &rtc_connection;
-  rtc::track_ptr video_track;
+  rtc::google::connection &rtc_connection;
+  rtc::google::video_track_ptr video_track;
 
   video_track_handler(rtc::connection &rtc_connection)
       : rtc_connection(rtc_connection) {
-    rtc_connection.on_track.connect([this](auto track) {
+    rtc_connection.on_video_track.connect([this](auto track) {
       BOOST_ASSERT(!video_track);
       video_track = track;
       connect_signals();
@@ -107,6 +45,7 @@ struct video_track_handler {
     // video_track->
   }
 };
+#endif
 struct data_channel_handler {
   rtc::connection &rtc_connection;
   rtc::data_channel_ptr data_channel;
@@ -208,17 +147,19 @@ int main(int argc, char *argv[]) {
   std::unique_ptr<rtc::connection> rtc_connection =
       rtc_connection_creator.create_connection();
 
-  ice_candidate_handler ice_candidate_handler_{signalling_client,
-                                               *rtc_connection};
-  offer_answer_handler offer_answer_handler_{boost_executor, signalling_client,
-                                             *rtc_connection};
+  client::p2p::negotiation::ice_candidates ice_candidate_handler_{
+      signalling_client, *rtc_connection};
+  client::p2p::negotiation::offer_answer offer_answer_handler_{
+      boost_executor, signalling_client, *rtc_connection};
   data_channel_handler data_channel_handler_{*rtc_connection};
   message_writer message_writer_{executor, data_channel_handler_};
 
-  signalling_client.on_create_offer.connect([&] {
-    offer_answer_handler_.offering = true;
-    data_channel_handler_.add();
-  });
+  if (config_.video_.send) {
+    rtc::google::capture::video::enumerator enumerator;
+  }
+
+  signalling_client.on_create_offer.connect(
+      [&] { data_channel_handler_.add(); });
   signalling_client.on_closed.connect([&] {
     message_writer_.close();
     rtc_connection->close();

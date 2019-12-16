@@ -1,7 +1,6 @@
-client = executable('client',
+client_cli = executable('client',
   ['client.cpp', 'options.cpp'],
-  dependencies: [boost_dep, utils_dep,
-    signalling_client_dep, webrtc_google_peer_dep],
+  dependencies: [client_dep],
   install: true
   )
 
