@@ -7,7 +7,7 @@ video_track::video_track(
     const rtc::scoped_refptr<webrtc::VideoTrackInterface> &track)
     : track(track) {}
 
-video_track::~video_track() = default;
+video_track::~video_track() {}
 
 rtc::scoped_refptr<webrtc::MediaStreamTrackInterface>
 video_track::native_track() const {

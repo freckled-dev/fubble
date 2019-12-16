@@ -228,14 +228,14 @@ void connection::OnAddTrack(
   BOOST_LOG_SEV(logger, logging::severity::info) << "OnAddTrack";
   rtc::scoped_refptr<webrtc::MediaStreamTrackInterface> track =
       receiver->track();
-  auto track_casted =
-      dynamic_cast<webrtc::VideoTrackInterface *>(track.release());
+  auto track_casted = dynamic_cast<webrtc::VideoTrackInterface *>(track.get());
   assert(track_casted != nullptr);
   if (track_casted == nullptr)
     return;
   auto result = std::make_shared<video_track_sink>(track_casted);
   tracks.push_back(result);
   on_track(result);
+  on_video_track(result);
 }
 
 void connection::OnDataChannel(

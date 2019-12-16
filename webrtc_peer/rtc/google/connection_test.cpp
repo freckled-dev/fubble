@@ -57,6 +57,7 @@ struct test_peer {
 struct connection {
   test_peer offering;
   test_peer answering;
+  boost::inline_executor executor;
   connection(rtc::google::factory &creator)
       : offering{creator}, answering{creator} {
     offering.connect_ice_candidates(answering);
@@ -64,6 +65,7 @@ struct connection {
   boost::future<void> operator()() {
     auto offer = offering.create_offer();
     offering.set_local_description(offer);
+    // TODO if a inline_executor is getting used here - it will deadlock
     boost::shared_future<rtc::session_description> answer =
         answering.set_remote_description(offer).then(
             [&](auto) { return answering.create_answer().get(); });
@@ -219,3 +221,20 @@ TEST_F(GoogleConnection, VideoTrackInOffer) {
   EXPECT_NE(offer_.sdp.find("video"), std::string::npos);
 }
 
+#if 1
+TEST_F(GoogleConnection, OnVideoTrack) {
+  connection connection_{creator};
+  auto source = std::make_shared<rtc::google::video_source>();
+  std::shared_ptr<rtc::track> track = creator.create_video_track(source);
+  connection_.offering.instance->add_track(track);
+  wait_for_event waiter;
+  connection_.answering.instance->on_video_track.connect(
+      [&](const auto &track) {
+        EXPECT_TRUE(track);
+        waiter.event();
+      });
+  auto connected = connection_();
+  connected.get();
+  waiter.wait();
+}
+#endif

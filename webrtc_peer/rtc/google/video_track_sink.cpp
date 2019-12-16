@@ -8,7 +8,9 @@ video_track_sink::video_track_sink(
   track->AddOrUpdateSink(this, rtc::VideoSinkWants());
 }
 
-video_track_sink::~video_track_sink() = default;
+video_track_sink::~video_track_sink() {
+  // BOOST_LOG_SEV(logger, logging::severity::debug) << "~video_track_sink()";
+}
 
 void video_track_sink::OnFrame(const webrtc::VideoFrame &frame) {
   on_frame(frame);
