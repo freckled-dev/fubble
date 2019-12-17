@@ -9,7 +9,6 @@
 #include "rtc/data_channel.hpp"
 #include "rtc/google/capture/video/device.hpp"
 #include "rtc/google/capture/video/device_creator.hpp"
-#include "rtc/google/capture/video/device_to_video_source.hpp"
 #include "rtc/google/capture/video/enumerator.hpp"
 #include "rtc/google/connection.hpp"
 #include "rtc/google/factory.hpp"
