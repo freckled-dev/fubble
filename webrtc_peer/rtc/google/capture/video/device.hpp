@@ -12,6 +12,7 @@ class device : public rtc::VideoSinkInterface<webrtc::VideoFrame>,
                public video_source {
 public:
   device(const rtc::scoped_refptr<webrtc::VideoCaptureModule> &native_device);
+  ~device();
 
   void start();
   void stop();

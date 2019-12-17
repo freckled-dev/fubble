@@ -8,6 +8,7 @@ video_track_source::video_track_source(
     const rtc::scoped_refptr<video_track_source::adapter> &source_adapter,
     const std::shared_ptr<video_source> &source)
     : video_track(track), adapter_(source_adapter), source(source) {
+  BOOST_ASSERT(source);
   on_frame_connection = source->on_frame.connect(
       [this](const auto &frame) { handle_frame(frame); });
 }

@@ -186,6 +186,7 @@ void connection::add_track(rtc::track_ptr track_) {
   assert(track_casted);
   auto native_track = track_casted->native_track();
   native->AddTrack(native_track, {});
+  tracks.push_back(track_);
 }
 
 rtc::data_channel_ptr connection::create_data_channel() {

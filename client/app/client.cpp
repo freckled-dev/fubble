@@ -8,9 +8,12 @@
 #include "rtc/connection.hpp"
 #include "rtc/data_channel.hpp"
 #include "rtc/google/capture/video/device.hpp"
+#include "rtc/google/capture/video/device_creator.hpp"
+#include "rtc/google/capture/video/device_to_video_source.hpp"
 #include "rtc/google/capture/video/enumerator.hpp"
 #include "rtc/google/connection.hpp"
 #include "rtc/google/factory.hpp"
+#include "rtc/google/video_track.hpp"
 #include "rtc/track_ptr.hpp"
 #include "signalling/client/connection_creator.hpp"
 #include "signalling/json_message.hpp"
@@ -162,8 +165,17 @@ int main(int argc, char *argv[]) {
           << "capture device:" << device.name;
     if (devices.empty())
       throw std::runtime_error("no video capture devices available");
-    return 0;
+    rtc::google::capture::video::device_creator device_creator;
+    std::shared_ptr<rtc::google::capture::video::device> capture_device =
+        device_creator(devices.front().id);
+    std::shared_ptr<rtc::google::video_track> video_track =
+        rtc_connection_creator.create_video_track(capture_device);
+    rtc_connection->add_track(video_track);
+    capture_device->start();
   }
+#if 0
+  rtc_connection->on_track.connect([&](auto &track) {});
+#endif
 
   signalling_client.on_create_offer.connect(
       [&] { data_channel_handler_.add(); });
