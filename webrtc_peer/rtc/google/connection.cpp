@@ -1,5 +1,7 @@
 #include "connection.hpp"
 #include "data_channel.hpp"
+#include "track.hpp"
+#include "video_track_sink.hpp"
 #include <boost/uuid/random_generator.hpp>
 #include <boost/uuid/uuid_io.hpp>
 #include <fmt/format.h>
@@ -179,7 +181,13 @@ void connection::add_ice_candidate(const ice_candidate &candidate) {
   native->AddIceCandidate(parsed.get());
 }
 
-void connection::add_track(track_ptr) { BOOST_ASSERT(false && "implement"); }
+void connection::add_track(rtc::track_ptr track_) {
+  auto track_casted = std::dynamic_pointer_cast<track>(track_);
+  assert(track_casted);
+  auto native_track = track_casted->native_track();
+  native->AddTrack(native_track, {});
+  tracks.push_back(track_);
+}
 
 rtc::data_channel_ptr connection::create_data_channel() {
   auto label = boost::uuids::random_generator()();
@@ -193,7 +201,7 @@ rtc::data_channel_ptr connection::create_data_channel() {
 }
 
 void connection::close() {
-  // closes and destorys the data channels
+  // closes and destroys the data channels
   native->Close();
 }
 
@@ -217,10 +225,18 @@ void connection::OnStandardizedIceConnectionChange(
 void connection::OnAddTrack(
     rtc::scoped_refptr<webrtc::RtpReceiverInterface> receiver,
     const std::vector<rtc::scoped_refptr<webrtc::MediaStreamInterface>>
-        &streams) {
+        & /*streams*/) {
   BOOST_LOG_SEV(logger, logging::severity::info) << "OnAddTrack";
-  (void)receiver;
-  (void)streams;
+  rtc::scoped_refptr<webrtc::MediaStreamTrackInterface> track =
+      receiver->track();
+  auto track_casted = dynamic_cast<webrtc::VideoTrackInterface *>(track.get());
+  assert(track_casted != nullptr);
+  if (track_casted == nullptr)
+    return;
+  auto result = std::make_shared<video_track_sink>(track_casted);
+  tracks.push_back(result);
+  on_track(result);
+  on_video_track(result);
 }
 
 void connection::OnDataChannel(

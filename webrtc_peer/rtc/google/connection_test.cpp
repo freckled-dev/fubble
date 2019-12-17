@@ -1,6 +1,8 @@
 #include "connection.hpp"
-#include "connection_creator.hpp"
 #include "data_channel.hpp"
+#include "factory.hpp"
+#include "video_track.hpp"
+#include "video_track_source.hpp"
 #include <boost/thread/executors/inline_executor.hpp>
 #include <fmt/format.h>
 #include <gtest/gtest.h>
@@ -9,20 +11,21 @@
 namespace {
 struct GoogleConnection : ::testing::Test {
   logging::logger logger;
-  rtc::google::connection_creator creator;
+  rtc::google::factory creator;
 };
 struct test_peer {
   boost::inline_executor executor;
   std::unique_ptr<rtc::google::connection> instance;
 
-  test_peer(rtc::google::connection_creator &creator) : instance(creator()) {}
+  test_peer(rtc::google::factory &creator)
+      : instance(creator.create_connection()) {}
   ~test_peer() { instance->close(); }
 
   boost::shared_future<rtc::session_description> create_offer() {
     return instance->create_offer();
   }
 
-  boost::shared_future<rtc::session_description> create_answer() {
+  boost::future<rtc::session_description> create_answer() {
     return instance->create_answer();
   }
 
@@ -54,16 +57,20 @@ struct test_peer {
 struct connection {
   test_peer offering;
   test_peer answering;
-  connection(rtc::google::connection_creator &creator)
+  boost::inline_executor executor;
+  connection(rtc::google::factory &creator)
       : offering{creator}, answering{creator} {
     offering.connect_ice_candidates(answering);
   }
   boost::future<void> operator()() {
     auto offer = offering.create_offer();
     offering.set_local_description(offer);
+    boost::shared_future<void> remote_description_future =
+        answering.set_remote_description(offer);
     boost::shared_future<rtc::session_description> answer =
-        answering.set_remote_description(offer).then(
-            [&](auto) { return answering.create_answer().get(); });
+        remote_description_future
+            .then(executor, [&](auto) { return answering.create_answer(); })
+            .unwrap();
     answering.set_local_description(answer);
     return offering.set_remote_description(answer);
   }
@@ -190,6 +197,38 @@ TEST_F(GoogleConnection, DataExchange) {
     waiter.event();
   });
   data_channels.offering->send(message);
+  waiter.wait();
+}
+
+TEST_F(GoogleConnection, VideoTrackCreation) {
+  auto source = std::make_shared<rtc::google::video_source>();
+  auto track = creator.create_video_track(source);
+  EXPECT_TRUE(track);
+}
+
+TEST_F(GoogleConnection, VideoTrackInOffer) {
+  auto source = std::make_shared<rtc::google::video_source>();
+  std::shared_ptr<rtc::track> track = creator.create_video_track(source);
+  auto connection = creator.create_connection();
+  connection->add_track(track);
+  auto offer = connection->create_offer();
+  auto offer_ = offer.get();
+  EXPECT_NE(offer_.sdp.find("video"), std::string::npos);
+}
+
+TEST_F(GoogleConnection, OnVideoTrack) {
+  connection connection_{creator};
+  auto source = std::make_shared<rtc::google::video_source>();
+  std::shared_ptr<rtc::track> track = creator.create_video_track(source);
+  connection_.offering.instance->add_track(track);
+  wait_for_event waiter;
+  connection_.answering.instance->on_video_track.connect(
+      [&](const auto &track) {
+        EXPECT_TRUE(track);
+        waiter.event();
+      });
+  auto connected = connection_();
+  connected.get();
   waiter.wait();
 }
 

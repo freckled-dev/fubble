@@ -3,10 +3,12 @@
 
 #include "logging/logger.hpp"
 #include "rtc/connection.hpp"
+#include "video_track_ptr.hpp"
 #include <api/candidate.h>
 #include <api/peer_connection_interface.h>
 
 namespace rtc::google {
+// TODO class uses make_shared for tracks instead of extrusive factory
 class connection : public rtc::connection,
                    public ::webrtc::PeerConnectionObserver {
 public:
@@ -19,10 +21,11 @@ public:
   boost::future<void>
   set_remote_description(const session_description &) override;
   void add_ice_candidate(const ice_candidate &candidate) override;
-  void add_track(track_ptr) override;
+  void add_track(rtc::track_ptr) override;
   // seems like data channels can't be removed!
   rtc::data_channel_ptr create_data_channel() override;
   void close() override;
+  boost::signals2::signal<void(track_ptr)> on_video_track;
 
 protected:
   void OnConnectionChange(
@@ -65,6 +68,7 @@ protected:
   // Because of pure virtual DataChannel.
   // It does not help, if we close the data_channel inside its constructor
   std::vector<data_channel_ptr> data_channels;
+  std::vector<track_ptr> tracks;
 };
 } // namespace rtc::google
 

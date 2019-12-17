@@ -15,6 +15,12 @@ struct option_adder {
                           description.c_str());
   }
 };
+auto video(config::video &result) {
+  bpo::options_description description("video");
+  option_adder adder{description};
+  adder("video-send", result.send, "send a video");
+  return description;
+}
 } // namespace
 
 std::optional<config> options::operator()(int argc, char *argv[]) {
@@ -23,6 +29,7 @@ std::optional<config> options::operator()(int argc, char *argv[]) {
   bpo::options_description general("general");
   general.add_options()("help", "produce help message");
 
+  auto video_ = video(result.video_);
   bpo::options_description signalling("signalling");
   option_adder adder{signalling};
   adder("signalling-host", result.signalling_.host,
@@ -34,6 +41,7 @@ std::optional<config> options::operator()(int argc, char *argv[]) {
 
   bpo::options_description options;
   options.add(general);
+  options.add(video_);
   options.add(signalling);
 
   bpo::variables_map vm;
