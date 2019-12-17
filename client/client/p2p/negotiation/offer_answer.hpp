@@ -14,9 +14,11 @@ public:
 
 protected:
   void renegotiate();
+  void on_create_offer();
   void on_answer(signalling::answer sdp);
   void on_offer(signalling::offer sdp);
 
+  logging::logger logger;
   boost::executor &executor;
   signalling::client::client &signalling_client;
   rtc::connection &rtc_connection;
