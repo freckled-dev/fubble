@@ -12,7 +12,7 @@
 #include "rtc/google/capture/video/enumerator.hpp"
 #include "rtc/google/connection.hpp"
 #include "rtc/google/factory.hpp"
-#include "rtc/google/video_track.hpp"
+#include "rtc/google/video_track_sink.hpp"
 #include "rtc/track_ptr.hpp"
 #include "signalling/client/connection_creator.hpp"
 #include "signalling/json_message.hpp"
@@ -172,9 +172,13 @@ int main(int argc, char *argv[]) {
     rtc_connection->add_track(video_track);
     capture_device->start();
   }
-#if 0
-  rtc_connection->on_track.connect([&](auto &track) {});
-#endif
+  rtc_connection->on_track.connect([&](auto track) {
+    std::shared_ptr<rtc::google::video_track_sink> track_casted =
+        std::dynamic_pointer_cast<rtc::google::video_track_sink>(track);
+    track_casted->on_frame.connect([&](const auto & /*frame*/) {
+      BOOST_LOG_SEV(logger, logging::severity::debug) << "on frame from track";
+    });
+  });
 
   signalling_client.on_create_offer.connect(
       [&] { data_channel_handler_.add(); });
