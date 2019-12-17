@@ -11,6 +11,7 @@ offer_answer::offer_answer(boost::executor &executor,
   signalling_client.on_offer.connect([this](auto sdp) { on_offer(sdp); });
   signalling_client.on_answer.connect([this](auto sdp) { on_answer(sdp); });
   signalling_client.on_create_offer.connect([this] { on_create_offer(); });
+  signalling_client.on_create_answer.connect([this] { on_create_answer(); });
 }
 
 void offer_answer::on_create_offer() {
@@ -18,8 +19,15 @@ void offer_answer::on_create_offer() {
   renegotiate();
 }
 
+void offer_answer::on_create_answer() {
+  offering = false;
+  renegotiate();
+}
+
 void offer_answer::renegotiate() {
-  if (!offering)
+  if (!offering.has_value())
+    return;
+  if (!offering.value())
     return;
   auto sdp = rtc_connection.create_offer();
   sdp.then(executor, [this](auto offer_future) {

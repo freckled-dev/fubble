@@ -15,6 +15,7 @@ public:
 protected:
   void renegotiate();
   void on_create_offer();
+  void on_create_answer();
   void on_answer(signalling::answer sdp);
   void on_offer(signalling::offer sdp);
 
@@ -22,7 +23,7 @@ protected:
   boost::executor &executor;
   signalling::client::client &signalling_client;
   rtc::connection &rtc_connection;
-  bool offering{false};
+  std::optional<bool> offering;
 };
 } // namespace client::p2p::negotiation
 
