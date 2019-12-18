@@ -20,6 +20,8 @@ json_dep = dependency('jsonformoderncpp')
 boost_di_dep = dependency('boost-di')
 gstreamer_webrtc_dep_pkg = dependency('gstreamer-webrtc-1.0', required : false)
 gstreamer_sdp_dep = dependency('gstreamer-sdp-1.0', required : false)
+qt5 = import('qt5')
+qt5_dep = dependency('qt5', modules: ['Core'])
 if gstreamer_webrtc_dep_pkg.found()
   gstreamer_webrtc_found = gstreamer_webrtc_dep_pkg
 else

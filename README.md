@@ -2,12 +2,18 @@
 
 ```bash
 pip3 install --user conan meson==0.51.2
+# boost-di
 conan remote add inexorgame https://api.bintray.com/conan/inexorgame/inexor-conan
+# qt
+conan remote add bincrafters "https://api.bintray.com/conan/bincrafters/public-conan"
+
 # fedora
 sudo dnf install -y \
   gstreamer1-plugins-bad-free-devel \
   libasan \
-  libX11-devel
+  libX11-devel \
+  qt5-devel
+
 # opensuse
 sudo zypper install libX11-devel
 ```
