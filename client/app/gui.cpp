@@ -7,7 +7,36 @@
 #pragma GCC diagnostic ignored "-Wdeprecated-copy"
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QtMultimedia/qabstractvideosurface.h>
+#include <QtMultimedia/qvideosurfaceformat.h>
 #pragma GCC diagnostic pop
+
+class MyVideoProducer : public QObject {
+  Q_OBJECT
+  Q_PROPERTY(QAbstractVideoSurface *videoSurface READ videoSurface WRITE
+                 setVideoSurface)
+
+public:
+  QAbstractVideoSurface *videoSurface() const { return m_surface; }
+
+  void setVideoSurface(QAbstractVideoSurface *surface) {
+    if (m_surface != surface && m_surface && m_surface->isActive()) {
+      m_surface->stop();
+    }
+    m_surface = surface;
+    if (m_surface)
+      m_surface->start(m_format);
+  }
+public slots:
+  void onNewVideoContentReceived(const QVideoFrame &frame) {
+    if (m_surface)
+      m_surface->present(frame);
+  }
+
+private:
+  QAbstractVideoSurface *m_surface;
+  QVideoSurfaceFormat m_format;
+};
 
 int main(int argc, char *argv[]) {
   logging::add_console_log();
@@ -39,6 +68,7 @@ int main(int argc, char *argv[]) {
 
   // TODO deliver frames to qml
   // https://stackoverflow.com/questions/43854589/custom-source-property-for-videooutput-qml
+  // https://doc.qt.io/qt-5/videooverview.html
 
   return app.exec();
 }
