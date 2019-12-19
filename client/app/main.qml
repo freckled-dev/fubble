@@ -6,5 +6,10 @@ Window {
   width: 640
   height: 480
   title: qsTr("Hello World")
+
+  ClientForm {
+    anchors.fill: parent
+  }
 }
+
 
