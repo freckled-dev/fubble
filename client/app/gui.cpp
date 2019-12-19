@@ -17,8 +17,7 @@ int main(int argc, char *argv[]) {
 
   QQmlApplicationEngine engine;
   const QUrl url(QStringLiteral("qrc:/main.qml"));
-  // const QUrl url(QStringLiteral(
-  //     "/home/mlanner/Development/projects/fubble/fubble/client/app/main.qml"));
+#if 0
   QObject::connect(
       &engine, &QQmlApplicationEngine::objectCreated, &app,
       [url](QObject *obj, const QUrl &objUrl) {
@@ -26,6 +25,7 @@ int main(int argc, char *argv[]) {
     QCoreApplication::exit(-1);
       },
       Qt::QueuedConnection);
+#endif
   engine.load(url);
 
   return app.exec();
