@@ -28,33 +28,15 @@ class video_buffer_adapter : public QAbstractPlanarVideoBuffer {
 public:
   video_buffer_adapter(const webrtc::VideoFrame &frame)
       : QAbstractPlanarVideoBuffer(NoHandle), frame(frame) {}
+  ~video_buffer_adapter() = default;
 
   MapMode mapMode() const override { return ReadOnly; }
-
-#if 0
-  uchar *map([[maybe_unused]] MapMode mode, int *numBytes,
-             int *bytesPerLine) override {
-    (void)numBytes;
-    (void)bytesPerLine;
-    webrtc::VideoFrameBuffer *buffer = frame.video_frame_buffer().get();
-    const webrtc::I420BufferInterface *buffer_accessor = buffer->GetI420();
-    BOOST_LOG_SEV(logger, logging::severity::debug)
-        << "StrideU:" << buffer_accessor->StrideU()
-        << ", StrideV:" << buffer_accessor->StrideV()
-        << ", StrideY:" << buffer_accessor->StrideY();
-    (void)buffer_accessor;
-    // buffer_accessor->
-    return nullptr;
-  }
-#endif
 
   int map(MapMode mode, int *numBytes, int bytesPerLine[4],
           uchar *data[4]) override {
     (void)mode;
+    BOOST_ASSERT(mode == ReadOnly);
     (void)numBytes;
-    (void)bytesPerLine;
-    (void)data;
-    BOOST_LOG_SEV(logger, logging::severity::debug) << "map";
     webrtc::VideoFrameBuffer *buffer = frame.video_frame_buffer().get();
     const webrtc::I420BufferInterface *buffer_accessor = buffer->GetI420();
     data[0] = const_cast<uchar *>(buffer_accessor->DataY());
@@ -63,12 +45,13 @@ public:
     bytesPerLine[0] = buffer_accessor->StrideY();
     bytesPerLine[1] = buffer_accessor->StrideU();
     bytesPerLine[2] = buffer_accessor->StrideV();
+    // numBytes should contain the summed buffer size. Works withouth setting
+    // it.
+    *numBytes = 0;
     return 3;
   }
 
-  void unmap() override {
-    BOOST_LOG_SEV(logger, logging::severity::debug) << "unmap()";
-  }
+  void unmap() override {}
 
 private:
   logging::logger logger;
@@ -99,19 +82,22 @@ int main(int argc, char *argv[]) {
                                   "FrameProvider");
   const QUrl url(QStringLiteral("qrc:/main.qml"));
   engine.load(url);
-  auto display = engine.rootObjects().first()->findChild<QObject *>("display");
-  BOOST_ASSERT(display);
-  auto provider = qvariant_cast<frame_provider *>(display->property("source"));
+  auto provider =
+      engine.rootObjects().first()->findChild<frame_provider *>("provider");
   BOOST_ASSERT(provider);
   provider->setFormat(160, 90, QVideoFrame::Format_YUV420P);
 
   capture_device->on_frame.connect([&](const webrtc::VideoFrame &frame) {
     auto frame_buffer = frame.video_frame_buffer();
     webrtc::VideoFrameBuffer::Type type = frame_buffer->type();
+#if 0
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << "frame, width:" << frame.width() << ", height:" << frame.height()
         << ", type:" << static_cast<int>(type);
+#endif
     BOOST_ASSERT(type == webrtc::VideoFrameBuffer::Type::kI420);
+    // destruction happens through VideoFrame
+    // https://doc.qt.io/qt-5/qabstractvideobuffer.html#release
     auto frame_buffer_casted = new video_buffer_adapter(frame);
     QSize size{frame_buffer->width(), frame_buffer->height()};
     QVideoFrame frame_casted{frame_buffer_casted, size,
@@ -128,4 +114,3 @@ int main(int argc, char *argv[]) {
 
   return app.exec();
 }
-

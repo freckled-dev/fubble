@@ -30,7 +30,6 @@ public:
     QSize size(width, heigth);
     QVideoSurfaceFormat format(size, pixel_format);
     m_format = format;
-
     if (!m_surface)
       return;
     if (m_surface->isActive())
