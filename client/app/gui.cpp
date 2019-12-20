@@ -26,6 +26,8 @@ int main(int argc, char *argv[]) {
   std::shared_ptr<rtc::google::capture::video::device> capture_device =
       device_creator(devices.front().id);
 
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "starting qt";
+
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
   QGuiApplication app(argc, argv);
 
@@ -34,17 +36,15 @@ int main(int argc, char *argv[]) {
   qmlRegisterType<frame_provider>("io.fubble.FrameProvider", 1, 0,
                                   "FrameProvider");
   const QUrl url(QStringLiteral("qrc:/main.qml"));
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "loading qml";
   engine.load(url);
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "loaded qml";
   auto provider =
       engine.rootObjects().first()->findChild<frame_provider *>("provider");
   BOOST_ASSERT(provider);
   provider->set_source(capture_device.get());
 
   capture_device->start();
-
-  // TODO deliver frames to qml
-  // https://stackoverflow.com/questions/43854589/custom-source-property-for-videooutput-qml
-  // https://doc.qt.io/qt-5/videooverview.html
 
   return app.exec();
 }
