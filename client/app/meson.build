@@ -5,10 +5,10 @@ client_cli = executable('client',
   )
 moc_files = qt5.preprocess(
   qresources: 'qml.qrc',
-  moc_headers: ['frame_provider.hpp']
+  moc_headers: []
   )
 client_gui = executable('client_gui',
-  ['gui.cpp', 'frame_provider.cpp'] + moc_files,
-  dependencies: [client_dep, qt5_dep],
+  ['gui.cpp'] + moc_files,
+  dependencies: [client_dep, ui_dep],
   install: true)
 
