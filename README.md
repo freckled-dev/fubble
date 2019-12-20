@@ -28,6 +28,12 @@ set -x PATH $PATH $HOME/.local/bin
 fix gcc >= 5 ABI. https://docs.conan.io/en/latest/howtos/manage_gcc_abi.html
 Change conan config file `~/.conan/profiles/default` and set `compiler.libcxx=libstdc++11`.
 
+# notes on qt5
+
+## logging and fedora
+
+by default it's disabled to log with `console.log` and `console.debug`. other logs still work, eg: `console.info`.
+https://stackoverflow.com/questions/36338000/qml-console-log-and-console-debug-dont-write-to-console
 
 # conan
 enable `_GLIBCXX_USE_CXX11_ABI` by setting `compiler.libcxx=libstdc++11` in `~/.conan/profiles/default`
