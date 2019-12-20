@@ -1,4 +1,4 @@
-#include "backend.hpp"
+#include "join_model.hpp"
 #include <QStandardPaths>
 
 using namespace client;
@@ -11,14 +11,14 @@ QString config_file() {
 }
 } // namespace
 
-backend::backend() : settings(config_file(), QSettings::IniFormat) {
+join_model::join_model() : settings(config_file(), QSettings::IniFormat) {
   name = settings.value("name").toString();
   room = settings.value("room").toString();
 }
 
-backend::~backend() = default;
+join_model::~join_model() = default;
 
-void backend::join(const QString &room, const QString &name) {
+void join_model::join(const QString &room, const QString &name) {
   BOOST_LOG_SEV(logger, logging::severity::info)
       << "join(), name:" << name.toStdString()
       << ", room:" << room.toStdString();

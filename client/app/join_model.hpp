@@ -9,13 +9,13 @@
 #pragma GCC diagnostic pop
 
 namespace client {
-class backend : public QObject {
+class join_model : public QObject {
   Q_OBJECT
   Q_PROPERTY(QString name MEMBER name NOTIFY name_changed)
   Q_PROPERTY(QString room MEMBER room NOTIFY room_changed)
 public:
-  backend();
-  ~backend();
+  join_model();
+  ~join_model();
 
   Q_INVOKABLE void join(const QString &room, const QString &name);
 
