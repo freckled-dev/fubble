@@ -5,9 +5,9 @@ import io.fubble.FrameProvider 1.0
 
 Window {
   visible: true
-  width: 640
-  height: 480
-  title: qsTr("Hello World")
+  minimumWidth: 640
+  minimumHeight: 480
+  title: qsTr("fubble")
 
   FrameProvider {
     objectName: "provider"
