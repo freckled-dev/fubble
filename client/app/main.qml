@@ -33,7 +33,7 @@ Window {
       }
       TextField {
           id: room
-          text: backend.room
+          text: join.room
           placeholderText: "Room"
           Layout.fillWidth: true
           focus: true
@@ -41,16 +41,15 @@ Window {
       }
       TextField {
           id: name
-          text: backend.name
+          text: join.name
           placeholderText: "Your Name"
           Layout.fillWidth: true
-          onAccepted: backend.join(room.text, name.text)
+          onAccepted: join.join(room.text, name.text)
       }
       Button {
-          id: join
           text: qsTr("Join")
           Layout.fillWidth: true
-          onClicked: backend.join(room.text, name.text)
+          onClicked: join.join(room.text, name.text)
       }
   }
 

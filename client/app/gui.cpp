@@ -1,4 +1,4 @@
-#include "backend.hpp"
+#include "join_model.hpp"
 #include "logging/initialser.hpp"
 #include "logging/logger.hpp"
 #include "rtc/google/capture/video/device.hpp"
@@ -35,8 +35,8 @@ int main(int argc, char *argv[]) {
 
   using frame_provider = client::ui::frame_provider_google_video_source;
   QQmlApplicationEngine engine;
-  client::backend backend;
-  engine.rootContext()->setContextProperty("backend", &backend);
+  client::join_model backend;
+  engine.rootContext()->setContextProperty("join", &backend);
   qmlRegisterType<frame_provider>("io.fubble.FrameProvider", 1, 0,
                                   "FrameProvider");
   const QUrl url(QStringLiteral("qrc:/main.qml"));
