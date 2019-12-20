@@ -5,7 +5,7 @@ import QtQuick.Layouts 1.3
 import QtQuick.Window 2.12
 import io.fubble.FrameProvider 1.0
 
-Window {
+ApplicationWindow {
   visible: true
   minimumWidth: 640
   minimumHeight: 480
@@ -26,6 +26,7 @@ Window {
             return Math.min(container.width*percentage, container.height*percentage*aspectRatio)
           }
           Layout.maximumHeight: {
+            console.log("fun")
             var percentage = 0.6
             var aspectRatio = videoOutput.sourceRect.width / videoOutput.sourceRect.height
             return Math.min(container.height*percentage, (container.width*percentage)/aspectRatio)
@@ -35,11 +36,14 @@ Window {
           id: room
           placeholderText: "Room"
           Layout.fillWidth: true
+          focus: true
+          onAccepted: name.focus = true
       }
       TextField {
           id: name
           placeholderText: "Your Name"
           Layout.fillWidth: true
+          // onAccepted: name.focus = true
       }
       Button {
           id: join

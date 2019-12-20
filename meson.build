@@ -21,14 +21,18 @@ boost_di_dep = dependency('boost-di')
 gstreamer_webrtc_dep_pkg = dependency('gstreamer-webrtc-1.0', required : false)
 gstreamer_sdp_dep = dependency('gstreamer-sdp-1.0', required : false)
 qt5 = import('qt5')
-qt5_dep = dependency('qt5', modules: ['Core', 'Quick', 'Multimedia'])
+qt5_clear_dep = dependency('qt5', modules: ['Core', 'Quick', 'Multimedia'])
+qt5_dep = declare_dependency(
+  compile_args : ['-DQT_DEPRECATED_WARNINGS', '-DQT_QML_DEBUG=1'],
+  dependencies : [qt5_clear_dep]
+  )
 if gstreamer_webrtc_dep_pkg.found()
   gstreamer_webrtc_found = gstreamer_webrtc_dep_pkg
 else
   gstreamer_webrtc_found = disabled
 endif
 gstreamer_webrtc_dep = declare_dependency(
-  dependencies: [gstreamer_webrtc_dep_pkg, gstreamer_sdp_dep,
+  dependencies : [gstreamer_webrtc_dep_pkg, gstreamer_sdp_dep,
     gstreamer_webrtc_found
     ]
   )
