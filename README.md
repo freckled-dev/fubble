@@ -12,7 +12,8 @@ sudo dnf install -y \
   gstreamer1-plugins-bad-free-devel \
   libasan \
   libX11-devel \
-  qt5-devel
+  qt5-devel \
+  qt5-qtquickcontrols2-devel
 
 # opensuse
 sudo zypper install libX11-devel

@@ -10,6 +10,8 @@
 #pragma GCC diagnostic pop
 
 namespace client::ui {
+// https://stackoverflow.com/questions/43854589/custom-source-property-for-videooutput-qml
+// https://doc.qt.io/qt-5/videooverview.html
 class frame_provider_google_video_source : public QObject {
   Q_OBJECT
   Q_PROPERTY(
