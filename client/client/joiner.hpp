@@ -3,18 +3,12 @@
 
 #include "logging/logger.hpp"
 
-namespace rtc::google {
-class factory;
-}
-namespace signalling::client {
-class client_creator;
-}
 namespace client {
 class peer;
+class peer_creator;
 class joiner {
 public:
-  joiner(signalling::client::client_creator &client_creator,
-         rtc::google::factory &connection_creator);
+  joiner(peer_creator &peer_creator_);
 
   struct parameters {
     std::string name, room;
@@ -23,8 +17,7 @@ public:
 
 protected:
   logging::logger logger;
-  signalling::client::client_creator &client_creator;
-  rtc::google::factory &connection_creator;
+  peer_creator &peer_creator_;
 };
 } // namespace client
 

@@ -1,4 +1,5 @@
 #include "join_model.hpp"
+#include "joiner.hpp"
 #include <QStandardPaths>
 
 using namespace client;
@@ -20,9 +21,10 @@ join_model::join_model(joiner &joiner_)
 join_model::~join_model() = default;
 
 void join_model::join(const QString &room, const QString &name) {
-  BOOST_LOG_SEV(logger, logging::severity::info)
-      << "join(), name:" << name.toStdString()
-      << ", room:" << room.toStdString();
   settings.setValue("name", name);
   settings.setValue("room", room);
+  joiner::parameters parameters;
+  parameters.room = room.toStdString();
+  parameters.name = name.toStdString();
+  joiner_(parameters);
 }

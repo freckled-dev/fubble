@@ -3,6 +3,7 @@
 #include "joiner.hpp"
 #include "logging/initialser.hpp"
 #include "logging/logger.hpp"
+#include "peer_creator.hpp"
 #include "rtc/google/capture/video/device.hpp"
 #include "rtc/google/capture/video/device_creator.hpp"
 #include "rtc/google/capture/video/enumerator.hpp"
@@ -41,7 +42,9 @@ int main(int argc, char *argv[]) {
       boost_executor, websocket_connector, signalling_connection_creator};
 
   rtc::google::factory rtc_connection_creator;
-  client::joiner joiner{client_creator, rtc_connection_creator};
+  client::peer_creator peer_creator{boost_executor, client_creator,
+                                    rtc_connection_creator};
+  client::joiner joiner{peer_creator};
 
   rtc::google::capture::video::enumerator enumerator;
   auto devices = enumerator();
