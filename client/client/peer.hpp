@@ -1,14 +1,20 @@
 #ifndef CLIENT_PEER_HPP
 #define CLIENT_PEER_HPP
 
+#include "rtc/connection.hpp"
+#include "signalling/client/client.hpp"
+#include <memory>
+
+// TODO move to p2p
 namespace client {
 class peer {
 public:
+  peer(std::unique_ptr<signalling::client::client> signalling_,
+       std::unique_ptr<rtc::connection> rtc_);
+
 protected:
-#if 0
-  signalling::client::client &signalling_client;
-  rtc::connection &rtc_connection;
-#endif
+  std::unique_ptr<signalling::client::client> signalling_client;
+  std::unique_ptr<rtc::connection> rtc_connection;
 };
 } // namespace client
 

@@ -11,7 +11,8 @@ QString config_file() {
 }
 } // namespace
 
-join_model::join_model() : settings(config_file(), QSettings::IniFormat) {
+join_model::join_model(joiner &joiner_)
+    : joiner_(joiner_), settings(config_file(), QSettings::IniFormat) {
   name = settings.value("name").toString();
   room = settings.value("room").toString();
 }
@@ -25,4 +26,3 @@ void join_model::join(const QString &room, const QString &name) {
   settings.setValue("name", name);
   settings.setValue("room", room);
 }
-
