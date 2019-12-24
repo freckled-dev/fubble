@@ -15,13 +15,15 @@ public:
        std::unique_ptr<signalling::client::client> signalling_,
        std::unique_ptr<rtc::connection> rtc_);
 
+  rtc::connection &rtc_connection();
+  const rtc::connection &rtc_connection() const;
+
 protected:
   std::unique_ptr<signalling::client::client> signalling_client;
-  std::unique_ptr<rtc::connection> rtc_connection;
+  std::unique_ptr<rtc::connection> rtc_connection_;
   client::p2p::negotiation::ice_candidates ice_candidate_handler;
   client::p2p::negotiation::offer_answer offer_answer_handler;
 };
 } // namespace client
 
 #endif
-

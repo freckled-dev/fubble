@@ -4,6 +4,7 @@
 #include "logging/initialser.hpp"
 #include "logging/logger.hpp"
 #include "peer_creator.hpp"
+#include "peers.hpp"
 #include "rtc/google/capture/video/device.hpp"
 #include "rtc/google/capture/video/device_creator.hpp"
 #include "rtc/google/capture/video/enumerator.hpp"
@@ -15,6 +16,7 @@
 #include "websocket/connection_creator.hpp"
 #include "websocket/connector.hpp"
 #include <boost/asio/io_context.hpp>
+#include <thread>
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-copy"
 #include <QGuiApplication>
@@ -44,7 +46,8 @@ int main(int argc, char *argv[]) {
   rtc::google::factory rtc_connection_creator;
   client::peer_creator peer_creator{boost_executor, client_creator,
                                     rtc_connection_creator};
-  client::joiner joiner{peer_creator};
+  client::peers peers;
+  client::joiner joiner{peers, peer_creator};
 
   rtc::google::capture::video::enumerator enumerator;
   auto devices = enumerator();
@@ -64,7 +67,7 @@ int main(int argc, char *argv[]) {
   using frame_provider = client::ui::frame_provider_google_video_source;
   QQmlApplicationEngine engine;
   client::join_model backend(joiner);
-  engine.rootContext()->setContextProperty("join", &backend);
+  engine.rootContext()->setContextProperty("joinModel", &backend);
   qmlRegisterType<frame_provider>("io.fubble.FrameProvider", 1, 0,
                                   "FrameProvider");
   const QUrl url(QStringLiteral("qrc:/main.qml"));
@@ -78,5 +81,9 @@ int main(int argc, char *argv[]) {
 
   capture_device->start();
 
-  return app.exec();
+  std::thread asio_thread{[&context] { context.run(); }};
+  auto result = app.exec();
+  if (asio_thread.joinable())
+    asio_thread.join();
+  return result;
 }
