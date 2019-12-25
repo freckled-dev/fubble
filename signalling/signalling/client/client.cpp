@@ -14,6 +14,10 @@ client::client::client(boost::executor &executor_,
     : executor(executor_), connector(connector_),
       connection_creator_(connection_creator_) {}
 
+void client::client::set_connect_information(const connect_information &set) {
+  connect_information_ = set;
+}
+
 void client::client::close() {
   if (!connection_)
     return;
@@ -33,13 +37,11 @@ void client::client::send_ice_candidate(
   connection_->send_ice_candidate(candidate);
 }
 
-void client::client::operator()(const std::string &host,
-                                const std::string &service,
-                                const std::string &key) {
+void client::client::connect(const std::string &key) {
   BOOST_ASSERT(!connection_);
   websocket::connector::config connector_config;
-  connector_config.url = host;
-  connector_config.service = service;
+  connector_config.url = connect_information_.host;
+  connector_config.service = connect_information_.service;
   connector(connector_config).then(executor, [this, key](auto result) {
     connected(result, key);
   });

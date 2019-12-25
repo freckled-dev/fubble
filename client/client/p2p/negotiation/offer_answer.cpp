@@ -25,6 +25,7 @@ void offer_answer::on_create_answer() {
 }
 
 void offer_answer::renegotiate() {
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "renegotiate";
   if (!offering.has_value())
     return;
   if (!offering.value())

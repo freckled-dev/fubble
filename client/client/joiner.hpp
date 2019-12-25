@@ -7,9 +7,11 @@ namespace client {
 class peer;
 class peers;
 class peer_creator;
+class add_video_to_connection;
 class joiner {
 public:
-  joiner(peers &peers_, peer_creator &peer_creator_);
+  joiner(peers &peers_, add_video_to_connection &track_adder,
+         peer_creator &peer_creator_);
 
   struct parameters {
     std::string name, room;
@@ -19,6 +21,7 @@ public:
 protected:
   logging::logger logger;
   peers &peers_;
+  add_video_to_connection &track_adder;
   peer_creator &peer_creator_;
 };
 } // namespace client

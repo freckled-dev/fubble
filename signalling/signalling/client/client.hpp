@@ -18,9 +18,15 @@ class connection_creator;
 class connection;
 class client {
 public:
+  struct connect_information {
+    std::string host;
+    std::string service;
+  };
   client(boost::executor &executor, websocket::connector &connector,
          connection_creator &connection_creator_);
 
+  void set_connect_information(const connect_information &set);
+  void connect(const std::string &key);
   void close();
   boost::signals2::signal<void()> on_closed;
   boost::signals2::signal<void()> on_connected;
@@ -36,8 +42,6 @@ public:
   void send_answer(const signalling::answer &answer_);
   void send_ice_candidate(const signalling::ice_candidate &candidate);
 
-  void operator()(const std::string &host, const std::string &service,
-                  const std::string &key);
   connection_ptr get_connection() const;
 
 private:
@@ -50,7 +54,7 @@ private:
   boost::executor &executor;
   websocket::connector &connector;
   connection_creator &connection_creator_;
-
+  connect_information connect_information_;
   connection_ptr connection_;
 };
 } // namespace signalling::client
