@@ -15,6 +15,7 @@ public:
        std::unique_ptr<signalling::client::client> signalling_,
        std::unique_ptr<rtc::connection> rtc_);
 
+  void connect(const std::string &key);
   rtc::connection &rtc_connection();
   const rtc::connection &rtc_connection() const;
 

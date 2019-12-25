@@ -1,3 +1,4 @@
+#include "add_video_to_connection.hpp"
 #include "executor_asio.hpp"
 #include "join_model.hpp"
 #include "joiner.hpp"
@@ -15,6 +16,7 @@
 #include "ui/frame_provider_google_video_frame.hpp"
 #include "websocket/connection_creator.hpp"
 #include "websocket/connector.hpp"
+#include <boost/asio/executor_work_guard.hpp>
 #include <boost/asio/io_context.hpp>
 #include <thread>
 #pragma GCC diagnostic push
@@ -40,14 +42,15 @@ int main(int argc, char *argv[]) {
   signalling::json_message signalling_json;
   signalling::client::connection_creator signalling_connection_creator{
       context, boost_executor, signalling_json};
+  signalling::client::client::connect_information connect_information{
+      "localhost", "8080"};
   signalling::client::client_creator client_creator{
-      boost_executor, websocket_connector, signalling_connection_creator};
+      boost_executor, websocket_connector, signalling_connection_creator,
+      connect_information};
 
   rtc::google::factory rtc_connection_creator;
   client::peer_creator peer_creator{boost_executor, client_creator,
                                     rtc_connection_creator};
-  client::peers peers;
-  client::joiner joiner{peers, peer_creator};
 
   rtc::google::capture::video::enumerator enumerator;
   auto devices = enumerator();
@@ -59,6 +62,11 @@ int main(int argc, char *argv[]) {
   rtc::google::capture::video::device_creator device_creator;
   std::shared_ptr<rtc::google::capture::video::device> capture_device =
       device_creator(devices.front().id);
+
+  client::peers peers;
+  client::add_video_to_connection track_adder(rtc_connection_creator,
+                                              capture_device);
+  client::joiner joiner{peers, track_adder, peer_creator};
 
   BOOST_LOG_SEV(logger, logging::severity::debug) << "starting qt";
 
@@ -81,8 +89,13 @@ int main(int argc, char *argv[]) {
 
   capture_device->start();
 
-  std::thread asio_thread{[&context] { context.run(); }};
+  auto work_guard = boost::asio::make_work_guard(context);
+  std::thread asio_thread{[&context, &logger] {
+    context.run();
+    BOOST_LOG_SEV(logger, logging::severity::debug) << "context.run() is over";
+  }};
   auto result = app.exec();
+  work_guard.reset();
   if (asio_thread.joinable())
     asio_thread.join();
   return result;

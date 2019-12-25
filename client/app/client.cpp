@@ -24,30 +24,6 @@
 #include <iostream>
 
 namespace {
-#if 0
-struct video_track_handler {
-  rtc::google::connection &rtc_connection;
-  rtc::google::video_track_ptr video_track;
-
-  video_track_handler(rtc::connection &rtc_connection)
-      : rtc_connection(rtc_connection) {
-    rtc_connection.on_video_track.connect([this](auto track) {
-      BOOST_ASSERT(!video_track);
-      video_track = track;
-      connect_signals();
-    });
-  }
-
-  void add() {
-    BOOST_ASSERT(!video_track);
-    // data_channel = rtc_connection.create_data_channel();
-    connect_signals();
-  }
-  void connect_signals() {
-    // video_track->
-  }
-};
-#endif
 struct data_channel_handler {
   rtc::connection &rtc_connection;
   rtc::data_channel_ptr data_channel;
@@ -143,6 +119,9 @@ int main(int argc, char *argv[]) {
       context, boost_executor, signalling_json};
   signalling::client::client signalling_client{
       boost_executor, websocket_connector, signalling_connection_creator};
+  signalling::client::client::connect_information connect_information{
+      config_.signalling_.host, config_.signalling_.service};
+  signalling_client.set_connect_information(connect_information);
   signalling_client.on_error.connect([&](auto /*error*/) { signals_.close(); });
 
   rtc::google::factory rtc_connection_creator;
@@ -186,8 +165,7 @@ int main(int argc, char *argv[]) {
     message_writer_.close();
     rtc_connection->close();
   });
-  signalling_client(config_.signalling_.host, config_.signalling_.service,
-                    config_.signalling_.id);
+  signalling_client.connect(config_.signalling_.id);
 
   signals_.async_wait([&](auto &error) {
     if (error)

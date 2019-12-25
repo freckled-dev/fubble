@@ -5,11 +5,13 @@
 using namespace client;
 
 add_video_to_connection::add_video_to_connection(
+    rtc::google::factory &rtc_factory,
     const std::shared_ptr<rtc::google::video_source> &source)
-    : source(source) {}
-void own_video::add_to_connection(rtc::connection &connection) {
+    : rtc_factory(rtc_factory), source(source) {}
+
+void add_video_to_connection::add_to_connection(rtc::connection &connection) {
   std::shared_ptr<rtc::google::video_track> video_track =
-      rtc_connection_creator.create_video_track(capture_device);
-  connection.add_track(track);
+      rtc_factory.create_video_track(source);
+  connection.add_track(video_track);
 }
 
