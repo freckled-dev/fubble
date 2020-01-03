@@ -73,9 +73,7 @@ int main(int argc, char *argv[]) {
 
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
   QGuiApplication app(argc, argv);
-  using frame_provider = client::ui::frame_provider_google_video_source;
-  qmlRegisterType<frame_provider>("io.fubble.FrameProvider", 1, 0,
-                                  "FrameProvider");
+  qRegisterMetaType<client::ui::frame_provider_google_video_source*>();
   QQmlApplicationEngine engine;
   client::join_model join_model{joiner};
   engine.rootContext()->setContextProperty("joinModel", &join_model);
@@ -86,10 +84,7 @@ int main(int argc, char *argv[]) {
   BOOST_LOG_SEV(logger, logging::severity::debug) << "loading qml";
   engine.load(url);
   BOOST_LOG_SEV(logger, logging::severity::debug) << "loaded qml";
-  auto provider =
-      engine.rootObjects().first()->findChild<frame_provider *>("provider");
-  BOOST_ASSERT(provider);
-  provider->set_source(capture_device.get());
+  videos_model.get_own_video()->set_source(capture_device.get());
 
   capture_device->start();
 

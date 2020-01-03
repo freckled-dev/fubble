@@ -3,11 +3,13 @@
 #include "peers.hpp"
 #include "rtc/google/video_source.hpp"
 #include "rtc/track.hpp"
+#include <QCoreApplication>
 
 using namespace client;
 
 videos_model::videos_model(peers &peers_) : peers_(peers_) {
   peers_.on_added.connect([this]() { on_peer_added(); });
+  own_video = new ui::frame_provider_google_video_source();
 }
 
 void videos_model::on_peer_added() {
@@ -23,6 +25,12 @@ ui::frame_provider_google_video_source *videos_model::get_video_source() const {
   return video_source;
 }
 
+  ui::frame_provider_google_video_source * videos_model:: get_own_video() const {
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "get_own_video()";
+  return own_video;
+  }
+
+
 void videos_model::on_track(const rtc::track_ptr &track) {
   BOOST_LOG_SEV(logger, logging::severity::debug) << "videos_model::on_track";
   rtc::google::video_source *casted =
@@ -31,6 +39,7 @@ void videos_model::on_track(const rtc::track_ptr &track) {
   if (casted == nullptr)
     return;
   video_source = new ui::frame_provider_google_video_source();
+  video_source->moveToThread(QCoreApplication::instance()->thread());
   video_source->set_source(casted);
   BOOST_LOG_SEV(logger, logging::severity::debug) << "calling signal";
   video_source_changed(video_source);
