@@ -9,13 +9,6 @@ using namespace client;
 videos_model::videos_model(peers &peers_) : peers_(peers_) {
   video_source = new ui::frame_provider_google_video_source();
   peers_.on_added.connect([this]() { on_peer_added(); });
-  video_source_changed(video_source);
-}
-
-ui::frame_provider_google_video_source *videos_model::get_video() const {
-  BOOST_LOG_SEV(logger, logging::severity::debug)
-      << "videos_model::get_video()";
-  return video_source;
 }
 
 void videos_model::on_peer_added() {
