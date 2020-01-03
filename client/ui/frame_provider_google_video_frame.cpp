@@ -74,9 +74,6 @@ void frame_provider_google_video_source::set_surface(
   if (surface_ != surface && surface && surface->isActive())
     surface->stop();
   surface = surface_;
-  if (!surface)
-    return;
-  surface->start(format);
 }
 
 QAbstractVideoSurface *frame_provider_google_video_source::get_surface() const {
@@ -99,26 +96,26 @@ void frame_provider_google_video_source::on_frame(
   QSize size{frame_buffer->width(), frame_buffer->height()};
   QVideoFrame frame_casted{frame_buffer_casted, size,
                            QVideoFrame::Format_YUV420P};
-  post_to_object([frame_casted, this] { on_frame_ui_thread(frame_casted); },
-                 this);
-  /*
-provider->setFormat(160, 90, QVideoFrame::Format_YUV420P);
-  */
+  post_to_object([frame_casted, this] { on_frame_ui_thread(frame_casted); });
 }
 
 void frame_provider_google_video_source::on_frame_ui_thread(
     const QVideoFrame &frame) {
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "on_frame_ui_thread";
   if (!surface) {
     BOOST_LOG_SEV(logger, logging::severity::debug)
-        << "on_frame_ui_thread a frame gets discarded because no surface is "
-           "set";
+        << "on_frame_ui_thread a frame gets discarded because no surface "
+           "is set";
     return;
   }
-  set_size(frame.size());
+  set_format(frame.size());
+  start_surface();
   surface->present(frame);
 }
 
-void frame_provider_google_video_source::set_size(const QSize &set) {
+void frame_provider_google_video_source::set_format(const QSize &set) {
+  if (!surface)
+    return;
   if (set == current_frame_size)
     return;
   BOOST_LOG_SEV(logger, logging::severity::debug) << fmt::format(
@@ -130,8 +127,18 @@ void frame_provider_google_video_source::set_size(const QSize &set) {
     return;
   if (surface->isActive())
     surface->stop();
-  // format = m_surface->nearestFormat(format);
-  bool success = surface->start(format);
+  // format = surface->nearestFormat(format);
+}
+
+void frame_provider_google_video_source::start_surface() {
+  if (!surface)
+    return;
+  if (format != surface->surfaceFormat())
+    surface->stop();
+  if (surface->isActive())
+    return;
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "starting surface";
+  const bool success = surface->start(format);
   BOOST_ASSERT(success);
   if (success)
     return;

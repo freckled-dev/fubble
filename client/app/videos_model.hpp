@@ -9,10 +9,12 @@ namespace client {
 class peers;
 class videos_model : public QObject {
   Q_OBJECT
-  Q_PROPERTY(client::ui::frame_provider_google_video_source *video MEMBER
-                 video_source NOTIFY video_source_changed)
+  Q_PROPERTY(client::ui::frame_provider_google_video_source *video READ
+                 get_video_source NOTIFY video_source_changed)
 public:
   videos_model(peers &peers_);
+
+  ui::frame_provider_google_video_source *get_video_source() const;
 
 signals:
   void video_source_changed(ui::frame_provider_google_video_source *);

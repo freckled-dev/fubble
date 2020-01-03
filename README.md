@@ -38,7 +38,9 @@ https://stackoverflow.com/questions/36338000/qml-console-log-and-console-debug-d
 ## qml
 
 When using the `Q_PROPERTY` I have to give the full typename with all namespaces noted.
-Don't do `typedef`s or `using`s. https://stackoverflow.com/questions/19889163/using-qt-properties-with-custom-types-defined-in-namespaces
+Don't do `typedef`s or `using`s.
+https://stackoverflow.com/questions/19889163/using-qt-properties-with-custom-types-defined-in-namespaces
+https://wiki.qt.io/How_to_use_a_C_class_declared_in_a_namespace_with_Q_PROPERTY_and_QML
 
 # conan
 enable `_GLIBCXX_USE_CXX11_ABI` by setting `compiler.libcxx=libstdc++11` in `~/.conan/profiles/default`

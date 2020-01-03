@@ -7,7 +7,6 @@
 using namespace client;
 
 videos_model::videos_model(peers &peers_) : peers_(peers_) {
-  video_source = new ui::frame_provider_google_video_source();
   peers_.on_added.connect([this]() { on_peer_added(); });
 }
 
@@ -19,6 +18,11 @@ void videos_model::on_peer_added() {
       [this](const auto &track) { on_track(track); });
 }
 
+ui::frame_provider_google_video_source *videos_model::get_video_source() const {
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "get_video_source()";
+  return video_source;
+}
+
 void videos_model::on_track(const rtc::track_ptr &track) {
   BOOST_LOG_SEV(logger, logging::severity::debug) << "videos_model::on_track";
   rtc::google::video_source *casted =
@@ -26,6 +30,8 @@ void videos_model::on_track(const rtc::track_ptr &track) {
   BOOST_ASSERT(casted);
   if (casted == nullptr)
     return;
+  video_source = new ui::frame_provider_google_video_source();
   video_source->set_source(casted);
-  // video_source_changed(video_source);
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "calling signal";
+  video_source_changed(video_source);
 }
