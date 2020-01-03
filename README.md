@@ -35,6 +35,11 @@ Change conan config file `~/.conan/profiles/default` and set `compiler.libcxx=li
 by default it's disabled to log with `console.log` and `console.debug`. other logs still work, eg: `console.info`.
 https://stackoverflow.com/questions/36338000/qml-console-log-and-console-debug-dont-write-to-console
 
+## qml
+
+When using the `Q_PROPERTY` I have to give the full typename with all namespaces noted.
+Don't do `typedef`s or `using`s. https://stackoverflow.com/questions/19889163/using-qt-properties-with-custom-types-defined-in-namespaces
+
 # conan
 enable `_GLIBCXX_USE_CXX11_ABI` by setting `compiler.libcxx=libstdc++11` in `~/.conan/profiles/default`
 

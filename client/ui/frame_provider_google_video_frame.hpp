@@ -38,7 +38,5 @@ protected:
   boost::signals2::scoped_connection connection_on_frame;
 };
 } // namespace client::ui
-// Q_DECLARE_METATYPE(client::ui::frame_provider_google_video_source)
-// Q_DECLARE_METATYPE(client::ui::frame_provider_google_video_source *)
 
 #endif

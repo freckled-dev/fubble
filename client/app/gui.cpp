@@ -74,13 +74,6 @@ int main(int argc, char *argv[]) {
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
   QGuiApplication app(argc, argv);
   using frame_provider = client::ui::frame_provider_google_video_source;
-#if 1
-  qRegisterMetaType<frame_provider *>(
-      "ui::frame_provider_google_video_source*");
-#else
-  qRegisterMetaType<client::ui::frame_provider_google_video_source *>();
-#endif
-  // qRegisterMetaType<frame_provider>();
   qmlRegisterType<frame_provider>("io.fubble.FrameProvider", 1, 0,
                                   "FrameProvider");
   QQmlApplicationEngine engine;
