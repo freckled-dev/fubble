@@ -28,7 +28,8 @@ public:
 protected:
   void on_frame(const webrtc::VideoFrame &frame);
   void on_frame_ui_thread(const QVideoFrame &frame);
-  void set_size(const QSize &set);
+  void set_format(const QSize &set);
+  void start_surface();
 
   logging::logger logger;
   QAbstractVideoSurface *surface{};
