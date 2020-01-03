@@ -25,8 +25,8 @@ signals:
   void room_changed(QString);
 
 protected:
-  joiner &joiner_;
   logging::logger logger;
+  joiner &joiner_;
   QSettings settings;
   QString name;
   QString room;

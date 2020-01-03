@@ -1,10 +1,17 @@
 #include "peers.hpp"
+#include "peer.hpp"
 #include <algorithm>
 #include <boost/assert.hpp>
 
 using namespace client;
 
 peers::~peers() = default;
+
+void peers::close() {
+  for (auto &peer : container)
+    peer->close();
+  container.clear();
+}
 
 void peers::add(const peer_ptr &add_) {
   container.push_back(add_);

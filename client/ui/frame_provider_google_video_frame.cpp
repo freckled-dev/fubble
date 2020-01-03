@@ -50,8 +50,10 @@ private:
 frame_provider_google_video_source::frame_provider_google_video_source() =
     default;
 
-frame_provider_google_video_source::~frame_provider_google_video_source() =
-    default;
+frame_provider_google_video_source::~frame_provider_google_video_source() {
+  BOOST_LOG_SEV(logger, logging::severity::debug)
+      << " ~frame_provider_google_video_source()";
+}
 
 void frame_provider_google_video_source::set_source(
     rtc::google::video_source *source_) {
@@ -85,10 +87,10 @@ void frame_provider_google_video_source::on_frame(
     const webrtc::VideoFrame &frame) {
   auto frame_buffer = frame.video_frame_buffer();
   webrtc::VideoFrameBuffer::Type type = frame_buffer->type();
-#if 0
-    BOOST_LOG_SEV(logger, logging::severity::debug)
-        << "frame, width:" << frame.width() << ", height:" << frame.height()
-        << ", type:" << static_cast<int>(type);
+#if 1
+  BOOST_LOG_SEV(logger, logging::severity::debug)
+      << "frame, width:" << frame.width() << ", height:" << frame.height()
+      << ", type:" << static_cast<int>(type);
 #endif
   BOOST_ASSERT(type == webrtc::VideoFrameBuffer::Type::kI420);
   // destruction happens through VideoFrame
@@ -106,8 +108,12 @@ provider->setFormat(160, 90, QVideoFrame::Format_YUV420P);
 
 void frame_provider_google_video_source::on_frame_ui_thread(
     const QVideoFrame &frame) {
-  if (!surface)
+  if (!surface) {
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << "on_frame_ui_thread a frame gets discarded because no surface is "
+           "set";
     return;
+  }
   set_size(frame.size());
   surface->present(frame);
 }
