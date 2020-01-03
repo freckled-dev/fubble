@@ -18,17 +18,32 @@ Window {
     anchors.fill: parent
     focus: true
   }
+
     Component {
       id: roomComponent
-      Rectangle {
-        width: 100; height: 100
-        color: "red"
+      GridLayout {
+        VideoOutput {
+          source: videosModel.video
+          Layout.maximumWidth: 500
+          Layout.maximumHeight: 500
+        }
+        /*
+        VideoOutput {
+          source: provider
+          // Layout.fillWidth: true; Layout.fillHeight: true
+          Layout.maximumWidth: 500
+          Layout.maximumHeight: 500
+        }
+        */
+        Button {
+          text: "button"
+        }
       }
     }
 
     Component {
-        id: login
-        FocusScope {
+      id: login
+      FocusScope {
         ColumnLayout {
             anchors.verticalCenter: parent.verticalCenter
             anchors.horizontalCenter: parent.horizontalCenter

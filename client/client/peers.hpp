@@ -15,6 +15,7 @@ public:
   void add(const peer_ptr &add_);
   std::vector<peer_ptr> get_all();
   void remove(const peer_ptr &remove_);
+  void close();
 
   boost::signals2::signal<void()> on_added;
   boost::signals2::signal<void()> on_removed;

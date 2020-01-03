@@ -12,6 +12,7 @@
 namespace client::ui {
 // https://stackoverflow.com/questions/43854589/custom-source-property-for-videooutput-qml
 // https://doc.qt.io/qt-5/videooverview.html
+// TODO name the source file the same way the class is called
 class frame_provider_google_video_source : public QObject {
   Q_OBJECT
   Q_PROPERTY(
@@ -37,5 +38,7 @@ protected:
   boost::signals2::scoped_connection connection_on_frame;
 };
 } // namespace client::ui
+// Q_DECLARE_METATYPE(client::ui::frame_provider_google_video_source)
+// Q_DECLARE_METATYPE(client::ui::frame_provider_google_video_source *)
 
 #endif

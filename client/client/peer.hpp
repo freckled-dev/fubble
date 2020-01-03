@@ -3,7 +3,6 @@
 
 #include "p2p/negotiation/ice_candidates.hpp"
 #include "p2p/negotiation/offer_answer.hpp"
-#include "rtc/connection.hpp"
 #include "signalling/client/client.hpp"
 #include <memory>
 
@@ -16,6 +15,7 @@ public:
        std::unique_ptr<rtc::connection> rtc_);
 
   void connect(const std::string &key);
+  void close();
   rtc::connection &rtc_connection();
   const rtc::connection &rtc_connection() const;
 

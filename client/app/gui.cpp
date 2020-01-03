@@ -14,6 +14,7 @@
 #include "signalling/client/connection_creator.hpp"
 #include "signalling/json_message.hpp"
 #include "ui/frame_provider_google_video_frame.hpp"
+#include "videos_model.hpp"
 #include "websocket/connection_creator.hpp"
 #include "websocket/connector.hpp"
 #include <boost/asio/executor_work_guard.hpp>
@@ -43,7 +44,7 @@ int main(int argc, char *argv[]) {
   signalling::client::connection_creator signalling_connection_creator{
       context, boost_executor, signalling_json};
   signalling::client::client::connect_information connect_information{
-      "localhost", "8080"};
+      "localhost", "8000"};
   signalling::client::client_creator client_creator{
       boost_executor, websocket_connector, signalling_connection_creator,
       connect_information};
@@ -73,11 +74,21 @@ int main(int argc, char *argv[]) {
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
   QGuiApplication app(argc, argv);
   using frame_provider = client::ui::frame_provider_google_video_source;
-  QQmlApplicationEngine engine;
-  client::join_model backend(joiner);
-  engine.rootContext()->setContextProperty("joinModel", &backend);
+#if 1
+  qRegisterMetaType<frame_provider *>(
+      "ui::frame_provider_google_video_source*");
+#else
+  qRegisterMetaType<client::ui::frame_provider_google_video_source *>();
+#endif
+  // qRegisterMetaType<frame_provider>();
   qmlRegisterType<frame_provider>("io.fubble.FrameProvider", 1, 0,
                                   "FrameProvider");
+  QQmlApplicationEngine engine;
+  client::join_model join_model{joiner};
+  engine.rootContext()->setContextProperty("joinModel", &join_model);
+  client::videos_model videos_model{peers};
+  engine.rootContext()->setContextProperty("videosModel", &videos_model);
+
   const QUrl url(QStringLiteral("qrc:/main.qml"));
   BOOST_LOG_SEV(logger, logging::severity::debug) << "loading qml";
   engine.load(url);
@@ -96,6 +107,7 @@ int main(int argc, char *argv[]) {
   }};
   auto result = app.exec();
   work_guard.reset();
+  peers.close();
   if (asio_thread.joinable())
     asio_thread.join();
   return result;
