@@ -3,10 +3,13 @@
 
 #include <QGuiApplication>
 #include <QtCore/QAbstractEventDispatcher>
+#include <boost/assert.hpp>
 
 // https://stackoverflow.com/questions/21646467/how-to-execute-a-functor-or-a-lambda-in-a-given-thread-in-qt-gcd-style
 template <typename F> static void post_to_object(F &&fun, QObject *obj = qApp) {
-  QMetaObject::invokeMethod(obj, std::forward<F>(fun));
+  [[maybe_unused]] bool result =
+      QMetaObject::invokeMethod(obj, std::forward<F>(fun));
+  BOOST_ASSERT(result);
 }
 
 template <typename F>

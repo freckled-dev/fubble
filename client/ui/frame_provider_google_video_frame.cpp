@@ -96,7 +96,7 @@ void frame_provider_google_video_source::on_frame(
   QSize size{frame_buffer->width(), frame_buffer->height()};
   QVideoFrame frame_casted{frame_buffer_casted, size,
                            QVideoFrame::Format_YUV420P};
-  post_to_object([frame_casted, this] { on_frame_ui_thread(frame_casted); });
+  post_to_object([frame_casted, this] { on_frame_ui_thread(frame_casted); }, this);
 }
 
 void frame_provider_google_video_source::on_frame_ui_thread(

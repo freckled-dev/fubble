@@ -3,7 +3,6 @@ import QtQuick 2.12
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
 import QtQuick.Window 2.12
-import io.fubble.FrameProvider 1.0
 
 Window {
   visible: true
@@ -24,19 +23,11 @@ Window {
       GridLayout {
         VideoOutput {
           source: videosModel.video
-          Layout.maximumWidth: 500
-          Layout.maximumHeight: 500
+          Layout.fillWidth: true; Layout.fillHeight: true
         }
-        /*
         VideoOutput {
-          source: provider
-          // Layout.fillWidth: true; Layout.fillHeight: true
-          Layout.maximumWidth: 500
-          Layout.maximumHeight: 500
-        }
-        */
-        Button {
-          text: "button"
+          source: videosModel.ownVideo
+          Layout.fillWidth: true; Layout.fillHeight: true
         }
       }
     }
@@ -55,7 +46,7 @@ Window {
 
             VideoOutput {
                 id: videoOutput
-                source: provider
+                source: videosModel.ownVideo
                 function getAspectRatio() {
                   return videoOutput.sourceRect.width / videoOutput.sourceRect.height
                 }
@@ -92,11 +83,6 @@ Window {
             }
         }
     }
-  }
-
-  FrameProvider {
-    objectName: "provider"
-    id: provider
   }
 }
 
