@@ -29,7 +29,6 @@ protected:
 
   mutable logging::logger logger;
   peers &peers_;
-  // TODO we leak here!
   ui::frame_provider_google_video_source *video_source{};
   ui::frame_provider_google_video_source *own_video{};
 };

@@ -103,7 +103,7 @@ send videos to fake device
 ```bash
 # produce a video
 # sintel https://durian.blender.org/download/
-curl -O http://peach.themazzone.com/durian/movies/sintel-1280-surround.mp4
+curl -LO http://peach.themazzone.com/durian/movies/sintel-1280-surround.mp4
 ffmpeg -re -i ./sintel-1280-surround.mp4 -f v4l2 /dev/video0
 
 # consume it by gstreamer

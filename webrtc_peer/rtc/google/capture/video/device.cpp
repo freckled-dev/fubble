@@ -35,7 +35,9 @@ void device::stop() {
 }
 
 void device::OnFrame(const webrtc::VideoFrame &frame) {
-  // BOOST_LOG_SEV(logger, logging::severity::debug) << "OnFrame()";
+#if 0
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "OnFrame()";
+#endif
   on_frame(frame);
 }
 
