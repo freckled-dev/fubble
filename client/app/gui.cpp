@@ -19,6 +19,7 @@
 #include "websocket/connector.hpp"
 #include <boost/asio/executor_work_guard.hpp>
 #include <boost/asio/io_context.hpp>
+#include <fmt/format.h>
 #include <thread>
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-copy"
@@ -63,6 +64,13 @@ int main(int argc, char *argv[]) {
   rtc::google::capture::video::device_creator device_creator;
   std::shared_ptr<rtc::google::capture::video::device> capture_device =
       device_creator(devices.front().id);
+  try {
+    capture_device->start();
+  } catch (const std::runtime_error &error) {
+    BOOST_LOG_SEV(logger, logging::severity::warning) << fmt::format(
+        "could not start capturing from device, error:{}", error.what());
+    // TODO do a fake video or try next camera
+  }
 
   client::peers peers;
   client::add_video_to_connection track_adder(rtc_connection_creator,
@@ -73,7 +81,7 @@ int main(int argc, char *argv[]) {
 
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
   QGuiApplication app(argc, argv);
-  qRegisterMetaType<client::ui::frame_provider_google_video_source*>();
+  qRegisterMetaType<client::ui::frame_provider_google_video_source *>();
   QQmlApplicationEngine engine;
   client::join_model join_model{joiner};
   engine.rootContext()->setContextProperty("joinModel", &join_model);
@@ -85,8 +93,6 @@ int main(int argc, char *argv[]) {
   engine.load(url);
   BOOST_LOG_SEV(logger, logging::severity::debug) << "loaded qml";
   videos_model.get_own_video()->set_source(capture_device.get());
-
-  capture_device->start();
 
   auto work_guard = boost::asio::make_work_guard(context);
   std::thread asio_thread{[&context, &logger] {

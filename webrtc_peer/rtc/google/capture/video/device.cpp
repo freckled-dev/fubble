@@ -23,7 +23,10 @@ void device::start() {
   // capabilities.width = 640;
   // capabilities.height = 480;
   capabilities.maxFPS = 60;
-  device_->StartCapture(capabilities);
+  auto result = device_->StartCapture(capabilities);
+  if (result == 0)
+    return;
+  throw std::runtime_error("could not start recording");
 }
 
 void device::stop() {
