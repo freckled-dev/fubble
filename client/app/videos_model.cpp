@@ -9,7 +9,7 @@ using namespace client;
 
 videos_model::videos_model(peers &peers_) : peers_(peers_) {
   peers_.on_added.connect([this]() { on_peer_added(); });
-  own_video = new ui::frame_provider_google_video_source();
+  own_video = new ui::frame_provider_google_video_source(this);
 }
 
 void videos_model::on_peer_added() {
@@ -25,11 +25,10 @@ ui::frame_provider_google_video_source *videos_model::get_video_source() const {
   return video_source;
 }
 
-  ui::frame_provider_google_video_source * videos_model:: get_own_video() const {
+ui::frame_provider_google_video_source *videos_model::get_own_video() const {
   BOOST_LOG_SEV(logger, logging::severity::debug) << "get_own_video()";
   return own_video;
-  }
-
+}
 
 void videos_model::on_track(const rtc::track_ptr &track) {
   BOOST_LOG_SEV(logger, logging::severity::debug) << "videos_model::on_track";
@@ -38,7 +37,7 @@ void videos_model::on_track(const rtc::track_ptr &track) {
   BOOST_ASSERT(casted);
   if (casted == nullptr)
     return;
-  video_source = new ui::frame_provider_google_video_source();
+  video_source = new ui::frame_provider_google_video_source(this);
   video_source->moveToThread(QCoreApplication::instance()->thread());
   video_source->set_source(casted);
   BOOST_LOG_SEV(logger, logging::severity::debug) << "calling signal";

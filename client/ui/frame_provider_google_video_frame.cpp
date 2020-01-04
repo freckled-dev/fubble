@@ -47,8 +47,9 @@ private:
 };
 } // namespace
 
-frame_provider_google_video_source::frame_provider_google_video_source() =
-    default;
+frame_provider_google_video_source::frame_provider_google_video_source(
+    QObject *parent)
+    : QObject(parent) {}
 
 frame_provider_google_video_source::~frame_provider_google_video_source() {
   BOOST_LOG_SEV(logger, logging::severity::debug)
@@ -84,7 +85,7 @@ void frame_provider_google_video_source::on_frame(
     const webrtc::VideoFrame &frame) {
   auto frame_buffer = frame.video_frame_buffer();
   webrtc::VideoFrameBuffer::Type type = frame_buffer->type();
-#if 1
+#if 0
   BOOST_LOG_SEV(logger, logging::severity::debug)
       << "frame, width:" << frame.width() << ", height:" << frame.height()
       << ", type:" << static_cast<int>(type);
@@ -96,12 +97,15 @@ void frame_provider_google_video_source::on_frame(
   QSize size{frame_buffer->width(), frame_buffer->height()};
   QVideoFrame frame_casted{frame_buffer_casted, size,
                            QVideoFrame::Format_YUV420P};
-  post_to_object([frame_casted, this] { on_frame_ui_thread(frame_casted); }, this);
+  post_to_object([frame_casted, this] { on_frame_ui_thread(frame_casted); },
+                 this);
 }
 
 void frame_provider_google_video_source::on_frame_ui_thread(
     const QVideoFrame &frame) {
+#if 0
   BOOST_LOG_SEV(logger, logging::severity::debug) << "on_frame_ui_thread";
+#endif
   if (!surface) {
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << "on_frame_ui_thread a frame gets discarded because no surface "

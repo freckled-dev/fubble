@@ -62,15 +62,20 @@ int main(int argc, char *argv[]) {
   if (devices.empty())
     throw std::runtime_error("no video capture devices available");
   rtc::google::capture::video::device_creator device_creator;
-  std::shared_ptr<rtc::google::capture::video::device> capture_device =
-      device_creator(devices.front().id);
-  try {
-    capture_device->start();
-  } catch (const std::runtime_error &error) {
-    BOOST_LOG_SEV(logger, logging::severity::warning) << fmt::format(
-        "could not start capturing from device, error:{}", error.what());
-    // TODO do a fake video or try next camera
+  std::shared_ptr<rtc::google::capture::video::device> capture_device;
+  for (const auto &current_device : devices) {
+    capture_device = device_creator(current_device.id);
+    try {
+      capture_device->start();
+      break;
+    } catch (const std::runtime_error &error) {
+      BOOST_LOG_SEV(logger, logging::severity::warning) << fmt::format(
+          "could not start capturing from device, id:'{}' error:{}",
+          current_device.id, error.what());
+    }
   }
+  if (!capture_device)
+    throw std::runtime_error("no camera device available");
 
   client::peers peers;
   client::add_video_to_connection track_adder(rtc_connection_creator,

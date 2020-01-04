@@ -18,7 +18,7 @@ class frame_provider_google_video_source : public QObject {
   Q_PROPERTY(
       QAbstractVideoSurface *videoSurface READ get_surface WRITE set_surface)
 public:
-  frame_provider_google_video_source();
+  frame_provider_google_video_source(QObject *parent);
   ~frame_provider_google_video_source();
 
   void set_source(rtc::google::video_source *source);
