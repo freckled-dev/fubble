@@ -49,7 +49,8 @@ test('dependencies test', dependencies_test)
 
 signalling_client = library('signalling_client',
   ['signalling/client/client.cpp', 'signalling/client/connection.cpp',
-    'signalling/client/connection_creator.cpp'],
+    'signalling/client/connection_creator.cpp',
+    'signalling/client/client_creator.cpp'],
   dependencies: [fmt_dep, websocket_dep, signalling_dep],
   link_with: []
   )
