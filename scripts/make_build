@@ -32,12 +32,12 @@ export BOOST_ROOT=$(pkg-config --variable=prefix boost)
 # export CXX="ccache clang++"
 meson "$source_dir" meson \
   --prefix="$prefix_dir" \
-  --fatal-meson-warnings \
   -Db_sanitize=address \
   -Db_lundef=false \
   -Dwarning_level=3 \
   -Dwerror=true
 
+#   --fatal-meson-warnings \
 #  -Db_coverage=true \
 #  -Ddefault_library=static \
 

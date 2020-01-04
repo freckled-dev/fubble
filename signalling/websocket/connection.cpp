@@ -14,8 +14,10 @@ static void completion_error(const boost::system::error_code &error) {
 }
 
 boost::future<void> connection::send(const std::string &message) {
+#if 0
   BOOST_LOG_SEV(logger, logging::severity::trace)
       << "sending message: '" << message << "'";
+#endif
   send_queue.emplace();
   send_item &item = send_queue.back();
   item.message = message;

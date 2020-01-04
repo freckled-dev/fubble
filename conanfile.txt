@@ -4,6 +4,8 @@ gtest/1.8.1@bincrafters/stable
 fmt/6.0.0
 jsonformoderncpp/3.7.0@vthiery/stable
 boost-di/1.1.0@inexorgame/stable
+# does not work on fedora 31
+# qt/5.14.0@bincrafters/stable
 
 [generators]
 pkg_config
@@ -17,6 +19,8 @@ boost:without_coroutine=True
 boost:without_fiber=True
 boost:zlib=False
 boost:bzip2=False
-# boost:fPIC=False
 
+# qt:qtsvg=True
+# qt:qtcharts=True
+# qt:qtmultimedia=True
 

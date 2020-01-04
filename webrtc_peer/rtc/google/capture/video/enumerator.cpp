@@ -10,7 +10,7 @@ std::vector<information> enumerator::operator()() {
   std::unique_ptr<webrtc::VideoCaptureModule::DeviceInfo> info(
       webrtc::VideoCaptureFactory::CreateDeviceInfo());
   if (!info)
-    throw std::runtime_error("deviveinfo could not be initialised");
+    throw std::runtime_error("deviceinfo could not be initialised");
   int num_devices = info->NumberOfDevices();
   for (int index = 0; index < num_devices; ++index) {
     constexpr std::size_t device_name_size =
@@ -24,6 +24,11 @@ std::vector<information> enumerator::operator()() {
     item.name = name;
     result.emplace_back(item);
   }
+  auto erase =
+      std::unique(result.begin(), result.end(), [](auto first, auto second) {
+        return first.id == second.id;
+      });
+  result.erase(erase, result.end());
   return result;
 }
 

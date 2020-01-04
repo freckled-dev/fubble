@@ -16,8 +16,17 @@ device::~device() {
 
 void device::start() {
   BOOST_LOG_SEV(logger, logging::severity::debug) << "start()";
+  // webrtc::VideoCaptureCapability capabilities;
   webrtc::VideoCaptureCapability capabilities;
-  device_->StartCapture(capabilities);
+  capabilities.width = 1920;
+  capabilities.height = 1080;
+  // capabilities.width = 640;
+  // capabilities.height = 480;
+  capabilities.maxFPS = 60;
+  auto result = device_->StartCapture(capabilities);
+  if (result == 0)
+    return;
+  throw std::runtime_error("could not start recording");
 }
 
 void device::stop() {
@@ -26,7 +35,9 @@ void device::stop() {
 }
 
 void device::OnFrame(const webrtc::VideoFrame &frame) {
-  // BOOST_LOG_SEV(logger, logging::severity::debug) << "OnFrame()";
+#if 0
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "OnFrame()";
+#endif
   on_frame(frame);
 }
 
