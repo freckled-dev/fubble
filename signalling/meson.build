@@ -23,7 +23,7 @@ signalling = library('signalling',
     'signalling/json_message.cpp', 'signalling/offer.cpp',
     'signalling/answer.cpp', 'signalling/ice_candidate.cpp',
     'signalling/device/offering.cpp', 'signalling/device/answering.cpp'],
-  dependencies: [boost_dep, fmt_dep, json_dep, utils_dep],
+  dependencies: [fmt_dep, json_dep, utils_dep],
   link_with: [],
   install: true
   )

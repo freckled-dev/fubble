@@ -17,9 +17,10 @@ webrtc_google_peer_dep = declare_dependency(
   link_with: [webrtc_google_peer],
   dependencies: [boost_dep, webrtc_peer_dep, google_webrtc_dep]
   )
+# TODO this test needs more than a second. split it into multiple tests
 webrtc_google_peer_test = executable('google_peer_test',
   ['connection_test.cpp'],
-  dependencies: [gtest_dep, webrtc_google_peer_dep, fmt_dep],
+  dependencies: [gtest_dep, webrtc_google_peer_dep, fmt_dep, disabled],
   link_with: [test_main]
   )
 suppr_file = meson.source_root() / 'webrtc_peer/lsan_suppressions_google'
