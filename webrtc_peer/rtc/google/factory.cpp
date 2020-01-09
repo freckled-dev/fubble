@@ -1,5 +1,6 @@
 #include "factory.hpp"
 #include "connection.hpp"
+#include "uuid.hpp"
 #include "video_source.hpp"
 #include "video_track.hpp"
 #include "video_track_source.hpp"
@@ -7,8 +8,6 @@
 #include <api/audio_codecs/builtin_audio_encoder_factory.h>
 #include <api/video_codecs/builtin_video_decoder_factory.h>
 #include <api/video_codecs/builtin_video_encoder_factory.h>
-#include <boost/uuid/random_generator.hpp>
-#include <boost/uuid/uuid_io.hpp>
 
 using namespace rtc::google;
 
@@ -41,12 +40,11 @@ std::unique_ptr<rtc::connection> factory::create_connection() {
 
 std::unique_ptr<video_track>
 factory::create_video_track(const std::shared_ptr<video_source> &source) {
-  auto label = boost::uuids::random_generator()();
-  auto label_string = boost::uuids::to_string(label);
+  auto label = uuid::generate();
   rtc::scoped_refptr<video_track_source::adapter> source_adapter =
       new rtc::RefCountedObject<video_track_source::adapter>;
   rtc::scoped_refptr<webrtc::VideoTrackInterface> native(
-      factory_->CreateVideoTrack(label_string, source_adapter.get()));
+      factory_->CreateVideoTrack(label, source_adapter.get()));
   assert(native);
   if (!native)
     throw std::runtime_error("could not create video track");
