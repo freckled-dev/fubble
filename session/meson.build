@@ -6,7 +6,12 @@ nakama_test = executable('nakama_test',
 test('nakama test',
   nakama_test,
   env: [
-    'ASAN_OPTIONS=fast_unwind_on_malloc=0,detect_leaks=0'
+    'ASAN_OPTIONS=fast_unwind_on_malloc=0'
     ],
   timeout: 8)
+
+session = library('session',
+  ['client.cpp', 'room_joiner.cpp', 'room.cpp'],
+  dependencies: [nakama_dep, utils_dep, fmt_dep]
+  )
 

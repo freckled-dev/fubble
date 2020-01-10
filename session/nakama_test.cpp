@@ -27,7 +27,6 @@ struct session {
       Nakama::createDefaultClient(Nakama::NClientParameters{});
   Nakama::NSessionPtr session_;
   session(const std::string name) {
-    (void)name;
     using namespace NAKAMA_NAMESPACE;
     auto loginFailedCallback = [&](const NError &) { EXPECT_TRUE(false); };
     bool called{};
@@ -63,6 +62,8 @@ TEST(Nakama, AuthenticateDevice) { session test{"name"}; }
 namespace {
 struct realtime : Nakama::NRtClientListenerInterface {
   session &session_;
+  // WATCHOUT this structure will NOT be updated, if another person joins the
+  // room
   Nakama::NRtClientPtr realtime_client;
   boost::signals2::signal<void()> on_connected;
   boost::signals2::signal<void()> on_joins;
@@ -210,16 +211,6 @@ struct NakamaTwoSessions : testing::Test {
     second_joiner.wait_for_joined();
     EXPECT_EQ(first_joiner.channel->id, second_joiner.channel->id);
     channel_id = first_joiner.channel->id;
-#if 0
-    while (first_joiner.channel->presences.empty() ||
-           second_joiner.channel->presences.empty()) {
-      BOOST_LOG_SEV(logger, logging::severity::info)
-          << first_joiner.channel->presences.size() << " "
-          << second_joiner.channel->presences.size();
-      first_realtime.tick_50ms();
-      second_realtime.tick_50ms();
-    }
-#endif
   }
   void tick_50ms() {
     first_realtime.tick_50ms();
