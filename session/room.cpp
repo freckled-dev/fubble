@@ -21,6 +21,7 @@ void room::on_channel_message(const Nakama::NChannelMessage &message) {
   BOOST_LOG_SEV(logger, logging::severity::info)
       << "on_channel_message, content:" << message.content;
 }
+
 void room::on_channel_presence(const Nakama::NChannelPresenceEvent &event) {
   BOOST_LOG_SEV(logger, logging::severity::info)
       << fmt::format("on_channel_presence, joins:{}, leaves:{}",
