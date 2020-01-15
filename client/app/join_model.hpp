@@ -2,11 +2,8 @@
 #define UUID_5D0F470B_C872_46EB_8804_1972618A74E6
 
 #include "logging/logger.hpp"
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-copy"
 #include <QObject>
 #include <QSettings>
-#pragma GCC diagnostic pop
 
 namespace client {
 class joiner;

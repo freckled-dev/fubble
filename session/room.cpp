@@ -1,6 +1,6 @@
 #include "room.hpp"
 #include "client.hpp"
-#include "fmt/format.h"
+#include <fmt/format.h>
 
 using namespace session;
 
@@ -16,6 +16,16 @@ room::room(client &client_, Nakama::NChannelPtr channel)
 const std::string &room::get_name() const { return channel->roomName; }
 
 const std::string &room::own_id() const { return channel->self.userId; }
+
+void room::on_channel_message(const Nakama::NChannelMessage &message) {
+  BOOST_LOG_SEV(logger, logging::severity::info)
+      << "on_channel_message, content:" << message.content;
+}
+void room::on_channel_presence(const Nakama::NChannelPresenceEvent &event) {
+  BOOST_LOG_SEV(logger, logging::severity::info)
+      << fmt::format("on_channel_presence, joins:{}, leaves:{}",
+                     event.joins.size(), event.leaves.size());
+}
 
 namespace {
 participant

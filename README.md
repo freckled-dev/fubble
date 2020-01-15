@@ -16,7 +16,7 @@ sudo dnf install -y \
   qt5-qtquickcontrols2-devel
 
 # opensuse
-sudo zypper install libX11-devel
+sudo zypper install libX11-devel cmake gcc-c++ git meson
 ```
 
 if using fish add the python3 bin path to PATH

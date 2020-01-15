@@ -3,11 +3,8 @@
 
 #include "logging/logger.hpp"
 #include "rtc/google/video_source.hpp"
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-copy"
 #include <QtMultimedia/qabstractvideosurface.h>
 #include <QtMultimedia/qvideosurfaceformat.h>
-#pragma GCC diagnostic pop
 
 namespace client::ui {
 // https://stackoverflow.com/questions/43854589/custom-source-property-for-videooutput-qml

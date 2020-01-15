@@ -31,8 +31,8 @@ cd $build_dir
 # multiple paths with `:`
 export PKG_CONFIG_PATH="${dependencies_dir}"
 export BOOST_ROOT=$(pkg-config --variable=prefix boost)
-# export CC="ccache clang"
-# export CXX="ccache clang++"
+export CC="ccache clang"
+export CXX="ccache clang++"
 meson "$source_dir" meson \
   --prefix="$prefix_dir" \
   -Db_sanitize=address \

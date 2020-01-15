@@ -8,7 +8,6 @@
 
 TEST(Nakama, CreateDefaultClient) {
   using namespace NAKAMA_NAMESPACE;
-  NLogger::initWithConsoleSink(NLogLevel::Debug);
   NClientParameters parameters;
 #if 0
   parameters.serverKey = "defaultkey";
