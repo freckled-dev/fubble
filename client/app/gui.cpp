@@ -21,12 +21,9 @@
 #include <boost/asio/io_context.hpp>
 #include <fmt/format.h>
 #include <thread>
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-copy"
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
-#pragma GCC diagnostic pop
 
 int main(int argc, char *argv[]) {
   logging::add_console_log();

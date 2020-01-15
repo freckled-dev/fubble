@@ -9,6 +9,7 @@ client::client(boost::asio::executor &executor)
   client_->setErrorCallback(
       [this](const auto &error) { on_nakama_error(error); });
   const std::string device_id = uuid::generate();
+  // TODO do a connect method with a future.
   client_->authenticateDevice(
       device_id, Nakama::opt::nullopt, Nakama::opt::nullopt, {},
       [this](const auto &session_) { on_logged_in(session_); }
@@ -17,6 +18,8 @@ client::client(boost::asio::executor &executor)
 #endif
   );
 }
+
+client::~client() = default;
 
 void client::set_name(const std::string &name_) {
   if (name == name_)
@@ -29,6 +32,8 @@ Nakama::NRtClientPtr client::get_native_realtime_client() const {
   return realtime_client;
 }
 Nakama::NClientPtr client::get_native_client() const { return client_; }
+
+Nakama::NSessionPtr client::get_native_session() const { return session_; }
 
 void client::post_tick() {
   tick_timer.expires_from_now(std::chrono::milliseconds(50));
@@ -90,3 +95,14 @@ void client::onDisconnect(const Nakama::NRtClientDisconnectInfo &info) {
       << "onDisconnect, code:" << info.code << ", message:" << info.reason;
   on_disconnected();
 }
+
+void client::onChannelMessage(const Nakama::NChannelMessage &message) {
+  BOOST_LOG_SEV(logger, logging::severity::info) << "onChannelMessage";
+  on_channel_message(message);
+}
+
+void client::onChannelPresence(const Nakama::NChannelPresenceEvent &presence) {
+  BOOST_LOG_SEV(logger, logging::severity::info) << "onChannelPresence";
+  on_channel_presence(presence);
+}
+

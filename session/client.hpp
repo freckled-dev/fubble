@@ -12,6 +12,7 @@ namespace session {
 class client : public Nakama::NRtClientListenerInterface {
 public:
   client(boost::asio::executor &executor);
+  ~client();
 
   void set_name(const std::string &name);
   boost::signals2::signal<void()> on_connected;
