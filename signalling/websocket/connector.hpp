@@ -16,21 +16,20 @@ public:
     std::string url;
     std::string path = "/";
   };
-  connector(boost::asio::io_context &context, boost::executor &executor,
-            connection_creator &creator);
+  connector(boost::asio::io_context &context, connection_creator &creator);
   using future_type = boost::future<connection_ptr>;
   future_type operator()(const config &config_);
 
 private:
-  using promise_type = boost::promise<connection_ptr>;
-  boost::future<boost::asio::ip::tcp::resolver::results_type>
-  resolve(const config &config_);
-  future_type connect_to_endpoints(
+  struct state;
+  using state_ptr = std::shared_ptr<state>;
+  void resolve(state_ptr &state, const config &config_);
+  void connect_to_endpoints(
+      state_ptr &state,
       const boost::asio::ip::tcp::resolver::results_type &results);
-  future_type handshake(connection_ptr connection_, const config &config_);
+  void handshake(state_ptr &state, connection_ptr connection_);
 
   logging::logger logger;
-  boost::executor &executor;
   boost::asio::ip::tcp::resolver resolver;
   connection_creator &creator;
 };

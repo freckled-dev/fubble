@@ -7,10 +7,11 @@ using namespace session;
 room::room(client &client_, Nakama::NChannelPtr channel)
     : client_(client_), channel(channel) {
   on_nakama_joins(channel->presences);
-  client_.on_channel_presence.connect(
-      [this](const auto &event) { on_channel_presence(event); });
-  client_.on_channel_message.connect(
-      [this](const auto &event) { on_channel_message(event); });
+  auto &client_signals = client_.get_natives().realtime_signals;
+  signal_connections.push_back(client_signals.on_channel_presence.connect(
+      [this](const auto &event) { on_channel_presence(event); }));
+  signal_connections.push_back(client_signals.on_channel_message.connect(
+      [this](const auto &event) { on_channel_message(event); }));
 }
 
 const std::string &room::get_name() const { return channel->roomName; }
@@ -48,8 +49,8 @@ void room::on_nakama_joins(
     on_joins(joins);
   }
   {
-    Nakama::NClientPtr native_client = client_.get_native_client();
-    Nakama::NSessionPtr native_session = client_.get_native_session();
+    Nakama::NClientPtr native_client = client_.get_natives().client_;
+    Nakama::NSessionPtr native_session = client_.get_natives().session_;
     std::vector<std::string> ids;
     for (const auto presence : presences)
       ids.push_back(presence.userId);

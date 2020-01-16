@@ -15,7 +15,7 @@ websocket_test = executable('websocket_test',
   dependencies : [gtest_dep, boost_dep, websocket_dep],
   link_with: [test_main]
   )
-test('websocket test', websocket_test, timeout: 1)
+test('websocket test', websocket_test, timeout: 8)
 
 signalling = library('signalling',
   ['signalling/registration_handler.cpp',
@@ -77,7 +77,7 @@ server_test = executable('server_test',
   dependencies: [boost_dep, gtest_dep, fmt_dep, boost_di_dep, server_dep],
   link_with: [signalling_client, test_main]
   )
-test('server test', server_test, timeout: 2)
+test('signalling server test', server_test, timeout: 8)
 
 server_exec = executable('server',
   ['app/server.cpp'],
