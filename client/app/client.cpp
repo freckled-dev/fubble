@@ -111,7 +111,7 @@ int main(int argc, char *argv[]) {
   exit_signals signals_{executor};
 
   websocket::connection_creator websocket_connection_creator{context};
-  websocket::connector websocket_connector{context, boost_executor,
+  websocket::connector websocket_connector{context,
                                            websocket_connection_creator};
 
   signalling::json_message signalling_json;

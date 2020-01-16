@@ -61,9 +61,15 @@ void client::client::connected(boost::future<websocket::connection_ptr> &result,
         executor, [this](boost::future<void> result) { run_done(result); });
   } catch (const boost::system::system_error &error) {
     BOOST_LOG_SEV(logger, logging::severity::info)
-        << "an error occured, what:" << error.what();
+        << "an asio error occured, what:" << error.what();
     on_error(error);
+  } catch (const std::exception &error) {
+    BOOST_LOG_SEV(logger, logging::severity::info)
+        << "an error occured, what:" << error.what();
+    BOOST_ASSERT(false);
   } catch (...) {
+    BOOST_LOG_SEV(logger, logging::severity::error)
+        << "an unknow error occured";
     BOOST_ASSERT(false);
   }
 }

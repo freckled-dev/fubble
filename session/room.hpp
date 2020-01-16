@@ -30,6 +30,7 @@ protected:
   client &client_;
   Nakama::NChannelPtr channel;
   participants participants_;
+  std::vector<boost::signals2::scoped_connection> signal_connections;
 };
 } // namespace session
 

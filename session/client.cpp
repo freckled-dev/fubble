@@ -5,21 +5,23 @@ using namespace session;
 
 client::client(boost::asio::executor &executor)
     : executor(executor), tick_timer(executor) {
-  client_ = Nakama::createDefaultClient(Nakama::NClientParameters{});
-  client_->setErrorCallback(
+  natives_.client_ = Nakama::createDefaultClient(Nakama::NClientParameters{});
+  natives_.client_->setErrorCallback(
       [this](const auto &error) { on_nakama_error(error); });
-  const std::string device_id = uuid::generate();
-  // TODO do a connect method with a future.
-  client_->authenticateDevice(
-      device_id, Nakama::opt::nullopt, Nakama::opt::nullopt, {},
-      [this](const auto &session_) { on_logged_in(session_); }
-#if 0
-      , [this](const auto &error) { on_login_failed(error); }
-#endif
-  );
+  natives_.realtime_client = natives_.client_->createRtClient();
+  natives_.realtime_client->setListener(&natives_.realtime_signals);
+  post_tick();
 }
 
 client::~client() = default;
+
+void client::close() {
+  tick_timer.cancel();
+  if (natives_.realtime_client)
+    natives_.realtime_client->disconnect();
+  natives_.client_->disconnect();
+  natives_.session_.reset();
+}
 
 void client::set_name(const std::string &name_) {
   if (name == name_)
@@ -28,12 +30,8 @@ void client::set_name(const std::string &name_) {
   set_display_name();
 }
 
-Nakama::NRtClientPtr client::get_native_realtime_client() const {
-  return realtime_client;
-}
-Nakama::NClientPtr client::get_native_client() const { return client_; }
-
-Nakama::NSessionPtr client::get_native_session() const { return session_; }
+const client::natives &client::get_natives() const { return natives_; }
+client::natives &client::get_natives() { return natives_; }
 
 void client::post_tick() {
   tick_timer.expires_from_now(std::chrono::milliseconds(50));
@@ -51,27 +49,11 @@ void client::on_tick(const boost::system::error_code &error) {
   tick();
 }
 void client::tick() {
-  client_->tick();
-  if (realtime_client)
-    realtime_client->tick();
+  natives_.client_->tick();
+  if (natives_.realtime_client)
+    natives_.realtime_client->tick();
   post_tick();
 }
-void client::on_logged_in(const Nakama::NSessionPtr &session_) {
-  BOOST_LOG_SEV(logger, logging::severity::info) << "on_logged_in";
-  this->session_ = session_;
-  set_display_name();
-  realtime_client = client_->createRtClient();
-  realtime_client->setListener(this);
-  bool show_as_online = true;
-  realtime_client->connect(session_, show_as_online);
-}
-
-#if 0
-void client::on_login_failed(const Nakama::NError &error) {
-  BOOST_LOG_SEV(logger, logging::severity::info)
-      << "on_login_failed, error:" << error.message;
-}
-#endif
 
 void client::on_nakama_error(const Nakama::NError &error) {
   BOOST_LOG_SEV(logger, logging::severity::info)
@@ -79,30 +61,9 @@ void client::on_nakama_error(const Nakama::NError &error) {
 }
 
 void client::set_display_name() {
-  if (!session_ || name.empty())
+  if (!natives_.session_ || name.empty())
     return;
   auto username = Nakama::opt::nullopt;
-  client_->updateAccount(session_, username, name);
-}
-
-void client::onConnect() {
-  BOOST_LOG_SEV(logger, logging::severity::info) << "onConnect";
-  on_connected();
-}
-
-void client::onDisconnect(const Nakama::NRtClientDisconnectInfo &info) {
-  BOOST_LOG_SEV(logger, logging::severity::info)
-      << "onDisconnect, code:" << info.code << ", message:" << info.reason;
-  on_disconnected();
-}
-
-void client::onChannelMessage(const Nakama::NChannelMessage &message) {
-  BOOST_LOG_SEV(logger, logging::severity::info) << "onChannelMessage";
-  on_channel_message(message);
-}
-
-void client::onChannelPresence(const Nakama::NChannelPresenceEvent &presence) {
-  BOOST_LOG_SEV(logger, logging::severity::info) << "onChannelPresence";
-  on_channel_presence(presence);
+  natives_.client_->updateAccount(natives_.session_, username, name);
 }
 

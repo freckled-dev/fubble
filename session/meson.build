@@ -14,7 +14,8 @@ test('nakama test',
   timeout: 8)
 
 session = library('session',
-  ['client.cpp', 'room_joiner.cpp', 'room.cpp'],
+  ['client.cpp', 'room_joiner.cpp', 'room.cpp',
+    'nakama_realtime_client_signals.cpp', 'client_connector.cpp'],
   dependencies: [nakama_dep, utils_dep, fmt_dep]
   )
 session_dep = declare_dependency(
@@ -29,6 +30,17 @@ session_client_test = executable('session_client_test',
   link_with: [test_nakama_main]
   )
 test('session client test', session_client_test,
+  env: [
+    'ASAN_OPTIONS=fast_unwind_on_malloc=0'
+    ],
+  timeout: 8)
+
+session_room_test = executable('session_room_test',
+  ['room_test.cpp'],
+  dependencies : [gtest_dep, session_dep, fmt_dep],
+  link_with: [test_nakama_main]
+  )
+test('session room test', session_room_test,
   env: [
     'ASAN_OPTIONS=fast_unwind_on_malloc=0'
     ],

@@ -16,7 +16,8 @@
 #include <fmt/format.h>
 #include <gtest/gtest.h>
 
-static auto make_injector(boost::asio::io_context &context) {
+namespace {
+auto make_injector(boost::asio::io_context &context) {
   namespace di = boost::di;
   using executor_type = boost::executor_adaptor<executor_asio>;
   return di::make_injector<di::extension::shared_config>(
@@ -54,6 +55,7 @@ struct Server : testing::Test {
     }
   }
 };
+} // namespace
 
 TEST_F(Server, SetUp) {
   server_.close();

@@ -10,13 +10,13 @@ room_joiner::room_joiner(client &client_) : client_(client_) {}
 boost::future<room_joiner::room_ptr>
 room_joiner::join(const std::string &room_) {
   auto result = promise.get_future();
-  auto native = client_.get_native_realtime_client();
+  auto &natives = client_.get_natives();
   auto persistance = Nakama::opt::nullopt;
   auto hidden = Nakama::opt::nullopt;
-  native->joinChat(
+  natives.realtime_client->joinChat(
       room_, Nakama::NChannelType::ROOM, persistance, hidden,
-      [self = shared_from_this()](auto session) { self->on_success(session); },
-      [self = shared_from_this()](auto error) { self->on_error(error); });
+      [this](auto session) { on_success(session); },
+      [this](auto error) { on_error(error); });
   return result;
 }
 
@@ -26,6 +26,8 @@ void room_joiner::on_success(Nakama::NChannelPtr channel) {
 }
 
 void room_joiner::on_error(Nakama::NRtError error) {
-  promise.set_exception(std::runtime_error(
-      fmt::format("failed to join room, message:'{}'", error.message)));
+  auto error_message =
+      fmt::format("failed to join room, message:'{}'", error.message);
+  BOOST_LOG_SEV(logger, logging::severity::warning) << error_message;
+  promise.set_exception(std::runtime_error(error_message));
 }

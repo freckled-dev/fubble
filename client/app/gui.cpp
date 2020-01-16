@@ -17,13 +17,13 @@
 #include "videos_model.hpp"
 #include "websocket/connection_creator.hpp"
 #include "websocket/connector.hpp"
+#include <QGuiApplication>
+#include <QQmlApplicationEngine>
+#include <QQmlContext>
 #include <boost/asio/executor_work_guard.hpp>
 #include <boost/asio/io_context.hpp>
 #include <fmt/format.h>
 #include <thread>
-#include <QGuiApplication>
-#include <QQmlApplicationEngine>
-#include <QQmlContext>
 
 int main(int argc, char *argv[]) {
   logging::add_console_log();
@@ -35,7 +35,7 @@ int main(int argc, char *argv[]) {
   boost::executor_adaptor<executor_asio> boost_executor{context};
 
   websocket::connection_creator websocket_connection_creator{context};
-  websocket::connector websocket_connector{context, boost_executor,
+  websocket::connector websocket_connector{context,
                                            websocket_connection_creator};
 
   signalling::json_message signalling_json;
