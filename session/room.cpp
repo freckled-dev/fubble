@@ -14,6 +14,10 @@ room::room(client &client_, Nakama::NChannelPtr channel)
       [this](const auto &event) { on_channel_message(event); }));
 }
 
+const room::participants &room::get_participants() const {
+  return participants_;
+}
+
 const std::string &room::get_name() const { return channel->roomName; }
 
 const std::string &room::own_id() const { return channel->self.userId; }
