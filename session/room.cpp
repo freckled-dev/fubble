@@ -31,6 +31,7 @@ void room::on_channel_presence(const Nakama::NChannelPresenceEvent &event) {
   BOOST_LOG_SEV(logger, logging::severity::info)
       << fmt::format("on_channel_presence, joins:{}, leaves:{}",
                      event.joins.size(), event.leaves.size());
+  on_nakama_joins(event.joins);
 }
 
 namespace {
@@ -44,14 +45,20 @@ convert_nakama_presence_to_participant(const Nakama::NUserPresence &convert) {
 
 void room::on_nakama_joins(
     const std::vector<Nakama::NUserPresence> &presences) {
+  if (presences.empty())
+    return;
   {
     participants joins;
     std::transform(presences.cbegin(), presences.cend(),
                    std::back_inserter(joins),
                    convert_nakama_presence_to_participant);
     std::copy(joins.cbegin(), joins.cend(), std::back_inserter(participants_));
+    BOOST_LOG_SEV(logger, logging::severity::trace)
+        << fmt::format("self:{} joining_id:{}", own_id(), joins.back().id);
     on_joins(joins);
   }
+  BOOST_LOG_SEV(logger, logging::severity::info)
+      << fmt::format("there are {} participants", participants_.size());
   {
     Nakama::NClientPtr native_client = client_.get_natives().client_;
     Nakama::NSessionPtr native_session = client_.get_natives().session_;
