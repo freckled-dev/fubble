@@ -32,6 +32,7 @@ void room::on_channel_presence(const Nakama::NChannelPresenceEvent &event) {
       << fmt::format("on_channel_presence, joins:{}, leaves:{}",
                      event.joins.size(), event.leaves.size());
   on_nakama_joins(event.joins);
+  on_nakama_leaves(event.leaves);
 }
 
 namespace {
@@ -53,8 +54,6 @@ void room::on_nakama_joins(
                    std::back_inserter(joins),
                    convert_nakama_presence_to_participant);
     std::copy(joins.cbegin(), joins.cend(), std::back_inserter(participants_));
-    BOOST_LOG_SEV(logger, logging::severity::trace)
-        << fmt::format("self:{} joining_id:{}", own_id(), joins.back().id);
     on_joins(joins);
   }
   BOOST_LOG_SEV(logger, logging::severity::info)
@@ -72,6 +71,27 @@ void room::on_nakama_joins(
         [this](const auto users) { on_names(users); },
         [this](auto error) { on_error(error); });
   }
+}
+
+void room::on_nakama_leaves(
+    const std::vector<Nakama::NUserPresence> &presences) {
+  if (presences.empty())
+    return;
+  std::vector<std::string> leaves;
+  for (const auto &presence : presences) {
+    auto found = std::remove_if(
+        participants_.begin(), participants_.end(),
+        [&](const auto &check) { return presence.userId == check.id; });
+    if (found == participants_.end()) {
+      BOOST_LOG_SEV(logger, logging::severity::error)
+          << "could not find participant for removal";
+      BOOST_ASSERT(false);
+      continue;
+    }
+    participants_.erase(found);
+    leaves.push_back(presence.userId);
+  }
+  on_leaves(leaves);
 }
 
 void room::on_names(const Nakama::NUsers &users) {

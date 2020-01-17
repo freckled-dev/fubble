@@ -13,7 +13,7 @@ public:
   room(client &client_, Nakama::NChannelPtr channel);
   using participants = std::vector<participant>;
   boost::signals2::signal<void(participants)> on_joins;
-  boost::signals2::signal<void(participants)> on_leaves;
+  boost::signals2::signal<void(std::vector<std::string>)> on_leaves;
   boost::signals2::signal<void(participants)> on_updates;
   const participants &get_participants() const;
   const std::string &get_name() const;
@@ -23,6 +23,7 @@ protected:
   void on_channel_message(const Nakama::NChannelMessage &message);
   void on_channel_presence(const Nakama::NChannelPresenceEvent &event);
   void on_nakama_joins(const std::vector<Nakama::NUserPresence> &presences);
+  void on_nakama_leaves(const std::vector<Nakama::NUserPresence> &presences);
   void on_names(const Nakama::NUsers &users);
   void on_error(const Nakama::NError &error);
 

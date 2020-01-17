@@ -108,30 +108,43 @@ TEST_F(Room, TwoJoins) {
 }
 
 namespace {
-struct two_in_a_room {};
+struct two_in_a_room {
+  const std::string room_id = uuid::generate();
+  joined_client first;
+  joined_client second;
+  std::unique_ptr<session::room> first_room;
+  std::unique_ptr<session::room> second_room;
+  boost::inline_executor executor;
+  boost::promise<void> promise;
+  two_in_a_room(boost::asio::executor &asio_executor)
+      : first{asio_executor, room_id, "first"}, second{asio_executor, room_id,
+                                                       "second"} {}
+  boost::future<void> operator()() {
+    boost::when_all(first(), second())
+        .then(executor, [this](auto rooms_future) {
+          auto rooms = rooms_future.get();
+          first_room = std::get<0>(rooms).get();
+          second_room = std::get<1>(rooms).get();
+          on_rooms_set();
+        });
+    return promise.get_future();
+  }
+  void on_rooms_set() {
+    auto first_waiter = std::make_shared<participants_waiter>(*first_room);
+    auto second_waiter = std::make_shared<participants_waiter>(*second_room);
+    boost::when_all((*first_waiter)(), (*second_waiter)())
+        .then(executor, [this, first_waiter, second_waiter](auto future) {
+          EXPECT_TRUE(future.has_value());
+          promise.set_value();
+        });
+  }
+};
 } // namespace
 
 TEST_F(Room, TwoJoinSignals) {
-  const std::string room_id = uuid::generate();
-  joined_client first{asio_executor, room_id, "first"};
-  joined_client second{asio_executor, room_id, "second"};
-  std::unique_ptr<session::room> first_room;
-  std::unique_ptr<session::room> second_room;
-  boost::when_all(first(), second()).then(executor, [&](auto rooms_future) {
-    auto rooms = rooms_future.get();
-    first_room = std::get<0>(rooms).get();
-    second_room = std::get<1>(rooms).get();
-    io_context.stop();
-  });
+  two_in_a_room two{asio_executor};
+  two().then([&](auto) { io_context.stop(); });
   run_io_contect();
-  ASSERT_TRUE(first_room);
-  ASSERT_TRUE(second_room);
-  participants_waiter first_waiter{*first_room};
-  participants_waiter second_waiter{*second_room};
-  boost::when_all(first_waiter(), second_waiter()).then(executor, [&](auto) {
-    io_context.stop();
-  });
-  io_context.run();
 }
 
 TEST_F(Room, Name) {
@@ -161,5 +174,15 @@ TEST_F(Room, Name) {
 }
 
 TEST_F(Room, DisconnectSignal) {
-  // TODO
+  two_in_a_room two{asio_executor};
+  auto leave_check = [&](auto leaves) {
+    EXPECT_EQ(static_cast<int>(leaves.size()), 1);
+    EXPECT_EQ(leaves.front(), two.second_room->own_id());
+    io_context.stop();
+  };
+  two().then(executor, [&](auto) {
+    two.first_room->on_leaves.connect(leave_check);
+    two.second.client.close();
+  });
+  run_io_contect();
 }
