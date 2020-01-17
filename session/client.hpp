@@ -16,7 +16,7 @@ public:
   ~client();
 
   void close();
-  void set_name(const std::string &name);
+  boost::future<void> set_name(const std::string &name);
   boost::signals2::signal<void()> on_connected;
   boost::signals2::signal<void()> on_disconnected;
 
@@ -37,12 +37,10 @@ protected:
   void on_logged_in(promise_ptr promise, const Nakama::NSessionPtr &session_);
   void on_login_failed(promise_ptr promise, const Nakama::NError &error);
   void on_nakama_error(const Nakama::NError &error);
-  void set_display_name();
 
   logging::logger logger;
   boost::asio::executor &executor;
   boost::asio::steady_timer tick_timer{executor};
-  std::string name;
   natives natives_;
 };
 } // namespace session
