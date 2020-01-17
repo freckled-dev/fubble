@@ -1,5 +1,6 @@
 #include "client.hpp"
 #include "uuid.hpp"
+#include <fmt/format.h>
 
 using namespace session;
 
@@ -23,11 +24,29 @@ void client::close() {
   natives_.session_.reset();
 }
 
-void client::set_name(const std::string &name_) {
-  if (name == name_)
-    return;
-  name = name_;
-  set_display_name();
+boost::future<void> client::set_name(const std::string &name) {
+  if (!natives_.session_ || name.empty()) {
+    BOOST_ASSERT(false);
+    return boost::make_exceptional_future<void>(
+        std::runtime_error("could not set name, because we are not connected"));
+  }
+  auto username = Nakama::opt::nullopt;
+  auto avatarUrl = Nakama::opt::nullopt;
+  auto langTag = Nakama::opt::nullopt;
+  auto location = Nakama::opt::nullopt;
+  auto timezone = Nakama::opt::nullopt;
+  auto promise = std::make_shared<boost::promise<void>>();
+  auto on_success = [promise] { promise->set_value(); };
+  auto on_failure = [this, promise](auto error) {
+    auto message =
+        fmt::format("could not set name, message: {}", error.message);
+    BOOST_LOG_SEV(logger, logging::severity::warning) << message;
+    promise->set_exception(std::runtime_error(message));
+  };
+  natives_.client_->updateAccount(natives_.session_, username, name, avatarUrl,
+                                  langTag, location, timezone,
+                                  std::move(on_success), std::move(on_failure));
+  return promise->get_future();
 }
 
 const client::natives &client::get_natives() const { return natives_; }
@@ -58,12 +77,5 @@ void client::tick() {
 void client::on_nakama_error(const Nakama::NError &error) {
   BOOST_LOG_SEV(logger, logging::severity::info)
       << "on_login_failed, error:" << error.message;
-}
-
-void client::set_display_name() {
-  if (!natives_.session_ || name.empty())
-    return;
-  auto username = Nakama::opt::nullopt;
-  natives_.client_->updateAccount(natives_.session_, username, name);
 }
 
