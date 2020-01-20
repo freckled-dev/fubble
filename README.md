@@ -1,7 +1,7 @@
 # set up
 
 ```bash
-pip3 install --user conan meson==0.51.2
+pip3 install --user conan meson
 # boost-di
 conan remote add inexorgame https://api.bintray.com/conan/inexorgame/inexor-conan
 # qt
@@ -16,7 +16,7 @@ sudo dnf install -y \
   qt5-qtquickcontrols2-devel
 
 # opensuse
-sudo zypper install libX11-devel cmake gcc-c++ git meson
+sudo zypper install libX11-devel cmake gcc-c++ git libqt5-qttools
 ```
 
 if using fish add the python3 bin path to PATH
