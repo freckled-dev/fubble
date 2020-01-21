@@ -26,5 +26,5 @@ void join_model::join(const QString &room, const QString &name) {
   joiner::parameters parameters;
   parameters.room = room.toStdString();
   parameters.name = name.toStdString();
-  joiner_(parameters);
+  joiner_.join(parameters);
 }

@@ -77,7 +77,7 @@ int main(int argc, char *argv[]) {
   client::peers peers;
   client::add_video_to_connection track_adder(rtc_connection_creator,
                                               capture_device);
-  client::joiner joiner{peers, track_adder, peer_creator};
+  client::joiner joiner{executor};
 
   BOOST_LOG_SEV(logger, logging::severity::debug) << "starting qt";
 
@@ -98,6 +98,7 @@ int main(int argc, char *argv[]) {
 
   auto work_guard = boost::asio::make_work_guard(context);
   std::thread asio_thread{[&context, &logger] {
+    BOOST_LOG_SEV(logger, logging::severity::debug) << "context.run()";
     context.run();
     BOOST_LOG_SEV(logger, logging::severity::debug) << "context.run() is over";
   }};

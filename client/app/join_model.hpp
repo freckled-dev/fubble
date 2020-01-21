@@ -20,6 +20,7 @@ public:
 signals:
   void name_changed(QString);
   void room_changed(QString);
+  void joined();
 
 protected:
   logging::logger logger;

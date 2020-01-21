@@ -39,11 +39,16 @@ Window {
             anchors.verticalCenter: parent.verticalCenter
             anchors.horizontalCenter: parent.horizontalCenter
             id: loginUi
+            Connections{
+              target: joinModel
+              onJoined: {
+                stack.push(roomComponent);
+              }
+            }
             function joinRoom() {
                 joinModel.join(room.text, name.text)
-                stack.push(roomComponent)
+                loginUi.enabled = false
             }
-
             VideoOutput {
                 id: videoOutput
                 source: videosModel.ownVideo
