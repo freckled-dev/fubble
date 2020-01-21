@@ -6,6 +6,8 @@
 #include "logging/logger.hpp"
 #include "peer_creator.hpp"
 #include "peers.hpp"
+#include "room_creator.hpp"
+#include "rooms.hpp"
 #include "rtc/google/capture/video/device.hpp"
 #include "rtc/google/capture/video/device_creator.hpp"
 #include "rtc/google/capture/video/enumerator.hpp"
@@ -13,6 +15,7 @@
 #include "signalling/client/client_creator.hpp"
 #include "signalling/client/connection_creator.hpp"
 #include "signalling/json_message.hpp"
+#include "ui/executor_qt.hpp"
 #include "ui/frame_provider_google_video_frame.hpp"
 #include "videos_model.hpp"
 #include "websocket/connection_creator.hpp"
@@ -33,6 +36,7 @@ int main(int argc, char *argv[]) {
   boost::asio::io_context context;
   boost::asio::executor executor{context.get_executor()};
   boost::executor_adaptor<executor_asio> boost_executor{context};
+  boost::executor_adaptor<client::ui::executor_qt> qt_executor;
 
   websocket::connection_creator websocket_connection_creator{context};
   websocket::connector websocket_connector{context,
@@ -77,7 +81,9 @@ int main(int argc, char *argv[]) {
   client::peers peers;
   client::add_video_to_connection track_adder(rtc_connection_creator,
                                               capture_device);
-  client::joiner joiner{executor};
+  client::rooms rooms;
+  client::room_creator client_room_creator{boost_executor};
+  client::joiner joiner{executor, client_room_creator, rooms};
 
   BOOST_LOG_SEV(logger, logging::severity::debug) << "starting qt";
 
@@ -103,8 +109,10 @@ int main(int argc, char *argv[]) {
     BOOST_LOG_SEV(logger, logging::severity::debug) << "context.run() is over";
   }};
   auto result = app.exec();
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "gui stopped";
   work_guard.reset();
   peers.close();
+  context.stop();
   if (asio_thread.joinable())
     asio_thread.join();
   return result;

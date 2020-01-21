@@ -12,19 +12,26 @@ class client;
 }
 
 namespace client {
+class room;
+class rooms;
+class room_creator;
 class joiner {
 public:
-  joiner(boost::asio::executor &executor);
+  joiner(boost::asio::executor &executor, room_creator &room_creator_,
+         rooms &rooms_);
   ~joiner();
 
   struct parameters {
     std::string name, room;
   };
-  boost::future<void> join(const parameters &parameters_);
+  // thread-safe
+  boost::future<std::shared_ptr<room>> join(const parameters &parameters_);
 
 protected:
   logging::logger logger;
   boost::asio::executor &executor;
+  room_creator &room_creator_;
+  rooms &rooms_;
   executor_asio executor_asio_{executor};
   boost::executor_adaptor<executor_asio> future_executor{executor_asio_};
   class join;
