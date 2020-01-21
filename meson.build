@@ -43,6 +43,6 @@ nakama_dep = dependency('nakama')
 subdir('utils')
 subdir('signalling')
 subdir('webrtc_peer')
-subdir('client')
 subdir('session')
+subdir('client')
 
