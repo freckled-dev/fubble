@@ -7,6 +7,7 @@
 #include "peer_creator.hpp"
 #include "peers.hpp"
 #include "room_creator.hpp"
+#include "room_model.hpp"
 #include "rooms.hpp"
 #include "rtc/google/capture/video/device.hpp"
 #include "rtc/google/capture/video/device_creator.hpp"
@@ -89,7 +90,12 @@ int main(int argc, char *argv[]) {
 
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
   QGuiApplication app(argc, argv);
+  // we are regestering with full namespace. so use full namespace in signals
+  // and properties
   qRegisterMetaType<client::ui::frame_provider_google_video_source *>();
+  qRegisterMetaType<client::room_model *>();
+  qmlRegisterUncreatableType<client::room_model>("io.fubble", 1, 0, "RoomModel",
+                                                 "some message");
   QQmlApplicationEngine engine;
   client::join_model join_model{joiner};
   engine.rootContext()->setContextProperty("joinModel", &join_model);
