@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
+        <file>Join.qml</file>
         <file>cog.svg</file>
     </qresource>
 </RCC>
