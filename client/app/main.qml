@@ -25,13 +25,13 @@ ApplicationWindow {
             anchors.fill: parent
 
             ToolButton {
-                // action: navigateBackAction
+            // action: navigateBackAction
             }
 
             Label {
                 id: titleLabel
                 // text: listView.currentItem ? listView.currentItem.text : "Join a room"
-                text: "Join a room"
+                text: stack.currentItem.title
                 font.pixelSize: 20
                 elide: Label.ElideRight
                 horizontalAlignment: Qt.AlignHCenter
@@ -69,10 +69,7 @@ ApplicationWindow {
         GridLayout {
             id: layout
             property RoomModel room
-            Label {
-                text: "fun: " + room.name
-            }
-
+            property var title: layout.room.name
 
             /*
         VideoOutput {
@@ -90,6 +87,7 @@ ApplicationWindow {
     Component {
         id: login
         FocusScope {
+          property var title: "Join a room"
             ColumnLayout {
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -98,11 +96,7 @@ ApplicationWindow {
                 Connections {
                     target: joinModel
                     onJoined: {
-                        console.log("fun:" + room)
-                        console.log("fun:" + room.name)
-                        stack.push(roomComponent, {
-                                       "room": room, "namei": "whopi"
-                                   })
+                        stack.push(roomComponent, { "room": room })
                     }
                 }
                 function joinRoom() {
