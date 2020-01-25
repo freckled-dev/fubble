@@ -24,13 +24,11 @@ ApplicationWindow {
             spacing: 20
             anchors.fill: parent
 
-            ToolButton {
-            // action: navigateBackAction
+            ToolButton {// action: navigateBackAction
             }
 
             Label {
                 id: titleLabel
-                // text: listView.currentItem ? listView.currentItem.text : "Join a room"
                 text: stack.currentItem.title
                 font.pixelSize: 20
                 elide: Label.ElideRight
@@ -41,8 +39,8 @@ ApplicationWindow {
 
             ToolButton {
                 action: optionsMenuAction
-                // text: qsTr("‹")
 
+                // text: qsTr("‹")
                 Menu {
                     id: optionsMenu
                     x: parent.width - width
@@ -59,7 +57,7 @@ ApplicationWindow {
 
     StackView {
         id: stack
-        initialItem: login
+        initialItem: Join {}
         anchors.fill: parent
         focus: true
     }
@@ -70,6 +68,7 @@ ApplicationWindow {
             id: layout
             property RoomModel room
             property var title: layout.room.name
+
 
             /*
         VideoOutput {
@@ -84,70 +83,7 @@ ApplicationWindow {
         }
     }
 
-    Component {
-        id: login
-        FocusScope {
-          property var title: "Join a room"
-            ColumnLayout {
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.horizontalCenter: parent.horizontalCenter
-                id: loginUi
-
-                Connections {
-                    target: joinModel
-                    onJoined: {
-                        stack.push(roomComponent, { "room": room })
-                    }
-                }
-                function joinRoom() {
-                    joinModel.join(room.text, name.text)
-                    loginUi.enabled = false
-                }
-                VideoOutput {
-                    id: videoOutput
-                    source: videosModel.ownVideo
-                    function getAspectRatio() {
-                        return videoOutput.sourceRect.width / videoOutput.sourceRect.height
-                    }
-                    Layout.maximumWidth: {
-                        var percentage = 0.6
-                        var aspectRatio = getAspectRatio()
-                        return Math.min(
-                                    container.width * percentage,
-                                    container.height * percentage * aspectRatio)
-                    }
-                    Layout.maximumHeight: {
-                        var percentage = 0.6
-                        var aspectRatio = getAspectRatio()
-                        return Math.min(
-                                    container.height * percentage,
-                                    (container.width * percentage) / aspectRatio)
-                    }
-                }
-                TextField {
-                    id: room
-                    text: joinModel.room
-                    placeholderText: "Room"
-                    Layout.fillWidth: true
-                    focus: true
-                    onAccepted: name.focus = true
-                }
-                TextField {
-                    id: name
-                    text: joinModel.name
-                    placeholderText: "Your Name"
-                    Layout.fillWidth: true
-                    onAccepted: loginUi.joinRoom()
-                }
-                Button {
-                    text: qsTr("Join")
-                    Layout.fillWidth: true
-                    onClicked: loginUi.joinRoom()
-                }
-            }
-        }
-      }
-      Dialog {
+    Dialog {
         id: aboutDialog
         modal: true
         focus: true
@@ -168,5 +104,6 @@ ApplicationWindow {
                 wrapMode: Label.Wrap
                 font.pixelSize: 12
             }
-    }   }
+        }
+    }
 }
