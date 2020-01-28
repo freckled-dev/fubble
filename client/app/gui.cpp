@@ -94,6 +94,8 @@ int main(int argc, char *argv[]) {
   // and properties
   qRegisterMetaType<client::ui::frame_provider_google_video_source *>();
   qRegisterMetaType<client::room_model *>();
+  qRegisterMetaType<client::participant_model *>();
+  qRegisterMetaType<client::participants_model *>();
   qmlRegisterUncreatableType<client::room_model>("io.fubble", 1, 0, "RoomModel",
                                                  "some message");
   QQmlApplicationEngine engine;
