@@ -28,13 +28,17 @@ ApplicationWindow {
         GridLayout {
             id: layout
             columns: 2
+            // rowSpacing: 20
+            // columnSpacing: 20
             property RoomModel room
             property var title: layout.room.name
 
             Repeater {
               model: layout.room.participants
-                 Participant {
-                  participant: model.participant
+              Participant {
+                Layout.margins: 10
+                // Layout.fillWidth: true
+                participant: model.participant
               }
             }
 
