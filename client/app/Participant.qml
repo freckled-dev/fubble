@@ -4,10 +4,24 @@ import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import io.fubble 1.0
 
-Grid {
+GridLayout {
   property ParticipantModel participant
   columns: 1
-  Label {
-    text: participant.name
+  ToolBar {
+    Layout.fillWidth: true
+    RowLayout {
+      anchors.fill: parent
+      Label {
+        Layout.fillWidth: true
+        font.pixelSize: 20
+        text: participant.name
+        elide: Label.ElideRight
+        horizontalAlignment: Qt.AlignHCenter
+        verticalAlignment: Qt.AlignVCenter
+      }
+    }
+  }
+  Button {
+    text: "fun button"
   }
 }
