@@ -2,6 +2,7 @@
 #include "client.hpp"
 #include "uuid.hpp"
 #include <fmt/format.h>
+
 using namespace session;
 using namespace session;
 
