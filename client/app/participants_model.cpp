@@ -17,10 +17,15 @@ int participants_model::rowCount([
 
 QVariant participants_model::data([[maybe_unused]] const QModelIndex &index,
                                   [[maybe_unused]] int role) const {
-  // ive no idea what the other roles describe
-  BOOST_ASSERT(role == Qt::DisplayRole);
+  BOOST_ASSERT(role == participant_role);
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "getting some data";
   auto index_casted = static_cast<std::size_t>(index.row());
-  const participant_model *result = participants[index_casted];
-  return result;
+  client::participant_model *result = participants[index_casted];
+  return QVariant::fromValue(result);
 }
 
+QHash<int, QByteArray> participants_model::roleNames() const {
+  QHash<int, QByteArray> roles;
+  roles[participant_role] = "participant";
+  return roles;
+}

@@ -27,41 +27,14 @@ ApplicationWindow {
         id: roomComponent
         GridLayout {
             id: layout
-            columns: 3
+            columns: 2
             property RoomModel room
             property var title: layout.room.name
-            ListModel {
-              id: fun
-              ListElement {
-                name: "first"
-                background: "red"
-              }
-              ListElement {
-                name: "second"
-                background: "green"
-              }
-              ListElement {
-                name: "third"
-                background: "blue"
-              }
-              ListElement {
-                name: "first"
-                background: "red"
-              }
-              ListElement {
-                name: "second"
-                background: "green"
-              }
-              ListElement {
-                name: "third"
-                background: "blue"
-              }
-            }
 
             Repeater {
               model: layout.room.participants
-                 Label {
-                  text: model.display.name
+                 Participant {
+                  participant: model.participant
               }
             }
 
