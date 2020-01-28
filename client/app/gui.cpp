@@ -96,8 +96,11 @@ int main(int argc, char *argv[]) {
   qRegisterMetaType<client::room_model *>();
   qRegisterMetaType<client::participant_model *>();
   qRegisterMetaType<client::participants_model *>();
+
   qmlRegisterUncreatableType<client::room_model>("io.fubble", 1, 0, "RoomModel",
                                                  "some message");
+  qmlRegisterUncreatableType<client::participant_model>(
+      "io.fubble", 1, 0, "ParticipantModel", "some message");
   QQmlApplicationEngine engine;
   client::join_model join_model{joiner};
   engine.rootContext()->setContextProperty("joinModel", &join_model);

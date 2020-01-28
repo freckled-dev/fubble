@@ -3,6 +3,7 @@
         <file>main.qml</file>
         <file>Join.qml</file>
         <file>Header.qml</file>
+        <file>Participant.qml</file>
         <file>cog.svg</file>
     </qresource>
 </RCC>
