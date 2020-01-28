@@ -5,14 +5,18 @@ cd "$(dirname "$0")"
 
 # get diff from https://boringssl-review.googlesource.com/changes/boringssl~28524/revisions/2/patch?zip&path=crypto%2Fx509%2Fx509_test.cc
 (
+  curl -Lo e6737a8.diff.zip 'https://boringssl-review.googlesource.com/changes/boringssl~28524/revisions/2/patch?zip&path=crypto%2Fx509%2Fx509_test.cc'
+  unzip e6737a8.diff.zip
   cd nakama-cpp/third_party/grpc/third_party/boringssl
   git apply ../../../../../e6737a8.diff
 )
 (
-  cd ./third_party/cpprestsdk/Release/libs/websocketpp
+  cd nakama-cpp/third_party/cpprestsdk/Release/libs/websocketpp
   git switch -c develop
   git pull origin develop
 )
+# change cpp standard in ./nakama-cpp/src/CMakeLists.txt to 17
+
 
 set -e
 
@@ -25,8 +29,12 @@ export BOOST_ROOT=/home/mlanner/.conan/data/boost/1.71.0/conan/stable/package/9c
 # export PKG_CONFIG_PATH="$(pwd)"
 # export BOOST_ROOT=$(pkg-config --variable=prefix boost)
 
-cd nakama-cpp/build/linux
-python build_linux.py --so
+(
+  cd nakama-cpp/build/linux
+  python build_linux.py --so
+)
+cd ..
+ln -rs nakama/nakama-cpp/release/nakama-cpp-sdk
 
 exit 0
 
