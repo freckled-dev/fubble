@@ -1,5 +1,7 @@
 #include "participant_creator.hpp"
+#include "own_participant.hpp"
 #include "peer_creator.hpp"
+#include "remote_participant.hpp"
 
 using namespace client;
 
@@ -9,13 +11,11 @@ participant_creator::participant_creator(peer_creator &peer_creator_,
 
 std::unique_ptr<participant>
 participant_creator::create(const session::participant &session_information) {
-  if (session_information.id == own_id) {
-    // TODO do own participant
-    return nullptr;
-  }
+  if (session_information.id == own_id)
+    return std::make_unique<own_participant>(session_information);
   auto peer = peer_creator_.create();
-  auto result =
-      std::make_unique<participant>(std::move(peer), session_information);
+  auto result = std::make_unique<remote_participant>(std::move(peer),
+                                                     session_information);
   auto other_id = session_information.id;
   const std::string peer_id = [&] {
     if (own_id < other_id)

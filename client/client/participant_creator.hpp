@@ -5,6 +5,7 @@
 #include "session/participant.hpp"
 
 namespace client {
+class peer_creator;
 class participant_creator {
 public:
   participant_creator(peer_creator &peer_creator_, const std::string &own_id);
