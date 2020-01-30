@@ -15,8 +15,7 @@ class participant;
 class participant_creator;
 class room {
 public:
-  room(boost::executor &session_thread,
-       participant_creator &participant_creator_,
+  room(std::unique_ptr<participant_creator> participant_creator_,
        std::unique_ptr<session::client> client_,
        std::unique_ptr<session::room> room_);
   ~room();
@@ -28,16 +27,13 @@ public:
       on_participants_left;
 
   const std::string &get_name() const;
-  // TODO this seems stupid!
-  boost::executor &get_session_thread();
 
 protected:
   void
   on_session_participant_joins(const std::vector<session::participant> &joins);
   void on_session_participant_leaves(const std::vector<std::string> &leaves);
 
-  boost::executor &session_thread;
-  participant_creator &participant_creator_;
+  std::unique_ptr<participant_creator> participant_creator_;
   std::unique_ptr<session::client> client_;
   std::unique_ptr<session::room> room_;
   std::vector<std::unique_ptr<participant>> participants;

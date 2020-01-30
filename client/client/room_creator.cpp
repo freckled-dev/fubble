@@ -5,15 +5,16 @@
 
 using namespace client;
 
-room_creator::room_creator(boost::executor &executor) : executor(executor) {}
+room_creator::room_creator(
+    participant_creator_creator &participant_creator_creator_)
+    : participant_creator_creator_(participant_creator_creator_) {}
 
 std::unique_ptr<room>
 room_creator::create(std::unique_ptr<session::client> &&client_,
                      std::unique_ptr<session::room> &&room_) {
-  (void)client_;
-  (void)room_;
-  // TODO create room_creator
-  // return std::make_unique<room>(executor, std::move(client_),
-  // std::move(room_));
-  return nullptr;
+  auto own_id = room_->own_id();
+  BOOST_ASSERT(!own_id.empty());
+  auto participant_creator_ = participant_creator_creator_.create(own_id);
+  return std::make_unique<room>(std::move(participant_creator_),
+                                std::move(client_), std::move(room_));
 }
