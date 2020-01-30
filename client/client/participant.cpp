@@ -1,18 +1,18 @@
 #include "participant.hpp"
 #include "peer.hpp"
-#include "peer_creator.hpp"
 #include "rtc/google/video_track_source.hpp"
 
 using namespace client;
 
-participant::participant(peer_creator &peer_creator_,
-                         session::participant &session_participant)
-    : peer_creator_(peer_creator_), session_participant(session_participant) {
-  peer = peer_creator_.create();
-  peer->rtc_connection().on_track.connect(
+participant::participant(std::unique_ptr<peer> peer_,
+                         const session::participant &session_participant)
+    : peer_(std::move(peer_)), session_participant(session_participant) {
+  peer_->rtc_connection().on_track.connect(
       [this](auto track) { on_track(track); });
-  peer->connect(session_participant.id); // TODO this won't work!!!
+  peer_->connect(session_participant.id); // TODO this won't work!!!
 }
+
+participant::~participant() = default;
 
 std::string participant::get_name() const { return session_participant.name; }
 

@@ -12,8 +12,9 @@ class peer;
 class peer_creator;
 class participant {
 public:
-  participant(peer_creator &peer_creator_,
-              session::participant &session_participant);
+  participant(std::unique_ptr<peer> peer_,
+              const session::participant &session_participant);
+  ~participant();
 
   std::string get_name() const;
 
@@ -23,9 +24,8 @@ public:
 protected:
   void on_track(rtc::track_ptr track);
 
-  peer_creator &peer_creator_;
-  session::participant &session_participant;
-  std::unique_ptr<peer> peer;
+  std::unique_ptr<peer> peer_;
+  session::participant session_participant;
 };
 } // namespace client
 
