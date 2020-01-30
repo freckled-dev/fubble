@@ -4,6 +4,7 @@
 #include <string>
 
 namespace session {
+// TODO make it a non-copyable class, with signal `on_name_changed`
 struct participant {
   std::string id;
   std::string name;
