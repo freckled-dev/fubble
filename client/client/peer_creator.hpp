@@ -1,6 +1,7 @@
 #ifndef UUID_DF21A153_FFF1_4F29_9F41_B783B7F0E0D3
 #define UUID_DF21A153_FFF1_4F29_9F41_B783B7F0E0D3
 
+#include "peer.hpp"
 #include <boost/thread/executor.hpp>
 
 namespace rtc::google {
@@ -10,7 +11,6 @@ namespace signalling::client {
 class client_creator;
 }
 namespace client {
-class peer;
 class peer_creator {
 public:
   peer_creator(boost::executor &executor,

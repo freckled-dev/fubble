@@ -14,5 +14,14 @@ participant_creator::create(const session::participant &session_information) {
     return nullptr;
   }
   auto peer = peer_creator_.create();
-  return std::make_unique<participant>(std::move(peer), session_information);
+  auto result =
+      std::make_unique<participant>(std::move(peer), session_information);
+  auto other_id = session_information.id;
+  const std::string peer_id = [&] {
+    if (own_id < other_id)
+      return own_id + '_' + other_id;
+    return other_id + '_' + own_id;
+  }();
+  peer->connect(peer_id);
+  return result;
 }

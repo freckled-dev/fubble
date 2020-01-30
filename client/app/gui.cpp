@@ -1,4 +1,5 @@
 #include "add_video_to_connection.hpp"
+#include "client/participant_creator_creator.hpp"
 #include "executor_asio.hpp"
 #include "join_model.hpp"
 #include "joiner.hpp"
@@ -83,7 +84,8 @@ int main(int argc, char *argv[]) {
   client::add_video_to_connection track_adder(rtc_connection_creator,
                                               capture_device);
   client::rooms rooms;
-  client::room_creator client_room_creator{boost_executor};
+  client::participant_creator_creator participant_creator_creator{peer_creator};
+  client::room_creator client_room_creator{participant_creator_creator};
   client::joiner joiner{executor, client_room_creator, rooms};
 
   BOOST_LOG_SEV(logger, logging::severity::debug) << "starting qt";
