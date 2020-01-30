@@ -1,13 +1,12 @@
 #include "participants_model.hpp"
+#include "session/room.hpp"
 #include <boost/assert.hpp>
 
 using namespace client;
 
-participants_model::participants_model(QObject *parent)
-    : QAbstractListModel(parent) {
-  for (auto counter = 0; counter < 3; ++counter) {
-    participants.emplace_back(new participant_model(this));
-  }
+participants_model::participants_model(room &room_, QObject *parent)
+    : QAbstractListModel(parent), room_(room_) {
+  // TODO append to room signals
 }
 
 int participants_model::rowCount([
@@ -29,3 +28,4 @@ QHash<int, QByteArray> participants_model::roleNames() const {
   roles[participant_role] = "participant";
   return roles;
 }
+

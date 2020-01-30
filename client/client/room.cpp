@@ -12,6 +12,6 @@ room::room(boost::executor &session_thread,
 
 room::~room() = default;
 
-session::room &room::get_session_room() { return *room_; }
+const std::string &room::get_name() const { return room_->get_name(); }
 
 boost::executor &room::get_session_thread() { return session_thread; }

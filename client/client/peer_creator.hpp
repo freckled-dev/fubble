@@ -17,7 +17,7 @@ public:
                signalling::client::client_creator &client_creator,
                rtc::google::factory &connection_creator);
 
-  std::unique_ptr<peer> operator()();
+  std::unique_ptr<peer> create();
 
 protected:
   boost::executor &executor;
