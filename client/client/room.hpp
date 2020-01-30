@@ -17,7 +17,10 @@ public:
        std::unique_ptr<session::room> room_);
   ~room();
 
-  session::room &get_session_room();
+  // TODO do signals for participants added/removed
+
+  const std::string &get_name() const;
+  // TODO this seems stupid!
   boost::executor &get_session_thread();
 
 protected:

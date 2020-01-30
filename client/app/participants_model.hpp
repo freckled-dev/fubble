@@ -3,14 +3,18 @@
 
 #include "logging/logger.hpp"
 #include "participant_model.hpp"
+#include "room.hpp"
 #include <QAbstractItemModel>
 
+namespace session {
+struct participant;
+}
 namespace client {
 
 class participants_model : public QAbstractListModel {
   Q_OBJECT
 public:
-  participants_model(QObject *parent);
+  participants_model(room &room_, QObject *parent);
 
   enum participant_roles { participant_role = Qt::UserRole + 1 };
 
@@ -21,6 +25,7 @@ protected:
   QHash<int, QByteArray> roleNames() const override;
 
   mutable logging::logger logger;
+  room &room_;
   std::vector<participant_model *> participants;
 };
 
