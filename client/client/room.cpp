@@ -11,6 +11,7 @@ room::room(std::unique_ptr<participant_creator> participant_creator_parameter,
            std::unique_ptr<session::room> room_parameter)
     : participant_creator_(std::move(participant_creator_parameter)),
       client_(std::move(client_parameter)), room_(std::move(room_parameter)) {
+  on_session_participant_joins(room_->get_participants());
   room_->on_joins.connect(
       [this](const auto joins) { on_session_participant_joins(joins); });
   room_->on_leaves.connect(
@@ -59,4 +60,3 @@ room::participants::iterator room::find(const std::string &id) {
   return std::find_if(participants_.begin(), participants_.end(),
                       [&](auto &check) { return check->get_id() == id; });
 }
-

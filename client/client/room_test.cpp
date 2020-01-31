@@ -1,5 +1,6 @@
 #include "executor_asio.hpp"
 #include "joiner.hpp"
+#include "own_participant.hpp"
 #include "participant_creator_creator.hpp"
 #include "peer_creator.hpp"
 #include "room.hpp"
@@ -50,6 +51,26 @@ struct Room : testing::Test {
     return joiner.join(join_paramenters);
   }
 };
+struct participants_waiter {
+  client::room &room;
+  int wait_until{2};
+  boost::promise<void> promise;
+  boost::signals2::scoped_connection joins;
+
+  participants_waiter(client::room &room) : room(room) {}
+  boost::future<void> wait() {
+    joins =
+        room.on_participants_join.connect([this](auto) { check_if_enough(); });
+    check_if_enough();
+    return promise.get_future();
+  }
+  void check_if_enough() {
+    if (static_cast<int>(room.get_participants().size()) != wait_until)
+      return;
+    joins.disconnect();
+    promise.set_value();
+  }
+};
 } // namespace
 
 TEST_F(Room, Instance) {}
@@ -63,6 +84,33 @@ TEST_F(Room, Join) {
     context.stop();
     std::shared_ptr<client::room> room_ = room.get();
     EXPECT_EQ(room_->get_name(), room_name);
+  });
+  context.run();
+  EXPECT_TRUE(called);
+}
+
+TEST_F(Room, Participant) {
+  std::shared_ptr<client::room> room;
+  std::unique_ptr<participants_waiter> waiter;
+  auto done = join("some name")
+                  .then(boost_executor,
+                        [&](auto room_) {
+                          room = room_.get();
+                          waiter = std::make_unique<participants_waiter>(*room);
+                          waiter->wait_until = 1;
+                          return waiter->wait();
+                        })
+                  .unwrap();
+  bool called{};
+  done.then(boost_executor, [&](auto result) {
+    EXPECT_FALSE(result.has_exception());
+    called = true;
+    context.stop();
+    auto &participants = room->get_participants();
+    EXPECT_EQ(static_cast<int>(participants.size()), 1);
+    auto own =
+        dynamic_cast<client::own_participant *>(participants.front().get());
+    EXPECT_NE(own, nullptr);
   });
   context.run();
   EXPECT_TRUE(called);

@@ -46,6 +46,8 @@ convert_nakama_presence_to_participant(const Nakama::NUserPresence &convert) {
 
 void room::on_nakama_joins(
     const std::vector<Nakama::NUserPresence> &presences) {
+  BOOST_LOG_SEV(logger, logging::severity::info)
+      << "on_nakama_joins, count:" << presences.size();
   if (presences.empty())
     return;
   {
