@@ -15,3 +15,17 @@ client_dep = declare_dependency(
     webrtc_google_peer_dep, session_dep],
   include_directories: ['.']
   )
+
+client_room_test = executable('client_room_test',
+  ['room_test.cpp'],
+  dependencies: [client_dep, gtest_dep],
+  link_with: [test_nakama_main]
+  )
+suppr_file = meson.source_root() / 'webrtc_peer/lsan_suppressions_google'
+suppr_option = 'LSAN_OPTIONS=suppressions=' + suppr_file
+test('client room test', client_room_test,
+  env: [
+    'ASAN_OPTIONS=fast_unwind_on_malloc=0', suppr_option
+    ],
+  timeout: 8)
+
