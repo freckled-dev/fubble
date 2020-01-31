@@ -25,6 +25,7 @@ public:
     std::string name, room;
   };
   // thread-safe
+  // TODO remove thread safety and executor from constructor
   boost::future<std::shared_ptr<room>> join(const parameters &parameters_);
 
 protected:

@@ -89,7 +89,10 @@ void joiner::join::on_room_joined(
     promise.set_exception(room_.get_exception_ptr());
     return;
   }
-  auto result = room_creator_.create(std::move(client_), room_.get());
+  session::room_joiner::room_ptr room_result = room_.get();
+  BOOST_ASSERT(room_result);
+  auto result =
+      room_creator_.create(std::move(client_), std::move(room_result));
   promise.set_value(std::move(result));
 }
 

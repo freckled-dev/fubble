@@ -15,8 +15,8 @@ class room_creator {
 public:
   room_creator(participant_creator_creator &participant_creator_creator_);
 
-  std::unique_ptr<room> create(std::unique_ptr<session::client> &&client_,
-                               std::unique_ptr<session::room> &&room_);
+  std::unique_ptr<room> create(std::unique_ptr<session::client> client_,
+                               std::unique_ptr<session::room> room_);
 
 protected:
   participant_creator_creator &participant_creator_creator_;

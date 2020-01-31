@@ -6,11 +6,11 @@
 
 using namespace client;
 
-room::room(std::unique_ptr<participant_creator> participant_creator_,
-           std::unique_ptr<session::client> client_,
-           std::unique_ptr<session::room> room_)
-    : participant_creator_(std::move(participant_creator_)),
-      client_(std::move(client_)), room_(std::move(room_)) {
+room::room(std::unique_ptr<participant_creator> participant_creator_parameter,
+           std::unique_ptr<session::client> client_parameter,
+           std::unique_ptr<session::room> room_parameter)
+    : participant_creator_(std::move(participant_creator_parameter)),
+      client_(std::move(client_parameter)), room_(std::move(room_parameter)) {
   room_->on_joins.connect(
       [this](const auto joins) { on_session_participant_joins(joins); });
   room_->on_leaves.connect(
@@ -18,6 +18,10 @@ room::room(std::unique_ptr<participant_creator> participant_creator_,
 }
 
 room::~room() = default;
+
+const room::participants &room::get_participants() const {
+  return participants_;
+}
 
 const std::string &room::get_name() const { return room_->get_name(); }
 
@@ -55,3 +59,4 @@ room::participants::iterator room::find(const std::string &id) {
   return std::find_if(participants_.begin(), participants_.end(),
                       [&](auto &check) { return check->get_id() == id; });
 }
+
