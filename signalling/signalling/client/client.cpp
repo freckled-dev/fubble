@@ -8,11 +8,10 @@
 
 using namespace signalling;
 
-client::client::client(boost::executor &executor_,
-                       websocket::connector &connector_,
-                       connection_creator &connection_creator_)
-    : executor(executor_), connector(connector_),
-      connection_creator_(connection_creator_) {}
+client::client::client(websocket::connector_creator &connector_,
+                       connection_creator &connection_creator_parameter)
+    : connector_creator(connector_),
+      connection_creator_(connection_creator_parameter) {}
 
 void client::client::set_connect_information(const connect_information &set) {
   connect_information_ = set;
@@ -42,9 +41,10 @@ void client::client::connect(const std::string &key) {
   websocket::connector::config connector_config;
   connector_config.url = connect_information_.host;
   connector_config.service = connect_information_.service;
-  connector(connector_config).then(executor, [this, key](auto result) {
-    connected(result, key);
-  });
+  BOOST_ASSERT(!connector);
+  connector = connector_creator.create(connector_config);
+  connector->connect().then(
+      executor, [this, key](auto result) { connected(result, key); });
 }
 
 void client::client::connected(boost::future<websocket::connection_ptr> &result,

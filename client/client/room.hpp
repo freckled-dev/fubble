@@ -30,6 +30,7 @@ public:
   const participants &get_participants() const;
 
   const std::string &get_name() const;
+  const std::string &get_own_id() const;
 
 protected:
   void

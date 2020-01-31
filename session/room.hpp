@@ -17,6 +17,7 @@ public:
   boost::signals2::signal<void(participants)> on_updates;
   const participants &get_participants() const;
   const std::string &get_name() const;
+  // TODO getter --> `get_`
   const std::string &own_id() const;
 
 protected:

@@ -23,8 +23,8 @@ struct Room : testing::Test {
   boost::executor_adaptor<executor_asio> boost_executor{context};
 
   websocket::connection_creator websocket_connection_creator{context};
-  websocket::connector websocket_connector{context,
-                                           websocket_connection_creator};
+  websocket::connector_creator websocket_connector{
+      context, websocket_connection_creator};
 
   signalling::json_message signalling_json;
   signalling::client::connection_creator signalling_connection_creator{
@@ -32,8 +32,7 @@ struct Room : testing::Test {
   signalling::client::client::connect_information connect_information{
       "localhost", "8000"};
   signalling::client::client_creator client_creator{
-      boost_executor, websocket_connector, signalling_connection_creator,
-      connect_information};
+      websocket_connector, signalling_connection_creator, connect_information};
 
   rtc::google::factory rtc_connection_creator;
   client::peer_creator peer_creator{boost_executor, client_creator,
@@ -89,43 +88,60 @@ TEST_F(Room, Join) {
   EXPECT_TRUE(called);
 }
 
-TEST_F(Room, Participant) {
+namespace {
+struct join_and_wait {
+  Room &fixture;
+  std::string name;
+  int wait_until = 2;
   std::shared_ptr<client::room> room;
   std::unique_ptr<participants_waiter> waiter;
-  auto done = join("some name")
-                  .then(boost_executor,
-                        [&](auto room_) {
-                          room = room_.get();
-                          waiter = std::make_unique<participants_waiter>(*room);
-                          waiter->wait_until = 1;
-                          return waiter->wait();
-                        })
-                  .unwrap();
+
+  join_and_wait(Room &fixture, std::string name)
+      : fixture(fixture), name(name) {}
+
+  boost::future<void> operator()() {
+    return fixture.join(name)
+        .then(fixture.boost_executor,
+              [&](auto room_) {
+                room = room_.get();
+                waiter = std::make_unique<participants_waiter>(*room);
+                waiter->wait_until = wait_until;
+                return waiter->wait();
+              })
+        .unwrap();
+  }
+};
+} // namespace
+
+TEST_F(Room, Participant) {
+  join_and_wait test(*this, "some name");
+  test.wait_until = 1;
   bool called{};
-  done.then(boost_executor, [&](auto result) {
+  test().then(boost_executor, [&](auto result) {
     EXPECT_FALSE(result.has_exception());
     called = true;
     context.stop();
-    auto &participants = room->get_participants();
+    auto &participants = test.room->get_participants();
     EXPECT_EQ(static_cast<int>(participants.size()), 1);
-    auto own =
-        dynamic_cast<client::own_participant *>(participants.front().get());
+    auto participant = participants.front().get();
+    EXPECT_EQ(participant->get_id(), test.room->get_own_id());
+    auto own = dynamic_cast<client::own_participant *>(participant);
     EXPECT_NE(own, nullptr);
   });
   context.run();
   EXPECT_TRUE(called);
 }
 
-#if 0
-TEST_F(Room, TwoJoins) {
-  auto joined = join("some name");
-  joined.then(boost_executor, [&](auto room) {
-    EXPECT_TRUE(room.has_value());
+TEST_F(Room, TwoParticipants) {
+  join_and_wait first(*this, "first");
+  join_and_wait second(*this, "second");
+  bool called{};
+  boost::when_all(first(), second()).then([&](auto result) {
     called = true;
     context.stop();
+    EXPECT_FALSE(result.has_exception());
   });
   context.run();
   EXPECT_TRUE(called);
 }
-#endif
 
