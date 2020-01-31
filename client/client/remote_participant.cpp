@@ -5,9 +5,9 @@
 using namespace client;
 
 remote_participant::remote_participant(
-    std::unique_ptr<peer> peer_,
+    std::unique_ptr<peer> peer_moved,
     const session::participant &session_participant)
-    : peer_(std::move(peer_)), session_participant(session_participant) {
+    : peer_(std::move(peer_moved)), session_participant(session_participant) {
   peer_->rtc_connection().on_track.connect(
       [this](auto track) { on_track(track); });
 }

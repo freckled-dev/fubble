@@ -1,5 +1,5 @@
-#ifndef WEBSOCKET_CONNECTION_CREATOR_HPP
-#define WEBSOCKET_CONNECTION_CREATOR_HPP
+#ifndef UUID_34EC7F18_25A0_46C2_9CCB_8732C2504C25
+#define UUID_34EC7F18_25A0_46C2_9CCB_8732C2504C25
 
 #include "connection_ptr.hpp"
 #include <boost/asio/io_context.hpp>

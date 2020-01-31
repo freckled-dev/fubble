@@ -17,14 +17,15 @@ struct Websocket : ::testing::Test {
 };
 
 TEST_F(Websocket, ConnectionCreation) {
-  websocket::connector connector{context, connection_creator};
+  websocket::connector_creator connector_creator{context, connection_creator};
   acceptor.on_connection.connect(
       [&](auto connection) { EXPECT_TRUE(connection); });
   bool connected{};
   websocket::connector::config connector_config;
   connector_config.service = std::to_string(acceptor.get_port());
   connector_config.url = "localhost";
-  connector(connector_config).then(executor, [&](auto connection) {
+  auto connector = connector_creator.create(connector_config);
+  connector->connect().then(executor, [&](auto connection) {
     EXPECT_TRUE(connection.get());
     connected = true;
     acceptor.close();
@@ -34,14 +35,15 @@ TEST_F(Websocket, ConnectionCreation) {
 }
 
 struct WebsocketOpenConnection : Websocket {
-  websocket::connector connector{context, connection_creator};
+  websocket::connector_creator connector_creator{context, connection_creator};
   websocket::connection_ptr first;
   websocket::connection_ptr second;
   WebsocketOpenConnection() {
     acceptor.on_connection.connect([&](auto result) { first = result; });
     websocket::connector::config connector_config{
         std::to_string(acceptor.get_port()), "localhost"};
-    connector(connector_config).then(executor, [&](auto result) {
+    auto connector = connector_creator.create(connector_config);
+    connector->connect().then(executor, [&](auto result) {
       second = result.get();
       acceptor.close();
     });

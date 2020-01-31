@@ -14,6 +14,7 @@ participant_creator::create(const session::participant &session_information) {
   if (session_information.id == own_id)
     return std::make_unique<own_participant>(session_information);
   auto peer = peer_creator_.create();
+  auto peer_pointer = peer.get();
   auto result = std::make_unique<remote_participant>(std::move(peer),
                                                      session_information);
   auto other_id = session_information.id;
@@ -22,6 +23,6 @@ participant_creator::create(const session::participant &session_information) {
       return own_id + '_' + other_id;
     return other_id + '_' + own_id;
   }();
-  peer->connect(peer_id);
+  peer_pointer->connect(peer_id);
   return result;
 }

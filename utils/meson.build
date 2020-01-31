@@ -15,7 +15,7 @@ utils_dep = declare_dependency(
   dependencies: [boost_dep]
   )
 utils_test = executable('utils_test',
-  ['executor_asio_test.cpp'],
+  ['executor_asio_test.cpp', 'boost_thread_test.cpp'],
   dependencies: [gtest_dep, utils_dep],
   link_with: [test_main]
   )

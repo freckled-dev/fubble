@@ -10,6 +10,7 @@
 #include "signalling/registration_handler.hpp"
 #include "websocket/acceptor.hpp"
 #include "websocket/connection_creator.hpp"
+#include "websocket/connector.hpp"
 #include <boost/log/keywords/auto_flush.hpp>
 #include <boost/log/utility/setup/console.hpp>
 #include <boost/thread/executors/executor_adaptor.hpp>
@@ -33,10 +34,13 @@ struct Server : testing::Test {
   websocket::acceptor &acceptor = injector.create<websocket::acceptor &>();
   signalling::server::server &server_ =
       injector.create<signalling::server::server &>();
-  signalling::client::client client_ =
-      injector.create<signalling::client::client>();
-  signalling::client::client client_answering =
-      injector.create<signalling::client::client>();
+  websocket::connector_creator &websocket_connector =
+      injector.create<websocket::connector_creator &>();
+  signalling::client::connection_creator &connection_creator =
+      injector.create<signalling::client::connection_creator &>();
+  signalling::client::client client_{websocket_connector, connection_creator};
+  signalling::client::client client_answering{websocket_connector,
+                                              connection_creator};
 
   void connect(signalling::client::client &client) const {
     auto service = std::to_string(acceptor.get_port());

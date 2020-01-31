@@ -41,8 +41,8 @@ int main(int argc, char *argv[]) {
   boost::executor_adaptor<client::ui::executor_qt> qt_executor;
 
   websocket::connection_creator websocket_connection_creator{context};
-  websocket::connector websocket_connector{context,
-                                           websocket_connection_creator};
+  websocket::connector_creator websocket_connector{
+      context, websocket_connection_creator};
 
   signalling::json_message signalling_json;
   signalling::client::connection_creator signalling_connection_creator{
@@ -50,8 +50,7 @@ int main(int argc, char *argv[]) {
   signalling::client::client::connect_information connect_information{
       "localhost", "8000"};
   signalling::client::client_creator client_creator{
-      boost_executor, websocket_connector, signalling_connection_creator,
-      connect_information};
+      websocket_connector, signalling_connection_creator, connect_information};
 
   rtc::google::factory rtc_connection_creator;
   client::peer_creator peer_creator{boost_executor, client_creator,

@@ -3,10 +3,10 @@
 using namespace client;
 
 peer::peer(boost::executor &executor,
-           std::unique_ptr<signalling::client::client> signalling_,
-           std::unique_ptr<rtc::connection> rtc_)
-    : signalling_client(std::move(signalling_)),
-      rtc_connection_(std::move(rtc_)),
+           std::unique_ptr<signalling::client::client> signalling_moved,
+           std::unique_ptr<rtc::connection> rtc_moved)
+    : signalling_client(std::move(signalling_moved)),
+      rtc_connection_(std::move(rtc_moved)),
       ice_candidate_handler(*signalling_client, *rtc_connection_),
       offer_answer_handler(executor, *signalling_client, *rtc_connection_) {}
 

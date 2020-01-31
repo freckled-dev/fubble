@@ -26,6 +26,8 @@ const room::participants &room::get_participants() const {
 
 const std::string &room::get_name() const { return room_->get_name(); }
 
+const std::string &room::get_own_id() const { return room_->own_id(); }
+
 void room::on_session_participant_joins(
     const std::vector<session::participant> &joins) {
   BOOST_LOG_SEV(logger, logging::severity::trace)
