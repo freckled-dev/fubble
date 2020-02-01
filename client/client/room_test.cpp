@@ -92,12 +92,12 @@ namespace {
 struct join_and_wait {
   Room &fixture;
   std::string name;
-  int wait_until = 2;
+  int wait_until;
   std::shared_ptr<client::room> room;
   std::unique_ptr<participants_waiter> waiter;
 
-  join_and_wait(Room &fixture, std::string name)
-      : fixture(fixture), name(name) {}
+  join_and_wait(Room &fixture, std::string name, int wait_until = 2)
+      : fixture(fixture), name(name), wait_until{wait_until} {}
 
   boost::future<void> operator()() {
     return fixture.join(name)
@@ -114,8 +114,7 @@ struct join_and_wait {
 } // namespace
 
 TEST_F(Room, Participant) {
-  join_and_wait test(*this, "some name");
-  test.wait_until = 1;
+  join_and_wait test(*this, "some name", 1);
   bool called{};
   test().then(boost_executor, [&](auto result) {
     EXPECT_FALSE(result.has_exception());
@@ -133,15 +132,56 @@ TEST_F(Room, Participant) {
 }
 
 TEST_F(Room, TwoParticipants) {
-  join_and_wait first(*this, "first");
-  join_and_wait second(*this, "second");
+  join_and_wait first(*this, "first", 2);
+  join_and_wait second(*this, "second", 2);
   bool called{};
-  boost::when_all(first(), second()).then([&](auto result) {
+  boost::when_all(first(), second()).then(boost_executor, [&](auto result) {
     called = true;
     context.stop();
     EXPECT_FALSE(result.has_exception());
+    EXPECT_EQ(2, static_cast<int>(first.room->get_participants().size()));
+    EXPECT_EQ(2, static_cast<int>(second.room->get_participants().size()));
   });
   context.run();
   EXPECT_TRUE(called);
+}
+
+TEST_F(Room, ThreeParticipants) {
+  join_and_wait first(*this, "first", 3);
+  join_and_wait second(*this, "second", 3);
+  join_and_wait third(*this, "three", 3);
+  bool called{};
+  boost::when_all(first(), second(), third())
+      .then(boost_executor, [&](auto result) {
+        called = true;
+        context.stop();
+        EXPECT_FALSE(result.has_exception());
+        EXPECT_EQ(3, static_cast<int>(first.room->get_participants().size()));
+        EXPECT_EQ(3, static_cast<int>(second.room->get_participants().size()));
+        EXPECT_EQ(3, static_cast<int>(third.room->get_participants().size()));
+      });
+  context.run();
+  EXPECT_TRUE(called);
+}
+
+namespace {
+struct two_participants {
+  join_and_wait first;
+  join_and_wait second;
+
+  two_participants(Room &fixture)
+      : first(fixture, "first", 2), second(fixture, "second", 2) {}
+
+  auto operator()() { return boost::when_all(first(), second()); }
+};
+} // namespace
+
+TEST_F(Room, DataChannel) {
+  two_participants participants{*this};
+  participants().then(boost_executor, [&](auto result) {
+    EXPECT_FALSE(result.has_exception());
+    context.stop();
+  });
+  context.run();
 }
 
