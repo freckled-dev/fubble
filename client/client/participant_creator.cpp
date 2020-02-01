@@ -2,12 +2,15 @@
 #include "own_participant.hpp"
 #include "peer_creator.hpp"
 #include "remote_participant.hpp"
+#include "tracks_adder.hpp"
 
 using namespace client;
 
 participant_creator::participant_creator(peer_creator &peer_creator_,
+                                         tracks_adder &tracks_adder_,
                                          const std::string &own_id)
-    : peer_creator_(peer_creator_), own_id(own_id) {}
+    : peer_creator_(peer_creator_), tracks_adder_(tracks_adder_),
+      own_id(own_id) {}
 
 std::unique_ptr<participant>
 participant_creator::create(const session::participant &session_information) {
@@ -23,6 +26,7 @@ participant_creator::create(const session::participant &session_information) {
       return own_id + '_' + other_id;
     return other_id + '_' + own_id;
   }();
+  tracks_adder_.add_to_connection(peer_pointer->rtc_connection());
   peer_pointer->connect(peer_id);
   return result;
 }

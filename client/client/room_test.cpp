@@ -10,6 +10,7 @@
 #include "signalling/client/client_creator.hpp"
 #include "signalling/client/connection_creator.hpp"
 #include "signalling/json_message.hpp"
+#include "tracks_adder.hpp"
 #include "uuid.hpp"
 #include "websocket/connection_creator.hpp"
 #include "websocket/connector.hpp"
@@ -38,7 +39,9 @@ struct Room : testing::Test {
   client::peer_creator peer_creator{boost_executor, client_creator,
                                     rtc_connection_creator};
   client::rooms rooms;
-  client::participant_creator_creator participant_creator_creator{peer_creator};
+  client::tracks_adder tracks_adder;
+  client::participant_creator_creator participant_creator_creator{peer_creator,
+                                                                  tracks_adder};
   client::room_creator client_room_creator{participant_creator_creator};
   client::joiner joiner{executor, client_room_creator, rooms};
   std::string room_name = uuid::generate();
