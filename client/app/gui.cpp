@@ -17,6 +17,7 @@
 #include "signalling/client/client_creator.hpp"
 #include "signalling/client/connection_creator.hpp"
 #include "signalling/json_message.hpp"
+#include "tracks_adder.hpp"
 #include "ui/executor_qt.hpp"
 #include "ui/frame_provider_google_video_frame.hpp"
 #include "videos_model.hpp"
@@ -82,8 +83,11 @@ int main(int argc, char *argv[]) {
   client::peers peers;
   client::add_video_to_connection track_adder(rtc_connection_creator,
                                               capture_device);
+  client::tracks_adder tracks_adder;
+  tracks_adder.add(track_adder);
   client::rooms rooms;
-  client::participant_creator_creator participant_creator_creator{peer_creator};
+  client::participant_creator_creator participant_creator_creator{peer_creator,
+                                                                  tracks_adder};
   client::room_creator client_room_creator{participant_creator_creator};
   client::joiner joiner{executor, client_room_creator, rooms};
 

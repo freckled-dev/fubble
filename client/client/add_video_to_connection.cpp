@@ -9,9 +9,10 @@ add_video_to_connection::add_video_to_connection(
     const std::shared_ptr<rtc::google::video_source> &source)
     : rtc_factory(rtc_factory), source(source) {}
 
+add_video_to_connection::~add_video_to_connection() = default;
+
 void add_video_to_connection::add_to_connection(rtc::connection &connection) {
   std::shared_ptr<rtc::google::video_track> video_track =
       rtc_factory.create_video_track(source);
   connection.add_track(video_track);
 }
-

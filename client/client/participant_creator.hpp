@@ -6,15 +6,19 @@
 
 namespace client {
 class peer_creator;
+class tracks_adder;
 class participant_creator {
 public:
-  participant_creator(peer_creator &peer_creator_, const std::string &own_id);
+  // TODO maybe move `tracks_adder_` to `peer_creator` and into `peer`?
+  participant_creator(peer_creator &peer_creator_, tracks_adder &tracks_adder_,
+                      const std::string &own_id);
 
   std::unique_ptr<participant>
   create(const session::participant &session_information);
 
 protected:
   peer_creator &peer_creator_;
+  tracks_adder &tracks_adder_;
   const std::string own_id;
 };
 } // namespace client
