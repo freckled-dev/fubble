@@ -12,7 +12,7 @@ peer_creator::peer_creator(boost::executor &executor,
       connection_creator(connection_creator) {}
 
 std::unique_ptr<peer> peer_creator::create() {
-  auto signalling_ = client_creator();
+  auto signalling_ = client_creator.create();
   auto connection_ = connection_creator.create_connection();
   auto result = std::make_unique<peer>(executor, std::move(signalling_),
                                        std::move(connection_));

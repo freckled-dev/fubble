@@ -9,9 +9,9 @@ connection_creator::connection_creator(boost::executor &executor,
     : executor(executor), message_parser(message_parser) {}
 connection_creator::~connection_creator() {}
 
-connection_ptr connection_creator::
-operator()(const websocket::connection_ptr &websocket_connection) {
-  auto result = std::make_shared<connection>(executor, websocket_connection,
-                                             message_parser);
+connection_ptr
+connection_creator::create(websocket::connection_ptr websocket_connection) {
+  auto result = std::make_shared<connection>(
+      executor, std::move(websocket_connection), message_parser);
   return result;
 }

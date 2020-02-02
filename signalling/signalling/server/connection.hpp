@@ -13,12 +13,12 @@ class connection;
 namespace signalling::server {
 class connection : public signalling::connection {
 public:
-  connection(boost::executor &executor,
-             const websocket::connection_ptr &connection,
+  connection(boost::executor &executor, websocket::connection_ptr connection,
              signalling::json_message &message_parser);
   ~connection();
   [[nodiscard]] boost::future<void> run();
 
+  // TODO let it return a future!
   void close() final;
   void send_offer(const signalling::offer &send) final;
   void send_ice_candidate(const signalling::ice_candidate &candidate) final;

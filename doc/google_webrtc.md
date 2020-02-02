@@ -39,6 +39,13 @@ gn gen out/arm64 --args='target_os="linux" target_cpu="arm64" is_debug=true cc_w
 if you `close()` on the `RTCConnection` the other end will timeout after 20 seconds.
 the other side will not call any event.
 
+## threading
+
+native information: http://webrtc.github.io/webrtc-org/native-code/native-apis/
+
+> Calls to the Stream APIs and the PeerConnection APIs will be proxied to the signaling thread, which means that an application can call those APIs from whatever thread.
+
+
 # links
 
 - bugs/issues https://bugs.chromium.org/p/webrtc/issues/list

@@ -3,6 +3,7 @@
 #include "factory.hpp"
 #include "video_track.hpp"
 #include "video_track_source.hpp"
+#include "wait_for_event.hpp"
 #include <boost/thread/executors/inline_executor.hpp>
 #include <fmt/format.h>
 #include <gtest/gtest.h>
@@ -98,12 +99,6 @@ public:
     return boost::when_all(promise_open.get_future(),
                            promise_answering.get_future());
   }
-};
-struct wait_for_event {
-  std::mutex mutex;
-  wait_for_event() { mutex.lock(); }
-  void wait() { std::unique_lock<std::mutex> end(mutex); }
-  void event() { mutex.unlock(); }
 };
 } // namespace
 
@@ -231,4 +226,3 @@ TEST_F(GoogleConnection, OnVideoTrack) {
   connected.get();
   waiter.wait();
 }
-

@@ -18,7 +18,7 @@ public:
            const config &config_);
   void close();
   std::uint16_t get_port() const;
-  boost::signals2::signal<void(connection_ptr)> on_connection;
+  boost::signals2::signal<void(connection_ptr &)> on_connection;
 
 private:
   void run();

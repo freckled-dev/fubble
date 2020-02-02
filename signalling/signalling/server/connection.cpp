@@ -5,9 +5,9 @@
 using namespace signalling::server;
 
 connection::connection(boost::executor &executor,
-                       const websocket::connection_ptr &connection_,
+                       websocket::connection_ptr connection_moved,
                        signalling::json_message &message_parser)
-    : executor(executor), connection_(connection_),
+    : executor(executor), connection_(std::move(connection_moved)),
       message_parser(message_parser) {}
 
 connection::~connection() {
@@ -66,7 +66,8 @@ void connection::run(boost::promise<void> &&promise) {
 
 void connection::close() {
   BOOST_LOG_SEV(logger, logging::severity::debug) << "close";
-  connection_->close().then(executor, [connection_ = connection_](auto) {});
+  connection_->close().then(executor,
+                            [connection_ = std::move(connection_)](auto) {});
 }
 
 void connection::send_offer(const signalling::offer &offer) {
@@ -93,6 +94,5 @@ void connection::send_state_answering() {
 void connection::send(const std::string &message) {
   BOOST_LOG_SEV(logger, logging::severity::trace)
       << fmt::format("sending message '{}'", message);
-  auto future = connection_->send(message);
-  future.then(executor, [connection_ = connection_](auto) {});
+  connection_->send(message);
 }

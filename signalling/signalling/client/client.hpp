@@ -21,6 +21,7 @@ public:
   };
   client(websocket::connector_creator &connector_creator,
          connection_creator &connection_creator_);
+  ~client();
 
   void set_connect_information(const connect_information &set);
   void connect(const std::string &key);
@@ -39,7 +40,7 @@ public:
   void send_answer(const signalling::answer &answer_);
   void send_ice_candidate(const signalling::ice_candidate &candidate);
 
-  connection_ptr get_connection() const;
+  connection &get_connection() const;
 
 private:
   void connected(boost::future<websocket::connection_ptr> &result,

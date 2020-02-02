@@ -13,6 +13,8 @@ client::client::client(websocket::connector_creator &connector_,
     : connector_creator(connector_),
       connection_creator_(connection_creator_parameter) {}
 
+client::client::~client() = default;
+
 void client::client::set_connect_information(const connect_information &set) {
   connect_information_ = set;
 }
@@ -53,7 +55,7 @@ void client::client::connected(boost::future<websocket::connection_ptr> &result,
   try {
     auto websocket_connection = result.get();
     BOOST_ASSERT(!connection_);
-    connection_ = connection_creator_(websocket_connection);
+    connection_ = connection_creator_.create(std::move(websocket_connection));
     connect_signals(connection_);
     on_connected();
     connection_->send_registration(signalling::registration{key});
@@ -74,8 +76,8 @@ void client::client::connected(boost::future<websocket::connection_ptr> &result,
   }
 }
 
-client::connection_ptr client::client::get_connection() const {
-  return connection_;
+client::connection &client::client::get_connection() const {
+  return *connection_;
 }
 
 void client::client::connect_signals(const connection_ptr &connection_) const {
@@ -98,7 +100,12 @@ void client::client::run_done(boost::future<void> &result) {
     BOOST_LOG_SEV(logger, logging::severity::info)
         << "connection stopped running with error:" << error.what();
     on_error(error);
+  } catch (const boost::broken_promise &error) {
+    BOOST_LOG_SEV(logger, logging::severity::error)
+        << "a should not happen error occured";
   } catch (...) {
+    BOOST_LOG_SEV(logger, logging::severity::error)
+        << "run_done, an unknown error occured";
     BOOST_ASSERT(false);
   }
   BOOST_LOG_SEV(logger, logging::severity::info)

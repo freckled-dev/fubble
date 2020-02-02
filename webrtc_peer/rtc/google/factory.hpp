@@ -26,6 +26,7 @@ private:
 
   std::unique_ptr<rtc::Thread> network_thread;
   std::unique_ptr<rtc::Thread> worker_thread;
+  // TODO replace signaling_thread with a local thread (asio) implementation
   std::unique_ptr<rtc::Thread> signaling_thread;
   rtc::scoped_refptr<webrtc::AudioDeviceModule> default_adm;
   rtc::scoped_refptr<webrtc::AudioMixer> audio_mixer;

@@ -6,7 +6,7 @@
 namespace client {
 class track_adder {
 public:
-  virtual ~track_adder() = 0;
+  virtual ~track_adder() = default;
   virtual void add_to_connection(rtc::connection &connection) = 0;
 };
 } // namespace client

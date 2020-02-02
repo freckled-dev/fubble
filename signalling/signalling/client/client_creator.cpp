@@ -11,7 +11,7 @@ client_creator::client_creator(
       connection_creator_(connection_creator_),
       connect_information_(connect_information_) {}
 
-std::unique_ptr<client> client_creator::operator()() {
+std::unique_ptr<client> client_creator::create() {
   auto result =
       std::make_unique<client>(connector_creator, connection_creator_);
   result->set_connect_information(connect_information_);

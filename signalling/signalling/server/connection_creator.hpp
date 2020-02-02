@@ -16,8 +16,7 @@ public:
                      signalling::json_message &message_parser);
   virtual ~connection_creator();
 
-  connection_ptr
-  operator()(const websocket::connection_ptr &websocket_connection);
+  connection_ptr create(websocket::connection_ptr websocket_connection);
 
 private:
   boost::executor &executor;

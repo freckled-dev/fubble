@@ -17,7 +17,7 @@ clazz::server(boost::executor &executor_, websocket::acceptor &acceptor,
       connection_creator_(connection_creator_),
       registration_handler(registration_handler) {
   acceptor.on_connection.connect(
-      [this](auto connection_) { on_connection(connection_); });
+      [this](auto &connection_) { on_connection(std::move(connection_)); });
 }
 
 clazz::~server() {
@@ -26,7 +26,8 @@ clazz::~server() {
 
 void clazz::on_connection(websocket::connection_ptr websocket_connection) {
   BOOST_LOG_SEV(logger, logging::severity::info) << "got a server connection";
-  connection_ptr connection_ = connection_creator_(websocket_connection);
+  connection_ptr connection_ =
+      connection_creator_.create(std::move(websocket_connection));
   registration_handler.add(connection_);
   connection_->run().then(executor, [connection_](auto) {});
 }
