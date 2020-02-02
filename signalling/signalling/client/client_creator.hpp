@@ -17,7 +17,7 @@ public:
                  connection_creator &connection_creator_,
                  const client::connect_information &connect_information_);
 
-  std::unique_ptr<client> operator()();
+  std::unique_ptr<client> create();
 
 protected:
   websocket::connector_creator &connector_creator;

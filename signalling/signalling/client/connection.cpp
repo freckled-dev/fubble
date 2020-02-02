@@ -5,10 +5,10 @@
 
 using namespace signalling::client;
 
-connection::connection(boost::executor &executor,
-                       const websocket::connection_ptr &connection,
+connection::connection(boost::executor &executor_,
+                       websocket::connection_ptr connection_moved,
                        signalling::json_message &message_parser)
-    : executor(executor), connection_(connection),
+    : post_executor(executor_), connection_(std::move(connection_moved)),
       message_parser(message_parser) {}
 
 connection::~connection() {
@@ -17,7 +17,7 @@ connection::~connection() {
 
 void connection::close() {
   BOOST_LOG_SEV(logger, logging::severity::info) << "closing connection";
-  connection_->close().then(executor, [connection_ = connection_](auto) {});
+  connection_->close();
 }
 
 void connection::send_registration(const signalling::registration &send_) {
@@ -39,34 +39,38 @@ void connection::send_answer(const signalling::answer &answer_) {
   send(serialized);
 }
 boost::future<void> connection::run() {
-  boost::promise<void> promise;
-  auto result = promise.get_future();
-  run(std::move(promise));
-  return result;
+  running = true;
+  read_next();
+  return run_promise.get_future();
 }
-void connection::run(boost::promise<void> &&promise) {
+void connection::read_next() {
   BOOST_LOG_SEV(logger, logging::severity::debug) << "reading next message";
-  connection_->read().then(executor, [this, promise = std::move(promise)](
-                                         auto message_future) mutable {
+  connection_->read().then(inline_executor, [this](auto message_future) {
     try {
       auto message = message_future.get();
       parse_message(message);
-      run(std::move(promise));
+      post_read_next();
     } catch (const boost::system::system_error &error) {
+      running = false;
       if (error.code() == boost::asio::error::operation_aborted) {
-        promise.set_value();
+        run_promise.set_value();
         return;
       }
       BOOST_LOG_SEV(logger, logging::severity::warning)
           << "an error occured while running, error:" << error.what();
-      promise.set_exception(error);
+      run_promise.set_exception(error);
+    } catch (...) {
+      BOOST_ASSERT(false);
     }
   });
 }
 
+void connection::post_read_next() {
+  post_executor.submit([this] { read_next(); });
+}
+
 void connection::send(const std::string &message) {
-  connection_->send(message).then(executor,
-                                  [connection_ = connection_](auto) {});
+  connection_->send(message);
 }
 
 namespace {

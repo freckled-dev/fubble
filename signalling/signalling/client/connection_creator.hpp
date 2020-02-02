@@ -15,8 +15,7 @@ public:
   connection_creator(boost::asio::io_context &context,
                      boost::executor &executor,
                      signalling::json_message &message_parser);
-  connection_ptr
-  operator()(const websocket::connection_ptr &websocket_connection);
+  connection_ptr create(websocket::connection_ptr websocket_connection);
 
 protected:
   boost::asio::io_context &context;

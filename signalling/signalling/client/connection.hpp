@@ -8,7 +8,7 @@
 #include "signalling/registration.hpp"
 #include "websocket/connection_ptr.hpp"
 #include <boost/signals2/signal.hpp>
-#include <boost/thread/executors/executor.hpp>
+#include <boost/thread/executors/inline_executor.hpp>
 #include <boost/thread/future.hpp>
 
 namespace signalling {
@@ -17,8 +17,7 @@ class json_message;
 namespace client {
 class connection {
 public:
-  connection(boost::executor &executor,
-             const websocket::connection_ptr &connection,
+  connection(boost::executor &executor, websocket::connection_ptr connection,
              signalling::json_message &message_parser);
   ~connection();
 
@@ -39,15 +38,19 @@ public:
   boost::future<void> run();
 
 private:
-  void run(boost::promise<void> &&promise);
+  void read_next();
+  void post_read_next();
 
   void send(const std::string &message);
   void parse_message(const std::string &message);
 
   logging::logger logger;
-  boost::executor &executor;
+  boost::executor &post_executor;
+  boost::inline_executor inline_executor;
+  boost::promise<void> run_promise;
   websocket::connection_ptr connection_;
   signalling::json_message &message_parser;
+  bool running{};
 };
 } // namespace client
 } // namespace signalling

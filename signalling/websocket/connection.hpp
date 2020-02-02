@@ -11,6 +11,7 @@ namespace websocket {
 class connection {
 public:
   connection(boost::asio::io_context &context);
+  ~connection();
 
   boost::future<void> send(const std::string &message);
   boost::future<std::string> read();
@@ -28,12 +29,14 @@ private:
   stream_type stream;
   boost::beast::flat_buffer buffer;
 
+  boost::promise<std::string> read_promise;
   struct send_item {
     std::string message;
     boost::promise<void> completion;
   };
   std::queue<send_item> send_queue;
   bool sending{};
+  bool reading{};
 };
 } // namespace websocket
 

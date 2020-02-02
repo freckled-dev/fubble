@@ -58,7 +58,7 @@ void connector::handshake() {
     BOOST_LOG_SEV(logger, logging::severity::info)
         << "did handshake successfully";
     done = true;
-    promise.set_value(connection);
+    promise.set_value(std::move(connection));
   });
 }
 

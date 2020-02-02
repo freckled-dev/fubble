@@ -5,7 +5,7 @@
 
 namespace websocket {
 class connection;
-using connection_ptr = std::shared_ptr<connection>;
+using connection_ptr = std::unique_ptr<connection>;
 } // namespace websocket
 
 #endif

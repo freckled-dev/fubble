@@ -19,7 +19,7 @@ struct Websocket : ::testing::Test {
 TEST_F(Websocket, ConnectionCreation) {
   websocket::connector_creator connector_creator{context, connection_creator};
   acceptor.on_connection.connect(
-      [&](auto connection) { EXPECT_TRUE(connection); });
+      [&](auto &connection) { EXPECT_TRUE(connection); });
   bool connected{};
   websocket::connector::config connector_config;
   connector_config.service = std::to_string(acceptor.get_port());
@@ -39,7 +39,8 @@ struct WebsocketOpenConnection : Websocket {
   websocket::connection_ptr first;
   websocket::connection_ptr second;
   WebsocketOpenConnection() {
-    acceptor.on_connection.connect([&](auto result) { first = result; });
+    acceptor.on_connection.connect(
+        [&](auto &result) { first = std::move(result); });
     websocket::connector::config connector_config{
         std::to_string(acceptor.get_port()), "localhost"};
     auto connector = connector_creator.create(connector_config);

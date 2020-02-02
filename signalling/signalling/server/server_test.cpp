@@ -48,10 +48,8 @@ struct Server : testing::Test {
     client.connect(session_key);
   }
   void close() {
-    if (client_.get_connection())
-      client_.close();
-    if (client_answering.get_connection())
-      client_answering.close();
+    client_.close();
+    client_answering.close();
     try {
       server_.close();
     } catch (...) {
@@ -69,8 +67,7 @@ TEST_F(Server, SetUp) {
 TEST_F(Server, SingleConnect) {
   bool connected{};
   client_.on_connected.connect([&] {
-    auto connection = client_.get_connection();
-    EXPECT_TRUE(connection);
+    [[maybe_unused]] auto &connection = client_.get_connection();
     EXPECT_FALSE(connected);
     connected = true;
     close();
