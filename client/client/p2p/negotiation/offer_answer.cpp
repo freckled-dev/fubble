@@ -12,6 +12,7 @@ offer_answer::offer_answer(boost::executor &executor,
   signalling_client.on_answer.connect([this](auto sdp) { on_answer(sdp); });
   signalling_client.on_create_offer.connect([this] { on_create_offer(); });
   signalling_client.on_create_answer.connect([this] { on_create_answer(); });
+  // TODO implement logic for `send_want_to_negotiate`
 }
 
 void offer_answer::on_create_offer() {

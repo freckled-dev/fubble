@@ -8,6 +8,7 @@
 #include "logging/logger.hpp"
 #include "offer.hpp"
 #include "registration.hpp"
+#include "want_to_negotiate.hpp"
 #include <stdexcept>
 #include <variant>
 
@@ -28,6 +29,7 @@ public:
   std::string serialize(const create_offer &offering) const;
   std::string serialize(const create_answer &answering) const;
   std::string serialize(const registration &registration_) const;
+  std::string serialize(const want_to_negotiate &negotiate) const;
 
 private:
   mutable logging::logger logger;

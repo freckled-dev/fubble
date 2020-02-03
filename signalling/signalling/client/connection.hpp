@@ -24,6 +24,7 @@ public:
   void close();
 
   void send_registration(const signalling::registration &send);
+  void send_want_to_negotiate();
   void send_offer(const signalling::offer &send);
   void send_ice_candidate(const signalling::ice_candidate &candidate);
   void send_answer(const signalling::answer &answer_);
