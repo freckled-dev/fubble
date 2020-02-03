@@ -9,8 +9,11 @@ class connection;
 namespace google {
 class video_track;
 class video_source;
+// TODO don't create a signalling thread in this class. instead use an external
+// one
 class factory {
 public:
+  factory(std::unique_ptr<rtc::Thread> signaling_thread);
   factory();
   ~factory();
 
@@ -18,7 +21,10 @@ public:
   std::unique_ptr<video_track>
   create_video_track(const std::shared_ptr<video_source> &source);
 
+  rtc::Thread &get_signaling_thread() const;
+
 private:
+  void instance_members();
   void instance_threads();
   void instance_audio();
   void instance_video();

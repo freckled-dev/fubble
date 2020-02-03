@@ -4,7 +4,7 @@ client = library('client',
     'add_video_to_connection.cpp', 'room.cpp', 'rooms.cpp',
     'room_creator.cpp', 'participant.cpp', 'participant_creator.cpp',
     'participant_creator_creator.cpp', 'remote_participant.cpp',
-    'own_participant.cpp'],
+    'own_participant.cpp', 'add_data_channel.cpp'],
   dependencies: [boost_dep, utils_dep, signalling_client_dep,
     webrtc_google_peer_dep, session_dep],
   install: true

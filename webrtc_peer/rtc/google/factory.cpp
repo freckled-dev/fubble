@@ -11,12 +11,12 @@
 
 using namespace rtc::google;
 
-factory::factory() {
-  instance_threads();
-  instance_audio();
-  instance_video();
-  instance_factory();
+factory::factory(std::unique_ptr<rtc::Thread> signaling_thread_moved)
+    : signaling_thread(std::move(signaling_thread_moved)) {
+  instance_members();
 }
+
+factory::factory() { instance_members(); }
 
 factory::~factory() = default;
 
@@ -53,12 +53,25 @@ factory::create_video_track(const std::shared_ptr<video_source> &source) {
   return result;
 }
 
+rtc::Thread &factory::get_signaling_thread() const {
+  return *signaling_thread.get();
+}
+
+void factory::instance_members() {
+  instance_threads();
+  instance_audio();
+  instance_video();
+  instance_factory();
+}
+
 void factory::instance_threads() {
   network_thread = rtc::Thread::CreateWithSocketServer();
-  worker_thread = rtc::Thread::Create();
-  signaling_thread = rtc::Thread::Create();
   network_thread->Start();
+  worker_thread = rtc::Thread::Create();
   worker_thread->Start();
+  if (signaling_thread)
+    return;
+  signaling_thread = rtc::Thread::Create();
   signaling_thread->Start();
 }
 
