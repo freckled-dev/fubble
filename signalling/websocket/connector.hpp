@@ -26,8 +26,11 @@ public:
 
 private:
   void resolve();
+  void on_resolved(const boost::system::error_code &error,
+                   const boost::asio::ip::tcp::resolver::results_type &results);
   void connect_to_endpoints(
       const boost::asio::ip::tcp::resolver::results_type &results);
+  void on_connected(const boost::system::error_code &error);
   void handshake();
   bool check_error(const boost::system::error_code &error);
 
