@@ -19,7 +19,7 @@ asio_signalling_thread::~asio_signalling_thread() {}
 rtc::Thread &asio_signalling_thread::get_native() const { return *native; }
 
 void asio_signalling_thread::trigger_wait() {
-  timer.expires_after(std::chrono::milliseconds(50));
+  timer.expires_after(interval);
   timer.async_wait([this](auto error) { on_waited(error); });
 }
 
@@ -28,7 +28,5 @@ void asio_signalling_thread::on_waited(const boost::system::error_code &error) {
     return;
   BOOST_ASSERT(!error);
   trigger_wait();
-  BOOST_LOG_SEV(logger, logging::severity::debug) << "before ProcessMessages";
-  native->ProcessMessages(10);
-  BOOST_LOG_SEV(logger, logging::severity::debug) << "after ProcessMessages";
+  native->ProcessMessages(maximum_update_time_ms);
 }

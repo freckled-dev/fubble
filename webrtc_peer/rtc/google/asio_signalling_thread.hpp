@@ -7,6 +7,8 @@
 #include <thread>
 
 namespace rtc::google {
+// TODO refactor so it derives from `rtc::Thread` and must not get called in an
+// interval
 class asio_signalling_thread {
 public:
   asio_signalling_thread(boost::asio::io_context &asio_);
@@ -18,6 +20,9 @@ protected:
   void trigger_wait();
   void on_waited(const boost::system::error_code &error);
 
+  static constexpr std::chrono::steady_clock::duration interval =
+      std::chrono::milliseconds(50);
+  static constexpr int maximum_update_time_ms = 10;
   logging::logger logger;
   boost::asio::io_context &asio;
   using timer_type = boost::asio::steady_timer;
