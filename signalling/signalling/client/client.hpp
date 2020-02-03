@@ -39,6 +39,7 @@ public:
   void send_offer(const signalling::offer &offer_);
   void send_answer(const signalling::answer &answer_);
   void send_ice_candidate(const signalling::ice_candidate &candidate);
+  void send_want_to_negotiate();
 
   connection &get_connection() const;
 

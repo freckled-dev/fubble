@@ -38,6 +38,11 @@ void client::client::send_ice_candidate(
   connection_->send_ice_candidate(candidate);
 }
 
+void client::client::send_want_to_negotiate() {
+  BOOST_ASSERT(!connection_);
+  connection_->send_want_to_negotiate();
+}
+
 void client::client::connect(const std::string &key) {
   BOOST_ASSERT(!connection_);
   websocket::connector::config connector_config;

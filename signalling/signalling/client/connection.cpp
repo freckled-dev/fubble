@@ -25,6 +25,12 @@ void connection::send_registration(const signalling::registration &send_) {
   send(serialized);
 }
 
+void connection::send_want_to_negotiate() {
+  want_to_negotiate negotiation{};
+  auto serialized = message_parser.serialize(negotiation);
+  send(serialized);
+}
+
 void connection::send_offer(const signalling::offer &send_) {
   auto serialized = message_parser.serialize(send_);
   send(serialized);

@@ -75,3 +75,8 @@ std::string json_message::serialize(const registration &registration_) const {
                            {"key", registration_.key}};
   return result.dump();
 }
+
+std::string json_message::serialize(const want_to_negotiate &) const {
+  nlohmann::json result = {{"type", "want_to_negotiate"}};
+  return result.dump();
+}
