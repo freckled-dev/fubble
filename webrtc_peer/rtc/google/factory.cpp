@@ -1,4 +1,5 @@
 #include "factory.hpp"
+#include "asio_signalling_thread.hpp"
 #include "connection.hpp"
 #include "uuid.hpp"
 #include "video_source.hpp"
@@ -11,8 +12,8 @@
 
 using namespace rtc::google;
 
-factory::factory(std::unique_ptr<rtc::Thread> signaling_thread_moved)
-    : signaling_thread(std::move(signaling_thread_moved)) {
+factory::factory(rtc::Thread &signaling_thread)
+    : signaling_thread(&signaling_thread) {
   instance_members();
 }
 
@@ -53,9 +54,7 @@ factory::create_video_track(const std::shared_ptr<video_source> &source) {
   return result;
 }
 
-rtc::Thread &factory::get_signaling_thread() const {
-  return *signaling_thread.get();
-}
+rtc::Thread &factory::get_signaling_thread() const { return *signaling_thread; }
 
 void factory::instance_members() {
   instance_threads();
@@ -71,8 +70,9 @@ void factory::instance_threads() {
   worker_thread->Start();
   if (signaling_thread)
     return;
-  signaling_thread = rtc::Thread::Create();
-  signaling_thread->Start();
+  signaling_thread_own = rtc::Thread::Create();
+  signaling_thread_own->Start();
+  signaling_thread = signaling_thread_own.get();
 }
 
 void factory::instance_audio() {
@@ -89,8 +89,8 @@ void factory::instance_video() {
 
 void factory::instance_factory() {
   factory_ = webrtc::CreatePeerConnectionFactory(
-      network_thread.get(), worker_thread.get(), signaling_thread.get(),
-      default_adm, audio_encoder, audio_decoder, std::move(video_encoder),
+      network_thread.get(), worker_thread.get(), signaling_thread, default_adm,
+      audio_encoder, audio_decoder, std::move(video_encoder),
       std::move(video_decoder), audio_mixer, audio_processing);
   if (factory_)
     return;

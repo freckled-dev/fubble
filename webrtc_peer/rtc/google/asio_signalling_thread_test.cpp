@@ -11,27 +11,17 @@ struct AsioSignallingThread : ::testing::Test {
   logging::logger logger;
   boost::asio::io_context context;
   boost::asio::executor executor{context.get_executor()};
-  boost::asio::executor_work_guard<boost::asio::executor> work_guard{executor};
-  joined_thread context_thread{[this] {
-    context.run();
-    BOOST_LOG_SEV(logger, logging::severity::debug) << "context.run() over";
-  }};
 };
 
 TEST_F(AsioSignallingThread, AddDataChannel) {
-  // factory immediately posts to context. if context is not running, it will
-  // block!
-  wait_for_event waiter;
-  rtc::google::factory creator{
-      std::make_unique<rtc::google::asio_signalling_thread>(context)};
+  rtc::google::asio_signalling_thread signaling_thread{context};
+  rtc::google::factory creator{signaling_thread.get_native()};
   test_peer peer{creator};
   peer.instance->on_negotiation_needed.connect([&] {
     BOOST_LOG_SEV(logger, logging::severity::debug) << "done";
-    work_guard.reset();
-    waiter.event();
+    context.stop();
   });
   peer.instance->create_data_channel();
   BOOST_LOG_SEV(logger, logging::severity::debug) << "joining context_thread";
-  // context_thread.join();
-  waiter.wait();
+  context.run();
 }
