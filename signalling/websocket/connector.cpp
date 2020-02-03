@@ -29,10 +29,19 @@ boost::future<connection_ptr> connector::connect() {
 void connector::resolve() {
   resolver.async_resolve(config_.url, config_.service,
                          [this](const auto &error, const auto &endpoints) {
-                           if (check_error(error))
-                             return;
-                           connect_to_endpoints(endpoints);
+                           on_resolved(error, endpoints);
                          });
+}
+
+void connector::on_resolved(
+    const boost::system::error_code &error,
+    const boost::asio::ip::tcp::resolver::results_type &endpoints) {
+  BOOST_LOG_SEV(logger, logging::severity::trace)
+      << "on_resolved, error:" << error.message()
+      << ", results.size():" << endpoints.size();
+  if (check_error(error))
+    return;
+  connect_to_endpoints(endpoints);
 }
 
 void connector::connect_to_endpoints(
@@ -40,12 +49,17 @@ void connector::connect_to_endpoints(
   connection = creator();
   auto &native = connection->get_native();
   boost::asio::ip::tcp::socket &tcp = native.next_layer();
-  boost::asio::async_connect(tcp, endpoints,
-                             [this](const auto &error, const auto &) mutable {
-                               if (check_error(error))
-                                 return;
-                               handshake();
-                             });
+  boost::asio::async_connect(
+      tcp, endpoints,
+      [this](const auto &error, const auto &) { on_connected(error); });
+}
+
+void connector::on_connected(const boost::system::error_code &error) {
+  BOOST_LOG_SEV(logger, logging::severity::trace)
+      << "on_connected, error:" << error.message();
+  if (check_error(error))
+    return;
+  handshake();
 }
 
 void connector::handshake() {
