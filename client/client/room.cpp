@@ -20,6 +20,10 @@ room::room(std::unique_ptr<participant_creator> participant_creator_parameter,
 
 room::~room() = default;
 
+  boost::future<void> room:: leave() {
+    // 
+  }
+
 const room::participants &room::get_participants() const {
   return participants_;
 }

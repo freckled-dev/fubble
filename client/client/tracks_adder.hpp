@@ -1,6 +1,7 @@
 #ifndef UUID_C92BDF54_AEE0_4DC1_87CA_B5EBBFDA3FFE
 #define UUID_C92BDF54_AEE0_4DC1_87CA_B5EBBFDA3FFE
 
+#include "logging/logger.hpp"
 #include "track_adder.hpp"
 #include <memory>
 #include <vector>
@@ -13,11 +14,15 @@ public:
   void add(track_adder &adder) { adders.emplace_back(&adder); }
 
   void add_to_connection(rtc::connection &connection) {
+    BOOST_LOG_SEV(logger, logging::severity::info)
+        << "adding " << adders.size()
+        << " tracks to the connection:" << &connection;
     for (auto &adder : adders)
       adder->add_to_connection(connection);
   }
 
 protected:
+  logging::logger logger;
   using track_adder_ptr = track_adder *;
   std::vector<track_adder_ptr> adders;
 };

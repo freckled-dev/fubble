@@ -2,6 +2,7 @@
 #define RTC_GOOGLE_FACTORY_HPP
 
 #include <api/create_peerconnection_factory.h>
+#include <boost/asio/io_context.hpp>
 #include <memory>
 
 namespace rtc {
@@ -13,7 +14,7 @@ class video_source;
 // one
 class factory {
 public:
-  factory(std::unique_ptr<rtc::Thread> signaling_thread);
+  explicit factory(rtc::Thread &signaling_thread);
   factory();
   ~factory();
 
@@ -33,7 +34,8 @@ private:
   std::unique_ptr<rtc::Thread> network_thread;
   std::unique_ptr<rtc::Thread> worker_thread;
   // TODO replace signaling_thread with a local thread (asio) implementation
-  std::unique_ptr<rtc::Thread> signaling_thread;
+  std::unique_ptr<rtc::Thread> signaling_thread_own;
+  rtc::Thread *signaling_thread{};
   rtc::scoped_refptr<webrtc::AudioDeviceModule> default_adm;
   rtc::scoped_refptr<webrtc::AudioMixer> audio_mixer;
   rtc::scoped_refptr<webrtc::AudioProcessing> audio_processing;

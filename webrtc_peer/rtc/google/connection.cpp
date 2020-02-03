@@ -102,7 +102,10 @@ cast_session_description(const rtc::session_description &description) {
 }
 } // namespace
 
-connection::~connection() = default;
+connection::~connection() {
+  BOOST_LOG_SEV(logger, logging::severity::trace)
+      << "google::webrtc::connection::~connection(), this:" << this;
+}
 
 void connection::initialise(
     rtc::scoped_refptr<::webrtc::PeerConnectionInterface> native_) {
@@ -239,8 +242,9 @@ void connection::OnAddTrack(
 
 void connection::OnDataChannel(
     ::rtc::scoped_refptr<::webrtc::DataChannelInterface> data_channel_) {
-  BOOST_LOG_SEV(logger, logging::severity::info) << "OnDataChannel";
-  auto result = std::make_shared<data_channel>(data_channel_);
+  BOOST_LOG_SEV(logger, logging::severity::info)
+      << "OnDataChannel, this:" << this;
+  data_channel_ptr result = std::make_shared<data_channel>(data_channel_);
   data_channels.push_back(result);
   on_data_channel(result);
 }
