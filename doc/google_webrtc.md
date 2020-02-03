@@ -43,6 +43,8 @@ the other side will not call any event.
 
 native information: http://webrtc.github.io/webrtc-org/native-code/native-apis/
 
+`peer_factory` immediately posts to signaling thread. if signaling thread is not running, it will block!
+
 > Calls to the Stream APIs and the PeerConnection APIs will be proxied to the signaling thread, which means that an application can call those APIs from whatever thread.
 
 
