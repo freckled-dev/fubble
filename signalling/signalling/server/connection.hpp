@@ -24,7 +24,6 @@ public:
   void send_ice_candidate(const signalling::ice_candidate &candidate) final;
   void send_answer(const signalling::answer &answer_) final;
   void send_do_offer() final;
-  void send_do_answer() final;
 
 private:
   void run(boost::promise<void> &&promise);

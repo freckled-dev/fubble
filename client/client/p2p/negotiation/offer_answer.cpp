@@ -12,8 +12,7 @@ offer_answer::offer_answer(boost::executor &executor,
   signalling_client.on_offer.connect([this](auto sdp) { on_offer(sdp); });
   signalling_client.on_answer.connect([this](auto sdp) { on_answer(sdp); });
   signalling_client.on_create_offer.connect([this] { on_create_offer(); });
-  signalling_client.on_create_answer.connect([this] { on_create_answer(); });
-  signalling_client.on_connected.connect([this] { on_connected(); });
+  signalling_client.on_registered.connect([this] { on_connected(); });
   signalling_client.on_closed.connect([this] { on_closed(); });
 }
 
@@ -25,10 +24,6 @@ void offer_answer::on_create_offer() {
     signalling::offer offer_casted{offer.sdp};
     signalling_client.send_offer(offer_casted);
   });
-}
-
-void offer_answer::on_create_answer() {
-  BOOST_LOG_SEV(logger, logging::severity::trace) << "on_create_answer";
 }
 
 void offer_answer::on_negotiation_needed() {

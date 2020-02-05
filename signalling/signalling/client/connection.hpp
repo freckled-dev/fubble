@@ -34,7 +34,6 @@ public:
   boost::signals2::signal<void(const signalling::ice_candidate &)>
       on_ice_candidate;
   boost::signals2::signal<void()> on_create_offer;
-  boost::signals2::signal<void()> on_create_answer;
 
   boost::future<void> run();
 

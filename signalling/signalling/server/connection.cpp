@@ -35,9 +35,6 @@ struct message_visitor {
   void operator()(const signalling::create_offer &) {
     BOOST_ASSERT_MSG(false, "must not be received");
   }
-  void operator()(const signalling::create_answer &) {
-    BOOST_ASSERT_MSG(false, "must not be received");
-  }
 };
 } // namespace
 
@@ -88,10 +85,6 @@ void connection::send_answer(const signalling::answer &answer_) {
 
 void connection::send_do_offer() {
   send(message_parser.serialize(signalling::create_offer{}));
-}
-
-void connection::send_do_answer() {
-  send(message_parser.serialize(signalling::create_answer{}));
 }
 
 void connection::send(const std::string &message) {

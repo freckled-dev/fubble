@@ -28,7 +28,6 @@ struct mock_connection final : signalling::connection {
   bool state_offering_called{};
   void send_do_offer() final { state_offering_called = true; }
   bool state_answering_called{};
-  void send_do_answer() final { state_answering_called = true; }
   bool close_called{};
   void close() final {
     EXPECT_FALSE(close_called);

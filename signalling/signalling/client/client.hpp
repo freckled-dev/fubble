@@ -27,9 +27,8 @@ public:
   void connect(const std::string &key);
   void close();
   boost::signals2::signal<void()> on_closed;
-  boost::signals2::signal<void()> on_connected;
+  boost::signals2::signal<void()> on_registered;
   boost::signals2::signal<void()> on_create_offer;
-  boost::signals2::signal<void()> on_create_answer;
   boost::signals2::signal<void(const signalling::offer &)> on_offer;
   boost::signals2::signal<void(const signalling::answer &)> on_answer;
   boost::signals2::signal<void(const signalling::ice_candidate &)>
