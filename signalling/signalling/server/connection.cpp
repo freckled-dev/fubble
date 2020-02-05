@@ -29,6 +29,9 @@ struct message_visitor {
   void operator()(const signalling::registration &registration_) {
     connection_.on_registration(registration_);
   }
+  void operator()(const signalling::want_to_negotiate &negotiation) {
+    connection_.on_want_to_negotiate(negotiation);
+  }
   void operator()(const signalling::create_offer &) {
     BOOST_ASSERT_MSG(false, "must not be received");
   }
@@ -83,11 +86,11 @@ void connection::send_answer(const signalling::answer &answer_) {
   send(message_parser.serialize(answer_));
 }
 
-void connection::send_state_offering() {
+void connection::send_do_offer() {
   send(message_parser.serialize(signalling::create_offer{}));
 }
 
-void connection::send_state_answering() {
+void connection::send_do_answer() {
   send(message_parser.serialize(signalling::create_answer{}));
 }
 

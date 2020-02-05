@@ -45,6 +45,10 @@ json_message::parse(const std::string &message) const {
     result.key = json["key"];
     return result;
   }
+  if (type == "want_to_negotiate") {
+    want_to_negotiate result;
+    return result;
+  }
   throw invalid_type(type);
 }
 std::string json_message::serialize(const offer &offer_) const {

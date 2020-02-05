@@ -22,7 +22,7 @@ signalling = library('signalling',
     'signalling/connection.cpp', 'signalling/device/creator.cpp',
     'signalling/json_message.cpp', 'signalling/offer.cpp',
     'signalling/answer.cpp', 'signalling/ice_candidate.cpp',
-    'signalling/device/offering.cpp', 'signalling/device/answering.cpp'],
+    'signalling/device/device.cpp'],
   dependencies: [fmt_dep, json_dep, utils_dep],
   link_with: [],
   install: true
