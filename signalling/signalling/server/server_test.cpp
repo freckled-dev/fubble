@@ -47,6 +47,9 @@ struct Server : testing::Test {
     client.set_connect_information({"localhost", service});
     client.connect(session_key);
   }
+  static void shall_want_to_negotiate(signalling::client::client &client) {
+    client.on_registered.connect([&] { client.send_want_to_negotiate(); });
+  }
   void close() {
     client_.close();
     client_answering.close();
@@ -66,7 +69,7 @@ TEST_F(Server, SetUp) {
 
 TEST_F(Server, SingleConnect) {
   bool connected{};
-  client_.on_connected.connect([&] {
+  client_.on_registered.connect([&] {
     [[maybe_unused]] auto &connection = client_.get_connection();
     EXPECT_FALSE(connected);
     connected = true;
@@ -79,7 +82,7 @@ TEST_F(Server, SingleConnect) {
 
 TEST_F(Server, ClientClose) {
   bool connected{};
-  client_.on_connected.connect([&] {
+  client_.on_registered.connect([&] {
     EXPECT_FALSE(connected);
     connected = true;
     close();
@@ -97,8 +100,8 @@ TEST_F(Server, DoubleConnect) {
       return;
     close();
   };
-  client_.on_connected.connect(connected_callback);
-  client_answering.on_connected.connect(connected_callback);
+  client_.on_registered.connect(connected_callback);
+  client_answering.on_registered.connect(connected_callback);
   connect(client_);
   connect(client_answering);
   context.run();
@@ -118,33 +121,22 @@ TEST_F(Server, CantConnect) {
   EXPECT_TRUE(called);
 }
 
-TEST_F(Server, StateOffering) {
+TEST_F(Server, StateCreateOffer) {
   bool called{};
   client_.on_create_offer.connect([&] {
-    called = true;
-    close();
-  });
-  client_.set_connect_information(
-      {"localhost", std::to_string(acceptor.get_port())});
-  client_.connect(session_key);
-  context.run();
-  EXPECT_TRUE(called);
-}
-
-TEST_F(Server, StateAnswering) {
-  connect(client_);
-  connect(client_answering);
-  bool called{};
-  client_answering.on_create_answer.connect([&] {
     EXPECT_FALSE(called);
     called = true;
     close();
   });
+  shall_want_to_negotiate(client_);
+  connect(client_);
+  connect(client_answering);
   context.run();
   EXPECT_TRUE(called);
 }
 
 TEST_F(Server, SendReceiveOffer) {
+  shall_want_to_negotiate(client_);
   connect(client_);
   connect(client_answering);
   bool called{};
@@ -161,23 +153,26 @@ TEST_F(Server, SendReceiveOffer) {
 }
 
 TEST_F(Server, SendReceiveAnswer) {
+  shall_want_to_negotiate(client_);
   connect(client_);
   connect(client_answering);
   bool called{};
   const std::string sdp = "fun sdp";
+  client_.on_create_offer.connect([&] { client_.send_offer({sdp}); });
   client_.on_answer.connect([&](const auto answer_) {
     EXPECT_FALSE(called);
     called = true;
     EXPECT_EQ(answer_.sdp, sdp);
     close();
   });
-  client_answering.on_create_answer.connect(
-      [&] { client_answering.send_answer({sdp}); });
+  client_answering.on_offer.connect(
+      [&](auto) { client_answering.send_answer({sdp}); });
   context.run();
   EXPECT_TRUE(called);
 }
 
 TEST_F(Server, SendReceiveIceCandidate) {
+  shall_want_to_negotiate(client_);
   connect(client_);
   connect(client_answering);
   bool called{};
@@ -197,6 +192,7 @@ TEST_F(Server, SendReceiveIceCandidate) {
 
 TEST_F(Server, Close) {
   connect(client_);
+  shall_want_to_negotiate(client_answering);
   connect(client_answering);
   bool called{};
   const std::string sdp = "fun sdp";
@@ -205,10 +201,7 @@ TEST_F(Server, Close) {
     called = true;
     server_.close();
   });
-  client_answering.on_create_answer.connect([&] {
-    // sadad
-    client_answering.close();
-  });
+  client_answering.on_create_offer.connect([&] { client_answering.close(); });
   context.run();
   EXPECT_TRUE(called);
 }

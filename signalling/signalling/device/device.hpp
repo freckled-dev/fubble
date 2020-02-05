@@ -24,9 +24,12 @@ public:
   void send_offer(const offer &offer);
   void send_answer(const answer &answer_);
   void send_ice_candidate(const ice_candidate &candidate);
+  bool get_wants_to_negotiate();
+  bool get_actice_negotiating();
+  void negotiate();
 
 protected:
-  virtual void on_want_to_negotiate(const want_to_negotiate &answer_);
+  virtual void on_want_to_negotiate(const want_to_negotiate &negotiation);
   virtual void on_answer(const answer &answer_);
   virtual void on_offer(const offer &offer_);
   virtual void on_ice_candidate(const ice_candidate &candidate);
@@ -37,6 +40,8 @@ protected:
   // extrusive
   device_wptr partner;
   std::vector<boost::signals2::scoped_connection> callback_connections;
+  bool wants_to_negotiate{};
+  bool active_negotiating{};
 };
 } // namespace signalling::device
 

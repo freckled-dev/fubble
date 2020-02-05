@@ -28,7 +28,6 @@ public:
   virtual void send_ice_candidate(const ice_candidate &candidate) = 0;
   virtual void send_answer(const signalling::answer &answer_) = 0;
   virtual void send_do_offer() = 0;
-  virtual void send_do_answer() = 0;
 };
 } // namespace signalling
 

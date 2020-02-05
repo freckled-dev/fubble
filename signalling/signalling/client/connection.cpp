@@ -94,8 +94,9 @@ struct message_visitor {
   void operator()(const signalling::create_offer &) {
     connection_.on_create_offer();
   }
-  void operator()(const signalling::create_answer &) {
-    connection_.on_create_answer();
+  void operator()(const signalling::want_to_negotiate &) {
+    BOOST_ASSERT_MSG(false,
+                     "want_to_negotiate must not be send to client connection");
   }
   void operator()(const signalling::registration &) {
     BOOST_ASSERT_MSG(false,

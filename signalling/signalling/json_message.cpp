@@ -36,10 +36,6 @@ json_message::parse(const std::string &message) const {
     create_offer result;
     return result;
   }
-  if (type == "create_answer") {
-    create_answer result;
-    return result;
-  }
   if (type == "registration") {
     registration result;
     result.key = json["key"];
@@ -68,10 +64,6 @@ std::string json_message::serialize(const ice_candidate &candidate) const {
 }
 std::string json_message::serialize(const create_offer &) const {
   nlohmann::json result = {{"type", "create_offer"}};
-  return result.dump();
-}
-std::string json_message::serialize(const create_answer &) const {
-  nlohmann::json result = {{"type", "create_answer"}};
   return result.dump();
 }
 std::string json_message::serialize(const registration &registration_) const {

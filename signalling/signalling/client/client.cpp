@@ -26,20 +26,27 @@ void client::client::close() {
 }
 
 void client::client::send_offer(const signalling::offer &offer_) {
+  BOOST_ASSERT(connection_);
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "send_offer";
   connection_->send_offer(offer_);
 }
 
 void client::client::send_answer(const signalling::answer &answer_) {
+  BOOST_ASSERT(connection_);
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "send_answer";
   connection_->send_answer(answer_);
 }
 
 void client::client::send_ice_candidate(
     const signalling::ice_candidate &candidate) {
+  BOOST_ASSERT(connection_);
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "send_ice_candidate";
   connection_->send_ice_candidate(candidate);
 }
 
 void client::client::send_want_to_negotiate() {
-  BOOST_ASSERT(!connection_);
+  BOOST_ASSERT(connection_);
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "send_want_to_negotiate";
   connection_->send_want_to_negotiate();
 }
 
@@ -62,8 +69,8 @@ void client::client::connected(boost::future<websocket::connection_ptr> &result,
     BOOST_ASSERT(!connection_);
     connection_ = connection_creator_.create(std::move(websocket_connection));
     connect_signals(connection_);
-    on_connected();
     connection_->send_registration(signalling::registration{key});
+    on_registered();
     connection_->run().then(
         executor, [this](boost::future<void> result) { run_done(result); });
   } catch (const boost::system::system_error &error) {
@@ -87,7 +94,6 @@ client::connection &client::client::get_connection() const {
 
 void client::client::connect_signals(const connection_ptr &connection_) const {
   connection_->on_create_offer.connect([this] { on_create_offer(); });
-  connection_->on_create_answer.connect([this] { on_create_answer(); });
   connection_->on_offer.connect(
       [this](const auto &offer_) { on_offer(offer_); });
   connection_->on_answer.connect(
