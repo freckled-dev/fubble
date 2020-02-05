@@ -5,7 +5,7 @@
 using namespace signalling::device;
 
 offering::offering(connection_ptr connection_) : connection_(connection_) {
-  connection_->send_state_offering();
+  connection_->send_do_offer();
   callback_connections.emplace_back(connection_->on_offer.connect(
       [this](const auto &offer) { on_offer(offer); }));
   callback_connections.emplace_back(connection_->on_ice_candidate.connect(

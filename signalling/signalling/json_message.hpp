@@ -19,8 +19,9 @@ public:
     invalid_type(const std::string &type);
   };
 
-  using messages_type = std::variant<offer, answer, ice_candidate,
-                                     create_answer, create_offer, registration>;
+  using messages_type =
+      std::variant<offer, answer, ice_candidate, create_answer, create_offer,
+                   registration, want_to_negotiate>;
   messages_type parse(const std::string &message) const;
 
   std::string serialize(const offer &offer_) const;
