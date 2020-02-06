@@ -1,5 +1,6 @@
 #include "join_model.hpp"
 #include "joiner.hpp"
+#include "model_creator.hpp"
 #include "room.hpp"
 #include "room_model.hpp"
 #include <QStandardPaths>
@@ -14,8 +15,9 @@ QString config_file() {
 }
 } // namespace
 
-join_model::join_model(joiner &joiner_)
-    : joiner_(joiner_), settings(config_file(), QSettings::IniFormat) {
+join_model::join_model(model_creator &model_factory, joiner &joiner_)
+    : model_factory(model_factory), joiner_(joiner_),
+      settings(config_file(), QSettings::IniFormat) {
   name = settings.value("name").toString();
   room = settings.value("room").toString();
 }
@@ -39,6 +41,6 @@ void join_model::on_joined(boost::future<std::shared_ptr<class room>> room_) {
     BOOST_LOG_SEV(logger, logging::severity::warning) << "could not join room";
     return;
   }
-  auto room_model_ = new room_model(room_.get(), this);
+  auto room_model_ = model_factory.create_room_model(room_.get(), this);
   joined(room_model_);
 }

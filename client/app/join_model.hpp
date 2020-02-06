@@ -11,12 +11,13 @@ namespace client {
 class joiner;
 class room_model;
 class room;
+class model_creator;
 class join_model : public QObject {
   Q_OBJECT
   Q_PROPERTY(QString name MEMBER name NOTIFY name_changed)
   Q_PROPERTY(QString room MEMBER room NOTIFY room_changed)
 public:
-  join_model(joiner &joiner_);
+  join_model(model_creator &model_factory, joiner &joiner_);
   ~join_model();
 
   Q_INVOKABLE void join(const QString &room, const QString &name);
@@ -30,6 +31,7 @@ protected:
   void on_joined(boost::future<std::shared_ptr<room>> room_);
 
   logging::logger logger;
+  model_creator &model_factory;
   joiner &joiner_;
   ui::executor_qt qt_executor;
   QSettings settings;

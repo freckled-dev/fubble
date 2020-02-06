@@ -10,7 +10,7 @@ moc_files = qt5.preprocess(
   )
 client_gui = executable('client_gui',
   ['gui.cpp', 'join_model.cpp', 'videos_model.cpp', 'participants_model.cpp',
-    'participant_model.cpp', 'room_model.cpp'] + moc_files,
+    'participant_model.cpp', 'room_model.cpp', 'model_creator.cpp'] + moc_files,
   dependencies: [client_dep, ui_dep],
   install: true)
 
