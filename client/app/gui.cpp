@@ -4,6 +4,7 @@
 #include "joiner.hpp"
 #include "logging/initialser.hpp"
 #include "logging/logger.hpp"
+#include "model_creator.hpp"
 #include "participant_creator_creator.hpp"
 #include "peer_creator.hpp"
 #include "peers.hpp"
@@ -107,7 +108,8 @@ int main(int argc, char *argv[]) {
   qmlRegisterUncreatableType<client::participant_model>(
       "io.fubble", 1, 0, "ParticipantModel", "some message");
   QQmlApplicationEngine engine;
-  client::join_model join_model{joiner};
+  client::model_creator model_creator{boost_executor};
+  client::join_model join_model{model_creator, joiner};
   engine.rootContext()->setContextProperty("joinModel", &join_model);
   client::videos_model videos_model{peers};
   engine.rootContext()->setContextProperty("videosModel", &videos_model);

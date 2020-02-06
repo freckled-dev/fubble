@@ -5,16 +5,15 @@
 
 using namespace client;
 
-room_model::room_model(const std::shared_ptr<room> &room_, QObject *parent)
-    : QObject(parent), room_(room_) {
+room_model::room_model(boost::executor &backend_thread,
+                       const std::shared_ptr<room> &room_, QObject *parent)
+    : QObject(parent), backend_thread(backend_thread), room_(room_) {
   participants = new participants_model(*room_, this);
   get_name();
 }
 
 void room_model::get_name() {
-#if 0
-  auto &executor = room_->get_session_thread();
-  executor.submit([this] {
+  backend_thread.submit([this] {
     auto name_ = room_->get_name();
     post_to_object([this, name_] {
       BOOST_LOG_SEV(logger, logging::severity::trace)
@@ -24,7 +23,4 @@ void room_model::get_name() {
       name_changed(nameCasted);
     });
   });
-#else
-  BOOST_ASSERT(false);
-#endif
 }
