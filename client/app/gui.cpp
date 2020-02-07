@@ -11,6 +11,7 @@
 #include "room_creator.hpp"
 #include "room_model.hpp"
 #include "rooms.hpp"
+#include "rtc/google/asio_signalling_thread.hpp"
 #include "rtc/google/capture/video/device.hpp"
 #include "rtc/google/capture/video/device_creator.hpp"
 #include "rtc/google/capture/video/enumerator.hpp"
@@ -41,6 +42,7 @@ int main(int argc, char *argv[]) {
   boost::asio::executor executor{context.get_executor()};
   boost::executor_adaptor<executor_asio> boost_executor{context};
   boost::executor_adaptor<client::ui::executor_qt> qt_executor;
+  rtc::google::asio_signalling_thread asio_signalling_thread{context};
 
   websocket::connection_creator websocket_connection_creator{context};
   websocket::connector_creator websocket_connector{
@@ -54,7 +56,8 @@ int main(int argc, char *argv[]) {
   signalling::client::client_creator client_creator{
       websocket_connector, signalling_connection_creator, connect_information};
 
-  rtc::google::factory rtc_connection_creator;
+  rtc::google::factory rtc_connection_creator{
+      asio_signalling_thread.get_native()};
   client::peer_creator peer_creator{boost_executor, client_creator,
                                     rtc_connection_creator};
 
