@@ -23,7 +23,7 @@ signals:
   void participants_changed(participants_model *);
 
 protected:
-  void get_name();
+  void set_name();
 
   logging::logger logger;
   std::shared_ptr<room> room_;

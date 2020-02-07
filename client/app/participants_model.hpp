@@ -6,11 +6,8 @@
 #include "room.hpp"
 #include <QAbstractItemModel>
 
-namespace session {
-struct participant;
-}
 namespace client {
-
+class participant;
 class participants_model : public QAbstractListModel {
   Q_OBJECT
 public:
@@ -23,10 +20,13 @@ public:
 
 protected:
   QHash<int, QByteArray> roleNames() const override;
+  void on_joins(const std::vector<participant *> &joins);
+  void on_leaves(std::vector<std::string> leaves);
 
   mutable logging::logger logger;
   room &room_;
   std::vector<participant_model *> participants;
+  std::vector<boost::signals2::scoped_connection> signal_connections;
 };
 
 } // namespace client

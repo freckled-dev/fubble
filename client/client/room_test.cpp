@@ -144,9 +144,9 @@ TEST_F(Room, Participant) {
     EXPECT_FALSE(result.has_exception());
     called = true;
     context.stop();
-    auto &participants = test.room->get_participants();
+    auto participants = test.room->get_participants();
     EXPECT_EQ(static_cast<int>(participants.size()), 1);
-    auto participant = participants.front().get();
+    auto participant = participants.front();
     EXPECT_EQ(participant->get_id(), test.room->get_own_id());
     auto own = dynamic_cast<client::own_participant *>(participant);
     EXPECT_NE(own, nullptr);
