@@ -16,8 +16,7 @@ class room_model : public QObject {
                  participants_changed)
 
 public:
-  room_model(boost::executor &backend_thread,
-             const std::shared_ptr<room> &room_, QObject *parent);
+  room_model(const std::shared_ptr<room> &room_, QObject *parent);
 
 signals:
   void name_changed(QString);
@@ -27,11 +26,9 @@ protected:
   void get_name();
 
   logging::logger logger;
-  boost::executor &backend_thread;
   std::shared_ptr<room> room_;
   QString name;
   participants_model *participants;
-  boost::future<QString> get_name_future;
 };
 } // namespace client
 

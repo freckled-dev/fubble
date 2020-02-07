@@ -28,6 +28,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+#include <QTimer>
 #include <boost/asio/executor_work_guard.hpp>
 #include <boost/asio/io_context.hpp>
 #include <fmt/format.h>
@@ -106,12 +107,13 @@ int main(int argc, char *argv[]) {
   qRegisterMetaType<client::participant_model *>();
   qRegisterMetaType<client::participants_model *>();
 
-  qmlRegisterUncreatableType<client::room_model>("io.fubble", 1, 0, "RoomModel",
-                                                 "some message");
+  qmlRegisterUncreatableType<client::room_model>(
+      "io.fubble", 1, 0, "RoomModel", "can't instance client::room_model");
   qmlRegisterUncreatableType<client::participant_model>(
-      "io.fubble", 1, 0, "ParticipantModel", "some message");
+      "io.fubble", 1, 0, "ParticipantModel",
+      "can't instance client::participant_model");
   QQmlApplicationEngine engine;
-  client::model_creator model_creator{boost_executor};
+  client::model_creator model_creator;
   client::join_model join_model{model_creator, joiner};
   engine.rootContext()->setContextProperty("joinModel", &join_model);
   client::videos_model videos_model{peers};
@@ -123,18 +125,13 @@ int main(int argc, char *argv[]) {
   BOOST_LOG_SEV(logger, logging::severity::debug) << "loaded qml";
   videos_model.get_own_video()->set_source(capture_device.get());
 
-  auto work_guard = boost::asio::make_work_guard(context);
-  std::thread asio_thread{[&context, &logger] {
-    BOOST_LOG_SEV(logger, logging::severity::debug) << "context.run()";
-    context.run();
-    BOOST_LOG_SEV(logger, logging::severity::debug) << "context.run() is over";
-  }};
+  QTimer asio_poller;
+  asio_poller.callOnTimeout([&] { context.poll(); });
+  asio_poller.start(std::chrono::milliseconds(50));
+
   auto result = app.exec();
   BOOST_LOG_SEV(logger, logging::severity::debug) << "gui stopped";
-  work_guard.reset();
   peers.close();
   context.stop();
-  if (asio_thread.joinable())
-    asio_thread.join();
   return result;
 }
