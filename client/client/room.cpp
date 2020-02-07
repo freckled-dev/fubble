@@ -20,8 +20,14 @@ room::room(std::unique_ptr<participant_creator> participant_creator_parameter,
 
 room::~room() = default;
 
-const room::participants &room::get_participants() const {
-  return participants_;
+std::vector<participant *> room::get_participants() const {
+  std::vector<participant *> result;
+  std::transform(participants_.cbegin(), participants_.cend(),
+                 std::back_inserter(result), [](const auto &item) {
+                   BOOST_ASSERT(item);
+                   return item.get();
+                 });
+  return result;
 }
 
 const std::string &room::get_name() const { return room_->get_name(); }

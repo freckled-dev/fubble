@@ -26,8 +26,7 @@ public:
       on_participants_join;
   boost::signals2::signal<void(const std::vector<std::string> &removed)>
       on_participants_left;
-  using participants = std::vector<std::unique_ptr<participant>>;
-  const participants &get_participants() const;
+  std::vector<participant *> get_participants() const;
 
   const std::string &get_name() const;
   const std::string &get_own_id() const;
@@ -36,6 +35,7 @@ protected:
   void
   on_session_participant_joins(const std::vector<session::participant> &joins);
   void on_session_participant_leaves(const std::vector<std::string> &leaves);
+  using participants = std::vector<std::unique_ptr<participant>>;
   participants::iterator find(const std::string &id);
 
   logging::logger logger;
