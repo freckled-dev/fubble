@@ -23,7 +23,6 @@
 #include "tracks_adder.hpp"
 #include "ui/executor_qt.hpp"
 #include "ui/frame_provider_google_video_frame.hpp"
-#include "videos_model.hpp"
 #include "websocket/connection_creator.hpp"
 #include "websocket/connector.hpp"
 #include <QGuiApplication>
@@ -117,16 +116,13 @@ int main(int argc, char *argv[]) {
       "can't instance client::participant_model");
   QQmlApplicationEngine engine;
   client::model_creator model_creator;
-  client::join_model join_model{model_creator, joiner};
+  client::join_model join_model{model_creator, joiner, own_media};
   engine.rootContext()->setContextProperty("joinModel", &join_model);
-  client::videos_model videos_model{peers};
-  engine.rootContext()->setContextProperty("videosModel", &videos_model);
 
   const QUrl url(QStringLiteral("qrc:/main.qml"));
   BOOST_LOG_SEV(logger, logging::severity::debug) << "loading qml";
   engine.load(url);
   BOOST_LOG_SEV(logger, logging::severity::debug) << "loaded qml";
-  videos_model.get_own_video()->set_source(capture_device.get());
 
   QTimer asio_poller;
   asio_poller.callOnTimeout([&] { context.poll(); });
