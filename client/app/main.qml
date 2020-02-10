@@ -38,20 +38,11 @@ ApplicationWindow {
               Participant {
                 Layout.margins: 10
                 // Layout.fillWidth: true
+                Layout.maximumWidth: container.width/2
+                Layout.maximumHeight: container.height/2
                 participant: model.participant
               }
             }
-
-            /*
-        VideoOutput {
-          source: videosModel.video
-          Layout.fillWidth: true; Layout.fillHeight: true
-        }
-        VideoOutput {
-          source: videosModel.ownVideo
-          Layout.fillWidth: true; Layout.fillHeight: true
-        }
-        */
         }
     }
 

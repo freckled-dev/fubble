@@ -44,12 +44,9 @@ void participants_model::on_joins(const std::vector<participant *> &joins) {
   auto instance_participant_model = [&](participant *source) {
     return new participant_model(*source, this);
   };
+  beginInsertRows(QModelIndex(), rowCount(), rowCount());
   std::transform(joins.cbegin(), joins.cend(), std::back_inserter(participants),
                  instance_participant_model);
-  auto parent = index(participants_count);
-  beginInsertRows(parent, participants_count, participants_count + joins_count);
-  [[maybe_unused]] bool success = insertRows(participants_count, joins_count);
-  BOOST_ASSERT(success);
   endInsertRows();
 }
 

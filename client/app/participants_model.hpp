@@ -15,7 +15,7 @@ public:
 
   enum participant_roles { participant_role = Qt::UserRole + 1 };
 
-  int rowCount(const QModelIndex &parent) const override;
+  int rowCount(const QModelIndex &parent = QModelIndex()) const override;
   QVariant data(const QModelIndex &index, int role) const override;
 
 protected:
