@@ -107,6 +107,7 @@ send videos to fake device
 # produce a video
 # sintel https://durian.blender.org/download/
 curl -LO http://peach.themazzone.com/durian/movies/sintel-1280-surround.mp4
+// TODO more movie links. maybe with torrent: https://www.maketecheasier.com/how-to-download-torrents-from-the-command-line-in-ubuntu/
 ffmpeg -re -i ./sintel-1280-surround.mp4 -f v4l2 /dev/video0
 
 # consume it by gstreamer

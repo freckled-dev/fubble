@@ -1,10 +1,11 @@
 #include "own_participant.hpp"
+#include "own_media.hpp"
 
 using namespace client;
 
 own_participant::own_participant(
-    const session::participant &session_participant)
-    : session_participant(session_participant) {}
+    const session::participant &session_participant, own_media &own_media_)
+    : session_participant(session_participant), own_media_(own_media_) {}
 
 own_participant::~own_participant() = default;
 
@@ -20,4 +21,8 @@ void own_participant::update(const session::participant &update) {
     return;
   session_participant = update;
   on_name_changed(session_participant.name);
+}
+
+own_participant::videos_type own_participant::get_videos() const {
+  return own_media_.get_videos();
 }

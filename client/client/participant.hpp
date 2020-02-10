@@ -12,12 +12,16 @@ public:
   virtual ~participant();
 
   virtual std::string get_id() const = 0;
-  virtual std::string get_name() const = 0;
+
   virtual void update(const session::participant &update) = 0;
 
+  virtual std::string get_name() const = 0;
+  boost::signals2::signal<void(const std::string &)> on_name_changed;
+
+  using videos_type = std::vector<rtc::google::video_source *>;
+  virtual videos_type get_videos() const = 0;
   boost::signals2::signal<void(const rtc::google::video_source_ptr &)>
       on_video_added;
-  boost::signals2::signal<void(const std::string &)> on_name_changed;
 };
 } // namespace client
 

@@ -10,6 +10,7 @@ remote_participant::remote_participant(
     : peer_(std::move(peer_moved)), session_participant(session_participant) {
   peer_->rtc_connection().on_track.connect(
       [this](auto track) { on_track(track); });
+  // TODO track removal!
 }
 
 remote_participant::~remote_participant() = default;
@@ -30,6 +31,10 @@ void remote_participant::update(const session::participant &update) {
   on_name_changed(session_participant.name);
 }
 
+remote_participant::videos_type remote_participant::get_videos() const {
+  return videos;
+}
+
 void remote_participant::on_track(rtc::track_ptr track) {
   BOOST_LOG_SEV(logger, logging::severity::trace) << "on_track";
   auto video_track =
@@ -39,5 +44,6 @@ void remote_participant::on_track(rtc::track_ptr track) {
     BOOST_ASSERT(false && "not implemented");
     return;
   }
+  videos.emplace_back(video_track.get());
   on_video_added(video_track);
 }

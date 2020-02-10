@@ -18,6 +18,7 @@ public:
   std::string get_id() const override;
   std::string get_name() const override;
   void update(const session::participant &update) override;
+  videos_type get_videos() const override;
 
 protected:
   void on_track(rtc::track_ptr track);
@@ -25,6 +26,7 @@ protected:
   logging::logger logger;
   std::unique_ptr<peer> peer_;
   session::participant session_participant;
+  videos_type videos;
 };
 } // namespace client
 
