@@ -1,6 +1,7 @@
 #include "add_data_channel.hpp"
 #include "executor_asio.hpp"
 #include "joiner.hpp"
+#include "own_media.hpp"
 #include "own_participant.hpp"
 #include "participant_creator_creator.hpp"
 #include "peer_creator.hpp"
@@ -57,8 +58,9 @@ struct test_client {
                                     rtc_connection_creator};
   client::rooms rooms;
   client::tracks_adder tracks_adder;
-  client::participant_creator_creator participant_creator_creator{peer_creator,
-                                                                  tracks_adder};
+  client::own_media own_media;
+  client::participant_creator_creator participant_creator_creator{
+      peer_creator, tracks_adder, own_media};
   client::room_creator client_room_creator{participant_creator_creator};
   client::joiner joiner{executor, client_room_creator, rooms};
 
@@ -232,4 +234,3 @@ TEST_F(Room, DataChannel) {
   BOOST_LOG_SEV(logger, logging::severity::trace) << "end run";
 }
 #endif
-

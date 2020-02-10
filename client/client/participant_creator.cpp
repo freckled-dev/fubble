@@ -8,14 +8,15 @@ using namespace client;
 
 participant_creator::participant_creator(peer_creator &peer_creator_,
                                          tracks_adder &tracks_adder_,
-                                         const std::string &own_id)
+                                         const std::string &own_id,
+                                         own_media &own_media_)
     : peer_creator_(peer_creator_), tracks_adder_(tracks_adder_),
-      own_id(own_id) {}
+      own_id(own_id), own_media_(own_media_) {}
 
 std::unique_ptr<participant>
 participant_creator::create(const session::participant &session_information) {
   if (session_information.id == own_id)
-    return std::make_unique<own_participant>(session_information);
+    return std::make_unique<own_participant>(session_information, own_media_);
   auto peer = peer_creator_.create();
   auto peer_pointer = peer.get();
   auto result = std::make_unique<remote_participant>(std::move(peer),

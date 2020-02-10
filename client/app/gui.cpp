@@ -5,6 +5,7 @@
 #include "logging/initialser.hpp"
 #include "logging/logger.hpp"
 #include "model_creator.hpp"
+#include "own_media.hpp"
 #include "participant_creator_creator.hpp"
 #include "peer_creator.hpp"
 #include "peers.hpp"
@@ -91,8 +92,10 @@ int main(int argc, char *argv[]) {
   client::tracks_adder tracks_adder;
   tracks_adder.add(track_adder);
   client::rooms rooms;
-  client::participant_creator_creator participant_creator_creator{peer_creator,
-                                                                  tracks_adder};
+  client::own_media own_media;
+  own_media.add_video(*capture_device);
+  client::participant_creator_creator participant_creator_creator{
+      peer_creator, tracks_adder, own_media};
   client::room_creator client_room_creator{participant_creator_creator};
   client::joiner joiner{executor, client_room_creator, rooms};
 
