@@ -24,7 +24,7 @@ FocusScope {
         }
         VideoOutput {
             id: videoOutput
-            source: videosModel.ownVideo
+            source: joinModel.video
             function getAspectRatio() {
                 return videoOutput.sourceRect.width / videoOutput.sourceRect.height
             }
