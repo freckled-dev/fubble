@@ -21,7 +21,10 @@ GridLayout {
       }
     }
   }
-  Button {
-    text: "fun button"
+  VideoOutput {
+    // source: videosModel.ownVideo
+    source: participant.video
+    Layout.fillWidth: true
+    Layout.fillHeight: true
   }
 }

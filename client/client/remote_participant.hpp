@@ -17,6 +17,7 @@ public:
 
   std::string get_id() const override;
   std::string get_name() const override;
+  void update(const session::participant &update) override;
 
 protected:
   void on_track(rtc::track_ptr track);
@@ -28,4 +29,3 @@ protected:
 } // namespace client
 
 #endif
-

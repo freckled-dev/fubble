@@ -6,6 +6,7 @@ using namespace client;
 participant_model::participant_model(participant &participant_, QObject *parent)
     : QObject(parent), participant_(participant_) {
   set_name();
+  participant_.on_name_changed.connect([this](auto) { set_name(); });
 }
 
 void participant_model::set_name() {

@@ -12,6 +12,7 @@ public:
 
   std::string get_id() const override;
   std::string get_name() const override;
+  void update(const session::participant &update) override;
 
 protected:
   session::participant session_participant;

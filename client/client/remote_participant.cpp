@@ -22,6 +22,14 @@ std::string remote_participant::get_name() const {
   return session_participant.name;
 }
 
+void remote_participant::update(const session::participant &update) {
+  BOOST_ASSERT(update.id == session_participant.id);
+  if (session_participant.name == update.name)
+    return;
+  session_participant = update;
+  on_name_changed(session_participant.name);
+}
+
 void remote_participant::on_track(rtc::track_ptr track) {
   BOOST_LOG_SEV(logger, logging::severity::trace) << "on_track";
   auto video_track =
