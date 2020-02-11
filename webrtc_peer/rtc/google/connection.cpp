@@ -232,8 +232,10 @@ void connection::OnAddTrack(
       receiver->track();
   auto track_casted = dynamic_cast<webrtc::VideoTrackInterface *>(track.get());
   assert(track_casted != nullptr);
-  if (track_casted == nullptr)
+  if (track_casted == nullptr) {
+    BOOST_ASSERT_MSG(false, "implement");
     return;
+  }
   auto result = std::make_shared<video_track_sink>(track_casted);
   tracks.push_back(result);
   on_track(result);

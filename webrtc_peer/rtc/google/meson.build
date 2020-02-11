@@ -9,7 +9,7 @@ webrtc_google_peer = library('webrtc_google_peer',
     'video_track.cpp', 'video_track_source.cpp',
     'capture/video/enumerator.cpp', 'capture/video/device_creator.cpp',
     'capture/video/device.cpp',
-    'capture/audio/device_creator.cpp', 'capture/audio/device.hpp',
+    'capture/audio/device_creator.cpp', 'capture/audio/device.cpp',
     'audio_track_source.cpp',
     'video_track_source.cpp', 'video_track_sink.cpp', 'video_source.cpp',
     'asio_signalling_thread.cpp'
