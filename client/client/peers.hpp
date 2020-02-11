@@ -7,6 +7,7 @@
 
 namespace client {
 class peer;
+// TODO delete?
 class peers {
 public:
   using peer_ptr = std::shared_ptr<peer>;

@@ -111,14 +111,14 @@ int main(int argc, char *argv[]) {
   exit_signals signals_{executor};
 
   websocket::connection_creator websocket_connection_creator{context};
-  websocket::connector websocket_connector{context, boost_executor,
-                                           websocket_connection_creator};
+  websocket::connector_creator websocket_connector{
+      context, websocket_connection_creator};
 
   signalling::json_message signalling_json;
   signalling::client::connection_creator signalling_connection_creator{
       context, boost_executor, signalling_json};
-  signalling::client::client signalling_client{
-      boost_executor, websocket_connector, signalling_connection_creator};
+  signalling::client::client signalling_client{websocket_connector,
+                                               signalling_connection_creator};
   signalling::client::client::connect_information connect_information{
       config_.signalling_.host, config_.signalling_.service};
   signalling_client.set_connect_information(connect_information);

@@ -9,6 +9,7 @@
 
 namespace websocket {
 class connection_creator;
+
 class connector {
 public:
   struct config {
@@ -16,22 +17,44 @@ public:
     std::string url;
     std::string path = "/";
   };
-  connector(boost::asio::io_context &context, boost::executor &executor,
-            connection_creator &creator);
+  connector(boost::asio::io_context &context, connection_creator &creator,
+            const config &config_);
+  ~connector();
+
   using future_type = boost::future<connection_ptr>;
-  future_type operator()(const config &config_);
+  future_type connect();
 
 private:
-  using promise_type = boost::promise<connection_ptr>;
-  boost::future<boost::asio::ip::tcp::resolver::results_type>
-  resolve(const config &config_);
-  future_type connect_to_endpoints(
+  void resolve();
+  void on_resolved(const boost::system::error_code &error,
+                   const boost::asio::ip::tcp::resolver::results_type &results);
+  void connect_to_endpoints(
       const boost::asio::ip::tcp::resolver::results_type &results);
-  future_type handshake(connection_ptr connection_, const config &config_);
+  void on_connected(const boost::system::error_code &error);
+  void handshake();
+  bool check_error(const boost::system::error_code &error);
 
   logging::logger logger;
-  boost::executor &executor;
+  connection_creator &creator;
   boost::asio::ip::tcp::resolver resolver;
+  boost::promise<connection_ptr> promise;
+  const connector::config config_;
+  connection_ptr connection;
+  bool done{};
+};
+
+// TODO move to own file
+class connector_creator {
+public:
+  connector_creator(boost::asio::io_context &context,
+                    connection_creator &creator);
+  ~connector_creator();
+
+  std::unique_ptr<connector> create(const connector::config &config_);
+
+private:
+  logging::logger logger;
+  boost::asio::io_context &context;
   connection_creator &creator;
 };
 } // namespace websocket

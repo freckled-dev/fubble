@@ -4,7 +4,7 @@ test_main = static_library('test_main',
 
 utils = library('utils',
   ['executor_asio.cpp', 'logging/logger.cpp', 'logging/initialser.cpp',
-    'exit_signals.cpp'
+    'exit_signals.cpp', 'uuid.cpp'
     ],
   dependencies: [boost_dep, fmt_dep],
   install: true
@@ -15,7 +15,7 @@ utils_dep = declare_dependency(
   dependencies: [boost_dep]
   )
 utils_test = executable('utils_test',
-  ['executor_asio_test.cpp'],
+  ['executor_asio_test.cpp', 'boost_thread_test.cpp'],
   dependencies: [gtest_dep, utils_dep],
   link_with: [test_main]
   )

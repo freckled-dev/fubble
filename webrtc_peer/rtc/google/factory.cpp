@@ -1,5 +1,7 @@
 #include "factory.hpp"
+#include "asio_signalling_thread.hpp"
 #include "connection.hpp"
+#include "uuid.hpp"
 #include "video_source.hpp"
 #include "video_track.hpp"
 #include "video_track_source.hpp"
@@ -7,17 +9,15 @@
 #include <api/audio_codecs/builtin_audio_encoder_factory.h>
 #include <api/video_codecs/builtin_video_decoder_factory.h>
 #include <api/video_codecs/builtin_video_encoder_factory.h>
-#include <boost/uuid/random_generator.hpp>
-#include <boost/uuid/uuid_io.hpp>
 
 using namespace rtc::google;
 
-factory::factory() {
-  instance_threads();
-  instance_audio();
-  instance_video();
-  instance_factory();
+factory::factory(rtc::Thread &signaling_thread)
+    : signaling_thread(&signaling_thread) {
+  instance_members();
 }
+
+factory::factory() { instance_members(); }
 
 factory::~factory() = default;
 
@@ -41,12 +41,11 @@ std::unique_ptr<rtc::connection> factory::create_connection() {
 
 std::unique_ptr<video_track>
 factory::create_video_track(const std::shared_ptr<video_source> &source) {
-  auto label = boost::uuids::random_generator()();
-  auto label_string = boost::uuids::to_string(label);
+  auto label = uuid::generate();
   rtc::scoped_refptr<video_track_source::adapter> source_adapter =
       new rtc::RefCountedObject<video_track_source::adapter>;
   rtc::scoped_refptr<webrtc::VideoTrackInterface> native(
-      factory_->CreateVideoTrack(label_string, source_adapter.get()));
+      factory_->CreateVideoTrack(label, source_adapter.get()));
   assert(native);
   if (!native)
     throw std::runtime_error("could not create video track");
@@ -55,13 +54,25 @@ factory::create_video_track(const std::shared_ptr<video_source> &source) {
   return result;
 }
 
+rtc::Thread &factory::get_signaling_thread() const { return *signaling_thread; }
+
+void factory::instance_members() {
+  instance_threads();
+  instance_audio();
+  instance_video();
+  instance_factory();
+}
+
 void factory::instance_threads() {
   network_thread = rtc::Thread::CreateWithSocketServer();
-  worker_thread = rtc::Thread::Create();
-  signaling_thread = rtc::Thread::Create();
   network_thread->Start();
+  worker_thread = rtc::Thread::Create();
   worker_thread->Start();
-  signaling_thread->Start();
+  if (signaling_thread)
+    return;
+  signaling_thread_own = rtc::Thread::Create();
+  signaling_thread_own->Start();
+  signaling_thread = signaling_thread_own.get();
 }
 
 void factory::instance_audio() {
@@ -78,8 +89,8 @@ void factory::instance_video() {
 
 void factory::instance_factory() {
   factory_ = webrtc::CreatePeerConnectionFactory(
-      network_thread.get(), worker_thread.get(), signaling_thread.get(),
-      default_adm, audio_encoder, audio_decoder, std::move(video_encoder),
+      network_thread.get(), worker_thread.get(), signaling_thread, default_adm,
+      audio_encoder, audio_decoder, std::move(video_encoder),
       std::move(video_decoder), audio_mixer, audio_processing);
   if (factory_)
     return;

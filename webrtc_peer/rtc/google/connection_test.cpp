@@ -1,9 +1,8 @@
-#include "connection.hpp"
 #include "data_channel.hpp"
-#include "factory.hpp"
+#include "test_peer.hpp"
 #include "video_track.hpp"
 #include "video_track_source.hpp"
-#include <boost/thread/executors/inline_executor.hpp>
+#include "wait_for_event.hpp"
 #include <fmt/format.h>
 #include <gtest/gtest.h>
 #include <thread>
@@ -12,47 +11,6 @@ namespace {
 struct GoogleConnection : ::testing::Test {
   logging::logger logger;
   rtc::google::factory creator;
-};
-struct test_peer {
-  boost::inline_executor executor;
-  std::unique_ptr<rtc::google::connection> instance;
-
-  test_peer(rtc::google::factory &creator)
-      : instance(creator.create_connection()) {}
-  ~test_peer() { instance->close(); }
-
-  boost::shared_future<rtc::session_description> create_offer() {
-    return instance->create_offer();
-  }
-
-  boost::future<rtc::session_description> create_answer() {
-    return instance->create_answer();
-  }
-
-  boost::future<void> set_local_description(
-      boost::shared_future<rtc::session_description> description) {
-    return description
-        .then(executor,
-              [this](auto description) {
-                return instance->set_local_description(description.get());
-              })
-        .unwrap();
-  }
-  boost::future<void> set_remote_description(
-      boost::shared_future<rtc::session_description> description) {
-    return description
-        .then(executor,
-              [this](auto description) {
-                return instance->set_remote_description(description.get());
-              })
-        .unwrap();
-  }
-  void connect_ice_candidates(test_peer &other) {
-    instance->on_ice_candidate.connect(
-        [&](auto candidate) { other.instance->add_ice_candidate(candidate); });
-    other.instance->on_ice_candidate.connect(
-        [&](auto candidate) { instance->add_ice_candidate(candidate); });
-  }
 };
 struct connection {
   test_peer offering;
@@ -98,12 +56,6 @@ public:
     return boost::when_all(promise_open.get_future(),
                            promise_answering.get_future());
   }
-};
-struct wait_for_event {
-  std::mutex mutex;
-  wait_for_event() { mutex.lock(); }
-  void wait() { std::unique_lock<std::mutex> end(mutex); }
-  void event() { mutex.unlock(); }
 };
 } // namespace
 
@@ -231,4 +183,3 @@ TEST_F(GoogleConnection, OnVideoTrack) {
   connected.get();
   waiter.wait();
 }
-

@@ -3,11 +3,8 @@
 
 #include "logging/logger.hpp"
 #include "rtc/google/video_source.hpp"
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-copy"
 #include <QtMultimedia/qabstractvideosurface.h>
 #include <QtMultimedia/qvideosurfaceformat.h>
-#pragma GCC diagnostic pop
 
 namespace client::ui {
 // https://stackoverflow.com/questions/43854589/custom-source-property-for-videooutput-qml
@@ -21,6 +18,8 @@ public:
   frame_provider_google_video_source(QObject *parent);
   ~frame_provider_google_video_source();
 
+  // TODO take it in constructor?! reinstance
+  // `frame_provider_google_video_source` every video change
   void set_source(rtc::google::video_source *source);
   void set_surface(QAbstractVideoSurface *surface);
   QAbstractVideoSurface *get_surface() const;

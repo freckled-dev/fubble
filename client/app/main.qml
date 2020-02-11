@@ -1,89 +1,49 @@
 import QtMultimedia 5.0
 import QtQuick 2.12
-import QtQuick.Controls 2.0
-import QtQuick.Layouts 1.3
+import QtQuick.Controls 2.12
+import QtQuick.Layouts 1.12
 import QtQuick.Window 2.12
+import io.fubble 1.0
 
-Window {
-  visible: true
-  minimumWidth: 640
-  minimumHeight: 480
-  title: qsTr("fubble")
-  id: container
+ApplicationWindow {
+    visible: true
+    minimumWidth: 640
+    minimumHeight: 480
+    title: "fubble"
+    id: container
 
-  StackView {
-    id: stack
-    initialItem: login
-    anchors.fill: parent
-    focus: true
-  }
 
-    Component {
-      id: roomComponent
-      GridLayout {
-        VideoOutput {
-          source: videosModel.video
-          Layout.fillWidth: true; Layout.fillHeight: true
-        }
-        VideoOutput {
-          source: videosModel.ownVideo
-          Layout.fillWidth: true; Layout.fillHeight: true
-        }
-      }
+    header: Header {
+      title: stack.currentItem.title
+    }
+    StackView {
+        id: stack
+        initialItem: Join {}
+        anchors.fill: parent
+        focus: true
     }
 
     Component {
-      id: login
-      FocusScope {
-        ColumnLayout {
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.horizontalCenter: parent.horizontalCenter
-            id: loginUi
-            function joinRoom() {
-                joinModel.join(room.text, name.text)
-                stack.push(roomComponent)
-            }
+        id: roomComponent
+        GridLayout {
+            id: layout
+            columns: 2
+            // rowSpacing: 20
+            // columnSpacing: 20
+            property RoomModel room
+            property var title: layout.room.name
 
-            VideoOutput {
-                id: videoOutput
-                source: videosModel.ownVideo
-                function getAspectRatio() {
-                  return videoOutput.sourceRect.width / videoOutput.sourceRect.height
-                }
-                Layout.maximumWidth: {
-                  var percentage = 0.6
-                  var aspectRatio = getAspectRatio()
-                  return Math.min(container.width*percentage, container.height*percentage*aspectRatio)
-                }
-                Layout.maximumHeight: {
-                  var percentage = 0.6
-                  var aspectRatio = getAspectRatio()
-                  return Math.min(container.height*percentage, (container.width*percentage)/aspectRatio)
-                }
-            }
-            TextField {
-                id: room
-                text: joinModel.room
-                placeholderText: "Room"
-                Layout.fillWidth: true
-                focus: true
-                onAccepted: name.focus = true
-            }
-            TextField {
-                id: name
-                text: joinModel.name
-                placeholderText: "Your Name"
-                Layout.fillWidth: true
-                onAccepted: loginUi.joinRoom()
-            }
-            Button {
-                text: qsTr("Join")
-                Layout.fillWidth: true
-                onClicked: loginUi.joinRoom()
+            Repeater {
+              model: layout.room.participants
+              Participant {
+                Layout.margins: 10
+                // Layout.fillWidth: true
+                Layout.maximumWidth: container.width/2
+                Layout.maximumHeight: container.height/2
+                participant: model.participant
+              }
             }
         }
     }
-  }
+
 }
-
-

@@ -1,7 +1,7 @@
 # set up
 
 ```bash
-pip3 install --user conan meson==0.51.2
+pip3 install --user conan meson
 # boost-di
 conan remote add inexorgame https://api.bintray.com/conan/inexorgame/inexor-conan
 # qt
@@ -16,7 +16,8 @@ sudo dnf install -y \
   qt5-qtquickcontrols2-devel
 
 # opensuse
-sudo zypper install libX11-devel
+sudo zypper install libX11-devel cmake gcc-c++ git libqt5-qttools \
+  libqt5-qtsvg-devel
 ```
 
 if using fish add the python3 bin path to PATH
@@ -38,9 +39,11 @@ https://stackoverflow.com/questions/36338000/qml-console-log-and-console-debug-d
 ## qml
 
 When using the `Q_PROPERTY` I have to give the full typename with all namespaces noted.
+Same applies to signals.
 Don't do `typedef`s or `using`s.
-https://stackoverflow.com/questions/19889163/using-qt-properties-with-custom-types-defined-in-namespaces
-https://wiki.qt.io/How_to_use_a_C_class_declared_in_a_namespace_with_Q_PROPERTY_and_QML
+- https://stackoverflow.com/questions/19889163/using-qt-properties-with-custom-types-defined-in-namespaces
+- https://wiki.qt.io/How_to_use_a_C_class_declared_in_a_namespace_with_Q_PROPERTY_and_QML
+- https://stackoverflow.com/questions/24231470/qmetapropertyread-unable-to-handle-unregistered-datatype-treeiteminspectori
 
 # conan
 enable `_GLIBCXX_USE_CXX11_ABI` by setting `compiler.libcxx=libstdc++11` in `~/.conan/profiles/default`
@@ -104,6 +107,7 @@ send videos to fake device
 # produce a video
 # sintel https://durian.blender.org/download/
 curl -LO http://peach.themazzone.com/durian/movies/sintel-1280-surround.mp4
+// TODO more movie links. maybe with torrent: https://www.maketecheasier.com/how-to-download-torrents-from-the-command-line-in-ubuntu/
 ffmpeg -re -i ./sintel-1280-surround.mp4 -f v4l2 /dev/video0
 
 # consume it by gstreamer

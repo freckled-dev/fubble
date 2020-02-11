@@ -7,29 +7,16 @@ offer_answer::offer_answer(boost::executor &executor,
                            rtc::connection &rtc_connection)
     : executor(executor), signalling_client(signalling_client),
       rtc_connection(rtc_connection) {
-  rtc_connection.on_negotiation_needed.connect([this] { renegotiate(); });
+  rtc_connection.on_negotiation_needed.connect(
+      [this] { on_negotiation_needed(); });
   signalling_client.on_offer.connect([this](auto sdp) { on_offer(sdp); });
   signalling_client.on_answer.connect([this](auto sdp) { on_answer(sdp); });
   signalling_client.on_create_offer.connect([this] { on_create_offer(); });
-  signalling_client.on_create_answer.connect([this] { on_create_answer(); });
+  signalling_client.on_registered.connect([this] { on_connected(); });
+  signalling_client.on_closed.connect([this] { on_closed(); });
 }
 
 void offer_answer::on_create_offer() {
-  offering = true;
-  renegotiate();
-}
-
-void offer_answer::on_create_answer() {
-  offering = false;
-  renegotiate();
-}
-
-void offer_answer::renegotiate() {
-  BOOST_LOG_SEV(logger, logging::severity::debug) << "renegotiate";
-  if (!offering.has_value())
-    return;
-  if (!offering.value())
-    return;
   auto sdp = rtc_connection.create_offer();
   sdp.then(executor, [this](auto offer_future) {
     auto offer = offer_future.get();
@@ -38,6 +25,26 @@ void offer_answer::renegotiate() {
     signalling_client.send_offer(offer_casted);
   });
 }
+
+void offer_answer::on_negotiation_needed() {
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "on_negotiation_needed";
+  if (connected) {
+    signalling_client.send_want_to_negotiate();
+    return;
+  }
+  wants_to_negotiate = true;
+}
+
+void offer_answer::on_connected() {
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "on_connected";
+  connected = true;
+  if (!wants_to_negotiate)
+    return;
+  signalling_client.send_want_to_negotiate();
+  wants_to_negotiate = false;
+}
+
+void offer_answer::on_closed() { connected = false; }
 
 void offer_answer::on_answer(signalling::answer sdp) {
   rtc::session_description answer_casted{rtc::session_description::type::answer,
