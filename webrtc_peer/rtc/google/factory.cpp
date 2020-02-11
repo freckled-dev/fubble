@@ -1,5 +1,7 @@
 #include "factory.hpp"
 #include "asio_signalling_thread.hpp"
+#include "audio_source.hpp"
+#include "audio_track_source.hpp"
 #include "connection.hpp"
 #include "uuid.hpp"
 #include "video_source.hpp"
@@ -49,9 +51,18 @@ factory::create_video_track(const std::shared_ptr<video_source> &source) {
   assert(native);
   if (!native)
     throw std::runtime_error("could not create video track");
+  // TODO adapter shall take source, not track
   auto result =
       std::make_unique<video_track_source>(native, source_adapter, source);
   return result;
+}
+
+std::unique_ptr<audio_track> factory::create_audio_track(audio_source &source) {
+  auto label = uuid::generate();
+  webrtc::AudioSourceInterface &native_source = source.get_native();
+  rtc::scoped_refptr<webrtc::AudioTrackInterface> native =
+      factory_->CreateAudioTrack(label, &native_source);
+  return std::make_unique<audio_track_source>(native);
 }
 
 rtc::Thread &factory::get_signaling_thread() const { return *signaling_thread; }
@@ -61,6 +72,10 @@ void factory::instance_members() {
   instance_audio();
   instance_video();
   instance_factory();
+}
+
+webrtc::PeerConnectionFactoryInterface &factory::get_native() const {
+  return *factory_;
 }
 
 void factory::instance_threads() {
