@@ -36,13 +36,13 @@ json_message::parse(const std::string &message) const {
     create_offer result;
     return result;
   }
-  if (type == "create_answer") {
-    create_answer result;
-    return result;
-  }
   if (type == "registration") {
     registration result;
     result.key = json["key"];
+    return result;
+  }
+  if (type == "want_to_negotiate") {
+    want_to_negotiate result;
     return result;
   }
   throw invalid_type(type);
@@ -66,12 +66,13 @@ std::string json_message::serialize(const create_offer &) const {
   nlohmann::json result = {{"type", "create_offer"}};
   return result.dump();
 }
-std::string json_message::serialize(const create_answer &) const {
-  nlohmann::json result = {{"type", "create_answer"}};
-  return result.dump();
-}
 std::string json_message::serialize(const registration &registration_) const {
   nlohmann::json result = {{"type", "registration"},
                            {"key", registration_.key}};
+  return result.dump();
+}
+
+std::string json_message::serialize(const want_to_negotiate &) const {
+  nlohmann::json result = {{"type", "want_to_negotiate"}};
   return result.dump();
 }

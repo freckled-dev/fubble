@@ -27,7 +27,7 @@ data_channel::data_channel(
   native->RegisterObserver(this);
 }
 
-data_channel::~data_channel() = default;
+data_channel::~data_channel() { native->UnregisterObserver(); }
 
 void data_channel::close() { native->Close(); }
 

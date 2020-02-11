@@ -1,9 +1,8 @@
 #include "connection.hpp"
 #include "data_channel.hpp"
 #include "track.hpp"
+#include "uuid.hpp"
 #include "video_track_sink.hpp"
-#include <boost/uuid/random_generator.hpp>
-#include <boost/uuid/uuid_io.hpp>
 #include <fmt/format.h>
 
 namespace std {
@@ -103,7 +102,10 @@ cast_session_description(const rtc::session_description &description) {
 }
 } // namespace
 
-connection::~connection() = default;
+connection::~connection() {
+  BOOST_LOG_SEV(logger, logging::severity::trace)
+      << "google::webrtc::connection::~connection(), this:" << this;
+}
 
 void connection::initialise(
     rtc::scoped_refptr<::webrtc::PeerConnectionInterface> native_) {
@@ -190,11 +192,10 @@ void connection::add_track(rtc::track_ptr track_) {
 }
 
 rtc::data_channel_ptr connection::create_data_channel() {
-  auto label = boost::uuids::random_generator()();
-  auto label_string = boost::uuids::to_string(label);
+  auto label = uuid::generate();
   BOOST_LOG_SEV(logger, logging::severity::info)
-      << "create_data_channel, label:" << label_string;
-  auto native_data_channel = native->CreateDataChannel(label_string, nullptr);
+      << "create_data_channel, label:" << label;
+  auto native_data_channel = native->CreateDataChannel(label, nullptr);
   auto result = std::make_shared<data_channel>(native_data_channel);
   data_channels.push_back(result);
   return result;
@@ -241,8 +242,9 @@ void connection::OnAddTrack(
 
 void connection::OnDataChannel(
     ::rtc::scoped_refptr<::webrtc::DataChannelInterface> data_channel_) {
-  BOOST_LOG_SEV(logger, logging::severity::info) << "OnDataChannel";
-  auto result = std::make_shared<data_channel>(data_channel_);
+  BOOST_LOG_SEV(logger, logging::severity::info)
+      << "OnDataChannel, this:" << this;
+  data_channel_ptr result = std::make_shared<data_channel>(data_channel_);
   data_channels.push_back(result);
   on_data_channel(result);
 }

@@ -1,5 +1,5 @@
 project('fubble', 'cpp',
-  meson_version : '=0.51.2',
+  meson_version : '>=0.53.0',
   default_options : ['cpp_std=c++17'])
 # there is a bug in meson 0.52.0. cant use boost with meson
 # https://github.com/mesonbuild/meson/issues/6003
@@ -21,7 +21,7 @@ boost_di_dep = dependency('boost-di')
 gstreamer_webrtc_dep_pkg = dependency('gstreamer-webrtc-1.0', required : false)
 gstreamer_sdp_dep = dependency('gstreamer-sdp-1.0', required : false)
 qt5 = import('qt5')
-qt5_clear_dep = dependency('qt5', modules: ['Core', 'Quick', 'Multimedia'])
+qt5_clear_dep = dependency('qt5', modules: ['Core', 'Quick', 'Multimedia', 'Svg'])
 # `QT_NO_EMIT` is neccessary because google webrtc declares a method/function called `emit`
 qt5_dep = declare_dependency(
   compile_args : ['-DQT_DEPRECATED_WARNINGS', '-DQT_QML_DEBUG=1', '-DQT_NO_EMIT'],
@@ -38,9 +38,11 @@ gstreamer_webrtc_dep = declare_dependency(
     ]
   )
 google_webrtc_dep = dependency('google-webrtc')
+nakama_dep = dependency('nakama')
 
 subdir('utils')
 subdir('signalling')
 subdir('webrtc_peer')
+subdir('session')
 subdir('client')
 

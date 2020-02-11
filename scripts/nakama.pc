@@ -1,0 +1,10 @@
+prefix=/home/mlanner/Development/projects/fubble/nakama-cpp-sdk
+includedir=${prefix}/include
+libdir=${prefix}/shared-libs/linux/x64
+
+Name: nakama
+Description: heroiclabs nakama
+Version: 2.2.4
+Cflags: -isystem ${includedir} -DNAKAMA_SHARED_LIBRARY
+Libs: -L${libdir} -lnakama-cpp
+

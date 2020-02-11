@@ -1,6 +1,7 @@
-#ifndef SIGNALLING_CLIENT_CLIENT_HPP
-#define SIGNALLING_CLIENT_CLIENT_HPP
+#ifndef UUID_F4A34DAF_E141_427B_9B6E_595646D04193
+#define UUID_F4A34DAF_E141_427B_9B6E_595646D04193
 
+#include "connection_creator.hpp"
 #include "connection_ptr.hpp"
 #include "logging/logger.hpp"
 #include "signalling/answer.hpp"
@@ -8,30 +9,26 @@
 #include "signalling/offer.hpp"
 #include "websocket/connector.hpp"
 #include <boost/signals2/signal.hpp>
+#include <boost/thread/executors/inline_executor.hpp>
 #include <boost/thread/future.hpp>
 
-namespace websocket {
-class connector;
-}
 namespace signalling::client {
-class connection_creator;
-class connection;
 class client {
 public:
   struct connect_information {
     std::string host;
     std::string service;
   };
-  client(boost::executor &executor, websocket::connector &connector,
+  client(websocket::connector_creator &connector_creator,
          connection_creator &connection_creator_);
+  ~client();
 
   void set_connect_information(const connect_information &set);
   void connect(const std::string &key);
   void close();
   boost::signals2::signal<void()> on_closed;
-  boost::signals2::signal<void()> on_connected;
+  boost::signals2::signal<void()> on_registered;
   boost::signals2::signal<void()> on_create_offer;
-  boost::signals2::signal<void()> on_create_answer;
   boost::signals2::signal<void(const signalling::offer &)> on_offer;
   boost::signals2::signal<void(const signalling::answer &)> on_answer;
   boost::signals2::signal<void(const signalling::ice_candidate &)>
@@ -41,8 +38,9 @@ public:
   void send_offer(const signalling::offer &offer_);
   void send_answer(const signalling::answer &answer_);
   void send_ice_candidate(const signalling::ice_candidate &candidate);
+  void send_want_to_negotiate();
 
-  connection_ptr get_connection() const;
+  connection &get_connection() const;
 
 private:
   void connected(boost::future<websocket::connection_ptr> &result,
@@ -51,10 +49,11 @@ private:
   void run_done(boost::future<void> &result);
 
   logging::logger logger;
-  boost::executor &executor;
-  websocket::connector &connector;
+  boost::inline_executor executor;
+  websocket::connector_creator &connector_creator;
   connection_creator &connection_creator_;
   connect_information connect_information_;
+  std::unique_ptr<websocket::connector> connector;
   connection_ptr connection_;
 };
 } // namespace signalling::client

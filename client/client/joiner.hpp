@@ -1,28 +1,41 @@
 #ifndef UUID_B27E182A_AF56_48E7_B9B3_428F3B393E2B
 #define UUID_B27E182A_AF56_48E7_B9B3_428F3B393E2B
 
+#include "executor_asio.hpp"
 #include "logging/logger.hpp"
+#include <boost/asio/executor.hpp>
+#include <boost/thread/executors/executor_adaptor.hpp>
+#include <boost/thread/future.hpp>
+
+namespace session {
+class client;
+}
 
 namespace client {
-class peer;
-class peers;
-class peer_creator;
-class add_video_to_connection;
+class room;
+class rooms;
+class room_creator;
 class joiner {
 public:
-  joiner(peers &peers_, add_video_to_connection &track_adder,
-         peer_creator &peer_creator_);
+  joiner(boost::asio::executor &executor, room_creator &room_creator_,
+         rooms &rooms_);
+  ~joiner();
 
   struct parameters {
     std::string name, room;
   };
-  std::shared_ptr<peer> operator()(const parameters &parameters_);
+  // thread-safe
+  // TODO remove thread safety and executor from constructor
+  boost::future<std::shared_ptr<room>> join(const parameters &parameters_);
 
 protected:
   logging::logger logger;
-  peers &peers_;
-  add_video_to_connection &track_adder;
-  peer_creator &peer_creator_;
+  boost::asio::executor &executor;
+  room_creator &room_creator_;
+  rooms &rooms_;
+  executor_asio executor_asio_{executor};
+  boost::executor_adaptor<executor_asio> future_executor{executor_asio_};
+  class join;
 };
 } // namespace client
 

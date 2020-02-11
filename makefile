@@ -1,7 +1,10 @@
 BUILD=time -f 'finished after %E' ninja -C ../fubble_build/meson
 
 .PHONY: all
-all:
+all: build
+
+.PHONY: build
+build:
 	${BUILD}
 
 .PHONY: clean
@@ -14,4 +17,4 @@ install:
 
 .PHONY: test
 test:
-	${BUILD} test
+	cd ../fubble_build/meson; meson test # 'signalling server test' # 'client room test' # 'session room test' # 'asio_signalling_thread test' # 'websocket test'  
