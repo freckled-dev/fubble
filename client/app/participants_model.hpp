@@ -5,6 +5,7 @@
 #include "participant_model.hpp"
 #include "room.hpp"
 #include <QAbstractItemModel>
+#include <deque>
 
 namespace client {
 class participant;
@@ -25,7 +26,11 @@ protected:
 
   mutable logging::logger logger;
   room &room_;
-  std::vector<participant_model *> participants;
+  struct participant_container {
+    std::string id;
+    participant_model *model;
+  };
+  std::deque<participant_container> participants;
   std::vector<boost::signals2::scoped_connection> signal_connections;
 };
 

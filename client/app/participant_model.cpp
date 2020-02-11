@@ -7,6 +7,7 @@ participant_model::participant_model(participant &participant_, QObject *parent)
     : QObject(parent), participant_(participant_) {
   set_name();
   participant_.on_name_changed.connect([this](auto) { set_name(); });
+  // TODO support video removal
   participant_.on_video_added.connect([this](auto added) {
     BOOST_ASSERT(added);
     video_added(*added);

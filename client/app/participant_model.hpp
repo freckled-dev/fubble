@@ -16,13 +16,12 @@ class participant_model : public QObject {
 public:
   participant_model(participant &participant_, QObject *parent);
 
-  ui::frame_provider_google_video_source *get_video() const;
-
 signals:
   void name_changed(QString);
   void video_changed(ui::frame_provider_google_video_source *);
 
 protected:
+  ui::frame_provider_google_video_source *get_video() const;
   void set_name();
   void video_added(rtc::google::video_source &);
 
