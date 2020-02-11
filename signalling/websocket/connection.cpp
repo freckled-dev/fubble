@@ -38,10 +38,14 @@ boost::future<void> connection::send(const std::string &message) {
 void connection::send_next_from_queue() {
   sending = true;
   auto &item = send_queue.front();
-  stream.async_write(boost::asio::buffer(item.message),
-                     [this](const auto &error, auto transferred) {
-                       on_send(error, transferred);
-                     });
+  std::weak_ptr<int> weak_alive_check = alive_check;
+  stream.async_write(
+      boost::asio::buffer(item.message),
+      [this, weak_alive_check](const auto &error, auto transferred) {
+        if (!weak_alive_check.lock())
+          return;
+        on_send(error, transferred);
+      });
 }
 
 void connection::on_send(const boost::system::error_code &error, std::size_t) {
@@ -76,18 +80,26 @@ boost::future<std::string> connection::read() {
   BOOST_ASSERT(!reading);
   reading = true;
   read_promise = boost::promise<std::string>();
-  stream.async_read(buffer, [this](const auto &error, auto) {
-    BOOST_LOG_SEV(logger, logging::severity::info)
-        << "stream.async_read, this:" << this << ", error:" << error.message();
-    if (error) {
-      read_promise.set_exception(boost::system::system_error(error));
-      reading = false;
+  std::weak_ptr<int> weak_alive_check = alive_check;
+  stream.async_read(buffer, [this, weak_alive_check](const auto &error,
+                                                     auto bytes_transferred) {
+    if (!weak_alive_check.lock())
       return;
-    }
-    std::string result = boost::beast::buffers_to_string(buffer.data());
-    buffer.consume(buffer.size());
-    read_promise.set_value(result);
-    reading = false;
+    on_read(error, bytes_transferred);
   });
   return read_promise.get_future();
+}
+
+void connection::on_read(const boost::system::error_code &error, std::size_t) {
+  BOOST_LOG_SEV(logger, logging::severity::info)
+      << "stream.async_read, this:" << this << ", error:" << error.message();
+  if (error) {
+    read_promise.set_exception(boost::system::system_error(error));
+    reading = false;
+    return;
+  }
+  std::string result = boost::beast::buffers_to_string(buffer.data());
+  buffer.consume(buffer.size());
+  read_promise.set_value(result);
+  reading = false;
 }

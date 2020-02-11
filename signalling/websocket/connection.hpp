@@ -24,6 +24,7 @@ public:
 private:
   void send_next_from_queue();
   void on_send(const boost::system::error_code &error, std::size_t);
+  void on_read(const boost::system::error_code &error, std::size_t);
 
   logging::logger logger;
   stream_type stream;
@@ -37,6 +38,7 @@ private:
   std::queue<send_item> send_queue;
   bool sending{};
   bool reading{};
+  std::shared_ptr<int> alive_check = std::make_shared<int>(42);
 };
 } // namespace websocket
 
