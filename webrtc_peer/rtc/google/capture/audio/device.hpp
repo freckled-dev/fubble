@@ -9,8 +9,6 @@ public:
   using native_ptr = rtc::scoped_refptr<webrtc::AudioSourceInterface>;
   device(const native_ptr &native);
 
-  webrtc::AudioSourceInterface &get_native() const override;
-
 protected:
   native_ptr native;
 };

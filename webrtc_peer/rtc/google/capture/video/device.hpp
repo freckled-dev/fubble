@@ -8,6 +8,7 @@
 #include <modules/video_capture/video_capture.h>
 
 namespace rtc::google::capture::video {
+// TODO move `VideoSinkInterface` into `video_source`
 class device : public rtc::VideoSinkInterface<webrtc::VideoFrame>,
                public video_source {
 public:
