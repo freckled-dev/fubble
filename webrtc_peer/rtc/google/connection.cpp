@@ -1,4 +1,5 @@
 #include "connection.hpp"
+#include "audio_track_sink.hpp"
 #include "data_channel.hpp"
 #include "track.hpp"
 #include "uuid.hpp"
@@ -230,16 +231,40 @@ void connection::OnAddTrack(
   BOOST_LOG_SEV(logger, logging::severity::info) << "OnAddTrack";
   rtc::scoped_refptr<webrtc::MediaStreamTrackInterface> track =
       receiver->track();
-  auto track_casted = dynamic_cast<webrtc::VideoTrackInterface *>(track.get());
-  assert(track_casted != nullptr);
-  if (track_casted == nullptr) {
+  BOOST_ASSERT(track);
+  bool is_video{true};
+  auto result = check_handle_video_track(*track);
+  if (!result) {
+    result = check_handle_audio_track(*track);
+    is_video = false;
+  }
+  if (!result) {
     BOOST_ASSERT_MSG(false, "implement");
     return;
   }
-  auto result = std::make_shared<video_track_sink>(track_casted);
   tracks.push_back(result);
   on_track(result);
-  on_video_track(result);
+  if (is_video)
+    on_video_track(result);
+  else
+    on_audio_track(result);
+}
+
+rtc::track_ptr connection::check_handle_video_track(
+    webrtc::MediaStreamTrackInterface &interface) {
+  auto track_casted = dynamic_cast<webrtc::VideoTrackInterface *>(&interface);
+  if (track_casted == nullptr)
+    return nullptr;
+  return std::make_shared<video_track_sink>(track_casted);
+}
+
+rtc::track_ptr connection::check_handle_audio_track(
+    webrtc::MediaStreamTrackInterface &interface) {
+  rtc::scoped_refptr<webrtc::AudioTrackInterface> track_casted =
+      dynamic_cast<webrtc::AudioTrackInterface *>(&interface);
+  if (track_casted == nullptr)
+    return nullptr;
+  return std::make_shared<audio_track_sink>(track_casted);
 }
 
 void connection::OnDataChannel(

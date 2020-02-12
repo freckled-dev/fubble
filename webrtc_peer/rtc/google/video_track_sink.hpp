@@ -18,10 +18,10 @@ public:
       const rtc::scoped_refptr<webrtc::VideoTrackInterface> &track);
   ~video_track_sink();
 
+protected:
   void OnFrame(const webrtc::VideoFrame &frame) override;
   void OnDiscardedFrame() override;
 
-protected:
   logging::logger logger;
 };
 } // namespace rtc::google
