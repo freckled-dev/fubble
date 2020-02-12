@@ -41,7 +41,7 @@ void remote_participant::on_track(rtc::track_ptr track) {
       std::dynamic_pointer_cast<rtc::google::video_source>(track);
   if (!video_track) {
     // TODO support audio
-    BOOST_ASSERT(false && "not implemented");
+    // BOOST_ASSERT(false && "not implemented");
     return;
   }
   videos.emplace_back(video_track.get());

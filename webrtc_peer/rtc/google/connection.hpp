@@ -26,6 +26,7 @@ public:
   rtc::data_channel_ptr create_data_channel() override;
   void close() override;
   boost::signals2::signal<void(track_ptr)> on_video_track;
+  boost::signals2::signal<void(track_ptr)> on_audio_track;
 
 protected:
   void OnConnectionChange(
@@ -45,6 +46,10 @@ protected:
       webrtc::PeerConnectionInterface::IceGatheringState new_state) override;
   void
   OnIceCandidate(const ::webrtc::IceCandidateInterface *candidate) override;
+  track_ptr
+  check_handle_video_track(webrtc::MediaStreamTrackInterface &interface);
+  track_ptr
+  check_handle_audio_track(webrtc::MediaStreamTrackInterface &interface);
 
   struct create_session_description_observer
       : webrtc::CreateSessionDescriptionObserver {
