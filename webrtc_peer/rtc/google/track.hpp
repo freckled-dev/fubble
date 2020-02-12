@@ -7,6 +7,7 @@
 namespace rtc::google {
 class track : public rtc::track {
 public:
+  // TODO remove scoped_refptr?
   virtual rtc::scoped_refptr<webrtc::MediaStreamTrackInterface>
   native_track() const = 0;
 };

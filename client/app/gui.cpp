@@ -1,3 +1,4 @@
+#include "add_audio_to_connection.hpp"
 #include "add_video_to_connection.hpp"
 #include "executor_asio.hpp"
 #include "join_model.hpp"
@@ -13,6 +14,8 @@
 #include "room_model.hpp"
 #include "rooms.hpp"
 #include "rtc/google/asio_signalling_thread.hpp"
+#include "rtc/google/capture/audio/device.hpp"
+#include "rtc/google/capture/audio/device_creator.hpp"
 #include "rtc/google/capture/video/device.hpp"
 #include "rtc/google/capture/video/device_creator.hpp"
 #include "rtc/google/capture/video/enumerator.hpp"
@@ -61,7 +64,17 @@ int main(int argc, char *argv[]) {
       asio_signalling_thread.get_native()};
   client::peer_creator peer_creator{boost_executor, client_creator,
                                     rtc_connection_creator};
+  client::tracks_adder tracks_adder;
 
+  // audio
+  rtc::google::capture::audio::device_creator audio_device_creator{
+      rtc_connection_creator};
+  auto audio_device = audio_device_creator.create();
+  client::add_audio_to_connection audio_track_adder(rtc_connection_creator,
+                                                    *audio_device);
+  tracks_adder.add(audio_track_adder);
+
+  // video
   rtc::google::capture::video::enumerator enumerator;
   auto devices = enumerator();
   for (const auto device : devices)
@@ -84,11 +97,8 @@ int main(int argc, char *argv[]) {
   }
   if (!capture_device)
     throw std::runtime_error("no camera device available");
-
-  client::peers peers;
   client::add_video_to_connection track_adder(rtc_connection_creator,
                                               capture_device);
-  client::tracks_adder tracks_adder;
   tracks_adder.add(track_adder);
   client::rooms rooms;
   client::own_media own_media;
@@ -130,7 +140,6 @@ int main(int argc, char *argv[]) {
 
   auto result = app.exec();
   BOOST_LOG_SEV(logger, logging::severity::debug) << "gui stopped";
-  peers.close();
   context.stop();
   return result;
 }

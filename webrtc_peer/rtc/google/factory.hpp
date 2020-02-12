@@ -8,8 +8,10 @@
 namespace rtc {
 class connection;
 namespace google {
-class video_track;
 class video_source;
+class video_track;
+class audio_source;
+class audio_track;
 // TODO don't create a signalling thread in this class. instead use an external
 // one
 class factory {
@@ -21,6 +23,10 @@ public:
   std::unique_ptr<connection> create_connection();
   std::unique_ptr<video_track>
   create_video_track(const std::shared_ptr<video_source> &source);
+
+  std::unique_ptr<audio_track> create_audio_track(audio_source &source);
+
+  webrtc::PeerConnectionFactoryInterface &get_native() const;
 
   rtc::Thread &get_signaling_thread() const;
 
