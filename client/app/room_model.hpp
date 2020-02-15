@@ -1,7 +1,7 @@
 #ifndef UUID_3B809525_60BA_4E59_9647_52C23E7A52EE
 #define UUID_3B809525_60BA_4E59_9647_52C23E7A52EE
 
-#include "logging/logger.hpp"
+#include "client/logger.hpp"
 #include "participants_model.hpp"
 #include <QObject>
 #include <boost/thread/future.hpp>
@@ -25,7 +25,7 @@ signals:
 protected:
   void set_name();
 
-  logging::logger logger;
+  client::logger logger{"room_model"};
   std::shared_ptr<room> room_;
   QString name;
   participants_model *participants;

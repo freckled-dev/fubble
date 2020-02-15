@@ -9,7 +9,7 @@
 
 namespace {
 struct GoogleConnection : ::testing::Test {
-  logging::logger logger;
+  logging::logger logger{"GoogleConnection"};
   rtc::google::factory creator;
 };
 struct connection {

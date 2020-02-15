@@ -8,7 +8,7 @@
 #include <gtest/gtest.h>
 
 struct AsioSignallingThread : ::testing::Test {
-  logging::logger logger;
+  logging::logger logger{"AsioSignallingThread"};
   boost::asio::io_context context;
   boost::asio::executor executor{context.get_executor()};
 };

@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
     return 0;
   auto options = options_optional.value();
   set_up_logging();
-  logging::logger logger;
+  logging::logger logger{"main"};
   websocket::acceptor::config acceptor_config{
       static_cast<std::uint16_t>(options.port)};
   boost::asio::io_context context;

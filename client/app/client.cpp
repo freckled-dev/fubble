@@ -1,10 +1,10 @@
 #include "signalling/client/client.hpp"
+#include "client/p2p/negotiation/ice_candidates.hpp"
+#include "client/p2p/negotiation/offer_answer.hpp"
 #include "executor_asio.hpp"
 #include "exit_signals.hpp"
 #include "logging/initialser.hpp"
 #include "options.hpp"
-#include "p2p/negotiation/ice_candidates.hpp"
-#include "p2p/negotiation/offer_answer.hpp"
 #include "rtc/connection.hpp"
 #include "rtc/data_channel.hpp"
 #include "rtc/google/capture/video/device.hpp"
@@ -95,7 +95,7 @@ struct message_writer {
 
 int main(int argc, char *argv[]) {
   logging::add_console_log();
-  logging::logger logger;
+  logging::logger logger{"main"};
   BOOST_LOG_SEV(logger, logging::severity::info) << "starting";
 
   options options_parser;

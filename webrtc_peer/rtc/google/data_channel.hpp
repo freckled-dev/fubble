@@ -1,8 +1,8 @@
 #ifndef RTC_GOOGLE_DATA_CHANNEL_HPP
 #define RTC_GOOGLE_DATA_CHANNEL_HPP
 
-#include "logging/logger.hpp"
 #include "rtc/data_channel.hpp"
+#include "rtc/logger.hpp"
 #include <api/data_channel_interface.h>
 
 namespace rtc::google {
@@ -21,7 +21,9 @@ protected:
   void OnBufferedAmountChange(uint64_t sent_data_size) override;
 
 private:
-  logging::logger logger;
+  class logger logger {
+    "data_channel"
+  };
   ::rtc::scoped_refptr<webrtc::DataChannelInterface> native;
 };
 } // namespace rtc::google

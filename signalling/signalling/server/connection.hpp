@@ -1,9 +1,9 @@
 #ifndef SERVER_CONNECTION_HPP
 #define SERVER_CONNECTION_HPP
 
-#include "logging/logger.hpp"
 #include "signalling/connection.hpp"
 #include "signalling/json_message.hpp"
+#include "signalling/logger.hpp"
 #include "websocket/connection_ptr.hpp"
 
 namespace websocket {
@@ -32,7 +32,7 @@ private:
   boost::executor &executor;
   websocket::connection_ptr connection_;
   signalling::json_message &message_parser;
-  logging::logger logger;
+  signalling::logger logger{"connection"};
 };
 } // namespace signalling::server
 
