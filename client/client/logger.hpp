@@ -4,9 +4,10 @@
 #include "logging/logger.hpp"
 
 namespace client {
-class logger : public logging::logger {
+class logger : public logging::module_logger {
 public:
-  using logging::logger::logger;
+  logger(const std::string &descriptor)
+      : logging::module_logger("client", descriptor) {}
 };
 } // namespace client
 
