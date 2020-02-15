@@ -2,7 +2,7 @@
 #define WEBSOCKET_CONNECTOR_HPP
 
 #include "connection_ptr.hpp"
-#include "logging/logger.hpp"
+#include "signalling/logger.hpp"
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/thread/executors/executor.hpp>
 #include <boost/thread/future.hpp>
@@ -34,7 +34,7 @@ private:
   void handshake();
   bool check_error(const boost::system::error_code &error);
 
-  logging::logger logger;
+  signalling::logger logger{"connector"};
   connection_creator &creator;
   boost::asio::ip::tcp::resolver resolver;
   boost::promise<connection_ptr> promise;
@@ -53,7 +53,7 @@ public:
   std::unique_ptr<connector> create(const connector::config &config_);
 
 private:
-  logging::logger logger;
+  signalling::logger logger{"connector_creator"};
   boost::asio::io_context &context;
   connection_creator &creator;
 };

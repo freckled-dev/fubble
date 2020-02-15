@@ -1,7 +1,7 @@
 #ifndef UUID_879851E1_6012_47BE_AF61_ECB95660B186
 #define UUID_879851E1_6012_47BE_AF61_ECB95660B186
 
-#include "logging/logger.hpp"
+#include "client/logger.hpp"
 #include "participant.hpp"
 #include "rtc/track_ptr.hpp"
 #include "session/participant.hpp"
@@ -23,7 +23,7 @@ public:
 protected:
   void on_track(rtc::track_ptr track);
 
-  logging::logger logger;
+  client::logger logger{"remote_participant"};
   std::unique_ptr<peer> peer_;
   session::participant session_participant;
   videos_type videos;

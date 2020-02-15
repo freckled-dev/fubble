@@ -40,7 +40,7 @@ public:
   void unmap() override {}
 
 private:
-  logging::logger logger;
+  client::logger logger{"video_buffer_adapter"};
   webrtc::VideoFrame frame;
   const webrtc::I420BufferInterface *buffer_accessor;
   rtc::scoped_refptr<webrtc::I420BufferInterface> i420_reference;

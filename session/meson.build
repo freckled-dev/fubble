@@ -16,7 +16,8 @@ test('nakama test',
 session = library('session',
   ['client.cpp', 'room_joiner.cpp', 'room.cpp',
     'nakama_realtime_client_signals.cpp', 'client_connector.cpp'],
-  dependencies: [nakama_dep, utils_dep, fmt_dep]
+  dependencies: [nakama_dep, utils_dep, fmt_dep],
+  include_directories: ['..']
   )
 session_dep = declare_dependency(
   include_directories: '..',

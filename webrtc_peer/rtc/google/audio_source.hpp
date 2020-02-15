@@ -2,7 +2,7 @@
 #define UUID_6CC52509_B0C4_43D5_92AC_618EF31ECDCF
 
 #include "audio_data.hpp"
-#include "logging/logger.hpp"
+#include "rtc/logger.hpp"
 #include <api/media_stream_interface.h>
 #if 0
 #include <boost/signals2/signal.hpp>
@@ -29,7 +29,9 @@ protected:
               size_t number_of_channels, size_t number_of_frames) override;
 #endif
 
-  logging::logger logger;
+  class logger logger {
+    "audio_source"
+  };
   webrtc::AudioSourceInterface &native_audio_track;
 };
 } // namespace rtc::google

@@ -1,8 +1,8 @@
 #ifndef UUID_D10FE831_B416_4A53_9EBF_0BA3F656F47E
 #define UUID_D10FE831_B416_4A53_9EBF_0BA3F656F47E
 
-#include "logging/logger.hpp"
 #include "nakama_realtime_client_signals.hpp"
+#include "session/logger.hpp"
 #include <boost/asio/executor.hpp>
 #include <boost/asio/steady_timer.hpp>
 #include <boost/signals2/signal.hpp>
@@ -38,7 +38,7 @@ protected:
   void on_login_failed(promise_ptr promise, const Nakama::NError &error);
   void on_nakama_error(const Nakama::NError &error);
 
-  logging::logger logger;
+  session::logger logger{"client"};
   boost::asio::executor &executor;
   boost::asio::steady_timer tick_timer{executor};
   natives natives_;

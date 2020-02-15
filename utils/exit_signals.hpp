@@ -14,7 +14,7 @@ public:
   void close();
 
 private:
-  logging::logger logger;
+  logging::logger logger{"exit_signals"};
   struct implementation;
   std::unique_ptr<implementation> impl;
 };

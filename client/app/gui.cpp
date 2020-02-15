@@ -1,18 +1,19 @@
-#include "add_audio_to_connection.hpp"
-#include "add_video_to_connection.hpp"
+#include "client/add_audio_to_connection.hpp"
+#include "client/add_video_to_connection.hpp"
+#include "client/joiner.hpp"
+#include "client/own_media.hpp"
+#include "client/participant_creator_creator.hpp"
+#include "client/peer_creator.hpp"
+#include "client/peers.hpp"
+#include "client/room_creator.hpp"
+#include "client/rooms.hpp"
+#include "client/tracks_adder.hpp"
 #include "executor_asio.hpp"
 #include "join_model.hpp"
-#include "joiner.hpp"
 #include "logging/initialser.hpp"
 #include "logging/logger.hpp"
 #include "model_creator.hpp"
-#include "own_media.hpp"
-#include "participant_creator_creator.hpp"
-#include "peer_creator.hpp"
-#include "peers.hpp"
-#include "room_creator.hpp"
 #include "room_model.hpp"
-#include "rooms.hpp"
 #include "rtc/google/asio_signalling_thread.hpp"
 #include "rtc/google/capture/audio/device.hpp"
 #include "rtc/google/capture/audio/device_creator.hpp"
@@ -23,7 +24,6 @@
 #include "signalling/client/client_creator.hpp"
 #include "signalling/client/connection_creator.hpp"
 #include "signalling/json_message.hpp"
-#include "tracks_adder.hpp"
 #include "ui/executor_qt.hpp"
 #include "ui/frame_provider_google_video_frame.hpp"
 #include "websocket/connection_creator.hpp"
@@ -39,7 +39,7 @@
 
 int main(int argc, char *argv[]) {
   logging::add_console_log();
-  logging::logger logger;
+  logging::logger logger{"main"};
   BOOST_LOG_SEV(logger, logging::severity::debug) << "starting up";
 
   boost::asio::io_context context;

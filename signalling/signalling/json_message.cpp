@@ -4,6 +4,10 @@
 
 using namespace signalling;
 
+json_message::json_message() = default;
+
+json_message::~json_message() = default;
+
 json_message::invalid_type::invalid_type(const std::string &type)
     : std::runtime_error(
           fmt::format("invalid json message type. type:'{}'", type)) {}

@@ -1,7 +1,7 @@
 #ifndef UUID_4D2DAB75_A9D1_4415_8754_D7BFE834C262
 #define UUID_4D2DAB75_A9D1_4415_8754_D7BFE834C262
 
-#include "logging/logger.hpp"
+#include "rtc/logger.hpp"
 #include <boost/asio/steady_timer.hpp>
 #include <rtc_base/thread.h>
 #include <thread>
@@ -23,7 +23,7 @@ protected:
   static constexpr std::chrono::steady_clock::duration interval =
       std::chrono::milliseconds(50);
   static constexpr int maximum_update_time_ms = 10;
-  logging::logger logger;
+  rtc::logger logger{"asio_signalling_thread"};
   boost::asio::io_context &asio;
   using timer_type = boost::asio::steady_timer;
   timer_type timer{asio};

@@ -1,8 +1,8 @@
 #ifndef UUID_B27E182A_AF56_48E7_B9B3_428F3B393E2B
 #define UUID_B27E182A_AF56_48E7_B9B3_428F3B393E2B
 
+#include "client/logger.hpp"
 #include "executor_asio.hpp"
-#include "logging/logger.hpp"
 #include <boost/asio/executor.hpp>
 #include <boost/thread/executors/executor_adaptor.hpp>
 #include <boost/thread/future.hpp>
@@ -29,7 +29,7 @@ public:
   boost::future<std::shared_ptr<room>> join(const parameters &parameters_);
 
 protected:
-  logging::logger logger;
+  client::logger logger{"joiner"};
   boost::asio::executor &executor;
   room_creator &room_creator_;
   rooms &rooms_;

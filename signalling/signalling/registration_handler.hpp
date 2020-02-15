@@ -2,7 +2,7 @@
 #define SIGNALLING_REGISTRATION_HANDLER_HPP
 
 #include "connection_ptr.hpp"
-#include "logging/logger.hpp"
+#include "logger.hpp"
 #include "signalling/device/device_ptr.hpp"
 #include <boost/signals2/connection.hpp>
 #include <boost/thread/executors/executor.hpp>
@@ -41,7 +41,9 @@ private:
   void remove_by_key(const std::string &key);
   devices_type::iterator find(const std::string &key);
 
-  logging::logger logger;
+  class logger logger {
+    "registration_handler"
+  };
   device::creator &device_creator_;
   devices_type devices;
 };

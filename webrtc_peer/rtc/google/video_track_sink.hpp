@@ -1,7 +1,7 @@
 #ifndef RTC_GOOGLE_VIDEO_TRACK_SINK_HPP
 #define RTC_GOOGLE_VIDEO_TRACK_SINK_HPP
 
-#include "logging/logger.hpp"
+#include "rtc/logger.hpp"
 #include "video_source.hpp"
 #include "video_track.hpp"
 #include <api/media_stream_interface.h>
@@ -22,7 +22,7 @@ protected:
   void OnFrame(const webrtc::VideoFrame &frame) override;
   void OnDiscardedFrame() override;
 
-  logging::logger logger;
+  rtc::logger logger{"video_track_sink"};
 };
 } // namespace rtc::google
 

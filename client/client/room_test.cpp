@@ -23,7 +23,7 @@
 
 namespace {
 struct Room : testing::Test {
-  logging::logger logger;
+  logging::logger logger{"Room"};
   boost::asio::io_context context;
   boost::asio::executor executor{context.get_executor()};
   boost::executor_adaptor<executor_asio> boost_executor{context};
