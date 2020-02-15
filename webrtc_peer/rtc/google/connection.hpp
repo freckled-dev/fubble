@@ -1,8 +1,8 @@
 #ifndef RTC_GOOGLE_CONNECTION_HPP
 #define RTC_GOOGLE_CONNECTION_HPP
 
-#include "logging/logger.hpp"
 #include "rtc/connection.hpp"
+#include "rtc/logger.hpp"
 #include "video_track_ptr.hpp"
 #include <api/candidate.h>
 #include <api/peer_connection_interface.h>
@@ -55,19 +55,19 @@ protected:
       : webrtc::CreateSessionDescriptionObserver {
     boost::promise<::rtc::session_description> promise;
     session_description result;
-    logging::logger logger;
+    rtc::logger logger{"create_session_description_observer"};
     void OnSuccess(webrtc::SessionDescriptionInterface *description) override;
     void OnFailure(const std::string &error) override;
   };
   struct set_session_description_observer
       : public webrtc::SetSessionDescriptionObserver {
     boost::promise<void> promise;
-    logging::logger logger;
+    rtc::logger logger{"set_session_description_observer"};
     void OnSuccess() override;
     void OnFailure(const std::string &error) override;
   };
 
-  logging::logger logger;
+  rtc::logger logger{"connection"};
   rtc::scoped_refptr<::webrtc::PeerConnectionInterface> native;
   // if we don't save the data_channels, RTCConnection will crash in clode().
   // Because of pure virtual DataChannel.

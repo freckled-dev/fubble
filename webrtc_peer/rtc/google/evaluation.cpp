@@ -29,7 +29,7 @@ public:
 class data_channel_observer : public webrtc::DataChannelObserver {
 public:
   rtc::scoped_refptr<webrtc::DataChannelInterface> data_channel;
-  logging::logger logger;
+  logging::logger logger{"data_channel_observer"};
   bool did_send_echo{};
 
   void OnStateChange() override {
@@ -68,7 +68,7 @@ public:
 };
 
 struct video_receiver : rtc::VideoSinkInterface<webrtc::VideoFrame> {
-  logging::logger logger;
+  logging::logger logger{"video_receiver"};
   void OnFrame(const webrtc::VideoFrame &frame) {
     BOOST_LOG_SEV(logger, logging::severity::info) << fmt::format(
         "reveiver OnFrame(const VideoFrameT& frame), width:'{}', height:'{}'",
@@ -80,7 +80,7 @@ class peer_connection_observer : public ::webrtc::PeerConnectionObserver {
 public:
   signaling &signaling_;
   data_channel_observer &data_channel_observer_;
-  logging::logger logger;
+  logging::logger logger{"peer_connection_observer"};
   video_receiver video_receiver_;
 
   peer_connection_observer(signaling &signaling_,
@@ -173,7 +173,7 @@ public:
   }
 
   std::string description;
-  logging::logger logger;
+  logging::logger logger{"set_session_description_observer"};
 };
 
 std::string make_sdp_parse_error_description(webrtc::SdpParseError error,
@@ -194,7 +194,7 @@ struct sdp_parse_error : std::runtime_error {
 
 class set_remote_description_observer
     : public webrtc::SetRemoteDescriptionObserverInterface {
-  logging::logger logger;
+  logging::logger logger{"set_remote_description_observer"};
   void OnSetRemoteDescriptionComplete(webrtc::RTCError error) override {
     if (error.ok()) {
       BOOST_LOG_SEV(logger, logging::severity::info)
@@ -251,7 +251,7 @@ public:
   rtc::scoped_refptr<webrtc::PeerConnectionInterface> peer_connection;
   rtc::scoped_refptr<set_session_description_observer> observer;
   const bool offering;
-  logging::logger logger;
+  logging::logger logger{"create_session_description_observer"};
 };
 
 // struct video_device : webrtc::VideoTrackSourceInterface {};
@@ -278,7 +278,7 @@ struct video_device : rtc::AdaptedVideoTrackSource {
 
 struct video_device_observer : rtc::VideoSinkInterface<webrtc::VideoFrame> {
   video_device *sink{};
-  logging::logger logger;
+  logging::logger logger{"video_device_observer"};
   void OnFrame(const webrtc::VideoFrame &frame) override {
     BOOST_LOG_SEV(logger, logging::severity::info) << fmt::format(
         "OnFrame width:{}, height:{}", frame.width(), frame.height());
@@ -287,7 +287,7 @@ struct video_device_observer : rtc::VideoSinkInterface<webrtc::VideoFrame> {
 };
 
 struct connection {
-  logging::logger logger;
+  logging::logger logger{"connection"};
   signaling &signaling_client;
   data_channel_observer data_channel_observer_;
   peer_connection_observer observer{signaling_client, data_channel_observer_};
@@ -433,7 +433,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
       std::cout, boost::log::keywords::auto_flush = true,
       boost::log::keywords::format = "%TimeStamp% %Severity% %Message%");
 
-  logging::logger logger;
+  logging::logger logger{"main"};
   BOOST_LOG_SEV(logger, logging::severity::info) << "starting";
   rtc::InitializeSSL();
 
@@ -508,7 +508,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
     connection &connection_;
     void operator()(const std::string &candidate, const std::string &sdp_mid,
                     const int sdp_mline_index) {
-      logging::logger logger;
+      logging::logger logger{"on_ice_candidate"};
       BOOST_LOG_SEV(logger, logging::severity::info) << "we got us a candidate";
       if (candidate.empty())
         return;

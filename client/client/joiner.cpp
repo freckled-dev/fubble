@@ -25,7 +25,7 @@ protected:
   void on_room_joined(boost::future<session::room_joiner::room_ptr> joined);
   bool check_error(boost::future<void> &check);
 
-  logging::logger logger;
+  client::logger logger{"joiner::join"};
   boost::asio::executor &executor;
   room_creator &room_creator_;
   executor_asio executor_asio_{executor};

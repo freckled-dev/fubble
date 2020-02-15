@@ -1,8 +1,8 @@
 #ifndef UUID_5D5307B7_976F_4300_8388_7400A858C71C
 #define UUID_5D5307B7_976F_4300_8388_7400A858C71C
 
-#include "logging/logger.hpp"
 #include "participant.hpp"
+#include "session/logger.hpp"
 #include <boost/signals2/signal.hpp>
 #include <nakama-cpp/Nakama.h>
 
@@ -28,7 +28,7 @@ protected:
   void on_names(const Nakama::NUsers &users);
   void on_error(const Nakama::NError &error);
 
-  logging::logger logger;
+  session::logger logger{"room"};
   client &client_;
   Nakama::NChannelPtr channel;
   participants participants_;

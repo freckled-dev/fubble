@@ -1,8 +1,8 @@
 #include "join_model.hpp"
-#include "joiner.hpp"
+#include "client/joiner.hpp"
+#include "client/own_media.hpp"
+#include "client/room.hpp"
 #include "model_creator.hpp"
-#include "own_media.hpp"
-#include "room.hpp"
 #include "room_model.hpp"
 #include <QStandardPaths>
 

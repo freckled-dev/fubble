@@ -1,7 +1,7 @@
 #ifndef UUID_3097ADFC_B1A4_4CA7_80E2_DEE577390CEA
 #define UUID_3097ADFC_B1A4_4CA7_80E2_DEE577390CEA
 
-#include "logging/logger.hpp"
+#include "session/logger.hpp"
 #include <boost/signals2/signal.hpp>
 #include <nakama-cpp/Nakama.h>
 
@@ -25,7 +25,7 @@ protected:
   void
   onChannelPresence(const Nakama::NChannelPresenceEvent &presence) override;
 
-  logging::logger logger;
+  session::logger logger{"nakama_realtime_client_signals"};
 };
 } // namespace session
 

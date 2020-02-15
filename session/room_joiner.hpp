@@ -1,7 +1,7 @@
 #ifndef UUID_8B24544C_F862_445E_8A04_513A53E210B0
 #define UUID_8B24544C_F862_445E_8A04_513A53E210B0
 
-#include "logging/logger.hpp"
+#include "session/logger.hpp"
 #include <boost/thread/future.hpp>
 #include <nakama-cpp/Nakama.h>
 
@@ -18,7 +18,7 @@ protected:
   void on_success(Nakama::NChannelPtr channel);
   void on_error(Nakama::NRtError error);
 
-  logging::logger logger;
+  session::logger logger{"room_joiner"};
   client &client_;
   boost::promise<room_ptr> promise;
 };

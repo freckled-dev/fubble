@@ -1,6 +1,7 @@
 #ifndef UUID_912B7A62_19DE_45A9_B92E_0FC0046CE8C5
 #define UUID_912B7A62_19DE_45A9_B92E_0FC0046CE8C5
 
+#include "client/logger.hpp"
 #include "rtc/google/video_source_ptr.hpp"
 #include "ui/frame_provider_google_video_frame.hpp"
 #include <QObject>
@@ -25,7 +26,7 @@ protected:
   void set_name();
   void video_added(rtc::google::video_source &);
 
-  mutable logging::logger logger;
+  mutable client::logger logger{"participant_model"};
   participant &participant_;
   QString name;
   ui::frame_provider_google_video_source *video{};

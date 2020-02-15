@@ -1,7 +1,7 @@
 #ifndef UUID_C92BDF54_AEE0_4DC1_87CA_B5EBBFDA3FFE
 #define UUID_C92BDF54_AEE0_4DC1_87CA_B5EBBFDA3FFE
 
-#include "logging/logger.hpp"
+#include "client/logger.hpp"
 #include "track_adder.hpp"
 #include <memory>
 #include <vector>
@@ -22,7 +22,7 @@ public:
   }
 
 protected:
-  logging::logger logger;
+  client::logger logger{"tracks_adder"};
   using track_adder_ptr = track_adder *;
   std::vector<track_adder_ptr> adders;
 };

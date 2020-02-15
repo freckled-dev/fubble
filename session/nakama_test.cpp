@@ -19,7 +19,7 @@ TEST(Nakama, CreateDefaultClient) {
 }
 
 namespace {
-logging::logger logger;
+logging::logger logger{"nakama_test"};
 std::string generate_device_id() { return uuid::generate(); }
 struct session {
   Nakama::NClientPtr client =

@@ -1,7 +1,7 @@
 #ifndef UUID_D136BB60_81E5_4336_A54C_72FACE9EE23A
 #define UUID_D136BB60_81E5_4336_A54C_72FACE9EE23A
 
-#include "logging/logger.hpp"
+#include "client/logger.hpp"
 #include "session/participant.hpp"
 #include <boost/signals2/signal.hpp>
 #include <boost/thread/executor.hpp>
@@ -42,7 +42,7 @@ protected:
   using participants = std::vector<std::unique_ptr<participant>>;
   participants::iterator find(const std::string &id);
 
-  logging::logger logger;
+  client::logger logger{"room"};
   std::unique_ptr<participant_creator> participant_creator_;
   std::unique_ptr<session::client> client_;
   std::unique_ptr<session::room> room_;
