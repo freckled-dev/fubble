@@ -4,7 +4,7 @@
 #include "answer.hpp"
 #include "create_offer.hpp"
 #include "ice_candidate.hpp"
-#include "logging/logger.hpp"
+#include "logger.hpp"
 #include "offer.hpp"
 #include "registration.hpp"
 #include "want_to_negotiate.hpp"
@@ -14,6 +14,9 @@
 namespace signalling {
 class json_message {
 public:
+  json_message();
+  ~json_message();
+
   struct invalid_type : std::runtime_error {
     invalid_type(const std::string &type);
   };
@@ -30,7 +33,7 @@ public:
   std::string serialize(const want_to_negotiate &negotiate) const;
 
 private:
-  mutable logging::logger logger;
+  mutable class logger logger { "json_message" };
 };
 } // namespace signalling
 

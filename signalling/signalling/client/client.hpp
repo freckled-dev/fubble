@@ -3,9 +3,9 @@
 
 #include "connection_creator.hpp"
 #include "connection_ptr.hpp"
-#include "logging/logger.hpp"
 #include "signalling/answer.hpp"
 #include "signalling/ice_candidate.hpp"
+#include "signalling/logger.hpp"
 #include "signalling/offer.hpp"
 #include "websocket/connector.hpp"
 #include <boost/signals2/signal.hpp>
@@ -48,7 +48,7 @@ private:
   void connect_signals(const connection_ptr &connection_) const;
   void run_done(boost::future<void> &result);
 
-  logging::logger logger;
+  signalling::logger logger{"client"};
   boost::inline_executor executor;
   websocket::connector_creator &connector_creator;
   connection_creator &connection_creator_;

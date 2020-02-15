@@ -2,7 +2,7 @@
 #define RTC_GOOGLE_CAPTURE_VIDEO_ENUMERATOR_HPP
 
 #include "information.hpp"
-#include <logging/logger.hpp>
+#include "rtc/logger.hpp"
 
 namespace rtc::google::capture::video {
 
@@ -13,10 +13,11 @@ public:
   std::vector<information> operator()();
 
 private:
-  logging::logger logger;
+  class logger logger {
+    "enumerator"
+  };
 };
 
 } // namespace rtc::google::capture::video
 
 #endif
-

@@ -3,7 +3,7 @@ moc_files = qt5.preprocess(
   )
 ui = library('ui',
   ['frame_provider_google_video_frame.cpp', 'executor_qt.cpp'] + moc_files,
-  dependencies: [qt5_dep, utils_dep, webrtc_google_peer_dep, fmt_dep],
+  dependencies: [qt5_dep, utils_dep, webrtc_google_peer_dep, fmt_dep, client_dep],
   install: true
   )
 ui_dep = declare_dependency(

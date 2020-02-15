@@ -1,5 +1,5 @@
 #include "room_model.hpp"
-#include "room.hpp"
+#include "client/room.hpp"
 #include "session/room.hpp"
 
 using namespace client;

@@ -1,5 +1,5 @@
 #include "participant_model.hpp"
-#include "participant.hpp"
+#include "client/participant.hpp"
 
 using namespace client;
 

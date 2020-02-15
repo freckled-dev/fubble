@@ -103,7 +103,7 @@ void client::client::connect_signals(const connection_ptr &connection_) const {
 }
 
 void client::client::run_done(boost::future<void> &result) {
-  logging::logger logger;
+  signalling::logger logger{"client::run_done"};
   try {
     result.get();
     BOOST_LOG_SEV(logger, logging::severity::info) << "connection stopped";

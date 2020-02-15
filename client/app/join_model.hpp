@@ -1,7 +1,7 @@
 #ifndef UUID_5D0F470B_C872_46EB_8804_1972618A74E6
 #define UUID_5D0F470B_C872_46EB_8804_1972618A74E6
 
-#include "logging/logger.hpp"
+#include "client/logger.hpp"
 #include "ui/executor_qt.hpp"
 #include <QObject>
 #include <QSettings>
@@ -40,7 +40,7 @@ signals:
 protected:
   void on_joined(boost::future<std::shared_ptr<room>> room_);
 
-  logging::logger logger;
+  client::logger logger{"join_model"};
   model_creator &model_factory;
   joiner &joiner_;
   own_media &own_media_;

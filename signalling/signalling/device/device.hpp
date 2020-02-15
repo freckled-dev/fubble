@@ -1,10 +1,10 @@
 #ifndef SIGNALLING_DEVICE_DEVICE_HPP
 #define SIGNALLING_DEVICE_DEVICE_HPP
 
-#include "logging/logger.hpp"
 #include "signalling/answer.hpp"
 #include "signalling/connection_ptr.hpp"
 #include "signalling/ice_candidate.hpp"
+#include "signalling/logger.hpp"
 #include "signalling/offer.hpp"
 #include "signalling/want_to_negotiate.hpp"
 #include <boost/signals2/connection.hpp>
@@ -34,7 +34,9 @@ protected:
   virtual void on_offer(const offer &offer_);
   virtual void on_ice_candidate(const ice_candidate &candidate);
 
-  logging::logger logger;
+  class logger logger {
+    "device"
+  };
   connection_ptr connection_;
   // TODO remove weakptr to partner. partner shall be a ref. ownership shall
   // extrusive

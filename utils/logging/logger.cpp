@@ -2,5 +2,5 @@
 
 using namespace logging;
 
-logger::logger() = default;
+logger::logger(const std::string &) {}
 logger::~logger() = default;

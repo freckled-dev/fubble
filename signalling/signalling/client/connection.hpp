@@ -1,9 +1,9 @@
 #ifndef SIGNALLING_CLIENT_CONNECTION_HPP
 #define SIGNALLING_CLIENT_CONNECTION_HPP
 
-#include "logging/logger.hpp"
 #include "signalling/answer.hpp"
 #include "signalling/ice_candidate.hpp"
+#include "signalling/logger.hpp"
 #include "signalling/offer.hpp"
 #include "signalling/registration.hpp"
 #include "websocket/connection_ptr.hpp"
@@ -44,7 +44,7 @@ private:
   void send(const std::string &message);
   void parse_message(const std::string &message);
 
-  logging::logger logger;
+  signalling::logger logger{"connection"};
   boost::executor &post_executor;
   boost::inline_executor inline_executor;
   boost::promise<void> run_promise;

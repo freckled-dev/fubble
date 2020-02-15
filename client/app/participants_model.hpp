@@ -1,9 +1,9 @@
 #ifndef UUID_3F20FC60_F52B_4FFE_9CFA_8134CAE97A86
 #define UUID_3F20FC60_F52B_4FFE_9CFA_8134CAE97A86
 
-#include "logging/logger.hpp"
+#include "client/logger.hpp"
+#include "client/room.hpp"
 #include "participant_model.hpp"
-#include "room.hpp"
 #include <QAbstractItemModel>
 #include <deque>
 
@@ -24,7 +24,7 @@ protected:
   void on_joins(const std::vector<participant *> &joins);
   void on_leaves(std::vector<std::string> leaves);
 
-  mutable logging::logger logger;
+  mutable client::logger logger{"participant_model"};
   room &room_;
   struct participant_container {
     std::string id;

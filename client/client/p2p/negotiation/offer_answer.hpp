@@ -1,6 +1,7 @@
 #ifndef CLIENT_P2P_NEGOTIATION_OFFER_ANSWER_HPP
 #define CLIENT_P2P_NEGOTIATION_OFFER_ANSWER_HPP
 
+#include "client/logger.hpp"
 #include "rtc/connection.hpp"
 #include "signalling/client/client.hpp"
 #include <boost/thread/executors/executor.hpp>
@@ -22,7 +23,7 @@ protected:
   void on_answer(signalling::answer sdp);
   void on_offer(signalling::offer sdp);
 
-  logging::logger logger;
+  client::logger logger{"offer_answer"};
   boost::executor &executor;
   signalling::client::client &signalling_client;
   rtc::connection &rtc_connection;

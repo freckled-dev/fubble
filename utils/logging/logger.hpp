@@ -10,8 +10,7 @@ using severity = boost::log::trivial::severity_level;
 
 class logger : public boost::log::sources::severity_logger<severity> {
 public:
-  // TODO take a describing string. eg the class name
-  logger();
+  logger(const std::string &descriptor);
   ~logger();
 };
 } // namespace logging
