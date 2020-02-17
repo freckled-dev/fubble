@@ -1,0 +1,21 @@
+<!-- subscribe section -->
+<section class="subscribe-bg">
+   <div class="container">
+      <div class="row">
+         <div class="col-sm-12 col-lg-4">
+            <div class="subscribe">
+               <h3>Subscribe to Newsletter</h3>
+            </div>
+         </div>
+         <div class="col-sm-12 col-lg-8">
+            <div class="email-box">
+               <form (ngSubmit)="onSubmit(name.value)">
+                  <input #name class="form-control" name="EMAIL" id="mce-EMAIL" placeholder="Your email address:" type="email" required="required" >
+                  <button type="submit" class="btn btn-email" id="mc-submit">Subscribe</button>
+               </form>
+            </div>
+         </div>
+      </div>
+   </div>
+</section>
+<!-- end subscribe section -->
