@@ -20,8 +20,8 @@ matrix_test = executable('matrix_test',
   )
 test('matrix test',
   matrix_test,
-  env: [ 'ASAN_OPTIONS=fast_unwind_on_malloc=0' ],
-  timeout: 8)
+  env: [ 'ASAN_OPTIONS=fast_unwind_on_malloc=0' ]
+  )
 
 session = library('session',
   ['client.cpp', 'room_joiner.cpp', 'room.cpp',
