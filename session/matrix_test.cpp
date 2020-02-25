@@ -161,9 +161,11 @@ namespace {
 struct client {
   boost::asio::io_context &context;
   http::client http_client{context};
+  std::string user_id;
 
   client(boost::asio::io_context &context) : context(context) {
     auto response = register_as_user(http_client);
+    user_id = response["user_id"];
     auto token = response["access_token"];
     http_client.auth_token = token;
   }
@@ -224,17 +226,61 @@ TEST(Matrix, JoinRoom) {
   join_room_by_id(client_join, room_id);
 }
 
-TEST(Matrix, Sync) {
-  boost::asio::io_context context;
-  client client_creator{context};
-  auto room_id = create_room(client_creator);
-  client client_join{context};
-  join_room_by_id(client_join, room_id);
-  http::client &http_creator = client_creator.http_client;
-
+namespace {
+struct sync_result {
+  nlohmann::json repsonse;
+  std::string next_batch;
+};
+sync_result sync(client &client_, std::optional<std::string> next_batch) {
+  http::client &http_creator = client_.http_client;
   auto sync_path = http::target_prefix + "sync";
+  if (next_batch)
+    sync_path += "?since=" + next_batch.value();
+#if 0
+  int timeout_ms = 1000;
+  sync_path += "&timeout=" + std::to_string(timeout_ms);
+#endif
   auto response = http_creator.get(sync_path);
   EXPECT_EQ(response.result(), boost::beast::http::status::ok);
-  response = http_creator.get(sync_path);
-  EXPECT_EQ(response.result(), boost::beast::http::status::ok);
+  sync_result result;
+  result.repsonse = nlohmann::json::parse(response.body());
+  EXPECT_TRUE(result.repsonse.contains("next_batch"));
+  result.next_batch = result.repsonse["next_batch"];
+  return result;
+}
+} // namespace
+
+TEST(Matrix, Sync) {
+  boost::asio::io_context context;
+  client client_{context};
+  auto room_id = create_room(client_);
+  auto response = sync(client_, {});
+  EXPECT_FALSE(response.next_batch.empty());
+}
+
+TEST(Matrix, SyncJoin) {
+  boost::asio::io_context context;
+  client client_create{context};
+  auto room_id = create_room(client_create);
+  auto sync_response = sync(client_create, {});
+  client client_join{context};
+  join_room_by_id(client_join, room_id);
+  sync_response = sync(client_create, sync_response.next_batch);
+  auto join_events = sync_response.repsonse["rooms"]["join"];
+  EXPECT_TRUE(join_events.contains(room_id));
+  auto room_timeline_events = join_events[room_id]["timeline"]["events"];
+  EXPECT_EQ(room_timeline_events.size(), std::size_t{1});
+  auto event = room_timeline_events[0];
+  std::string event_type = event["type"];
+  EXPECT_EQ(event_type, "m.room.member");
+  std::string event_sender = event["sender"];
+  EXPECT_EQ(event_sender, client_join.user_id);
+}
+
+TEST(Matrix, Invite) {
+  boost::asio::io_context context;
+  client client_create{context};
+  auto room_id = create_room(client_create);
+  client client_join{context};
+  sync(client_join, {});
 }
