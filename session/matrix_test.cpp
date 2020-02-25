@@ -203,12 +203,9 @@ TEST(Matrix, CreateRoomWithParameter) {
   EXPECT_TRUE(response_json.contains("room_id"));
 }
 
-TEST(Matrix, JoinRoom) {
-  boost::asio::io_context context;
-  client client_creator{context};
-  auto room_id = create_room(client_creator);
-  client client_join{context};
-  http::client &http_join = client_join.http_client;
+namespace {
+void join_room_by_id(client &joiner, std::string room_id) {
+  http::client &http_join = joiner.http_client;
   auto join_path = http::target_prefix + "rooms/" + room_id + "/join";
   auto join_request = nlohmann::json::object();
   auto response = http_join.post(join_path, join_request);
@@ -216,4 +213,28 @@ TEST(Matrix, JoinRoom) {
   auto response_json = nlohmann::json::parse(response.body());
   EXPECT_TRUE(response_json.contains("room_id"));
   EXPECT_EQ(response_json["room_id"], room_id);
+}
+} // namespace
+
+TEST(Matrix, JoinRoom) {
+  boost::asio::io_context context;
+  client client_creator{context};
+  auto room_id = create_room(client_creator);
+  client client_join{context};
+  join_room_by_id(client_join, room_id);
+}
+
+TEST(Matrix, Sync) {
+  boost::asio::io_context context;
+  client client_creator{context};
+  auto room_id = create_room(client_creator);
+  client client_join{context};
+  join_room_by_id(client_join, room_id);
+  http::client &http_creator = client_creator.http_client;
+
+  auto sync_path = http::target_prefix + "sync";
+  auto response = http_creator.get(sync_path);
+  EXPECT_EQ(response.result(), boost::beast::http::status::ok);
+  response = http_creator.get(sync_path);
+  EXPECT_EQ(response.result(), boost::beast::http::status::ok);
 }
