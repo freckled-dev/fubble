@@ -110,33 +110,51 @@ TEST(Matrix, Versions) {
 }
 
 namespace {
+void check_valid_registration(const nlohmann::json &check) {
+  EXPECT_TRUE(check.contains("user_id"));
+  EXPECT_TRUE(check.contains("access_token"));
+  EXPECT_TRUE(check.contains("device_id"));
+}
 nlohmann::json register_as_guest(http::client &client) {
-  const std::string target = http::target_prefix
-#if 1
-                             + "register?kind=guest"
-#endif
-      ;
+  const std::string target = http::target_prefix + "register?kind=guest";
   auto register_ = nlohmann::json::object();
-  register_["password"] = ""; // mandatory if not guest
-  register_["initial_device_display_name"] = "A fun name";
+  register_["initial_device_display_name"] = "A fun guest name";
   auto auth = nlohmann::json::object();
   auth["type"] = "m.login.dummy";
   register_["auth"] = auth;
   auto response = client.post(target, register_);
   EXPECT_EQ(response.result(), boost::beast::http::status::ok);
   auto check = nlohmann::json::parse(response.body());
-  EXPECT_TRUE(check.contains("user_id"));
-  EXPECT_TRUE(check.contains("access_token"));
-  EXPECT_TRUE(check.contains("device_id"));
+  check_valid_registration(check);
+  return check;
+}
+nlohmann::json register_as_user(http::client &client) {
+  const std::string target = http::target_prefix + "register";
+  auto register_ = nlohmann::json::object();
+  register_["password"] = ""; // mandatory if not guest
+  register_["initial_device_display_name"] = "A fun user name";
+  auto auth = nlohmann::json::object();
+  auth["type"] = "m.login.dummy";
+  register_["auth"] = auth;
+  auto response = client.post(target, register_);
+  EXPECT_EQ(response.result(), boost::beast::http::status::ok);
+  auto check = nlohmann::json::parse(response.body());
+  check_valid_registration(check);
   return check;
 }
 } // namespace
 
 // https://matrix.org/docs/spec/client_server/latest#account-registration-and-management
-TEST(Matrix, Registration) {
+TEST(Matrix, RegistrationGuest) {
   boost::asio::io_context context;
   http::client client{context};
   register_as_guest(client);
+}
+
+TEST(Matrix, RegistrationUser) {
+  boost::asio::io_context context;
+  http::client client{context};
+  register_as_user(client);
 }
 
 namespace {
@@ -145,39 +163,57 @@ struct client {
   http::client http_client{context};
 
   client(boost::asio::io_context &context) : context(context) {
-    auto response = register_as_guest(http_client);
+    auto response = register_as_user(http_client);
     auto token = response["access_token"];
     http_client.auth_token = token;
   }
 };
+std::string create_room(client &client_) {
+  http::client &http_client = client_.http_client;
+  auto create = nlohmann::json::object();
+  auto response = http_client.post(http::target_prefix + "createRoom", create);
+  EXPECT_EQ(response.result(), boost::beast::http::status::ok);
+  auto response_json = nlohmann::json::parse(response.body());
+  EXPECT_TRUE(response_json.contains("room_id"));
+  return response_json["room_id"];
+}
 } // namespace
 
 TEST(Matrix, CreateRoom) {
   boost::asio::io_context context;
   client client_{context};
-  http::client &http_client = client_.http_client;
-
-  nlohmann::json create = nlohmann::json::object();
-  auto response = http_client.post(http::target_prefix + "createRoom", create);
-  EXPECT_EQ(response.result(), boost::beast::http::status::ok);
+  EXPECT_FALSE(create_room(client_).empty());
 }
 
-TEST(Matrix, CreateRoomWithAlias) {
+TEST(Matrix, CreateRoomWithParameter) {
   boost::asio::io_context context;
   client client_{context};
   http::client &http_client = client_.http_client;
 
   auto create = nlohmann::json::object();
+#if 0
   create["room_alias_name"] = "fun";
+#endif
   auto creation_content = nlohmann::json::object();
   creation_content["m.federate"] = false;
   create["creation_content"] = creation_content;
   auto response = http_client.post(http::target_prefix + "createRoom", create);
   EXPECT_EQ(response.result(), boost::beast::http::status::ok);
-#if 0
-  response = http_client.post(http::target_prefix + "createRoom", create);
-  EXPECT_EQ(response.result(), boost::beast::http::status::bad_request);
   auto response_json = nlohmann::json::parse(response.body());
-  EXPECT_EQ(response_json["errcode"], "M_ROOM_IN_USE");
-#endif
+  EXPECT_TRUE(response_json.contains("room_id"));
+}
+
+TEST(Matrix, JoinRoom) {
+  boost::asio::io_context context;
+  client client_creator{context};
+  auto room_id = create_room(client_creator);
+  client client_join{context};
+  http::client &http_join = client_join.http_client;
+  auto join_path = http::target_prefix + "rooms/" + room_id + "/join";
+  auto join_request = nlohmann::json::object();
+  auto response = http_join.post(join_path, join_request);
+  EXPECT_EQ(response.result(), boost::beast::http::status::ok);
+  auto response_json = nlohmann::json::parse(response.body());
+  EXPECT_TRUE(response_json.contains("room_id"));
+  EXPECT_EQ(response_json["room_id"], room_id);
 }
