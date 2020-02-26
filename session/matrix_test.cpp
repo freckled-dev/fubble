@@ -3,6 +3,7 @@
 #include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>
 #include <boost/beast/version.hpp>
+#include <fmt/chrono.h>
 #include <fmt/format.h>
 #include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
@@ -78,6 +79,16 @@ struct client {
     request.prepare_payload();
     BOOST_LOG_SEV(logger, logging::severity::info)
         << "post request:" << request;
+    boost::beast::http::write(stream, request);
+    return read_response();
+  }
+
+  response_type put(std::string target, const nlohmann::json &message) {
+    request_type request{boost::beast::http::verb::put, target, http::version};
+    set_default_request_headers(request);
+    request.body() = message.dump();
+    request.prepare_payload();
+    BOOST_LOG_SEV(logger, logging::severity::info) << "put request:" << request;
     boost::beast::http::write(stream, request);
     return read_response();
   }
@@ -282,5 +293,92 @@ TEST(Matrix, Invite) {
   client client_create{context};
   auto room_id = create_room(client_create);
   client client_join{context};
-  sync(client_join, {});
+  auto join_sync = sync(client_join, {});
+  auto invite_path = http::target_prefix + "rooms/" + room_id + "/invite";
+  auto invite_request = nlohmann::json::object();
+  invite_request["user_id"] = client_join.user_id;
+  auto invite_response =
+      client_create.http_client.post(invite_path, invite_request);
+  EXPECT_EQ(invite_response.result(), boost::beast::http::status::ok);
+  join_sync = sync(client_join, join_sync.next_batch);
+  auto rooms_invite = join_sync.repsonse["rooms"]["invite"];
+  EXPECT_TRUE(rooms_invite.contains(room_id));
+}
+
+TEST(Matrix, Message) {
+  boost::asio::io_context context;
+  client client_create{context};
+  auto room_id = create_room(client_create);
+  auto &http_client = client_create.http_client;
+  for (int transactionId = 0; transactionId < 4; ++transactionId) {
+    std::string path = http::target_prefix + "rooms/" + room_id +
+                       "/send/m.room.message/" + std::to_string(transactionId);
+    auto request = nlohmann::json::object();
+    request["msgtype"] = "m.text";
+    request["body"] =
+        "hello world, transactionId:" + std::to_string(transactionId);
+    std::chrono::steady_clock::time_point begin =
+        std::chrono::steady_clock::now();
+    auto response = http_client.put(path, request);
+    EXPECT_EQ(response.result(), boost::beast::http::status::ok);
+    auto diff = std::chrono::duration_cast<std::chrono::milliseconds>(
+        std::chrono::steady_clock::now() - begin);
+    BOOST_LOG_SEV(logger, logging::severity::info)
+        << fmt::format("message send needed: {}", diff);
+  }
+}
+
+TEST(Matrix, CustomMessage) {
+  boost::asio::io_context context;
+  client client_create{context};
+  auto room_id = create_room(client_create);
+  client client_join{context};
+  join_room_by_id(client_join, room_id);
+  auto join_sync = sync(client_join, {});
+  auto &http_client = client_create.http_client;
+  std::string path = http::target_prefix + "rooms/" + room_id +
+                     "/send/io.fubble.custom/" + std::to_string(1);
+  auto request = nlohmann::json::object();
+  request["some_content"] = "hello world";
+  auto response = http_client.put(path, request);
+  EXPECT_EQ(response.result(), boost::beast::http::status::ok);
+  join_sync = sync(client_join, join_sync.next_batch);
+  auto room_events =
+      join_sync.repsonse["rooms"]["join"][room_id]["timeline"]["events"];
+  EXPECT_EQ(room_events.size(), std::size_t{1});
+  auto check = room_events[0];
+  std::string check_type = check["type"];
+  EXPECT_EQ(check_type, "io.fubble.custom");
+  EXPECT_TRUE(check["content"].contains("some_content"));
+  std::string check_some_content = check["content"]["some_content"];
+  EXPECT_EQ(check_some_content, "hello world");
+}
+
+TEST(Matrix, CustomState) {
+  boost::asio::io_context context;
+  client client_create{context};
+  auto room_id = create_room(client_create);
+  client client_join{context};
+  join_room_by_id(client_join, room_id);
+  auto join_sync = sync(client_join, {});
+  auto &http_client = client_create.http_client;
+  std::string path = http::target_prefix + "rooms/" + room_id +
+                     "/state/io.fubble.custom/state_name";
+  auto request = nlohmann::json::object();
+  request["some_content"] = "hello world";
+  auto response = http_client.put(path, request);
+  EXPECT_EQ(response.result(), boost::beast::http::status::ok);
+
+  join_sync = sync(client_join, join_sync.next_batch);
+  auto room_events =
+      join_sync.repsonse["rooms"]["join"][room_id]["timeline"]["events"];
+  EXPECT_EQ(room_events.size(), std::size_t{1});
+  auto check = room_events[0];
+  std::string check_type = check["type"];
+  EXPECT_EQ(check_type, "io.fubble.custom");
+  std::string check_state_key = check["state_key"];
+  EXPECT_EQ(check_state_key, "state_name");
+  EXPECT_TRUE(check["content"].contains("some_content"));
+  std::string check_some_content = check["content"]["some_content"];
+  EXPECT_EQ(check_some_content, "hello world");
 }
