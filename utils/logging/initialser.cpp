@@ -38,6 +38,7 @@ void colorized_console_formatter(boost::log::record_view const &rec,
     throw std::runtime_error("colorized_console_formatter: extraction failed");
   bool colored{};
   switch (severity_.get()) {
+  // TODO evaluate https://github.com/agauniyal/rang for color setting
   case severity::error:
     strm << "\033[41m";
     colored = true;
