@@ -1,7 +1,7 @@
 #ifndef WEBSOCKET_CONNECTION_HPP
 #define WEBSOCKET_CONNECTION_HPP
 
-#include "signalling/logger.hpp"
+#include "logger.hpp"
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/beast/websocket/stream.hpp>
 #include <boost/thread/future.hpp>
@@ -26,7 +26,9 @@ private:
   void on_send(const boost::system::error_code &error, std::size_t);
   void on_read(const boost::system::error_code &error, std::size_t);
 
-  signalling::logger logger{"connection"};
+  class logger logger {
+    "connection"
+  };
   stream_type stream;
   boost::beast::flat_buffer buffer;
 

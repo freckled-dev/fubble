@@ -2,8 +2,7 @@
 #define WEBSOCKET_ACCEPTOR_HPP
 
 #include "connection_ptr.hpp"
-#include "logging/logger.hpp"
-#include "signalling/logger.hpp"
+#include "logger.hpp"
 #include <boost/asio/io_context.hpp>
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/signals2/signal.hpp>
@@ -25,7 +24,7 @@ private:
   void run();
   void successful_tcp(connection_ptr connection_);
 
-  signalling::logger logger{"acceptor"};
+  websocket::logger logger{"acceptor"};
   boost::asio::ip::tcp::acceptor acceptor_;
   connection_creator &creator;
 };
