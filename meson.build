@@ -41,6 +41,7 @@ google_webrtc_dep = dependency('google-webrtc')
 nakama_dep = dependency('nakama')
 
 subdir('utils')
+subdir('websocket')
 subdir('signalling')
 subdir('webrtc_peer')
 subdir('session')
