@@ -1,0 +1,104 @@
+@startuml
+  
+namespace temporary_room {
+
+namespace net {
+
+    class connection {
+        send_room_id(string)
+        future<message> read()
+    }
+    connection o-- json_message
+    class connector {
+        future connect()
+    }
+    connector --> connection : creates
+    class acceptor {
+        signal on_connection
+    }
+    acceptor ---> connection : creates
+
+    abstract class message {
+        + string type
+    }
+    message <|-- joined
+    message <|-- error
+    class joined {
+        + string room_id
+    }
+    class error {
+        + string description
+    }
+
+    class json_message {
+        serialize()
+        variant parse()
+    }
+    json_message --> joined: creates\nserializes
+    json_message --> error: creates\nserializes
+}
+
+namespace rooms {
+    class rooms {
+        map<room> rooms
+
+        add_participant(participant_id, room_name)
+        remove_participant()
+    }
+    rooms *-- rooms_callack
+    rooms o-- participant
+
+    interface rooms_callack {
+        future<room_id> create()
+        void destroy(name)
+    }
+
+    interface participant {
+        set_room(room_id)
+    }
+}
+
+namespace matrix {
+    class room_factory {
+        future<id> create()
+        future<> destroy(id)
+    }
+}
+
+namespace server {
+    class server {
+        run()
+        close()
+    }
+    server o-- temporary_room.net.acceptor
+    server o-- temporary_room.rooms.rooms
+    server o-- matrix_rooms_adapter
+    server --> net_participant_adapter : creates
+
+    class net_participant_adapter {
+    }
+    net_participant_adapter o-- temporary_room.net.connection
+    net_participant_adapter o-- temporary_room.rooms.participant
+
+    class matrix_rooms_adapter {
+    }
+    matrix_rooms_adapter --|> temporary_room.rooms.rooms_callack
+    matrix_rooms_adapter o-- temporary_room.matrix.room_factory
+}
+
+namespace client {
+class client {
+    future<room_id> connect(room_name)
+}
+class connection {
+    signal on_joined
+    signal on_error
+}
+client o-- temporary_room.net.connector
+client *-- connection: creates
+connection o-- temporary_room.net.connection
+}
+
+}
+
+@enduml
