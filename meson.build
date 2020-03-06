@@ -14,7 +14,7 @@ boost_dep = declare_dependency(
       ],
     dependencies : [boost_dep_pkg]
     )
-gtest_dep = dependency('gtest')
+gtest_dep = dependency('gtest', include_type : 'system')
 fmt_dep = dependency('fmt')
 json_dep = dependency('jsonformoderncpp')
 boost_di_dep = dependency('boost-di')
@@ -46,4 +46,5 @@ subdir('signalling')
 subdir('webrtc_peer')
 subdir('session')
 subdir('client')
+subdir('temporary_room')
 

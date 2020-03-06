@@ -45,10 +45,10 @@ namespace rooms {
         add_participant(participant_id, room_name)
         remove_participant()
     }
-    rooms *-- rooms_callack
+    rooms *-- room_factory
     rooms o-- participant
 
-    interface rooms_callack {
+    interface room_factory {
         future<room_id> create()
         void destroy(name)
     }
@@ -82,7 +82,7 @@ namespace server {
 
     class matrix_rooms_adapter {
     }
-    matrix_rooms_adapter --|> temporary_room.rooms.rooms_callack
+    matrix_rooms_adapter --|> temporary_room.rooms.room_factory
     matrix_rooms_adapter o-- temporary_room.matrix.room_factory
 }
 
