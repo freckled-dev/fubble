@@ -13,16 +13,6 @@ test('nakama test',
     ],
   timeout: 8)
 
-matrix_test = executable('matrix_test',
-  ['matrix_test.cpp'],
-  dependencies : [gtest_dep, json_dep,  utils_dep, fmt_dep]
-  , link_with: [test_main]
-  )
-test('matrix test',
-  matrix_test,
-  env: [ 'ASAN_OPTIONS=fast_unwind_on_malloc=0' ]
-  )
-
 session = library('session',
   ['client.cpp', 'room_joiner.cpp', 'room.cpp',
     'nakama_realtime_client_signals.cpp', 'client_connector.cpp'],
