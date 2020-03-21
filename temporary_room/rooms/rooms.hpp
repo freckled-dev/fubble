@@ -21,6 +21,7 @@ class participant {
 public:
   virtual ~participant() = default;
   virtual void set_room(const room_id &id) = 0;
+  virtual void set_error(const std::runtime_error &error) = 0;
 };
 
 class rooms {
@@ -29,7 +30,8 @@ public:
   ~rooms();
 
   void add_participant(participant &add, const room_name &name);
-  void remove_participant(participant &remove);
+  void remove_participant(participant &remove, const room_name &name);
+  std::size_t get_room_count();
 
 protected:
   void create(const room_name &name);
