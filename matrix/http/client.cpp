@@ -15,6 +15,16 @@ client::async_result_future client::get(const std::string &target) {
   return promise->get_future();
 }
 
+client::async_result_future client::post(const std::string &target,
+                                         const nlohmann::json &content) {
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "post, target:" << target;
+  create_promise();
+  BOOST_ASSERT(!current_action);
+  current_action = std::make_unique<post_action>(target, content);
+  connect_and_do_action();
+  return promise->get_future();
+}
+
 void client::create_promise() {
   BOOST_ASSERT(!promise);
   promise = std::make_unique<async_result_promise>();
@@ -89,6 +99,7 @@ void client::do_request() {
               std::string("Bearer ") + auth_token.value());
 #endif
   // BOOST_LOG_SEV(logger, logging::severity::trace) << "request:" << request;
+  request.prepare_payload();
   std::weak_ptr<int> alive = alive_check;
   boost::beast::http::async_write(
       stream, request, [this, alive = std::move(alive)](auto error, auto) {
@@ -128,5 +139,13 @@ void client::get_action::do_(client &self) {
   std::string target_with_prefix = self.fields.target_prefix + target;
   self.request = request_type{boost::beast::http::verb::get, target_with_prefix,
                               self.fields.version};
+  self.do_request();
+}
+
+void client::post_action::do_(client &self) {
+  std::string target_with_prefix = self.fields.target_prefix + target;
+  self.request = request_type{boost::beast::http::verb::post,
+                              target_with_prefix, self.fields.version};
+  self.request.body() = content.dump();
   self.do_request();
 }
