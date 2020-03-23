@@ -1,5 +1,5 @@
 matrix = library('matrix',
-  ['http/client.cpp'],
+  ['http/client.cpp', 'authentification.cpp', 'error.cpp'],
   dependencies: [utils_dep, fmt_dep, json_dep],
   include_directories: ['..']
   )
@@ -11,7 +11,9 @@ matrix_dep = declare_dependency(
 matrix_test = executable('matrix_test',
   [
     # 'evaluation.cpp',
-    'http/client_test.cpp'],
+    'http/client_test.cpp',
+    'authentification_test.cpp'
+    ],
   dependencies : [gtest_dep, matrix_dep, fmt_dep],
   link_with: [test_main]
   )

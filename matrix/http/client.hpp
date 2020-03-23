@@ -55,7 +55,7 @@ protected:
   void read_response();
   void on_response_read(const boost::system::error_code &error);
 
-  matrix::logger logger{"http::connection"};
+  matrix::logger logger{"http::client"};
   boost::beast::tcp_stream stream;
   bool connected{};
   boost::asio::ip::tcp::resolver resolver;
@@ -72,6 +72,12 @@ protected:
   };
   struct get_action : action {
     using action::action;
+    void do_(client &self) override;
+  };
+  struct post_action : action {
+    nlohmann::json content;
+    post_action(const std::string &target, const nlohmann::json &content)
+        : action(target), content(content) {}
     void do_(client &self) override;
   };
   std::unique_ptr<action> current_action;
