@@ -2,21 +2,21 @@
 #include <boost/thread/executors/inline_executor.hpp>
 #include <gtest/gtest.h>
 
-TEST(Client, Instance) {
+TEST(HttpClient, Instance) {
   using namespace matrix::http;
   boost::asio::io_context context;
   client::server server{"localhost", "http"};
-  client::default_fields fields{server};
+  client::fields fields{server};
   client_factory factory{context, server, fields};
   EXPECT_TRUE(factory.create());
 }
 
-TEST(Client, Get) {
+TEST(HttpClient, Get) {
   using namespace matrix::http;
   boost::asio::io_context context;
   boost::inline_executor executor;
   client::server server{"localhost", "8008"};
-  client::default_fields fields{server};
+  client::fields fields{server};
   fields.target_prefix = "/_matrix/client/";
   client_factory factory{context, server, fields};
   auto client_ = factory.create();

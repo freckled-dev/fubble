@@ -9,7 +9,6 @@
 #include <boost/beast/version.hpp>
 #include <boost/thread/future.hpp>
 #include <nlohmann/json.hpp>
-#include <string>
 
 namespace matrix::http {
 class client {
@@ -18,22 +17,23 @@ public:
     std::string server;
     std::string port;
   };
-  struct default_fields {
-    default_fields() = default;
-    default_fields(const server &server) {
-      host = server.server + ":" + server.port;
-    }
+  struct fields {
+    fields() = default;
+    fields(const server &server) { host = server.server + ":" + server.port; }
     std::string host;
     std::string target_prefix{"/_matrix/client/r0/"};
     std::string agent = BOOST_BEAST_VERSION_STRING;
     int version = 11; // http 1.1
+    std::optional<std::string> auth_token;
   };
   client(boost::asio::io_context &context, const server &server_,
-         const default_fields &fields);
+         const fields &fields_);
+  ~client();
 
   using async_result = std::pair<boost::beast::http::status, nlohmann::json>;
   using async_result_future = boost::future<async_result>;
   using async_result_promise = boost::promise<async_result>;
+  // TODO refactor. shall not do one get/post at a time
   async_result_future get(const std::string &target);
   async_result_future post(const std::string &target,
                            const nlohmann::json &content);
@@ -60,7 +60,7 @@ protected:
   bool connected{};
   boost::asio::ip::tcp::resolver resolver;
   const server server_;
-  const default_fields fields;
+  const fields fields_;
   std::unique_ptr<async_result_promise> promise;
   std::shared_ptr<int> alive_check = std::make_shared<int>(42);
   struct action {

@@ -3,8 +3,16 @@
 using namespace matrix::http;
 
 client::client(boost::asio::io_context &context, const server &server_,
-               const default_fields &fields)
-    : stream{context}, resolver{context}, server_{server_}, fields{fields} {}
+               const fields &fields_)
+    : stream{context}, resolver{context}, server_{server_}, fields_{fields_} {}
+
+client::~client() {
+#if 0
+  if (!promise)
+    return;
+  promise->set_exception(std::runtime_error("cancelled"));
+#endif
+}
 
 client::async_result_future client::get(const std::string &target) {
   BOOST_LOG_SEV(logger, logging::severity::trace) << "get, target:" << target;
@@ -90,14 +98,12 @@ bool client::check_and_handle_error(const boost::system::error_code &error) {
 }
 
 void client::do_request() {
-  request.set(boost::beast::http::field::host, fields.host);
-  request.set(boost::beast::http::field::user_agent, fields.agent);
+  request.set(boost::beast::http::field::host, fields_.host);
+  request.set(boost::beast::http::field::user_agent, fields_.agent);
   request.set(boost::beast::http::field::accept, "application/json");
-#if 0
-    if (auth_token)
-      request.set(boost::beast::http::field::authorization,
-              std::string("Bearer ") + auth_token.value());
-#endif
+  if (fields_.auth_token)
+    request.set(boost::beast::http::field::authorization,
+                std::string("Bearer ") + fields_.auth_token.value());
   // BOOST_LOG_SEV(logger, logging::severity::trace) << "request:" << request;
   request.prepare_payload();
   std::weak_ptr<int> alive = alive_check;
@@ -133,19 +139,20 @@ void client::on_response_read(const boost::system::error_code &error) {
   auto body = response.body();
   auto json_body = nlohmann::json::parse(body);
   promise->set_value(std::make_pair(http_code, json_body));
+  clear_promise_and_action();
 }
 
 void client::get_action::do_(client &self) {
-  std::string target_with_prefix = self.fields.target_prefix + target;
+  std::string target_with_prefix = self.fields_.target_prefix + target;
   self.request = request_type{boost::beast::http::verb::get, target_with_prefix,
-                              self.fields.version};
+                              self.fields_.version};
   self.do_request();
 }
 
 void client::post_action::do_(client &self) {
-  std::string target_with_prefix = self.fields.target_prefix + target;
+  std::string target_with_prefix = self.fields_.target_prefix + target;
   self.request = request_type{boost::beast::http::verb::post,
-                              target_with_prefix, self.fields.version};
+                              target_with_prefix, self.fields_.version};
   self.request.body() = content.dump();
   self.do_request();
 }
