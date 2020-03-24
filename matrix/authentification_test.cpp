@@ -10,8 +10,8 @@ using namespace matrix;
 struct Authentifification : ::testing::Test {
   boost::inline_executor executor;
   boost::asio::io_context context;
-  http::client::server server_information{"localhost", "8008"};
-  http::client::fields fields_information{server_information};
+  http::server server_information{"localhost", "8008"};
+  http::fields fields_information{server_information};
   http::client_factory http_client_factory{context, server_information,
                                            fields_information};
   room_factory room_factory_;

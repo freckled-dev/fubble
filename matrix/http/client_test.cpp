@@ -5,9 +5,9 @@
 TEST(HttpClient, Instance) {
   using namespace matrix::http;
   boost::asio::io_context context;
-  client::server server{"localhost", "http"};
-  client::fields fields{server};
-  client_factory factory{context, server, fields};
+  server server_{"localhost", "http"};
+  fields fields{server_};
+  client_factory factory{context, server_, fields};
   EXPECT_TRUE(factory.create());
 }
 
@@ -15,10 +15,10 @@ TEST(HttpClient, Get) {
   using namespace matrix::http;
   boost::asio::io_context context;
   boost::inline_executor executor;
-  client::server server{"localhost", "8008"};
-  client::fields fields{server};
+  server server_{"localhost", "8008"};
+  fields fields{server_};
   fields.target_prefix = "/_matrix/client/";
-  client_factory factory{context, server, fields};
+  client_factory factory{context, server_, fields};
   auto client_ = factory.create();
   bool called{};
   auto got = client_->get("versions").then(executor, [&](auto result) {

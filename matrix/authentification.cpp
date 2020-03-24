@@ -14,7 +14,6 @@ boost::future<authentification::client_ptr>
 authentification::register_as_guest() {
   const std::string target = "register?kind=guest";
   auto register_ = nlohmann::json::object();
-  // register_["initial_device_display_name"] = "A fun guest name";
   auto auth = nlohmann::json::object();
   auth["type"] = "m.login.dummy";
   register_["auth"] = auth;
@@ -37,7 +36,6 @@ boost::future<authentification::client_ptr>
 authentification::register_(const std::string &username,
                             const std::string &password) {
   auto register_ = nlohmann::json::object();
-  // register_["initial_device_display_name"] = "A fun guest name";
   auto auth = nlohmann::json::object();
   auth["type"] = "m.login.dummy";
   register_["auth"] = auth;
@@ -49,7 +47,6 @@ authentification::register_(const std::string &username,
 boost::future<authentification::client_ptr>
 authentification::register_anonymously() {
   auto register_ = nlohmann::json::object();
-  // register_["initial_device_display_name"] = "A fun guest name";
   auto auth = nlohmann::json::object();
   auth["type"] = "m.login.dummy";
   register_["auth"] = auth;

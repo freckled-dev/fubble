@@ -15,7 +15,7 @@ public:
 };
 
 class module_logger : public logger {
-public:
+protected:
   module_logger(const std::string &module, const std::string &descriptor);
 };
 
