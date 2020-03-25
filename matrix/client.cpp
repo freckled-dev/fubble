@@ -5,14 +5,17 @@
 
 using namespace matrix;
 
-client::client(room_factory &room_factory_, http::client_factory &http_factory,
+client::client(factory &factory_, http::client_factory &http_factory,
                const information &information_)
-    : room_factory_(room_factory_), http_factory(http_factory),
+    : factory_(factory_), http_factory(http_factory),
       information_(information_) {
   http_client = create_http_client();
+  users_ = factory_.create_users(*this);
 }
 
 const std::string &client::get_user_id() const { return information_.user_id; }
+
+users &client::get_users() const { return *users_; }
 
 std::unique_ptr<http::client> client::create_http_client() {
   auto fields = http_factory.get_fields();
@@ -43,7 +46,7 @@ boost::future<std::unique_ptr<room>> client::create_room() {
         auto response_json = response.second;
         error::check_matrix_response(response.first, response_json);
         std::string room_id = response_json["room_id"];
-        return room_factory_.create(*this, room_id);
+        return factory_.create_room(*this, room_id);
       });
 }
 
@@ -56,7 +59,7 @@ client::join_room_by_id(const std::string &id) {
     auto response_json = response.second;
     error::check_matrix_response(response.first, response_json);
     std::string room_id = response_json["room_id"];
-    return room_factory_.create(*this, room_id);
+    return factory_.create_room(*this, room_id);
   });
 }
 
@@ -79,7 +82,7 @@ void client::on_synced(const nlohmann::json &content) {
       << "content:" << content.dump(2);
 #endif
   auto presence = content["presence"];
-#if 0
+#if 1
   BOOST_LOG_SEV(logger, logging::severity::trace) << fmt::format(
       "user_id:'{}', presence:{}", get_user_id(), presence.dump(2));
 #endif

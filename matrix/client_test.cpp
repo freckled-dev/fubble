@@ -1,28 +1,8 @@
-#include "authentification.hpp"
-#include "client_factory.hpp"
-#include "error.hpp"
-#include "room.hpp"
-#include <boost/thread/executors/inline_executor.hpp>
-#include <gtest/gtest.h>
+#include "fixture.hpp"
 
 using namespace matrix;
 
-struct Client : ::testing::Test {
-  boost::inline_executor executor;
-  boost::asio::io_context context;
-  http::server server_information{"localhost", "8008"};
-  http::fields fields_information{server_information};
-  http::client_factory http_client_factory{context, server_information,
-                                           fields_information};
-  room_factory room_factory_;
-  client_factory client_factory_{room_factory_, http_client_factory};
-  authentification authentification_{http_client_factory, client_factory_};
-
-  void run_context() {
-    context.run();
-    context.reset();
-  }
-};
+struct Client : fixture {};
 
 TEST_F(Client, Instance) {}
 
