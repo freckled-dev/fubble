@@ -13,6 +13,8 @@ public:
   users(client &client_);
   user &get_or_add_user(const std::string &id);
 
+  using user_list = std::deque<std::unique_ptr<user>>;
+  inline const user_list &get_all() const { return users_; }
   boost::signals2::signal<void(client &)> on_add;
 
 protected:
