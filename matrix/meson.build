@@ -1,6 +1,7 @@
 matrix = library('matrix',
   ['http/client.cpp', 'authentification.cpp', 'error.cpp', 'client.cpp',
-    'room_factory.cpp', 'client_factory.cpp', 'room.cpp', 'http/action.cpp'],
+    'factory.cpp', 'client_factory.cpp', 'room.cpp', 'http/action.cpp',
+    'user.cpp', 'users.cpp'],
   dependencies: [utils_dep, fmt_dep, json_dep],
   include_directories: ['..']
   )

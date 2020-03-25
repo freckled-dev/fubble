@@ -7,13 +7,13 @@
 namespace matrix {
 class client_factory {
 public:
-  client_factory(room_factory &room_factory_,
+  client_factory(factory &room_factory_,
                  http::client_factory &http_client_factory);
 
   std::unique_ptr<client> create(const client::information &information);
 
 protected:
-  room_factory &room_factory_;
+  factory &room_factory_;
   http::client_factory &http_client_factory;
 };
 } // namespace matrix

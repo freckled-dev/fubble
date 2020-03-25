@@ -1,7 +1,7 @@
 #include "authentification.hpp"
 #include "client_factory.hpp"
+#include "factory.hpp"
 #include "http/client_factory.hpp"
-#include "room_factory.hpp"
 #include "utils/uuid.hpp"
 #include <gtest/gtest.h>
 
@@ -14,7 +14,7 @@ struct Authentifification : ::testing::Test {
   http::fields fields_information{server_information};
   http::client_factory http_client_factory{context, server_information,
                                            fields_information};
-  room_factory room_factory_;
+  factory room_factory_;
   client_factory client_factory_{room_factory_, http_client_factory};
   authentification test{http_client_factory, client_factory_};
 };

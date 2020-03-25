@@ -6,9 +6,12 @@
 namespace matrix {
 class room;
 class client;
-class room_factory {
+class users;
+class factory {
 public:
-  std::unique_ptr<room> create(client &client_, const std::string &room_id);
+  std::unique_ptr<room> create_room(client &client_,
+                                    const std::string &room_id);
+  std::unique_ptr<users> create_users(client &client_);
 };
 } // namespace matrix
 
