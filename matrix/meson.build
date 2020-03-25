@@ -15,7 +15,8 @@ matrix_test = executable('matrix_test',
     # 'evaluation.cpp',
     'http/client_test.cpp',
     'client_test.cpp',
-    'authentification_test.cpp'
+    'authentification_test.cpp',
+    'users_test.cpp'
     ],
   dependencies : [gtest_dep, matrix_dep, fmt_dep],
   link_with: [test_main]

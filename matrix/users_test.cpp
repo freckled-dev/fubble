@@ -9,5 +9,10 @@ TEST_F(Users, Fun) {
   client_->sync();
   run_context();
   auto &users_ = client_->get_users();
+  const auto &all = users_.get_all();
+  EXPECT_EQ(all.size(), 1);
+  const auto &first = all.front();
+  EXPECT_EQ(first->get_id(), client_->get_user_id());
+  EXPECT_EQ(first->get_presence(), "online");
 }
 
