@@ -3,6 +3,7 @@
 
 #include <boost/beast/http/status.hpp>
 #include <boost/exception/exception.hpp>
+#include <boost/thread/future.hpp>
 #include <nlohmann/json.hpp>
 
 namespace matrix::error {
@@ -18,6 +19,11 @@ public:
   const char *what() const noexcept override;
 };
 
+void check_matrix_response(
+    boost::future<std::pair<boost::beast::http::status, nlohmann::json>>
+        &response_);
+void check_matrix_response(
+    std::pair<boost::beast::http::status, nlohmann::json> &response_);
 void check_matrix_response(boost::beast::http::status code,
                            const nlohmann::json &response_);
 } // namespace matrix::error

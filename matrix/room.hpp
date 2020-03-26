@@ -11,30 +11,33 @@
 
 namespace matrix {
 class client;
+class user;
 class room {
 public:
   room(client &client_, const std::string &id);
   const std::string &get_id() const;
   boost::future<void> invite_by_user_id(const std::string &user_id);
-  void kick();
+  boost::future<void> kick(const std::string &user_id);
+  using members_type = std::deque<user *>;
+  const members_type &get_members() const;
+  std::optional<user *> get_member_by_id(const std::string &id);
+
+  boost::signals2::signal<void(const user &)> on_join;
+  boost::signals2::signal<void(const std::string &)> on_leave;
+
+protected:
   struct member {
     std::string id;
     std::string display_name;
   };
-  using members_type = std::deque<member>;
-  const members_type &get_members() const;
-
-  boost::signals2::signal<void(const member &)> on_join;
-  boost::signals2::signal<void(const std::string &)> on_leave;
-
-protected:
   void on_sync(const nlohmann::json &content);
-  void on_event_join(const nlohmann::json &parse);
-  void add_member(const member &member_);
+  void on_event_m_room_member(const nlohmann::json &parse);
+  void add_or_update_member(const member &member_);
   void remove_member(const std::string &member_);
 
   matrix::logger logger{"room"};
   boost::inline_executor executor;
+  client &client_;
   const std::string id;
   std::unique_ptr<http::client> http_client;
   boost::signals2::scoped_connection on_sync_connection;
