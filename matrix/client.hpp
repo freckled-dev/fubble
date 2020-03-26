@@ -3,12 +3,12 @@
 
 #include "factory.hpp"
 #include "http/client_factory.hpp"
+#include "rooms.hpp"
 #include "users.hpp"
 #include <boost/signals2/signal.hpp>
 #include <boost/thread/executors/inline_executor.hpp>
 
 namespace matrix {
-class users;
 class client {
 public:
   struct information {
@@ -21,12 +21,9 @@ public:
 
   const std::string &get_user_id() const;
   users &get_users() const;
+  rooms &get_rooms() const;
 
   std::unique_ptr<http::client> create_http_client();
-
-  boost::future<std::unique_ptr<room>> create_room();
-  void leave_room(const room &room_);
-  boost::future<std::unique_ptr<room>> join_room_by_id(const std::string &id);
 
   void set_display_name();
   boost::future<void>
@@ -45,6 +42,7 @@ protected:
   const information information_;
   std::optional<std::string> sync_next_batch;
   std::unique_ptr<users> users_;
+  std::unique_ptr<rooms> rooms_;
 };
 } // namespace matrix
 

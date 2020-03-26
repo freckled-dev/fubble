@@ -13,7 +13,7 @@ TEST_F(Client, CreateRoom) {
   auto done = test.then(executor,
                         [&](auto client_future) {
                           client_ = std::move(client_future.get());
-                          return client_.get()->create_room();
+                          return client_.get()->get_rooms().create_room();
                         })
                   .unwrap()
                   .then(executor, [&](auto room) {
@@ -35,16 +35,16 @@ TEST_F(Client, InviteByUserId) {
   run_context();
   auto inviter = inviter_future.get();
   auto invitee = invitee_future.get();
-  auto room_future = inviter->create_room();
+  auto room_future = inviter->get_rooms().create_room();
   run_context();
   auto room = room_future.get();
-  auto join_fail = invitee->join_room_by_id(room->get_id());
+  auto join_fail = invitee->get_rooms().join_room_by_id(room->get_id());
   run_context();
   EXPECT_THROW(join_fail.get(), error::response);
   auto invite_future = room->invite_by_user_id(invitee->get_user_id());
   run_context();
   invite_future.get();
-  auto join_success = invitee->join_room_by_id(room->get_id());
+  auto join_success = invitee->get_rooms().join_room_by_id(room->get_id());
   run_context();
   EXPECT_EQ(join_success.get()->get_id(), room->get_id());
 }
@@ -66,12 +66,13 @@ TEST_F(Client, SyncRoomJoin) {
   auto invitee = invitee_future.get();
   inviter->sync();
   invitee->sync();
-  auto room_future = inviter->create_room();
+  auto room_future = inviter->get_rooms().create_room();
   run_context();
   auto room = room_future.get();
   room->invite_by_user_id(invitee->get_user_id());
   run_context();
-  auto invitee_room_future = invitee->join_room_by_id(room->get_id());
+  auto invitee_room_future =
+      invitee->get_rooms().join_room_by_id(room->get_id());
   run_context();
   auto invitee_room = invitee_room_future.get();
   auto inviter_sync = inviter->sync(std::chrono::seconds(2));
