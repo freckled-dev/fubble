@@ -1,4 +1,5 @@
 #include "users.hpp"
+#include "client.hpp"
 
 using namespace matrix;
 
