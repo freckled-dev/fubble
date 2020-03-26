@@ -40,12 +40,12 @@ boost::future<void> client::sync(std::chrono::milliseconds timeout) {
 
 void client::on_synced(const nlohmann::json &content) {
   sync_next_batch = content["next_batch"];
-#if 0
+#if 1
   BOOST_LOG_SEV(logger, logging::severity::trace)
       << "content:" << content.dump(2);
 #endif
   auto presence = content["presence"];
-#if 1
+#if 0
   BOOST_LOG_SEV(logger, logging::severity::trace) << fmt::format(
       "user_id:'{}', presence:{}", get_user_id(), presence.dump(2));
 #endif

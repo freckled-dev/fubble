@@ -15,11 +15,14 @@ public:
   rooms(factory &factory_, client &client_);
 
   boost::future<room *> create_room();
-  void leave_room(const room &room_);
+  boost::future<void> leave_room(const room &room_);
+  boost::future<void> leave_room_by_id(const std::string &id);
   boost::future<room *> join_room_by_id(const std::string &id);
   using room_list = std::deque<std::unique_ptr<room>>;
   inline const room_list &get_rooms() { return rooms_; }
   std::optional<room *> get_room_by_id(const std::string &id);
+
+  boost::signals2::signal<void(const std::string &)> on_leave;
 
 protected:
   void on_sync(const nlohmann::json &content);

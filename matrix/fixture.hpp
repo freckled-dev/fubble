@@ -25,6 +25,20 @@ struct fixture : ::testing::Test {
     context.run();
     context.reset();
   }
+  inline std::unique_ptr<matrix::client> create_registered_client() {
+    auto client_future = authentification_.register_anonymously();
+    run_context();
+    return client_future.get();
+  }
+  inline std::unique_ptr<matrix::client> create_guest_client() {
+    auto client_future = authentification_.register_as_guest();
+    run_context();
+    return client_future.get();
+  }
+  inline void sync_client(matrix::client &client_) {
+    client_.sync();
+    run_context();
+  }
 };
 
 #endif

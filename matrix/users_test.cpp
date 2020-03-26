@@ -2,7 +2,7 @@
 
 struct Users : fixture {};
 
-TEST_F(Users, Fun) {
+TEST_F(Users, Sync) {
   auto client_future = authentification_.register_anonymously();
   run_context();
   auto client_ = client_future.get();

@@ -22,7 +22,21 @@ std::optional<room *> rooms::get_room_by_id(const std::string &id) {
   return found->get();
 }
 
-void rooms::on_sync(const nlohmann::json &content) { (void)content; }
+void rooms::on_sync(const nlohmann::json &content) {
+  auto leave = content["rooms"]["leave"];
+  for (const auto &leave_room : leave.items()) {
+    const std::string room_id = leave_room.key();
+    auto found =
+        std::find_if(rooms_.begin(), rooms_.end(), [&](const auto &check) {
+          return check->get_id() == room_id;
+        });
+    BOOST_ASSERT(found != rooms_.end());
+    if (found == rooms_.end())
+      continue;
+    rooms_.erase(found);
+    on_leave(room_id);
+  }
+}
 
 boost::future<room *> rooms::create_room() {
   nlohmann::json content = nlohmann::json::object();
@@ -52,6 +66,18 @@ boost::future<room *> rooms::create_room() {
         on_room_created(std::move(room_));
         return return_result;
       });
+}
+
+boost::future<void> rooms::leave_room(const room &room_) {
+  return leave_room_by_id(room_.get_id());
+}
+
+boost::future<void> rooms::leave_room_by_id(const std::string &id) {
+  auto target = fmt::format("rooms/{}/leave", id);
+  nlohmann::json content = nlohmann::json::object();
+  return http_client->post(target, content).then(executor, [](auto result) {
+    error::check_matrix_response(result);
+  });
 }
 
 boost::future<room *> rooms::join_room_by_id(const std::string &id) {
