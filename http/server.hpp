@@ -3,10 +3,10 @@
 
 #include <string>
 
-namespace matrix::http {
+namespace http {
 struct server {
   std::string server;
   std::string port;
 };
-} // namespace matrix::http
+} // namespace http
 #endif
