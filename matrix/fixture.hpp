@@ -13,7 +13,7 @@ struct fixture : ::testing::Test {
   boost::inline_executor executor;
   boost::asio::io_context context;
   matrix::http::server server_information{"localhost", "8008"};
-  matrix::http::fields fields_information{server_information};
+  matrix::http::fields fields_information = make_fields(server_information);
   matrix::http::client_factory http_client_factory{context, server_information,
                                                    fields_information};
   matrix::factory room_factory_;
@@ -21,6 +21,12 @@ struct fixture : ::testing::Test {
   matrix::authentification authentification_{http_client_factory,
                                              client_factory_};
 
+  inline static matrix::http::fields
+  make_fields(const matrix::http::server &server) {
+    matrix::http::fields result{server};
+    result.target_prefix = "/_matrix/client/r0/";
+    return result;
+  };
   inline void run_context() {
     context.run();
     context.reset();
