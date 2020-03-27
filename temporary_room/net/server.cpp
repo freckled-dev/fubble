@@ -15,9 +15,10 @@ bool connection::check_error(const boost::system::error_code error) {
   if (!error)
     return false;
   auto promise_copy = promise;
-  if (error == boost::beast::http::error::end_of_stream)
+  if (error == boost::beast::http::error::end_of_stream) {
+    BOOST_LOG_SEV(logger, logging::severity::trace) << "end_of_stream";
     promise_copy->set_value();
-  else
+  } else
     promise_copy->set_exception(boost::system::system_error(error));
   return true;
 }
@@ -34,7 +35,8 @@ void connection::read_next_request() {
 }
 
 void connection::on_got_request(const request_type &request) {
-  nlohmann::json content = nlohmann::json::parse(request.body());
+  const std::string request_body = request.body();
+  nlohmann::json content = nlohmann::json::parse(request_body);
   const auto target = request.target().to_string();
   auto response = on_request(target, content);
   response.then([this](auto result) { on_got_response(result); });
@@ -82,38 +84,42 @@ void acceptor::stop() {
 }
 
 boost::future<void> acceptor::run() {
-  boost::packaged_task<void(boost::asio::yield_context)> task{
-      [this](auto yield) { run(yield); }};
-  auto result = task.get_future();
-  boost::asio::spawn(context, std::move(task));
-  return result;
-}
-
-void acceptor::run(boost::asio::yield_context yield) {
+  run_promise = std::make_shared<boost::promise<void>>();
   const auto address = boost::asio::ip::make_address("0.0.0.0");
   const boost::asio::ip::tcp::endpoint endpoint{address, config_.port};
   acceptor_.open(endpoint.protocol());
   acceptor_.set_option(boost::asio::socket_base::reuse_address(true));
   acceptor_.listen();
-  for (;;)
-    accept(yield);
+  accept_next();
+  return run_promise->get_future();
 }
 
-void acceptor::accept(boost::asio::yield_context yield) {
-  boost::asio::ip::tcp::socket socket{context};
+unsigned short acceptor::get_port() const {
+  return acceptor_.local_endpoint().port();
+}
+
+void acceptor::accept_next() {
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "accept_next";
+  socket = std::make_unique<boost::asio::ip::tcp::socket>(context);
   boost::system::error_code error;
-  acceptor_.async_accept(socket, yield[error]);
-  if (error == boost::asio::error::operation_aborted)
-    return; // stop() got called
-  if (error)
-    throw boost::system::system_error(error);
-  do_session(std::move(socket), yield);
+  acceptor_.async_accept(*socket, [this](auto error) {
+    if (error) {
+      auto promise_copy = run_promise;
+      if (error == boost::asio::error::operation_aborted) {
+        BOOST_LOG_SEV(logger, logging::severity::trace) << "operation_aborted";
+        run_promise->set_value(); // stop() got called
+      } else
+        run_promise->set_exception(boost::system::system_error(error));
+      return;
+    }
+    do_session();
+    accept_next();
+  });
 }
 
-void acceptor::do_session(boost::asio::ip::tcp::socket &&socket,
-                          boost::asio::yield_context yield) {
-  (void)yield;
-  auto connection_ = std::make_shared<connection>(std::move(socket));
+void acceptor::do_session() {
+  auto connection_ = std::make_shared<connection>(std::move(*socket));
+  socket.reset();
   connection_->on_request = [this](const auto &target, const auto &content) {
     return on_request(target, content);
   };
