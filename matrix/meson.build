@@ -12,7 +12,7 @@ matrix_dep = declare_dependency(
   )
 matrix_test = executable('matrix_test',
   [
-    'evaluation.cpp',
+    # 'evaluation.cpp',
     'authentification_test.cpp', 'client_test.cpp',
     'http/client_test.cpp', 'rooms_test.cpp', 'users_test.cpp'
     ],

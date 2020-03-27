@@ -1,6 +1,6 @@
 temporary_room_rooms = library('temporary_room_rooms',
   ['rooms/rooms.cpp', 'matrix/room_factory.cpp',
-    'net/server.cpp'],
+    'net/server.cpp', 'net/client.cpp'],
   include_directories: '..',
   dependencies: [fmt_dep, json_dep, utils_dep],
   link_with: [],

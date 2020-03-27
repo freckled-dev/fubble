@@ -10,7 +10,7 @@ struct fields {
   fields() = default;
   fields(const server &server) { host = server.server + ":" + server.port; }
   std::string host;
-  std::string target_prefix{"/_matrix/client/r0/"};
+  std::string target_prefix;
   std::string agent = BOOST_BEAST_VERSION_STRING;
   // TODO support http 1.1
   int version = 10; // http 1.0
