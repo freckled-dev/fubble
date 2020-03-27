@@ -4,7 +4,7 @@
 #include "client.hpp"
 #include <memory>
 
-namespace matrix::http {
+namespace http {
 class client_factory {
 public:
   client_factory(boost::asio::io_context &context, server server_,
@@ -26,6 +26,6 @@ private:
   server server_;
   fields fields_;
 };
-} // namespace matrix::http
+} // namespace http
 
 #endif

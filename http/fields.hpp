@@ -5,7 +5,7 @@
 #include <boost/beast/version.hpp>
 #include <optional>
 
-namespace matrix::http {
+namespace http {
 struct fields {
   fields() = default;
   fields(const server &server) { host = server.server + ":" + server.port; }
@@ -16,6 +16,6 @@ struct fields {
   int version = 10; // http 1.0
   std::optional<std::string> auth_token;
 };
-} // namespace matrix::http
+} // namespace http
 
 #endif

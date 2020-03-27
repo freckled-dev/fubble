@@ -3,7 +3,7 @@
 #include <gtest/gtest.h>
 
 TEST(HttpClient, Instance) {
-  using namespace matrix::http;
+  using namespace http;
   boost::asio::io_context context;
   server server_{"localhost", "http"};
   fields fields{server_};
@@ -12,7 +12,7 @@ TEST(HttpClient, Instance) {
 }
 
 TEST(HttpClient, Get) {
-  using namespace matrix::http;
+  using namespace http;
   boost::asio::io_context context;
   boost::inline_executor executor;
   server server_{"localhost", "8008"};

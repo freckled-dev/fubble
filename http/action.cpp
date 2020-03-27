@@ -1,6 +1,6 @@
 #include "action.hpp"
 
-using namespace matrix::http;
+using namespace http;
 
 action::action(boost::asio::io_context &context, boost::beast::http::verb verb,
                const std::string &target, const server &server_,

@@ -9,7 +9,7 @@
 #include <boost/thread/future.hpp>
 #include <nlohmann/json.hpp>
 
-namespace matrix::http {
+namespace http {
 class action;
 class client {
 public:
@@ -31,13 +31,13 @@ protected:
   void add_action(const std::shared_ptr<action> &action_);
   void remove_action(const action *action_);
 
-  matrix::logger logger{"http::client"};
+  http::logger logger{"client"};
   boost::asio::io_context &context;
   boost::inline_executor executor;
   const server server_;
   const fields fields_;
   std::vector<std::shared_ptr<action>> actions;
 };
-} // namespace matrix::http
+} // namespace http
 
 #endif

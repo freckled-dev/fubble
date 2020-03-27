@@ -1,7 +1,7 @@
 #include "client.hpp"
 #include "action.hpp"
 
-using namespace matrix::http;
+using namespace http;
 
 client::client(boost::asio::io_context &context, const server &server_,
                const fields &fields_)

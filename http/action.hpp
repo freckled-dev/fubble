@@ -11,7 +11,7 @@
 #include <boost/thread/future.hpp>
 #include <nlohmann/json.hpp>
 
-namespace matrix::http {
+namespace http {
 class action {
 public:
   action(boost::asio::io_context &context, boost::beast::http::verb verb,
@@ -35,7 +35,7 @@ protected:
   void on_response_read(const boost::system::error_code &error);
   bool check_and_handle_error(const boost::system::error_code &error);
 
-  matrix::logger logger{"http::action"};
+  http::logger logger{"action"};
   boost::beast::tcp_stream stream;
   boost::asio::ip::tcp::resolver resolver;
   const server server_;
@@ -49,6 +49,6 @@ protected:
   boost::beast::flat_buffer response_buffer;
   std::shared_ptr<int> alive_check = std::make_shared<int>(42);
 };
-} // namespace matrix::http
+} // namespace http
 
 #endif
