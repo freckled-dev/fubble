@@ -44,12 +44,12 @@ protected:
   std::shared_ptr<response_type> response;
 };
 
-class server {
+class acceptor {
 public:
   struct config {
     unsigned short port;
   };
-  server(boost::asio::io_context &context, const config &config_);
+  acceptor(boost::asio::io_context &context, const config &config_);
 
   void stop();
   boost::future<void> run();
@@ -67,7 +67,7 @@ protected:
   temporary_room::logger logger{"net::server"};
   boost::inline_executor executor;
   boost::asio::io_context &context;
-  boost::asio::ip::tcp::acceptor acceptor{context};
+  boost::asio::ip::tcp::acceptor acceptor_{context};
   const config config_;
 };
 } // namespace temporary_room::net::server

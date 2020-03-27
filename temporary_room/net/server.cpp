@@ -73,15 +73,15 @@ void connection::send_response() {
   });
 }
 
-server::server(boost::asio::io_context &context, const config &config_)
+acceptor::acceptor(boost::asio::io_context &context, const config &config_)
     : context(context), config_(config_) {}
 
-void server::stop() {
+void acceptor::stop() {
   BOOST_LOG_SEV(logger, logging::severity::info) << "server gets stopped";
-  acceptor.close();
+  acceptor_.close();
 }
 
-boost::future<void> server::run() {
+boost::future<void> acceptor::run() {
   boost::packaged_task<void(boost::asio::yield_context)> task{
       [this](auto yield) { run(yield); }};
   auto result = task.get_future();
@@ -89,20 +89,20 @@ boost::future<void> server::run() {
   return result;
 }
 
-void server::run(boost::asio::yield_context yield) {
+void acceptor::run(boost::asio::yield_context yield) {
   const auto address = boost::asio::ip::make_address("0.0.0.0");
   const boost::asio::ip::tcp::endpoint endpoint{address, config_.port};
-  acceptor.open(endpoint.protocol());
-  acceptor.set_option(boost::asio::socket_base::reuse_address(true));
-  acceptor.listen();
+  acceptor_.open(endpoint.protocol());
+  acceptor_.set_option(boost::asio::socket_base::reuse_address(true));
+  acceptor_.listen();
   for (;;)
     accept(yield);
 }
 
-void server::accept(boost::asio::yield_context yield) {
+void acceptor::accept(boost::asio::yield_context yield) {
   boost::asio::ip::tcp::socket socket{context};
   boost::system::error_code error;
-  acceptor.async_accept(socket, yield[error]);
+  acceptor_.async_accept(socket, yield[error]);
   if (error == boost::asio::error::operation_aborted)
     return; // stop() got called
   if (error)
@@ -110,8 +110,8 @@ void server::accept(boost::asio::yield_context yield) {
   do_session(std::move(socket), yield);
 }
 
-void server::do_session(boost::asio::ip::tcp::socket &&socket,
-                        boost::asio::yield_context yield) {
+void acceptor::do_session(boost::asio::ip::tcp::socket &&socket,
+                          boost::asio::yield_context yield) {
   (void)yield;
   auto connection_ = std::make_shared<connection>(std::move(socket));
   connection_->on_request = [this](const auto &target, const auto &content) {

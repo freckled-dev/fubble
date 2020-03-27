@@ -3,6 +3,6 @@
 
 TEST(NetServer, Instance) {
   boost::asio::io_context context;
-  temporary_room::net::server::server::config config;
-  temporary_room::net::server::server server{context, config};
+  temporary_room::net::server::acceptor::config config;
+  temporary_room::net::server::acceptor server{context, config};
 }
