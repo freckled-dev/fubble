@@ -18,9 +18,18 @@ client::async_result_future client::get(const std::string &target) {
 
 client::async_result_future client::post(const std::string &target,
                                          const nlohmann::json &content) {
-  BOOST_LOG_SEV(logger, logging::severity::trace) << "get, target:" << target;
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "post, target:" << target;
   auto action_ = std::make_shared<action>(
       context, boost::beast::http::verb::post, target, server_, fields_);
+  action_->set_request_body(content);
+  return do_action(action_);
+}
+
+client::async_result_future client::put(const std::string &target,
+                                        const nlohmann::json &content) {
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "put, target:" << target;
+  auto action_ = std::make_shared<action>(
+      context, boost::beast::http::verb::put, target, server_, fields_);
   action_->set_request_body(content);
   return do_action(action_);
 }

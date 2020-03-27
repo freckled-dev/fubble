@@ -13,8 +13,8 @@ temporary_room_dep = declare_dependency(
   )
 temporary_room_test = executable('temporary_room_test',
   ['rooms/rooms_test.cpp', 'matrix/room_factory.cpp', 'net/server_test.cpp'],
-  dependencies : [gtest_dep, temporary_room_dep],
+  dependencies : [gtest_dep, temporary_room_dep, http_dep],
   link_with: [websocket, test_main]
   )
-test('temporary_room test', temporary_room_test)
+test('temporary_room test', temporary_room_test, timeout: 10)
 

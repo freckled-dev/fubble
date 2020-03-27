@@ -35,7 +35,7 @@ protected:
   void on_got_response(response_future &response_future_);
   void send_response();
 
-  temporary_room::logger logger{"net::connection"};
+  temporary_room::logger logger{"net::server::connection"};
   std::shared_ptr<boost::promise<void>> promise =
       std::make_shared<boost::promise<void>>();
   boost::beast::tcp_stream stream;
@@ -53,22 +53,23 @@ public:
 
   void stop();
   boost::future<void> run();
+  unsigned short get_port() const;
 
   std::function<response_future(const std::string &target,
                                 const nlohmann::json &request)>
       on_request;
 
 protected:
-  void run(boost::asio::yield_context yield);
-  void accept(boost::asio::yield_context yield);
-  void do_session(boost::asio::ip::tcp::socket &&socket,
-                  boost::asio::yield_context yield);
+  void accept_next();
+  void do_session();
 
   temporary_room::logger logger{"net::server"};
   boost::inline_executor executor;
   boost::asio::io_context &context;
   boost::asio::ip::tcp::acceptor acceptor_{context};
   const config config_;
+  std::shared_ptr<boost::promise<void>> run_promise;
+  std::unique_ptr<boost::asio::ip::tcp::socket> socket;
 };
 } // namespace temporary_room::net::server
 
