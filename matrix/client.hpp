@@ -16,6 +16,7 @@ public:
     std::string access_token;
     std::string device_id;
   };
+  // TODO refactor to just taking a http::client?
   client(factory &factory_, http::client_factory &http_factory,
          const information &information_);
 
