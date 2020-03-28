@@ -1,17 +1,16 @@
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { HttpModule } from '@angular/http';
 import { BrowserModule } from '@angular/platform-browser';
-import { Http, HttpModule } from '@angular/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { SharedModule } from "./shared/shared.module";
-import { rootRouterConfig } from './app.routes';
-import { AppComponent } from './app.component';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { RouterModule } from '@angular/router';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { DemoComponent } from './demo/demo.component';
+import { AppComponent } from './app.component';
+import { rootRouterConfig } from './app.routes';
 import { BlogComponent } from './blog/blog.component';
-import * as $ from 'jquery';
+import { DemoComponent } from './demo/demo.component';
+import { SharedModule } from "./shared/shared.module";
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -42,3 +41,4 @@ export function createTranslateLoader(http: HttpClient) {
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+
