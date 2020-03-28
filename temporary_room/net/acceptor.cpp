@@ -78,20 +78,27 @@ void connection::send_response() {
 acceptor::acceptor(boost::asio::io_context &context, const config &config_)
     : context(context), config_(config_) {}
 
-void acceptor::stop() {
-  BOOST_LOG_SEV(logger, logging::severity::info) << "server gets stopped";
-  acceptor_.close();
-}
-
-boost::future<void> acceptor::run() {
-  run_promise = std::make_shared<boost::promise<void>>();
+void acceptor::listen() {
+  if (listening)
+    return;
   const auto address = boost::asio::ip::make_address("0.0.0.0");
   const boost::asio::ip::tcp::endpoint endpoint{address, config_.port};
   acceptor_.open(endpoint.protocol());
   acceptor_.set_option(boost::asio::socket_base::reuse_address(true));
   acceptor_.listen();
+  listening = true;
+}
+
+boost::future<void> acceptor::run() {
+  run_promise = std::make_shared<boost::promise<void>>();
+  listen();
   accept_next();
   return run_promise->get_future();
+}
+
+void acceptor::stop() {
+  BOOST_LOG_SEV(logger, logging::severity::info) << "server gets stopped";
+  acceptor_.close();
 }
 
 unsigned short acceptor::get_port() const {

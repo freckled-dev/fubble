@@ -8,8 +8,5 @@ server::server(net::server::server &net_server, rooms::rooms &rooms)
 }
 
 boost::future<std::string> server::on_join(const std::string &name) {
-  // rooms.add_or_update(name);
-  (void)name;
-  return boost::make_exceptional_future<std::string>(
-      std::runtime_error("not implemented"));
+  return rooms.get_or_create_room_id(name);
 }

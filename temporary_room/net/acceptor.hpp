@@ -51,8 +51,10 @@ public:
   };
   acceptor(boost::asio::io_context &context, const config &config_);
 
-  void stop();
+  void listen();
   boost::future<void> run();
+  void stop();
+
   unsigned short get_port() const;
 
   std::function<response_future(const std::string &target,
@@ -70,6 +72,7 @@ protected:
   const config config_;
   std::shared_ptr<boost::promise<void>> run_promise;
   std::unique_ptr<boost::asio::ip::tcp::socket> socket;
+  bool listening{};
 };
 } // namespace temporary_room::net::server
 
