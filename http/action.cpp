@@ -86,10 +86,12 @@ void action::on_response_read(const boost::system::error_code &error) {
   if (!check_and_handle_error(error))
     return;
   auto http_code = response.result();
-  auto body = response.body();
-  auto json_body = nlohmann::json::parse(body);
   stream.socket().shutdown(boost::asio::socket_base::shutdown_both);
   auto promise_copy = promise;
+  if (http_code != boost::beast::http::status::ok)
+    return promise->set_exception(error_not_status_200(http_code));
+  auto body = response.body();
+  auto json_body = nlohmann::json::parse(body);
   promise->set_value(std::make_pair(http_code, json_body));
 }
 

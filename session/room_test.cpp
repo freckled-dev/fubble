@@ -7,7 +7,6 @@
 #include <boost/thread/executors/inline_executor.hpp>
 #include <gtest/gtest.h>
 
-#if 0
 namespace {
 struct Room : testing::Test {
   boost::asio::io_context io_context;
@@ -15,11 +14,12 @@ struct Room : testing::Test {
   boost::inline_executor executor;
   void run_io_contect() {
     io_context.run();
-    io_context.restart();
+    io_context.reset();
   }
 };
 } // namespace
 
+#if 0
 namespace {
 struct joined_client {
   session::client client;
