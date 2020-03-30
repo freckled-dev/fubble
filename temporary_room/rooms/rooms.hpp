@@ -9,12 +9,14 @@ namespace temporary_room::rooms {
 
 using room_id = std::string;
 using room_name = std::string;
+using user_id = std::string;
 
 class room {
 public:
   virtual ~room() = default;
   std::function<void(int)> on_participant_count_changed;
   virtual room_id get_room_id() const = 0;
+  virtual boost::future<void> invite(const user_id &) = 0;
 };
 using room_ptr = std::unique_ptr<room>;
 
@@ -24,42 +26,40 @@ public:
   virtual boost::future<room_ptr> create() = 0;
 };
 
-class participant {
-public:
-  std::shared_ptr<boost::promise<room_id>> promise =
-      std::make_shared<boost::promise<room_id>>();
-
-  virtual ~participant() = default;
-  inline void set_room(const room_id &id) {
-    auto keep_alive = promise;
-    promise->set_value(id);
-  }
-  inline void set_error(const std::runtime_error &error) {
-    auto keep_alive = promise;
-    promise->set_exception(error);
-  }
-};
-
 class rooms {
 public:
   rooms(room_factory &factory);
   ~rooms();
 
-  boost::future<room_id> get_or_create_room_id(const room_name &name);
+  boost::future<room_id> get_or_create_room_id(const room_name &name,
+                                               const user_id &user_id_);
   std::size_t get_room_count();
 
 protected:
+  struct participant {
+    std::shared_ptr<boost::promise<room_id>> promise =
+        std::make_shared<boost::promise<room_id>>();
+    user_id user_id_;
+    room_id room_id_;
+
+    participant(const user_id &user_id_) : user_id_(user_id_) {}
+  };
+
   void create(const room_name &name);
   void on_created(const room_name &name, boost::future<room_ptr> &result);
   void on_participant_count_changed(const room_name &name, const int count);
+  void invite(const std::shared_ptr<participant> participant_,
+              const room_ptr &room_);
+  void on_invited(const std::shared_ptr<participant> &participant_,
+                  boost::future<void> result);
 
   room_factory &factory;
   boost::inline_executor executor;
   temporary_room::logger logger{"rooms"};
-
   struct room_adapter {
     room_ptr room_;
-    std::vector<std::unique_ptr<participant>> participants;
+    // TODO rename to `waiting_for_room`
+    std::vector<std::shared_ptr<participant>> participants;
   };
   std::unordered_map<room_name, room_adapter> rooms_;
 };

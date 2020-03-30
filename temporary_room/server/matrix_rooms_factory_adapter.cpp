@@ -13,6 +13,10 @@ public:
   temporary_room::rooms::room_id get_room_id() const override {
     return matrix_room.get_id();
   }
+  boost::future<void>
+  invite(const temporary_room::rooms::user_id &user_id_) override {
+    return matrix_room.invite_by_user_id(user_id_);
+  }
 };
 } // namespace
 

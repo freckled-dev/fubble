@@ -45,7 +45,7 @@ TEST(Server, Join) {
   temporary_room::net::client client{*http_client};
   bool called{};
   auto join_future =
-      client.join("fun_name")
+      client.join("fun_name", matrix_client->get_user_id())
           .then(executor,
                 [&](auto result) {
                   auto id = result.get();

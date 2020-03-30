@@ -23,7 +23,7 @@ class client {
 public:
   client(http::client &http_client);
 
-  boost::future<std::string> join(const std::string &name);
+  boost::future<std::string> join(const std::string &name, const std::string& user_id);
 
 protected:
   http::client &http_client;
