@@ -36,10 +36,9 @@ protected:
 };
 
 joiner::join::join(boost::asio::executor &executor, room_creator &room_creator_)
-    : executor(executor),
-      room_creator_(room_creator_), client_{std::make_unique<session::client>(
-                                        executor)} {}
-
+    : executor(executor), room_creator_(room_creator_)
+// client_{std::make_unique<session::client>(executor)}
+{}
 joiner::join::~join() {
   BOOST_LOG_SEV(logger, logging::severity::info) << "destructor";
 }
