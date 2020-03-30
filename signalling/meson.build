@@ -1,36 +1,17 @@
-websocket = library('websocket',
-  ['websocket/acceptor.cpp', 'websocket/connection.cpp',
-    'websocket/connection_creator.cpp', 'websocket/connector.cpp'],
-  dependencies: [boost_dep, fmt_dep, utils_dep],
-  link_with: [],
-  install: true
-  )
-websocket_dep = declare_dependency(
-  include_directories: '.',
-  link_with: [websocket],
-  dependencies: [boost_dep, utils_dep]
-  )
-websocket_test = executable('websocket_test',
-  ['websocket/test.cpp'],
-  dependencies : [gtest_dep, boost_dep, websocket_dep],
-  link_with: [test_main]
-  )
-test('websocket test', websocket_test, timeout: 8)
-
 signalling = library('signalling',
   ['signalling/registration_handler.cpp',
     'signalling/connection.cpp', 'signalling/device/creator.cpp',
     'signalling/json_message.cpp', 'signalling/offer.cpp',
     'signalling/answer.cpp', 'signalling/ice_candidate.cpp',
     'signalling/device/device.cpp'],
-  dependencies: [fmt_dep, json_dep, utils_dep],
+  dependencies: [fmt_dep, json_dep, utils_dep, websocket_dep],
   link_with: [],
   install: true
   )
 signalling_dep = declare_dependency(
   include_directories: '.',
   link_with: [signalling],
-  dependencies: [boost_dep, utils_dep]
+  dependencies: [boost_dep, utils_dep, websocket_dep]
   )
 signalling_test = executable('signalling_test',
   ['signalling/json_message_test.cpp',
@@ -63,8 +44,7 @@ signalling_client_dep = declare_dependency(
 server = library('server',
   ['signalling/server/server.cpp', 'signalling/server/connection.cpp',
     'signalling/server/connection_creator.cpp'],
-  dependencies: [boost_dep, fmt_dep, utils_dep],
-  link_with: [websocket, signalling],
+  dependencies: [boost_dep, fmt_dep, utils_dep, signalling_dep],
   install: true
   )
 server_dep = declare_dependency(

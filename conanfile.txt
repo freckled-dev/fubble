@@ -1,9 +1,9 @@
 [requires]
 boost-di/1.1.0@inexorgame/stable
-boost/1.71.0@conan/stable
-gtest/1.8.1@bincrafters/stable
+boost/1.72.0
+gtest/1.10.0
 fmt/6.0.0
-jsonformoderncpp/3.7.0@vthiery/stable
+jsonformoderncpp/3.7.0
 # does not work on fedora 31
 # qt/5.14.0@bincrafters/stable
 

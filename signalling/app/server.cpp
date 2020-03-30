@@ -1,6 +1,7 @@
 #include "signalling/server/server.hpp"
 #include "boost_di_extension_scopes_session.hpp"
 #include "executor_asio.hpp"
+#include "logging/initialser.hpp"
 #include "signalling/device/creator.hpp"
 #include "signalling/json_message.hpp"
 #include "signalling/registration_handler.hpp"
@@ -10,13 +11,10 @@
 #include <boost/asio/io_context.hpp>
 #include <boost/asio/signal_set.hpp>
 #include <boost/di.hpp>
-#include <boost/log/keywords/auto_flush.hpp>
-#include <boost/log/keywords/format.hpp>
-#include <boost/log/utility/setup/common_attributes.hpp>
-#include <boost/log/utility/setup/console.hpp>
 #include <boost/program_options.hpp>
 #include <boost/thread/executors/executor_adaptor.hpp>
 #include <fmt/format.h>
+#include <iostream>
 
 namespace {
 struct options {
@@ -58,12 +56,7 @@ int main(int argc, char *argv[]) {
   return 0;
 }
 
-static void set_up_logging() {
-  boost::log::add_common_attributes();
-  boost::log::add_console_log(
-      std::cout, boost::log::keywords::auto_flush = true,
-      boost::log::keywords::format = "%TimeStamp% %Severity% %Message%");
-}
+static void set_up_logging() { logging::add_console_log(); }
 
 static std::optional<options> parse_options(int argc, char *argv[]) {
   namespace bpo = boost::program_options;
