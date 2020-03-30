@@ -7,6 +7,7 @@
 #include <boost/thread/executors/inline_executor.hpp>
 #include <gtest/gtest.h>
 
+#if 0
 namespace {
 struct Room : testing::Test {
   boost::asio::io_context io_context;
@@ -186,3 +187,4 @@ TEST_F(Room, DisconnectSignal) {
   });
   run_io_contect();
 }
+#endif

@@ -3,7 +3,6 @@
 
 #include "session/logger.hpp"
 #include <boost/thread/future.hpp>
-#include <nakama-cpp/Nakama.h>
 
 namespace session {
 class room;
@@ -15,12 +14,8 @@ public:
   boost::future<room_ptr> join(const std::string &room);
 
 protected:
-  void on_success(Nakama::NChannelPtr channel);
-  void on_error(Nakama::NRtError error);
-
   session::logger logger{"room_joiner"};
   client &client_;
-  boost::promise<room_ptr> promise;
 };
 } // namespace session
 

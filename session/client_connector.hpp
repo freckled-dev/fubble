@@ -4,7 +4,6 @@
 #include "session/logger.hpp"
 #include <boost/signals2/signal.hpp>
 #include <boost/thread/future.hpp>
-#include <nakama-cpp/Nakama.h>
 
 namespace session {
 class client;
@@ -14,11 +13,6 @@ public:
   boost::future<void> connect();
 
 protected:
-  void on_logged_in(const Nakama::NSessionPtr &session_);
-  void on_login_failed(const Nakama::NError &error);
-  void on_realtime_connected();
-  void on_realtime_error(const Nakama::NRtError &error);
-
   session::logger logger{"client_connector"};
   client &client_;
   boost::promise<void> promise;
