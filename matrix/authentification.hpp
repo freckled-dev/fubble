@@ -29,6 +29,7 @@ public:
 protected:
   boost::future<client_ptr> register_as_user(const nlohmann::json &content);
 
+  matrix::logger logger{"authentification"};
   boost::inline_executor executor;
   http::client_factory &http_client_creator;
   client_factory &client_factory_;
