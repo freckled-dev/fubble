@@ -4,7 +4,8 @@
 
 using namespace session;
 
-client::client(matrix::client &matrix_client) : matrix_client(matrix_client) {}
+client::client(std::unique_ptr<matrix::client> matrix_client)
+    : matrix_client(std::move(matrix_client)) {}
 
 client::~client() {
   BOOST_LOG_SEV(logger, logging::severity::trace) << "~client()";
@@ -18,4 +19,3 @@ boost::future<void> client::set_name(const std::string &name) {
   BOOST_LOG_SEV(logger, logging::severity::info) << "setting name to:" << name;
   return boost::make_ready_future();
 }
-

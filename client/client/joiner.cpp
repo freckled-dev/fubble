@@ -35,6 +35,7 @@ protected:
   parameters parameters_;
 };
 
+#if 0
 joiner::join::join(boost::asio::executor &executor, room_creator &room_creator_)
     : executor(executor), room_creator_(room_creator_)
 // client_{std::make_unique<session::client>(executor)}
@@ -102,6 +103,7 @@ bool joiner::join::check_error(boost::future<void> &check) {
   promise.set_exception(check.get_exception_ptr());
   return true;
 }
+#endif
 
 joiner::joiner(boost::asio::executor &executor, room_creator &room_creator_,
                rooms &rooms_)
@@ -111,7 +113,9 @@ joiner::~joiner() = default;
 
 boost::future<std::shared_ptr<room>>
 joiner::join(const parameters &parameters_) {
+  (void)parameters_;
   auto promise = std::make_shared<boost::promise<std::shared_ptr<room>>>();
+#if 0
   auto join_ = std::make_shared<class join>(executor, room_creator_);
   auto joined = join_->join_(parameters_);
   joined.then(future_executor, [promise, join_, this](auto joined_result) {
@@ -123,5 +127,6 @@ joiner::join(const parameters &parameters_) {
     rooms_.set(casted);
     promise->set_value(casted);
   });
+#endif
   return promise->get_future();
 }

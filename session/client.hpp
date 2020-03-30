@@ -7,7 +7,7 @@
 namespace session {
 class client {
 public:
-  client(matrix::client &matrix_client);
+  client(std::unique_ptr<matrix::client> matrix_client);
   ~client();
 
   void close();
@@ -18,7 +18,7 @@ public:
 
 protected:
   session::logger logger{"client"};
-  matrix::client &matrix_client;
+  std::unique_ptr<matrix::client> matrix_client;
 };
 } // namespace session
 

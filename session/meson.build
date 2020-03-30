@@ -1,5 +1,6 @@
 session = library('session',
-  ['client.cpp', 'room_joiner.cpp', 'room.cpp', 'client_connector.cpp'],
+  ['client.cpp', 'room_joiner.cpp', 'room.cpp', 'client_connector.cpp',
+    'client_factory.cpp'],
   dependencies: [matrix_dep, fmt_dep],
   include_directories: ['..']
   )
