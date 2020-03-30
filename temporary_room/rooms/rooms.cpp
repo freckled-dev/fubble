@@ -7,25 +7,26 @@ rooms::rooms(room_factory &factory) : factory(factory) {}
 
 rooms::~rooms() = default;
 
-boost::future<room_id> rooms::get_or_create_room_id(const room_name &name) {
+boost::future<room_id> rooms::get_or_create_room_id(const room_name &name,
+                                                    const user_id &user_id_) {
+  auto add = std::make_shared<participant>(user_id_);
+  auto result = add->promise->get_future();
   auto found = rooms_.find(name);
-  if (found != rooms_.cend()) {
-    if (found->second.room_) {
-      const auto id = found->second.room_->get_room_id();
-      return boost::make_ready_future(id);
-    }
-    auto &participants = found->second.participants;
-    auto add = std::make_unique<participant>();
-    auto result = add->promise->get_future();
-    participants.push_back(std::move(add));
+  if (found == rooms_.cend()) {
+    room_adapter room_;
+    room_.participants.push_back(add);
+    rooms_[name] = std::move(room_);
+    create(name);
     return result;
   }
-  room_adapter room_;
-  auto add = std::make_unique<participant>();
-  auto result = add->promise->get_future();
-  room_.participants.push_back(std::move(add));
-  rooms_[name] = std::move(room_);
-  create(name);
+  std::optional<room_id> room_id_;
+  if (found->second.room_) {
+    const auto &room_ = found->second;
+    invite(add, room_.room_);
+  } else {
+    auto &participants = found->second.participants;
+    participants.push_back(add);
+  }
   return result;
 }
 
@@ -52,10 +53,10 @@ void rooms::on_created(const room_name &name, boost::future<room_ptr> &result) {
       on_participant_count_changed(name, count);
     };
     found->second.room_ = std::move(got_room);
-    for (auto &participant_ : found->second.participants)
-      participant_->set_room(id);
+    for (const auto &participant_ : found->second.participants)
+      invite(participant_, found->second.room_);
     found->second.participants.clear();
-  } catch (const std::runtime_error &error) {
+  } catch (const std::exception &error) {
     BOOST_LOG_SEV(logger, logging::severity::error)
         << "failed to create room, message:" << error.what();
     auto found = rooms_.find(name);
@@ -63,7 +64,7 @@ void rooms::on_created(const room_name &name, boost::future<room_ptr> &result) {
     if (found == rooms_.cend())
       return;
     for (auto &participant_ : found->second.participants)
-      participant_->set_error(error);
+      participant_->promise->set_exception(error);
     found->second.participants.clear();
   }
 }
@@ -80,5 +81,27 @@ void rooms::on_participant_count_changed(const room_name &name,
     BOOST_ASSERT(false);
     return;
   }
+  BOOST_ASSERT(found->second.participants.empty());
   rooms_.erase(found);
 }
+
+void rooms::invite(const std::shared_ptr<participant> participant_,
+                   const room_ptr &room_) {
+  participant_->room_id_ = room_->get_room_id();
+  BOOST_LOG_SEV(logger, logging::severity::info)
+      << fmt::format("inviting the participant '{}' to the room '{}'",
+                     participant_->user_id_, participant_->room_id_);
+  auto invited = room_->invite(participant_->user_id_);
+  invited.then(executor, [this, participant_](auto result) {
+    on_invited(participant_, std::move(result));
+  });
+}
+
+void rooms::on_invited(const std::shared_ptr<participant> &participant_,
+                       boost::future<void> result) {
+  auto safe_promise = participant_->promise;
+  if (result.has_exception())
+    return safe_promise->set_exception(result.get_exception_ptr());
+  safe_promise->set_value(participant_->room_id_);
+}
+

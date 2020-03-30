@@ -8,10 +8,13 @@ class server {
 public:
   server(net::server::acceptor &net_server);
 
-  std::function<boost::future<std::string>(std::string name)> on_join;
+  std::function<boost::future<std::string>(const std::string &name,
+                                           const std::string &user_id)>
+      on_join;
 
 protected:
-  response_future on_request(const std::string &target);
+  response_future on_request(const std::string &target,
+                             const std::string &user_id);
 
   net::server::acceptor &acceptor_;
 };

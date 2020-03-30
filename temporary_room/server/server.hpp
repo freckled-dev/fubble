@@ -10,7 +10,8 @@ public:
   server(net::server::server &net_server, rooms::rooms &rooms);
 
 protected:
-  boost::future<std::string> on_join(const std::string &name);
+  boost::future<std::string> on_join(const std::string &name,
+                                     const std::string &user_id);
 
   net::server::server &net_server;
   rooms::rooms &rooms;
