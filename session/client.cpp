@@ -1,4 +1,5 @@
 #include "client.hpp"
+#include "matrix/client.hpp"
 #include "uuid.hpp"
 #include <fmt/format.h>
 
@@ -11,9 +12,9 @@ client::~client() {
   BOOST_LOG_SEV(logger, logging::severity::trace) << "~client()";
 }
 
-void client::close() {
-  // TODO
-}
+boost::future<void> client::run() { return matrix_client->sync_till_stop(); }
+
+void client::close() { matrix_client->stop_sync(); }
 
 const matrix::client &client::get_natives() const { return *matrix_client; }
 

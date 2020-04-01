@@ -21,6 +21,15 @@ action::action(boost::asio::io_context &context, boost::beast::http::verb verb,
                 std::string("Bearer ") + fields_.auth_token.value());
 }
 
+action::~action() {
+  if (!promise)
+    return;
+  BOOST_LOG_SEV(logger, logging::severity::warning) << fmt::format(
+      "action is getting destructed before done, target:", target);
+  promise->set_exception(
+      boost::system::system_error(boost::asio::error::operation_aborted));
+}
+
 void action::set_request_body(const nlohmann::json &body) {
   request.body() = body.dump();
 }
@@ -39,6 +48,8 @@ action::async_result_future action::do_() {
       });
   return promise->get_future();
 }
+
+void action::cancel() { stream.socket().close(); }
 
 void action::on_resolved(
     const boost::system::error_code &error,
@@ -91,11 +102,12 @@ void action::on_response_read(const boost::system::error_code &error) {
   auto http_code = response.result();
   stream.socket().shutdown(boost::asio::socket_base::shutdown_both);
   auto promise_copy = promise;
+  promise.reset();
   if (http_code != boost::beast::http::status::ok)
     return promise_copy->set_exception(error_not_status_200(http_code));
   auto body = response.body();
   auto json_body = nlohmann::json::parse(body);
-  promise->set_value(std::make_pair(http_code, json_body));
+  promise_copy->set_value(std::make_pair(http_code, json_body));
 }
 
 bool action::check_and_handle_error(const boost::system::error_code &error) {
@@ -104,7 +116,7 @@ bool action::check_and_handle_error(const boost::system::error_code &error) {
   BOOST_LOG_SEV(logger, logging::severity::trace)
       << "got an error, error:" << error.message();
   auto promise_copy = promise;
-  promise->set_exception(boost::system::system_error{error});
+  promise_copy->set_exception(boost::system::system_error{error});
+  promise_copy.reset();
   return false;
 }
-

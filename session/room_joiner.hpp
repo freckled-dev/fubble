@@ -25,7 +25,6 @@ protected:
 
   session::logger logger{"room_joiner"};
   boost::inline_executor executor;
-  boost::promise<room_ptr> promise;
   client &client_;
   temporary_room::net::client &temporary_room_client;
 };

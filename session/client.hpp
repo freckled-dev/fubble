@@ -10,6 +10,7 @@ public:
   client(std::unique_ptr<matrix::client> matrix_client);
   ~client();
 
+  boost::future<void> run();
   void close();
   boost::future<void> set_name(const std::string &name);
 
