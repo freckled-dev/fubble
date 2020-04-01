@@ -1,13 +1,13 @@
 session = library('session',
   ['client.cpp', 'room_joiner.cpp', 'room.cpp', 'client_connector.cpp',
     'client_factory.cpp'],
-  dependencies: [matrix_dep, fmt_dep],
+  dependencies: [matrix_dep, fmt_dep, temporary_room_dep],
   include_directories: ['..']
   )
 session_dep = declare_dependency(
   include_directories: '..',
   link_with: [session],
-  dependencies: [matrix_dep]
+  dependencies: [matrix_dep, temporary_room_dep]
   )
 
 session_client_test = executable('session_client_test',

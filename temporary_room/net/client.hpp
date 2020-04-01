@@ -1,6 +1,7 @@
 #ifndef UUID_8CFB5B2F_0E59_4213_AE28_1EEF84B422AC
 #define UUID_8CFB5B2F_0E59_4213_AE28_1EEF84B422AC
 
+#include "temporary_room/logger.hpp"
 #include <boost/beast/http/status.hpp>
 #include <boost/exception/exception.hpp>
 #include <boost/thread/executors/inline_executor.hpp>
@@ -22,10 +23,13 @@ public:
 class client {
 public:
   client(http::client &http_client);
+  ~client();
 
-  boost::future<std::string> join(const std::string &name, const std::string& user_id);
+  boost::future<std::string> join(const std::string &name,
+                                  const std::string &user_id);
 
 protected:
+  temporary_room::logger logger{"net::client"};
   http::client &http_client;
   boost::inline_executor executor;
 };

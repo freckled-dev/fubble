@@ -20,6 +20,7 @@ public:
   error_not_status_200(boost::beast::http::status status) {
     message = "status: " + std::to_string(static_cast<int>(status));
   };
+  ~error_not_status_200() override = default;
   const char *what() const noexcept override { return message.c_str(); }
 };
 class action {
@@ -35,6 +36,7 @@ public:
   async_result_future do_();
 
 protected:
+protected:
   void
   on_resolved(const boost::system::error_code &error,
               const boost::asio::ip::tcp::resolver::results_type &resolved);
@@ -49,6 +51,10 @@ protected:
   boost::beast::tcp_stream stream;
   boost::asio::ip::tcp::resolver resolver;
   const server server_;
+  const boost::beast::http::verb verb;
+  const std::string target;
+  const fields fields_;
+
   using response_type =
       boost::beast::http::response<boost::beast::http::string_body>;
   using request_type =

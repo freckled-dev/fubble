@@ -1,13 +1,11 @@
 #include "client.hpp"
 #include "client_connector.hpp"
 #include "matrix/client.hpp"
-#include "utils/executor_asio.hpp"
 #include <boost/thread/executors/inline_executor.hpp>
 #include <gtest/gtest.h>
 
 TEST(Client, Connect) {
   boost::asio::io_context io_context;
-  boost::asio::executor asio_executor = io_context.get_executor();
   boost::inline_executor executor;
   http::server http_server{"localhost", "8008"};
   http::fields http_fields{http_server};

@@ -5,11 +5,15 @@
 #include "session/logger.hpp"
 #include <boost/signals2/signal.hpp>
 
+namespace matrix {
+class room;
+}
+
 namespace session {
 class client;
 class room {
 public:
-  room(client &client_);
+  room(matrix::room &room_);
   using participants = std::vector<participant>;
   boost::signals2::signal<void(participants)> on_joins;
   boost::signals2::signal<void(std::vector<std::string>)> on_leaves;
@@ -21,7 +25,7 @@ public:
 
 protected:
   session::logger logger{"room"};
-  client &client_;
+  matrix::room &room_;
   participants participants_;
   std::vector<boost::signals2::scoped_connection> signal_connections;
 };

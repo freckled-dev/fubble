@@ -12,12 +12,16 @@ const char *error::what() const noexcept { return message.c_str(); }
 
 client::client(http::client &http_client) : http_client(http_client) {}
 
+client::~client() {
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "destructor";
+}
+
 boost::future<std::string> client::join(const std::string &name,
                                         const std::string &user_id) {
   auto content = nlohmann::json::object();
   content["user_id"] = user_id;
   auto target = fmt::format("join/{}", name);
-  return http_client.put(target, content).then(executor, [](auto result) {
+  return http_client.put(target, content).then(executor, [this](auto result) {
     auto got_result = result.get();
     if (got_result.first != boost::beast::http::status::ok)
       throw error(got_result.first, got_result.second);
@@ -26,3 +30,4 @@ boost::future<std::string> client::join(const std::string &name,
     return room_id;
   });
 }
+

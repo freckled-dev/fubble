@@ -88,7 +88,9 @@ int main(int argc, char *argv[]) {
       return;
     acceptor.stop();
   });
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "context.run()";
   context.run();
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "after context.run()";
   acceptor_done.get();
   return 0;
 }

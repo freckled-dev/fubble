@@ -14,11 +14,17 @@ client::client(factory &factory_, http::client_factory &http_factory,
   rooms_ = factory_.create_rooms(*this);
 }
 
+client::~client() {
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "destructor";
+}
+
 const std::string &client::get_user_id() const { return information_.user_id; }
 
 users &client::get_users() const { return *users_; }
 
 rooms &client::get_rooms() const { return *rooms_; }
+
+http::client &client::get_http_client() { return *http_client; }
 
 std::unique_ptr<http::client> client::create_http_client() {
   auto fields = http_factory.get_fields();
