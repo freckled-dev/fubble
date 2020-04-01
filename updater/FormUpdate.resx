@@ -181,13 +181,16 @@
     <value>1</value>
   </data>
   <data name="progressBox.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Top, Left, Right</value>
+    <value>Top, Bottom, Left, Right</value>
   </data>
   <data name="progressBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>27, 100</value>
   </data>
   <data name="progressBox.Multiline" type="System.Boolean, mscorlib">
     <value>True</value>
+  </data>
+  <data name="progressBox.ScrollBars" type="System.Windows.Forms.ScrollBars, System.Windows.Forms">
+    <value>Vertical</value>
   </data>
   <data name="progressBox.Size" type="System.Drawing.Size, System.Drawing">
     <value>518, 186</value>
