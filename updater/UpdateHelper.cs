@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace Updater
 {
@@ -12,6 +13,8 @@ namespace Updater
 
         public Boolean StartUpdate()
         {
+            Listener.SetProgress(0);
+
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
                 UseShellExecute = false,
@@ -19,7 +22,7 @@ namespace Updater
                 CreateNoWindow = true,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
-                //Arguments = $"sync --progress --http-url {syncURL} :http: ."
+                Arguments = $"sync --progress --http-url {syncURL} :http: /bin/bla"
             };
 
             Process process = new Process
@@ -29,52 +32,64 @@ namespace Updater
 
             process.OutputDataReceived += new DataReceivedEventHandler(OutputHandler);
             process.ErrorDataReceived += new DataReceivedEventHandler(OutputHandler);
+            process.EnableRaisingEvents = true;
+            process.Exited += new EventHandler(ExitHandler);
 
             try
             {
                 process.Start();
+                Listener.ExecuteUpdate();
+
                 process.BeginOutputReadLine();
                 process.BeginErrorReadLine();
-                process.WaitForExit();
-
-                int exitCode = process.ExitCode;
-
-                if (exitCode == 0)
-                {
-                    logSuccess();
-                    startFubble();
-                }
-                else
-                {
-                    handleUpdateException("Exit code " + exitCode);
-                }
             }
             catch (Exception ex)
             {
-                handleUpdateException(ex.Message);
+                HandleUpdateException(ex.Message);
             }
 
             return true;
         }
 
-        private void handleUpdateException(string message)
+        private void HandleUpdateException(string message)
         {
-            Listener.setProgress(100);
-            Listener.handleUpdateEvent(message);
+            // Listener.setProgress(100);
+            Listener.HandleUpdateEvent(message);
         }
 
         private void OutputHandler(object sendingProcess, DataReceivedEventArgs outLine)
         {
-            Listener.handleUpdateEvent(outLine.Data);
+            string line = outLine.Data;
+
+            if (line != null && (line.Contains("Transferred:") || line.Contains("Checks:")))
+            {
+                Regex rx = new Regex("\\d+(?:\\.\\d+)?%");
+                MatchCollection matches = rx.Matches(line);
+                // Report the number of matches found.
+                if (matches.Count > 0)
+                {
+                    int percentage = int.Parse(matches[0].Groups[0].Value.Replace("%", ""));
+                    Listener.SetProgress(percentage);
+                }
+            }
+
+            Listener.HandleUpdateEvent(line);
         }
 
-        private void logSuccess()
+        private void ExitHandler(object sender, EventArgs e)
         {
-            Listener.setProgress(100);
-            Listener.handleUpdateEvent("Update finished succesfully!");
+            Process p = (Process)sender;
+            int exitCode = p.ExitCode;
+            Listener.Exit(exitCode);
         }
 
-        private void startFubble()
+        private void LogSuccess()
+        {
+            //Listener.setProgress(100);
+            Listener.HandleUpdateEvent("Update finished succesfully!");
+        }
+
+        private void StartFubble()
         {
 
         }

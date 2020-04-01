@@ -118,40 +118,40 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="versionInfoLabel.AutoSize" type="System.Boolean, mscorlib">
+  <data name="progressLabel.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="versionInfoLabel.Font" type="System.Drawing.Font, System.Drawing">
+  <data name="progressLabel.Font" type="System.Drawing.Font, System.Drawing">
     <value>Microsoft Sans Serif, 10pt</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="versionInfoLabel.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+  <data name="progressLabel.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
-  <data name="versionInfoLabel.Location" type="System.Drawing.Point, System.Drawing">
+  <data name="progressLabel.Location" type="System.Drawing.Point, System.Drawing">
     <value>24, 25</value>
   </data>
-  <data name="versionInfoLabel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>186, 17</value>
+  <data name="progressLabel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>154, 17</value>
   </data>
-  <data name="versionInfoLabel.TabIndex" type="System.Int32, mscorlib">
+  <data name="progressLabel.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
   </data>
-  <data name="versionInfoLabel.Text" xml:space="preserve">
-    <value>New version 1.1 is available!</value>
+  <data name="progressLabel.Text" xml:space="preserve">
+    <value>Checking for updates...</value>
   </data>
-  <data name="&gt;&gt;versionInfoLabel.Name" xml:space="preserve">
-    <value>versionInfoLabel</value>
+  <data name="&gt;&gt;progressLabel.Name" xml:space="preserve">
+    <value>progressLabel</value>
   </data>
-  <data name="&gt;&gt;versionInfoLabel.Type" xml:space="preserve">
+  <data name="&gt;&gt;progressLabel.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;versionInfoLabel.Parent" xml:space="preserve">
+  <data name="&gt;&gt;progressLabel.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <data name="&gt;&gt;versionInfoLabel.ZOrder" xml:space="preserve">
-    <value>2</value>
+  <data name="&gt;&gt;progressLabel.ZOrder" xml:space="preserve">
+    <value>5</value>
   </data>
   <data name="progressBar.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Left, Right</value>
@@ -163,7 +163,7 @@
     <value>27, 55</value>
   </data>
   <data name="progressBar.Size" type="System.Drawing.Size, System.Drawing">
-    <value>518, 23</value>
+    <value>426, 23</value>
   </data>
   <data name="progressBar.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
@@ -178,13 +178,13 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;progressBar.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>4</value>
   </data>
   <data name="progressBox.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Bottom, Left, Right</value>
   </data>
   <data name="progressBox.Location" type="System.Drawing.Point, System.Drawing">
-    <value>27, 100</value>
+    <value>27, 153</value>
   </data>
   <data name="progressBox.Multiline" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -193,10 +193,13 @@
     <value>Vertical</value>
   </data>
   <data name="progressBox.Size" type="System.Drawing.Size, System.Drawing">
-    <value>518, 186</value>
+    <value>426, 20</value>
   </data>
   <data name="progressBox.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
+  </data>
+  <data name="progressBox.Visible" type="System.Boolean, mscorlib">
+    <value>False</value>
   </data>
   <data name="&gt;&gt;progressBox.Name" xml:space="preserve">
     <value>progressBox</value>
@@ -208,6 +211,81 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;progressBox.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="update.Location" type="System.Drawing.Point, System.Drawing">
+    <value>378, 25</value>
+  </data>
+  <data name="update.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 23</value>
+  </data>
+  <data name="update.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="update.Text" xml:space="preserve">
+    <value>Update</value>
+  </data>
+  <data name="&gt;&gt;update.Name" xml:space="preserve">
+    <value>update</value>
+  </data>
+  <data name="&gt;&gt;update.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;update.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;update.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="showInformation.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Microsoft Sans Serif, 8.25pt, style=Underline</value>
+  </data>
+  <data name="showInformation.Location" type="System.Drawing.Point, System.Drawing">
+    <value>24, 131</value>
+  </data>
+  <data name="showInformation.Size" type="System.Drawing.Size, System.Drawing">
+    <value>100, 19</value>
+  </data>
+  <data name="showInformation.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="showInformation.Text" xml:space="preserve">
+    <value>More Information</value>
+  </data>
+  <data name="&gt;&gt;showInformation.Name" xml:space="preserve">
+    <value>showInformation</value>
+  </data>
+  <data name="&gt;&gt;showInformation.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;showInformation.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;showInformation.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="divider.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Left, Right</value>
+  </data>
+  <data name="divider.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 106</value>
+  </data>
+  <data name="divider.Size" type="System.Drawing.Size, System.Drawing">
+    <value>496, 2</value>
+  </data>
+  <data name="divider.TabIndex" type="System.Int32, mscorlib">
+    <value>6</value>
+  </data>
+  <data name="&gt;&gt;divider.Name" xml:space="preserve">
+    <value>divider</value>
+  </data>
+  <data name="&gt;&gt;divider.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;divider.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;divider.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
@@ -217,10 +295,19 @@
     <value>6, 13</value>
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>576, 322</value>
+    <value>484, 181</value>
+  </data>
+  <data name="$this.MinimumSize" type="System.Drawing.Size, System.Drawing">
+    <value>500, 200</value>
+  </data>
+  <data name="$this.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>0, 0, 0, 50</value>
+  </data>
+  <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
+    <value>CenterScreen</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>Fubble Update</value>
+    <value>Fubble</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>FormUpdate</value>
