@@ -7,7 +7,11 @@ client::client(boost::asio::io_context &context, const server &server_,
                const fields &fields_)
     : context(context), server_{server_}, fields_{fields_} {}
 
-client::~client() = default;
+client::~client() {
+#if 0
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "destructor";
+#endif
+}
 
 client::async_result_future client::get(const std::string &target) {
   BOOST_LOG_SEV(logger, logging::severity::trace) << "get, target:" << target;

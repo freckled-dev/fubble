@@ -19,11 +19,14 @@ public:
   // TODO refactor to just taking a http::client?
   client(factory &factory_, http::client_factory &http_factory,
          const information &information_);
+  ~client();
 
   const std::string &get_user_id() const;
   users &get_users() const;
   rooms &get_rooms() const;
 
+  http::client &get_http_client();
+  // TODO make protected
   std::unique_ptr<http::client> create_http_client();
 
   void set_display_name();
