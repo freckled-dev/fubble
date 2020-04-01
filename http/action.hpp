@@ -28,6 +28,7 @@ public:
   action(boost::asio::io_context &context, boost::beast::http::verb verb,
          const std::string &target, const server &server_,
          const fields &fields_);
+  ~action();
 
   void set_request_body(const nlohmann::json &body);
   using async_result = std::pair<boost::beast::http::status, nlohmann::json>;
@@ -35,7 +36,8 @@ public:
   using async_result_promise = boost::promise<async_result>;
   async_result_future do_();
 
-protected:
+  void cancel();
+
 protected:
   void
   on_resolved(const boost::system::error_code &error,

@@ -20,6 +20,12 @@ client::async_result_future client::get(const std::string &target) {
   return do_action(action_);
 }
 
+std::unique_ptr<action> client::get_action(const std::string &target) {
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "get, target:" << target;
+  return std::make_unique<action>(context, boost::beast::http::verb::get,
+                                  target, server_, fields_);
+}
+
 client::async_result_future client::post(const std::string &target,
                                          const nlohmann::json &content) {
   BOOST_LOG_SEV(logger, logging::severity::trace) << "post, target:" << target;

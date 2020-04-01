@@ -7,7 +7,8 @@
 
 namespace matrix {
 class room;
-}
+class user;
+} // namespace matrix
 
 namespace session {
 class client;
@@ -24,6 +25,10 @@ public:
   std::string own_id() const;
 
 protected:
+  void on_join(const matrix::user &user);
+  void on_leave(const std::string &user_id);
+  participants::iterator find_iterator(const std::string &user_id);
+
   session::logger logger{"room"};
   matrix::room &room_;
   participants participants_;
