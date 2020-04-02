@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Configuration;
 using System.Text.RegularExpressions;
 
 namespace Updater
 {
     public class UpdateHelper
     {
-        private const string syncToolPath = "../../rclone.exe";
-        private const string syncURL = "http://192.168.0.101:9080";
 
         internal UpdateListener Listener { get; set; }
 
@@ -15,25 +14,8 @@ namespace Updater
         {
             Listener.SetProgress(0);
 
-            ProcessStartInfo startInfo = new ProcessStartInfo
-            {
-                UseShellExecute = false,
-                FileName = syncToolPath,
-                CreateNoWindow = true,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                Arguments = $"sync --progress --http-url {syncURL} :http: /bin/bla"
-            };
-
-            Process process = new Process
-            {
-                StartInfo = startInfo
-            };
-
-            process.OutputDataReceived += new DataReceivedEventHandler(OutputHandler);
-            process.ErrorDataReceived += new DataReceivedEventHandler(OutputHandler);
-            process.EnableRaisingEvents = true;
-            process.Exited += new EventHandler(ExitHandler);
+            ProcessStartInfo startInfo = CreateStartInfo();
+            Process process = CreateProcess(startInfo);
 
             try
             {
@@ -51,9 +33,49 @@ namespace Updater
             return true;
         }
 
+        private Process CreateProcess(ProcessStartInfo startInfo)
+        {
+            Process process = new Process
+            {
+                StartInfo = startInfo
+            };
+
+            process.OutputDataReceived += new DataReceivedEventHandler(OutputHandler);
+            process.ErrorDataReceived += new DataReceivedEventHandler(OutputHandler);
+            process.EnableRaisingEvents = true;
+            process.Exited += new EventHandler(ExitHandler);
+
+            return process;
+        }
+
+        private ProcessStartInfo CreateStartInfo()
+        {
+            string url = GetUpdateUrl();
+            string rclonePath = ConfigurationManager.AppSettings.Get("RClonePath");
+            string execParams = ConfigurationManager.AppSettings.Get("Params");
+            string command = ConfigurationManager.AppSettings.Get("Command");
+            string targetDir = ConfigurationManager.AppSettings.Get("TargetDir");
+
+            return new ProcessStartInfo
+            {
+                UseShellExecute = false,
+                FileName = rclonePath,
+                CreateNoWindow = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                Arguments = $"{command} {execParams} --http-url {url} {targetDir}"
+            };
+        }
+
+        private string GetUpdateUrl()
+        {
+            string host = ConfigurationManager.AppSettings.Get("Host");
+            string port = ConfigurationManager.AppSettings.Get("Port");
+            return $"{host}:{port}";
+        }
+
         private void HandleUpdateException(string message)
         {
-            // Listener.setProgress(100);
             Listener.HandleUpdateEvent(message);
         }
 
@@ -61,19 +83,29 @@ namespace Updater
         {
             string line = outLine.Data;
 
-            if (line != null && (line.Contains("Transferred:") || line.Contains("Checks:")))
+            if (IsStatusLine(line))
             {
-                Regex rx = new Regex("\\d+(?:\\.\\d+)?%");
-                MatchCollection matches = rx.Matches(line);
-                // Report the number of matches found.
-                if (matches.Count > 0)
-                {
-                    int percentage = int.Parse(matches[0].Groups[0].Value.Replace("%", ""));
-                    Listener.SetProgress(percentage);
-                }
+                ReportPercentage(line);
             }
 
             Listener.HandleUpdateEvent(line);
+        }
+
+        private void ReportPercentage(string line)
+        {
+            Regex rx = new Regex("\\d+(?:\\.\\d+)?%");
+            MatchCollection matches = rx.Matches(line);
+            // Report the number of matches found.
+            if (matches.Count > 0)
+            {
+                int percentage = int.Parse(matches[0].Groups[0].Value.Replace("%", ""));
+                Listener.SetProgress(percentage);
+            }
+        }
+
+        private bool IsStatusLine(string line)
+        {
+            return line != null && (line.Contains("Transferred:") || line.Contains("Checks:"));
         }
 
         private void ExitHandler(object sender, EventArgs e)
