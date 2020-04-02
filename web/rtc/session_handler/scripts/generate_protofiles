@@ -1,9 +1,0 @@
-#!/bin/bash
-
-cd "$(dirname "$0")"/..
-
-proto_dir=../../../proto/
-result_dir=server/
-echo 'generating proto files for fubble_rtc.proto'
-protoc -I=$proto_dir --python_out=$result_dir $proto_dir/fubble_rtc.proto
-

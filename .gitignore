@@ -1,3 +1,7 @@
 CMakeLists.txt.user
 .vscode/
 .ccls-cache/
+bin
+.vs
+obj
+*.exe
