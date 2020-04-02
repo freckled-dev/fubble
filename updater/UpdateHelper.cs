@@ -55,7 +55,7 @@ namespace Updater
             string rclonePath = ConfigurationManager.AppSettings.Get("RClonePath");
             string execParams = ConfigurationManager.AppSettings.Get("Params");
             string command = ConfigurationManager.AppSettings.Get("Command");
-            string targetDir = GetTargetDir();
+            string targetDir = GetDirInAppPath("TargetDir");
 
             return new ProcessStartInfo
             {
@@ -68,10 +68,10 @@ namespace Updater
             };
         }
 
-        private string GetTargetDir()
+        private string GetDirInAppPath(string path)
         {
-            string configDir = ConfigurationManager.AppSettings.Get("TargetDir");
-            return $"{Application.StartupPath}\\{configDir}";
+            string directory = ConfigurationManager.AppSettings.Get(path);
+            return $"{Application.StartupPath}\\{directory}";
         }
 
         private string GetUpdateUrl()
@@ -117,8 +117,8 @@ namespace Updater
 
         private void ExitHandler(object sender, EventArgs e)
         {
-            Process p = (Process)sender;
-            int exitCode = p.ExitCode;
+            Process process = (Process)sender;
+            int exitCode = process.ExitCode;
             Listener.Exit(exitCode);
             if (exitCode == 0)
             {
@@ -128,7 +128,8 @@ namespace Updater
 
         private void StartFubble()
         {
-            string fubblePath = ConfigurationManager.AppSettings.Get("FubblePath");
+            string fubblePath = GetDirInAppPath("FubblePath");
+
             try
             {
                 Process.Start(fubblePath);

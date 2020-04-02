@@ -72,7 +72,7 @@ namespace Updater
             {
                 // collapse
                 line = rm.GetString("moreInformation");
-                Height = 200;
+                Height = 220;
                 Width = 500;
             }
 
