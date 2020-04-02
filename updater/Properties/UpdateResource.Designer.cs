@@ -70,6 +70,24 @@ namespace Updater.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Fubble is starting....
+        /// </summary>
+        internal static string fubbleStart {
+            get {
+                return ResourceManager.GetString("fubbleStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error starting fubble: {0}.
+        /// </summary>
+        internal static string fubbleStartError {
+            get {
+                return ResourceManager.GetString("fubbleStartError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Less Information.
         /// </summary>
         internal static string lessInformation {

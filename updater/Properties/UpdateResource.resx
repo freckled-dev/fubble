@@ -132,4 +132,10 @@
   <data name="updateError" xml:space="preserve">
     <value>There was an error during the update.</value>
   </data>
+  <data name="fubbleStart" xml:space="preserve">
+    <value>Fubble is starting...</value>
+  </data>
+  <data name="fubbleStartError" xml:space="preserve">
+    <value>Error starting fubble: {0}</value>
+  </data>
 </root>

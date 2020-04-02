@@ -32,7 +32,6 @@
             this.progressLabel = new System.Windows.Forms.Label();
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.progressBox = new System.Windows.Forms.TextBox();
-            this.update = new System.Windows.Forms.Button();
             this.showInformation = new System.Windows.Forms.Label();
             this.divider = new System.Windows.Forms.Label();
             this.SuspendLayout();
@@ -53,13 +52,6 @@
             resources.ApplyResources(this.progressBox, "progressBox");
             this.progressBox.Name = "progressBox";
             // 
-            // update
-            // 
-            resources.ApplyResources(this.update, "update");
-            this.update.Name = "update";
-            this.update.UseVisualStyleBackColor = true;
-            this.update.Click += new System.EventHandler(this.Button1_Click);
-            // 
             // showInformation
             // 
             resources.ApplyResources(this.showInformation, "showInformation");
@@ -79,7 +71,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.divider);
             this.Controls.Add(this.showInformation);
-            this.Controls.Add(this.update);
             this.Controls.Add(this.progressBox);
             this.Controls.Add(this.progressBar);
             this.Controls.Add(this.progressLabel);
@@ -95,7 +86,6 @@
         private System.Windows.Forms.Label progressLabel;
         private System.Windows.Forms.ProgressBar progressBar;
         private System.Windows.Forms.TextBox progressBox;
-        private System.Windows.Forms.Button update;
         private System.Windows.Forms.Label showInformation;
         private System.Windows.Forms.Label divider;
     }

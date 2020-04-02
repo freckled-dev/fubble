@@ -51,10 +51,6 @@ namespace Updater
 
         private void FormUpdate_Load(object sender, EventArgs e)
         {
-        }
-
-        private void Button1_Click(object sender, EventArgs e)
-        {
             StartUpdate();
         }
 
@@ -105,12 +101,35 @@ namespace Updater
 
         private void updateProgressLabel(string textId)
         {
+            UpdateProgressLabel(textId, null);
+        }
+
+        private void UpdateProgressLabel(string textId, string parameter)
+        {
             BeginInvoke(new Action(() =>
             {
-                progressLabel.Text = rm.GetString(textId);
+                if (parameter != null)
+                {
+                    progressLabel.Text = String.Format(rm.GetString(textId), parameter);
+                }
+                else
+                {
+                    progressLabel.Text = rm.GetString(textId);
+                }
             }));
         }
 
+        public void FubbleStart(Exception ex)
+        {
+            if (ex != null)
+            {
+                UpdateProgressLabel("fubbleStartError", ex.Message);
+            }
+            else
+            {
+                updateProgressLabel("fubbleStart");
+            }
+        }
     }
 
     interface UpdateListener
@@ -121,6 +140,8 @@ namespace Updater
         void ExecuteUpdate();
 
         void Exit(int exitCode);
+
+        void FubbleStart(Exception ex);
 
     }
 

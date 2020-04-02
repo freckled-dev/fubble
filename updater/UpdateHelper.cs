@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Configuration;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 namespace Updater
 {
@@ -54,7 +55,7 @@ namespace Updater
             string rclonePath = ConfigurationManager.AppSettings.Get("RClonePath");
             string execParams = ConfigurationManager.AppSettings.Get("Params");
             string command = ConfigurationManager.AppSettings.Get("Command");
-            string targetDir = ConfigurationManager.AppSettings.Get("TargetDir");
+            string targetDir = GetTargetDir();
 
             return new ProcessStartInfo
             {
@@ -65,6 +66,12 @@ namespace Updater
                 RedirectStandardError = true,
                 Arguments = $"{command} {execParams} --http-url {url} {targetDir}"
             };
+        }
+
+        private string GetTargetDir()
+        {
+            string configDir = ConfigurationManager.AppSettings.Get("TargetDir");
+            return $"{Application.StartupPath}\\{configDir}";
         }
 
         private string GetUpdateUrl()
@@ -113,17 +120,24 @@ namespace Updater
             Process p = (Process)sender;
             int exitCode = p.ExitCode;
             Listener.Exit(exitCode);
-        }
-
-        private void LogSuccess()
-        {
-            //Listener.setProgress(100);
-            Listener.HandleUpdateEvent("Update finished succesfully!");
+            if (exitCode == 0)
+            {
+                StartFubble();
+            }
         }
 
         private void StartFubble()
         {
-
+            string fubblePath = ConfigurationManager.AppSettings.Get("FubblePath");
+            try
+            {
+                Process.Start(fubblePath);
+                Listener.FubbleStart(null);
+            }
+            catch (Exception ex)
+            {
+                Listener.FubbleStart(ex);
+            }
         }
 
     }
