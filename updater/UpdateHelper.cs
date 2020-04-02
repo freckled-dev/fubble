@@ -71,7 +71,7 @@ namespace Updater
         private string GetDirInAppPath(string path)
         {
             string directory = ConfigurationManager.AppSettings.Get(path);
-            return $"{Application.StartupPath}\\{directory}";
+            return $"\"{Application.StartupPath}\\{directory}\"";
         }
 
         private string GetUpdateUrl()
