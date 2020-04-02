@@ -134,9 +134,6 @@
   <data name="update.Location" type="System.Drawing.Point, System.Drawing">
     <value>378, 25</value>
   </data>
-  <data name="update.Text" xml:space="preserve">
-    <value>Update</value>
-  </data>
   <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="showInformation.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -161,5 +158,8 @@
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Fubble</value>
+  </data>
+  <data name="progressLabel.Text" xml:space="preserve">
+    <value>Überprüfe auf Updates...</value>
   </data>
 </root>

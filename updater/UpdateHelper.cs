@@ -83,7 +83,7 @@ namespace Updater
 
         private void HandleUpdateException(string message)
         {
-            Listener.HandleUpdateEvent(message);
+            Listener.HandleUpdateException(message);
         }
 
         private void OutputHandler(object sendingProcess, DataReceivedEventArgs outLine)
@@ -134,6 +134,7 @@ namespace Updater
             {
                 Process.Start(fubblePath);
                 Listener.FubbleStart(null);
+                Application.Exit();
             }
             catch (Exception ex)
             {

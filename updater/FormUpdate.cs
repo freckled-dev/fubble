@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Drawing;
-using System.Reflection;
 using System.Resources;
 using System.Windows.Forms;
 
@@ -39,6 +37,13 @@ namespace Updater
                 progressBox.AppendText(text);
                 progressBox.AppendText(Environment.NewLine);
             }));
+        }
+
+
+        public void HandleUpdateException(string text)
+        {
+            HandleUpdateEvent(text);
+            UpdateProgressLabel("updateError");
         }
 
         public void SetProgress(int percentage)
@@ -84,22 +89,22 @@ namespace Updater
 
         public void ExecuteUpdate()
         {
-            updateProgressLabel("executeUpdate");
+            UpdateProgressLabel("executeUpdate");
         }
 
         public void Exit(int exitCode)
         {
             if (exitCode == 0)
             {
-                updateProgressLabel("updateSuccess");
+                UpdateProgressLabel("updateSuccess");
             }
             else
             {
-                updateProgressLabel("updateError");
+                UpdateProgressLabel("updateError");
             }
         }
 
-        private void updateProgressLabel(string textId)
+        private void UpdateProgressLabel(string textId)
         {
             UpdateProgressLabel(textId, null);
         }
@@ -127,7 +132,7 @@ namespace Updater
             }
             else
             {
-                updateProgressLabel("fubbleStart");
+                UpdateProgressLabel("fubbleStart");
             }
         }
     }
@@ -143,6 +148,7 @@ namespace Updater
 
         void FubbleStart(Exception ex);
 
+        void HandleUpdateException(string message);
     }
 
 }
