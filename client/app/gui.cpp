@@ -38,6 +38,9 @@
 #include <thread>
 
 int main(int argc, char *argv[]) {
+  (void)argc;
+  (void)argv;
+#if 0
   logging::add_console_log();
   logging::logger logger{"main"};
   BOOST_LOG_SEV(logger, logging::severity::debug) << "starting up";
@@ -142,4 +145,6 @@ int main(int argc, char *argv[]) {
   BOOST_LOG_SEV(logger, logging::severity::debug) << "gui stopped";
   context.stop();
   return result;
+#endif
+  return 0;
 }

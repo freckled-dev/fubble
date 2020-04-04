@@ -18,8 +18,6 @@ const room::participants &room::get_participants() const {
 
 std::string room::get_name() const { return "TODO room::get_name"; }
 
-std::string room::own_id() const { return "TODO room::own_id"; }
-
 std::string room::get_id() const { return room_.get_id(); }
 
 void room::on_join(const matrix::user &user) {

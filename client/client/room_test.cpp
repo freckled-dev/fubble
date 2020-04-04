@@ -1,6 +1,7 @@
 #include "add_data_channel.hpp"
 #include "executor_asio.hpp"
 #include "joiner.hpp"
+#include "matrix/testing.hpp"
 #include "own_media.hpp"
 #include "own_participant.hpp"
 #include "participant_creator_creator.hpp"
@@ -11,9 +12,12 @@
 #include "rtc/data_channel.hpp"
 #include "rtc/google/asio_signalling_thread.hpp"
 #include "rtc/google/factory.hpp"
+#include "session/client_connector.hpp"
+#include "session/room_joiner.hpp"
 #include "signalling/client/client_creator.hpp"
 #include "signalling/client/connection_creator.hpp"
 #include "signalling/json_message.hpp"
+#include "temporary_room/testing.hpp"
 #include "tracks_adder.hpp"
 #include "uuid.hpp"
 #include "wait_for_event.hpp"
@@ -26,7 +30,8 @@ struct Room : testing::Test {
   logging::logger logger{"Room"};
   boost::asio::io_context context;
   boost::asio::executor executor{context.get_executor()};
-  boost::executor_adaptor<executor_asio> boost_executor{context};
+  boost::executor_adaptor<executor_asio> boost_executor{
+      context}; // TODO remove!
   rtc::google::asio_signalling_thread rtc_signalling_thread{context};
   std::string room_name = uuid::generate();
 };
@@ -40,11 +45,13 @@ struct test_client {
   boost::asio::io_context &context;
   std::string room_name;
   boost::asio::executor executor{context.get_executor()};
-  boost::executor_adaptor<executor_asio> boost_executor{context};
+  boost::executor_adaptor<executor_asio> boost_executor{
+      context}; // TODO remove!
   websocket::connection_creator websocket_connection_creator{context};
   websocket::connector_creator websocket_connector{
       context, websocket_connection_creator};
 
+  // signalling
   signalling::json_message signalling_json;
   signalling::client::connection_creator signalling_connection_creator{
       context, boost_executor, signalling_json};
@@ -53,16 +60,36 @@ struct test_client {
   signalling::client::client_creator client_creator{
       websocket_connector, signalling_connection_creator, connect_information};
 
+  // session and matrix
+  http::client_factory http_client_factory{
+      context, matrix::testing::make_http_server_and_fields()};
+  http::client http_client_temporary_room{
+      context, temporary_room::testing::make_http_server_and_fields()};
+  temporary_room::net::client temporary_room_client{http_client_temporary_room};
+  matrix::factory matrix_factory;
+  matrix::client_factory matrix_client_factory{matrix_factory,
+                                               http_client_factory};
+  matrix::authentification matrix_authentification{http_client_factory,
+                                                   matrix_client_factory};
+  session::client_factory client_factory;
+  session::client_connector session_connector{client_factory,
+                                              matrix_authentification};
+  session::room_joiner session_room_joiner{temporary_room_client};
+
+  // rtc
   rtc::google::factory rtc_connection_creator;
   client::peer_creator peer_creator{boost_executor, client_creator,
                                     rtc_connection_creator};
+
+  // client
   client::rooms rooms;
   client::tracks_adder tracks_adder;
   client::own_media own_media;
   client::participant_creator_creator participant_creator_creator{
       peer_creator, tracks_adder, own_media};
   client::room_creator client_room_creator{participant_creator_creator};
-  client::joiner joiner{executor, client_room_creator, rooms};
+  client::joiner joiner{client_room_creator, rooms, session_connector,
+                        session_room_joiner};
 
   boost::future<std::shared_ptr<client::room>> join(std::string name) {
     client::joiner::parameters join_paramenters;
@@ -85,7 +112,8 @@ struct participants_waiter {
     return promise.get_future();
   }
   void check_if_enough() {
-    if (static_cast<int>(room.get_participants().size()) != wait_until)
+    if (static_cast<int>(room.get_participants().size()) !=
+        wait_until + 1) // +1 because of bot
       return;
     joins.disconnect();
     promise.set_value();
@@ -95,24 +123,20 @@ struct participants_waiter {
 
 TEST_F(Room, Instance) {}
 
-#if 0
 TEST_F(Room, Join) {
-  // TODO fix test by waiting for update. else nakama crashes internally because of a heap-use-after-free
   test_client test{*this, room_name};
-  bool called{};
   auto joined = test.join("some name");
-  joined.then(boost_executor, [&](auto room) {
-    EXPECT_TRUE(room.has_value());
-    called = true;
+  auto done = joined.then(boost_executor, [&](auto room) {
     context.stop();
     std::shared_ptr<client::room> room_ = room.get();
-    EXPECT_EQ(room_->get_name(), room_name);
+    EXPECT_TRUE(room_);
+    // EXPECT_EQ(room_->get_name(), room_name); // TODO not implemented yet
   });
   context.run();
-  EXPECT_TRUE(called);
+  done.get();
 }
-#endif
 
+#if 1
 namespace {
 struct join_and_wait {
   test_client &fixture;
@@ -124,7 +148,7 @@ struct join_and_wait {
   join_and_wait(test_client &fixture, std::string name, int wait_until = 2)
       : fixture(fixture), name(name), wait_until{wait_until} {}
 
-  boost::future<void> operator()() {
+  boost::future<void> join() {
     return fixture.join(name)
         .then(fixture.boost_executor,
               [&](auto room_) {
@@ -140,21 +164,21 @@ struct join_and_wait {
 
 TEST_F(Room, Participant) {
   test_client test_client_{*this, room_name};
-  join_and_wait test(test_client_, "some name", 1);
-  bool called{};
-  test().then(boost_executor, [&](auto result) {
-    EXPECT_FALSE(result.has_exception());
-    called = true;
+  join_and_wait test{test_client_, "some_name", 1};
+  auto done = test.join().then(boost_executor, [&](auto result) {
+    result.get();
     context.stop();
     auto participants = test.room->get_participants();
-    EXPECT_EQ(static_cast<int>(participants.size()), 1);
-    auto participant = participants.front();
-    EXPECT_EQ(participant->get_id(), test.room->get_own_id());
-    auto own = dynamic_cast<client::own_participant *>(participant);
+    EXPECT_EQ(static_cast<int>(participants.size()), 1 + 1); // +1 for bot
+    auto participant = std::find_if(
+        participants.cbegin(), participants.cend(),
+        [&](auto check) { return check->get_id() == test.room->get_own_id(); });
+    EXPECT_NE(participant, participants.cend());
+    auto own = dynamic_cast<client::own_participant *>(*participant);
     EXPECT_NE(own, nullptr);
   });
   context.run();
-  EXPECT_TRUE(called);
+  done.get();
 }
 
 TEST_F(Room, TwoParticipants) {
@@ -162,16 +186,18 @@ TEST_F(Room, TwoParticipants) {
   join_and_wait first(client_first, "first", 2);
   test_client client_second{*this, room_name};
   join_and_wait second(client_second, "second", 2);
-  bool called{};
-  boost::when_all(first(), second()).then(boost_executor, [&](auto result) {
-    called = true;
-    context.stop();
-    EXPECT_FALSE(result.has_exception());
-    EXPECT_EQ(2, static_cast<int>(first.room->get_participants().size()));
-    EXPECT_EQ(2, static_cast<int>(second.room->get_participants().size()));
-  });
+  auto done =
+      boost::when_all(first.join(), second.join())
+          .then(boost_executor, [&](auto result) {
+            context.stop();
+            EXPECT_FALSE(result.has_exception());
+            EXPECT_EQ(3,
+                      static_cast<int>(first.room->get_participants().size()));
+            EXPECT_EQ(3,
+                      static_cast<int>(second.room->get_participants().size()));
+          });
   context.run();
-  EXPECT_TRUE(called);
+  done.get();
 }
 
 TEST_F(Room, ThreeParticipants) {
@@ -181,22 +207,25 @@ TEST_F(Room, ThreeParticipants) {
   join_and_wait second(client_second, "second", 3);
   test_client client_third{*this, room_name};
   join_and_wait third(client_third, "three", 3);
-  bool called{};
-  boost::when_all(first(), second(), third())
-      .then(boost_executor, [&](auto result) {
-        called = true;
-        context.stop();
-        EXPECT_FALSE(result.has_exception());
-        EXPECT_EQ(3, static_cast<int>(first.room->get_participants().size()));
-        EXPECT_EQ(3, static_cast<int>(second.room->get_participants().size()));
-        EXPECT_EQ(3, static_cast<int>(third.room->get_participants().size()));
-      });
+  auto done =
+      boost::when_all(first.join(), second.join(), third.join())
+          .then(boost_executor, [&](auto result) {
+            context.stop();
+            result.get();
+            EXPECT_EQ(4,
+                      static_cast<int>(first.room->get_participants().size()));
+            EXPECT_EQ(4,
+                      static_cast<int>(second.room->get_participants().size()));
+            EXPECT_EQ(4,
+                      static_cast<int>(third.room->get_participants().size()));
+          });
   context.run();
-  EXPECT_TRUE(called);
+  done.get();
 }
 
 namespace {
 struct two_participants {
+  boost::inline_executor executor;
   test_client client_first;
   join_and_wait first{client_first, "first", 2};
   test_client client_second;
@@ -205,23 +234,29 @@ struct two_participants {
   two_participants(Room &fixture, const std::string &room_name)
       : client_first{fixture, room_name}, client_second{fixture, room_name} {}
 
-  auto operator()() { return boost::when_all(first(), second()); }
+  auto join() {
+    return boost::when_all(first.join(), second.join())
+        .then(executor, [](auto result) {
+          auto got = result.get();
+          std::get<0>(got).get();
+          std::get<1>(got).get();
+        });
+  }
 };
 } // namespace
 
-#if 0
 TEST_F(Room, DataChannel) {
   std::unique_ptr<two_participants> participants =
       std::make_unique<two_participants>(*this, room_name);
   client::add_data_channel data_channel;
   participants->client_first.tracks_adder.add(data_channel);
-  (*participants)();
+  auto joined = participants->join();
   bool called{};
   auto close = [&] {
     BOOST_LOG_SEV(logger, logging::severity::trace) << "test close";
     called = true;
     participants.reset();
-    // context.stop();
+    context.stop();
   };
   auto channel_opened = [&]() {
     BOOST_LOG_SEV(logger, logging::severity::trace) << "test channel_opened";
@@ -232,5 +267,6 @@ TEST_F(Room, DataChannel) {
   });
   context.run();
   BOOST_LOG_SEV(logger, logging::severity::trace) << "end run";
+  joined.get();
 }
 #endif

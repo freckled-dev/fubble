@@ -28,6 +28,5 @@ suppr_option = 'LSAN_OPTIONS=suppressions=' + suppr_file
 test('client room test', client_room_test,
   env: [
     'ASAN_OPTIONS=fast_unwind_on_malloc=0', suppr_option
-    ],
-  timeout: 8)
+    ])
 

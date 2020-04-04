@@ -12,18 +12,6 @@
 #include <nlohmann/json.hpp>
 
 namespace http {
-// TODO remove this exception!
-class error_not_status_200 : public virtual boost::exception,
-                             public virtual std::exception {
-  std::string message;
-
-public:
-  error_not_status_200(boost::beast::http::status status) {
-    message = "status: " + std::to_string(static_cast<int>(status));
-  };
-  ~error_not_status_200() override = default;
-  const char *what() const noexcept override { return message.c_str(); }
-};
 class action {
 public:
   action(boost::asio::io_context &context, boost::beast::http::verb verb,
@@ -63,10 +51,14 @@ protected:
   using request_type =
       boost::beast::http::request<boost::beast::http::string_body>;
   std::shared_ptr<async_result_promise> promise;
-  request_type request;
-  response_type response;
-  boost::beast::flat_buffer response_buffer;
-  std::shared_ptr<int> alive_check = std::make_shared<int>(42);
+  struct buffers {
+    request_type request;
+    response_type response;
+    boost::beast::flat_buffer response_buffer;
+  };
+  std::shared_ptr<buffers> buffers_ = std::make_shared<buffers>();
+  std::shared_ptr<int> alive_check =
+      std::make_shared<int>(42); // TODO use the promise?
 };
 } // namespace http
 

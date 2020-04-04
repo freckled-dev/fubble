@@ -20,7 +20,9 @@ room::room(std::unique_ptr<participant_creator> participant_creator_parameter,
       [this](const auto leaves) { on_session_participant_leaves(leaves); });
 }
 
-room::~room() = default;
+room::~room() {
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "destructor";
+}
 
 std::vector<participant *> room::get_participants() const {
   std::vector<participant *> result;
@@ -34,7 +36,7 @@ std::vector<participant *> room::get_participants() const {
 
 std::string room::get_name() const { return room_->get_name(); }
 
-std::string room::get_own_id() const { return room_->own_id(); }
+std::string room::get_own_id() const { return client_->get_id(); }
 
 void room::on_session_participant_joins(
     const std::vector<session::participant> &joins) {

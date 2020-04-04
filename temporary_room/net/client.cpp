@@ -20,11 +20,12 @@ boost::future<std::string> client::join(const std::string &name,
                                         const std::string &user_id) {
   auto content = nlohmann::json::object();
   content["user_id"] = user_id;
-  auto target = fmt::format("join/{}", name);
+  content["room_name"] = name;
+  auto target = "join";
   return http_client.put(target, content).then(executor, [this](auto result) {
     auto got_result = result.get();
     if (got_result.first != boost::beast::http::status::ok)
-      throw error(got_result.first, got_result.second);
+      BOOST_THROW_EXCEPTION(error(got_result.first, got_result.second));
     auto response = got_result.second;
     std::string room_id = response["room_id"];
     return room_id;

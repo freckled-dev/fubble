@@ -14,7 +14,7 @@ public:
 
 protected:
   response_future on_request(const std::string &target,
-                             const std::string &user_id);
+                             const nlohmann::json &request);
 
   net::server::acceptor &acceptor_;
 };
