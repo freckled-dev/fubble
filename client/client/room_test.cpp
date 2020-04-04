@@ -125,20 +125,18 @@ TEST_F(Room, Instance) {}
 
 TEST_F(Room, Join) {
   test_client test{*this, room_name};
-  bool called{};
-  auto joined = test.join("some_name");
-  joined.then(boost_executor, [&](auto room) {
-    EXPECT_TRUE(room.has_value());
-    called = true;
+  auto joined = test.join("some name");
+  auto done = joined.then(boost_executor, [&](auto room) {
     context.stop();
     std::shared_ptr<client::room> room_ = room.get();
     EXPECT_TRUE(room_);
     // EXPECT_EQ(room_->get_name(), room_name); // TODO not implemented yet
   });
   context.run();
-  EXPECT_TRUE(called);
+  done.get();
 }
 
+#if 1
 namespace {
 struct join_and_wait {
   test_client &fixture;
@@ -271,4 +269,4 @@ TEST_F(Room, DataChannel) {
   BOOST_LOG_SEV(logger, logging::severity::trace) << "end run";
   joined.get();
 }
-
+#endif

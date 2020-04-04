@@ -63,9 +63,12 @@ protected:
   using request_type =
       boost::beast::http::request<boost::beast::http::string_body>;
   std::shared_ptr<async_result_promise> promise;
-  request_type request;
-  response_type response;
-  boost::beast::flat_buffer response_buffer;
+  struct buffers {
+    request_type request;
+    response_type response;
+    boost::beast::flat_buffer response_buffer;
+  };
+  std::shared_ptr<buffers> buffers_ = std::make_shared<buffers>();
   std::shared_ptr<int> alive_check =
       std::make_shared<int>(42); // TODO use the promise?
 };
