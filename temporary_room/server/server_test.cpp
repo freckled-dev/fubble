@@ -1,5 +1,6 @@
 #include "matrix/authentification.hpp"
 #include "matrix/client_factory.hpp"
+#include "matrix/testing.hpp"
 #include "matrix_rooms_factory_adapter.hpp"
 #include "server.hpp"
 #include "temporary_room/net/client.hpp"
@@ -12,11 +13,8 @@ TEST(Server, Join) {
   boost::asio::io_context context;
   // matrix
   matrix::factory matrix_factory;
-  http::server http_server_matrix{"localhost", "8008"};
-  http::fields http_fields_matrix{http_server_matrix};
-  http_fields_matrix.target_prefix = "/_matrix/client/r0/";
-  http::client_factory http_client_factory_matrix{context, http_server_matrix,
-                                                  http_fields_matrix};
+  http::client_factory http_client_factory_matrix{
+      context, matrix::testing::make_http_server_and_fields()};
   matrix::client_factory matrix_client_factory{matrix_factory,
                                                http_client_factory_matrix};
   matrix::authentification matrix_authentification{http_client_factory_matrix,

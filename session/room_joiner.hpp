@@ -13,20 +13,19 @@ class client;
 // TODO refactor to temporary_room_joiner
 class room_joiner {
 public:
-  room_joiner(temporary_room::net::client &temporary_room_client,
-              client &client_);
+  room_joiner(temporary_room::net::client &temporary_room_client);
   ~room_joiner();
   using room_ptr = std::unique_ptr<room>;
-  boost::future<room_ptr> join(const std::string &room);
+  // TODO take shared_ptr of client!
+  boost::future<room_ptr> join(client &client_, const std::string &room);
 
 protected:
   boost::future<matrix::room *>
-  on_got_invited(boost::future<std::string> &result);
+  on_got_invited(client &client_, boost::future<std::string> &result);
   room_ptr on_joined(boost::future<matrix::room *> &result);
 
   session::logger logger{"room_joiner"};
   boost::inline_executor executor;
-  client &client_;
   temporary_room::net::client &temporary_room_client;
 };
 } // namespace session

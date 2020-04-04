@@ -14,6 +14,8 @@ class action;
 class client {
 public:
   // TODO remove context, replace with action_factory
+  client(boost::asio::io_context &context,
+         const std::pair<server, fields> &server_and_fields);
   client(boost::asio::io_context &context, const server &server_,
          const fields &fields_);
   ~client();

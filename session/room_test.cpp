@@ -1,8 +1,10 @@
 #include "client.hpp"
 #include "client_connector.hpp"
 #include "matrix/client.hpp"
+#include "matrix/testing.hpp"
 #include "room.hpp"
 #include "room_joiner.hpp"
+#include "temporary_room/testing.hpp"
 #include "utils/executor_asio.hpp"
 #include "utils/uuid.hpp"
 #include <boost/thread/executors/inline_executor.hpp>
@@ -23,24 +25,13 @@ void check_when_all_future_worked(future_tuple_type &check) {
   std::get<0>(got).get();
   std::get<1>(got).get();
 }
-http::fields make_http_fields(const http::server &server) {
-  http::fields http_fields{server};
-  http_fields.target_prefix = "/_matrix/client/r0/";
-  return http_fields;
-}
 struct joined_client {
   boost::inline_executor executor;
   boost::asio::io_context &io_context;
-  // TODO move the creation of server and fields to
-  // ::matrix::testing::make_something
-  http::server http_server_matrix{"localhost", "8008"};
-  http::fields http_fields_matrix = make_http_fields(http_server_matrix);
-  http::client_factory http_client_factory{io_context, http_server_matrix,
-                                           http_fields_matrix};
-  http::server http_server_temporary_room{"localhost", "8009"};
-  http::fields http_fields_temporary_room{http_server_temporary_room};
+  http::client_factory http_client_factory{
+      io_context, matrix::testing::make_http_server_and_fields()};
   http::client http_client_temporary_room{
-      io_context, http_server_temporary_room, http_fields_temporary_room};
+      io_context, temporary_room::testing::make_http_server_and_fields()};
   temporary_room::net::client temporary_room_client{http_client_temporary_room};
   matrix::factory matrix_factory;
   matrix::client_factory matrix_client_factory{matrix_factory,
@@ -79,9 +70,8 @@ struct joined_client {
   boost::future<void> set_name() { return client->set_name(name); }
 
   boost::future<session::room_joiner::room_ptr> on_connected() {
-    joiner =
-        std::make_unique<session::room_joiner>(temporary_room_client, *client);
-    return joiner->join(room_id);
+    joiner = std::make_unique<session::room_joiner>(temporary_room_client);
+    return joiner->join(*client, room_id);
   }
 }; // namespace
 } // namespace
