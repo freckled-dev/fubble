@@ -182,10 +182,6 @@ struct two_in_a_room {
           check_when_all_future_worked(future);
         });
   }
-  boost::future<void> run() {
-    return boost::when_all(first.client->run(), second.client->run())
-        .then([](auto result) { check_when_all_future_worked(result); });
-  }
 };
 } // namespace
 
@@ -218,19 +214,20 @@ TEST_F(Room, Name) {
                    [&](auto check) { return check.name == name; });
   EXPECT_NE(found_name, participants.end());
 }
-#if 0
 
 TEST_F(Room, DisconnectSignal) {
-  two_in_a_room two{asio_executor};
+  two_in_a_room two{io_context};
   auto leave_check = [&](auto leaves) {
     EXPECT_EQ(static_cast<int>(leaves.size()), 1);
-    EXPECT_EQ(leaves.front(), two.second_room->own_id());
+    EXPECT_EQ(leaves.front(), two.second.client->get_id());
     io_context.stop();
   };
-  two().then(executor, [&](auto) {
+  auto done = two.join().then(executor, [&](auto result) {
+    result.get();
     two.first_room->on_leaves.connect(leave_check);
-    two.second.client.close();
+    return two.second.client->leave_room(*two.second_room);
   });
   run_io_contect();
+  done.get();
 }
-#endif
+

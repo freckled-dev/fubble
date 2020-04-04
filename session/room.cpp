@@ -8,6 +8,8 @@ using namespace session;
 room::room(matrix::room &room_) : room_(room_) {
   signal_connections.emplace_back(
       room_.on_join.connect([this](const auto &user) { on_join(user); }));
+  signal_connections.emplace_back(
+      room_.on_leave.connect([this](const auto &id) { on_leave(id); }));
 }
 
 const room::participants &room::get_participants() const {
@@ -18,6 +20,8 @@ std::string room::get_name() const { return "TODO room::get_name"; }
 
 std::string room::own_id() const { return "TODO room::own_id"; }
 
+std::string room::get_id() const { return room_.get_id(); }
+
 void room::on_join(const matrix::user &user) {
   participant add;
   add.id = user.get_id();
@@ -25,6 +29,18 @@ void room::on_join(const matrix::user &user) {
   BOOST_ASSERT(participants_.end() == find_iterator(add.id));
   participants_.push_back(add);
   on_joins({add});
+}
+
+void room::on_leave(const std::string &user_id) {
+  auto found = find_iterator(user_id);
+  if (found == participants_.cend()) {
+    BOOST_LOG_SEV(logger, logging::severity::error)
+        << "on_leave, could not find user by id:" << user_id;
+    BOOST_ASSERT(false);
+    return;
+  }
+  participants_.erase(found);
+  on_leaves({user_id});
 }
 
 room::participants::iterator room::find_iterator(const std::string &user_id) {
