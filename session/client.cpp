@@ -1,5 +1,6 @@
 #include "client.hpp"
 #include "matrix/client.hpp"
+#include "room.hpp"
 #include "uuid.hpp"
 #include <fmt/format.h>
 
@@ -15,6 +16,13 @@ client::~client() {
 boost::future<void> client::run() { return matrix_client->sync_till_stop(); }
 
 void client::close() { matrix_client->stop_sync(); }
+
+boost::future<void> client::leave_room(room &room_) {
+  auto room_id = room_.get_id();
+  return matrix_client->get_rooms().leave_room_by_id(room_id);
+}
+
+std::string client::get_id() const { return matrix_client->get_user_id(); }
 
 const matrix::client &client::get_natives() const { return *matrix_client; }
 

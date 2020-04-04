@@ -10,6 +10,7 @@
 namespace session {
 class room;
 class client;
+// TODO refactor to temporary_room_joiner
 class room_joiner {
 public:
   room_joiner(temporary_room::net::client &temporary_room_client,

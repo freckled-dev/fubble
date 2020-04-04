@@ -30,4 +30,4 @@ test('session room test', session_room_test,
   env: [
     'ASAN_OPTIONS=fast_unwind_on_malloc=0'
     ],
-  timeout: 8)
+  timeout: 16)

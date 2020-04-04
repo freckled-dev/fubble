@@ -15,8 +15,11 @@ public:
   rooms(factory &factory_, client &client_);
 
   boost::future<room *> create_room();
+  // TODO refactor to `leave`
   boost::future<void> leave_room(const room &room_);
+  // TODO refactor to `leave_by_id`
   boost::future<void> leave_room_by_id(const std::string &id);
+  // TODO refactor to `join_by_id`
   boost::future<room *> join_room_by_id(const std::string &id);
   using room_list = std::deque<std::unique_ptr<room>>;
   inline const room_list &get_rooms() { return rooms_; }

@@ -5,6 +5,7 @@
 #include "session/logger.hpp"
 
 namespace session {
+class room;
 class client {
 public:
   client(std::unique_ptr<matrix::client> matrix_client);
@@ -13,6 +14,9 @@ public:
   boost::future<void> run();
   void close();
   boost::future<void> set_name(const std::string &name);
+  // TODO do a `rooms` class
+  boost::future<void> leave_room(room &room_);
+  std::string get_id() const;
 
   const matrix::client &get_natives() const;
   matrix::client &get_natives();

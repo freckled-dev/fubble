@@ -22,6 +22,7 @@ public:
   const participants &get_participants() const;
   std::string get_name() const;
   // TODO getter --> `get_`
+  std::string get_id() const;
   std::string own_id() const;
 
 protected:
