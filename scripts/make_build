@@ -24,9 +24,6 @@ rdmd $scripts_dir/google-webrtc_pkg-config_generator/source/app.d \
   -s "$google_webrtc_dir" -b "$google_webrtc_dir/out/Default" \
   > "$dependencies_dir/google-webrtc.pc"
 
-# TODO clean up absolute path in `nakama.pc`
-cp -v "$scripts_dir/nakama.pc" "$dependencies_dir"
-
 cd $build_dir
 # multiple paths with `:`
 export PKG_CONFIG_PATH="${dependencies_dir}"

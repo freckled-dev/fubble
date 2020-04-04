@@ -81,17 +81,20 @@ acceptor::acceptor(boost::asio::io_context &context, const config &config_)
 void acceptor::listen() {
   if (listening)
     return;
+  BOOST_LOG_SEV(logger, logging::severity::trace)
+      << "listening on port: " << config_.port;
   const auto address = boost::asio::ip::make_address("0.0.0.0");
   const boost::asio::ip::tcp::endpoint endpoint{address, config_.port};
   acceptor_.open(endpoint.protocol());
   acceptor_.set_option(boost::asio::socket_base::reuse_address(true));
+  acceptor_.bind(endpoint);
   acceptor_.listen();
   listening = true;
 }
 
 boost::future<void> acceptor::run() {
-  run_promise = std::make_shared<boost::promise<void>>();
   listen();
+  run_promise = std::make_shared<boost::promise<void>>();
   accept_next();
   return run_promise->get_future();
 }
@@ -108,8 +111,9 @@ unsigned short acceptor::get_port() const {
 void acceptor::accept_next() {
   BOOST_LOG_SEV(logger, logging::severity::trace) << "accept_next";
   socket = std::make_unique<boost::asio::ip::tcp::socket>(context);
-  boost::system::error_code error;
   acceptor_.async_accept(*socket, [this](auto error) {
+    BOOST_LOG_SEV(logger, logging::severity::trace)
+        << "accepted, error:" << error.message();
     if (error) {
       auto promise_copy = run_promise;
       if (error == boost::asio::error::operation_aborted) {

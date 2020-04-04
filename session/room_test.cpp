@@ -1,5 +1,6 @@
 #include "client.hpp"
 #include "client_connector.hpp"
+#include "matrix/client.hpp"
 #include "room.hpp"
 #include "room_joiner.hpp"
 #include "utils/executor_asio.hpp"
@@ -10,73 +11,102 @@
 namespace {
 struct Room : testing::Test {
   boost::asio::io_context io_context;
-  boost::asio::executor asio_executor = io_context.get_executor();
   boost::inline_executor executor;
   void run_io_contect() {
     io_context.run();
-    io_context.restart();
+    io_context.reset();
   }
 };
-} // namespace
-
-namespace {
+template <class future_tuple_type>
+void check_when_all_future_worked(future_tuple_type &check) {
+  auto got = check.get();
+  std::get<0>(got).get();
+  std::get<1>(got).get();
+}
+http::fields make_http_fields(const http::server &server) {
+  http::fields http_fields{server};
+  http_fields.target_prefix = "/_matrix/client/r0/";
+  return http_fields;
+}
 struct joined_client {
-  session::client client;
-  session::client_connector connector{client};
-  session::room_joiner joiner = client;
   boost::inline_executor executor;
-  boost::promise<session::room_joiner::room_ptr> join_promise;
+  boost::asio::io_context &io_context;
+  // TODO move the creation of server and fields to
+  // ::matrix::testing::make_something
+  http::server http_server_matrix{"localhost", "8008"};
+  http::fields http_fields_matrix = make_http_fields(http_server_matrix);
+  http::client_factory http_client_factory{io_context, http_server_matrix,
+                                           http_fields_matrix};
+  http::server http_server_temporary_room{"localhost", "8009"};
+  http::fields http_fields_temporary_room{http_server_temporary_room};
+  http::client http_client_temporary_room{
+      io_context, http_server_temporary_room, http_fields_temporary_room};
+  temporary_room::net::client temporary_room_client{http_client_temporary_room};
+  matrix::factory matrix_factory;
+  matrix::client_factory matrix_client_factory{matrix_factory,
+                                               http_client_factory};
+  matrix::authentification matrix_authentification{http_client_factory,
+                                                   matrix_client_factory};
+  session::client_factory client_factory;
+  session::client_connector connector{client_factory, matrix_authentification};
+  std::unique_ptr<session::client> client;
+  std::unique_ptr<session::room_joiner> joiner;
+  std::unique_ptr<session::room> room;
   const std::string room_id;
   const std::string name;
 
-  joined_client(boost::asio::executor &executor, std::string room_id,
+  joined_client(boost::asio::io_context &io_context, std::string room_id,
                 std::string name)
-      : client{executor}, room_id(room_id), name(name) {}
+      : io_context(io_context), room_id(room_id), name(name) {}
 
-  boost::future<session::room_joiner::room_ptr> operator()() {
-    connector.connect().then(
-        executor, [this](auto connected) { on_connected(connected); });
-    return join_promise.get_future();
+  boost::future<void> join() {
+    return connector.connect()
+        .then(executor,
+              [this](auto result) {
+                client = result.get();
+                return set_name();
+              })
+        .unwrap()
+        .then(executor,
+              [this](auto result) {
+                result.get();
+                return on_connected();
+              })
+        .unwrap()
+        .then(executor, [this](auto result) { room = result.get(); });
   }
-  void on_connected(boost::future<void> &connected) {
-    EXPECT_TRUE(connected.has_value());
-    client.set_name(name).then(executor,
-                               [this](auto done) { on_name_set(done); });
+
+  boost::future<void> set_name() { return client->set_name(name); }
+
+  boost::future<session::room_joiner::room_ptr> on_connected() {
+    joiner =
+        std::make_unique<session::room_joiner>(temporary_room_client, *client);
+    return joiner->join(room_id);
   }
-  void on_name_set(boost::future<void> &done) {
-    EXPECT_TRUE(done.has_value());
-    joiner.join(room_id).then(executor,
-                              [this](auto joined) { on_joined(joined); });
-  }
-  void on_joined(boost::future<session::room_joiner::room_ptr> &room_future) {
-    EXPECT_TRUE(room_future.has_value());
-    session::room_joiner::room_ptr room = room_future.get();
-    EXPECT_TRUE(room);
-    EXPECT_EQ(room->get_name(), room_id);
-    join_promise.set_value(std::move(room));
-  }
-};
+}; // namespace
 } // namespace
 
 TEST_F(Room, Joiner) {
   auto room_id = uuid::generate();
-  joined_client join{asio_executor, room_id, "name"};
-  join().then(executor, [&](auto room_future) {
-    EXPECT_TRUE(room_future.get()->get_participants().empty());
+  joined_client join{io_context, room_id, "name"};
+  auto joined = join.join().then(executor, [&](auto result) {
+    result.get();
     io_context.stop();
   });
   io_context.run();
+  joined.get();
+  EXPECT_TRUE(join.room->get_participants().empty());
 }
 
 namespace {
 struct participants_waiter {
   session::room &room;
-  int wait_until{2};
+  int wait_until{3};
   boost::promise<void> promise;
   boost::signals2::scoped_connection joins;
 
   participants_waiter(session::room &room) : room(room) {}
-  boost::future<void> operator()() {
+  boost::future<void> wait() {
     joins = room.on_joins.connect([this](auto) { check_if_enough(); });
     check_if_enough();
     return promise.get_future();
@@ -92,97 +122,112 @@ struct participants_waiter {
 
 TEST_F(Room, TwoJoins) {
   const auto room_id = uuid::generate();
-  joined_client first{asio_executor, room_id, "first"};
-  joined_client second{asio_executor, room_id, "second"};
-  boost::when_all(first(), second()).then(executor, [&](auto rooms_future) {
-    // rooms_future is a future of a tuple of 2 futures
-    // https://www.boost.org/doc/libs/1_72_0/doc/html/thread/synchronization.html#thread.synchronization.futures.reference.when_all
-    auto rooms = rooms_future.get();
-    session::room_joiner::room_ptr first_room = std::get<0>(rooms).get();
-    session::room_joiner::room_ptr second_room = std::get<1>(rooms).get();
-    EXPECT_TRUE(first_room);
-    EXPECT_TRUE(second_room);
-    io_context.stop();
-  });
+  joined_client first{io_context, room_id, "first"};
+  joined_client second{io_context, room_id, "second"};
+  // rooms_future is a future of a tuple of 2 futures
+  // https://www.boost.org/doc/libs/1_72_0/doc/html/thread/synchronization.html#thread.synchronization.futures.reference.when_all
+  auto joined = boost::when_all(first.join(), second.join())
+                    .then(executor, [&](auto rooms_future) {
+                      auto rooms = rooms_future.get();
+                      std::get<0>(rooms).get();
+                      std::get<1>(rooms).get();
+                      EXPECT_TRUE(first.room);
+                      EXPECT_TRUE(second.room);
+                      io_context.stop();
+                    });
   io_context.run();
+  joined.get();
 }
 
 namespace {
 struct two_in_a_room {
   const std::string room_id = uuid::generate();
+  boost::inline_executor executor;
   joined_client first;
   joined_client second;
-  std::unique_ptr<session::room> first_room;
-  std::unique_ptr<session::room> second_room;
-  boost::inline_executor executor;
-  boost::promise<void> promise;
-  two_in_a_room(boost::asio::executor &asio_executor)
+  std::unique_ptr<session::room> &first_room = first.room;
+  std::unique_ptr<session::room> &second_room = second.room;
+  two_in_a_room(boost::asio::io_context &asio_executor)
       : first{asio_executor, room_id, "first"}, second{asio_executor, room_id,
                                                        "second"} {}
-  boost::future<void> operator()() {
-    boost::when_all(first(), second())
-        .then(executor, [this](auto rooms_future) {
-          auto rooms = rooms_future.get();
-          first_room = std::get<0>(rooms).get();
-          second_room = std::get<1>(rooms).get();
-          on_rooms_set();
+  boost::future<void> join() {
+    auto first_joined_and_running =
+        first.join().then(executor, [this](auto result) {
+          result.get();
+          first.client->run();
         });
-    return promise.get_future();
+    auto second_joined_and_running =
+        second.join().then(executor, [this](auto result) {
+          result.get();
+          second.client->run();
+        });
+    return boost::when_all(std::move(first_joined_and_running),
+                           std::move(second_joined_and_running))
+        .then(executor,
+              [this](auto rooms_future) {
+                check_when_all_future_worked(rooms_future);
+              })
+        .then(executor,
+              [this](auto result) {
+                result.get();
+                return on_rooms_set();
+              })
+        .unwrap();
   }
-  void on_rooms_set() {
+  boost::future<void> on_rooms_set() {
     auto first_waiter = std::make_shared<participants_waiter>(*first_room);
     auto second_waiter = std::make_shared<participants_waiter>(*second_room);
-    boost::when_all((*first_waiter)(), (*second_waiter)())
+    return boost::when_all(first_waiter->wait(), second_waiter->wait())
         .then(executor, [this, first_waiter, second_waiter](auto future) {
-          EXPECT_TRUE(future.has_value());
-          promise.set_value();
+          check_when_all_future_worked(future);
         });
   }
 };
 } // namespace
 
 TEST_F(Room, TwoJoinSignals) {
-  two_in_a_room two{asio_executor};
-  two().then([&](auto) { io_context.stop(); });
+  two_in_a_room two{io_context};
+  auto success = two.join().then(executor, [&](auto) { io_context.stop(); });
   run_io_contect();
+  success.get();
 }
 
 TEST_F(Room, Name) {
   const auto room_id = uuid::generate();
   const std::string name = "fun name";
-  joined_client first{asio_executor, room_id, name};
-  std::unique_ptr<session::room> first_room;
-  first().then(executor, [&](auto room_future) {
-    first_room = room_future.get();
+  joined_client first{io_context, room_id, name};
+  std::unique_ptr<session::room> &first_room = first.room;
+  auto joined = first.join().then(executor, [&](auto result) {
+    result.get();
     io_context.stop();
   });
   run_io_contect();
+  joined.get();
+  first.client->run();
   participants_waiter first_waiter{*first_room};
-  first_waiter.wait_until = 1;
-  first_waiter().then(executor, [&](auto) { io_context.stop(); });
+  first_waiter.wait_until = 2;
+  first_waiter.wait().then(executor, [&](auto) { io_context.stop(); });
   run_io_contect();
-  if (first_room->get_participants().front().name == name)
-    return;
-  first_room->on_updates.connect([&](auto updatees) {
-    EXPECT_EQ(static_cast<int>(updatees.size()), 1);
-    EXPECT_EQ(updatees.front().id, first_room->own_id());
-    EXPECT_EQ(updatees.front().name, name);
-    EXPECT_EQ(first_room->get_participants().front().name, name);
-    io_context.stop();
-  });
-  run_io_contect();
+  auto &participants = first_room->get_participants();
+  const auto found_name =
+      std::find_if(participants.begin(), participants.end(),
+                   [&](auto check) { return check.name == name; });
+  EXPECT_NE(found_name, participants.end());
 }
 
 TEST_F(Room, DisconnectSignal) {
-  two_in_a_room two{asio_executor};
+  two_in_a_room two{io_context};
   auto leave_check = [&](auto leaves) {
     EXPECT_EQ(static_cast<int>(leaves.size()), 1);
-    EXPECT_EQ(leaves.front(), two.second_room->own_id());
+    EXPECT_EQ(leaves.front(), two.second.client->get_id());
     io_context.stop();
   };
-  two().then(executor, [&](auto) {
+  auto done = two.join().then(executor, [&](auto result) {
+    result.get();
     two.first_room->on_leaves.connect(leave_check);
-    two.second.client.close();
+    return two.second.client->leave_room(*two.second_room);
   });
   run_io_contect();
+  done.get();
 }
+

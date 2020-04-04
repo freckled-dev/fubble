@@ -30,8 +30,8 @@ public:
       on_participants_left;
   std::vector<participant *> get_participants() const;
 
-  const std::string &get_name() const;
-  const std::string &get_own_id() const;
+  std::string get_name() const;
+  std::string get_own_id() const;
 
 protected:
   void

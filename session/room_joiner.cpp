@@ -1,33 +1,38 @@
 #include "room_joiner.hpp"
 #include "client.hpp"
+#include "http/client.hpp"
 #include "room.hpp"
 #include <fmt/format.h>
 
 using namespace session;
 
-room_joiner::room_joiner(client &client_) : client_(client_) {}
+room_joiner::room_joiner(temporary_room::net::client &temporary_room_client,
+                         client &client_)
+    : client_(client_), temporary_room_client{temporary_room_client} {}
+
+room_joiner::~room_joiner() {
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "~room_joiner";
+}
 
 boost::future<room_joiner::room_ptr>
 room_joiner::join(const std::string &room_) {
-  auto result = promise.get_future();
-  auto &natives = client_.get_natives();
-  auto persistance = Nakama::opt::nullopt;
-  auto hidden = Nakama::opt::nullopt;
-  natives.realtime_client->joinChat(
-      room_, Nakama::NChannelType::ROOM, persistance, hidden,
-      [this](auto session) { on_success(session); },
-      [this](auto error) { on_error(error); });
-  return result;
+  BOOST_LOG_SEV(logger, logging::severity::info) << "join room:" << room_;
+  return temporary_room_client.join(room_, client_.get_natives().get_user_id())
+      .then(executor, [this](auto result) { return on_got_invited(result); })
+      .unwrap()
+      .then(executor, [this](auto result) { return on_joined(result); });
 }
 
-void room_joiner::on_success(Nakama::NChannelPtr channel) {
-  auto result = std::make_unique<room>(client_, channel);
-  promise.set_value(std::move(result));
+boost::future<matrix::room *>
+room_joiner::on_got_invited(boost::future<std::string> &result) {
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "on_got_invited";
+  auto room_id = result.get();
+  return client_.get_natives().get_rooms().join_room_by_id(room_id);
 }
 
-void room_joiner::on_error(Nakama::NRtError error) {
-  auto error_message =
-      fmt::format("failed to join room, message:'{}'", error.message);
-  BOOST_LOG_SEV(logger, logging::severity::warning) << error_message;
-  promise.set_exception(std::runtime_error(error_message));
+room_joiner::room_ptr
+room_joiner::on_joined(boost::future<matrix::room *> &result) {
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "on_joined";
+  matrix::room *room_ = result.get();
+  return std::make_unique<room>(*room_);
 }

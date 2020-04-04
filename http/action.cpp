@@ -1,11 +1,13 @@
 #include "action.hpp"
+#include <fmt/format.h>
 
 using namespace http;
 
 action::action(boost::asio::io_context &context, boost::beast::http::verb verb,
                const std::string &target, const server &server_,
                const fields &fields_)
-    : stream{context}, resolver{context}, server_{server_} {
+    : stream{context}, resolver{context}, server_{server_}, verb(verb),
+      target(target), fields_(fields_) {
   // promise is a shared ref, for the case that the promise callbacks destroy
   // this class
   promise = std::make_shared<async_result_promise>();
@@ -19,13 +21,23 @@ action::action(boost::asio::io_context &context, boost::beast::http::verb verb,
                 std::string("Bearer ") + fields_.auth_token.value());
 }
 
+action::~action() {
+  if (!promise)
+    return;
+  BOOST_LOG_SEV(logger, logging::severity::warning) << fmt::format(
+      "action is getting destructed before done, target:", target);
+  promise->set_exception(
+      boost::system::system_error(boost::asio::error::operation_aborted));
+}
+
 void action::set_request_body(const nlohmann::json &body) {
   request.body() = body.dump();
 }
 
 action::async_result_future action::do_() {
   request.prepare_payload();
-  // BOOST_LOG_SEV(logger, logging::severity::trace) << "request:" << request;
+  BOOST_LOG_SEV(logger, logging::severity::trace) << fmt::format(
+      "resolving, server:'{}', port:'{}'", server_.server, server_.port);
   std::weak_ptr<int> alive = alive_check;
   resolver.async_resolve(
       server_.server, server_.port,
@@ -36,6 +48,8 @@ action::async_result_future action::do_() {
       });
   return promise->get_future();
 }
+
+void action::cancel() { stream.socket().close(); }
 
 void action::on_resolved(
     const boost::system::error_code &error,
@@ -86,11 +100,13 @@ void action::on_response_read(const boost::system::error_code &error) {
   if (!check_and_handle_error(error))
     return;
   auto http_code = response.result();
+  stream.socket().shutdown(boost::asio::socket_base::shutdown_both);
+  auto promise_copy = std::move(promise);
+  if (http_code != boost::beast::http::status::ok)
+    return promise_copy->set_exception(error_not_status_200(http_code));
   auto body = response.body();
   auto json_body = nlohmann::json::parse(body);
-  stream.socket().shutdown(boost::asio::socket_base::shutdown_both);
-  auto promise_copy = promise;
-  promise->set_value(std::make_pair(http_code, json_body));
+  promise_copy->set_value(std::make_pair(http_code, json_body));
 }
 
 bool action::check_and_handle_error(const boost::system::error_code &error) {
@@ -98,8 +114,7 @@ bool action::check_and_handle_error(const boost::system::error_code &error) {
     return true;
   BOOST_LOG_SEV(logger, logging::severity::trace)
       << "got an error, error:" << error.message();
-  auto promise_copy = promise;
-  promise->set_exception(boost::system::system_error{error});
+  auto promise_copy = std::move(promise);
+  promise_copy->set_exception(boost::system::system_error{error});
   return false;
 }
-

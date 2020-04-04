@@ -12,17 +12,32 @@
 #include <nlohmann/json.hpp>
 
 namespace http {
+// TODO remove this exception!
+class error_not_status_200 : public virtual boost::exception,
+                             public virtual std::exception {
+  std::string message;
+
+public:
+  error_not_status_200(boost::beast::http::status status) {
+    message = "status: " + std::to_string(static_cast<int>(status));
+  };
+  ~error_not_status_200() override = default;
+  const char *what() const noexcept override { return message.c_str(); }
+};
 class action {
 public:
   action(boost::asio::io_context &context, boost::beast::http::verb verb,
          const std::string &target, const server &server_,
          const fields &fields_);
+  ~action();
 
   void set_request_body(const nlohmann::json &body);
   using async_result = std::pair<boost::beast::http::status, nlohmann::json>;
   using async_result_future = boost::future<async_result>;
   using async_result_promise = boost::promise<async_result>;
   async_result_future do_();
+
+  void cancel();
 
 protected:
   void
@@ -39,6 +54,10 @@ protected:
   boost::beast::tcp_stream stream;
   boost::asio::ip::tcp::resolver resolver;
   const server server_;
+  const boost::beast::http::verb verb;
+  const std::string target;
+  const fields fields_;
+
   using response_type =
       boost::beast::http::response<boost::beast::http::string_body>;
   using request_type =
