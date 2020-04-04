@@ -12,18 +12,6 @@
 #include <nlohmann/json.hpp>
 
 namespace http {
-// TODO remove this exception!
-class error_not_status_200 : public virtual boost::exception,
-                             public virtual std::exception {
-  std::string message;
-
-public:
-  error_not_status_200(boost::beast::http::status status) {
-    message = "status: " + std::to_string(static_cast<int>(status));
-  };
-  ~error_not_status_200() override = default;
-  const char *what() const noexcept override { return message.c_str(); }
-};
 class action {
 public:
   action(boost::asio::io_context &context, boost::beast::http::verb verb,
