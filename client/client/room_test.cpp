@@ -25,7 +25,6 @@
 #include "websocket/connector.hpp"
 #include <gtest/gtest.h>
 
-#if 1
 namespace {
 struct Room : testing::Test {
   logging::logger logger{"Room"};
@@ -124,9 +123,7 @@ struct participants_waiter {
 
 TEST_F(Room, Instance) {}
 
-#if 0
 TEST_F(Room, Join) {
-  // TODO fix test by waiting for update. else nakama crashes internally because of a heap-use-after-free
   test_client test{*this, room_name};
   bool called{};
   auto joined = test.join("some_name");
@@ -135,12 +132,12 @@ TEST_F(Room, Join) {
     called = true;
     context.stop();
     std::shared_ptr<client::room> room_ = room.get();
-    EXPECT_EQ(room_->get_name(), room_name);
+    EXPECT_TRUE(room_);
+    // EXPECT_EQ(room_->get_name(), room_name); // TODO not implemented yet
   });
   context.run();
   EXPECT_TRUE(called);
 }
-#endif
 
 namespace {
 struct join_and_wait {
@@ -175,33 +172,34 @@ TEST_F(Room, Participant) {
     context.stop();
     auto participants = test.room->get_participants();
     EXPECT_EQ(static_cast<int>(participants.size()), 1 + 1); // +1 for bot
-    auto participant = participants.front();
-    EXPECT_EQ(participant->get_id(), test.room->get_own_id());
-    auto own = dynamic_cast<client::own_participant *>(participant);
+    auto participant = std::find_if(
+        participants.cbegin(), participants.cend(),
+        [&](auto check) { return check->get_id() == test.room->get_own_id(); });
+    EXPECT_NE(participant, participants.cend());
+    auto own = dynamic_cast<client::own_participant *>(*participant);
     EXPECT_NE(own, nullptr);
   });
   context.run();
   done.get();
 }
-#endif
-
-#if 0
 
 TEST_F(Room, TwoParticipants) {
   test_client client_first{*this, room_name};
   join_and_wait first(client_first, "first", 2);
   test_client client_second{*this, room_name};
   join_and_wait second(client_second, "second", 2);
-  bool called{};
-  boost::when_all(first(), second()).then(boost_executor, [&](auto result) {
-    called = true;
-    context.stop();
-    EXPECT_FALSE(result.has_exception());
-    EXPECT_EQ(2, static_cast<int>(first.room->get_participants().size()));
-    EXPECT_EQ(2, static_cast<int>(second.room->get_participants().size()));
-  });
+  auto done =
+      boost::when_all(first.join(), second.join())
+          .then(boost_executor, [&](auto result) {
+            context.stop();
+            EXPECT_FALSE(result.has_exception());
+            EXPECT_EQ(3,
+                      static_cast<int>(first.room->get_participants().size()));
+            EXPECT_EQ(3,
+                      static_cast<int>(second.room->get_participants().size()));
+          });
   context.run();
-  EXPECT_TRUE(called);
+  done.get();
 }
 
 TEST_F(Room, ThreeParticipants) {
@@ -211,22 +209,25 @@ TEST_F(Room, ThreeParticipants) {
   join_and_wait second(client_second, "second", 3);
   test_client client_third{*this, room_name};
   join_and_wait third(client_third, "three", 3);
-  bool called{};
-  boost::when_all(first(), second(), third())
-      .then(boost_executor, [&](auto result) {
-        called = true;
-        context.stop();
-        EXPECT_FALSE(result.has_exception());
-        EXPECT_EQ(3, static_cast<int>(first.room->get_participants().size()));
-        EXPECT_EQ(3, static_cast<int>(second.room->get_participants().size()));
-        EXPECT_EQ(3, static_cast<int>(third.room->get_participants().size()));
-      });
+  auto done =
+      boost::when_all(first.join(), second.join(), third.join())
+          .then(boost_executor, [&](auto result) {
+            context.stop();
+            result.get();
+            EXPECT_EQ(4,
+                      static_cast<int>(first.room->get_participants().size()));
+            EXPECT_EQ(4,
+                      static_cast<int>(second.room->get_participants().size()));
+            EXPECT_EQ(4,
+                      static_cast<int>(third.room->get_participants().size()));
+          });
   context.run();
-  EXPECT_TRUE(called);
+  done.get();
 }
 
 namespace {
 struct two_participants {
+  boost::inline_executor executor;
   test_client client_first;
   join_and_wait first{client_first, "first", 2};
   test_client client_second;
@@ -235,23 +236,29 @@ struct two_participants {
   two_participants(Room &fixture, const std::string &room_name)
       : client_first{fixture, room_name}, client_second{fixture, room_name} {}
 
-  auto operator()() { return boost::when_all(first(), second()); }
+  auto join() {
+    return boost::when_all(first.join(), second.join())
+        .then(executor, [](auto result) {
+          auto got = result.get();
+          std::get<0>(got).get();
+          std::get<1>(got).get();
+        });
+  }
 };
 } // namespace
 
-#if 0
 TEST_F(Room, DataChannel) {
   std::unique_ptr<two_participants> participants =
       std::make_unique<two_participants>(*this, room_name);
   client::add_data_channel data_channel;
   participants->client_first.tracks_adder.add(data_channel);
-  (*participants)();
+  auto joined = participants->join();
   bool called{};
   auto close = [&] {
     BOOST_LOG_SEV(logger, logging::severity::trace) << "test close";
     called = true;
     participants.reset();
-    // context.stop();
+    context.stop();
   };
   auto channel_opened = [&]() {
     BOOST_LOG_SEV(logger, logging::severity::trace) << "test channel_opened";
@@ -262,6 +269,6 @@ TEST_F(Room, DataChannel) {
   });
   context.run();
   BOOST_LOG_SEV(logger, logging::severity::trace) << "end run";
+  joined.get();
 }
-#endif
-#endif
+

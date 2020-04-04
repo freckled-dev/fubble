@@ -49,7 +49,7 @@ protected:
   void on_name_set(boost::future<void> &name_set) { name_set.get(); }
 
   boost::future<session::room_joiner::room_ptr> join_room() {
-    return session_room_joiner.join(*client_, parameters_.name);
+    return session_room_joiner.join(*client_, parameters_.room);
   }
 
   joiner::room_ptr

@@ -23,7 +23,6 @@ public:
   std::string get_name() const;
   // TODO getter --> `get_`
   std::string get_id() const;
-  std::string own_id() const;
 
 protected:
   void on_join(const matrix::user &user);
