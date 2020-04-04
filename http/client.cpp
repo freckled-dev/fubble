@@ -3,6 +3,10 @@
 
 using namespace http;
 
+client::client(boost::asio::io_context &context,
+               const std::pair<server, fields> &server_and_fields)
+    : client(context, server_and_fields.first, server_and_fields.second) {}
+
 client::client(boost::asio::io_context &context, const server &server_,
                const fields &fields_)
     : context(context), server_{server_}, fields_{fields_} {}

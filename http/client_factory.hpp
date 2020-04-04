@@ -3,10 +3,15 @@
 
 #include "client.hpp"
 #include <memory>
+#include <utility>
 
 namespace http {
 class client_factory {
 public:
+  client_factory(boost::asio::io_context &context,
+                 const std::pair<server, fields> &fields_)
+      : client_factory(context, fields_.first, fields_.second) {}
+
   client_factory(boost::asio::io_context &context, server server_,
                  fields fields_)
       : context(context), server_{server_}, fields_{fields_} {}

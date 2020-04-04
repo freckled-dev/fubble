@@ -25,9 +25,11 @@ action::~action() {
   if (!promise)
     return;
   BOOST_LOG_SEV(logger, logging::severity::warning) << fmt::format(
-      "action is getting destructed before done, target:", target);
+      "action is getting destructed before done, target:{}", target);
   promise->set_exception(
       boost::system::system_error(boost::asio::error::operation_aborted));
+  promise.reset();
+  cancel();
 }
 
 void action::set_request_body(const nlohmann::json &body) {

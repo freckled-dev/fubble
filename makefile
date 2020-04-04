@@ -17,4 +17,4 @@ install:
 
 .PHONY: test
 test:
-	cd ../fubble_build/meson; meson test 'session client test' 'session room test'
+	cd ../fubble_build/meson; meson test 'client room test' # 'matrix test' # 'session client test' 'session room test'
