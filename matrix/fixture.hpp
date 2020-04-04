@@ -4,6 +4,7 @@
 #include "authentification.hpp"
 #include "client_factory.hpp"
 #include "error.hpp"
+#include "matrix/testing.hpp"
 #include "room.hpp"
 #include "users.hpp"
 #include <boost/thread/executors/inline_executor.hpp>
@@ -12,10 +13,8 @@
 struct fixture : ::testing::Test {
   boost::inline_executor executor;
   boost::asio::io_context context;
-  http::server server_information{"localhost", "8008"};
-  http::fields fields_information = make_fields(server_information);
-  http::client_factory http_client_factory{context, server_information,
-                                           fields_information};
+  http::client_factory http_client_factory{
+      context, matrix::testing::make_http_server_and_fields()};
   matrix::factory room_factory_;
   matrix::client_factory client_factory_{room_factory_, http_client_factory};
   matrix::authentification authentification_{http_client_factory,

@@ -38,6 +38,7 @@ TEST_F(Rooms, InviteByUserId) {
   auto room = room_future.get();
   auto join_fail = invitee->get_rooms().join_room_by_id(room->get_id());
   run_context();
+  // TODO refactor http client error handling!!!
   EXPECT_THROW(join_fail.get(), error::response);
   auto invite_future = room->invite_by_user_id(invitee->get_user_id());
   run_context();

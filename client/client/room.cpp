@@ -20,7 +20,9 @@ room::room(std::unique_ptr<participant_creator> participant_creator_parameter,
       [this](const auto leaves) { on_session_participant_leaves(leaves); });
 }
 
-room::~room() = default;
+room::~room() {
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "destructor";
+}
 
 std::vector<participant *> room::get_participants() const {
   std::vector<participant *> result;

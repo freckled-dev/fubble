@@ -66,7 +66,8 @@ protected:
   request_type request;
   response_type response;
   boost::beast::flat_buffer response_buffer;
-  std::shared_ptr<int> alive_check = std::make_shared<int>(42);
+  std::shared_ptr<int> alive_check =
+      std::make_shared<int>(42); // TODO use the promise?
 };
 } // namespace http
 

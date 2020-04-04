@@ -16,6 +16,7 @@ class participant;
 class participant_creator;
 class room {
 public:
+  // TODO refactor. client shall not be owned by room
   room(std::unique_ptr<participant_creator> participant_creator_,
        std::unique_ptr<session::client> client_,
        std::unique_ptr<session::room> room_);

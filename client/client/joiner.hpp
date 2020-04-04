@@ -2,14 +2,14 @@
 #define UUID_B27E182A_AF56_48E7_B9B3_428F3B393E2B
 
 #include "client/logger.hpp"
-#include "executor_asio.hpp"
-#include <boost/asio/executor.hpp>
-#include <boost/thread/executors/executor_adaptor.hpp>
+#include <boost/thread/executors/inline_executor.hpp>
 #include <boost/thread/future.hpp>
 
 namespace session {
 class client;
-}
+class client_connector;
+class room_joiner;
+} // namespace session
 
 namespace client {
 class room;
@@ -17,25 +17,25 @@ class rooms;
 class room_creator;
 class joiner {
 public:
-  joiner(boost::asio::executor &executor, room_creator &room_creator_,
-         rooms &rooms_);
+  joiner(room_creator &room_creator_, rooms &rooms_,
+         session::client_connector &session_connector,
+         session::room_joiner &session_room_joiner);
   ~joiner();
 
   struct parameters {
     std::string name, room;
   };
   // thread-safe
-  // TODO remove thread safety and executor from constructor
-  boost::future<std::shared_ptr<room>> join(const parameters &parameters_);
+  using room_ptr = std::shared_ptr<room>;
+  boost::future<room_ptr> join(const parameters &parameters_);
 
 protected:
   client::logger logger{"joiner"};
-  boost::asio::executor &executor;
+  boost::inline_executor executor;
   room_creator &room_creator_;
+  session::client_connector &session_connector;
+  session::room_joiner &session_room_joiner;
   rooms &rooms_;
-  executor_asio executor_asio_{executor};
-  boost::executor_adaptor<executor_asio> future_executor{executor_asio_};
-  class join;
 };
 } // namespace client
 
