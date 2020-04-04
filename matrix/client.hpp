@@ -29,7 +29,7 @@ public:
   // TODO make protected
   std::unique_ptr<http::client> create_http_client();
 
-  void set_display_name();
+  boost::future<void> set_display_name(const std::string &name);
   static constexpr std::chrono::milliseconds default_sync_timeout =
       std::chrono::seconds(60);
   boost::future<void>

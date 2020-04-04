@@ -41,6 +41,15 @@ std::unique_ptr<http::client> client::create_http_client() {
   return http_factory.create(fields);
 }
 
+boost::future<void> client::set_display_name(const std::string &name) {
+  nlohmann::json request = nlohmann::json::object();
+  request["displayname"] = name;
+  std::string target = fmt::format("profile/{}/displayname", get_user_id());
+  return http_client->put(target, request).then(executor, [](auto result) {
+    error::check_matrix_response(result);
+  });
+}
+
 boost::future<void> client::sync(std::chrono::milliseconds timeout) {
   auto target = make_sync_target(timeout);
   return http_client->get(target).then(executor, [this](auto result) {

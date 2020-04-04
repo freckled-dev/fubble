@@ -12,6 +12,7 @@
 #include <nlohmann/json.hpp>
 
 namespace http {
+// TODO remove this exception!
 class error_not_status_200 : public virtual boost::exception,
                              public virtual std::exception {
   std::string message;

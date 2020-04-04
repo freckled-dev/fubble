@@ -64,17 +64,21 @@ struct joined_client {
         .then(executor,
               [this](auto result) {
                 client = result.get();
+                return set_name();
+              })
+        .unwrap()
+        .then(executor,
+              [this](auto result) {
+                result.get();
                 return on_connected();
               })
         .unwrap()
-        .then(executor, [this](auto result) {
-          room = result.get();
-          return;
-        });
+        .then(executor, [this](auto result) { room = result.get(); });
   }
 
+  boost::future<void> set_name() { return client->set_name(name); }
+
   boost::future<session::room_joiner::room_ptr> on_connected() {
-    // TODO set name of user
     joiner =
         std::make_unique<session::room_joiner>(temporary_room_client, *client);
     return joiner->join(room_id);
@@ -97,12 +101,12 @@ TEST_F(Room, Joiner) {
 namespace {
 struct participants_waiter {
   session::room &room;
-  int wait_until{2};
+  int wait_until{3};
   boost::promise<void> promise;
   boost::signals2::scoped_connection joins;
 
   participants_waiter(session::room &room) : room(room) {}
-  boost::future<void> operator()() {
+  boost::future<void> wait() {
     joins = room.on_joins.connect([this](auto) { check_if_enough(); });
     check_if_enough();
     return promise.get_future();
@@ -173,7 +177,7 @@ struct two_in_a_room {
   boost::future<void> on_rooms_set() {
     auto first_waiter = std::make_shared<participants_waiter>(*first_room);
     auto second_waiter = std::make_shared<participants_waiter>(*second_room);
-    return boost::when_all((*first_waiter)(), (*second_waiter)())
+    return boost::when_all(first_waiter->wait(), second_waiter->wait())
         .then(executor, [this, first_waiter, second_waiter](auto future) {
           check_when_all_future_worked(future);
         });
@@ -187,40 +191,34 @@ struct two_in_a_room {
 
 TEST_F(Room, TwoJoinSignals) {
   two_in_a_room two{io_context};
-  auto success = two.join().then(executor, [&](auto) {
-    //
-    io_context.stop();
-  });
+  auto success = two.join().then(executor, [&](auto) { io_context.stop(); });
   run_io_contect();
   success.get();
 }
-#if 0
 
 TEST_F(Room, Name) {
   const auto room_id = uuid::generate();
   const std::string name = "fun name";
-  joined_client first{asio_executor, room_id, name};
-  std::unique_ptr<session::room> first_room;
-  first().then(executor, [&](auto room_future) {
-    first_room = room_future.get();
+  joined_client first{io_context, room_id, name};
+  std::unique_ptr<session::room> &first_room = first.room;
+  auto joined = first.join().then(executor, [&](auto result) {
+    result.get();
     io_context.stop();
   });
   run_io_contect();
+  joined.get();
+  first.client->run();
   participants_waiter first_waiter{*first_room};
-  first_waiter.wait_until = 1;
-  first_waiter().then(executor, [&](auto) { io_context.stop(); });
+  first_waiter.wait_until = 2;
+  first_waiter.wait().then(executor, [&](auto) { io_context.stop(); });
   run_io_contect();
-  if (first_room->get_participants().front().name == name)
-    return;
-  first_room->on_updates.connect([&](auto updatees) {
-    EXPECT_EQ(static_cast<int>(updatees.size()), 1);
-    EXPECT_EQ(updatees.front().id, first_room->own_id());
-    EXPECT_EQ(updatees.front().name, name);
-    EXPECT_EQ(first_room->get_participants().front().name, name);
-    io_context.stop();
-  });
-  run_io_contect();
+  auto &participants = first_room->get_participants();
+  const auto found_name =
+      std::find_if(participants.begin(), participants.end(),
+                   [&](auto check) { return check.name == name; });
+  EXPECT_NE(found_name, participants.end());
 }
+#if 0
 
 TEST_F(Room, DisconnectSignal) {
   two_in_a_room two{asio_executor};

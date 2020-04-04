@@ -22,5 +22,5 @@ matrix::client &client::get_natives() { return *matrix_client; }
 
 boost::future<void> client::set_name(const std::string &name) {
   BOOST_LOG_SEV(logger, logging::severity::info) << "setting name to:" << name;
-  return boost::make_ready_future();
+  return matrix_client->set_display_name(name);
 }
