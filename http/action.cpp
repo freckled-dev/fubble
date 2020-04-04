@@ -101,8 +101,7 @@ void action::on_response_read(const boost::system::error_code &error) {
     return;
   auto http_code = response.result();
   stream.socket().shutdown(boost::asio::socket_base::shutdown_both);
-  auto promise_copy = promise;
-  promise.reset();
+  auto promise_copy = std::move(promise);
   if (http_code != boost::beast::http::status::ok)
     return promise_copy->set_exception(error_not_status_200(http_code));
   auto body = response.body();
@@ -115,8 +114,7 @@ bool action::check_and_handle_error(const boost::system::error_code &error) {
     return true;
   BOOST_LOG_SEV(logger, logging::severity::trace)
       << "got an error, error:" << error.message();
-  auto promise_copy = promise;
+  auto promise_copy = std::move(promise);
   promise_copy->set_exception(boost::system::system_error{error});
-  promise_copy.reset();
   return false;
 }
