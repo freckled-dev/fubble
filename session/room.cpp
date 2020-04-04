@@ -1,125 +1,49 @@
 #include "room.hpp"
 #include "client.hpp"
+#include "matrix/user.hpp"
 #include <fmt/format.h>
 
 using namespace session;
 
-room::room(client &client_, Nakama::NChannelPtr channel)
-    : client_(client_), channel(channel) {
-  on_nakama_joins(channel->presences);
-  auto &client_signals = client_.get_natives().realtime_signals;
-  signal_connections.push_back(client_signals.on_channel_presence.connect(
-      [this](const auto &event) { on_channel_presence(event); }));
-  signal_connections.push_back(client_signals.on_channel_message.connect(
-      [this](const auto &event) { on_channel_message(event); }));
+room::room(matrix::room &room_) : room_(room_) {
+  signal_connections.emplace_back(
+      room_.on_join.connect([this](const auto &user) { on_join(user); }));
+  signal_connections.emplace_back(
+      room_.on_leave.connect([this](const auto &id) { on_leave(id); }));
 }
 
 const room::participants &room::get_participants() const {
   return participants_;
 }
 
-const std::string &room::get_name() const { return channel->roomName; }
+std::string room::get_name() const { return "TODO room::get_name"; }
 
-const std::string &room::own_id() const { return channel->self.userId; }
+std::string room::own_id() const { return "TODO room::own_id"; }
 
-void room::on_channel_message(const Nakama::NChannelMessage &message) {
-  BOOST_LOG_SEV(logger, logging::severity::info)
-      << "on_channel_message, content:" << message.content;
+std::string room::get_id() const { return room_.get_id(); }
+
+void room::on_join(const matrix::user &user) {
+  participant add;
+  add.id = user.get_id();
+  add.name = user.get_display_name();
+  BOOST_ASSERT(participants_.end() == find_iterator(add.id));
+  participants_.push_back(add);
+  on_joins({add});
 }
 
-void room::on_channel_presence(const Nakama::NChannelPresenceEvent &event) {
-  BOOST_LOG_SEV(logger, logging::severity::info)
-      << fmt::format("on_channel_presence, joins:{}, leaves:{}",
-                     event.joins.size(), event.leaves.size());
-  on_nakama_joins(event.joins);
-  on_nakama_leaves(event.leaves);
-}
-
-namespace {
-participant
-convert_nakama_presence_to_participant(const Nakama::NUserPresence &convert) {
-  participant result;
-  result.id = convert.userId;
-  return result;
-}
-} // namespace
-
-void room::on_nakama_joins(
-    const std::vector<Nakama::NUserPresence> &presences) {
-  BOOST_LOG_SEV(logger, logging::severity::info)
-      << "on_nakama_joins, count:" << presences.size();
-  if (presences.empty())
+void room::on_leave(const std::string &user_id) {
+  auto found = find_iterator(user_id);
+  if (found == participants_.cend()) {
+    BOOST_LOG_SEV(logger, logging::severity::error)
+        << "on_leave, could not find user by id:" << user_id;
+    BOOST_ASSERT(false);
     return;
-  {
-    participants joins;
-    std::transform(presences.cbegin(), presences.cend(),
-                   std::back_inserter(joins),
-                   convert_nakama_presence_to_participant);
-    std::copy(joins.cbegin(), joins.cend(), std::back_inserter(participants_));
-    on_joins(joins);
   }
-  BOOST_LOG_SEV(logger, logging::severity::info)
-      << fmt::format("there are {} participants", participants_.size());
-  {
-    Nakama::NClientPtr native_client = client_.get_natives().client_;
-    Nakama::NSessionPtr native_session = client_.get_natives().session_;
-    std::vector<std::string> ids;
-    for (const auto presence : presences)
-      ids.push_back(presence.userId);
-    std::vector<std::string> usernames;
-    std::vector<std::string> facebook_ids;
-    native_client->getUsers(
-        native_session, ids, usernames, facebook_ids,
-        [this](const auto users) { on_names(users); },
-        [this](auto error) { on_error(error); });
-  }
+  participants_.erase(found);
+  on_leaves({user_id});
 }
 
-void room::on_nakama_leaves(
-    const std::vector<Nakama::NUserPresence> &presences) {
-  if (presences.empty())
-    return;
-  std::vector<std::string> leaves;
-  for (const auto &presence : presences) {
-    auto found = std::remove_if(
-        participants_.begin(), participants_.end(),
-        [&](const auto &check) { return presence.userId == check.id; });
-    if (found == participants_.end()) {
-      BOOST_LOG_SEV(logger, logging::severity::error)
-          << "could not find participant for removal";
-      BOOST_ASSERT(false);
-      continue;
-    }
-    participants_.erase(found);
-    leaves.push_back(presence.userId);
-  }
-  on_leaves(leaves);
-}
-
-void room::on_names(const Nakama::NUsers &users) {
-  BOOST_LOG_SEV(logger, logging::severity::info)
-      << "on_names, users.size():" << users.users.size();
-  std::vector<participant> updates;
-  for (auto &user : users.users) {
-    auto found =
-        std::find_if(participants_.begin(), participants_.end(),
-                     [&](const auto &item) { return item.id == user.id; });
-    if (found == participants_.end()) {
-      BOOST_LOG_SEV(logger, logging::severity::error) << fmt::format(
-          "could not find id participant in list, id:{}", user.id);
-      BOOST_ASSERT(false);
-      continue;
-    }
-    found->name = user.displayName;
-    updates.push_back(*found);
-  }
-  BOOST_ASSERT(!updates.empty());
-  if (updates.empty())
-    return;
-  on_updates(updates);
-}
-
-void room::on_error(const Nakama::NError &error) {
-  BOOST_LOG_SEV(logger, logging::severity::error)
-      << "on_error, message:" << error.message;
+room::participants::iterator room::find_iterator(const std::string &user_id) {
+  return std::find_if(participants_.begin(), participants_.end(),
+                      [&](const auto &check) { return user_id == check.id; });
 }

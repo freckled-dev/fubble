@@ -4,33 +4,34 @@
 #include "participant.hpp"
 #include "session/logger.hpp"
 #include <boost/signals2/signal.hpp>
-#include <nakama-cpp/Nakama.h>
+
+namespace matrix {
+class room;
+class user;
+} // namespace matrix
 
 namespace session {
 class client;
 class room {
 public:
-  room(client &client_, Nakama::NChannelPtr channel);
+  room(matrix::room &room_);
   using participants = std::vector<participant>;
   boost::signals2::signal<void(participants)> on_joins;
   boost::signals2::signal<void(std::vector<std::string>)> on_leaves;
   boost::signals2::signal<void(participants)> on_updates;
   const participants &get_participants() const;
-  const std::string &get_name() const;
+  std::string get_name() const;
   // TODO getter --> `get_`
-  const std::string &own_id() const;
+  std::string get_id() const;
+  std::string own_id() const;
 
 protected:
-  void on_channel_message(const Nakama::NChannelMessage &message);
-  void on_channel_presence(const Nakama::NChannelPresenceEvent &event);
-  void on_nakama_joins(const std::vector<Nakama::NUserPresence> &presences);
-  void on_nakama_leaves(const std::vector<Nakama::NUserPresence> &presences);
-  void on_names(const Nakama::NUsers &users);
-  void on_error(const Nakama::NError &error);
+  void on_join(const matrix::user &user);
+  void on_leave(const std::string &user_id);
+  participants::iterator find_iterator(const std::string &user_id);
 
   session::logger logger{"room"};
-  client &client_;
-  Nakama::NChannelPtr channel;
+  matrix::room &room_;
   participants participants_;
   std::vector<boost::signals2::scoped_connection> signal_connections;
 };

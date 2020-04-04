@@ -7,13 +7,23 @@ client::client(boost::asio::io_context &context, const server &server_,
                const fields &fields_)
     : context(context), server_{server_}, fields_{fields_} {}
 
-client::~client() = default;
+client::~client() {
+#if 0
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "destructor";
+#endif
+}
 
 client::async_result_future client::get(const std::string &target) {
   BOOST_LOG_SEV(logger, logging::severity::trace) << "get, target:" << target;
   auto action_ = std::make_shared<action>(
       context, boost::beast::http::verb::get, target, server_, fields_);
   return do_action(action_);
+}
+
+std::unique_ptr<action> client::get_action(const std::string &target) {
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "get, target:" << target;
+  return std::make_unique<action>(context, boost::beast::http::verb::get,
+                                  target, server_, fields_);
 }
 
 client::async_result_future client::post(const std::string &target,

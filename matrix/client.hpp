@@ -19,27 +19,43 @@ public:
   // TODO refactor to just taking a http::client?
   client(factory &factory_, http::client_factory &http_factory,
          const information &information_);
+  ~client();
 
   const std::string &get_user_id() const;
   users &get_users() const;
   rooms &get_rooms() const;
 
+  http::client &get_http_client();
+  // TODO make protected
   std::unique_ptr<http::client> create_http_client();
 
-  void set_display_name();
+  boost::future<void> set_display_name(const std::string &name);
+  static constexpr std::chrono::milliseconds default_sync_timeout =
+      std::chrono::seconds(60);
   boost::future<void>
-  sync(std::chrono::milliseconds timeout = std::chrono::seconds(60));
+  sync(std::chrono::milliseconds timeout = default_sync_timeout);
+  boost::future<void>
+  sync_till_stop(std::chrono::milliseconds timeout = default_sync_timeout);
+  void stop_sync();
 
   boost::signals2::signal<void(const nlohmann::json &)> on_sync;
 
 protected:
   void on_synced(const nlohmann::json &content);
+  std::string make_sync_target(std::chrono::milliseconds timeout) const;
+  void on_sync_till_stop(
+      boost::future<std::pair<boost::beast::http::status, nlohmann::json>>
+          &response);
+  void do_sync();
 
   matrix::logger logger{"client"};
+  boost::inline_executor executor;
   factory &factory_;
   http::client_factory &http_factory;
+  std::unique_ptr<boost::promise<void>> sync_till_stop_promise;
   std::unique_ptr<http::client> http_client;
-  boost::inline_executor executor;
+  std::unique_ptr<http::action> http_sync_action;
+  std::chrono::milliseconds sync_till_stop_timeout;
   const information information_;
   std::optional<std::string> sync_next_batch;
   std::unique_ptr<users> users_;

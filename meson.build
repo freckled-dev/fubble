@@ -38,7 +38,6 @@ gstreamer_webrtc_dep = declare_dependency(
     ]
   )
 google_webrtc_dep = dependency('google-webrtc')
-nakama_dep = dependency('nakama')
 
 subdir('utils')
 subdir('http')
@@ -46,7 +45,7 @@ subdir('websocket')
 subdir('matrix')
 subdir('signalling')
 subdir('webrtc_peer')
+subdir('temporary_room')
 subdir('session')
 subdir('client')
-subdir('temporary_room')
 

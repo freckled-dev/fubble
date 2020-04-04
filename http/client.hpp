@@ -21,6 +21,7 @@ public:
   using async_result = std::pair<boost::beast::http::status, nlohmann::json>;
   using async_result_future = boost::future<async_result>;
   async_result_future get(const std::string &target);
+  std::unique_ptr<action> get_action(const std::string &target);
   async_result_future post(const std::string &target,
                            const nlohmann::json &content);
   async_result_future put(const std::string &target,
