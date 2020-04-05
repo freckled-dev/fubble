@@ -15,7 +15,8 @@
     "VIDEO": "Free Video Conference",
     "EASY": "Easy to use",
     "NO_REGISTRATION": "No Registration",
-    "CONNECT_WITH_PEOPLE": "Connect with People all over the world!"
+    "CONNECT_WITH_PEOPLE": "Connect with People all over the world!",
+    "FUBBLE_DESCRIPTION": "Fubble is an app for video calls. Stay in touch with your family and friends. Use Fubble to work from home and conference with your collegues. The app is currently an alpha stage - you can use it for free. We would love to hear your feedback!"
   },
   "INTRO": {
     "HEADER": "Best way to connect with your friends, family or coworkers!",
@@ -50,5 +51,8 @@
   },
   "DOWNLOAD": {
     "ENJOY": "Download and test Fubble for free"
+  },
+  "SCREENSHOTS": {
+    "FUBBLE": "Fubble Screenshots"
   }
 }

@@ -749,7 +749,7 @@ section {
 ==========================*/
 .about-box {
   border-bottom: 1px solid $color_alto_approx;
-  padding-bottom: 58px;
+  padding-bottom: 30px;
 }
 
 .about-border {
@@ -937,6 +937,10 @@ section {
       bottom: 0;
     }
   }
+}
+
+.text-screenshots {
+  color: $theme-gray;
 }
 
 .slider-mobile {
@@ -2184,6 +2188,10 @@ li.nav-item.dropdown {
 
 .about-chat .col-md-3:last-child .chat-box {
   border-right: none;
+}
+
+.about-description {
+  margin-bottom: 50px;
 }
 
 .swiper-slide img {
