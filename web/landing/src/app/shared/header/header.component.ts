@@ -10,9 +10,9 @@ declare var $: any;
 })
 export class HeaderComponent implements OnInit {
 
-  public darkHeader: boolean = false;  
+  public darkHeader: boolean = false;
   public menuItems: any[];
-  
+
   // Inject Document object
   constructor(
     @Inject(DOCUMENT) private document: Document,
@@ -20,16 +20,15 @@ export class HeaderComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-     $.getScript('./assets/js/script.js');
-     $.getScript('./assets/js/tilt.jquery.js');
-   }
-  
+    $.getScript('./assets/js/script.js');
+  }
+
 
   // @HostListener Decorator
   @HostListener("window:scroll", [])
   onWindowScroll() {
     let number = this.window.pageYOffset || this.document.documentElement.scrollTop || this.document.body.scrollTop || 0;
-    if (number >= 60) { 
+    if (number >= 60) {
       this.darkHeader = true;
     } else {
       this.darkHeader = false;
