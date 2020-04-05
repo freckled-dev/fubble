@@ -17,7 +17,8 @@ matrix_test = executable('matrix_test',
   )
 test('matrix test',
   matrix_test,
-  env: [ 'ASAN_OPTIONS=fast_unwind_on_malloc=0' ]
+  env: [ 'ASAN_OPTIONS=fast_unwind_on_malloc=0' ],
+  timeout: 45
   )
 
 

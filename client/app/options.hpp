@@ -12,9 +12,21 @@ struct config {
   struct signalling {
     std::string host{"localhost"};
     std::string service{"http"};
-    std::string id{"test"};
+    std::string id{"test"}; // TODO remove this flag. join a room!
   };
   signalling signalling_;
+#if 0
+  struct matrix {
+    std::string host{"localhost"};
+    std::string service{"8008"};
+  };
+  matrix matrix_;
+  struct temporary_room {
+    std::string host{"localhost"};
+    std::string service{"8009"};
+  };
+  temporary_room temporary_room_;
+#endif
 };
 
 class options {
