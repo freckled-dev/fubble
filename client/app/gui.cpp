@@ -21,6 +21,8 @@
 #include "rtc/google/capture/video/device_creator.hpp"
 #include "rtc/google/capture/video/enumerator.hpp"
 #include "rtc/google/factory.hpp"
+#include "session/client_connector.hpp"
+#include "session/room_joiner.hpp"
 #include "signalling/client/client_creator.hpp"
 #include "signalling/client/connection_creator.hpp"
 #include "signalling/json_message.hpp"
@@ -38,9 +40,8 @@
 #include <thread>
 
 int main(int argc, char *argv[]) {
-  (void)argc;
-  (void)argv;
-#if 0
+  // TODO parse options
+
   logging::add_console_log();
   logging::logger logger{"main"};
   BOOST_LOG_SEV(logger, logging::severity::debug) << "starting up";
@@ -55,6 +56,7 @@ int main(int argc, char *argv[]) {
   websocket::connector_creator websocket_connector{
       context, websocket_connection_creator};
 
+  // signalling
   signalling::json_message signalling_json;
   signalling::client::connection_creator signalling_connection_creator{
       context, boost_executor, signalling_json};
@@ -62,6 +64,30 @@ int main(int argc, char *argv[]) {
       "localhost", "8000"};
   signalling::client::client_creator client_creator{
       websocket_connector, signalling_connection_creator, connect_information};
+
+  // session, matrix and temporary_room
+  http::server http_matrix_client_server{"localhost", "8008"};
+  http::fields http_matrix_client_fields{http_matrix_client_server};
+  http_matrix_client_fields.target_prefix = "/_matrix/client/r0/";
+  http::client_factory http_matrix_client_factory{
+      context, http_matrix_client_server, http_matrix_client_fields};
+
+  http::server http_temporary_room_client_server{"localhost", "8009"};
+  http::fields http_temporary_room_client_fields{
+      http_temporary_room_client_server};
+  http::client http_client_temporary_room{context,
+                                          http_temporary_room_client_server,
+                                          http_temporary_room_client_fields};
+  temporary_room::net::client temporary_room_client{http_client_temporary_room};
+  matrix::factory matrix_factory;
+  matrix::client_factory matrix_client_factory{matrix_factory,
+                                               http_matrix_client_factory};
+  matrix::authentification matrix_authentification{http_matrix_client_factory,
+                                                   matrix_client_factory};
+  session::client_factory client_factory;
+  session::client_connector session_connector{client_factory,
+                                              matrix_authentification};
+  session::room_joiner session_room_joiner{temporary_room_client};
 
   rtc::google::factory rtc_connection_creator{
       asio_signalling_thread.get_native()};
@@ -109,7 +135,8 @@ int main(int argc, char *argv[]) {
   client::participant_creator_creator participant_creator_creator{
       peer_creator, tracks_adder, own_media};
   client::room_creator client_room_creator{participant_creator_creator};
-  client::joiner joiner{executor, client_room_creator, rooms};
+  client::joiner joiner{client_room_creator, rooms, session_connector,
+                        session_room_joiner};
 
   BOOST_LOG_SEV(logger, logging::severity::debug) << "starting qt";
 
@@ -145,6 +172,5 @@ int main(int argc, char *argv[]) {
   BOOST_LOG_SEV(logger, logging::severity::debug) << "gui stopped";
   context.stop();
   return result;
-#endif
   return 0;
 }
