@@ -109,6 +109,10 @@ void action::on_response_read(const boost::system::error_code &error) {
   stream.socket().shutdown(boost::asio::socket_base::shutdown_both);
   auto promise_copy = std::move(promise);
   auto body = response.body();
+  BOOST_LOG_SEV(logger, logging::severity::trace)
+      << "got a response, for target'" << target
+      << "' code:" << static_cast<int>(http_code)
+      << ", body.size():" << body.size();
   auto json_body = nlohmann::json::parse(body);
   promise_copy->set_value(std::make_pair(http_code, json_body));
 }

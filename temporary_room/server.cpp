@@ -21,7 +21,7 @@ std::optional<options> parse_options(int argc, char *argv[]) {
   bpo::options_description general("Allowed options");
   general.add_options()("help", "produce help message");
   general.add_options()(
-      "port",
+      "port,p",
       bpo::value<unsigned short>(&result.port)->default_value(result.port),
       "port server will listen on");
   general.add_options()("matrix-server",
