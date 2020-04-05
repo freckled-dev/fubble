@@ -17,7 +17,6 @@ import { ScreenshotComponent } from './home/screenshot/screenshot.component';
 import { ContactUsComponent } from './home/contact-us/contact-us.component';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { OwlModule } from 'ngx-owl-carousel';
 import { DownloadComponent } from './home/download/download.component';
 
 export function createTranslateLoader(http: HttpClient) {
@@ -53,8 +52,7 @@ export function createTranslateLoader(http: HttpClient) {
     CommonModule,
     SharedModule,
     ReactiveFormsModule,
-    FormsModule,
-    OwlModule
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
