@@ -3,30 +3,30 @@ import { DemoComponent } from './demo/demo.component';
 import { BlogComponent } from './blog/blog.component';
 
 export const rootRouterConfig: Routes = [
-  { 
-    path: '', 
-    redirectTo: 'demo', 
-    pathMatch: 'full' 
+  {
+    path: '',
+    redirectTo: 'demo',
+    pathMatch: 'full'
   },
-  { 
+  {
     path: 'demo',
     component: DemoComponent
   },
-  { 
-    path: 'home', 
-    loadChildren: () => import('./home/home.module').then(m=>m.HomeModule)
+  {
+    path: 'home',
+    loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
   },
-  { 
+  {
     path: 'blog',
     component: BlogComponent,
-    loadChildren: () => import('./blog/blog.module').then(m=>m.BlogModule)
+    loadChildren: () => import('./blog/blog.module').then(m => m.BlogModule)
   },
-  { 
+  {
     path: 'pages',
-    loadChildren: () => import('./pages/pages.module').then(m=>m.PagesModule)
+    loadChildren: () => import('./pages/pages.module').then(m => m.PagesModule)
   },
-  { 
-    path: '**', 
+  {
+    path: '**',
     redirectTo: 'home/one'
   }
 ];

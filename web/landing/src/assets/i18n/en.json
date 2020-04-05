@@ -1,3 +1,39 @@
 {
-  "COPYRIGHT": "Copyright by themeforest Powered by Freckled"
+  "NAME": "Fubble",
+  "COMPANY": {
+    "NAME": "Freckled OG"
+  },
+  "NAVIGATION": {
+    "ABOUT": "About",
+    "HOME": "Home",
+    "FEATURES": "Features",
+    "SCREENSHOTS": "Screenshots",
+    "CONTACT": "Contact"
+  },
+  "ABOUT": {
+    "CONNECTED": "Stay Connected",
+    "VIDEO": "Free Video Conference",
+    "EASY": "Easy to use",
+    "NO_REGISTRATION": "No Registration",
+    "CONNECT_WITH_PEOPLE": "Connect with People all over the world!"
+  },
+  "FEATURES": {
+    "HEADER": "Features",
+    "FEATURE1_HEADER": "Easy Installation",
+    "FEATURE1_DESCRIPTION": "Installer provided.",
+    "FEATURE2_HEADER": "Multi Platform App",
+    "FEATURE2_DESCRIPTION": "Available for Windows and Linux.",
+    "FEATURE3_HEADER": "Quick start",
+    "FEATURE3_DESCRIPTION": "No registration necessary.",
+    "FEATURE4_HEADER": "Open Source",
+    "FEATURE4_DESCRIPTION": "Free to use.",
+    "FEATURE5_HEADER": "User friendly interface",
+    "FEATURE5_DESCRIPTION": "Available for Windows and Linux",
+    "FEATURE6_HEADER": "Dark mode",
+    "FEATURE6_DESCRIPTION": "Available for Windows and Linux",
+    "FEATURE7_HEADER": "Fast",
+    "FEATURE7_DESCRIPTION": "Available for Windows and Linux",
+    "FEATURE8_HEADER": "State of the art architecture",
+    "FEATURE8_DESCRIPTION": "WebRTC"
+  }
 }

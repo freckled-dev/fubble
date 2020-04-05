@@ -20,7 +20,7 @@ $black_11: rgba(0, 0, 0, 0.11);
 $black_10: rgba(0, 0, 0, 0.10);
 $black_17: rgba(0, 0, 0, 0.17);
 $black: #000;
-$theme-gray: #586082;
+$theme-gray: #3C4043;
 $color_saffron_approx: #eeb829;
 
 //fonts
@@ -33,10 +33,8 @@ $url_1: url(./images/testimonial.jpg);
 
 
 //Color settings
-$primary_color: #5f57ea;
-$secondary_color: #9647db;
-$bg_gradiant : linear-gradient(to right,$primary_color 0%, $secondary_color 100%);
-$color_bay_of_many_45_approx :rgba( $primary_color, .45 );
-
-
-
+$primary_color: #0277BD;
+$primary_light: #81D4FA;
+$secondary_color: #d65409;
+$bg_gradiant : linear-gradient(to right, $primary_light 0%, $primary_color 100%);
+$color_bay_of_many_45_approx :rgba($primary_color, .45);
