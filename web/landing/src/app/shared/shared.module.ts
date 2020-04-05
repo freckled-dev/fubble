@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from "@angular/router";
 import { TranslateModule } from '@ngx-translate/core';
 import { NgxPageScrollModule } from 'ngx-page-scroll';
-import { LandingFixService } from '../shared/services/landing-fix.service';
 import { FooterComponent } from './footer/footer.component';
 import { HeaderComponent } from './header/header.component';
 import { WINDOW_PROVIDERS } from "./services/windows.service";
@@ -28,8 +27,6 @@ import { WINDOW_PROVIDERS } from "./services/windows.service";
     FooterComponent
   ],
   providers: [
-    WINDOW_PROVIDERS,
-    LandingFixService
-  ]
+    WINDOW_PROVIDERS]
 })
 export class SharedModule { }

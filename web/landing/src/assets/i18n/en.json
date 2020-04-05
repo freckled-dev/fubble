@@ -47,5 +47,8 @@
     "CALL_INFO": "+43 650 44 515 88",
     "MAIL_HEADER": "Email us",
     "MAIL_INFO": "contact@freckled.dev"
+  },
+  "DOWNLOAD": {
+    "ENJOY": "Download and test Fubble for free"
   }
 }

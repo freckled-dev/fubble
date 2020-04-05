@@ -8,9 +8,17 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AppComponent } from './app.component';
 import { rootRouterConfig } from './app.routes';
-import { BlogComponent } from './blog/blog.component';
-import { DemoComponent } from './demo/demo.component';
 import { SharedModule } from "./shared/shared.module";
+import { IntroComponent } from './home/intro/intro.component';
+import { HomeComponent } from './home/home.component';
+import { AboutComponent } from './home/about/about.component';
+import { FeatureComponent } from './home/feature/feature.component';
+import { ScreenshotComponent } from './home/screenshot/screenshot.component';
+import { ContactUsComponent } from './home/contact-us/contact-us.component';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { OwlModule } from 'ngx-owl-carousel';
+import { DownloadComponent } from './home/download/download.component';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -19,8 +27,14 @@ export function createTranslateLoader(http: HttpClient) {
 @NgModule({
   declarations: [
     AppComponent,
-    DemoComponent,
-    BlogComponent
+    IntroComponent,
+    HomeComponent,
+    IntroComponent,
+    AboutComponent,
+    FeatureComponent,
+    ScreenshotComponent,
+    ContactUsComponent,
+    DownloadComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
@@ -35,7 +49,12 @@ export function createTranslateLoader(http: HttpClient) {
         useFactory: (createTranslateLoader),
         deps: [HttpClient]
       }
-    })
+    }),
+    CommonModule,
+    SharedModule,
+    ReactiveFormsModule,
+    FormsModule,
+    OwlModule
   ],
   providers: [],
   bootstrap: [AppComponent]
