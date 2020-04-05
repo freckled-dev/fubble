@@ -4,7 +4,9 @@ FROM matrixdotorg/synapse:latest
 
 RUN mkdir /fubble
 WORKDIR /fubble
-COPY ./fubble.io.log.config ./fubble.io.signing.key ./homeserver.yaml ./
+RUN python -m synapse.app.homeserver -c homeserver.yaml --generate-config \
+  --server-name=fubble.io --report-stats=no
+COPY ./homeserver.yaml ./
 ENV SYNAPSE_CONFIG_PATH=/fubble
 RUN chmod -R a+rwx /fubble
 

@@ -5,9 +5,22 @@ services:
     build:
       context: .
       dockerfile: signalling/Dockerfile
+  temporary_room:
+    build:
+      context: .
+      dockerfile: temporary_room/Dockerfile
     depends_on:
       - synapse
   synapse:
     build:
       context: synapse
+  proxy:
+    build:
+      context: proxy
+    ports:
+      - "80:80"
+    depends_on:
+      - synapse
+      - temporary_room
+      - signalling
 
