@@ -1,7 +1,7 @@
 FROM matrixdotorg/synapse:latest
 
+RUN apk add --no-cache bash
 WORKDIR /data
-ENV SYNAPSE_CONFIG_PATH=/data \
-  SYNAPSE_SERVER_NAME=io.fubble \
-  SYNAPSE_REPORT_STATS=no
+COPY homeserver.yaml install_homeserver /fubble/
+ENTRYPOINT ["/fubble/install_homeserver"]
 

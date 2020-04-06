@@ -1,0 +1,13 @@
+#!/bin/bash
+
+set -e
+
+cd /data
+
+if [ ! -f "/data/homeserver.yaml" ]; then
+    /start.py generate
+    cp -v /fubble/homeserver.yaml /data/
+    echo "generation done"
+fi
+/start.py
+
