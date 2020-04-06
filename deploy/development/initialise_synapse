@@ -1,0 +1,17 @@
+#!/bin/bash
+
+set -e
+
+cd "$(dirname "$0")"
+
+mkdir ./synapse/data
+# chmod a+rwx ./synapse/data
+docker run --rm \
+    -e SYNAPSE_SERVER_NAME=fubble.io \
+    -e SYNAPSE_REPORT_STATS=no \
+    -e UID=$(id -u) \
+    -e GID=$(id -g) \
+    -v "$(pwd)/synapse/data:/data" \
+    matrixdotorg/synapse:latest generate
+cp -v ./synapse/homeserver.yaml ./synapse/data/homeserver.yaml
+
