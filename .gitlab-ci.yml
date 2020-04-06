@@ -1,0 +1,4 @@
+
+include:
+  - local: '/web/landing/.gitlab-ci-yml
+
