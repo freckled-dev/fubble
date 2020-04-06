@@ -5,7 +5,7 @@
     expire_in: 1 week
     name: "${CI_BUILD_NAME}_${CI_BUILD_REF_NAME}"
     paths:
-      - ./dist
+      - web/landing/dist
   before_script:
     - cd web/landing
     - npm ci
