@@ -55,6 +55,7 @@ void client::client::connect(const std::string &key) {
   websocket::connector::config connector_config;
   connector_config.url = connect_information_.host;
   connector_config.service = connect_information_.service;
+  connector_config.path = connect_information_.target;
   BOOST_ASSERT(!connector);
   connector = connector_creator.create(connector_config);
   connector->connect().then(
@@ -74,11 +75,11 @@ void client::client::connected(boost::future<websocket::connection_ptr> &result,
     connection_->run().then(
         executor, [this](boost::future<void> result) { run_done(result); });
   } catch (const boost::system::system_error &error) {
-    BOOST_LOG_SEV(logger, logging::severity::info)
+    BOOST_LOG_SEV(logger, logging::severity::error)
         << "an asio error occured, what:" << error.what();
     on_error(error);
   } catch (const std::exception &error) {
-    BOOST_LOG_SEV(logger, logging::severity::info)
+    BOOST_LOG_SEV(logger, logging::severity::error)
         << "an error occured, what:" << error.what();
     BOOST_ASSERT(false);
   } catch (...) {

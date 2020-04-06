@@ -7,8 +7,9 @@
 namespace temporary_room::testing {
 namespace {
 inline std::pair<http::server, http::fields> make_http_server_and_fields() {
-  http::server http_server_matrix{"localhost", "8009"};
+  http::server http_server_matrix{"localhost", "80"};
   http::fields http_fields{http_server_matrix};
+  http_fields.target_prefix = "/api/temporary_room/v0/";
   return std::make_pair(http_server_matrix, http_fields);
 }
 } // namespace
