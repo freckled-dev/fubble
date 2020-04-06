@@ -3,5 +3,7 @@
 cd "$(dirname "$0")"
 rsync -r --delete ../../../fubble_build/install . || exit 1
 docker-compose down
+export FUBBLE_UID=$(id -u)
+export FUBBLE_GID=$(id -u)
 docker-compose up --build --abort-on-container-exit || exit 2
 

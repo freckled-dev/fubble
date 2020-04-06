@@ -15,6 +15,9 @@ services:
     # https://github.com/matrix-org/synapse/blob/master/contrib/docker/docker-compose.yml
     build:
       context: synapse
+    environment:
+      - UID=${FUBBLE_UID}
+      - GID=${FUBBLE_GID}
     volumes:
       - ./synapse/data:/data
   proxy:
