@@ -1,0 +1,20 @@
+.frontend_build: &frontend_build
+  stage: build
+  image: node:12
+  artifacts:
+    expire_in: 1 week
+    name: "${CI_BUILD_NAME}_${CI_BUILD_REF_NAME}"
+    paths:
+      - ./dist
+  before_script:
+    - npm ci
+
+frontend_build_test:
+  <<: *frontend_build
+  script:
+    - npm run build
+
+frontend_build_production:
+  <<: *frontend_build
+  script:
+    - npm run build_prod
