@@ -120,7 +120,8 @@ int main(int argc, char *argv[]) {
   signalling::client::client signalling_client{websocket_connector,
                                                signalling_connection_creator};
   signalling::client::client::connect_information connect_information{
-      config_.signalling_.host, config_.signalling_.service};
+      config_.signalling_.host, config_.signalling_.service,
+      "/api/signalling/v0/"};
   signalling_client.set_connect_information(connect_information);
   signalling_client.on_error.connect([&](auto /*error*/) { signals_.close(); });
 

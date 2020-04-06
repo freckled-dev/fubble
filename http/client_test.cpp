@@ -15,9 +15,9 @@ TEST(HttpClient, Get) {
   using namespace http;
   boost::asio::io_context context;
   boost::inline_executor executor;
-  server server_{"localhost", "8008"};
+  server server_{"localhost", "80"};
   fields fields{server_};
-  fields.target_prefix = "/_matrix/client/";
+  fields.target_prefix = "/api/matrix/v0/_matrix/client/";
   client_factory factory{context, server_, fields};
   auto client_ = factory.create();
   bool called{};

@@ -12,8 +12,11 @@ services:
     depends_on:
       - synapse
   synapse:
+    # https://github.com/matrix-org/synapse/blob/master/contrib/docker/docker-compose.yml
     build:
       context: synapse
+    volumes:
+      - ./synapse/data:/data
   proxy:
     build:
       context: proxy
