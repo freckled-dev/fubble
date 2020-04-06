@@ -61,7 +61,7 @@ int main(int argc, char *argv[]) {
   signalling::client::connection_creator signalling_connection_creator{
       context, boost_executor, signalling_json};
   signalling::client::client::connect_information connect_information{
-      "localhost", "8000"};
+      "localhost", "80", "/api/signalling/v0/"};
   signalling::client::client_creator client_creator{
       websocket_connector, signalling_connection_creator, connect_information};
 

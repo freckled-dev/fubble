@@ -6,10 +6,18 @@
 
 namespace matrix::testing {
 namespace {
+static const std::string server = "localhost";
+static const std::string port = "80";
+static const std::string host = server + ":" + port;
+// mainly needed for `/client/versions`
+static const std::string target_prefix_not_client = "/api/matrix/v0/_matrix/";
+static const std::string target_prefix =
+    target_prefix_not_client + "client/r0/";
+
 inline std::pair<http::server, http::fields> make_http_server_and_fields() {
-  http::server http_server_matrix{"localhost", "8008"};
+  http::server http_server_matrix{server, port};
   http::fields http_fields{http_server_matrix};
-  http_fields.target_prefix = "/_matrix/client/r0/";
+  http_fields.target_prefix = target_prefix;
   return std::make_pair(http_server_matrix, http_fields);
 }
 } // namespace

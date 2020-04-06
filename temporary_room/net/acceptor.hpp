@@ -32,6 +32,8 @@ protected:
   bool check_error(const boost::system::error_code error);
   void read_next_request();
   void on_got_request(const request_type &request);
+  void setup_response();
+  void send_error(const std::exception &error);
   void on_got_response(response_future &response_future_);
   void send_response();
 

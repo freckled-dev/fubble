@@ -15,7 +15,8 @@ temporary_room_dep = declare_dependency(
 
 temporary_room_server = executable('temporary_room_server',
   ['server.cpp'],
-  dependencies: [temporary_room_dep]
+  dependencies: [temporary_room_dep],
+  install: true
   )
 
 temporary_room_test = executable('temporary_room_test',

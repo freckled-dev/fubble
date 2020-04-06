@@ -2,7 +2,8 @@ matrix = library('matrix',
   ['authentification.cpp', 'error.cpp', 'client.cpp', 'factory.cpp',
     'client_factory.cpp', 'room.cpp', 'user.cpp', 'users.cpp', 'rooms.cpp'],
   dependencies: [fmt_dep, http_dep],
-  include_directories: ['..']
+  include_directories: ['..'],
+  install: true
   )
 matrix_dep = declare_dependency(
   include_directories: '..',
