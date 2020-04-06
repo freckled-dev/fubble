@@ -47,7 +47,7 @@ body {
 
 h1 {
   line-height: 1.4em;
-  font-size: 42px;
+  font-size: 40px;
   color: hsla(0, 0%, 100%, 0.85);
 }
 
@@ -383,6 +383,10 @@ section {
   animation: shadow .5s linear infinite;
 }
 
+a:hover .download-button {
+  transform: scale(1.05);
+}
+
 @keyframes shadow {
   50% {
     transform: scale(1.2, 1);
@@ -537,8 +541,12 @@ section {
   }
 }
 
+.add-margin-top {
+  margin-top: 40px;
+}
+
 .slid-btn {
-  margin-top: 70px;
+  margin-top: 20px;
 
   a:first-child {
     margin-right: 15px;
@@ -561,7 +569,7 @@ section {
 
 .profile-msg {
   position: absolute;
-  top: 41%;
+  top: 31%;
   left: -25px;
 
   img {
@@ -600,7 +608,7 @@ section {
 .awesome {
   position: absolute;
   top: 56%;
-  right: 25px;
+  right: 5px;
 
   img {
     animation: moveleftbounce 2.1s linear infinite;
