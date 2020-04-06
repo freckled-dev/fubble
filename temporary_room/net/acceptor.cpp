@@ -35,37 +35,51 @@ void connection::read_next_request() {
 }
 
 void connection::on_got_request(const request_type &request) {
-  const std::string request_body = request.body();
-  nlohmann::json content = nlohmann::json::parse(request_body);
-  const auto target = request.target().to_string();
-  auto response = on_request(target, content);
-  response.then([this](auto result) { on_got_response(result); });
+  setup_response();
+
+  try {
+    const std::string request_body = request.body();
+    nlohmann::json content = nlohmann::json::parse(request_body);
+    const auto target = request.target().to_string();
+    auto response = on_request(target, content);
+    response.then([this](auto result) { on_got_response(result); });
+  } catch (const std::exception &error) {
+    send_error(error);
+  }
 }
 
-void connection::on_got_response(response_future &response_future_) {
+void connection::send_error(const std::exception &error) {
+  response->result(boost::beast::http::status::internal_server_error);
+  nlohmann::json response_content = nlohmann::json::object();
+  response_content["description"] = error.what();
+  response->body() = response_content.dump();
+  send_response();
+}
+
+void connection::setup_response() {
   response = std::make_shared<response_type>(boost::beast::http::status::ok,
                                              request->version());
   response->set(boost::beast::http::field::server, BOOST_BEAST_VERSION_STRING);
   response->set(boost::beast::http::field::content_type, "application/json");
   response->keep_alive(request->keep_alive());
+}
+
+void connection::on_got_response(response_future &response_future_) {
   try {
     auto response_content = response_future_.get().dump();
     response->body() = response_content;
+    send_response();
   } catch (const std::exception &error) {
     BOOST_LOG_SEV(logger, logging::severity::warning)
         << "an error occured while getting the response, error:"
         << error.what();
-    response->result(boost::beast::http::status::internal_server_error);
-    nlohmann::json response_content = nlohmann::json::object();
-    response_content["description"] = error.what();
-    response->body() = response_content.dump();
+    send_error(error);
   }
-  response->prepare_payload();
-  send_response();
 }
 
 void connection::send_response() {
   BOOST_LOG_SEV(logger, logging::severity::trace) << "send_response";
+  response->prepare_payload();
   boost::beast::http::async_write(stream, *response, [this](auto error, auto) {
     if (check_error(error))
       return;

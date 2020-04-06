@@ -1,4 +1,5 @@
 #include "logging/logger.hpp"
+#include "testing.hpp"
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>
@@ -10,11 +11,11 @@
 
 namespace {
 logging::logger logger{"matrix_test"};
-namespace http {
-const std::string server = "localhost";
-const std::string port = "8008";
-const std::string host = server + ":" + port;
-const std::string target_prefix = "/_matrix/client/r0/";
+namespace test_http {
+const std::string server = matrix::testing::server;
+const std::string port = matrix::testing::port;
+const std::string host = matrix::testing::host;
+const std::string target_prefix = matrix::testing::target_prefix;
 #if 1
 const std::string agent = BOOST_BEAST_VERSION_STRING;
 #else
@@ -33,7 +34,7 @@ struct client {
 
   client(boost::asio::io_context &context) : context(context) {
     boost::asio::ip::tcp::resolver resolver{context};
-    const auto resolved = resolver.resolve(http::server, http::port);
+    const auto resolved = resolver.resolve(test_http::server, test_http::port);
     stream.connect(resolved);
   }
   ~client() {
@@ -65,7 +66,7 @@ struct client {
 
   response_type get(std::string target) {
     boost::beast::http::request<boost::beast::http::string_body> request{
-        boost::beast::http::verb::get, target, http::version};
+        boost::beast::http::verb::get, target, test_http::version};
     set_default_request_headers(request);
     BOOST_LOG_SEV(logger, logging::severity::info) << "get request:" << request;
     boost::beast::http::write(stream, request);
@@ -73,7 +74,8 @@ struct client {
   }
 
   response_type post(std::string target, const nlohmann::json &message) {
-    request_type request{boost::beast::http::verb::post, target, http::version};
+    request_type request{boost::beast::http::verb::post, target,
+                         test_http::version};
     set_default_request_headers(request);
     request.body() = message.dump();
     request.prepare_payload();
@@ -84,7 +86,8 @@ struct client {
   }
 
   response_type put(std::string target, const nlohmann::json &message) {
-    request_type request{boost::beast::http::verb::put, target, http::version};
+    request_type request{boost::beast::http::verb::put, target,
+                         test_http::version};
     set_default_request_headers(request);
     request.body() = message.dump();
     request.prepare_payload();
@@ -94,22 +97,23 @@ struct client {
   }
 
   void set_default_request_headers(request_type &set) {
-    set.set(boost::beast::http::field::host, http::host);
-    set.set(boost::beast::http::field::user_agent, http::agent);
+    set.set(boost::beast::http::field::host, test_http::host);
+    set.set(boost::beast::http::field::user_agent, test_http::agent);
     set.set(boost::beast::http::field::accept, "application/json");
     if (auth_token)
       set.set(boost::beast::http::field::authorization,
               std::string("Bearer ") + auth_token.value());
   }
 };
-} // namespace http
+} // namespace test_http
 // TODO move into namespace client and rename to client
 } // namespace
 
 TEST(Matrix, Versions) {
   boost::asio::io_context context;
-  http::client client{context};
-  const std::string target{"/_matrix/client/versions"};
+  test_http::client client{context};
+  const std::string target{matrix::testing::target_prefix_not_client +
+                           "client/versions"};
   auto response = client.get(target);
   EXPECT_EQ(response.result(), boost::beast::http::status::ok);
   const std::string body = response.body();
@@ -126,8 +130,8 @@ void check_valid_registration(const nlohmann::json &check) {
   EXPECT_TRUE(check.contains("access_token"));
   EXPECT_TRUE(check.contains("device_id"));
 }
-nlohmann::json register_as_guest(http::client &client) {
-  const std::string target = http::target_prefix + "register?kind=guest";
+nlohmann::json register_as_guest(test_http::client &client) {
+  const std::string target = test_http::target_prefix + "register?kind=guest";
   auto register_ = nlohmann::json::object();
   register_["initial_device_display_name"] = "A fun guest name";
   auto auth = nlohmann::json::object();
@@ -139,8 +143,8 @@ nlohmann::json register_as_guest(http::client &client) {
   check_valid_registration(check);
   return check;
 }
-nlohmann::json register_as_user(http::client &client) {
-  const std::string target = http::target_prefix + "register";
+nlohmann::json register_as_user(test_http::client &client) {
+  const std::string target = test_http::target_prefix + "register";
   auto register_ = nlohmann::json::object();
   register_["password"] = ""; // mandatory if not guest
   register_["initial_device_display_name"] = "A fun user name";
@@ -158,20 +162,20 @@ nlohmann::json register_as_user(http::client &client) {
 // https://matrix.org/docs/spec/client_server/latest#account-registration-and-management
 TEST(Matrix, RegistrationGuest) {
   boost::asio::io_context context;
-  http::client client{context};
+  test_http::client client{context};
   register_as_guest(client);
 }
 
 TEST(Matrix, RegistrationUser) {
   boost::asio::io_context context;
-  http::client client{context};
+  test_http::client client{context};
   register_as_user(client);
 }
 
 namespace {
 struct client {
   boost::asio::io_context &context;
-  http::client http_client{context};
+  test_http::client http_client{context};
   std::string user_id;
 
   client(boost::asio::io_context &context) : context(context) {
@@ -182,9 +186,10 @@ struct client {
   }
 };
 std::string create_room(client &client_) {
-  http::client &http_client = client_.http_client;
+  test_http::client &http_client = client_.http_client;
   auto create = nlohmann::json::object();
-  auto response = http_client.post(http::target_prefix + "createRoom", create);
+  auto response =
+      http_client.post(test_http::target_prefix + "createRoom", create);
   EXPECT_EQ(response.result(), boost::beast::http::status::ok);
   auto response_json = nlohmann::json::parse(response.body());
   EXPECT_TRUE(response_json.contains("room_id"));
@@ -201,7 +206,7 @@ TEST(Matrix, CreateRoom) {
 TEST(Matrix, CreateRoomWithParameter) {
   boost::asio::io_context context;
   client client_{context};
-  http::client &http_client = client_.http_client;
+  test_http::client &http_client = client_.http_client;
 
   auto create = nlohmann::json::object();
 #if 0
@@ -210,7 +215,8 @@ TEST(Matrix, CreateRoomWithParameter) {
   auto creation_content = nlohmann::json::object();
   creation_content["m.federate"] = false;
   create["creation_content"] = creation_content;
-  auto response = http_client.post(http::target_prefix + "createRoom", create);
+  auto response =
+      http_client.post(test_http::target_prefix + "createRoom", create);
   EXPECT_EQ(response.result(), boost::beast::http::status::ok);
   auto response_json = nlohmann::json::parse(response.body());
   EXPECT_TRUE(response_json.contains("room_id"));
@@ -218,8 +224,8 @@ TEST(Matrix, CreateRoomWithParameter) {
 
 namespace {
 void join_room_by_id(client &joiner, std::string room_id) {
-  http::client &http_join = joiner.http_client;
-  auto join_path = http::target_prefix + "rooms/" + room_id + "/join";
+  test_http::client &http_join = joiner.http_client;
+  auto join_path = test_http::target_prefix + "rooms/" + room_id + "/join";
   auto join_request = nlohmann::json::object();
   auto response = http_join.post(join_path, join_request);
   EXPECT_EQ(response.result(), boost::beast::http::status::ok);
@@ -243,8 +249,8 @@ struct sync_result {
   std::string next_batch;
 };
 sync_result sync(client &client_, std::optional<std::string> next_batch) {
-  http::client &http_creator = client_.http_client;
-  auto sync_path = http::target_prefix + "sync";
+  test_http::client &http_creator = client_.http_client;
+  auto sync_path = test_http::target_prefix + "sync";
   if (next_batch)
     sync_path += "?since=" + next_batch.value();
 #if 0
@@ -294,7 +300,7 @@ TEST(Matrix, Invite) {
   auto room_id = create_room(client_create);
   client client_join{context};
   auto join_sync = sync(client_join, {});
-  auto invite_path = http::target_prefix + "rooms/" + room_id + "/invite";
+  auto invite_path = test_http::target_prefix + "rooms/" + room_id + "/invite";
   auto invite_request = nlohmann::json::object();
   invite_request["user_id"] = client_join.user_id;
   auto invite_response =
@@ -311,7 +317,7 @@ TEST(Matrix, Message) {
   auto room_id = create_room(client_create);
   auto &http_client = client_create.http_client;
   for (int transactionId = 0; transactionId < 4; ++transactionId) {
-    std::string path = http::target_prefix + "rooms/" + room_id +
+    std::string path = test_http::target_prefix + "rooms/" + room_id +
                        "/send/m.room.message/" + std::to_string(transactionId);
     auto request = nlohmann::json::object();
     request["msgtype"] = "m.text";
@@ -336,7 +342,7 @@ TEST(Matrix, CustomMessage) {
   join_room_by_id(client_join, room_id);
   auto join_sync = sync(client_join, {});
   auto &http_client = client_create.http_client;
-  std::string path = http::target_prefix + "rooms/" + room_id +
+  std::string path = test_http::target_prefix + "rooms/" + room_id +
                      "/send/io.fubble.custom/" + std::to_string(1);
   auto request = nlohmann::json::object();
   request["some_content"] = "hello world";
@@ -362,7 +368,7 @@ TEST(Matrix, CustomState) {
   join_room_by_id(client_join, room_id);
   auto join_sync = sync(client_join, {});
   auto &http_client = client_create.http_client;
-  std::string path = http::target_prefix + "rooms/" + room_id +
+  std::string path = test_http::target_prefix + "rooms/" + room_id +
                      "/state/io.fubble.custom/state_name";
   auto request = nlohmann::json::object();
   request["some_content"] = "hello world";

@@ -18,6 +18,7 @@ public:
   struct connect_information {
     std::string host;
     std::string service;
+    std::string target;
   };
   client(websocket::connector_creator &connector_creator,
          connection_creator &connection_creator_);

@@ -44,7 +44,7 @@ struct Server : testing::Test {
 
   void connect(signalling::client::client &client) const {
     auto service = std::to_string(acceptor.get_port());
-    client.set_connect_information({"localhost", service});
+    client.set_connect_information({"localhost", service, "/"});
     client.connect(session_key);
   }
   static void shall_want_to_negotiate(signalling::client::client &client) {
@@ -115,7 +115,7 @@ TEST_F(Server, CantConnect) {
     called = true;
     EXPECT_EQ(error.code(), boost::asio::error::connection_refused);
   });
-  client_.set_connect_information({"localhost", ""});
+  client_.set_connect_information({"localhost", "", "/"});
   client_.connect(session_key);
   context.run();
   EXPECT_TRUE(called);

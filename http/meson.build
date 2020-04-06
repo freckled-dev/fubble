@@ -1,7 +1,8 @@
 http = library('http',
   ['client.cpp', 'action.cpp'],
   dependencies: [utils_dep, fmt_dep, json_dep],
-  include_directories: ['..']
+  include_directories: ['..'],
+  install: true
   )
 http_dep = declare_dependency(
   include_directories: '..',

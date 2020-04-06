@@ -1,0 +1,46 @@
+version: '3'
+
+services:
+  signalling:
+    build:
+      context: .
+      dockerfile: signalling/Dockerfile
+  temporary_room:
+    build:
+      context: .
+      dockerfile: temporary_room/Dockerfile
+    depends_on:
+      - synapse
+  synapse:
+    # https://github.com/matrix-org/synapse/blob/master/contrib/docker/docker-compose.yml
+    build:
+      context: synapse
+    environment:
+      - SYNAPSE_SERVER_NAME=fubble.io
+      - SYNAPSE_REPORT_STATS=no
+    volumes:
+      - synapse_data:/data
+    depends_on:
+      - synapse_database
+  synapse_database:
+    image: docker.io/postgres:latest
+    environment:
+      - POSTGRES_USER=synapse
+      - POSTGRES_PASSWORD=changeme
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --lc-collate=C --lc-ctype=C
+    volumes:
+      - synapse_database_data:/var/lib/postgresql/data
+  proxy:
+    build:
+      context: proxy
+    ports:
+      - "80:80"
+    depends_on:
+      - synapse
+      - temporary_room
+      - signalling
+
+volumes:
+  synapse_data:
+  synapse_database_data:
+
