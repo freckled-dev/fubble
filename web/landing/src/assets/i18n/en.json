@@ -19,8 +19,9 @@
     "FUBBLE_DESCRIPTION": "Fubble is an app for video calls. Stay in touch with your family and friends. Use Fubble to work from home and conference with your collegues. The app is currently an alpha stage - you can use it for free. We would love to hear your feedback!"
   },
   "INTRO": {
+    "SLOGAN": "Easy video conferencing",
     "HEADER": "Best way to connect with your friends, family or coworkers!",
-    "SLOGAN": "It is easy and free - try it out!",
+    "FREE": "It is easy and free - try it out!",
     "COMING_SOON": "Coming soon..."
   },
   "FEATURES": {

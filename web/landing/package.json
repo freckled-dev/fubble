@@ -33,7 +33,7 @@
     "classlist.js": "^1.1.20150312",
     "core-js": "^2.6.11",
     "express": "^4.15.2",
-    "font-awesome": "^4.7.0",
+    "font-bubble-free": "^4.7.0",
     "jquery": "^3.4.1",
     "ngx-page-scroll": "^6.0.2",
     "ngx-page-scroll-core": "^6.0.2",

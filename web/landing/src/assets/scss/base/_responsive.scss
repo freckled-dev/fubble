@@ -186,13 +186,13 @@
     left: 24%;
   }
 
-  .profile-msg {
+  .bubble-registration {
     width: 190px;
     left: 60px;
     top: 45%;
   }
 
-  .awesome {
+  .bubble-free {
     top: 45%;
     width: 160px;
     right: 80px;
@@ -379,13 +379,13 @@
     bottom: -4%;
   }
 
-  .profile-msg {
+  .bubble-registration {
     top: 44%;
     left: unset;
     right: 120px;
   }
 
-  .awesome {
+  .bubble-free {
     right: -30px;
     top: 190px;
   }
@@ -1084,11 +1084,11 @@
     display: block;
   }
 
-  .profile-msg {
+  .bubble-registration {
     left: -46px;
   }
 
-  .awesome {
+  .bubble-free {
     right: 25px;
   }
 
@@ -1295,12 +1295,12 @@
     top: -6%;
   }
 
-  .awesome {
+  .bubble-free {
     top: 47%;
     right: 0;
   }
 
-  .profile-msg {
+  .bubble-registration {
     left: -20px;
   }
 
@@ -1658,7 +1658,7 @@
   }
 
   .auth-page {
-    .profile-msg {
+    .bubble-registration {
       left: 0;
       top: 33%;
     }
@@ -1674,7 +1674,7 @@
     }
   }
 
-  .profile-msg {
+  .bubble-registration {
     left: 0;
     top: 25%;
   }
@@ -2144,8 +2144,8 @@
 
     .grab-img {
 
-      .profile-msg,
-      .awesome,
+      .bubble-registration,
+      .bubble-free,
       .emoji,
       .profile-2 {
         display: none;
@@ -2187,11 +2187,11 @@
     }
 
     .template-bg {
-      .awesome {
+      .bubble-free {
         display: none;
       }
 
-      .profile-msg {
+      .bubble-registration {
         display: none;
       }
 

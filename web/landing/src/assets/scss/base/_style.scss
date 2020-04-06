@@ -51,6 +51,10 @@ h1 {
   color: hsla(0, 0%, 100%, 0.85);
 }
 
+.h1-small {
+  font-size: 25px;
+}
+
 h2 {
   line-height: 28px;
   font-size: 36px;
@@ -567,10 +571,10 @@ a:hover .download-button {
   text-align: center;
 }
 
-.profile-msg {
+.bubble-registration {
   position: absolute;
-  top: 31%;
-  left: -25px;
+  top: 21%;
+  left: -35px;
 
   img {
     animation: movebounce 2.1s linear infinite;
@@ -605,7 +609,7 @@ a:hover .download-button {
   }
 }
 
-.awesome {
+.bubble-free {
   position: absolute;
   top: 56%;
   right: 5px;
@@ -2990,7 +2994,6 @@ li.nav-item.dropdown {
 
   .home-right {
     width: 400px;
-    float: right;
     position: relative;
 
     .mobile-slid img {
