@@ -7,6 +7,7 @@
     paths:
       - ./dist
   before_script:
+    - cd web/landing
     - npm ci
 
 frontend_build_test:
