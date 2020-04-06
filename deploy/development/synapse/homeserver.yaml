@@ -554,13 +554,23 @@ acme:
 
 ## Database ##
 
+# database:
+#   # The database engine name
+#   name: "sqlite3"
+#   # Arguments to pass to the engine
+#   args:
+#     # Path to the database
+#     database: "homeserver.db"
+
 database:
-  # The database engine name
-  name: "sqlite3"
-  # Arguments to pass to the engine
-  args:
-    # Path to the database
-    database: "homeserver.db"
+    name: psycopg2
+    args:
+        user: synapse
+        password: changeme
+        database: synapse
+        host: synapse_database
+        cp_min: 5
+        cp_max: 10
 
 # Number of events to cache in memory.
 #
