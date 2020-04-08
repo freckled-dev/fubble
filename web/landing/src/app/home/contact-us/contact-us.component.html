@@ -10,10 +10,8 @@
           <div class="form-group">
             <label for="exampleInputName1">Name</label>
             <i class="fa fa-user"></i>
-            <input required="" name="name" [formControl]="contactForm.controls['name']" type="text" class="form-control"
+            <input name="name" [formControl]="contactForm.controls['name']" type="text" class="form-control"
               id="exampleInputName1" placeholder="User name">
-            <div *ngIf="contactForm.controls.name.touched && contactForm.controls.name.errors?.required"
-              class="text text-danger">Name is required</div>
           </div>
           <div class="form-group">
             <label for="exampleInputEmail12">Email</label>
@@ -22,6 +20,9 @@
               id="exampleInputEmail12" placeholder="Email">
             <div *ngIf="contactForm.controls.email.touched && contactForm.controls.email.errors?.email"
               class="text text-danger">Invalid Email</div>
+            <div *ngIf="contactForm.controls.email.touched && contactForm.controls.email.errors?.required"
+              class="text text-danger">
+              Email required</div>
           </div>
           <div class="form-group">
             <label>Your message</label>

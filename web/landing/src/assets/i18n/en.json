@@ -49,7 +49,17 @@
     "CALL_HEADER": "Call us",
     "CALL_INFO": "+43 650 44 515 88",
     "MAIL_HEADER": "Email us",
-    "MAIL_INFO": "contact@freckled.dev"
+    "MAIL_INFO": "contact@freckled.dev",
+    "NAME": "Name",
+    "NAME_HINT": "Optional",
+    "MESSAGE": "Message *",
+    "MESSAGE_HINT": "Message is required",
+    "MAIL": "Email *",
+    "MAIL_HINT": "Email address is required",
+    "INVALID_MAIL": "Invalid Email",
+    "HOW_CAN_WE_HELP": "How can we help you?",
+    "MESSAGE_REQUIRED": "A message is required.",
+    "SEND": "Send message"
   },
   "DOWNLOAD": {
     "ENJOY": "Download and test Fubble for free"

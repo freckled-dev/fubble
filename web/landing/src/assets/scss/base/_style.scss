@@ -223,6 +223,7 @@ button:focus {
 
 .btn-theme {
   background-color: $primary_color;
+  cursor: pointer;
   background: $bg_gradiant;
   color: $white !important;
   font-size: 14px;
@@ -237,6 +238,11 @@ button:focus {
   &:hover {
     background: $primary_color;
     background-color: $primary_color;
+  }
+
+  &:disabled {
+    background: lightgray;
+    cursor: auto;
   }
 }
 
@@ -572,8 +578,8 @@ a:hover .download-button {
 
 .bubble-registration {
   position: absolute;
-  top: 21%;
-  left: -35px;
+  top: 41%;
+  left: -25px;
 
   img {
     animation: movebounce 2.1s linear infinite;
@@ -611,7 +617,7 @@ a:hover .download-button {
 .bubble-free {
   position: absolute;
   top: 56%;
-  right: 5px;
+  right: 25px;
 
   img {
     animation: moveleftbounce 2.1s linear infinite;
@@ -2969,7 +2975,6 @@ li.nav-item.dropdown {
   }
 
   .home-right {
-    width: 400px;
     position: relative;
 
     .mobile-slid img {
