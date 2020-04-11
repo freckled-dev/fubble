@@ -184,8 +184,8 @@ TEST_F(Room, TwoJoinSignals) {
 
 TEST_F(Room, Name) {
   const auto room_id = uuid::generate();
-  const std::string name = "fun name";
-  joined_client first{io_context, room_id, name};
+  const std::string user_name = "fun name";
+  joined_client first{io_context, room_id, user_name};
   std::unique_ptr<session::room> &first_room = first.room;
   auto joined = first.join().then(executor, [&](auto result) {
     result.get();
@@ -201,7 +201,7 @@ TEST_F(Room, Name) {
   auto &participants = first_room->get_participants();
   const auto found_name =
       std::find_if(participants.begin(), participants.end(),
-                   [&](auto check) { return check.name == name; });
+                   [&](auto check) { return check.name == user_name; });
   EXPECT_NE(found_name, participants.end());
 }
 

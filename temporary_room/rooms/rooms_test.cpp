@@ -7,7 +7,8 @@ using namespace temporary_room::rooms;
 
 class mock_room_factory : public room_factory {
 public:
-  MOCK_METHOD(boost::future<room_ptr>, create, (), (override));
+  MOCK_METHOD(boost::future<room_ptr>, create, (const std::string &),
+              (override));
 };
 
 class mock_room : public room {
@@ -27,6 +28,7 @@ TEST(Rooms, Instance) {
 TEST(Rooms, Add) {
   mock_room_factory room_factory_;
   const room_id room_id_{"fun_id"};
+  const room_name room_name_{"room_name"};
   const user_id user_id_{"user_id"};
   auto room_ = std::make_unique<mock_room>();
   EXPECT_CALL(*room_, get_room_id).WillRepeatedly(::testing::Return(room_id_));
@@ -34,11 +36,11 @@ TEST(Rooms, Add) {
       .WillOnce(
           ::testing::Return(::testing::ByMove(boost::make_ready_future())));
   room_ptr room_casted = std::move(room_);
-  EXPECT_CALL(room_factory_, create)
+  EXPECT_CALL(room_factory_, create(room_name_))
       .WillOnce(::testing::Return(
           ::testing::ByMove(boost::make_ready_future(std::move(room_casted)))));
   rooms test{room_factory_};
-  auto add_future = test.get_or_create_room_id("name", user_id_);
+  auto add_future = test.get_or_create_room_id(room_name_, user_id_);
   EXPECT_EQ(add_future.get(), room_id_);
   EXPECT_EQ(test.get_room_count(), 1);
 }
@@ -46,15 +48,16 @@ TEST(Rooms, Add) {
 TEST(Rooms, AddTwoParticipants) {
   mock_room_factory room_factory_;
   room_id room_id_{"fun_id"};
+  const room_name room_name_{"room_name"};
   const user_id user_id_{"user_id"};
   boost::promise<room_ptr> create_promise;
-  EXPECT_CALL(room_factory_, create)
+  EXPECT_CALL(room_factory_, create(room_name_))
       .WillOnce(
           ::testing::Return(::testing::ByMove(create_promise.get_future())));
   rooms test{room_factory_};
   int called{};
   for (int counter{}; counter < 2; ++counter) {
-    test.get_or_create_room_id("name", user_id_).then([&](auto result) {
+    test.get_or_create_room_id(room_name_, user_id_).then([&](auto result) {
       result.get();
       ++called;
     });
@@ -77,13 +80,14 @@ MATCHER_P(HasCorrectError, message, "") { return arg.what() == message; }
 TEST(Rooms, AddFail) {
   mock_room_factory room_factory_;
   std::string error_message = "failed";
+  const room_name room_name_{"room_name"};
   const user_id user_id_{"user_id"};
   struct test_exception : virtual boost::exception, virtual std::exception {};
-  EXPECT_CALL(room_factory_, create)
+  EXPECT_CALL(room_factory_, create(room_name_))
       .WillOnce(::testing::Return(::testing::ByMove(
           boost::make_exceptional_future<room_ptr>(test_exception()))));
   rooms test{room_factory_};
-  auto result = test.get_or_create_room_id("name", user_id_);
+  auto result = test.get_or_create_room_id(room_name_, user_id_);
   // test_exception does not work, because `enable_current_exception` not called
   EXPECT_THROW(result.get(), std::exception);
 }
@@ -105,7 +109,7 @@ struct RoomWithParticipants : testing::Test {
     EXPECT_CALL(*room_, get_room_id)
         .WillRepeatedly(::testing::Return(room_id_));
     room_ptr room_casted = std::move(room_ptr_);
-    EXPECT_CALL(room_factory_, create)
+    EXPECT_CALL(room_factory_, create(room_name_))
         .WillOnce(::testing::Return(::testing::ByMove(
             boost::make_ready_future(std::move(room_casted)))));
     EXPECT_CALL(*room_, invite(::testing::_))

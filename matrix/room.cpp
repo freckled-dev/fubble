@@ -7,8 +7,6 @@ using namespace matrix;
 
 room::room(client &client_, const std::string &id) : client_(client_), id(id) {
   http_client = client_.create_http_client();
-  on_sync_connection = client_.on_sync.connect(
-      [this](const auto &content) { on_sync(content); });
 }
 
 const std::string &room::get_id() const { return id; }
@@ -44,8 +42,11 @@ std::optional<user *> room::get_member_by_id(const std::string &id) {
   return *found;
 }
 
-void room::on_sync(const nlohmann::json &content) {
+std::string room::get_name() const { return name; }
+
+void room::sync(const nlohmann::json &content) {
   const auto joined_rooms = content["rooms"]["join"];
+  BOOST_ASSERT(joined_rooms.contains(id));
   if (!joined_rooms.contains(id))
     return;
   auto our_room = joined_rooms[id];
@@ -54,6 +55,11 @@ void room::on_sync(const nlohmann::json &content) {
     const std::string type = event["type"];
     if (type == "m.room.member") {
       on_event_m_room_member(event);
+      continue;
+    }
+    if (type == "m.room.name") {
+      BOOST_LOG_SEV(logger, logging::severity::trace) << "m.room.name";
+      on_event_m_room_name(event);
       continue;
     }
   }
@@ -74,6 +80,13 @@ void room::on_event_m_room_member(const nlohmann::json &parse) {
     return add_or_update_member(member_);
   }
   // lots more - not implemented
+}
+
+void room::on_event_m_room_name(const nlohmann::json &parse) {
+  name = parse["content"]["name"];
+  BOOST_LOG_SEV(logger, logging::severity::trace)
+      << "room_name changed to:" << name;
+  on_name_changed(name);
 }
 
 void room::add_or_update_member(const member &member_) {
