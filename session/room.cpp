@@ -10,13 +10,15 @@ room::room(matrix::room &room_) : room_(room_) {
       room_.on_join.connect([this](const auto &user) { on_join(user); }));
   signal_connections.emplace_back(
       room_.on_leave.connect([this](const auto &id) { on_leave(id); }));
+  signal_connections.emplace_back(room_.on_name_changed.connect(
+      [this](const auto &id) { on_name_changed(id); }));
 }
 
 const room::participants &room::get_participants() const {
   return participants_;
 }
 
-std::string room::get_name() const { return "TODO room::get_name"; }
+std::string room::get_name() const { return room_.get_name(); }
 
 std::string room::get_id() const { return room_.get_id(); }
 

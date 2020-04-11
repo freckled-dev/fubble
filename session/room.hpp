@@ -19,6 +19,7 @@ public:
   boost::signals2::signal<void(participants)> on_joins;
   boost::signals2::signal<void(std::vector<std::string>)> on_leaves;
   boost::signals2::signal<void(participants)> on_updates;
+  boost::signals2::signal<void(std::string)> on_name_changed;
   const participants &get_participants() const;
   std::string get_name() const;
   // TODO getter --> `get_`
