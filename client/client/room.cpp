@@ -14,8 +14,6 @@ room::room(std::unique_ptr<participant_creator> participant_creator_parameter,
   on_session_participant_joins(room_->get_participants());
   room_->on_joins.connect(
       [this](const auto joins) { on_session_participant_joins(joins); });
-  room_->on_updates.connect(
-      [this](const auto updates) { on_session_participant_updates(updates); });
   room_->on_leaves.connect(
       [this](const auto leaves) { on_session_participant_leaves(leaves); });
   room_->on_name_changed.connect(
@@ -41,35 +39,19 @@ std::string room::get_name() const { return room_->get_name(); }
 std::string room::get_own_id() const { return client_->get_id(); }
 
 void room::on_session_participant_joins(
-    const std::vector<session::participant> &joins) {
+    const std::vector<session::participant *> &joins) {
   BOOST_LOG_SEV(logger, logging::severity::trace)
       << "on_session_participant_joins, count:" << joins.size();
   std::vector<participant *> signal_joins;
   for (auto join : joins) {
-    BOOST_ASSERT(find(join.id) == participants_.end());
-    auto participant = participant_creator_->create(join);
+    BOOST_ASSERT(find(join->get_id()) == participants_.end());
+    auto participant = participant_creator_->create(*join);
     signal_joins.emplace_back(participant.get());
     participants_.emplace_back(std::move(participant));
   }
+  if (signal_joins.empty())
+    return;
   on_participants_join(signal_joins);
-}
-void room::on_session_participant_updates(
-    const std::vector<session::participant> &updates) {
-  BOOST_LOG_SEV(logger, logging::severity::trace)
-      << "on_session_participant_updates, count:" << updates.size();
-  std::vector<participant *> signal_updates;
-  for (const auto &update : updates) {
-    auto found = find(update.id);
-    if (found == participants_.end()) {
-      BOOST_LOG_SEV(logger, logging::severity::error)
-          << "participant not in list for update, id:" << update.id;
-      BOOST_ASSERT(false);
-      continue;
-    }
-    (*found)->update(update);
-    signal_updates.emplace_back(found->get());
-  }
-  on_participants_updated(signal_updates);
 }
 void room::on_session_participant_leaves(
     const std::vector<std::string> &leaves) {

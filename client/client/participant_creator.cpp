@@ -1,4 +1,5 @@
 #include "participant_creator.hpp"
+#include "bot_participant.hpp"
 #include "own_participant.hpp"
 #include "peer_creator.hpp"
 #include "remote_participant.hpp"
@@ -14,14 +15,16 @@ participant_creator::participant_creator(peer_creator &peer_creator_,
       own_id(own_id), own_media_(own_media_) {}
 
 std::unique_ptr<participant>
-participant_creator::create(const session::participant &session_information) {
-  if (session_information.id == own_id)
+participant_creator::create(session::participant &session_information) {
+  if (session_information.get_id() == own_id)
     return std::make_unique<own_participant>(session_information, own_media_);
+  if (session_information.get_name() == "Fubble Bot")
+    return std::make_unique<bot_participant>(session_information);
   auto peer = peer_creator_.create();
   auto peer_pointer = peer.get();
   auto result = std::make_unique<remote_participant>(std::move(peer),
                                                      session_information);
-  auto other_id = session_information.id;
+  auto other_id = session_information.get_id();
   const std::string peer_id = [&] {
     if (own_id < other_id)
       return own_id + '_' + other_id;
