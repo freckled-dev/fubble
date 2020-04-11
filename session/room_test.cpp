@@ -73,7 +73,7 @@ struct joined_client {
     joiner = std::make_unique<session::room_joiner>(temporary_room_client);
     return joiner->join(*client, room_id);
   }
-}; // namespace
+};
 } // namespace
 
 TEST_F(Room, Joiner) {
@@ -199,10 +199,10 @@ TEST_F(Room, Name) {
   first_waiter.wait_until = 2;
   first_waiter.wait().then(executor, [&](auto) { io_context.stop(); });
   run_io_contect();
-  auto &participants = first_room->get_participants();
+  auto participants = first_room->get_participants();
   const auto found_name =
       std::find_if(participants.begin(), participants.end(),
-                   [&](auto check) { return check.name == user_name; });
+                   [&](auto check) { return check->get_name() == user_name; });
   EXPECT_NE(found_name, participants.end());
 }
 
