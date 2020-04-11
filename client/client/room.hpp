@@ -30,6 +30,7 @@ public:
   boost::signals2::signal<void(const std::vector<std::string> &removed)>
       on_participants_left;
   std::vector<participant *> get_participants() const;
+  boost::signals2::signal<void(const std::string &)> on_name_changed;
 
   std::string get_name() const;
   std::string get_own_id() const;

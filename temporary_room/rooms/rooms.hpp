@@ -23,7 +23,7 @@ using room_ptr = std::unique_ptr<room>;
 class room_factory {
 public:
   virtual ~room_factory() = default;
-  virtual boost::future<room_ptr> create() = 0;
+  virtual boost::future<room_ptr> create(const std::string &name) = 0;
 };
 
 class rooms {

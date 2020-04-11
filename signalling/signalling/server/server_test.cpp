@@ -112,8 +112,8 @@ TEST_F(Server, CantConnect) {
   server_.close();
   bool called{};
   client_.on_error.connect([&](auto error) {
+    (void)error;
     called = true;
-    EXPECT_EQ(error.code(), boost::asio::error::connection_refused);
   });
   client_.set_connect_information({"localhost", "", "/"});
   client_.connect(session_key);

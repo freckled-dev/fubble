@@ -22,17 +22,22 @@ public:
   using members_type = std::deque<user *>;
   const members_type &get_members() const;
   std::optional<user *> get_member_by_id(const std::string &id);
+  std::string get_name() const;
 
   boost::signals2::signal<void(const user &)> on_join;
   boost::signals2::signal<void(const std::string &)> on_leave;
+  boost::signals2::signal<void(const std::string &)> on_name_changed;
+
+  void sync(const nlohmann::json &content);
 
 protected:
+  // TODO this struct is kinda legacy - remove it
   struct member {
     std::string id;
     std::string display_name;
   };
-  void on_sync(const nlohmann::json &content);
   void on_event_m_room_member(const nlohmann::json &parse);
+  void on_event_m_room_name(const nlohmann::json &parse);
   void add_or_update_member(const member &member_);
   void remove_member(const std::string &member_);
 
@@ -43,6 +48,7 @@ protected:
   std::unique_ptr<http::client> http_client;
   boost::signals2::scoped_connection on_sync_connection;
   members_type members;
+  std::string name;
 };
 } // namespace matrix
 
