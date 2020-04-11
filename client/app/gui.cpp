@@ -66,15 +66,16 @@ int main(int argc, char *argv[]) {
       websocket_connector, signalling_connection_creator, connect_information};
 
   // session, matrix and temporary_room
-  http::server http_matrix_client_server{"localhost", "8008"};
+  http::server http_matrix_client_server{"localhost", "80"};
   http::fields http_matrix_client_fields{http_matrix_client_server};
-  http_matrix_client_fields.target_prefix = "/_matrix/client/r0/";
+  http_matrix_client_fields.target_prefix = "/api/matrix/v0/_matrix/client/r0/";
   http::client_factory http_matrix_client_factory{
       context, http_matrix_client_server, http_matrix_client_fields};
 
-  http::server http_temporary_room_client_server{"localhost", "8009"};
+  http::server http_temporary_room_client_server{"localhost", "80"};
   http::fields http_temporary_room_client_fields{
       http_temporary_room_client_server};
+  http_temporary_room_client_fields.target_prefix = "/api/temporary_room/v0/";
   http::client http_client_temporary_room{context,
                                           http_temporary_room_client_server,
                                           http_temporary_room_client_fields};

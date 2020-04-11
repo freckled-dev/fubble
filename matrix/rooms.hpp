@@ -14,7 +14,11 @@ class rooms {
 public:
   rooms(factory &factory_, client &client_);
 
+  struct create_room_fields {
+    std::optional<std::string> name;
+  };
   boost::future<room *> create_room();
+  boost::future<room *> create_room(const create_room_fields &fields);
   // TODO refactor to `leave`
   boost::future<void> leave_room(const room &room_);
   // TODO refactor to `leave_by_id`
@@ -30,6 +34,8 @@ public:
 protected:
   void on_sync(const nlohmann::json &content);
   void on_room_created(std::unique_ptr<room> room_);
+  room_list::iterator find_room_by_id(const std::string &id);
+  room &do_create_room(const std::string &id);
 
   matrix::logger logger{"rooms"};
   factory &factory_;

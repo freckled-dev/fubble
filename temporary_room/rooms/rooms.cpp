@@ -33,7 +33,7 @@ boost::future<room_id> rooms::get_or_create_room_id(const room_name &name,
 std::size_t rooms::get_room_count() { return rooms_.size(); }
 
 void rooms::create(const room_name &name) {
-  factory.create().then(
+  factory.create(name).then(
       executor, [this, name](auto result) { on_created(name, result); });
 }
 
