@@ -15,7 +15,7 @@ public:
                       const std::string &own_id, own_media &own_media_);
 
   std::unique_ptr<participant>
-  create(const session::participant &session_information);
+  create(session::participant &session_information);
 
 protected:
   peer_creator &peer_creator_;
