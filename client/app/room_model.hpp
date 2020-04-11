@@ -29,6 +29,7 @@ protected:
   std::shared_ptr<room> room_;
   QString name;
   participants_model *participants;
+  std::vector<boost::signals2::scoped_connection> signal_connections;
 };
 } // namespace client
 

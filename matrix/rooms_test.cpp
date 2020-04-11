@@ -2,7 +2,10 @@
 
 using namespace matrix;
 
-struct Rooms : fixture {};
+struct Rooms : fixture {
+  rooms::create_room_fields create_room_fields;
+  Rooms() { create_room_fields.name = "room name"; }
+};
 
 TEST_F(Rooms, CreateRoom) {
   auto test = authentification_.register_anonymously();
@@ -11,7 +14,8 @@ TEST_F(Rooms, CreateRoom) {
   auto done = test.then(executor,
                         [&](auto client_future) {
                           client_ = std::move(client_future.get());
-                          return client_.get()->get_rooms().create_room();
+                          return client_.get()->get_rooms().create_room(
+                              create_room_fields);
                         })
                   .unwrap()
                   .then(executor, [&](auto room) {
@@ -33,7 +37,7 @@ TEST_F(Rooms, InviteByUserId) {
   run_context();
   auto inviter = inviter_future.get();
   auto invitee = invitee_future.get();
-  auto room_future = inviter->get_rooms().create_room();
+  auto room_future = inviter->get_rooms().create_room(create_room_fields);
   run_context();
   auto room = room_future.get();
   auto join_fail = invitee->get_rooms().join_room_by_id(room->get_id());
@@ -56,7 +60,7 @@ TEST_F(Rooms, SyncRoomJoin) {
   auto invitee = invitee_future.get();
   inviter->sync();
   invitee->sync();
-  auto room_future = inviter->get_rooms().create_room();
+  auto room_future = inviter->get_rooms().create_room(create_room_fields);
   run_context();
   auto room = room_future.get();
   room->invite_by_user_id(invitee->get_user_id());
@@ -76,7 +80,7 @@ TEST_F(Rooms, SyncRoomJoin) {
 
 TEST_F(Rooms, DisplayName) {
   auto client_ = create_registered_client();
-  client_->get_rooms().create_room();
+  client_->get_rooms().create_room(create_room_fields);
   run_context();
   sync_client(*client_);
   auto user_id = client_->get_user_id();
@@ -85,9 +89,18 @@ TEST_F(Rooms, DisplayName) {
   EXPECT_EQ(client_->get_users().get_all().front()->get_display_name(), check);
 }
 
+TEST_F(Rooms, RoomName) {
+  auto client_ = create_registered_client();
+  auto done = client_->get_rooms().create_room(create_room_fields);
+  run_context();
+  sync_client(*client_);
+  auto got_room = done.get();
+  EXPECT_EQ(got_room->get_name(), create_room_fields.name.value());
+}
+
 TEST_F(Rooms, Leave) {
   auto client_ = create_registered_client();
-  auto room_future = client_->get_rooms().create_room();
+  auto room_future = client_->get_rooms().create_room(create_room_fields);
   run_context();
   auto room_ = room_future.get();
   sync_client(*client_);
@@ -101,7 +114,7 @@ TEST_F(Rooms, Leave) {
 TEST_F(Rooms, Kick) {
   auto inviter = create_registered_client();
   auto invitee = create_guest_client();
-  auto room_future = inviter->get_rooms().create_room();
+  auto room_future = inviter->get_rooms().create_room(create_room_fields);
   run_context();
   auto room_ = room_future.get();
   room_->invite_by_user_id(invitee->get_user_id());

@@ -27,11 +27,14 @@ matrix_rooms_factory_adapter::matrix_rooms_factory_adapter(
 matrix_rooms_factory_adapter::~matrix_rooms_factory_adapter() = default;
 
 boost::future<temporary_room::rooms::room_ptr>
-matrix_rooms_factory_adapter::create() {
-  return matrix_client.get_rooms().create_room().then([this](auto result) {
-    matrix::room *got = result.get();
-    auto return_ = std::make_unique<rooms_room_matrix_adapter>(*got);
-    rooms::room_ptr return_casted = std::move(return_);
-    return return_casted;
-  });
+matrix_rooms_factory_adapter::create(const std::string &room_name) {
+  matrix::rooms::create_room_fields fields;
+  fields.name = room_name;
+  return matrix_client.get_rooms().create_room(fields).then(
+      [this](auto result) {
+        matrix::room *got = result.get();
+        auto return_ = std::make_unique<rooms_room_matrix_adapter>(*got);
+        rooms::room_ptr return_casted = std::move(return_);
+        return return_casted;
+      });
 }
