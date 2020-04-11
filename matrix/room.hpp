@@ -24,7 +24,7 @@ public:
   std::optional<user *> get_member_by_id(const std::string &id);
   std::string get_name() const;
 
-  boost::signals2::signal<void(const user &)> on_join;
+  boost::signals2::signal<void(user &)> on_join;
   boost::signals2::signal<void(const std::string &)> on_leave;
   boost::signals2::signal<void(const std::string &)> on_name_changed;
 

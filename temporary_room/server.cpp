@@ -72,6 +72,7 @@ int main(int argc, char *argv[]) {
   context.run();
   context.reset();
   auto matrix_client_server = matrix_client_server_future.get();
+  matrix_client_server->set_display_name("Fubble Bot");
   // temporary_room::server
   net::server::acceptor::config acceptor_config;
   acceptor_config.port = options_.port;

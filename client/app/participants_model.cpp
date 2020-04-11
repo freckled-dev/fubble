@@ -1,4 +1,5 @@
 #include "participants_model.hpp"
+#include "client/bot_participant.hpp"
 #include "client/participant.hpp"
 #include "session/room.hpp"
 #include <boost/assert.hpp>
@@ -35,7 +36,17 @@ QHash<int, QByteArray> participants_model::roleNames() const {
   return roles;
 }
 
-void participants_model::on_joins(const std::vector<participant *> &joins) {
+void participants_model::on_joins(
+    const std::vector<participant *> &joins_to_filter) {
+  std::vector<participant *> joins;
+  std::copy_if(joins_to_filter.cbegin(), joins_to_filter.cend(),
+               std::back_inserter(joins), [&](auto check) {
+                 // dont do bots
+                 // TODO do a class witch just holds media participants per room
+                 return dynamic_cast<bot_participant *>(check) == nullptr;
+               });
+  if (joins.empty())
+    return;
   int participants_count = participants.size();
   int joins_count = joins.size();
   BOOST_LOG_SEV(logger, logging::severity::trace)
@@ -63,7 +74,8 @@ void participants_model::on_leaves(std::vector<std::string> leaves) {
   for (const auto &leave : leaves) {
     auto found = std::find_if(participants.begin(), participants.end(),
                               [&](auto check) { return check.id == leave; });
-    BOOST_ASSERT(found != participants.end());
+    if (found == participants.end())
+      continue; // bots will get skipped in this list
     int found_index = std::distance(participants.begin(), found);
     beginRemoveRows(QModelIndex(), found_index, found_index);
     found->model->deleteLater();

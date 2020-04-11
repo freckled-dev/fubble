@@ -25,8 +25,6 @@ public:
   // these signals could be in a class calles participants. Do so if room grows
   boost::signals2::signal<void(const std::vector<participant *> &added)>
       on_participants_join;
-  boost::signals2::signal<void(const std::vector<participant *> &updated)>
-      on_participants_updated;
   boost::signals2::signal<void(const std::vector<std::string> &removed)>
       on_participants_left;
   std::vector<participant *> get_participants() const;
@@ -36,8 +34,8 @@ public:
   std::string get_own_id() const;
 
 protected:
-  void
-  on_session_participant_joins(const std::vector<session::participant> &joins);
+  void on_session_participant_joins(
+      const std::vector<session::participant *> &joins);
   void on_session_participant_updates(
       const std::vector<session::participant> &updates);
   void on_session_participant_leaves(const std::vector<std::string> &leaves);
