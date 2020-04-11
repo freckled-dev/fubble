@@ -18,6 +18,8 @@ room::room(std::unique_ptr<participant_creator> participant_creator_parameter,
       [this](const auto updates) { on_session_participant_updates(updates); });
   room_->on_leaves.connect(
       [this](const auto leaves) { on_session_participant_leaves(leaves); });
+  room_->on_name_changed.connect(
+      [this](const auto &name) { on_name_changed(name); });
 }
 
 room::~room() {

@@ -84,7 +84,7 @@ void room::on_event_m_room_member(const nlohmann::json &parse) {
 
 void room::on_event_m_room_name(const nlohmann::json &parse) {
   name = parse["content"]["name"];
-  BOOST_LOG_SEV(logger, logging::severity::trace)
+  BOOST_LOG_SEV(logger, logging::severity::info)
       << "room_name changed to:" << name;
   on_name_changed(name);
 }

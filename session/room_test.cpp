@@ -78,7 +78,8 @@ struct joined_client {
 
 TEST_F(Room, Joiner) {
   auto room_id = uuid::generate();
-  joined_client join{io_context, room_id, "name"};
+  const std::string room_name = "name";
+  joined_client join{io_context, room_id, room_name};
   auto joined = join.join().then(executor, [&](auto result) {
     result.get();
     io_context.stop();

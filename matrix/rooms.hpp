@@ -17,7 +17,6 @@ public:
   struct create_room_fields {
     std::optional<std::string> name;
   };
-  boost::future<room *> create_room();
   boost::future<room *> create_room(const create_room_fields &fields);
   // TODO refactor to `leave`
   boost::future<void> leave_room(const room &room_);

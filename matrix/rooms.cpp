@@ -48,12 +48,10 @@ void rooms::on_sync(const nlohmann::json &content) {
   }
 }
 
-boost::future<room *> rooms::create_room() {
-  create_room_fields fields;
-  return create_room(fields);
-}
-
 boost::future<room *> rooms::create_room(const create_room_fields &fields) {
+  BOOST_LOG_SEV(logger, logging::severity::trace) << fmt::format(
+      "create_room, fields.name:'{}'", fields.name.value_or("--"));
+
   nlohmann::json content = nlohmann::json::object();
   content["preset"] = "private_chat";
   if (fields.name)
