@@ -9,13 +9,20 @@ users::users(client &client_) : client_(client_) {
 }
 
 user &users::get_or_add_user(const std::string &id) {
-  auto found = std::find_if(users_.begin(), users_.end(),
-                            [&](auto &check) { return check->get_id() == id; });
+  auto found = find(id);
   if (found != users_.end())
     return *found->get();
   auto user_ = std::make_unique<user>(id);
   users_.emplace_back(std::move(user_));
   return *users_.back();
+}
+
+user &users::get_by_id(const std::string &id) {
+  auto found = find(id);
+  if (found == users_.end()) {
+    BOOST_ASSERT(false);
+  }
+  return *found->get();
 }
 
 void users::on_sync(const nlohmann::json &content) {
@@ -28,8 +35,14 @@ void users::on_sync(const nlohmann::json &content) {
     const std::string user_id = event["sender"];
     user &user_ = get_or_add_user(user_id);
     const auto content = event["content"];
-    user_.set_presence(content["presence"]);
+    std::string presence = content["presence"];
+    user_.set_presence_from_string(presence);
     if (content.contains("displayname"))
       user_.set_display_name(content["displayname"]);
   }
+}
+
+std::deque<std::unique_ptr<user>>::iterator users::find(const std::string &id) {
+  return std::find_if(users_.begin(), users_.end(),
+                      [&](auto &check) { return check->get_id() == id; });
 }

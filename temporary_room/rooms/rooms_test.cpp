@@ -126,7 +126,7 @@ struct RoomWithParticipants : testing::Test {
     }
   }
 
-  void remove_all_participants() { room_->on_participant_count_changed(1); }
+  void remove_all_participants() { room_->on_empty(); }
 
   void ensure_room_id_got_set() {
     for (auto &participant_ : participants)

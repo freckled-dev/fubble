@@ -13,6 +13,6 @@ TEST_F(Users, Sync) {
   EXPECT_EQ(all.size(), 1);
   const auto &first = all.front();
   EXPECT_EQ(first->get_id(), client_->get_user_id());
-  EXPECT_EQ(first->get_presence(), "online");
+  EXPECT_EQ(first->get_presence(), matrix::presence::online);
 }
 

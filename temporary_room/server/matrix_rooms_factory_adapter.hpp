@@ -13,6 +13,8 @@ public:
 
 protected:
   matrix::client &matrix_client;
+  temporary_room::logger logger{"matrix_rooms_factory_adapter"};
+  std::vector<boost::signals2::scoped_connection> signals_connections;
 };
 } // namespace temporary_room::server
 

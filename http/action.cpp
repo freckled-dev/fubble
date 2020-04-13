@@ -1,5 +1,6 @@
 #include "action.hpp"
 #include <fmt/format.h>
+#include <fmt/ostream.h>
 
 using namespace http;
 
@@ -109,11 +110,19 @@ void action::on_response_read(const boost::system::error_code &error) {
   stream.socket().shutdown(boost::asio::socket_base::shutdown_both);
   auto promise_copy = std::move(promise);
   auto body = response.body();
-  BOOST_LOG_SEV(logger, logging::severity::trace)
-      << "got a response, for target'" << target
-      << "' code:" << static_cast<int>(http_code)
-      << ", body.size():" << body.size();
-  auto json_body = nlohmann::json::parse(body);
+  const auto content_type = response[boost::beast::http::field::content_type];
+  BOOST_LOG_SEV(logger, logging::severity::trace) << fmt::format(
+      "got a response, for target'{}', code:{}, "
+      "content_type:'{}', body.size():{}",
+      target, static_cast<int>(http_code), content_type, body.size());
+  nlohmann::json json_body;
+  try {
+    json_body = nlohmann::json::parse(body);
+  } catch (...) {
+    BOOST_LOG_SEV(logger, logging::severity::error)
+        << "could not json-parse the following body:" << body;
+    std::rethrow_exception(std::current_exception());
+  }
   promise_copy->set_value(std::make_pair(http_code, json_body));
 }
 
