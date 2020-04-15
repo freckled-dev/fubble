@@ -8,7 +8,8 @@
     "HOME": "Home",
     "FEATURES": "Features",
     "SCREENSHOTS": "Screenshots",
-    "CONTACT": "Contact"
+    "CONTACT": "Contact",
+    "NEWS": "News"
   },
   "ABOUT": {
     "CONNECTED": "Stay Connected",
@@ -20,12 +21,12 @@
   },
   "INTRO": {
     "SLOGAN": "Easy video conferencing",
-    "HEADER": "Best way to connect with your friends, family or coworkers!",
-    "FREE": "It is easy and free - try it out!",
+    "HEADER": "Best way to connect with your friends, family or coworkers.",
+    "FREE": "Alpha available for windows and linux at the moment:",
     "COMING_SOON": "Coming soon..."
   },
   "FEATURES": {
-    "HEADER": "Features",
+    "HEADER": "Popular Features",
     "FEATURE1_HEADER": "Easy Installation",
     "FEATURE1_DESCRIPTION": "Installer provided.",
     "FEATURE2_HEADER": "Multi Platform App",
@@ -38,20 +39,22 @@
     "FEATURE5_DESCRIPTION": "Available for Windows and Linux",
     "FEATURE6_HEADER": "Dark mode",
     "FEATURE6_DESCRIPTION": "Light or dark - choose your side",
-    "FEATURE7_HEADER": "Fast",
-    "FEATURE7_DESCRIPTION": "Available for Windows and Linux",
+    "FEATURE7_HEADER": "Preview before joining",
+    "FEATURE7_DESCRIPTION": "Fix your hair first.",
     "FEATURE8_HEADER": "State of the art architecture",
     "FEATURE8_DESCRIPTION": "WebRTC"
   },
   "CONTACT": {
     "LOCATION_HEADER": "Location",
-    "LOCATION_INFO": "Luegerstraße 10, 9020 Klagenfurt, Austria",
+    "LOCATION_INFO": "Klagenfurt, Austria",
     "CALL_HEADER": "Call us",
     "CALL_INFO": "+43 650 44 515 88",
+    "GET_IN_TOUCH": "Get in touch",
+    "INFO": "Contact Info",
     "MAIL_HEADER": "Email us",
     "MAIL_INFO": "contact@freckled.dev",
     "NAME": "Name",
-    "NAME_HINT": "Optional",
+    "NAME_HINT": "Name is optional",
     "MESSAGE": "Message *",
     "MESSAGE_HINT": "Message is required",
     "MAIL": "Email *",
@@ -59,12 +62,22 @@
     "INVALID_MAIL": "Invalid Email",
     "HOW_CAN_WE_HELP": "How can we help you?",
     "MESSAGE_REQUIRED": "A message is required.",
-    "SEND": "Send message"
+    "SEND": "Send message",
+    "DESCRIPTION": "If you have any questions, suggestions, or if you would like further information, please don't hesitate to contact us:"
   },
   "DOWNLOAD": {
     "ENJOY": "Download and test Fubble for free"
   },
   "SCREENSHOTS": {
     "FUBBLE": "Fubble Screenshots"
+  },
+  "NEWS": {
+    "TITLE": "What is new?",
+    "UNDER_CONSTRUCTION": "Under construction",
+    "UNDER_CONSTRUCTION_TEXT": "blab blub jasdfjoi ejrier asdf aewr ae fdsf aewr asdf arew asdf aewr arfsadfadsfaeref arfsadfadsfaeref arfsadfadsfaeref adfadsf afdadfsadsf efasdf aesf ea fdaeswas dfs asdfyas blab blub jasdfjoi ejrier asdf aewr ae fdsf aewr asdf arew asdf aewr arfsadfadsfaeref",
+    "ALPHA": "Alpha is available",
+    "ALPHA_TEXT": "We proudly announce the new fubble alpha for Windows and Linux! Over the last months we worked hard to create a stable product. Please bear in mind, that this is an early release version - so there might be bugs. We would really love your feedback, input, suggestions.",
+    "WEBSITE": "New website is live",
+    "WEBSITE_TEXT": "blab blub jasdfjoi ejrier asdf aewr ae fdsf aewr asdf arew asdf aewr arfsadfadsfaeref arfsadfadsfaeref arfsadfadsfaeref adfadsf afdadfsadsf efasdf aesf ea fdaeswas dfs asdfyas blab blub jasdfjoi ejrier asdf aewr ae fdsf aewr asdf arew asdf aewr arfsadfadsfaeref"
   }
 }
