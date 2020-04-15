@@ -8,8 +8,7 @@ import { Author } from 'src/app/entities/author';
 })
 export class NewsComponent implements OnInit {
 
-
-  protected currentNews: any;
+  public currentNews: any;
 
   public news = [{
     image: 'assets/images/news-construction.png',
