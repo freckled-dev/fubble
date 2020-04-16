@@ -44,7 +44,7 @@ protected:
   using participants = std::vector<std::unique_ptr<participant>>;
   participants::iterator find(const std::string &id);
 
-  client::logger logger{"room"};
+  client::logger logger;
   std::unique_ptr<participant_creator> participant_creator_;
   boost::inline_executor executor;
   std::unique_ptr<session::client> client_;
