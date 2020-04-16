@@ -13,6 +13,8 @@ action::action(boost::asio::io_context &context, boost::beast::http::verb verb,
   // this class
   promise = std::make_shared<async_result_promise>();
   std::string target_with_prefix = fields_.target_prefix + target;
+  BOOST_LOG_SEV(logger, logging::severity::trace)
+      << "doing target_with_prefix:" << target_with_prefix;
   auto &request = buffers_->request;
   request = request_type{verb, target_with_prefix, fields_.version};
   request.set(boost::beast::http::field::host, fields_.host);
@@ -41,8 +43,10 @@ void action::set_request_body(const nlohmann::json &body) {
 action::async_result_future action::do_() {
   auto &request = buffers_->request;
   request.prepare_payload();
+#if 0
   BOOST_LOG_SEV(logger, logging::severity::trace) << fmt::format(
       "resolving, server:'{}', port:'{}'", server_.server, server_.port);
+#endif
   std::weak_ptr<int> alive = alive_check;
   resolver.async_resolve(server_.server, server_.port,
                          [buffers_ = buffers_, this,

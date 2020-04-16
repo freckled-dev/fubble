@@ -13,6 +13,7 @@ struct options {
   unsigned short port{80};
   std::string matrix_server{"localhost"};
   std::string matrix_port{"8008"};
+  std::string matrix_target_prefix{"/_matrix/client/r0/"};
 }; // namespace
 
 std::optional<options> parse_options(int argc, char *argv[]) {
@@ -32,6 +33,10 @@ std::optional<options> parse_options(int argc, char *argv[]) {
                         bpo::value<std::string>(&result.matrix_port)
                             ->default_value(result.matrix_port),
                         "matrix server port to connect to");
+  general.add_options()("matrix-target-prefix",
+                        bpo::value<std::string>(&result.matrix_target_prefix)
+                            ->default_value(result.matrix_target_prefix),
+                        "matrix server target prefix to use");
   bpo::variables_map variables_map;
   bpo::store(bpo::parse_command_line(argc, argv, general), variables_map);
   bpo::notify(variables_map);
@@ -59,7 +64,7 @@ int main(int argc, char *argv[]) {
   matrix::factory matrix_factory;
   http::server http_server_matrix{options_.matrix_server, options_.matrix_port};
   http::fields http_fields_matrix{http_server_matrix};
-  http_fields_matrix.target_prefix = "/_matrix/client/r0/";
+  http_fields_matrix.target_prefix = options_.matrix_target_prefix;
   http::client_factory http_client_factory_matrix{context, http_server_matrix,
                                                   http_fields_matrix};
   matrix::client_factory matrix_client_factory{matrix_factory,
@@ -86,15 +91,26 @@ int main(int argc, char *argv[]) {
   // lets start to accept connections
   auto acceptor_done = acceptor.run();
   boost::asio::signal_set signals{context, SIGINT, SIGTERM};
-  signals.async_wait([&acceptor](const auto &error, auto) {
-    if (error == boost::asio::error::operation_aborted)
-      return;
-    acceptor.stop();
-  });
+  signals.async_wait(
+      [&acceptor, &matrix_client_server](const auto &error, auto) {
+        if (error == boost::asio::error::operation_aborted)
+          return;
+        acceptor.stop();
+        matrix_client_server->stop_sync();
+      });
   BOOST_LOG_SEV(logger, logging::severity::trace) << "context.run()";
   context.run();
   BOOST_LOG_SEV(logger, logging::severity::trace) << "after context.run()";
-  matrix_client_server_sync_result.get();
-  acceptor_done.get();
+  auto check_for_operation_cancelled = [](boost::future<void> &check) {
+    try {
+      check.get();
+    } catch (const boost::system::system_error &error) {
+      if (error.code() == boost::asio::error::operation_aborted)
+        return;
+      std::rethrow_exception(std::current_exception());
+    }
+  };
+  check_for_operation_cancelled(matrix_client_server_sync_result);
+  check_for_operation_cancelled(acceptor_done);
   return 0;
 }
