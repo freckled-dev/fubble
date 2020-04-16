@@ -4,6 +4,7 @@
 #include "rtc/google/video_source_ptr.hpp"
 #include "session/participant.hpp"
 #include <boost/signals2/signal.hpp>
+#include <boost/thread/future.hpp>
 #include <memory>
 
 namespace client {
@@ -12,6 +13,7 @@ public:
   participant(session::participant &session_participant);
   virtual ~participant();
 
+  virtual boost::future<void> close() = 0;
   std::string get_id() const;
   std::string get_name() const;
   boost::signals2::signal<void(const std::string &)> on_name_changed;
@@ -25,6 +27,9 @@ protected:
   void update();
 
   session::participant &session_participant;
+  // on a delete the session_participant gets delted before the signal
+  // `on_session_participant_leaves` gets called
+  const std::string id{session_participant.get_id()};
   boost::signals2::scoped_connection connection_update;
 };
 } // namespace client
