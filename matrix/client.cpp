@@ -3,6 +3,7 @@
 #include "http/action.hpp"
 #include "room.hpp"
 #include <fmt/format.h>
+#include <fmt/ostream.h>
 
 using namespace matrix;
 
@@ -20,7 +21,7 @@ client::~client() {
   if (!sync_till_stop_promise)
     return;
   BOOST_LOG_SEV(logger, logging::severity::warning)
-      << "!sync_till_stop_promise";
+      << "sync_till_stop_promise not nullptr";
 #if 0
   sync_till_stop_promise->set_exception(
       boost::system::system_error(boost::asio::error::operation_aborted));
@@ -45,6 +46,18 @@ boost::future<void> client::set_display_name(const std::string &name) {
   nlohmann::json request = nlohmann::json::object();
   request["displayname"] = name;
   std::string target = fmt::format("profile/{}/displayname", get_user_id());
+  return http_client->put(target, request).then(executor, [](auto result) {
+    error::check_matrix_response(result);
+  });
+}
+
+boost::future<void> client::set_presence(presence set) {
+  BOOST_LOG_SEV(logger, logging::severity::trace)
+      << "setting presence to:" << set;
+  nlohmann::json request = nlohmann::json::object();
+  std::string presence_casted = fmt::format("{}", set);
+  request["presence"] = presence_casted;
+  std::string target = fmt::format("presence/{}/status", get_user_id());
   return http_client->put(target, request).then(executor, [](auto result) {
     error::check_matrix_response(result);
   });
@@ -79,6 +92,8 @@ std::string client::make_sync_target(std::chrono::milliseconds timeout) const {
 boost::future<void> client::sync_till_stop(std::chrono::milliseconds timeout) {
   BOOST_ASSERT(!http_sync_action);
   BOOST_ASSERT(!sync_till_stop_promise);
+  BOOST_ASSERT(!sync_till_stop_active);
+  sync_till_stop_active = true;
   sync_till_stop_timeout = timeout;
   sync_till_stop_promise = std::make_unique<boost::promise<void>>();
   do_sync();
@@ -86,6 +101,11 @@ boost::future<void> client::sync_till_stop(std::chrono::milliseconds timeout) {
 }
 
 void client::do_sync() {
+  if (!sync_till_stop_active) {
+    auto moved = std::move(sync_till_stop_promise);
+    moved->set_value();
+    return;
+  }
   auto target = make_sync_target(sync_till_stop_timeout);
   http_sync_action = http_client->get_action(target);
   http_sync_action->do_().then(
@@ -108,4 +128,7 @@ void client::on_sync_till_stop(
   }
 }
 
-void client::stop_sync() { http_sync_action->cancel(); }
+void client::stop_sync() {
+  sync_till_stop_active = false;
+  http_sync_action->cancel();
+}

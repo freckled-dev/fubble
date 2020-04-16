@@ -9,6 +9,8 @@ connection::~connection() {
   BOOST_LOG_SEV(logger, logging::severity::trace) << "websocket::~connection()";
   if (!reading)
     return;
+  BOOST_LOG_SEV(logger, logging::severity::warning)
+      << "read_promise is not fullfilled!";
   read_promise.set_exception(
       boost::system::system_error(boost::asio::error::operation_aborted));
 }
@@ -94,8 +96,8 @@ void connection::on_read(const boost::system::error_code &error, std::size_t) {
   BOOST_LOG_SEV(logger, logging::severity::info)
       << "stream.async_read, this:" << this << ", error:" << error.message();
   if (error) {
-    read_promise.set_exception(boost::system::system_error(error));
     reading = false;
+    read_promise.set_exception(boost::system::system_error(error));
     return;
   }
   std::string result = boost::beast::buffers_to_string(buffer.data());

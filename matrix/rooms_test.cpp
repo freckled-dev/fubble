@@ -5,6 +5,15 @@ using namespace matrix;
 struct Rooms : fixture {
   rooms::create_room_fields create_room_fields;
   Rooms() { create_room_fields.name = "room name"; }
+
+  std::pair<std::unique_ptr<client>, room *> register_and_create_room() {
+    auto client_ = create_registered_client();
+    auto room_future = client_->get_rooms().create_room(create_room_fields);
+    run_context();
+    auto room_ = room_future.get();
+    sync_client(*client_);
+    return std::make_pair(std::move(client_), room_);
+  }
 };
 
 TEST_F(Rooms, CreateRoom) {
@@ -79,10 +88,7 @@ TEST_F(Rooms, SyncRoomJoin) {
 }
 
 TEST_F(Rooms, DisplayName) {
-  auto client_ = create_registered_client();
-  client_->get_rooms().create_room(create_room_fields);
-  run_context();
-  sync_client(*client_);
+  auto [client_, room_] = register_and_create_room();
   auto user_id = client_->get_user_id();
   const auto check_last = user_id.find(":");
   const std::string check = user_id.substr(1, check_last - 1);
@@ -90,20 +96,12 @@ TEST_F(Rooms, DisplayName) {
 }
 
 TEST_F(Rooms, RoomName) {
-  auto client_ = create_registered_client();
-  auto done = client_->get_rooms().create_room(create_room_fields);
-  run_context();
-  sync_client(*client_);
-  auto got_room = done.get();
-  EXPECT_EQ(got_room->get_name(), create_room_fields.name.value());
+  auto [client_, room_] = register_and_create_room();
+  EXPECT_EQ(room_->get_name(), create_room_fields.name.value());
 }
 
 TEST_F(Rooms, Leave) {
-  auto client_ = create_registered_client();
-  auto room_future = client_->get_rooms().create_room(create_room_fields);
-  run_context();
-  auto room_ = room_future.get();
-  sync_client(*client_);
+  auto [client_, room_] = register_and_create_room();
   auto leave_future = client_->get_rooms().leave_room(*room_);
   run_context();
   leave_future.get();
@@ -111,12 +109,47 @@ TEST_F(Rooms, Leave) {
   EXPECT_TRUE(client_->get_rooms().get_rooms().empty());
 }
 
-TEST_F(Rooms, Kick) {
-  auto inviter = create_registered_client();
+TEST_F(Rooms, Online) {
+  auto [client_, room_] = register_and_create_room();
+  EXPECT_EQ(room_->get_members().front()->get_presence(),
+            matrix::presence::online);
+}
+
+TEST_F(Rooms,
+       DISABLED_GoOffline) { // this test waits for a timeout and lasts longer
+                             // than 30 seconds!
+  auto [client_, room_] = register_and_create_room();
+
   auto invitee = create_guest_client();
-  auto room_future = inviter->get_rooms().create_room(create_room_fields);
+  sync_client(*invitee); // ensure invitee gets online
+  room_->invite_by_user_id(invitee->get_user_id());
   run_context();
-  auto room_ = room_future.get();
+  invitee->get_rooms().join_room_by_id(room_->get_id());
+  sync_client(*invitee);
+  sync_client(*client_);
+
+  bool called{};
+  auto &other_user = client_->get_users().get_by_id(invitee->get_user_id());
+  EXPECT_EQ(other_user.get_presence(), presence::online);
+  other_user.on_update.connect([&] {
+    called = true;
+    EXPECT_EQ(other_user.get_presence(), presence::offline);
+    client_->stop_sync();
+  });
+#if 0 // guests are not allowed to set themselfs offline
+  auto did_presence = invitee->set_presence(presence::offline);
+  run_context();
+  did_presence.get();
+#endif
+  auto done = client_->sync_till_stop();
+  context.run();
+  EXPECT_TRUE(called);
+  done.get();
+}
+
+TEST_F(Rooms, Kick) {
+  auto [inviter, room_] = register_and_create_room();
+  auto invitee = create_guest_client();
   room_->invite_by_user_id(invitee->get_user_id());
   run_context();
   invitee->get_rooms().join_room_by_id(room_->get_id());

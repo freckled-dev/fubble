@@ -6,6 +6,7 @@
 using namespace matrix;
 
 room::room(client &client_, const std::string &id) : client_(client_), id(id) {
+  BOOST_ASSERT(!id.empty());
   http_client = client_.create_http_client();
 }
 

@@ -21,7 +21,7 @@ public:
              signalling::json_message &message_parser);
   ~connection();
 
-  void close();
+  boost::future<void> close();
 
   void send_registration(const signalling::registration &send);
   void send_want_to_negotiate();
@@ -44,7 +44,7 @@ private:
   void send(const std::string &message);
   void parse_message(const std::string &message);
 
-  signalling::logger logger{"connection"};
+  signalling::logger logger{"client::connection"};
   boost::executor &post_executor;
   boost::inline_executor inline_executor;
   boost::promise<void> run_promise;

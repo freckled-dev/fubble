@@ -14,7 +14,7 @@ using user_id = std::string;
 class room {
 public:
   virtual ~room() = default;
-  std::function<void(int)> on_participant_count_changed;
+  std::function<void()> on_empty;
   virtual room_id get_room_id() const = 0;
   virtual boost::future<void> invite(const user_id &) = 0;
 };
@@ -47,7 +47,7 @@ protected:
 
   void create(const room_name &name);
   void on_created(const room_name &name, boost::future<room_ptr> &result);
-  void on_participant_count_changed(const room_name &name, const int count);
+  void on_empty(const room_name &name);
   void invite(const std::shared_ptr<participant> participant_,
               const room_ptr &room_);
   void on_invited(const std::shared_ptr<participant> &participant_,

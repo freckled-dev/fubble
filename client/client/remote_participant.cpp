@@ -14,6 +14,8 @@ remote_participant::remote_participant(
 
 remote_participant::~remote_participant() = default;
 
+boost::future<void> remote_participant::close() { return peer_->close(); }
+
 remote_participant::videos_type remote_participant::get_videos() const {
   return videos;
 }

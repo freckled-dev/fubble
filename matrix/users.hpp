@@ -13,6 +13,7 @@ class users {
 public:
   users(client &client_);
   user &get_or_add_user(const std::string &id);
+  user &get_by_id(const std::string &id);
 
   using user_list = std::deque<std::unique_ptr<user>>;
   inline const user_list &get_all() const { return users_; }
@@ -20,6 +21,7 @@ public:
 
 protected:
   void on_sync(const nlohmann::json &content);
+  std::deque<std::unique_ptr<user>>::iterator find(const std::string &id);
 
   matrix::logger logger{"users"};
   client &client_;

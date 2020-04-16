@@ -15,9 +15,9 @@ connection::~connection() {
   BOOST_LOG_SEV(logger, logging::severity::trace) << "client ~connection()";
 }
 
-void connection::close() {
+boost::future<void> connection::close() {
   BOOST_LOG_SEV(logger, logging::severity::info) << "closing connection";
-  connection_->close();
+  return connection_->close();
 }
 
 void connection::send_registration(const signalling::registration &send_) {
@@ -58,7 +58,10 @@ void connection::read_next() {
       post_read_next();
     } catch (const boost::system::system_error &error) {
       running = false;
-      if (error.code() == boost::asio::error::operation_aborted) {
+      const auto error_code = error.code();
+      // error_code == boost::asio::error::operation_aborted
+      if (error_code == boost::beast::websocket::error::closed) {
+        // The WebSocket stream was gracefully closed at both endpoints
         run_promise.set_value();
         return;
       }

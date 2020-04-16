@@ -23,7 +23,8 @@ public:
   ~joiner();
 
   struct parameters {
-    std::string name, room;
+    std::string name;
+    std::string room;
   };
   // thread-safe
   using room_ptr = std::shared_ptr<room>;

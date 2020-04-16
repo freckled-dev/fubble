@@ -12,7 +12,13 @@ acceptor::acceptor(boost::asio::io_context &context,
   acceptor_.open(endpoint.protocol());
   boost::asio::socket_base::reuse_address reuse_address(true);
   acceptor_.set_option(reuse_address);
-  acceptor_.bind(endpoint);
+  try {
+    acceptor_.bind(endpoint);
+  } catch (...) {
+    BOOST_LOG_SEV(logger, logging::severity::error)
+        << "failed to bind to the endpoint:" << endpoint;
+    std::rethrow_exception(std::current_exception());
+  }
   acceptor_.listen();
 
   run();

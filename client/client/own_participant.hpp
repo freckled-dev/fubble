@@ -11,6 +11,7 @@ public:
   own_participant(session::participant &session_participant,
                   own_media &own_media_);
   ~own_participant();
+  boost::future<void> close() override;
 
 protected:
   videos_type get_videos() const override;

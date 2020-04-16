@@ -15,6 +15,8 @@ public:
                      session::participant &session_participant);
   ~remote_participant();
 
+  boost::future<void> close() override;
+
 protected:
   videos_type get_videos() const override;
   void on_track(rtc::track_ptr track);
