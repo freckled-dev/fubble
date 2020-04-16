@@ -31,8 +31,10 @@ public:
 
   boost::future<void> set_display_name(const std::string &name);
   boost::future<void> set_presence(presence set);
+  // do not more than 50 seconds. because a minute is a magic numbers. eg
+  // proxies will start to close the connection
   static constexpr std::chrono::milliseconds default_sync_timeout =
-      std::chrono::seconds(60);
+      std::chrono::seconds(30);
   boost::future<void>
   sync(std::chrono::milliseconds timeout = default_sync_timeout);
   boost::future<void>
