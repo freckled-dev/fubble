@@ -11,20 +11,26 @@ export class NewsComponent implements OnInit {
   public currentNews: any;
 
   public news = [{
+    image: 'assets/images/news-features.png',
+    date: 1587751074000,
+    author: Author.Manu,
+    titleId: "NEWS.NEXT_FEATURES",
+    textId: "NEWS.NEXT_FEATURES_TEXT"
+  }, {
     image: 'assets/images/news-construction.png',
-    date: 1586439292739,
+    date: 1587578274000,
     author: Author.Manu,
     titleId: "NEWS.UNDER_CONSTRUCTION",
     textId: "NEWS.UNDER_CONSTRUCTION_TEXT"
   }, {
     image: 'assets/images/news-alpha.png',
-    date: 1586124000000,
+    date: 1587319074000,
     author: Author.Markus,
     titleId: "NEWS.ALPHA",
     textId: "NEWS.ALPHA_TEXT"
   }, {
     image: 'assets/images/news-website.png',
-    date: 1585692000000,
+    date: 1587059874000,
     author: Author.Manu,
     titleId: "NEWS.WEBSITE",
     textId: "NEWS.WEBSITE_TEXT"
@@ -38,7 +44,8 @@ export class NewsComponent implements OnInit {
     autoplay: false,
     autoplayTimeout: 2000,
     autoplayHoverPause: true,
-    dots: false,
+    dots: true,
+    dotsEach: true,
     responsive: {
       0: {
         items: 1

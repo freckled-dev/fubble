@@ -105,6 +105,7 @@ h6 {
 p {
   line-height: 23px;
   font-size: 16px;
+  white-space: pre-wrap;
   color: $theme-gray;
   letter-spacing: 0.05rem;
 }
@@ -169,7 +170,10 @@ ul {
   .owl-dots {
     .owl-dot {
       span {
+        margin-top: 10px;
         margin-bottom: 0;
+        height: 20px !important;
+        width: 20px !important;
       }
     }
   }
@@ -1124,6 +1128,7 @@ a:hover .download-button {
     margin: 0;
     padding: 10px;
     color: $theme-gray;
+    font-weight: bold;
   }
 
   p {

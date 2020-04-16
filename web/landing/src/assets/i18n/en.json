@@ -13,16 +13,19 @@
   },
   "ABOUT": {
     "CONNECTED": "Stay Connected",
-    "VIDEO": "Free Video Conference",
+    "VIDEO": "Free Video Conferencing",
     "EASY": "Easy to use",
     "NO_REGISTRATION": "No Registration",
     "CONNECT_WITH_PEOPLE": "Connect with People all over the world!",
-    "FUBBLE_DESCRIPTION": "Fubble is an app for video calls. Stay in touch with your family and friends. Use Fubble to work from home and conference with your collegues. The app is currently an alpha stage - you can use it for free. We would love to get your feedback!"
+    "FUBBLE_DESCRIPTION_1": "Fubble is a secure and completely free app for video conferencing. Stay in touch with your family and friends. Use Fubble to work from home and conference with your collegues. Using Fubble is easy and intuitive. First, you create a room with a unique name. Then, you share this roomname and others can use it to join you - it is that simple.",
+    "FUBBLE_DESCRIPTION_2": "Fubble is open source, meaning that anyone can audit or customise it. You know what you get. It also means that you can move away from our servers and migrate to one you trust more.",
+    "FUBBLE_DESCRIPTION_3": "The app is currently in an ALPHA stage. Try it out - it is free with no account needed.",
+    "FUBBLE_DESCRIPTION_4": "We would love to get your feedback!"
   },
   "INTRO": {
     "SLOGAN": "Easy video conferencing",
     "HEADER": "Best way to connect with your friends, family or coworkers.",
-    "FREE": "Alpha available for windows and linux at the moment:",
+    "FREE": "Early access version of Fubble is now available for windows and linux (for fearless ALPHA warriors):",
     "COMING_SOON": "Coming soon..."
   },
   "FEATURES": {
@@ -32,17 +35,17 @@
     "FEATURE2_HEADER": "Multi Platform App",
     "FEATURE2_DESCRIPTION": "Available for Windows and Linux.",
     "FEATURE3_HEADER": "Quick start",
-    "FEATURE3_DESCRIPTION": "No registration necessary.",
-    "FEATURE4_HEADER": "Open Source",
-    "FEATURE4_DESCRIPTION": "Free to use.",
-    "FEATURE5_HEADER": "User friendly interface",
-    "FEATURE5_DESCRIPTION": "Available for Windows and Linux",
-    "FEATURE6_HEADER": "Dark mode",
-    "FEATURE6_DESCRIPTION": "Light or dark - choose your side",
-    "FEATURE7_HEADER": "Preview before joining",
+    "FEATURE3_DESCRIPTION": "No account necessary.",
+    "FEATURE4_HEADER": "Open Source and open standard",
+    "FEATURE4_DESCRIPTION": "Built on Matrix - own your own data by hosting your own server.",
+    "FEATURE5_HEADER": "Unlimited rooms",
+    "FEATURE5_DESCRIPTION": "Different rooms for different meetings - create as many as you like.",
+    "FEATURE6_HEADER": "Choose your side",
+    "FEATURE6_DESCRIPTION": "Light and dark theme - make Fubble your own.",
+    "FEATURE7_HEADER": "Video preview",
     "FEATURE7_DESCRIPTION": "Fix your hair first.",
     "FEATURE8_HEADER": "State of the art architecture",
-    "FEATURE8_DESCRIPTION": "WebRTC"
+    "FEATURE8_DESCRIPTION": "Build on WebRTC and Matrix."
   },
   "CONTACT": {
     "LOCATION_HEADER": "Location",
@@ -74,10 +77,12 @@
   "NEWS": {
     "TITLE": "What is new?",
     "UNDER_CONSTRUCTION": "Under construction",
-    "UNDER_CONSTRUCTION_TEXT": "blab blub jasdfjoi ejrier asdf aewr ae fdsf aewr asdf arew asdf aewr arfsadfadsfaeref arfsadfadsfaeref arfsadfadsfaeref adfadsf afdadfsadsf efasdf aesf ea fdaeswas dfs asdfyas blab blub jasdfjoi ejrier asdf aewr ae fdsf aewr asdf arew asdf aewr arfsadfadsfaeref",
-    "ALPHA": "Alpha is available",
-    "ALPHA_TEXT": "We proudly announce the new fubble alpha for Windows and Linux! Over the last months we worked hard to create a stable product. Please bear in mind, that this is an early release version - so there might be bugs. We would really love your feedback, input, suggestions.",
+    "UNDER_CONSTRUCTION_TEXT": "The most important thing for us is to develop software our users can rely on. The early access state of our software helps us to gather feedback and find bugs early on. We can identify issues, address and improve them and iron out any bugs.\n\n\"It just works\" - that ist not just an empty catch phrase - we see this as our most important duty.",
+    "ALPHA": "ALPHA is available",
+    "ALPHA_TEXT": "We proudly announce the new Fubble ALPHA for Windows and Linux! Over the last months we worked hard to create a stable product.\n\nPlease bear in mind, that this is an early release version - so there might be bugs. We would really love your feedback, input and suggestions.",
     "WEBSITE": "New website is live",
-    "WEBSITE_TEXT": "blab blub jasdfjoi ejrier asdf aewr ae fdsf aewr asdf arew asdf aewr arfsadfadsfaeref arfsadfadsfaeref arfsadfadsfaeref adfadsf afdadfsadsf efasdf aesf ea fdaeswas dfs asdfyas blab blub jasdfjoi ejrier asdf aewr ae fdsf aewr asdf arew asdf aewr arfsadfadsfaeref"
+    "WEBSITE_TEXT": "As you might have noticed - our new website is live ;-)\n\nIt will be updated regularly and inform you about the current news and the status of Fubble. It contains all download as well as feedback possibilities. Our contact information, privacy policy and terms of service are also available.\n\nCheck this site regulary and be first to know when new releases are available!",
+    "NEXT_FEATURES": "Next features",
+    "NEXT_FEATURES_TEXT": "Coming up soon: chat function and browser version!\n\nAs we aim for a multiplatform availability, the browser version of Fubble is our next big release. You should be able to join a video conference even easier - by using a simple web link. No more downloads necessary.\n\nAnother focus at the moment is the chat feature."
   }
 }
