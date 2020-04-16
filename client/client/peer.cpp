@@ -12,9 +12,9 @@ peer::peer(boost::executor &executor,
 
 void peer::connect(const std::string &key) { signalling_client->connect(key); }
 
-void peer::close() {
+boost::future<void> peer::close() {
   rtc_connection_->close();
-  signalling_client->close();
+  return signalling_client->close();
 }
 
 rtc::connection &peer::rtc_connection() { return *rtc_connection_; }

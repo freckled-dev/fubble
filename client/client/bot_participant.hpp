@@ -12,6 +12,8 @@ public:
   bot_participant(session::participant &session_participant);
   ~bot_participant();
 
+  boost::future<void> close() override;
+
 protected:
   videos_type get_videos() const override;
 

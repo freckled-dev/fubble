@@ -21,7 +21,7 @@ public:
              signalling::json_message &message_parser);
   ~connection();
 
-  void close();
+  boost::future<void> close();
 
   void send_registration(const signalling::registration &send);
   void send_want_to_negotiate();

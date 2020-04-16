@@ -26,7 +26,7 @@ public:
 
   void set_connect_information(const connect_information &set);
   void connect(const std::string &key);
-  void close();
+  boost::future<void> close();
   boost::signals2::signal<void()> on_closed;
   boost::signals2::signal<void()> on_registered;
   boost::signals2::signal<void()> on_create_offer;
