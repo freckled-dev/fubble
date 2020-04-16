@@ -49,9 +49,7 @@ void rooms::on_created(const room_name &name, boost::future<room_ptr> &result) {
       BOOST_ASSERT(false);
       return;
     }
-    got_room->on_participant_count_changed = [this, name](auto count) {
-      on_participant_count_changed(name, count);
-    };
+    got_room->on_empty = [this, name]() { on_empty(name); };
     found->second.room_ = std::move(got_room);
     for (const auto &participant_ : found->second.participants)
       invite(participant_, found->second.room_);
@@ -69,11 +67,9 @@ void rooms::on_created(const room_name &name, boost::future<room_ptr> &result) {
   }
 }
 
-void rooms::on_participant_count_changed(const room_name &name,
-                                         const int count) {
-  if (count > 1)
-    return;
-  BOOST_ASSERT(count == 1);
+void rooms::on_empty(const room_name &name) {
+  BOOST_LOG_SEV(logger, logging::severity::info)
+      << "closing room, because it's empty";
   auto found = rooms_.find(name);
   if (found == rooms_.end()) {
     BOOST_LOG_SEV(logger, logging::severity::error)
@@ -104,4 +100,3 @@ void rooms::on_invited(const std::shared_ptr<participant> &participant_,
     return safe_promise->set_exception(result.get_exception_ptr());
   safe_promise->set_value(participant_->room_id_);
 }
-

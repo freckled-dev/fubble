@@ -19,10 +19,11 @@ void client::client::set_connect_information(const connect_information &set) {
   connect_information_ = set;
 }
 
-void client::client::close() {
+boost::future<void> client::client::close() {
   if (!connection_)
-    return;
-  connection_->close();
+    return boost::make_exceptional(
+        boost::system::system_error(boost::asio::error::not_connected));
+  return connection_->close();
 }
 
 void client::client::send_offer(const signalling::offer &offer_) {
@@ -114,7 +115,7 @@ void client::client::run_done(boost::future<void> &result) {
     on_error(error);
   } catch (const boost::broken_promise &error) {
     BOOST_LOG_SEV(logger, logging::severity::error)
-        << "a should not happen error occured";
+        << "a broken_promise should not happen error occured";
   } catch (...) {
     BOOST_LOG_SEV(logger, logging::severity::error)
         << "run_done, an unknown error occured";

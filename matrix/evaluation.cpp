@@ -251,12 +251,10 @@ struct sync_result {
 sync_result sync(client &client_, std::optional<std::string> next_batch) {
   test_http::client &http_creator = client_.http_client;
   auto sync_path = test_http::target_prefix + "sync";
-  if (next_batch)
-    sync_path += "?since=" + next_batch.value();
-#if 0
   int timeout_ms = 1000;
-  sync_path += "&timeout=" + std::to_string(timeout_ms);
-#endif
+  sync_path += "?timeout=" + std::to_string(timeout_ms);
+  if (next_batch)
+    sync_path += "&since=" + next_batch.value();
   auto response = http_creator.get(sync_path);
   EXPECT_EQ(response.result(), boost::beast::http::status::ok);
   sync_result result;

@@ -72,6 +72,8 @@ int main(int argc, char *argv[]) {
   context.run();
   context.reset();
   auto matrix_client_server = matrix_client_server_future.get();
+  auto matrix_client_server_sync_result =
+      matrix_client_server->sync_till_stop();
   matrix_client_server->set_display_name("Fubble Bot");
   // temporary_room::server
   net::server::acceptor::config acceptor_config;
@@ -92,6 +94,7 @@ int main(int argc, char *argv[]) {
   BOOST_LOG_SEV(logger, logging::severity::trace) << "context.run()";
   context.run();
   BOOST_LOG_SEV(logger, logging::severity::trace) << "after context.run()";
+  matrix_client_server_sync_result.get();
   acceptor_done.get();
   return 0;
 }

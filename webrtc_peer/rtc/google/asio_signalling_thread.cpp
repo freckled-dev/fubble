@@ -19,6 +19,8 @@ asio_signalling_thread::~asio_signalling_thread() {}
 rtc::Thread &asio_signalling_thread::get_native() const { return *native; }
 
 void asio_signalling_thread::trigger_wait() {
+  if (stopped)
+    return;
   timer.expires_after(interval);
   timer.async_wait([this](auto error) { on_waited(error); });
 }
@@ -30,3 +32,5 @@ void asio_signalling_thread::on_waited(const boost::system::error_code &error) {
   trigger_wait();
   native->ProcessMessages(maximum_update_time_ms);
 }
+
+void asio_signalling_thread::stop() { stopped = true; }

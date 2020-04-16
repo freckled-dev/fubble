@@ -30,6 +30,7 @@ public:
   std::unique_ptr<http::client> create_http_client();
 
   boost::future<void> set_display_name(const std::string &name);
+  boost::future<void> set_presence(presence set);
   static constexpr std::chrono::milliseconds default_sync_timeout =
       std::chrono::seconds(60);
   boost::future<void>
@@ -52,10 +53,13 @@ protected:
   boost::inline_executor executor;
   factory &factory_;
   http::client_factory &http_factory;
+  // TODO move all sync_till_stop logic to own class or at least collect the
+  // fields in its own struct
   std::unique_ptr<boost::promise<void>> sync_till_stop_promise;
   std::unique_ptr<http::client> http_client;
   std::unique_ptr<http::action> http_sync_action;
   std::chrono::milliseconds sync_till_stop_timeout;
+  bool sync_till_stop_active{};
   const information information_;
   std::optional<std::string> sync_next_batch;
   std::unique_ptr<users> users_;

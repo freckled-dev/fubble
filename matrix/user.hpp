@@ -5,9 +5,24 @@
 
 namespace matrix {
 
+enum class presence { online, unavailable, offline };
+
+inline std::ostream &operator<<(std::ostream &out, const presence presence_) {
+  switch (presence_) {
+  case presence::online:
+    return out << "online";
+  case presence::offline:
+    return out << "offline";
+  case presence::unavailable:
+    return out << "unavailable";
+  }
+  BOOST_ASSERT(false);
+  return out;
+}
+
 class user {
   std::string id;
-  std::string presence;
+  presence presence_;
   std::string display_name;
 
 public:
@@ -15,13 +30,22 @@ public:
 
   inline const std::string &get_id() const { return id; }
 
-  inline void set_presence(const std::string &presence_) {
-    if (presence == presence_)
+  inline void set_presence_from_string(const std::string &presence_parameter) {
+    if (presence_parameter == "online")
+      return set_presence(presence::online);
+    if (presence_parameter == "offline")
+      return set_presence(presence::offline);
+    if (presence_parameter == "unavailable")
+      return set_presence(presence::unavailable);
+    BOOST_ASSERT(false);
+  }
+  inline void set_presence(const presence &presence_parameter) {
+    if (presence_ == presence_parameter)
       return;
-    presence = presence_;
+    presence_ = presence_parameter;
     on_update();
   }
-  inline const std::string &get_presence() const { return presence; }
+  inline const presence &get_presence() const { return presence_; }
 
   inline void set_display_name(const std::string &display_name_) {
     if (display_name == display_name_)

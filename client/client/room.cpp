@@ -38,6 +38,60 @@ std::string room::get_name() const { return room_->get_name(); }
 
 std::string room::get_own_id() const { return client_->get_id(); }
 
+namespace {
+struct leaver : std::enable_shared_from_this<leaver> {
+  client::logger logger{"room::leaver"};
+  using futures_type = std::vector<boost::future<void>>;
+  futures_type futures;
+  futures_type::iterator current;
+  boost::promise<void> promise;
+  boost::inline_executor executor;
+
+  boost::future<void> wait_for_done() {
+    if (futures.empty())
+      return boost::make_ready_future();
+    current = futures.begin();
+    do_next();
+    return promise.get_future();
+  }
+
+private:
+  void do_next() {
+    current->then(executor, [this, self = shared_from_this()](auto result) {
+      try {
+        result.get();
+      } catch (std::exception &error) {
+        BOOST_LOG_SEV(logger, logging::severity::error)
+            << "could not close participant";
+      }
+      current = ++current;
+      if (current == futures.end()) {
+        promise.set_value();
+        return;
+      }
+      do_next();
+    });
+  }
+};
+} // namespace
+
+boost::future<void> room::leave() {
+  BOOST_ASSERT(room_);
+  BOOST_ASSERT(client_);
+  client_->close(); // no more updates
+  auto leaver_ = std::make_shared<leaver>();
+  std::transform(participants_.begin(), participants_.end(),
+                 std::back_inserter(leaver_->futures),
+                 [](auto &participant_) { return participant_->close(); });
+  return leaver_->wait_for_done()
+      .then(executor,
+            [this](auto result) {
+              result.get();
+              return client_->leave_room(*room_);
+            })
+      .unwrap();
+}
+
 void room::on_session_participant_joins(
     const std::vector<session::participant *> &joins) {
   BOOST_LOG_SEV(logger, logging::severity::trace)

@@ -16,7 +16,7 @@ public:
        std::unique_ptr<rtc::connection> rtc_);
 
   void connect(const std::string &key);
-  void close();
+  boost::future<void> close();
   rtc::connection &rtc_connection();
   const rtc::connection &rtc_connection() const;
 

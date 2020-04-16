@@ -10,7 +10,7 @@ participant::participant(session::participant &session_participant)
 
 participant::~participant() = default;
 
-std::string participant::get_id() const { return session_participant.get_id(); }
+std::string participant::get_id() const { return id; }
 
 std::string participant::get_name() const {
   return session_participant.get_name();
