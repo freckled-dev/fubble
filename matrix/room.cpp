@@ -109,9 +109,9 @@ void room::remove_member(const std::string &user_id) {
       std::find_if(members.cbegin(), members.cend(),
                    [&](auto &check) { return check->get_id() == user_id; });
   if (found == members.cend()) {
-    BOOST_LOG_SEV(logger, logging::severity::error)
-        << "cant remove user because not found, user_id:" << user_id;
-    BOOST_ASSERT(false);
+    BOOST_LOG_SEV(logger, logging::severity::warning)
+        << "cant remove user because not found, user_id:" << user_id
+        << ", this may occur if user left before we joined";
     return;
   }
   members.erase(found);

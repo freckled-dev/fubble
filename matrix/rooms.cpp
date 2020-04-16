@@ -63,6 +63,12 @@ boost::future<room *> rooms::create_room(const create_room_fields &fields) {
   auto history_visibility = nlohmann::json::object();
   history_visibility["type"] = "m.room.history_visibility";
   auto history_visibility_content = nlohmann::json::object();
+  // a participant is still able to see all 'm.room.member' leaves.
+  // chapter 13.12.3
+  // https://matrix.org/docs/spec/client_server/latest#post-matrix-client-r0-createroom
+  // "For example, a user can always see m.room.member events which set their
+  // membership to join, or which change their membership from join to any other
+  // value, even if history_visibility is joined."
   history_visibility_content["history_visibility"] = "joined";
   history_visibility["content"] = history_visibility_content;
   initial_state.push_back(history_visibility);

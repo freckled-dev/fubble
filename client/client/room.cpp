@@ -3,13 +3,15 @@
 #include "participant_creator.hpp"
 #include "session/client.hpp"
 #include "session/room.hpp"
+#include <fmt/format.h>
 
 using namespace client;
 
 room::room(std::unique_ptr<participant_creator> participant_creator_parameter,
            std::unique_ptr<session::client> client_parameter,
            std::unique_ptr<session::room> room_parameter)
-    : participant_creator_(std::move(participant_creator_parameter)),
+    : logger{fmt::format("room:{}", room_parameter->get_id())},
+      participant_creator_(std::move(participant_creator_parameter)),
       client_(std::move(client_parameter)), room_(std::move(room_parameter)) {
   on_session_participant_joins(room_->get_participants());
   room_->on_joins.connect(
