@@ -58,7 +58,10 @@ void connection::read_next() {
       post_read_next();
     } catch (const boost::system::system_error &error) {
       running = false;
-      if (error.code() == boost::asio::error::operation_aborted) {
+      const auto error_code = error.code();
+      // error_code == boost::asio::error::operation_aborted
+      if (error_code == boost::beast::websocket::error::closed) {
+        // The WebSocket stream was gracefully closed at both endpoints
         run_promise.set_value();
         return;
       }
