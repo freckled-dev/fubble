@@ -9,6 +9,10 @@ own_participant::own_participant(session::participant &session_participant,
 
 own_participant::~own_participant() = default;
 
+boost::future<void> own_participant::close() {
+  return boost::make_ready_future();
+}
+
 own_participant::videos_type own_participant::get_videos() const {
   return own_media_.get_videos();
 }

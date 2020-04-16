@@ -38,6 +38,30 @@ std::string room::get_name() const { return room_->get_name(); }
 
 std::string room::get_own_id() const { return client_->get_id(); }
 
+boost::future<void> room::leave() {
+  BOOST_ASSERT(room_);
+  BOOST_ASSERT(client_);
+  client_->close(); // no more updates
+  std::vector<boost::future<void>> closing;
+  std::transform(participants_.begin(), participants_.end(),
+                 std::back_inserter(closing),
+                 [](auto &participant_) { return participant_->close(); });
+  return boost::when_all(closing.begin(), closing.end())
+      .then(executor,
+            [this](auto results) {
+              for (auto &result : results.get()) {
+                try {
+                  result.get();
+                } catch (std::exception &error) {
+                  BOOST_LOG_SEV(logger, logging::severity::error)
+                      << "could not close participant";
+                }
+              }
+              return client_->leave_room(*room_);
+            })
+      .unwrap();
+}
+
 void room::on_session_participant_joins(
     const std::vector<session::participant *> &joins) {
   BOOST_LOG_SEV(logger, logging::severity::trace)

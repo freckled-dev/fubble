@@ -32,6 +32,7 @@ struct Room : testing::Test {
   boost::asio::executor executor{context.get_executor()};
   boost::executor_adaptor<executor_asio> boost_executor{
       context}; // TODO remove!
+  boost::inline_executor inline_executor;
   rtc::google::asio_signalling_thread rtc_signalling_thread{context};
   std::string room_name = uuid::generate();
 };
@@ -136,7 +137,6 @@ TEST_F(Room, Join) {
   done.get();
 }
 
-#if 1
 namespace {
 struct join_and_wait {
   test_client &fixture;
@@ -243,30 +243,60 @@ struct two_participants {
         });
   }
 };
+struct two_participants_with_data_channel {
+  std::unique_ptr<two_participants> participants;
+  client::add_data_channel data_channel;
+  boost::promise<void> promise;
+  boost::inline_executor executor;
+
+  two_participants_with_data_channel(Room &fixture, std::string room_name) {
+    participants = std::make_unique<two_participants>(fixture, room_name);
+    participants->client_first.tracks_adder.add(data_channel);
+    auto channel_opened = [this]() { promise.set_value(); };
+    data_channel.on_added.connect(
+        [channel_opened](rtc::data_channel_ptr channel) {
+          channel->on_opened.connect(channel_opened);
+        });
+  }
+  boost::future<void> do_() {
+    participants->join().then(executor, [this](auto result) {
+      if (!result.has_exception())
+        return;
+      promise.set_exception(result.get_exception_ptr());
+    });
+    return promise.get_future();
+  }
+};
 } // namespace
 
 TEST_F(Room, DataChannel) {
-  std::unique_ptr<two_participants> participants =
-      std::make_unique<two_participants>(*this, room_name);
-  client::add_data_channel data_channel;
-  participants->client_first.tracks_adder.add(data_channel);
-  auto joined = participants->join();
-  bool called{};
-  auto close = [&] {
-    BOOST_LOG_SEV(logger, logging::severity::trace) << "test close";
-    called = true;
-    participants.reset();
-    context.stop();
+  two_participants_with_data_channel test{*this, room_name};
+  auto channel_opened = [&](boost::future<void> result) {
+    result.get();
+    boost::asio::post(context, [&] { context.stop(); });
   };
-  auto channel_opened = [&]() {
-    BOOST_LOG_SEV(logger, logging::severity::trace) << "test channel_opened";
-    boost::asio::post(context, close);
-  };
-  data_channel.on_added.connect([&](rtc::data_channel_ptr channel) {
-    channel->on_opened.connect(channel_opened);
+  auto done = test.do_().then(boost_executor, std::move(channel_opened));
+  context.run();
+  done.get();
+}
+
+TEST_F(Room, SaneShutdown) {
+  two_participants_with_data_channel test{*this, room_name};
+  auto &first_room = test.participants->first.room;
+  auto &second_room = test.participants->second.room;
+  auto done = test.do_().then(boost_executor, [&](auto result) {
+    result.get();
+    second_room->on_participants_left.connect([&](auto left) {
+      EXPECT_EQ(left.front(), first_room->get_own_id());
+      second_room->leave().then(inline_executor, [this](auto result) {
+        EXPECT_FALSE(result.has_exception());
+        context.stop();
+      });
+    });
+    first_room->leave().then(inline_executor, [](auto result) {
+      EXPECT_FALSE(result.has_exception());
+    });
   });
   context.run();
-  BOOST_LOG_SEV(logger, logging::severity::trace) << "end run";
-  joined.get();
+  done.get();
 }
-#endif

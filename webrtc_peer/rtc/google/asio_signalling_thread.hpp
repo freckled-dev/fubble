@@ -15,6 +15,7 @@ public:
   ~asio_signalling_thread();
 
   rtc::Thread &get_native() const;
+  void stop();
 
 protected:
   void trigger_wait();
@@ -28,6 +29,7 @@ protected:
   using timer_type = boost::asio::steady_timer;
   timer_type timer{asio};
   rtc::Thread *native;
+  bool stopped{};
 };
 } // namespace rtc::google
 

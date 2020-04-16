@@ -15,9 +15,9 @@ connection::~connection() {
   BOOST_LOG_SEV(logger, logging::severity::trace) << "client ~connection()";
 }
 
-void connection::close() {
+boost::future<void> connection::close() {
   BOOST_LOG_SEV(logger, logging::severity::info) << "closing connection";
-  connection_->close();
+  return connection_->close();
 }
 
 void connection::send_registration(const signalling::registration &send_) {

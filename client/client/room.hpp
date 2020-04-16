@@ -4,7 +4,8 @@
 #include "client/logger.hpp"
 #include "session/participant.hpp"
 #include <boost/signals2/signal.hpp>
-#include <boost/thread/executor.hpp>
+#include <boost/thread/executors/inline_executor.hpp>
+#include <boost/thread/future.hpp>
 
 namespace session {
 class client;
@@ -32,6 +33,7 @@ public:
 
   std::string get_name() const;
   std::string get_own_id() const;
+  boost::future<void> leave();
 
 protected:
   void on_session_participant_joins(
@@ -44,6 +46,7 @@ protected:
 
   client::logger logger{"room"};
   std::unique_ptr<participant_creator> participant_creator_;
+  boost::inline_executor executor;
   std::unique_ptr<session::client> client_;
   std::unique_ptr<session::room> room_;
   participants participants_;
