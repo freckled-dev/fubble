@@ -14,6 +14,17 @@ struct Rooms : fixture {
     sync_client(*client_);
     return std::make_pair(std::move(client_), room_);
   }
+
+  std::pair<std::unique_ptr<client>, room *>
+  create_and_invite_guest(room &room_) {
+    auto invitee = create_guest_client();
+    room_.invite_by_user_id(invitee->get_user_id());
+    run_context();
+    auto joined = invitee->get_rooms().join_room_by_id(room_.get_id());
+    sync_client(*invitee);
+    auto result_room = joined.get();
+    return std::make_pair(std::move(invitee), result_room);
+  }
 };
 
 TEST_F(Rooms, CreateRoom) {
@@ -149,11 +160,7 @@ TEST_F(Rooms,
 
 TEST_F(Rooms, Kick) {
   auto [inviter, room_] = register_and_create_room();
-  auto invitee = create_guest_client();
-  room_->invite_by_user_id(invitee->get_user_id());
-  run_context();
-  invitee->get_rooms().join_room_by_id(room_->get_id());
-  sync_client(*invitee);
+  auto [invitee, invitee_room] = create_and_invite_guest(*room_);
   bool called{};
   invitee->get_rooms().on_leave.connect([&](auto room_id) {
     EXPECT_EQ(room_id, room_->get_id());
@@ -166,4 +173,17 @@ TEST_F(Rooms, Kick) {
   sync_client(*invitee);
   EXPECT_TRUE(invitee->get_rooms().get_rooms().empty());
   EXPECT_TRUE(called);
+}
+
+TEST_F(Rooms, JoinJoinLeaveJoin) {
+  // join, leave, join leads to crash due to matrix leaves not being empty
+  // issue 53 https://gitlab.com/acof/fubble/-/issues/53
+  auto [first, first_room] = register_and_create_room();
+  auto room_id = first_room->get_id();
+  auto [second, second_room] = create_and_invite_guest(*first_room);
+  auto leave_future = second->get_rooms().leave_room_by_id(room_id);
+  run_context();
+  leave_future.get();
+  auto [third, third_room] = create_and_invite_guest(*first_room);
+  sync_client(*third);
 }
