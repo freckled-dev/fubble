@@ -13,9 +13,9 @@
         <owl-carousel [options]="newsCarousel" [items]="news"
           [carouselClasses]="['team-slider owl-carousel owl-theme']">
           <div class="item" *ngFor="let item of news">
-            <div class="team-box">
+            <div class="team-box" (click)="showDetails(item)">
               <div class="team-under-box">
-                <div class="team-under-box-button text-white" (click)="showDetails(item)">
+                <div class="team-under-box-button text-white">
                   <i class="fa fa-plus" aria-hidden="true"></i>
                 </div>
                 <h5>{{item.titleId | translate}}</h5>
@@ -42,17 +42,17 @@
               </div>
             </div>
             <div class="col-md-8">
-              <div class="d-flex-1">
+              <div>
                 <div class="hover-text">
-                  <div class="team-close-btn">
-                    <a><i class="fa fa-times" aria-hidden="true"></i></a>
-                  </div>
                   <div *ngIf="currentNews">
                     <h3>{{currentNews.titleId | translate}}</h3>
                     <h5>Author: {{currentNews.author}}</h5>
                     <p>{{currentNews.textId | translate}}</p>
                   </div>
                 </div>
+              </div>
+              <div class="team-close-btn">
+                <a><i class="fa fa-times" aria-hidden="true"></i></a>
               </div>
             </div>
           </div>

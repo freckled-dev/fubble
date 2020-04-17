@@ -1,8 +1,9 @@
 <!-- contact-section -->
-<section class="contact" id="contact">
+<section id="contact">
   <div class="container">
     <div class="row">
-      <div class="col-md-6">
+
+      <div class="col-md-6 bottom-buffer">
         <div class="section-title">
           <h2>{{'CONTACT.GET_IN_TOUCH' |translate }}</h2>
         </div>
@@ -27,7 +28,7 @@
             <label>{{'CONTACT.MESSAGE_HINT' |translate }}</label>
             <i class="fa fa-commenting-o"></i>
             <textarea class="form-control" name="message" [formControl]="contactForm.controls['message']" id="message"
-              cols="30" rows="10" placeholder="{{'CONTACT.MESSAGE' |translate }}"></textarea>
+              rows="6" placeholder="{{'CONTACT.MESSAGE' |translate }}"></textarea>
             <div *ngIf="contactForm.controls.message.touched && contactForm.controls.message.errors?.required"
               class="text text-danger">{{'CONTACT.MESSAGE_HINT' |translate }}</div>
           </div>
@@ -37,13 +38,39 @@
           </div>
         </form>
       </div>
-      <div class="col-md-6">
+
+      <div class="col-md-4 offset-md-2 bottom-buffer">
+        <div class="section-title">
+          <h2>
+            <!--  <svg class="v-align-middle" height="32" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true">
+              <path fill-rule="evenodd"
+                d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z">
+              </path>
+            </svg> -->
+            {{'CONTACT.GITHUB' |translate }}
+          </h2>
+        </div>
+
+        <p>{{'CONTACT.GITHUB_FORK' |translate }}</p>
+        <div class="row">
+          <div class="col-2">
+            <p><a href="www.google.at">{{'CONTACT.REPO_1_NAME' |translate }}</a> </p>
+          </div>
+          <iframe class="col-10"
+            src="https://ghbtns.com/github-btn.html?user=twbs&repo=bootstrap&type=star&count=true&size=large"
+            frameborder="0" scrolling="0" width="160px" height="30px"></iframe>
+        </div>
+      </div>
+    </div>
+
+    <div class="row contact">
+      <div class="col">
         <div class="section-title">
           <h2>{{'CONTACT.INFO' |translate }}</h2>
         </div>
-        <p>{{'CONTACT.DESCRIPTION' |translate }}</p>
-        <ul class="contact-box">
-          <li>
+        <div class="row">
+          <p class="bottom-buffer">{{'CONTACT.DESCRIPTION' |translate }}</p>
+          <div class="col-md-4 align-self-center">
             <div class="contact-circle">
               <i class="fa fa-map-marker" aria-hidden="true"></i>
             </div>
@@ -51,8 +78,8 @@
               <h3>{{'CONTACT.LOCATION_HEADER' | translate}}</h3>
               <p>{{'CONTACT.LOCATION_INFO' | translate}}</p>
             </div>
-          </li>
-          <li>
+          </div>
+          <div class="col-md-4 align-self-center">
             <div class="contact-circle">
               <i class="fa fa-phone" aria-hidden="true"></i>
             </div>
@@ -60,8 +87,8 @@
               <h3>{{'CONTACT.CALL_HEADER' | translate}}</h3>
               <p>{{'CONTACT.CALL_INFO' | translate}}</p>
             </div>
-          </li>
-          <li>
+          </div>
+          <div class="col-md-4 align-self-center">
             <div class="contact-circle">
               <i class="fa fa-envelope" aria-hidden="true"></i>
             </div>
@@ -69,8 +96,8 @@
               <h3>{{'CONTACT.MAIL_HEADER' | translate}}</h3>
               <p>{{'CONTACT.MAIL_INFO' | translate}}</p>
             </div>
-          </li>
-        </ul>
+          </div>
+        </div>
       </div>
     </div>
   </div>

@@ -1098,6 +1098,7 @@ a:hover .download-button {
 
 .team-box {
   position: relative;
+  cursor: pointer;
   padding: 4px;
   border: 1px solid $color_alto_approx;
   border-radius: 5px;
@@ -1108,9 +1109,9 @@ a:hover .download-button {
 }
 
 .line-clamp {
-  /* autoprefixer: off */
+  /* autoprefixer: ignore next */
   -webkit-box-orient: vertical;
-  /* autoprefixer: on */
+
   display: block;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -1575,15 +1576,37 @@ a:hover .download-button {
   }
 }
 
+.top-buffer {
+  margin-top: 50px;
+}
+
+.bottom-buffer {
+  margin-bottom: 50px;
+}
+
+.contact h2 {
+  text-align: center;
+}
+
+.contact h3 {
+  text-align: center;
+}
+
+.contact p {
+  text-align: center;
+  width: 100%;
+}
+
 .contact-circle {
   width: 50px;
   height: 50px;
+  margin: 0 auto;
+  text-align: center;
   border-radius: 50%;
   border: 2px solid $primary_color;
   background: transparent;
   font-size: 20px;
   color: $primary_color;
-  position: absolute;
   left: 0;
   text-align: center;
   line-height: 2.1;
@@ -1626,14 +1649,13 @@ a:hover .download-button {
 
   .form-control {
     display: inline-block;
-    width: 60% !important;
     color: $white;
     background-color: transparent;
     background-clip: padding-box;
     border: 1px solid rgba(255, 255, 255, 0.40);
     border-radius: 5px;
     padding: 10px 25px;
-    min-height: 45px;
+    min-height: 100px;
   }
 
   ::-webkit-input-placeholder {
@@ -2667,7 +2689,6 @@ li.nav-item.dropdown {
   }
 
   .form-control {
-    height: 45px;
     padding: 10px 52px;
     position: relative;
     transition: all 0.3s ease 0s;
@@ -2678,9 +2699,6 @@ li.nav-item.dropdown {
     }
   }
 
-  textarea {
-    height: 100px !important;
-  }
 }
 
 .auth-page {

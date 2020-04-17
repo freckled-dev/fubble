@@ -17,7 +17,7 @@
     "EASY": "Easy to use",
     "NO_REGISTRATION": "No Registration",
     "CONNECT_WITH_PEOPLE": "Connect with People all over the world!",
-    "FUBBLE_DESCRIPTION_1": "Fubble is a secure and completely free app for video conferencing. Stay in touch with your family and friends. Use Fubble to work from home and conference with your collegues. Using Fubble is easy and intuitive. First, you create a room with a unique name. Then, you share this roomname and others can use it to join you - it is that simple.",
+    "FUBBLE_DESCRIPTION_1": "Fubble is a secure, open source and completely free app for video conferencing. The main aim is to provide high quality, scalable video conferences. Stay in touch with your family and friends. Use Fubble to work from home and conference with your collegues. Using Fubble is easy and intuitive. First, you create a room with a unique name. Then, you share this roomname and others can use it to join you - it is that simple.",
     "FUBBLE_DESCRIPTION_2": "Fubble is open source, meaning that anyone can audit or customise it. You know what you get. It also means that you can move away from our servers and migrate to one you trust more.",
     "FUBBLE_DESCRIPTION_3": "The app is currently in an ALPHA stage. Try it out - it is free with no account needed.",
     "FUBBLE_DESCRIPTION_4": "We would love to get your feedback!"
@@ -66,7 +66,12 @@
     "HOW_CAN_WE_HELP": "How can we help you?",
     "MESSAGE_REQUIRED": "A message is required.",
     "SEND": "Send message",
-    "DESCRIPTION": "If you have any questions, suggestions, or if you would like further information, please don't hesitate to contact us:"
+    "DESCRIPTION": "If you have any questions, suggestions, or if you would like further information, please don't hesitate to contact us!",
+    "GITHUB": "GitHub",
+    "GITHUB_FORK": "Fork us on GitHub",
+    "REPO_1_NAME": "Web",
+    "REPO_2_NAME": "Server",
+    "REPO_3_NAME": "Android"
   },
   "DOWNLOAD": {
     "ENJOY": "Download and test Fubble for free"
@@ -83,6 +88,6 @@
     "WEBSITE": "New website is live",
     "WEBSITE_TEXT": "As you might have noticed - our new website is live ;-)\n\nIt will be updated regularly and inform you about the current news and the status of Fubble. It contains all download as well as feedback possibilities. Our contact information, privacy policy and terms of service are also available.\n\nCheck this site regulary and be first to know when new releases are available!",
     "NEXT_FEATURES": "Next features",
-    "NEXT_FEATURES_TEXT": "Coming up soon: chat function and browser version!\n\nAs we aim for a multiplatform availability, the browser version of Fubble is our next big release. You should be able to join a video conference even easier - by using a simple web link. No more downloads necessary.\n\nAnother focus at the moment is the chat feature."
+    "NEXT_FEATURES_TEXT": "Coming up soon: chat function and browser version!\n\nAs we aim for a multiplatform availability, the browser version of Fubble is our next big release. You should be able to join a video conference even easier - by using a simple web link. No more downloads necessary.\n\nAnother focus at the moment is the chat feature. Being able to send messages during the video chat will improve the usability."
   }
 }

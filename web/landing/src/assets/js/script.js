@@ -78,7 +78,7 @@ $(document).ready(function () {
   });
   $('.team-hover').hide();
 
-  $(".team-under-box-button").on('click', function (event) {
+  $(".team-box").on('click', function (event) {
     $('.team-box').hide(1000);
     $('.owl-dots').hide(1000);
     $('.team-hover').show(1000);

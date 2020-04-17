@@ -310,10 +310,6 @@
     margin-top: 82px;
   }
 
-  .contact-text h3 {
-    font-size: 16px;
-  }
-
   section {
     padding-top: 70px;
     padding-bottom: 70px;
@@ -455,14 +451,15 @@
   }
 
   .contact-text {
+
+    margin: 5px;
+
     h3 {
       font-size: 15px;
-      margin-top: 0;
     }
 
     p {
       font-size: 15px;
-      margin-bottom: 0;
     }
   }
 
@@ -472,6 +469,10 @@
 
   .contact .auth-form {
     padding-right: 50px;
+  }
+
+  .contact-circle {
+    margin-top: 10px;
   }
 }
 
@@ -921,7 +922,14 @@
   }
 
   .contact {
-    text-align: center;
+    text-align: left;
+
+    p,
+    h2 {
+      text-align: center;
+      padding-left: 10px;
+      padding-right: 10px;
+    }
   }
 
   .testimonil-box .owl-dots {
@@ -953,11 +961,6 @@
     li {
       padding: 0;
     }
-  }
-
-  .contact-circle {
-    position: relative;
-    margin: 0 auto 10px;
   }
 
   h4 {
@@ -1993,10 +1996,6 @@
   .email-box .form-control {
     font-size: 13px;
     width: 80% !important;
-  }
-
-  .contact-text h3 {
-    line-height: 23px;
   }
 
   .theme-form .form-control {
