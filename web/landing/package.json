@@ -36,6 +36,7 @@
     "express": "^4.15.2",
     "font-awesome": "^4.7.0",
     "jquery": "^3.4.1",
+    "ngx-owl-carousel": "^2.0.7",
     "ngx-page-scroll": "^6.0.2",
     "ngx-page-scroll-core": "^6.0.2",
     "rxjs": "^6.5.4",

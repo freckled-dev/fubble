@@ -105,6 +105,7 @@ h6 {
 p {
   line-height: 23px;
   font-size: 16px;
+  white-space: pre-wrap;
   color: $theme-gray;
   letter-spacing: 0.05rem;
 }
@@ -169,7 +170,10 @@ ul {
   .owl-dots {
     .owl-dot {
       span {
+        margin-top: 10px;
         margin-bottom: 0;
+        height: 20px !important;
+        width: 20px !important;
       }
     }
   }
@@ -223,6 +227,7 @@ button:focus {
 
 .btn-theme {
   background-color: $primary_color;
+  cursor: pointer;
   background: $bg_gradiant;
   color: $white !important;
   font-size: 14px;
@@ -237,6 +242,11 @@ button:focus {
   &:hover {
     background: $primary_color;
     background-color: $primary_color;
+  }
+
+  &:disabled {
+    background: lightgray;
+    cursor: auto;
   }
 }
 
@@ -572,8 +582,8 @@ a:hover .download-button {
 
 .bubble-registration {
   position: absolute;
-  top: 21%;
-  left: -35px;
+  top: 41%;
+  left: -25px;
 
   img {
     animation: movebounce 2.1s linear infinite;
@@ -611,7 +621,7 @@ a:hover .download-button {
 .bubble-free {
   position: absolute;
   top: 56%;
-  right: 5px;
+  right: 25px;
 
   img {
     animation: moveleftbounce 2.1s linear infinite;
@@ -1088,20 +1098,50 @@ a:hover .download-button {
 
 .team-box {
   position: relative;
+  cursor: pointer;
   padding: 4px;
   border: 1px solid $color_alto_approx;
   border-radius: 5px;
+}
+
+.module {
+  overflow: hidden;
+}
+
+.line-clamp {
+  /* autoprefixer: ignore next */
+  -webkit-box-orient: vertical;
+
+  display: block;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .team-under-box {
   border: 2px solid transparent;
   border-radius: 5px;
   transition: all 0.8s;
+  text-align: center;
+
+  h5 {
+    margin: 0;
+    padding: 10px;
+    color: $theme-gray;
+    font-weight: bold;
+  }
+
+  p {
+    margin: 20px 10px 20px 10px;
+  }
 
   img {
-    border: 1px solid $color_alto_approx;
     border-radius: 5px;
+    height: 150px !important;
+    width: 150px !important;
     transition: all 0.5s;
+    margin: 0 auto;
   }
 
   &:hover {
@@ -1117,7 +1157,7 @@ a:hover .download-button {
       transition: all 0.5s;
     }
 
-    .social-icon {
+    .news-item {
       display: block;
       transition: all 0.5s ease-in-out;
     }
@@ -1138,9 +1178,10 @@ a:hover .download-button {
   cursor: pointer;
 }
 
-.social-icon {
+.news-item {
   display: none;
   padding: 15px;
+  font-size: smaller;
   background: $bg_gradiant;
   text-align: center;
   transition: all 0.3s;
@@ -1149,6 +1190,12 @@ a:hover .download-button {
   bottom: 0;
   left: -1px;
   width: calc(100% + 2.5px);
+
+  p {
+    margin: 0;
+    padding: 0;
+    color: white;
+  }
 
   li {
     display: inline-block;
@@ -1529,15 +1576,37 @@ a:hover .download-button {
   }
 }
 
+.top-buffer {
+  margin-top: 50px;
+}
+
+.bottom-buffer {
+  margin-bottom: 50px;
+}
+
+.contact h2 {
+  text-align: center;
+}
+
+.contact h3 {
+  text-align: center;
+}
+
+.contact p {
+  text-align: center;
+  width: 100%;
+}
+
 .contact-circle {
   width: 50px;
   height: 50px;
+  margin: 0 auto;
+  text-align: center;
   border-radius: 50%;
   border: 2px solid $primary_color;
   background: transparent;
   font-size: 20px;
   color: $primary_color;
-  position: absolute;
   left: 0;
   text-align: center;
   line-height: 2.1;
@@ -1580,14 +1649,13 @@ a:hover .download-button {
 
   .form-control {
     display: inline-block;
-    width: 60% !important;
     color: $white;
     background-color: transparent;
     background-clip: padding-box;
     border: 1px solid rgba(255, 255, 255, 0.40);
     border-radius: 5px;
     padding: 10px 25px;
-    min-height: 45px;
+    min-height: 100px;
   }
 
   ::-webkit-input-placeholder {
@@ -2621,7 +2689,6 @@ li.nav-item.dropdown {
   }
 
   .form-control {
-    height: 45px;
     padding: 10px 52px;
     position: relative;
     transition: all 0.3s ease 0s;
@@ -2632,9 +2699,6 @@ li.nav-item.dropdown {
     }
   }
 
-  textarea {
-    height: 100px !important;
-  }
 }
 
 .auth-page {
@@ -2969,7 +3033,6 @@ li.nav-item.dropdown {
   }
 
   .home-right {
-    width: 400px;
     position: relative;
 
     .mobile-slid img {

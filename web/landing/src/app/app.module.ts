@@ -10,14 +10,15 @@ import { AppComponent } from './app.component';
 import { rootRouterConfig } from './app.routes';
 import { SharedModule } from "./shared/shared.module";
 import { IntroComponent } from './home/intro/intro.component';
-import { HomeComponent } from './home/home.component';
 import { AboutComponent } from './home/about/about.component';
 import { FeatureComponent } from './home/feature/feature.component';
 import { ScreenshotComponent } from './home/screenshot/screenshot.component';
 import { ContactUsComponent } from './home/contact-us/contact-us.component';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { OwlModule } from 'ngx-owl-carousel';
 import { DownloadComponent } from './home/download/download.component';
+import { NewsComponent } from './home/news/news.component';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -27,13 +28,13 @@ export function createTranslateLoader(http: HttpClient) {
   declarations: [
     AppComponent,
     IntroComponent,
-    HomeComponent,
     IntroComponent,
     AboutComponent,
     FeatureComponent,
     ScreenshotComponent,
     ContactUsComponent,
-    DownloadComponent
+    DownloadComponent,
+    NewsComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
@@ -52,7 +53,8 @@ export function createTranslateLoader(http: HttpClient) {
     CommonModule,
     SharedModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    OwlModule
   ],
   providers: [],
   bootstrap: [AppComponent]

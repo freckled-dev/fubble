@@ -78,8 +78,9 @@ $(document).ready(function () {
   });
   $('.team-hover').hide();
 
-  $(".team-under-box-button").on('click', function (event) {
+  $(".team-box").on('click', function (event) {
     $('.team-box').hide(1000);
+    $('.owl-dots').hide(1000);
     $('.team-hover').show(1000);
     $('.team-hover').fadeIn("slow");
   });
@@ -87,6 +88,7 @@ $(document).ready(function () {
     $(".team-hover").hide(1000);
     $('.team-box').show(1000);
     $('.team-box').fadeIn("slow");
+    $('.owl-dots').fadeIn(1000);
   });
 
 

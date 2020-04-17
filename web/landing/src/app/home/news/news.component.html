@@ -1,0 +1,65 @@
+<!-- news section-->
+<section class="team-bg" id="news">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 text-center">
+        <div class="section-title">
+          <h2>{{'NEWS.TITLE' | translate}}</h2>
+          <img src="assets/images/title-line.png" alt="title-line" class="img-fluid">
+        </div>
+      </div>
+      <div class="col-md-12">
+        <!-- If images array is dynamically changing pass this array to [items] input -->
+        <owl-carousel [options]="newsCarousel" [items]="news"
+          [carouselClasses]="['team-slider owl-carousel owl-theme']">
+          <div class="item" *ngFor="let item of news">
+            <div class="team-box" (click)="showDetails(item)">
+              <div class="team-under-box">
+                <div class="team-under-box-button text-white">
+                  <i class="fa fa-plus" aria-hidden="true"></i>
+                </div>
+                <h5>{{item.titleId | translate}}</h5>
+                <img [src]="item.image" alt="1" class="img-fluid">
+                <p class="line-clamp">{{item.textId | translate}}</p>
+                <div class="team-overlay">
+                  <div class="news-item">
+                    <p>{{item.date | date:'mediumDate'}}</p>
+                    <p>{{item.author}}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </owl-carousel>
+      </div>
+
+      <div class="col-md-12">
+        <div class="team-hover">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="team-profile" *ngIf="currentNews">
+                <img src="{{currentNews.image}}" alt="1" class="img-fluid">
+              </div>
+            </div>
+            <div class="col-md-8">
+              <div>
+                <div class="hover-text">
+                  <div *ngIf="currentNews">
+                    <h3>{{currentNews.titleId | translate}}</h3>
+                    <h5>Author: {{currentNews.author}}</h5>
+                    <p>{{currentNews.textId | translate}}</p>
+                  </div>
+                </div>
+              </div>
+              <div class="team-close-btn">
+                <a><i class="fa fa-times" aria-hidden="true"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+<!-- end news section-->
