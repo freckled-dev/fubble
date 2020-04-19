@@ -1,7 +1,11 @@
 # set up
 
 ```bash
-pip3 install --user conan meson
+pip3 install --user conan meson==0.53.0
+# set up conan
+conan profile update settings.compiler.libcxx=libstdc++11 default
+# webrtc
+conan remote add google_webrtc https://api.bintray.com/conan/freckled/google-webrtc
 # boost-di
 conan remote add inexorgame https://api.bintray.com/conan/inexorgame/inexor-conan
 # qt
