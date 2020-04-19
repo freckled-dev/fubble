@@ -19,11 +19,6 @@ mkdir -p $dependencies_dir
 cd $dependencies_dir
 $scripts_dir/get_dependencies_conan
 
-# generate google webrtc pkg-config file
-rdmd $scripts_dir/google-webrtc_pkg-config_generator/source/app.d \
-  -s "$google_webrtc_dir" -b "$google_webrtc_dir/out/Default" \
-  > "$dependencies_dir/google-webrtc.pc"
-
 cd $build_dir
 # multiple paths with `:`
 export PKG_CONFIG_PATH="${dependencies_dir}"

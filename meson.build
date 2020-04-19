@@ -1,13 +1,15 @@
 project('fubble', 'cpp',
-  meson_version : '>=0.53.0',
+  meson_version : '=0.53.0',
   default_options : ['cpp_std=c++17'])
 # there is a bug in meson 0.52.0. cant use boost with meson
 # https://github.com/mesonbuild/meson/issues/6003
+# TODO currently in >=0.54 boost doesn't work either
 
 disabled = disabler()
 boost_dep_pkg = dependency('boost', modules : [
-  'thread', 'program_options', 'regex', 'log', 'log_setup', 'filesystem'
-  ])
+    'thread', 'program_options', 'regex', 'log', 'log_setup', 'filesystem'
+    ]
+)
 boost_dep = declare_dependency(
     compile_args : ['-DBOOST_THREAD_VERSION=5'
       # , '-DBOOST_LOG_DYN_LINK'
@@ -16,7 +18,7 @@ boost_dep = declare_dependency(
     )
 gtest_dep = dependency('gtest', include_type : 'system')
 fmt_dep = dependency('fmt')
-json_dep = dependency('jsonformoderncpp')
+json_dep = dependency('nlohmann_json')
 boost_di_dep = dependency('boost-di')
 gstreamer_webrtc_dep_pkg = dependency('gstreamer-webrtc-1.0', required : false)
 gstreamer_sdp_dep = dependency('gstreamer-sdp-1.0', required : false)
@@ -37,7 +39,11 @@ gstreamer_webrtc_dep = declare_dependency(
     gstreamer_webrtc_found
     ]
   )
-google_webrtc_dep = dependency('google-webrtc')
+x11_dep = dependency('x11')
+google_webrtc_dep_fixme = dependency('google-webrtc', include_type : 'system')
+google_webrtc_dep = declare_dependency(
+  dependencies: [google_webrtc_dep_fixme, x11_dep]
+  )
 
 subdir('utils')
 subdir('http')
