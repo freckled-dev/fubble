@@ -3,9 +3,10 @@ boost-di/1.1.0@inexorgame/stable
 boost/1.72.0
 gtest/1.10.0
 fmt/6.0.0
-jsonformoderncpp/3.7.0
+nlohmann_json/3.7.0
 # does not work on fedora 31
 # qt/5.14.0@bincrafters/stable
+google-webrtc/m79
 
 [generators]
 pkg_config
