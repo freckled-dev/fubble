@@ -7,7 +7,6 @@
 namespace client::ui {
 class executor_qt {
 public:
-  executor_qt() = default;
   executor_qt(QObject &post_to);
   void submit(std::function<void()> &&call);
   void close();

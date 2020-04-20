@@ -27,7 +27,6 @@
 #include "signalling/client/client_creator.hpp"
 #include "signalling/client/connection_creator.hpp"
 #include "signalling/json_message.hpp"
-#include "ui/executor_qt.hpp"
 #include "ui/frame_provider_google_video_frame.hpp"
 #include "websocket/connection_creator.hpp"
 #include "websocket/connector.hpp"
@@ -49,7 +48,6 @@ int main(int argc, char *argv[]) {
   boost::asio::io_context context;
   boost::asio::executor executor{context.get_executor()};
   boost::executor_adaptor<executor_asio> boost_executor{context};
-  boost::executor_adaptor<client::ui::executor_qt> qt_executor;
   rtc::google::asio_signalling_thread asio_signalling_thread{context};
 
   websocket::connection_creator websocket_connection_creator{context};
@@ -166,6 +164,7 @@ int main(int argc, char *argv[]) {
   BOOST_LOG_SEV(logger, logging::severity::debug) << "loaded qml";
 
   client::poll_asio_by_qt asio_poller{context};
+  asio_poller.run();
 
   auto result = app.exec();
   BOOST_LOG_SEV(logger, logging::severity::debug) << "gui stopped";
