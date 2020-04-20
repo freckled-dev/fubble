@@ -8,7 +8,11 @@ scripts_dir="$(pwd)"
 source_dir="$(realpath ..)"
 project_root_dir="$(git rev-parse --show-toplevel)"
 build_dir="$project_root_dir/../fubble_build"
-prefix_dir="$build_dir/install"
+if [ -z ${FUBBLE_PREFIX_DIR} ]; then
+  prefix_dir="$build_dir/install"
+else
+  prefix_dir="$FUBBLE_PREFIX_DIR"
+fi
 dependencies_dir="$build_dir/dependencies"
 google_webrtc_dir="$project_root_dir/../google_webrtc/webrtc-checkout/src"
 

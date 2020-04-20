@@ -12,5 +12,9 @@ build debug:
     - apt-get install -y fish sudo > /dev/null
     - ./scripts/install_system_dependencies > /dev/null
   script:
-    - ./scripts/make_build
+    - FUBBLE_PREFIX_DIR=$(pwd)/install ./scripts/make_build
+    - ninja -C ../fubble_build/meson install
+  artifacts:
+    untracked: true
+    expire_in: 1 week
 
