@@ -4,9 +4,9 @@ include:
 
 build debug:
   image: ubuntu:18.04
+  stage: build
   before_script:
-    - apt-get update && apt-get install -y \
-        fish sudo
+    - apt-get update && apt-get install -y fish sudo
   script:
     - ./scripts/install_system_dependencies
 
