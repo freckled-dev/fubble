@@ -6,7 +6,7 @@ cd (dirname $script)
 if grep -i ubuntu /etc/os-release
   # from webrtc `install-build-deps.sh`
   # only the run packages
-  sudo apt-get -y install \
+  sudo apt-get -qq -y install \
     libappindicator3-1 \
     libasound2 \
     libatk1.0-0 \
@@ -48,7 +48,7 @@ if grep -i ubuntu /etc/os-release
     libxrender1 \
     libxtst6 \
     zlib1g
-  and sudo apt-get -y install \
+  and sudo apt-get -qq -y install \
     python3-pip python3-setuptools python3-wheel \
     ninja-build g++ libx11-dev \
     qt5-default qttools5-dev-tools qtquickcontrols2-5-dev qtmultimedia5-dev qtdeclarative5-dev libqt5svg5-dev \
