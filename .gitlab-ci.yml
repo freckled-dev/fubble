@@ -19,3 +19,17 @@ build debug:
     untracked: true
     expire_in: 1 week
 
+test debug:
+  services:
+    - docker:dind
+  image: ubuntu:18.04
+  before_script:
+    - apt-get update > /dev/null
+    - apt-get install -y fish sudo docker-compose > /dev/null
+    - ./scripts/install_system_dependencies > /dev/null
+  variables:
+    FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install
+  script:
+    - deploy/development/deploy_build_install
+
+
