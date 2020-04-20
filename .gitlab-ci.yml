@@ -2,3 +2,11 @@
 include:
   - local: '/web/landing/.gitlab-ci.yml'
 
+build debug:
+  image: ubuntu:18.04
+  before_script:
+    - apt-get update && apt-get install -y \
+        fish sudo
+  script:
+    - ./scripts/install_system_dependencies
+
