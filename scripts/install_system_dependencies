@@ -50,8 +50,15 @@ if grep -i ubuntu /etc/os-release
     zlib1g
   and sudo apt-get -y install \
     python3-pip python3-setuptools python3-wheel \
-    ninja-build g++ libx11-dev qt5-default
-  and pip3 install --user conan meson==0.53.0
+    ninja-build g++ libx11-dev \
+    qt5-default qttools5-dev-tools qtquickcontrols2-5-dev qtmultimedia5-dev qtdeclarative5-dev libqt5svg5-dev \
+    pkg-config git
+  and sudo -H pip3 install conan meson==0.53.0
+  conan profile new default --detect
+  conan profile update settings.compiler.libcxx=libstdc++11 default
+  conan remote add google_webrtc https://api.bintray.com/conan/freckled/google-webrtc
+  conan remote add inexorgame https://api.bintray.com/conan/inexorgame/inexor-conan
+  conan remote add bincrafters "https://api.bintray.com/conan/bincrafters/public-conan"
 else
   echo "could not determine the operating system"
   cat /etc/os-release

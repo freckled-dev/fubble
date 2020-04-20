@@ -1,6 +1,7 @@
 #!/bin/bash
 
-set -ex
+set -e
+set -x
 cd "$(dirname "$0")"
 
 scripts_dir="$(pwd)"
@@ -23,6 +24,19 @@ cd $build_dir
 # multiple paths with `:`
 export PKG_CONFIG_PATH="${dependencies_dir}"
 export BOOST_ROOT=$(pkg-config --variable=prefix boost)
+echo "set BOOST_ROOT to: $BOOST_ROOT"
+if [ -z ${FUBBLE_TREAT_WARNING_AS_ERROR+x} ];
+then
+  werror='true'
+else
+  if [[ ${FUBBLE_TREAT_WARNING_AS_ERROR} -eq "0" ]];
+  then
+    werror='false'
+  else
+    werror='true'
+  fi
+fi
+
 # export CC="ccache clang"
 # export CXX="ccache clang++"
 meson "$source_dir" meson \
@@ -30,7 +44,7 @@ meson "$source_dir" meson \
   -Db_sanitize=address \
   -Db_lundef=false \
   -Dwarning_level=3 \
-  -Dwerror=true
+  -Dwerror=$werror
 
 #   --fatal-meson-warnings \
 #  -Db_coverage=true \
