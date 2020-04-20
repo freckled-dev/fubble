@@ -14,7 +14,8 @@ webrtc_google_peer = library('webrtc_google_peer',
     'video_track_source.cpp', 'video_track_sink.cpp', 'video_source.cpp',
     'asio_signalling_thread.cpp'
     ],
-  dependencies: [webrtc_peer_dep, utils_dep, fmt_dep, google_webrtc_dep]
+  dependencies: [webrtc_peer_dep, utils_dep, fmt_dep, google_webrtc_dep],
+  install: true
   )
 webrtc_google_peer_dep = declare_dependency(
   link_with: [webrtc_google_peer],

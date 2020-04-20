@@ -2,7 +2,8 @@ session = library('session',
   ['client.cpp', 'room_joiner.cpp', 'room.cpp', 'client_connector.cpp',
     'client_factory.cpp'],
   dependencies: [matrix_dep, fmt_dep, temporary_room_dep],
-  include_directories: ['..']
+  include_directories: ['..'],
+  install: true
   )
 session_dep = declare_dependency(
   include_directories: '..',

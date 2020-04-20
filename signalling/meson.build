@@ -35,7 +35,8 @@ signalling_client = library('signalling_client',
     'signalling/client/connection_creator.cpp',
     'signalling/client/client_creator.cpp'],
   dependencies: [fmt_dep, websocket_dep, signalling_dep],
-  link_with: []
+  link_with: [],
+  install: true
   )
 signalling_client_dep = declare_dependency(
   include_directories: '.',

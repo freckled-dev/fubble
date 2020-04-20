@@ -8,7 +8,8 @@ webrtc_gstreamer_peer = library('webrtc_gstreamer_peer',
   ['connection.cpp', 'video_track.cpp',
     'gst_element_deleter.cpp'
     ],
-  dependencies: [webrtc_peer_dep, gstreamer_webrtc_dep, fmt_dep]
+  dependencies: [webrtc_peer_dep, gstreamer_webrtc_dep, fmt_dep],
+  install: true
   )
 webrtc_gstreamer_peer_dep = declare_dependency(
   include_directories: '.',
