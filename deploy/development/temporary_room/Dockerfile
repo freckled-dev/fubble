@@ -1,6 +1,6 @@
 FROM opensuse/tumbleweed:latest
 
-RUN zypper install -y gcc-c++ bash
+RUN zypper install -y gcc-c++ bash libasan4
 RUN mkdir /fubble
 WORKDIR /fubble
 COPY wait-for-it.sh install ./

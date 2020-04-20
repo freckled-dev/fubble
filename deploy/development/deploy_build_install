@@ -3,8 +3,6 @@
 cd "$(dirname "$0")"
 source ../../scripts/environment
 rsync -r --delete "$prefix_dir" . || exit 1
-export FUBBLE_UID=$(id -u)
-export FUBBLE_GID=$(id -u)
 docker-compose down
 docker-compose up --build --abort-on-container-exit || exit 2
 

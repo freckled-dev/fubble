@@ -1,6 +1,6 @@
 FROM opensuse/tumbleweed:latest
 
-RUN zypper install -y gcc-c++
+RUN zypper install -y gcc-c++ libasan4
 RUN mkdir /fubble
 WORKDIR /fubble
 COPY install ./
