@@ -3,15 +3,11 @@ include:
   - local: '/web/landing/.gitlab-ci.yml'
 
 build debug:
-  image: ubuntu:18.04
+  image: registry.gitlab.com/acof/fubble/ci/build_ubuntu_1804:v0
   stage: build
   variables:
     FUBBLE_TREAT_WARNING_AS_ERROR: 0
     FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install
-  before_script:
-    - apt-get update > /dev/null
-    - apt-get install -y fish sudo > /dev/null
-    - ./scripts/install_system_dependencies > /dev/null
   script:
     - ./scripts/make_build
     - ninja -C ../fubble_build/meson install
@@ -23,10 +19,6 @@ test debug:
   services:
     - docker:dind
   image: registry.gitlab.com/acof/fubble/ci/build_ubuntu_1804:v0
-  before_script:
-    - apt-get update > /dev/null
-    - apt-get install -y fish sudo docker-compose > /dev/null
-    - ./scripts/install_system_dependencies > /dev/null
   variables:
     FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install
   script:
