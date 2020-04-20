@@ -19,6 +19,8 @@ test debug:
   services:
     - docker:dind
   image: registry.gitlab.com/acof/fubble/ci/build_ubuntu_1804:v0
+  dependencies:
+    - build debug
   variables:
     FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install
     LD_LIBRARY_PATH: ${CI_PROJECT_DIR}/install/lib/x86_64-linux-gnu
