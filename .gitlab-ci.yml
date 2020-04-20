@@ -22,7 +22,7 @@ build debug:
 test debug:
   services:
     - docker:dind
-  image: ubuntu:18.04
+  image: registry.gitlab.com/acof/fubble/ci/build_ubuntu_1804:v0
   before_script:
     - apt-get update > /dev/null
     - apt-get install -y fish sudo docker-compose > /dev/null
