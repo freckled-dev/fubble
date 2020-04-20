@@ -47,11 +47,11 @@ if grep -i ubuntu /etc/os-release
     libxrandr2 \
     libxrender1 \
     libxtst6 \
-    zlib1g || exit 1
-  sudo apt-get -y install \
+    zlib1g
+  and sudo apt-get -y install \
     python3-pip python3-setuptools python3-wheel \
-    ninja-build g++ libx11-dev || exit 1
-  pip3 install --user conan meson==0.53.0 || exit 1
+    ninja-build g++ libx11-dev qt5-default || exit 1
+  and pip3 install --user conan meson==0.53.0 || exit 1
 else
   echo "could not determine the operating system"
   cat /etc/os-release
