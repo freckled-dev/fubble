@@ -7,7 +7,7 @@ build debug:
   stage: build
   variables:
     FUBBLE_TREAT_WARNING_AS_ERROR: 0
-    FUBBLE_PREFIX_DIR: ${PWD}/install
+    FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install
   before_script:
     - echo $FUBBLE_PREFIX_DIR
     - exit 1
