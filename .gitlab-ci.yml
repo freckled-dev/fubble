@@ -5,6 +5,8 @@ include:
 build debug:
   image: ubuntu:18.04
   stage: build
+  variables:
+    FUBBLE_TREAT_WARNING_AS_ERROR: 0
   before_script:
     - apt-get update && apt-get install -y fish sudo
   script:
