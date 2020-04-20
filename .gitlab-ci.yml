@@ -23,8 +23,9 @@ test debug:
     FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install
     LD_LIBRARY_PATH: ${CI_PROJECT_DIR}/install/lib/x86_64-linux-gnu
   script:
+    - apt-get update; apt-get install pulseaudio
+    - pulseaudio -D
     - deploy/development/deploy_build_install_background
-    - find install
     - ./install/bin/*
     - deploy/development/deploy_down
 
