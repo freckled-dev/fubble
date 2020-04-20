@@ -2,9 +2,9 @@
 #define UUID_5D0F470B_C872_46EB_8804_1972618A74E6
 
 #include "client/logger.hpp"
-#include "ui/executor_qt.hpp"
 #include <QObject>
 #include <QSettings>
+#include <boost/thread/executors/inline_executor.hpp>
 #include <boost/thread/future.hpp>
 
 namespace client {
@@ -44,7 +44,7 @@ protected:
   model_creator &model_factory;
   joiner &joiner_;
   own_media &own_media_;
-  ui::executor_qt qt_executor;
+  boost::inline_executor qt_executor;
   QSettings settings;
   QString name;
   QString room;
