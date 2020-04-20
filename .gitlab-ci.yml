@@ -24,6 +24,7 @@ test debug:
     LD_LIBRARY_PATH: ${CI_PROJECT_DIR}/install/lib/x86_64-linux-gnu
   script:
     - deploy/development/deploy_build_install_background
+    - find install
     - ./install/bin/*
     - deploy/development/deploy_down
 
