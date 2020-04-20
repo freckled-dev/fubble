@@ -17,4 +17,4 @@ install:
 
 .PHONY: test
 test:
-	cd ../fubble_build/meson; meson test
+	cd ../fubble_build/meson; meson test 
