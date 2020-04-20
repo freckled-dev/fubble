@@ -4,5 +4,5 @@ cd "$(dirname "$0")"
 source ../../scripts/environment
 rsync -r --delete "$prefix_dir" . || exit 1
 docker-compose down
-docker-compose up --build --abort-on-container-exit || exit 2
+docker-compose up --build "$@" || exit 2
 

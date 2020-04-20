@@ -21,7 +21,10 @@ test debug:
   image: registry.gitlab.com/acof/fubble/ci/build_ubuntu_1804:v0
   variables:
     FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install
+    LD_LIBRARY_PATH: ${CI_PROJECT_DIR}/install/lib/x86_64-linux-gnu
   script:
-    - deploy/development/deploy_build_install
+    - deploy/development/deploy_build_install_background
+    - ./install/bin/*
+    - deploy/development/deploy_down
 
 

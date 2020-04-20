@@ -14,7 +14,8 @@ matrix_test = executable('matrix_test',
   [ 'evaluation.cpp', 'authentification_test.cpp', 'client_test.cpp',
     'rooms_test.cpp', 'users_test.cpp' ],
   dependencies : [gtest_dep, matrix_dep, fmt_dep],
-  link_with: [test_main]
+  link_with: [test_main],
+  install: true
   )
 test('matrix test',
   matrix_test,
