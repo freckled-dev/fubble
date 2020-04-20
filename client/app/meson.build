@@ -6,10 +6,10 @@ client_cli = executable('client',
 moc_files = qt5.preprocess(
   qresources: 'qml.qrc',
   moc_headers: ['join_model.hpp',  'room_model.hpp',
-    'participants_model.hpp', 'participant_model.hpp']
+    'participants_model.hpp', 'participant_model.hpp', 'poll_asio_by_qt.hpp']
   )
 client_gui = executable('client_gui',
-  ['gui.cpp', 'join_model.cpp',  'participants_model.cpp',
+  ['gui.cpp', 'join_model.cpp', 'poll_asio_by_qt.cpp', 'participants_model.cpp',
     'participant_model.cpp', 'room_model.cpp', 'model_creator.cpp'] + moc_files,
   dependencies: [client_dep, ui_dep],
   install: true)
