@@ -9,4 +9,5 @@ build debug:
     - apt-get update && apt-get install -y fish sudo
   script:
     - ./scripts/install_system_dependencies
+    - ./scripts/make_build
 
