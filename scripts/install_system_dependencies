@@ -1,6 +1,7 @@
 #!/usr/bin/env fish
 
-cd "$(dirname "$0")"
+set script (status -f)
+cd (dirname $script)
 
 if grep -i ubuntu /etc/os-release
   # from webrtc `install-build-deps.sh`
