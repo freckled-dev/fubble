@@ -9,7 +9,7 @@ build debug:
     FUBBLE_TREAT_WARNING_AS_ERROR: 0
   before_script:
     - apt-get update && apt-get install -y fish sudo
-  script:
     - ./scripts/install_system_dependencies
+  script:
     - ./scripts/make_build
 
