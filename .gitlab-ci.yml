@@ -8,8 +8,9 @@ build debug:
   variables:
     FUBBLE_TREAT_WARNING_AS_ERROR: 0
   before_script:
-    - apt-get update && apt-get install -y fish sudo
-    - ./scripts/install_system_dependencies
+    - apt-get update > /dev/null
+    - apt-get install -y fish sudo > /dev/null
+    - ./scripts/install_system_dependencies > /dev/null
   script:
     - ./scripts/make_build
 

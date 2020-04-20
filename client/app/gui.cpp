@@ -13,6 +13,7 @@
 #include "logging/initialser.hpp"
 #include "logging/logger.hpp"
 #include "model_creator.hpp"
+#include "poll_asio_by_qt.hpp"
 #include "room_model.hpp"
 #include "rtc/google/asio_signalling_thread.hpp"
 #include "rtc/google/capture/audio/device.hpp"
@@ -33,7 +34,6 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
-#include <QTimer>
 #include <boost/asio/executor_work_guard.hpp>
 #include <boost/asio/io_context.hpp>
 #include <fmt/format.h>
@@ -165,9 +165,7 @@ int main(int argc, char *argv[]) {
   engine.load(url);
   BOOST_LOG_SEV(logger, logging::severity::debug) << "loaded qml";
 
-  QTimer asio_poller;
-  asio_poller.callOnTimeout([&] { context.poll(); });
-  asio_poller.start(std::chrono::milliseconds(50));
+  client::poll_asio_by_qt asio_poller{context};
 
   auto result = app.exec();
   BOOST_LOG_SEV(logger, logging::severity::debug) << "gui stopped";
