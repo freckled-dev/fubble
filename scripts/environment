@@ -1,0 +1,15 @@
+
+script_dir="$(dirname "$0")"
+source_dir="$(git rev-parse --show-toplevel)"
+if [ -z ${FUBBLE_BUILD_DIR} ]; then
+  build_dir="$source_dir/../fubble_build"
+else
+  build_dir="$FUBBLE_BUILD_DIR"
+fi
+if [ -z ${FUBBLE_PREFIX_DIR} ]; then
+  prefix_dir="$build_dir/install"
+else
+  prefix_dir="$FUBBLE_PREFIX_DIR"
+fi
+dependencies_dir="$build_dir/dependencies"
+
