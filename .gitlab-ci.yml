@@ -7,12 +7,15 @@ build debug:
   stage: build
   variables:
     FUBBLE_TREAT_WARNING_AS_ERROR: 0
+    FUBBLE_PREFIX_DIR: $(pwd)/install
   before_script:
+    - echo $FUBBLE_PREFIX_DIR
+    - exit 1
     - apt-get update > /dev/null
     - apt-get install -y fish sudo > /dev/null
     - ./scripts/install_system_dependencies > /dev/null
   script:
-    - FUBBLE_PREFIX_DIR=$(pwd)/install ./scripts/make_build
+    - ./scripts/make_build
     - ninja -C ../fubble_build/meson install
   artifacts:
     untracked: true
