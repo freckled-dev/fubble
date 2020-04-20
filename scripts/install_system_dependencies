@@ -52,7 +52,8 @@ if grep -i ubuntu /etc/os-release
     python3-pip python3-setuptools python3-wheel \
     ninja-build g++ libx11-dev ccache \
     qt5-default qttools5-dev-tools qtquickcontrols2-5-dev qtmultimedia5-dev qtdeclarative5-dev libqt5svg5-dev \
-    pkg-config git
+    pkg-config git \
+    docker-compose rsync rclone
   and sudo -H pip3 install conan meson==0.53.0
   conan profile new default --detect
   conan profile update settings.compiler.libcxx=libstdc++11 default
