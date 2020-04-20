@@ -13,7 +13,8 @@ session_dep = declare_dependency(
 session_client_test = executable('session_client_test',
   ['client_test.cpp'],
   dependencies : [gtest_dep, session_dep, fmt_dep],
-  link_with: [test_main]
+  link_with: [test_main],
+  install: true
   )
 test('session client test', session_client_test,
   env: [
@@ -24,7 +25,8 @@ test('session client test', session_client_test,
 session_room_test = executable('session_room_test',
   ['room_test.cpp'],
   dependencies : [gtest_dep, session_dep, fmt_dep],
-  link_with: [test_main]
+  link_with: [test_main],
+  install: true
   )
 test('session room test', session_room_test,
   env: [

@@ -22,7 +22,8 @@ client_dep = declare_dependency(
 client_room_test = executable('client_room_test',
   ['room_test.cpp'],
   dependencies: [client_dep, gtest_dep],
-  link_with: [test_main]
+  link_with: [test_main],
+  install: true
   )
 suppr_file = meson.source_root() / 'webrtc_peer/lsan_suppressions_google'
 suppr_option = 'LSAN_OPTIONS=suppressions=' + suppr_file

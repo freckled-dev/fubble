@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -e
+cd "$(dirname "$0")"
+./deploy_build_install -d
+
+
