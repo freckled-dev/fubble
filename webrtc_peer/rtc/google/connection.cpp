@@ -27,7 +27,7 @@ operator<<(std::ostream &out,
   case webrtc::PeerConnectionInterface::kClosed:
     return render("kClosed");
   }
-  BOOST_ASSERT(false && "must not reach");
+  BOOST_ASSERT_MSG(false, "must not reach");
   return out << "<undefined>";
 }
 std::ostream &
@@ -186,9 +186,11 @@ void connection::add_ice_candidate(const ice_candidate &candidate) {
 
 void connection::add_track(rtc::track_ptr track_) {
   auto track_casted = std::dynamic_pointer_cast<track>(track_);
-  assert(track_casted);
+  BOOST_ASSERT(track_casted);
   auto native_track = track_casted->native_track();
-  native->AddTrack(native_track, {});
+  BOOST_ASSERT(native_track);
+  [[maybe_unused]] auto result = native->AddTrack(native_track, {});
+  BOOST_ASSERT(result.ok());
   tracks.push_back(track_);
 }
 
