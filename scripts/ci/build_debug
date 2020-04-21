@@ -4,8 +4,8 @@
 cd "$(dirname "$0")"
 source ../environment
 
-time ../make_build
-ninja -C "$build_dir/meson" install
+time ../make_build || exit 1
+ninja -C "$build_dir/meson" install || exit 2
 time ../../deploy/development/deploy_build_install_background
 
 apt-get update; apt-get install -y pulseaudio curl
@@ -17,6 +17,6 @@ sleep 10
 # https://github.com/mesonbuild/meson/blob/master/mesonbuild/mesonlib.py#L718
 export LD_LIBRARY_PATH="${prefix_dir}/lib/x86_64-linux-gnu:${prefix_dir}/lib64"
 export FUBBLE_API_HOST="docker"
-(cd "$build_dir/meson"; meson test)
+(cd "$build_dir/meson"; meson test) || exit 3
 ../../deploy/development/deploy_down
 
