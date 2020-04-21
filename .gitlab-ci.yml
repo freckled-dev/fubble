@@ -13,13 +13,13 @@ build debug:
     LD_LIBRARY_PATH: ${CI_PROJECT_DIR}/install/lib/x86_64-linux-gnu
   script:
     - ./scripts/make_build
+    - ninja -C ../fubble_build/meson install
     - apt-get update; apt-get install -y pulseaudio
     - pulseaudio -D
     - deploy/development/deploy_build_install_background
     - sleep 10
     - (cd ../fubble_build/meson; meson test)
     - deploy/development/deploy_down
-    - ninja -C ../fubble_build/meson install
   after_script:
     - mv -v ../fubble_build/meson/meson-logs/testlog.txt .
   artifacts:
