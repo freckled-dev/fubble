@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+# set -e
 cd "$(dirname "$0")"
 source ../environment
 
@@ -12,7 +12,13 @@ apt-get update; apt-get install -y pulseaudio
 pulseaudio -D
 ../../deploy/development/wait-for-it.sh "127.0.0.1:80" -- \
     echo "backend port is up"
+../../deploy/development/wait-for-it.sh "docker:80" -- \
+    echo "backend docker port is up"
 sleep 10
+curl 127.0.0.1
+curl localhost
+curl '[::1]'
+curl 'docker'
 
 # https://github.com/mesonbuild/meson/blob/master/mesonbuild/mesonlib.py#L718
 export LD_LIBRARY_PATH="${prefix_dir}/lib/x86_64-linux-gnu:${prefix_dir}/lib64"
