@@ -17,4 +17,4 @@ install:
 
 .PHONY: test
 test:
-	cd ../fubble_build/meson; meson test --test-args=--gtest_shuffle
+	cd ../fubble_build/meson; meson test --test-args='--gtest_shuffle'
