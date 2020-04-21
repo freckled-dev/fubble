@@ -17,6 +17,6 @@ sleep 10
 # https://github.com/mesonbuild/meson/blob/master/mesonbuild/mesonlib.py#L718
 export LD_LIBRARY_PATH="${prefix_dir}/lib/x86_64-linux-gnu:${prefix_dir}/lib64"
 export FUBBLE_API_HOST="docker"
-(cd "$build_dir/meson"; meson test) || exit 3
+(cd "$build_dir/meson"; meson test --test-args=--gtest_shuffle) || exit 3
 ../../deploy/development/deploy_down
 
