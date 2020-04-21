@@ -6,11 +6,13 @@ source ../environment
 
 ../make_build
 ninja -C "$build_dir/meson" install
-../../deploy/development/deploy_build_install_foreground &
+../../deploy/development/deploy_build_install_background
 
 apt-get update; apt-get install -y pulseaudio
 pulseaudio -D
-sleep 60
+../../deploy/development/wait-for-it.sh "localhost:80" --timeout 120 -- \
+    echo "backend port is up"
+sleep 10
 
 # https://github.com/mesonbuild/meson/blob/master/mesonbuild/mesonlib.py#L718
 export LD_LIBRARY_PATH="${prefix_dir}/lib/x86_64-linux-gnu:${prefix_dir}/lib64"
