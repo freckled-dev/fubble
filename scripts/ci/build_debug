@@ -4,7 +4,7 @@ set -e
 cd "$(dirname "$0")"
 source ../environment
 
-./scripts/make_build
+../make_build
 ninja -C "$build_dir/meson" install
 ../../deploy/development/deploy_build_install_foreground &
 

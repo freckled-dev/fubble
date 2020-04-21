@@ -10,7 +10,6 @@ build debug:
   variables:
     FUBBLE_TREAT_WARNING_AS_ERROR: 0
     FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install
-    LD_LIBRARY_PATH: ${CI_PROJECT_DIR}/install/lib/x86_64-linux-gnu
   script:
     - ./scripts/ci/build_debug
   after_script:
