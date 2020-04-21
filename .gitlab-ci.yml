@@ -5,30 +5,22 @@ include:
 build debug:
   image: registry.gitlab.com/acof/fubble/ci/build_ubuntu_1804:v0
   stage: build
+  services:
+    - docker:dind
   variables:
     FUBBLE_TREAT_WARNING_AS_ERROR: 0
     FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install
+    LD_LIBRARY_PATH: ${CI_PROJECT_DIR}/install/lib/x86_64-linux-gnu
   script:
     - ./scripts/make_build
     - ninja -C ../fubble_build/meson install
-  artifacts:
-    untracked: true
-    expire_in: 1 week
-
-test debug:
-  services:
-    - docker:dind
-  image: registry.gitlab.com/acof/fubble/ci/build_ubuntu_1804:v0
-  dependencies:
-    - build debug
-  variables:
-    FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install
-    LD_LIBRARY_PATH: ${CI_PROJECT_DIR}/install/lib/x86_64-linux-gnu
-  script:
     - apt-get update; apt-get install -y pulseaudio
     - pulseaudio -D
     - deploy/development/deploy_build_install_background
-    - ./install/bin/*
+    - (cd ../fubble_build/meson; meson test)
     - deploy/development/deploy_down
+  artifacts:
+    untracked: true
+    expire_in: 1 week
 
 
