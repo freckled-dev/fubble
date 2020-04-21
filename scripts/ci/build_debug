@@ -8,7 +8,7 @@ source ../environment
 ninja -C "$build_dir/meson" install
 ../../deploy/development/deploy_build_install_background
 
-apt-get update; apt-get install -y pulseaudio
+apt-get update; apt-get install -y pulseaudio curl
 pulseaudio -D
 ../../deploy/development/wait-for-it.sh "127.0.0.1:80" -- \
     echo "backend port is up"
