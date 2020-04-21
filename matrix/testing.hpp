@@ -6,7 +6,7 @@
 
 namespace matrix::testing {
 namespace {
-static const std::string server = "127.0.0.1";
+static const std::string server = "docker";
 static const std::string port = "80";
 static const std::string host = server + ":" + port;
 // mainly needed for `/client/versions`
