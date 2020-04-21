@@ -10,14 +10,9 @@ ninja -C "$build_dir/meson" install
 
 apt-get update; apt-get install -y pulseaudio curl
 pulseaudio -D
-../../deploy/development/wait-for-it.sh "127.0.0.1:80" -- \
-    echo "backend port is up"
 ../../deploy/development/wait-for-it.sh "docker:80" -- \
     echo "backend docker port is up"
 sleep 10
-curl 127.0.0.1
-curl localhost
-curl '[::1]'
 curl 'docker'
 
 # https://github.com/mesonbuild/meson/blob/master/mesonbuild/mesonlib.py#L718
