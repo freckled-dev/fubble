@@ -45,5 +45,5 @@ meson "$source_dir" meson \
 #  -Ddefault_library=static \
 
 ln -frs meson/compile_commands.json ..
-time ninja -C meson
+ninja -C meson
 
