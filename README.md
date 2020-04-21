@@ -5,7 +5,7 @@
 sudo apt-get update
 sudo apt-get install fish
 ./scripts/install_system_dependencies
-./scripts/make_build
+FUBBLE_TREAT_WARNING_AS_ERROR=0 ./scripts/make_build
 
 # fedora
 sudo dnf install -y \
@@ -19,6 +19,30 @@ sudo dnf install -y \
 sudo zypper install libX11-devel cmake gcc-c++ git libqt5-qttools \
   libqt5-qtsvg-devel
 ```
+
+## build
+
+```
+make
+```
+
+## set up servers for local testing
+
+```bash
+make install
+./deploy/development/deploy_build_install_foreground
+```
+
+## run tests
+
+```bash
+# unit and integration tests
+make test
+# gui
+../fubble_build/meson/client/app/client_gui
+```
+
+## markus notes - ignore
 
 if using fish add the python3 bin path to PATH
 ```
