@@ -3,10 +3,11 @@
 
 #include "http/fields.hpp"
 #include "http/server.hpp"
+#include "utils/testing.hpp"
 
 namespace matrix::testing {
 namespace {
-static const std::string server = "docker";
+static const std::string server = utils::testing::server;
 static const std::string port = "80";
 static const std::string host = server + ":" + port;
 // mainly needed for `/client/versions`
