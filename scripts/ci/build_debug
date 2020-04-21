@@ -10,7 +10,7 @@ ninja -C "$build_dir/meson" install
 
 apt-get update; apt-get install -y pulseaudio
 pulseaudio -D
-sleep 10
+sleep 60
 
 # https://github.com/mesonbuild/meson/blob/master/mesonbuild/mesonlib.py#L718
 export LD_LIBRARY_PATH="${prefix_dir}/lib/x86_64-linux-gnu:${prefix_dir}/lib64"
