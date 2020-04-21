@@ -67,6 +67,7 @@ source venv/bin/activate.fish
 seems to not work with fedora. Tested on ubuntu 18.04 and 19.04
 
 ```fish
+apt install -y git wget curl
 git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
 set PATH $PATH /home/mlanner/Development/projects/fubble/google_webrtc/depot_tools/
 # dont skip `--nohooks`
