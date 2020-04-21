@@ -8,7 +8,6 @@ time ../make_build || exit 1
 ninja -C "$build_dir/meson" install || exit 2
 time ../../deploy/development/deploy_build_install_background
 
-apt-get update; apt-get install -y pulseaudio curl
 pulseaudio -D
 ../../deploy/development/wait-for-it.sh "docker:80" -- \
     echo "backend docker port is up"
