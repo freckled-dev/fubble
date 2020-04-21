@@ -1,15 +1,11 @@
 # set up
 
 ```bash
-pip3 install --user conan meson==0.53.0
-# set up conan
-conan profile update settings.compiler.libcxx=libstdc++11 default
-# webrtc
-conan remote add google_webrtc https://api.bintray.com/conan/freckled/google-webrtc
-# boost-di
-conan remote add inexorgame https://api.bintray.com/conan/inexorgame/inexor-conan
-# qt
-conan remote add bincrafters "https://api.bintray.com/conan/bincrafters/public-conan"
+# ubuntu 18.04
+sudo apt-get update
+sudo apt-get install fish
+./scripts/install_system_dependencies
+./scripts/make_build
 
 # fedora
 sudo dnf install -y \
