@@ -50,12 +50,12 @@ if grep -i ubuntu /etc/os-release
     zlib1g
   and sudo apt-get -qq -y install \
     python3-pip python3-setuptools python3-wheel \
-    ninja-build g++ libx11-dev ccache \
+    ninja-build g++ libx11-dev libssl-dev ccache \
     qt5-default qttools5-dev-tools qtquickcontrols2-5-dev qtmultimedia5-dev \
     qtdeclarative5-dev libqt5svg5-dev qml-module-qtmultimedia \
     pkg-config git \
     rsync rclone curl \
-    pulseaudio
+    pulseaudio docker.io
   and sudo -H pip3 install conan meson==0.53.0 docker-compose
   conan profile new default --detect
   conan profile update settings.compiler.libcxx=libstdc++11 default
