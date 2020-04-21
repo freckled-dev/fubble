@@ -1,0 +1,19 @@
+#!/bin/bash
+
+set -e
+cd "$(dirname "$0")"
+source ../environment
+
+./scripts/make_build
+ninja -C "$build_dir/meson" install
+../../deploy/development/deploy_build_install_foreground &
+
+apt-get update; apt-get install -y pulseaudio
+pulseaudio -D
+sleep 10
+
+# https://github.com/mesonbuild/meson/blob/master/mesonbuild/mesonlib.py#L718
+export LD_LIBRARY_PATH="${prefix_dir}/lib/x86_64-linux-gnu:${prefix_dir}/lib64"
+(cd "$build_dir/meson"; meson test)
+../../deploy/development/deploy_down
+
