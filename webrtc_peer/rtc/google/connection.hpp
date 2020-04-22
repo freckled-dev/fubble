@@ -7,7 +7,8 @@
 #include <api/candidate.h>
 #include <api/peer_connection_interface.h>
 
-namespace rtc::google {
+namespace rtc {
+namespace google {
 // TODO class uses make_shared for tracks instead of extrusive factory
 class connection : public rtc::connection,
                    public ::webrtc::PeerConnectionObserver {
@@ -75,6 +76,7 @@ protected:
   std::vector<data_channel_ptr> data_channels;
   std::vector<track_ptr> tracks;
 };
-} // namespace rtc::google
+} // namespace google
+} // namespace rtc
 
 #endif

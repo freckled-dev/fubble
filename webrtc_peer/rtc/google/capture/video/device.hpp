@@ -7,7 +7,10 @@
 #include <boost/signals2/signal.hpp>
 #include <modules/video_capture/video_capture.h>
 
-namespace rtc::google::capture::video {
+namespace rtc {
+namespace google {
+namespace capture {
+namespace video {
 // TODO move `VideoSinkInterface` into `video_source`
 class device : public rtc::VideoSinkInterface<webrtc::VideoFrame>,
                public video_source {
@@ -27,6 +30,9 @@ protected:
   };
   const rtc::scoped_refptr<webrtc::VideoCaptureModule> device_;
 };
-} // namespace rtc::google::capture::video
+} // namespace video
+} // namespace capture
+} // namespace google
+} // namespace rtc
 
 #endif

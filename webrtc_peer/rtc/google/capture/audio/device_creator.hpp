@@ -3,9 +3,11 @@
 
 #include <memory>
 
-namespace rtc::google {
+namespace rtc {
+namespace google {
 class factory;
-namespace capture::audio {
+namespace capture {
+namespace audio {
 class device;
 class device_creator {
 public:
@@ -16,7 +18,9 @@ public:
 protected:
   factory &factory_;
 };
-} // namespace capture::audio
-} // namespace rtc::google
+} // namespace audio
+} // namespace capture
+} // namespace google
+} // namespace rtc
 
 #endif

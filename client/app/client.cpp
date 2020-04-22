@@ -55,7 +55,7 @@ struct data_channel_handler {
 struct message_writer {
   boost::asio::posix::stream_descriptor input;
   data_channel_handler &data_channel;
-  std::vector<std::byte> line;
+  std::vector<std::uint8_t> line;
 
   message_writer(boost::asio::executor &executor,
                  data_channel_handler &data_channel)

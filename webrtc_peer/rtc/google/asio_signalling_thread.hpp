@@ -6,7 +6,8 @@
 #include <rtc_base/thread.h>
 #include <thread>
 
-namespace rtc::google {
+namespace rtc {
+namespace google {
 // TODO refactor so it derives from `rtc::Thread` and must not get called in an
 // interval
 class asio_signalling_thread {
@@ -31,6 +32,7 @@ protected:
   rtc::Thread *native;
   bool stopped{};
 };
-} // namespace rtc::google
+} // namespace google
+} // namespace rtc
 
 #endif

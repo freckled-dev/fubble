@@ -1,6 +1,7 @@
 evaluation = executable('webrtc_google_peer_evaluation',
   ['evaluation.cpp'],
   dependencies: [utils_dep, google_webrtc_dep, signalling_client_dep],
+  override_options: ['cpp_std=c++14'],
   install: true
   )
 
@@ -14,6 +15,7 @@ webrtc_google_peer = library('webrtc_google_peer',
     'video_track_source.cpp', 'video_track_sink.cpp', 'video_source.cpp',
     'asio_signalling_thread.cpp'
     ],
+  override_options: ['cpp_std=c++14'],
   dependencies: [webrtc_peer_dep, utils_dep, fmt_dep, google_webrtc_dep],
   install: true
   )

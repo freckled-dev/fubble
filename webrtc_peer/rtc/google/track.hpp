@@ -4,13 +4,15 @@
 #include "rtc/track.hpp"
 #include <api/media_stream_interface.h>
 
-namespace rtc::google {
+namespace rtc {
+namespace google {
 class track : public rtc::track {
 public:
   // TODO remove scoped_refptr?
   virtual rtc::scoped_refptr<webrtc::MediaStreamTrackInterface>
   native_track() const = 0;
 };
-} // namespace rtc::google
+} // namespace google
+} // namespace rtc
 
 #endif
