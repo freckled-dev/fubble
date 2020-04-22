@@ -5,7 +5,8 @@
 #include "video_track.hpp"
 #include <media/base/adapted_video_track_source.h>
 
-namespace rtc::google {
+namespace rtc {
+namespace google {
 class video_track_source : public video_track {
 public:
   class adapter : public rtc::AdaptedVideoTrackSource {
@@ -32,6 +33,7 @@ protected:
   const std::shared_ptr<video_source> source;
   boost::signals2::scoped_connection on_frame_connection;
 };
-} // namespace rtc::google
+} // namespace google
+} // namespace rtc
 
 #endif

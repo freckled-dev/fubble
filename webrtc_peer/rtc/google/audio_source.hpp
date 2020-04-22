@@ -8,7 +8,8 @@
 #include <boost/signals2/signal.hpp>
 #endif
 
-namespace rtc::google {
+namespace rtc {
+namespace google {
 class audio_source
 #if 0
   : public webrtc::AudioTrackSinkInterface
@@ -34,6 +35,7 @@ protected:
   };
   webrtc::AudioSourceInterface &native_audio_track;
 };
-} // namespace rtc::google
+} // namespace google
+} // namespace rtc
 
 #endif

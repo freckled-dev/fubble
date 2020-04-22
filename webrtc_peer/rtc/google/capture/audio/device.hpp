@@ -3,7 +3,10 @@
 
 #include "rtc/google/audio_source.hpp"
 
-namespace rtc::google::capture::audio {
+namespace rtc {
+namespace google {
+namespace capture {
+namespace audio {
 class device : public audio_source {
 public:
   using native_ptr = rtc::scoped_refptr<webrtc::AudioSourceInterface>;
@@ -12,7 +15,9 @@ public:
 protected:
   native_ptr native;
 };
-
-} // namespace rtc::google::capture::audio
+} // namespace audio
+} // namespace capture
+} // namespace google
+} // namespace rtc
 
 #endif

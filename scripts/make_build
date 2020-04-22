@@ -1,15 +1,10 @@
 #!/bin/bash
 
-set -ex
+set -e
+# set -x
 cd "$(dirname "$0")"
-
+source environment
 scripts_dir="$(pwd)"
-source_dir="$(realpath ..)"
-project_root_dir="$(git rev-parse --show-toplevel)"
-build_dir="$project_root_dir/../fubble_build"
-prefix_dir="$build_dir/install"
-dependencies_dir="$build_dir/dependencies"
-google_webrtc_dir="$project_root_dir/../google_webrtc/webrtc-checkout/src"
 
 rm -rf $build_dir
 mkdir -p $build_dir
@@ -23,6 +18,19 @@ cd $build_dir
 # multiple paths with `:`
 export PKG_CONFIG_PATH="${dependencies_dir}"
 export BOOST_ROOT=$(pkg-config --variable=prefix boost)
+echo "set BOOST_ROOT to: $BOOST_ROOT"
+if [ -z ${FUBBLE_TREAT_WARNING_AS_ERROR+x} ];
+then
+  werror='true'
+else
+  if [[ ${FUBBLE_TREAT_WARNING_AS_ERROR} -eq "0" ]];
+  then
+    werror='false'
+  else
+    werror='true'
+  fi
+fi
+
 # export CC="ccache clang"
 # export CXX="ccache clang++"
 meson "$source_dir" meson \
@@ -30,7 +38,7 @@ meson "$source_dir" meson \
   -Db_sanitize=address \
   -Db_lundef=false \
   -Dwarning_level=3 \
-  -Dwerror=true
+  -Dwerror=$werror
 
 #   --fatal-meson-warnings \
 #  -Db_coverage=true \

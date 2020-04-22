@@ -12,7 +12,7 @@ public:
   boost::signals2::signal<void()> on_opened;
   boost::signals2::signal<void(const message &)> on_message;
   void send(const std::string &message);
-  void send(const std::vector<std::byte> &message);
+  void send(const std::vector<uint8_t> &message);
   virtual void send(const message &message_) = 0;
 };
 } // namespace rtc

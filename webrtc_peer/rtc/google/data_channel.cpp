@@ -52,10 +52,10 @@ void data_channel::OnMessage(const webrtc::DataBuffer &buffer) {
       "OnMessage, size:'{}', binary:{}", buffer.size(), buffer.binary);
   message result;
   result.binary = buffer.binary;
-  const std::byte *data_ptr =
-      reinterpret_cast<const std::byte *>(buffer.data.cdata());
+  const std::uint8_t *data_ptr =
+      reinterpret_cast<const std::uint8_t *>(buffer.data.cdata());
   const auto data_size = static_cast<std::size_t>(buffer.size());
-  result.data = std::vector<std::byte>(data_ptr, data_ptr + data_size);
+  result.data = std::vector<std::uint8_t>(data_ptr, data_ptr + data_size);
   on_message(result);
 }
 

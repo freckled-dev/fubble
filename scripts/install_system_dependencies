@@ -1,0 +1,69 @@
+#!/usr/bin/env fish
+
+set script (status -f)
+cd (dirname $script)
+
+if grep -i ubuntu /etc/os-release
+  # from webrtc `install-build-deps.sh`
+  # only the run packages
+  sudo apt-get -qq -y install \
+    libappindicator3-1 \
+    libasound2 \
+    libatk1.0-0 \
+    ibatspi2.0-0 \
+    libc6 \
+    libcairo2 \
+    libcap2 \
+    libcups2 \
+    libexpat1 \
+    libffi6 \
+    libfontconfig1 \
+    libfreetype6 \
+    libglib2.0-0 \
+    libgnome-keyring0 \
+    libgtk-3-0 \
+    libpam0g \
+    libpango1.0-0 \
+    libpci3 \
+    libpcre3 \
+    libpixman-1-0 \
+    libspeechd2 \
+    libstdc++6 \
+    libsqlite3-0 \
+    libuuid1 \
+    libwayland-egl1-mesa \
+    libx11-6 \
+    libx11-xcb1 \
+    libxau6 \
+    libxcb1 \
+    libxcomposite1 \
+    libxcursor1 \
+    libxdamage1 \
+    libxdmcp6 \
+    libxext6 \
+    libxfixes3 \
+    libxi6 \
+    libxinerama1 \
+    libxrandr2 \
+    libxrender1 \
+    libxtst6 \
+    zlib1g
+  and sudo apt-get -qq -y install \
+    python3-pip python3-setuptools python3-wheel \
+    ninja-build g++ libx11-dev libssl-dev ccache \
+    qt5-default qttools5-dev-tools qtquickcontrols2-5-dev qtmultimedia5-dev \
+    qtdeclarative5-dev libqt5svg5-dev qml-module-qtmultimedia \
+    pkg-config git \
+    rsync rclone curl \
+    pulseaudio docker.io
+  and sudo -H pip3 install conan meson==0.53.0 docker-compose
+  conan profile new default --detect
+  conan profile update settings.compiler.libcxx=libstdc++11 default
+  conan remote add google_webrtc https://api.bintray.com/conan/freckled/google-webrtc
+  conan remote add inexorgame https://api.bintray.com/conan/inexorgame/inexor-conan
+  conan remote add bincrafters "https://api.bintray.com/conan/bincrafters/public-conan"
+else
+  echo "could not determine the operating system"
+  cat /etc/os-release
+end
+

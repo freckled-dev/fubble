@@ -4,7 +4,10 @@
 #include "information.hpp"
 #include "rtc/logger.hpp"
 
-namespace rtc::google::capture::video {
+namespace rtc {
+namespace google {
+namespace capture {
+namespace video {
 
 class enumerator {
 public:
@@ -18,6 +21,9 @@ private:
   };
 };
 
-} // namespace rtc::google::capture::video
+} // namespace video
+} // namespace capture
+} // namespace google
+} // namespace rtc
 
 #endif

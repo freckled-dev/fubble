@@ -1,0 +1,20 @@
+#!/bin/bash
+
+cd "$(dirname "$0")"
+source ../environment
+
+time ../make_build || exit 1
+ninja -C "$build_dir/meson" install || exit 2
+time ../../deploy/development/deploy_build_install_background || exit 3
+
+pulseaudio -D
+../../deploy/development/wait-for-it.sh "docker:80" -- \
+    echo "backend docker port is up"
+sleep 10
+
+# https://github.com/mesonbuild/meson/blob/master/mesonbuild/mesonlib.py#L718
+export LD_LIBRARY_PATH="${prefix_dir}/lib/x86_64-linux-gnu:${prefix_dir}/lib64"
+export FUBBLE_API_HOST="docker"
+(cd "$build_dir/meson"; meson test --test-args='--gtest_shuffle') || exit 4
+../../deploy/development/deploy_down
+

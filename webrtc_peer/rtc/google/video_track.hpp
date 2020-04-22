@@ -4,7 +4,8 @@
 #include "track.hpp"
 #include <media/base/adapted_video_track_source.h>
 
-namespace rtc::google {
+namespace rtc {
+namespace google {
 class video_track : public track {
 public:
   video_track(const rtc::scoped_refptr<webrtc::VideoTrackInterface> &track);
@@ -16,6 +17,7 @@ protected:
 
   const rtc::scoped_refptr<webrtc::VideoTrackInterface> track;
 };
-} // namespace rtc::google
+} // namespace google
+} // namespace rtc
 
 #endif

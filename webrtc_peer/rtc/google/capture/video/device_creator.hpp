@@ -4,7 +4,10 @@
 #include "information.hpp"
 #include <memory>
 
-namespace rtc::google::capture::video {
+namespace rtc {
+namespace google {
+namespace capture {
+namespace video {
 class device;
 class device_creator {
 public:
@@ -12,6 +15,9 @@ public:
 
   std::unique_ptr<device> operator()(const std::string &id);
 };
-} // namespace rtc::google::capture::video
+} // namespace video
+} // namespace capture
+} // namespace google
+} // namespace rtc
 
 #endif
