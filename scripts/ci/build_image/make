@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -e
+
+cd "$(dirname "$0")"
+source ../../../scripts/environment
+docker build \
+  -t registry.gitlab.com/acof/fubble/ci/build_ubuntu_1804:v0 \
+  -f Dockerfile \
+  ${source_dir}
+

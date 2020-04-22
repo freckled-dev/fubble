@@ -1,9 +1,9 @@
 #!/bin/bash
 
 cd "$(dirname "$0")"
-rsync -r --delete ../../../fubble_build/install . || exit 1
-export FUBBLE_UID=$(id -u)
-export FUBBLE_GID=$(id -u)
+source ../../scripts/environment
+rsync -r --delete "$prefix_dir" . || exit 1
 docker-compose down
-docker-compose up --build --abort-on-container-exit || exit 2
+docker-compose build --parallel || exit 2
+docker-compose up "$@" || exit 3
 

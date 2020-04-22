@@ -1,21 +1,24 @@
-import QtQuick 2.12
-import QtQuick.Controls 2.12
+import QtQuick 2.0
+import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.12
 
 ToolBar {
     property string title
 
+    /*
     Action {
         id: optionsMenuAction
         // icon.name: "icon should be part of theme!"
-        icon.source: "cog.svg"
         onTriggered: optionsMenu.open()
     }
+    */
     RowLayout {
         spacing: 20
         anchors.fill: parent
 
-        ToolButton {// action: navigateBackAction
+        ToolButton {
+            // text: qsTr("‹ back")
+            // action: navigateBackAction
         }
 
         Label {
@@ -29,15 +32,16 @@ ToolBar {
         }
 
         ToolButton {
-            action: optionsMenuAction
+            onClicked: optionsMenu.open()
+            text: qsTr("⋮")
+            // this nice cog.svg works with qt5.10 onwards :(
+            // icon.source: "cog.svg"
 
-            // text: qsTr("‹")
             Menu {
                 id: optionsMenu
                 x: parent.width - width
                 transformOrigin: Menu.TopRight
-
-                Action {
+                MenuItem {
                     text: "About"
                     onTriggered: aboutDialog.open()
                 }

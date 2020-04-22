@@ -5,7 +5,8 @@
 #include "rtc/logger.hpp"
 #include <api/data_channel_interface.h>
 
-namespace rtc::google {
+namespace rtc {
+namespace google {
 class data_channel : protected ::webrtc::DataChannelObserver,
                      public ::rtc::data_channel {
 public:
@@ -26,6 +27,7 @@ private:
   };
   ::rtc::scoped_refptr<webrtc::DataChannelInterface> native;
 };
-} // namespace rtc::google
+} // namespace google
+} // namespace rtc
 
 #endif

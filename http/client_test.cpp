@@ -1,11 +1,12 @@
 #include "client_factory.hpp"
+#include "utils/testing.hpp"
 #include <boost/thread/executors/inline_executor.hpp>
 #include <gtest/gtest.h>
 
 TEST(HttpClient, Instance) {
   using namespace http;
   boost::asio::io_context context;
-  server server_{"localhost", "http"};
+  server server_{utils::testing::server, "http"};
   fields fields{server_};
   client_factory factory{context, server_, fields};
   EXPECT_TRUE(factory.create());
@@ -15,7 +16,7 @@ TEST(HttpClient, Get) {
   using namespace http;
   boost::asio::io_context context;
   boost::inline_executor executor;
-  server server_{"localhost", "80"};
+  server server_{utils::testing::server, "80"};
   fields fields{server_};
   fields.target_prefix = "/api/matrix/v0/_matrix/client/";
   client_factory factory{context, server_, fields};

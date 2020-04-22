@@ -17,14 +17,16 @@ signalling_test = executable('signalling_test',
   ['signalling/json_message_test.cpp',
     'signalling/registration_handler_test.cpp'],
   dependencies : [gtest_dep, signalling_dep],
-  link_with: [websocket, test_main]
+  link_with: [websocket, test_main],
+  install: true
   )
 test('signalling test', signalling_test)
 
 dependencies_test = executable('dependencies_test',
   ['dependency_thread_test.cpp'],
   dependencies: [boost_dep, gtest_dep],
-  link_with: [utils, test_main]
+  link_with: [utils, test_main],
+  install: true
   )
 test('dependencies test', dependencies_test)
 
@@ -33,7 +35,8 @@ signalling_client = library('signalling_client',
     'signalling/client/connection_creator.cpp',
     'signalling/client/client_creator.cpp'],
   dependencies: [fmt_dep, websocket_dep, signalling_dep],
-  link_with: []
+  link_with: [],
+  install: true
   )
 signalling_client_dep = declare_dependency(
   include_directories: '.',
@@ -56,7 +59,8 @@ server_dep = declare_dependency(
 server_test = executable('signalling_server_test',
   ['signalling/server/server_test.cpp'],
   dependencies: [boost_dep, gtest_dep, fmt_dep, boost_di_dep, server_dep],
-  link_with: [signalling_client, test_main]
+  link_with: [signalling_client, test_main],
+  install: true
   )
 test('signalling server test', server_test, timeout: 8)
 
