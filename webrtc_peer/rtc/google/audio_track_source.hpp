@@ -3,7 +3,8 @@
 
 #include "audio_track.hpp"
 
-namespace rtc::google {
+namespace rtc {
+namespace google {
 class audio_track_source : public audio_track {
 public:
   audio_track_source(rtc::scoped_refptr<webrtc::AudioTrackInterface>);
@@ -14,6 +15,7 @@ public:
 protected:
   rtc::scoped_refptr<webrtc::AudioTrackInterface> native_track_;
 };
-} // namespace rtc::google
+} // namespace google
+} // namespace rtc
 
 #endif

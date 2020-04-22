@@ -4,12 +4,18 @@
 #include <string>
 #include <vector>
 
-namespace rtc::google::capture::video {
+namespace rtc {
+namespace google {
+namespace capture {
+namespace video {
 struct information {
   std::string name;
   std::string id;
   // std::vector<>
 };
-} // namespace rtc::google::capture::video
+} // namespace video
+} // namespace capture
+} // namespace google
+} // namespace rtc
 
 #endif

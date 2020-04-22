@@ -3,10 +3,12 @@
 
 #include "track.hpp"
 
-namespace rtc::google {
+namespace rtc {
+namespace google {
 class audio_track : public track {
 public:
 };
-} // namespace rtc::google
+} // namespace google
+} // namespace rtc
 
 #endif

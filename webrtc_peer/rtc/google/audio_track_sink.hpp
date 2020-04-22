@@ -5,7 +5,8 @@
 #include "audio_track.hpp"
 #include <api/media_stream_interface.h>
 
-namespace rtc::google {
+namespace rtc {
+namespace google {
 class audio_track_sink : public audio_track, public audio_source {
 public:
   audio_track_sink(
@@ -17,6 +18,7 @@ public:
 protected:
   const rtc::scoped_refptr<webrtc::AudioTrackInterface> track;
 };
-} // namespace rtc::google
+} // namespace google
+} // namespace rtc
 
 #endif

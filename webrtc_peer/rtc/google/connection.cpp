@@ -155,7 +155,8 @@ connection::set_local_description(const session_description &description) {
 
 boost::future<void>
 connection::set_remote_description(const session_description &description) {
-  BOOST_LOG_SEV(logger, logging::severity::info) << "set_remote_description";
+  BOOST_LOG_SEV(logger, logging::severity::info)
+      << "set_remote_description, description:" << description.sdp;
   try {
     auto casted = cast_session_description(description);
     auto observer =

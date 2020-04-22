@@ -4,7 +4,8 @@
 #include <api/video/video_frame.h>
 #include <boost/signals2/signal.hpp>
 
-namespace rtc::google {
+namespace rtc {
+namespace google {
 // TODO do a `rtc::video_source`. before that, do a container for
 // `webrtc::VideoFrame`
 class video_source {
@@ -12,6 +13,7 @@ public:
   virtual ~video_source();
   boost::signals2::signal<void(const webrtc::VideoFrame &)> on_frame;
 };
-} // namespace rtc::google
+} // namespace google
+} // namespace rtc
 
 #endif

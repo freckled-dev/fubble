@@ -7,7 +7,7 @@
 
 namespace rtc {
 struct message {
-  std::vector<std::byte> data;
+  std::vector<std::uint8_t> data;
   bool binary;
   std::string to_string() const;
 };

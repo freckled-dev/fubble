@@ -9,7 +9,8 @@
 #include <api/video/video_sink_interface.h>
 #include <boost/signals2/signal.hpp>
 
-namespace rtc::google {
+namespace rtc {
+namespace google {
 class video_track_sink : public rtc::VideoSinkInterface<webrtc::VideoFrame>,
                          public video_track,
                          public video_source {
@@ -24,6 +25,7 @@ protected:
 
   rtc::logger logger{"video_track_sink"};
 };
-} // namespace rtc::google
+} // namespace google
+} // namespace rtc
 
 #endif
