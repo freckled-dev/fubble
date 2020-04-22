@@ -10,7 +10,7 @@ time ../../deploy/development/deploy_build_install_background || exit 3
 pulseaudio -D
 ../../deploy/development/wait-for-it.sh "docker:80" -- \
     echo "backend docker port is up"
-sleep 4
+sleep 10
 
 # https://github.com/mesonbuild/meson/blob/master/mesonbuild/mesonlib.py#L718
 export LD_LIBRARY_PATH="${prefix_dir}/lib/x86_64-linux-gnu:${prefix_dir}/lib64"
