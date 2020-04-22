@@ -22,8 +22,6 @@ protected:
   void trigger_wait();
   void on_waited(const boost::system::error_code &error);
 
-  static constexpr std::chrono::steady_clock::duration interval =
-      std::chrono::milliseconds(50);
   static constexpr int maximum_update_time_ms = 10;
   rtc::logger logger{"asio_signalling_thread"};
   boost::asio::io_context &asio;
