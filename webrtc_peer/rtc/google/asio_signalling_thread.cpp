@@ -21,6 +21,8 @@ rtc::Thread &asio_signalling_thread::get_native() const { return *native; }
 void asio_signalling_thread::trigger_wait() {
   if (stopped)
     return;
+  static constexpr std::chrono::steady_clock::duration interval =
+      std::chrono::milliseconds(50);
   timer.expires_after(interval);
   timer.async_wait([this](auto error) { on_waited(error); });
 }
