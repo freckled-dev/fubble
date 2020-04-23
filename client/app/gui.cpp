@@ -116,11 +116,11 @@ int main(int argc, char *argv[]) {
   rtc::google::capture::video::device_creator device_creator;
   std::shared_ptr<rtc::google::capture::video::device> capture_device;
   for (const auto &current_device : devices) {
-    capture_device = device_creator(current_device.id);
     try {
+      capture_device = device_creator(current_device.id);
       capture_device->start();
       break;
-    } catch (const std::runtime_error &error) {
+    } catch (const std::exception &error) {
       BOOST_LOG_SEV(logger, logging::severity::warning) << fmt::format(
           "could not start capturing from device, id:'{}' error:{}",
           current_device.id, error.what());

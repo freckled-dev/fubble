@@ -5,6 +5,7 @@ using namespace rtc::google::capture::video;
 device::device(
     const rtc::scoped_refptr<webrtc::VideoCaptureModule> &native_device)
     : device_(native_device) {
+  BOOST_ASSERT(native_device);
   device_->RegisterCaptureDataCallback(this);
 }
 
