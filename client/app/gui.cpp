@@ -101,6 +101,8 @@ int main(int argc, char *argv[]) {
   client::add_audio_to_connection audio_track_adder(rtc_connection_creator,
                                                     *audio_device);
   tracks_adder.add(audio_track_adder);
+  client::rooms rooms;
+  client::own_media own_media;
 
   // video
   rtc::google::capture::video::enumerator enumerator;
@@ -109,7 +111,8 @@ int main(int argc, char *argv[]) {
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << "capture device, name:" << device.name << ", id:" << device.id;
   if (devices.empty())
-    throw std::runtime_error("no video capture devices available");
+    BOOST_LOG_SEV(logger, logging::severity::warning)
+        << "there are no capture devices";
   rtc::google::capture::video::device_creator device_creator;
   std::shared_ptr<rtc::google::capture::video::device> capture_device;
   for (const auto &current_device : devices) {
@@ -123,14 +126,16 @@ int main(int argc, char *argv[]) {
           current_device.id, error.what());
     }
   }
-  if (!capture_device)
-    throw std::runtime_error("no camera device available");
-  client::add_video_to_connection track_adder(rtc_connection_creator,
-                                              capture_device);
-  tracks_adder.add(track_adder);
-  client::rooms rooms;
-  client::own_media own_media;
-  own_media.add_video(*capture_device);
+  std::unique_ptr<client::add_video_to_connection> video_track_adder;
+  if (!capture_device) {
+    BOOST_LOG_SEV(logger, logging::severity::warning)
+        << "no capture device could be initialsed";
+  } else {
+    video_track_adder = std::make_unique<client::add_video_to_connection>(
+        rtc_connection_creator, capture_device);
+    tracks_adder.add(*video_track_adder);
+    own_media.add_video(*capture_device);
+  }
   client::participant_creator_creator participant_creator_creator{
       peer_creator, tracks_adder, own_media};
   client::room_creator client_room_creator{participant_creator_creator};
