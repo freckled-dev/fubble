@@ -1,0 +1,4 @@
+module io.fubble
+RoomModel 1.0 RoomModel.qml
+ParticipantModel 1.0 ParticipantModel.qml
+
