@@ -1,5 +1,0 @@
-
-QtObject {
-    property string name
-}
-

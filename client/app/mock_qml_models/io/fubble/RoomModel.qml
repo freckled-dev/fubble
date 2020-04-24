@@ -1,15 +1,17 @@
 import QtQml 2.0
 
 QtObject {
+    property string name: "room name not set"
     property list<QtObject> participants: [
         QtObject {
-            property ParticipantModel participant: {
+            property var participant: ParticipantModel {
                 name: "first"
             }
         },
         QtObject {
-            property ParticipantModel participant: {
+            property var participant: ParticipantModel {
                 name: "second"
+                video_source: "file:///home/mlanner/Downloads/Sintel_webm_extract.webm"
             }
         }
     ]
