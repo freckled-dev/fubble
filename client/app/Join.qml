@@ -2,9 +2,12 @@ import QtQuick 2.0
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.12
 import QtMultimedia 5.0
+import io.fubble 1.0
 
 FocusScope {
     property var title: "Join a room"
+    property var joinModel: JoinModel {}
+
     ColumnLayout {
         anchors.verticalCenter: parent.verticalCenter
         anchors.horizontalCenter: parent.horizontalCenter

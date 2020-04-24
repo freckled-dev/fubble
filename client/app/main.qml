@@ -11,10 +11,10 @@ ApplicationWindow {
     minimumHeight: 480
     title: "fubble"
     id: container
-
+    property JoinModel joinModel
 
     header: Header {
-      title: stack.currentItem.title
+        title: stack.currentItem.title
     }
     StackView {
         id: stack
@@ -34,16 +34,15 @@ ApplicationWindow {
             property var title: layout.room.name
 
             Repeater {
-              model: layout.room.participants
-              Participant {
-                Layout.margins: 10
-                // Layout.fillWidth: true
-                Layout.maximumWidth: container.width/2
-                Layout.maximumHeight: container.height/2
-                participant: model.participant
-              }
+                model: layout.room.participants
+                Participant {
+                    Layout.margins: 10
+                    // Layout.fillWidth: true
+                    Layout.maximumWidth: container.width / 2
+                    Layout.maximumHeight: container.height / 2
+                    participant: model.participant
+                }
             }
         }
     }
-
 }
