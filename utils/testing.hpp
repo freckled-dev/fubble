@@ -4,7 +4,7 @@
 #include <cstdlib>
 #include <optional>
 
-namespace utils ::testing {
+namespace utils::testing {
 static std::optional<std::string> get_server_from_environment() {
   auto got = std::getenv("FUBBLE_API_HOST");
   if (!got)
