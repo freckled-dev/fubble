@@ -52,4 +52,6 @@ protected:
 };
 } // namespace client
 
+// Q_DECLARE_METATYPE(client::join_model *)
+
 #endif

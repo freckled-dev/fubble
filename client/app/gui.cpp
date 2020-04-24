@@ -152,18 +152,29 @@ int main(int argc, char *argv[]) {
   qRegisterMetaType<client::room_model *>();
   qRegisterMetaType<client::participant_model *>();
   qRegisterMetaType<client::participants_model *>();
+  qRegisterMetaType<client::join_model *>();
 
+  // https://doc.qt.io/qt-5/qtqml-cppintegration-overview.html#choosing-the-correct-integration-method-between-c-and-qml
   qmlRegisterUncreatableType<client::room_model>(
       "io.fubble", 1, 0, "RoomModel", "can't instance client::room_model");
   qmlRegisterUncreatableType<client::participant_model>(
       "io.fubble", 1, 0, "ParticipantModel",
       "can't instance client::participant_model");
+  qmlRegisterUncreatableType<client::join_model>(
+      "io.fubble", 1, 0, "JoinModel", "can't instance client::join_model");
+
   QQmlApplicationEngine engine;
   client::model_creator model_creator;
   client::join_model join_model{model_creator, joiner, own_media};
-  engine.rootContext()->setContextProperty("joinModel", &join_model);
+  //  works from 5.14 onwards
+  // engine.setInitialProperties(...)
+  //  setContextProperty sets it globaly not as property of the window
+  engine.rootContext()->setContextProperty("joinModelFromCpp", &join_model);
+  //  seems not to do it either
+  // QVariant property{qMetaTypeId<client::join_model *>(), &join_model};
+  // engine.setProperty("joinModel", property);
 
-  const QUrl url(QStringLiteral("qrc:/main.qml"));
+  const QUrl url(QStringLiteral("qrc:/FubbleApplication.qml"));
   BOOST_LOG_SEV(logger, logging::severity::debug) << "loading qml";
   engine.load(url);
   BOOST_LOG_SEV(logger, logging::severity::debug) << "loaded qml";

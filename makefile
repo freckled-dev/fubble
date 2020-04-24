@@ -16,5 +16,6 @@ install:
 	${BUILD} install
 
 .PHONY: test
-test:
+test: build
 	cd ../fubble_build/meson; meson test --test-args='--gtest_shuffle'
+	# ../fubble_build/meson/client/app/client_gui -style Material
