@@ -107,9 +107,11 @@ void frame_provider_google_video_source::on_frame_ui_thread(
   BOOST_LOG_SEV(logger, logging::severity::debug) << "on_frame_ui_thread";
 #endif
   if (!surface) {
+#if 0
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << "on_frame_ui_thread a frame gets discarded because no surface "
            "is set";
+#endif
     return;
   }
   set_format(frame.size());
