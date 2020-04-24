@@ -6,7 +6,7 @@ QtObject {
     property string name: "some name"
     property string room: "some room name"
     property var video: MediaPlayer {
-        source: "gst-pipeline: videotestsrc ! qtvideosink"
+        source: "file:///home/mlanner/Downloads/big_buck_bunny.webm"
         autoPlay: true
     }
     signal joined(RoomModel room)

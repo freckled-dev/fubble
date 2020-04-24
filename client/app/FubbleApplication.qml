@@ -11,16 +11,28 @@ ApplicationWindow {
     minimumHeight: 480
     title: "fubble"
     id: container
-    property JoinModel joinModel
+    property JoinModel joinModel: joinModelFromCpp
 
     header: Header {
         title: stack.currentItem.title
     }
     StackView {
         id: stack
-        initialItem: Join {}
+        initialItem: joinComponent
         anchors.fill: parent
         focus: true
+    }
+
+    Component {
+        id: joinComponent
+        Join {
+            joinModel: container.joinModel
+            onJoined: {
+                stack.push(roomComponent, {
+                               "room": room
+                           })
+            }
+        }
     }
 
     Component {

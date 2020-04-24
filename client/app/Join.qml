@@ -6,7 +6,8 @@ import io.fubble 1.0
 
 FocusScope {
     property var title: "Join a room"
-    property var joinModel: JoinModel {}
+    property JoinModel joinModel
+    signal joined(RoomModel room)
 
     ColumnLayout {
         anchors.verticalCenter: parent.verticalCenter
@@ -16,9 +17,7 @@ FocusScope {
         Connections {
             target: joinModel
             onJoined: {
-                stack.push(roomComponent, {
-                               "room": room
-                           })
+                joined(room)
             }
         }
         function joinRoom() {
