@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/">
-        <file>main.qml</file>
+        <file>FubbleApplication.qml</file>
         <file>Join.qml</file>
         <file>Header.qml</file>
         <file>Participant.qml</file>
