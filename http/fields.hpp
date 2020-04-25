@@ -8,7 +8,7 @@
 namespace http {
 struct fields {
   fields() = default;
-  fields(const server &server) { host = server.server + ":" + server.port; }
+  fields(const server &server) { host = server.host + ":" + server.port; }
   std::string host;
   std::string target_prefix;
   std::string agent = BOOST_BEAST_VERSION_STRING;
