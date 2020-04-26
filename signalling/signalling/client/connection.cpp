@@ -65,7 +65,7 @@ void connection::read_next() {
         run_promise.set_value();
         return;
       }
-      BOOST_LOG_SEV(logger, logging::severity::warning)
+      BOOST_LOG_SEV(this->logger, logging::severity::warning)
           << "an error occured while running, error:" << error.what();
       run_promise.set_exception(error);
     } catch (...) {
