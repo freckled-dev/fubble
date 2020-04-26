@@ -38,10 +38,10 @@ void acceptor::run() {
                                   const auto &error) mutable {
     if (error) {
       if (error == boost::asio::error::operation_aborted) {
-        BOOST_LOG_SEV(logger, logging::severity::info) << "acceptor got closed";
+        BOOST_LOG_SEV(this->logger, logging::severity::info) << "acceptor got closed";
         return;
       }
-      BOOST_LOG_SEV(logger, logging::severity::warning)
+      BOOST_LOG_SEV(this->logger, logging::severity::warning)
           << "an error occured in tcp accept. what:" << error.message();
       return;
     }
@@ -55,7 +55,7 @@ void acceptor::successful_tcp(connection_ptr connection_parameter) {
   native.async_accept([this, connection_ = std::move(connection_parameter)](
                           const auto &error) mutable {
     if (error) {
-      BOOST_LOG_SEV(logger, logging::severity::warning)
+      BOOST_LOG_SEV(this->logger, logging::severity::warning)
           << "an error occured in websocket accept. what:" << error.message();
       return;
     }

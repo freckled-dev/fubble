@@ -2,6 +2,7 @@
 #define WEBSOCKET_CONNECTOR_HPP
 
 #include "connection_ptr.hpp"
+#include "connection.hpp"
 #include "logger.hpp"
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/thread/executors/executor.hpp>
