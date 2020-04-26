@@ -6,6 +6,11 @@
 #include "video_track_sink.hpp"
 #include <fmt/format.h>
 
+#if __cplusplus != 201402L
+#error                                                                         \
+    "file not compiled with c++14. This will lead to problems with abseil::optional"
+#endif
+
 namespace std {
 std::ostream &
 operator<<(std::ostream &out,
