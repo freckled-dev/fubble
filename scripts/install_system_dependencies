@@ -59,8 +59,8 @@ if grep -i ubuntu /etc/os-release
   and sudo -H pip3 install conan meson==0.53.0 docker-compose
   conan profile new default --detect
   conan profile update settings.compiler.libcxx=libstdc++11 default
-  conan remote add google_webrtc https://api.bintray.com/conan/freckled/google-webrtc
-  conan remote add inexorgame https://api.bintray.com/conan/inexorgame/inexor-conan
+  conan remote add google_webrtc "https://api.bintray.com/conan/freckled/google-webrtc"
+  conan remote add inexorgame "https://api.bintray.com/conan/inexorgame/inexor-conan"
   conan remote add bincrafters "https://api.bintray.com/conan/bincrafters/public-conan"
 else
   echo "could not determine the operating system"
