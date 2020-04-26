@@ -5,7 +5,7 @@
 sudo apt-get update
 sudo apt-get install fish
 ./scripts/install_system_dependencies
-FUBBLE_TREAT_WARNING_AS_ERROR=0 ./scripts/make_build
+FUBBLE_TREAT_WARNING_AS_ERROR=0 ./scripts/make_build.py
 
 # fedora
 sudo dnf install -y \
@@ -84,6 +84,8 @@ source venv/bin/activate.fish
 
 # dependency google webrtc
 
+## linux
+
 seems to not work with fedora. Tested on ubuntu 18.04 and 19.04
 
 ```fish
@@ -137,5 +139,45 @@ ffmpeg -re -i ./sintel-1280-surround.mp4 -f v4l2 /dev/video0
 
 # consume it by gstreamer
 gst-launch-1.0 v4l2src device=/dev/video0 ! videoconvert ! autovideosink
+```
+
+## windows
+
+instructions for webrtc
+https://chromium.googlesource.com/chromium/src/+/master/docs/windows_build_instructions.md
+
+use the visual studio installer and install the “Desktop development with C++”
+component and the “MFC/ATL support” sub-components.
+
+The SDK Debugging Tools must also be installed. If the Windows 10 SDK was 
+installed via the Visual Studio installer, then they can be installed by going
+to: Control Panel → Programs → Programs and Features → 
+Select the “Windows Software Development Kit” → Change → Change → 
+Check “Debugging Tools For Windows” → Change.
+
+
+because there's no pip, install conan by installer \
+https://conan.io/downloads.html
+https://dl.bintray.com/conan/installers/conan-win-64_1_24_1.exe
+
+install git and python3 (ensure python3 and pip3 become part of PATH)
+- https://git-scm.com/download/win
+- https://www.python.org/ftp/python/3.8.2/python-3.8.2.exe
+
+install pkg-config
+- https://sourceforge.net/projects/pkgconfiglite/
+
+install cmake for, needed by qt dependencies
+
+add conan remotes
+```bat
+conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
+conan remote add inexorgame "https://api.bintray.com/conan/inexorgame/inexor-conan"
+conan remote add google_webrtc "https://api.bintray.com/conan/freckled/google-webrtc"
+```
+
+build using conan
+```bat
+conan create . --build missing
 ```
 

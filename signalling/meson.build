@@ -44,11 +44,10 @@ signalling_client_dep = declare_dependency(
   link_with: [signalling_client]
   )
 
-# TODO rename to signalling_server
 server = library('signalling_server',
   ['signalling/server/server.cpp', 'signalling/server/connection.cpp',
     'signalling/server/connection_creator.cpp'],
-  dependencies: [boost_dep, fmt_dep, utils_dep, signalling_dep],
+  dependencies: [boost_dep, fmt_dep, utils_dep, signalling_dep, enable_servers],
   install: true
   )
 server_dep = declare_dependency(

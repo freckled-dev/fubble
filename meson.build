@@ -6,6 +6,12 @@ project('fubble', 'cpp',
 # TODO currently in >=0.54 boost doesn't work either
 
 disabled = disabler()
+if get_option('with_servers')
+  enable_servers = declare_dependency()
+else
+  enable_servers = disabled
+endif
+
 boost_dep_pkg = dependency('boost', modules : [
     'thread', 'program_options', 'regex', 'log', 'log_setup', 'filesystem'
     ]
@@ -16,12 +22,18 @@ boost_dep = declare_dependency(
       ],
     dependencies : [boost_dep_pkg]
     )
-gtest_dep = dependency('gtest', include_type : 'system')
+if get_option('with_tests')
+  gtest_dep = dependency('gtest', include_type : 'system')
+else
+  gtest_tests = disabled
+endif
 fmt_dep = dependency('fmt')
 json_dep = dependency('nlohmann_json')
 boost_di_dep = dependency('boost-di')
-gstreamer_webrtc_dep_pkg = dependency('gstreamer-webrtc-1.0', required : false)
-gstreamer_sdp_dep = dependency('gstreamer-sdp-1.0', required : false)
+gstreamer_webrtc_dep_pkg = dependency('gstreamer-webrtc-1.0',
+  required : false, disabler : true)
+gstreamer_sdp_dep = dependency('gstreamer-sdp-1.0',
+  required : false, disabler : true)
 qt5 = import('qt5')
 qt5_clear_dep = dependency('qt5', modules: ['Core', 'Quick', 'Multimedia', 'Svg'])
 # `QT_NO_EMIT` is neccessary because google webrtc declares a method/function called `emit`
@@ -29,14 +41,9 @@ qt5_dep = declare_dependency(
   compile_args : ['-DQT_DEPRECATED_WARNINGS', '-DQT_QML_DEBUG=1', '-DQT_NO_EMIT'],
   dependencies : [qt5_clear_dep]
   )
-if gstreamer_webrtc_dep_pkg.found()
-  gstreamer_webrtc_found = gstreamer_webrtc_dep_pkg
-else
-  gstreamer_webrtc_found = disabled
-endif
 gstreamer_webrtc_dep = declare_dependency(
   dependencies : [gstreamer_webrtc_dep_pkg, gstreamer_sdp_dep,
-    gstreamer_webrtc_found
+    gstreamer_webrtc_dep_pkg
     ]
   )
 x11_dep = dependency('x11')
