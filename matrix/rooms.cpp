@@ -103,7 +103,7 @@ boost::future<room *> rooms::join_room_by_id(const std::string &id) {
   auto target = fmt::format("rooms/{}/join", id);
   nlohmann::json content = nlohmann::json::object();
   return http_client->post(target, content).then(executor, [this](auto result) {
-    BOOST_LOG_SEV(logger, logging::severity::trace)
+    BOOST_LOG_SEV(this->logger, logging::severity::trace)
         << "joined room, result not validated yet";
     auto response = result.get();
     auto response_json = response.second;

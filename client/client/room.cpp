@@ -59,12 +59,13 @@ struct leaver : std::enable_shared_from_this<leaver> {
 
 private:
   void do_next() {
-    current->then(executor, [this, self = shared_from_this()](auto result) {
+    auto self = shared_from_this();
+    current->then(executor, [this, self](auto result) {
       try {
         result.get();
-      } catch (std::exception &error) {
-        BOOST_LOG_SEV(logger, logging::severity::error)
-            << "could not close participant";
+      } catch (const std::exception &error_) {
+        BOOST_LOG_SEV(this->logger, logging::severity::error)
+            << "could not close participant, error:" << error_.what();
       }
       current = ++current;
       if (current == futures.end()) {

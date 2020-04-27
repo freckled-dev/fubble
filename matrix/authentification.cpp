@@ -22,7 +22,7 @@ authentification::register_as_guest() {
         auto response = result.get();
         if (response.first != boost::beast::http::status::ok)
           error::check_matrix_response(response.first, response.second);
-        BOOST_LOG_SEV(logger, logging::severity::info)
+        BOOST_LOG_SEV(this->logger, logging::severity::info)
             << "successfully registered as guest";
         auto response_json = response.second;
         client::information information;
@@ -64,7 +64,7 @@ authentification::register_as_user(const nlohmann::json &content) {
         auto response = result.get();
         if (response.first != boost::beast::http::status::ok)
           error::check_matrix_response(response.first, response.second);
-        BOOST_LOG_SEV(logger, logging::severity::info)
+        BOOST_LOG_SEV(this->logger, logging::severity::info)
             << "successfully registered as user";
         auto response_json = response.second;
         client::information information;

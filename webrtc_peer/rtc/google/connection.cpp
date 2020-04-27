@@ -1,10 +1,20 @@
 #include "connection.hpp"
 #include "audio_track_sink.hpp"
 #include "data_channel.hpp"
-#include "track.hpp"
 #include "uuid.hpp"
 #include "video_track_sink.hpp"
 #include <fmt/format.h>
+#include <boost/config.hpp>
+
+#if defined(ABSL_HAVE_STD_OPTIONAL)
+#if ABSL_HAVE_STD_OPTIONAL == 1
+#error abseil header uses c++17 optional! but webrtc gets compiled with c++14!
+#if __cplusplus >= 201703L
+#error file not compiled with c++14. This will lead to problems with \
+  abseil::optional
+#endif
+#endif
+#endif
 
 namespace std {
 std::ostream &
@@ -253,18 +263,18 @@ void connection::OnAddTrack(
     on_audio_track(result);
 }
 
-rtc::track_ptr connection::check_handle_video_track(
-    webrtc::MediaStreamTrackInterface &interface) {
-  auto track_casted = dynamic_cast<webrtc::VideoTrackInterface *>(&interface);
+::rtc::track_ptr connection::check_handle_video_track(
+    ::webrtc::MediaStreamTrackInterface &interface_) {
+  auto track_casted = dynamic_cast<webrtc::VideoTrackInterface *>(&interface_);
   if (track_casted == nullptr)
     return nullptr;
   return std::make_shared<video_track_sink>(track_casted);
 }
 
-rtc::track_ptr connection::check_handle_audio_track(
-    webrtc::MediaStreamTrackInterface &interface) {
+::rtc::track_ptr connection::check_handle_audio_track(
+    ::webrtc::MediaStreamTrackInterface &interface_) {
   rtc::scoped_refptr<webrtc::AudioTrackInterface> track_casted =
-      dynamic_cast<webrtc::AudioTrackInterface *>(&interface);
+      dynamic_cast<webrtc::AudioTrackInterface *>(&interface_);
   if (track_casted == nullptr)
     return nullptr;
   return std::make_shared<audio_track_sink>(track_casted);

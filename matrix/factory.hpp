@@ -2,6 +2,7 @@
 #define UUID_41BBE839_56D6_4D3F_B3A4_7F6EE19AB84F
 
 #include <memory>
+#include <string>
 
 namespace matrix {
 class room;

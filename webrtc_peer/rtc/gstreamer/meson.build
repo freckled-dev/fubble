@@ -19,9 +19,7 @@ webrtc_gstreamer_peer_dep = declare_dependency(
 webrtc_gstreamer_peer_test = executable('webrtc_peer_test',
   ['test_main.cpp', 'connection_test.cpp',
     'video_track_test.cpp'],
-  dependencies: [gtest_dep, webrtc_gstreamer_peer_dep, utils_dep, fmt_dep
-    , disabled
-    ]
+  dependencies: [gtest_dep, webrtc_gstreamer_peer_dep, utils_dep, fmt_dep]
   )
 suppr_file = meson.source_root() / 'webrtc_peer/lsan_suppressions_gstreamer'
 suppr_option = 'LSAN_OPTIONS=suppressions=' + suppr_file

@@ -2,6 +2,7 @@
 #define UUID_1F9AFED9_482F_44D0_9C50_740D4A744285
 
 #include <cstdlib>
+#include <string>
 #include <optional>
 
 namespace utils::testing {

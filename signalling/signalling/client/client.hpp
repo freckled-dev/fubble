@@ -8,6 +8,7 @@
 #include "signalling/logger.hpp"
 #include "signalling/offer.hpp"
 #include "websocket/connector.hpp"
+#include "websocket/connection.hpp"
 #include <boost/signals2/signal.hpp>
 #include <boost/thread/executors/inline_executor.hpp>
 #include <boost/thread/future.hpp>

@@ -327,8 +327,9 @@ TEST(Matrix, Message) {
     EXPECT_EQ(response.result(), boost::beast::http::status::ok);
     auto diff = std::chrono::duration_cast<std::chrono::milliseconds>(
         std::chrono::steady_clock::now() - begin);
+    const std::string log_output = fmt::format("message send needed: {}", diff);
     BOOST_LOG_SEV(logger, logging::severity::info)
-        << fmt::format("message send needed: {}", diff);
+        << log_output;
   }
 }
 
