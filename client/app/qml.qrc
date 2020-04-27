@@ -1,10 +1,14 @@
 <RCC>
-    <qresource prefix="/">
+    <qresource>
         <file>FubbleApplication.qml</file>
         <file>Join.qml</file>
         <file>Header.qml</file>
         <file>Participant.qml</file>
-        <file>cog.svg</file>
+        <file>Room.qml</file>
+        <file>About.qml</file>
+        <file>Style.qml</file>
+        <file>qmldir</file>
+        <file>pics/logo.svg</file>
     </qresource>
 </RCC>
 
