@@ -13,7 +13,7 @@ ApplicationWindow {
     height: 800
     minimumWidth: 800
     minimumHeight: 600
-    title: "fubble"
+    title: "Fubble"
     id: container
     property JoinModel joinModel: joinModelFromCpp
 

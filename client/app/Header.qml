@@ -46,11 +46,11 @@ ToolBar {
                 x: parent.width - width
                 transformOrigin: Menu.TopRight
                 MenuItem {
-                    text: "Settings"
+                    text: qsTr("Settings")
                     onTriggered: settings.open()
                 }
                 MenuItem {
-                    text: "About"
+                    text: qsTr("About")
                     onTriggered: aboutDialog.open()
                 }
             }
