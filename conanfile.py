@@ -73,6 +73,10 @@ class FubbleConan(ConanFile):
                 "BOOST_LIBRARYDIR": boost_library_path}):
             self.output.info("before meson version")
             self.run('meson --version')
+            self.output.info("1")
+            self.run('where meson')
+            self.output.info("2")
+            self.run('$Env:Path')
             self.output.info("after meson version")
             meson.configure( build_folder="meson", defs=meson_options)
             # meson.build(args=["-j1"])
