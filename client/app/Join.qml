@@ -10,6 +10,7 @@ FocusScope {
     property var title: "Join a room"
     property JoinModel joinModel
     signal joined(RoomModel room)
+    Material.foreground: Style.current.foreground
 
     ColumnLayout {
         anchors.verticalCenter: parent.verticalCenter
@@ -59,6 +60,8 @@ FocusScope {
                 placeholderText: "Room"
                 Layout.fillWidth: true
                 focus: true
+                placeholderTextColor: Style.current.foreground
+                color: Style.current.foreground
                 onAccepted: name.focus = true
             }
 
@@ -75,8 +78,8 @@ FocusScope {
                 text: qsTr("Join")
                 Layout.topMargin: 20
                 Layout.fillHeight: false
-                Material.foreground: Style.foreground
-                Material.background: Material.primary
+                Material.background: Style.current.primary
+                Material.foreground: Style.current.buttonTextColor
                 Layout.preferredWidth: 300
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 Layout.fillWidth: false
