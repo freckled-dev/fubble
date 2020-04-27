@@ -3,7 +3,7 @@ temporary_room_rooms = library('temporary_room_rooms',
     'server/matrix_rooms_factory_adapter.cpp',
     'net/server.cpp', 'net/client.cpp', 'net/server.cpp', 'net/acceptor.cpp'],
   include_directories: '..',
-  dependencies: [fmt_dep, json_dep, utils_dep],
+  dependencies: [fmt_dep, json_dep, utils_dep, matrix_dep],
   link_with: [],
   install: true
   )

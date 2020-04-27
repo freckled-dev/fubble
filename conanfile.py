@@ -10,7 +10,8 @@ class FubbleConan(ConanFile):
     description = "Conferencing that works"
     topics = ("conference", "fubble", "video", "audio", "webrtc")
     settings = "os", "compiler", "build_type", "arch"
-    options = {"shared": [True, False]}
+    options = {"shared": [False, True]}
+    # https://docs.conan.io/en/latest/reference/conanfile/attributes.html#default-options
     default_options = {"shared": False}
     generators = "pkg_config"
     exports_sources = "*"
@@ -35,8 +36,11 @@ class FubbleConan(ConanFile):
     def build(self):
         # https://docs.conan.io/en/latest/reference/build_helpers/meson.html
         #qt_path_bin = self.deps_cpp_info["qt"].bin_paths
-        qt_path_bin = 'C:\\Qt\\5.14.2\\msvc2017_64\\bin'
-        self.output.info(f"qt_path_bin:{qt_path_bin}")
+        addtional_paths = []
+        if self.settings.os == "Windows":
+            qt_path_bin = 'C:\\Qt\\5.14.2\\msvc2017_64\\bin'
+            self.output.info(f"qt_path_bin:{qt_path_bin}")
+            addtional_paths += qt_path_bin
 
         boost_path = self.deps_cpp_info["boost"].rootpath
         self.output.info(f"boost_path:{boost_path}")
@@ -44,26 +48,31 @@ class FubbleConan(ConanFile):
         self.output.info(f"boost_include_path:{boost_include_path}")
         boost_library_path = self.deps_cpp_info["boost"].lib_paths
         self.output.info(f"boost_library_path:{boost_library_path}")
+
+        with_servers = False
+        with_tests = True
+        if self.settings.os == "Windows":
+            with_tests = False
+        if self.settings.os == "Linux":
+            with_servers = True
+
         meson = Meson(self)
         with tools.environment_append({
-                "PATH": [qt_path_bin],
-                "BOOST_ROOT": boost_path, 
+                "PATH": addtional_paths,
+                "BOOST_ROOT": boost_path,
                 "BOOST_INCLUDEDIR": boost_include_path,
                 "BOOST_LIBRARYDIR": boost_library_path}):
-            meson.configure(build_folder="builddir",
-                defs={'cpp_std': 'c++17'})
+            meson.configure(
+                    build_folder="meson",
+                    defs={'cpp_std': 'c++17',
+                        'with_servers': with_servers, 'with_tests': with_tests})
         # meson.build(args=["-j1"])
         # meson.build(args=["-k0"])
         meson.build()
 
     def package(self):
-        self.copy("*.hpp", dst="include")
-        self.copy("*.lib", dst="lib", keep_path=False)
-        self.copy("*.dll", dst="bin", keep_path=False)
-        self.copy("*.dylib*", dst="lib", keep_path=False)
-        self.copy("*.so", dst="lib", keep_path=False)
-        self.copy("*.a", dst="lib", keep_path=False)
-        self.copy("*.exe", dst="bin", keep_path=False)
+        meson = Meson(self)
+        meson.install(build_dir="meson")
 
     def package_info(self):
         pass

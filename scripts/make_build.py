@@ -31,32 +31,43 @@ try:
 except:
     print("Could not delete the build_dir:'%s'" % (paths.build_dir))
 
-os.makedirs(paths.meson_dir)
-os.makedirs(paths.dependencies_dir)
 subprocess.run(['conan', 'install', 
     '--build', 'missing', 
     '--install-folder', paths.dependencies_dir, 
     '-s', 'build_type=Debug', # TODO debug/release
     paths.source_dir])
-os.environ['PKG_CONFIG_PATH'] = paths.dependencies_dir
-boost_prefix_result = subprocess.run(['pkg-config', '--variable=prefix', 'boost'], stdout=subprocess.PIPE, check=True)
-os.environ['BOOST_ROOT'] = get_first_line_of_subprocess_result(boost_prefix_result)
 
 werror = 'true'
 werror_environment = os.environ.get('FUBBLE_TREAT_WARNING_AS_ERROR')
 if werror_environment == '0':
     werror = 'false'
 
-# TODO support release build
-subprocess.run(['meson',
-    paths.source_dir, paths.meson_dir,
-    f'--prefix={paths.prefix_dir}',
-    '-Db_sanitize=address',
-    '-Db_lundef=false',
-    '-Dwarning_level=3',
-    f'-Dwerror={werror}'
+subprocess.run(['conan', 'build',
+    paths.source_dir,
+    # '--build', 'missing',
+    '--build-folder', paths.build_dir,
+    '--install-folder', paths.dependencies_dir,
+    '--package-folder', paths.prefix_dir
     ])
 
-subprocess.run(['ninja',
-    '-C', paths.meson_dir])
+subprocess.run(['conan', 'package',
+    paths.source_dir,
+    '--build-folder', paths.build_dir,
+    '--install-folder', paths.dependencies_dir,
+    '--package-folder', paths.prefix_dir
+    ])
+
+# TODO support release build
+# https://mesonbuild.com/Builtin-options.html#base-options
+# subprocess.run(['meson',
+#     paths.source_dir, paths.meson_dir,
+#     f'--prefix={paths.prefix_dir}',
+#     '-Db_sanitize=address',
+#     '-Db_lundef=false',
+#     '-Dwarning_level=3',
+#     f'-Dwerror={werror}'
+#     ])
+# 
+# subprocess.run(['ninja',
+#     '-C', paths.meson_dir])
 
