@@ -27,6 +27,8 @@ build windows release:
   tags:
     - windows
   script:
-    - choco install -y python
+    - python --version
+    - choco install -y --no-progress python
+    - refreshenv
     - pip3 install conan meson
 
