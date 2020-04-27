@@ -49,7 +49,7 @@ subprocess.run(['conan', 'build',
     '--build-folder', paths.build_dir,
     '--install-folder', paths.dependencies_dir,
     '--package-folder', paths.prefix_dir
-    ], check=True)
+    ], check=True, shell=True)
 
 subprocess.run(['conan', 'package',
     paths.source_dir,
