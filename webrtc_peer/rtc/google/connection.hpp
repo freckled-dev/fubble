@@ -6,6 +6,7 @@
 #include "video_track_ptr.hpp"
 #include <api/candidate.h>
 #include <api/peer_connection_interface.h>
+#include <api/media_stream_interface.h>
 
 namespace rtc {
 namespace google {
@@ -47,10 +48,10 @@ protected:
       webrtc::PeerConnectionInterface::IceGatheringState new_state) override;
   void
   OnIceCandidate(const ::webrtc::IceCandidateInterface *candidate) override;
-  track_ptr
-  check_handle_video_track(webrtc::MediaStreamTrackInterface &interface);
-  track_ptr
-  check_handle_audio_track(webrtc::MediaStreamTrackInterface &interface);
+  ::rtc::track_ptr
+  check_handle_video_track(::webrtc::MediaStreamTrackInterface &interface_);
+  ::rtc::track_ptr
+  check_handle_audio_track(::webrtc::MediaStreamTrackInterface &interface_);
 
   struct create_session_description_observer
       : webrtc::CreateSessionDescriptionObserver {

@@ -5,7 +5,7 @@
 
 namespace http {
 struct server {
-  std::string server;
+  std::string host;
   std::string port;
 };
 } // namespace http

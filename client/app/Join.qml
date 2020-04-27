@@ -1,9 +1,10 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.2
-import QtQuick.Layouts 1.12
+import QtQuick.Layouts 1.0
 import QtMultimedia 5.0
 import io.fubble 1.0
-import QtQuick.Controls.Material 2.12
+import QtQuick.Controls.Material 2.0
+import "."
 
 FocusScope {
     property var title: "Join a room"
@@ -45,33 +46,42 @@ FocusScope {
                                 (container.width * percentage) / aspectRatio)
             }
         }
-        TextField {
-            topPadding: 50
-            id: room
-            text: joinModel.room
-            placeholderText: "Room"
-            Layout.fillWidth: true
-            focus: true
-            onAccepted: name.focus = true
-        }
-        TextField {
-            id: name
-            text: joinModel.name
-            placeholderText: "Your Name"
-            Layout.fillWidth: true
-            onAccepted: loginUi.joinRoom()
-            bottomPadding: 50
-        }
-        Button {
-            width: 300
-            text: qsTr("Join")
-            Layout.fillHeight: false
-            Material.foreground: Style.foreground
-            Material.background: Material.primary
-            Layout.preferredWidth: 300
-            Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-            Layout.fillWidth: false
-            onClicked: loginUi.joinRoom()
+        ColumnLayout {
+            id: inputLayout
+            width: 100
+            height: 100
+            spacing: 8
+            Layout.topMargin: 40
+
+            TextField {
+                id: room
+                text: joinModel.room
+                placeholderText: "Room"
+                Layout.fillWidth: true
+                focus: true
+                onAccepted: name.focus = true
+            }
+
+            TextField {
+                id: name
+                text: joinModel.name
+                placeholderText: "Your Name"
+                Layout.fillWidth: true
+                onAccepted: loginUi.joinRoom()
+            }
+
+            Button {
+                width: 300
+                text: qsTr("Join")
+                Layout.topMargin: 20
+                Layout.fillHeight: false
+                Material.foreground: Style.foreground
+                Material.background: Material.primary
+                Layout.preferredWidth: 300
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                Layout.fillWidth: false
+                onClicked: loginUi.joinRoom()
+            }
         }
     }
 }

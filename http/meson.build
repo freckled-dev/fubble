@@ -12,8 +12,7 @@ http_dep = declare_dependency(
 http_test = executable('http_test',
   ['client_test.cpp'],
   dependencies : [gtest_dep, http_dep, fmt_dep],
-  link_with: [test_main],
-  install: true
+  link_with: [test_main]
   )
 
 test('http test',

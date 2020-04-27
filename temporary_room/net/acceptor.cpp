@@ -126,12 +126,12 @@ void acceptor::accept_next() {
   BOOST_LOG_SEV(logger, logging::severity::trace) << "accept_next";
   socket = std::make_unique<boost::asio::ip::tcp::socket>(context);
   acceptor_.async_accept(*socket, [this](auto error) {
-    BOOST_LOG_SEV(logger, logging::severity::trace)
+    BOOST_LOG_SEV(this->logger, logging::severity::trace)
         << "accepted, error:" << error.message();
     if (error) {
       auto promise_copy = run_promise;
       if (error == boost::asio::error::operation_aborted) {
-        BOOST_LOG_SEV(logger, logging::severity::trace) << "operation_aborted";
+        BOOST_LOG_SEV(this->logger, logging::severity::trace) << "operation_aborted";
         run_promise->set_value(); // stop() got called
       } else
         run_promise->set_exception(boost::system::system_error(error));
@@ -153,7 +153,7 @@ void acceptor::do_session() {
     try {
       result.get();
     } catch (const std::exception &error) {
-      BOOST_LOG_SEV(logger, logging::severity::warning)
+      BOOST_LOG_SEV(this->logger, logging::severity::warning)
           << "an error occured while doing the connection, error:"
           << error.what();
     }

@@ -3,7 +3,7 @@
 cd "$(dirname "$0")"
 source ../environment
 
-time ../make_build || exit 1
+time ../make_build.py || exit 1
 ninja -C "$build_dir/meson" install || exit 2
 time ../../deploy/development/deploy_build_install_background || exit 3
 
