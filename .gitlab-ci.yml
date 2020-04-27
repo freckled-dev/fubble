@@ -28,8 +28,9 @@ build windows release:
     - windows
   script:
     - choco install -y --no-progress python
+    # - refreshenv # did not work
     - $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
     - python --version
-    - pyhton -m pip install -y conan meson
+    - pip install -y conan meson
+    - python scripts/make_build.py
 
-# - refreshenv
