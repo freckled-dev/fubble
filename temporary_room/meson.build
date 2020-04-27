@@ -3,7 +3,7 @@ temporary_room_rooms = library('temporary_room_rooms',
     'server/matrix_rooms_factory_adapter.cpp',
     'net/server.cpp', 'net/client.cpp', 'net/server.cpp', 'net/acceptor.cpp'],
   include_directories: '..',
-  dependencies: [fmt_dep, json_dep, utils_dep],
+  dependencies: [fmt_dep, json_dep, utils_dep, matrix_dep],
   link_with: [],
   install: true
   )
@@ -15,7 +15,7 @@ temporary_room_dep = declare_dependency(
 
 temporary_room_server = executable('temporary_room_server',
   ['server.cpp'],
-  dependencies: [temporary_room_dep],
+  dependencies: [temporary_room_dep, enable_servers],
   install: true
   )
 
@@ -25,8 +25,7 @@ temporary_room_test = executable('temporary_room_test',
     'matrix/room_factory.cpp', 'net/acceptor_test.cpp',
     'net/server_test.cpp'],
   dependencies : [gtest_dep, temporary_room_dep],
-  link_with: [websocket, test_main],
-  install: true
+  link_with: [websocket, test_main]
   )
 test('temporary_room test', temporary_room_test, timeout: 10)
 

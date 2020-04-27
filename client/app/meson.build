@@ -1,8 +1,10 @@
-client_cli = executable('client',
-  ['client.cpp', 'options.cpp'],
-  dependencies: [client_dep],
-  install: true
-  )
+if host_machine.system() == 'linux'
+  client_cli = executable('client',
+    ['client.cpp', 'options.cpp'],
+    dependencies: [client_dep],
+    install: true
+    )
+endif
 moc_files = qt5.preprocess(
   qresources: 'qml.qrc',
   moc_headers: ['join_model.hpp',  'room_model.hpp',

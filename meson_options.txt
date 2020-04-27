@@ -1,0 +1,5 @@
+option('with_servers', type : 'boolean', value : true,
+  description : 'enable server components')
+option('with_tests', type : 'boolean', value : true,
+  description : 'enable tests')
+
