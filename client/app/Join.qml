@@ -7,9 +7,10 @@ import QtQuick.Controls.Material 2.0
 import "."
 
 FocusScope {
-    property var title: "Join a room"
+    property var title: qsTr("Join a room")
     property JoinModel joinModel
     signal joined(RoomModel room)
+    Material.foreground: Style.current.foreground
 
     ColumnLayout {
         anchors.verticalCenter: parent.verticalCenter
@@ -56,7 +57,7 @@ FocusScope {
             TextField {
                 id: room
                 text: joinModel.room
-                placeholderText: "Room"
+                placeholderText: qsTr("Room")
                 Layout.fillWidth: true
                 focus: true
                 onAccepted: name.focus = true
@@ -65,7 +66,7 @@ FocusScope {
             TextField {
                 id: name
                 text: joinModel.name
-                placeholderText: "Your Name"
+                placeholderText: qsTr("Your Name")
                 Layout.fillWidth: true
                 onAccepted: loginUi.joinRoom()
             }
@@ -75,8 +76,8 @@ FocusScope {
                 text: qsTr("Join")
                 Layout.topMargin: 20
                 Layout.fillHeight: false
-                Material.foreground: Style.foreground
-                Material.background: Material.primary
+                Material.background: Style.current.primary
+                Material.foreground: Style.current.buttonTextColor
                 Layout.preferredWidth: 300
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 Layout.fillWidth: false
