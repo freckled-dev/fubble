@@ -66,10 +66,10 @@ void connector::handshake() {
   BOOST_LOG_SEV(logger, logging::severity::trace) << "goiing to handshake";
   auto &native = connection->get_native();
   native.async_handshake(config_.url, config_.path, [this](const auto &error) {
-    BOOST_LOG_SEV(logger, logging::severity::trace) << "did handshake";
+    BOOST_LOG_SEV(this->logger, logging::severity::trace) << "did handshake";
     if (check_error(error))
       return;
-    BOOST_LOG_SEV(logger, logging::severity::info)
+    BOOST_LOG_SEV(this->logger, logging::severity::info)
         << "did handshake successfully";
     done = true;
     promise.set_value(std::move(connection));

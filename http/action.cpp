@@ -48,7 +48,7 @@ action::async_result_future action::do_() {
       "resolving, server:'{}', port:'{}'", server_.server, server_.port);
 #endif
   std::weak_ptr<int> alive = alive_check;
-  resolver.async_resolve(server_.server, server_.port,
+  resolver.async_resolve(server_.host, server_.port,
                          [buffers_ = buffers_, this,
                           alive = std::move(alive)](auto error, auto result) {
                            if (!alive.lock())

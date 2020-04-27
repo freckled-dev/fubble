@@ -2,9 +2,9 @@
 #define RTC_GOOGLE_TRACK_PTR_HPP
 
 #include <memory>
+#include "track.hpp"
 
 namespace rtc::google {
-class track;
 using track_ptr = std::shared_ptr<track>;
 } // namespace rtc::google
 

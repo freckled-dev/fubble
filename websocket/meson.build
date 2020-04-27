@@ -13,8 +13,7 @@ websocket_dep = declare_dependency(
 websocket_test = executable('websocket_test',
   ['test.cpp'],
   dependencies : [gtest_dep, boost_dep, websocket_dep],
-  link_with: [test_main],
-  install: true
+  link_with: [test_main]
   )
 test('websocket test', websocket_test, timeout: 8)
 
