@@ -58,17 +58,3 @@ subprocess.run(['conan', 'package',
     '--package-folder', paths.prefix_dir
     ], check=True)
 
-# TODO support release build
-# https://mesonbuild.com/Builtin-options.html#base-options
-# subprocess.run(['meson',
-#     paths.source_dir, paths.meson_dir,
-#     f'--prefix={paths.prefix_dir}',
-#     '-Db_sanitize=address',
-#     '-Db_lundef=false',
-#     '-Dwarning_level=3',
-#     f'-Dwerror={werror}'
-#     ])
-# 
-# subprocess.run(['ninja',
-#     '-C', paths.meson_dir])
-
