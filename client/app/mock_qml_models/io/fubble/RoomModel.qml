@@ -5,24 +5,24 @@ QtObject {
     property list<QtObject> participants: [
         QtObject {
             property var participant: ParticipantModel {
-                name: "first"
+                name: qsTr("first")
             }
         },
         QtObject {
             property var participant: ParticipantModel {
-                name: "second"
+                name: qsTr("second")
                 video_source: "/home/tamrielle/Downloads/Sintel_webm_extract.webm"
             }
         },
         QtObject {
             property var participant: ParticipantModel {
-                name: "third"
+                name: qsTr("third")
                 video_source: "/home/tamrielle/Downloads/Sintel_webm_extract.webm"
             }
         },
         QtObject {
             property var participant: ParticipantModel {
-                name: "fourth"
+                name: qsTr("fourth")
             }
         }
     ]

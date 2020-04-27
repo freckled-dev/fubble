@@ -5,6 +5,7 @@ import QtQuick.Layouts 1.0
 import QtQuick.Window 2.0
 import io.fubble 1.0
 import QtQuick.Controls.Material 2.0
+import Qt.labs.settings 1.0
 
 ApplicationWindow {
     visible: true
@@ -12,18 +13,20 @@ ApplicationWindow {
     height: 800
     minimumWidth: 800
     minimumHeight: 600
-    title: "fubble"
+    title: "Fubble"
     id: container
     property JoinModel joinModel: joinModelFromCpp
 
     // theme
-    Material.primary: Style.primary
-    Material.accent: Style.accent
+    Material.primary: Style.current.primary
+    Material.accent: Style.current.accent
+    Material.background: Style.current.background
+    Material.foreground: Style.current.foreground
 
     header: Header {
         title: stack.currentItem.title
-        Material.foreground: Style.foreground
     }
+
     StackView {
         id: stack
         initialItem: joinComponent
