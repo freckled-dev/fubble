@@ -1,5 +1,5 @@
 project('fubble', 'cpp',
-  meson_version : '=0.53.0',
+  meson_version : '>=0.53.0',
   default_options : ['cpp_std=c++17'])
 # there is a bug in meson 0.52.0. cant use boost with meson
 # https://github.com/mesonbuild/meson/issues/6003
@@ -22,18 +22,23 @@ endif
 
 boost_dep_pkg = dependency('boost', modules : [
     'thread', 'program_options', 'regex', 'log', 'log_setup', 'filesystem'
-    ]
+    ], static: true
 )
+boost_dep_link_with = []
+if host_machine.system() == 'windows'
+  boost_dep_link_with = ['bcrypt.lib']
+endif
 boost_dep = declare_dependency(
     compile_args : ['-DBOOST_THREAD_VERSION=5'
       # , '-DBOOST_LOG_DYN_LINK'
       ],
-    dependencies : [boost_dep_pkg]
+    dependencies : [boost_dep_pkg],
+    link_args: boost_dep_link_with
     )
 if get_option('with_tests')
   gtest_dep = dependency('gtest', include_type : 'system')
 else
-  gtest_tests = disabled
+  gtest_dep = disabled
 endif
 fmt_dep = dependency('fmt')
 json_dep = dependency('nlohmann_json')

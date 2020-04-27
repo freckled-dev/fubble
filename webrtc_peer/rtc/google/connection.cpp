@@ -4,10 +4,16 @@
 #include "uuid.hpp"
 #include "video_track_sink.hpp"
 #include <fmt/format.h>
+#include <boost/config.hpp>
 
-#if __cplusplus != 201402L
-#error                                                                         \
-    "file not compiled with c++14. This will lead to problems with abseil::optional"
+#if defined(ABSL_HAVE_STD_OPTIONAL)
+#if ABSL_HAVE_STD_OPTIONAL == 1
+#error abseil header uses c++17 optional! but webrtc gets compiled with c++14!
+#if __cplusplus >= 201703L
+#error file not compiled with c++14. This will lead to problems with \
+  abseil::optional
+#endif
+#endif
 #endif
 
 namespace std {

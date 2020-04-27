@@ -1,5 +1,5 @@
 from conans import ConanFile, Meson, tools
-
+import os
 
 class FubbleConan(ConanFile):
     name = "fubble"
@@ -40,7 +40,7 @@ class FubbleConan(ConanFile):
         if self.settings.os == "Windows":
             qt_path_bin = 'C:\\Qt\\5.14.2\\msvc2017_64\\bin'
             self.output.info(f"qt_path_bin:{qt_path_bin}")
-            addtional_paths += qt_path_bin
+            addtional_paths += [qt_path_bin]
 
         boost_path = self.deps_cpp_info["boost"].rootpath
         self.output.info(f"boost_path:{boost_path}")
@@ -66,13 +66,21 @@ class FubbleConan(ConanFile):
                     build_folder="meson",
                     defs={'cpp_std': 'c++17',
                         'with_servers': with_servers, 'with_tests': with_tests})
-        # meson.build(args=["-j1"])
-        # meson.build(args=["-k0"])
-        meson.build()
+            # meson.build(args=["-j1"])
+            # meson.build(args=["-k0"])
+            meson.build()
 
     def package(self):
         meson = Meson(self)
         meson.install(build_dir="meson")
+        if self.settings.os == "Windows":
+            qt_path_bin = 'C:\\Qt\\5.14.2\\msvc2017_64\\bin'
+            with tools.environment_append({"PATH": [qt_path_bin]}):
+                bin_dir = os.path.join(self.package_folder, 'bin')
+                with tools.chdir(bin_dir):
+                    qml_dir = os.path.join(self.source_folder, 'client', 'app')
+                    self.run('windeployqt.exe client_gui.exe -no-widgets --qmldir "%s"'
+                        % (qml_dir))
 
     def package_info(self):
         pass

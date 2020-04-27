@@ -16,7 +16,8 @@ def get_environment_variable_or(variable, or_):
 class Paths:
     def __init__(self):
         script_dir = os.path.realpath(__file__)
-        git_result = subprocess.run(['git', 'rev-parse', '--show-toplevel'], stdout=subprocess.PIPE, check=True)
+        git_result = subprocess.run(['git', 'rev-parse', '--show-toplevel'], 
+            stdout=subprocess.PIPE, check=True)
         self.source_dir = get_first_line_of_subprocess_result(git_result)
         self.build_dir = os.path.join(self.source_dir, '..', 'fubble_build')
         self.build_dir = get_environment_variable_or('FUBBLE_BUILD_DIR', self.build_dir)
@@ -33,9 +34,9 @@ except:
 
 subprocess.run(['conan', 'install', 
     '--build', 'missing', 
-    '--install-folder', paths.dependencies_dir, 
-    '-s', 'build_type=Debug', # TODO debug/release
-    paths.source_dir])
+    '--install-folder', paths.dependencies_dir,
+    paths.source_dir
+    ], check=True)
 
 werror = 'true'
 werror_environment = os.environ.get('FUBBLE_TREAT_WARNING_AS_ERROR')
@@ -48,14 +49,14 @@ subprocess.run(['conan', 'build',
     '--build-folder', paths.build_dir,
     '--install-folder', paths.dependencies_dir,
     '--package-folder', paths.prefix_dir
-    ])
+    ], check=True)
 
 subprocess.run(['conan', 'package',
     paths.source_dir,
     '--build-folder', paths.build_dir,
     '--install-folder', paths.dependencies_dir,
     '--package-folder', paths.prefix_dir
-    ])
+    ], check=True)
 
 # TODO support release build
 # https://mesonbuild.com/Builtin-options.html#base-options
