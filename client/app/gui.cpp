@@ -38,6 +38,7 @@
 #include <fmt/format.h>
 #include <thread>
 #include <QIcon>
+#include <QQuickStyle>
 
 int main(int argc, char *argv[])
 {
@@ -155,6 +156,10 @@ int main(int argc, char *argv[])
 
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
   QGuiApplication app(argc, argv);
+
+  // applying material style
+  QQuickStyle::setStyle("Material");
+
   app.setWindowIcon(QIcon(":/pics/logo.svg"));
   // we are regestering with full namespace. so use full namespace in signals
   // and properties

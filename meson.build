@@ -23,7 +23,7 @@ boost_di_dep = dependency('boost-di')
 gstreamer_webrtc_dep_pkg = dependency('gstreamer-webrtc-1.0', required : false)
 gstreamer_sdp_dep = dependency('gstreamer-sdp-1.0', required : false)
 qt5 = import('qt5')
-qt5_clear_dep = dependency('qt5', modules: ['Core', 'Quick', 'Multimedia', 'Svg'])
+qt5_clear_dep = dependency('qt5', modules: ['Core', 'Quick', 'Multimedia', 'Svg', 'QuickControls2'])
 # `QT_NO_EMIT` is neccessary because google webrtc declares a method/function called `emit`
 qt5_dep = declare_dependency(
   compile_args : ['-DQT_DEPRECATED_WARNINGS', '-DQT_QML_DEBUG=1', '-DQT_NO_EMIT'],
