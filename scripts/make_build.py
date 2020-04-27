@@ -30,7 +30,7 @@ paths = Paths()
 try:
     shutil.rmtree(paths.build_dir)
 except:
-    print("Could not delete the build_dir:'%s'" % (paths.build_dir))
+    print("Could not delete the build_dir:'%s'. Ignoring." % (paths.build_dir))
 
 subprocess.run(['conan', 'install', 
     '--build', 'missing', 
