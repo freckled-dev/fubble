@@ -21,7 +21,7 @@ Dialog {
 
         Label {
             width: aboutDialog.availableWidth
-            text: "About"
+            text: qsTr("About")
             font.bold: true
             horizontalAlignment: Text.AlignHCenter
             font.pixelSize: 16
@@ -37,14 +37,14 @@ Dialog {
 
         Label {
             width: aboutDialog.availableWidth
-            text: "Fubble"
+            text: qsTr("Fubble")
             horizontalAlignment: Text.AlignHCenter
             font.pixelSize: 16
         }
 
         Label {
             width: aboutDialog.availableWidth
-            text: "by Freckled OG"
+            text: qsTr("by Freckled OG")
             horizontalAlignment: Text.AlignHCenter
             font.pixelSize: 14
         }
