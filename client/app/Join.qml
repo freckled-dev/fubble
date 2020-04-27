@@ -66,7 +66,7 @@ FocusScope {
             width: 300
             text: qsTr("Join")
             Layout.fillHeight: false
-            Material.foreground: "#ffffff"
+            Material.foreground: Style.foreground
             Material.background: Material.primary
             Layout.preferredWidth: 300
             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter

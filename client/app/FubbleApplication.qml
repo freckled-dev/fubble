@@ -17,12 +17,12 @@ ApplicationWindow {
     property JoinModel joinModel: joinModelFromCpp
 
     // theme
-    Material.primary: "#0277BD"
-    Material.accent: "#fd7d3e"
+    Material.primary: Style.primary
+    Material.accent: Style.accent
 
     header: Header {
         title: stack.currentItem.title
-        Material.foreground: "#ffffff"
+        Material.foreground: Style.foreground
     }
     StackView {
         id: stack
