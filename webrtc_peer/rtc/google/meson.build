@@ -1,8 +1,7 @@
 evaluation = executable('webrtc_google_peer_evaluation',
   ['evaluation.cpp'],
   dependencies: [utils_dep, google_webrtc_dep, signalling_client_dep],
-  override_options: ['cpp_std=c++14'],
-  install: true
+  override_options: ['cpp_std=c++14']
   )
 
 webrtc_google_peer = library('webrtc_google_peer',
@@ -27,8 +26,7 @@ webrtc_google_peer_dep = declare_dependency(
 webrtc_google_peer_test = executable('google_peer_test',
   ['connection_test.cpp'],
   dependencies: [gtest_dep, webrtc_google_peer_dep, fmt_dep],
-  link_with: [test_main],
-  install: true
+  link_with: [test_main]
   )
 suppr_file = meson.source_root() / 'webrtc_peer/lsan_suppressions_google'
 suppr_option = 'LSAN_OPTIONS=suppressions=' + suppr_file
@@ -42,8 +40,7 @@ test('webrtc_google_peer test',
 webrtc_google_asio_thread_test = executable('webrtc_google_asio_thread_test',
   ['asio_signalling_thread_test.cpp'],
   dependencies: [gtest_dep, webrtc_google_peer_dep, fmt_dep],
-  link_with: [test_main],
-  install: true
+  link_with: [test_main]
   )
 test('asio_signalling_thread test',
   webrtc_google_asio_thread_test,
