@@ -25,8 +25,7 @@ temporary_room_test = executable('temporary_room_test',
     'matrix/room_factory.cpp', 'net/acceptor_test.cpp',
     'net/server_test.cpp'],
   dependencies : [gtest_dep, temporary_room_dep],
-  link_with: [websocket, test_main],
-  install: true
+  link_with: [websocket, test_main]
   )
 test('temporary_room test', temporary_room_test, timeout: 10)
 
