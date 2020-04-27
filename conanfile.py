@@ -76,7 +76,7 @@ class FubbleConan(ConanFile):
             self.output.info("1")
             self.run('where meson')
             self.output.info("2")
-            self.run('$Env:Path')
+            self.run('echo %PATH%')
             self.output.info("after meson version")
             meson.configure( build_folder="meson", defs=meson_options)
             # meson.build(args=["-j1"])
