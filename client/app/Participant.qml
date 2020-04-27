@@ -10,7 +10,7 @@ GridLayout {
     columns: 1
     ToolBar {
         Layout.fillWidth: true
-        Material.foreground: "#ffffff"
+        Material.foreground: Style.foreground
 
         RowLayout {
             anchors.fill: parent

@@ -52,27 +52,8 @@ ToolBar {
             }
         }
     }
-    Dialog {
+
+    About {
         id: aboutDialog
-        modal: true
-        focus: true
-        title: "About"
-        x: (container.width - width) / 2
-        y: container.height / 6
-        width: Math.min(container.width, container.height) / 3 * 2
-        contentHeight: aboutColumn.height
-
-        Column {
-            id: aboutColumn
-            spacing: 20
-
-            Label {
-                width: aboutDialog.availableWidth
-                text: "Fubble by <i>Freckled OG</i>.<br><a href='https://freckled.dev/contact'>Contact us at freckled.dev/contact</a>"
-                onLinkActivated: Qt.openUrlExternally(link)
-                wrapMode: Label.Wrap
-                font.pixelSize: 12
-            }
-        }
     }
 }
