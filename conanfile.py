@@ -56,16 +56,21 @@ class FubbleConan(ConanFile):
         if self.settings.os == "Linux":
             with_servers = True
 
+        # https://mesonbuild.com/Builtin-options.html#base-options
+        meson_options = {'cpp_std': 'c++17', 'warning_level': '3',
+                        'with_servers': with_servers, 'with_tests': with_tests}
+        # meson_options['werror'] = 'true'
+        build_type = self.settings.get_safe("build_type", default="Release")
+        if build_type == 'Debug' and self.settings.os == 'Linux':
+            meson_options['b_sanitize'] = 'address'
+
         meson = Meson(self)
         with tools.environment_append({
                 "PATH": addtional_paths,
                 "BOOST_ROOT": boost_path,
                 "BOOST_INCLUDEDIR": boost_include_path,
                 "BOOST_LIBRARYDIR": boost_library_path}):
-            meson.configure(
-                    build_folder="meson",
-                    defs={'cpp_std': 'c++17',
-                        'with_servers': with_servers, 'with_tests': with_tests})
+            meson.configure( build_folder="meson", defs=meson_options)
             # meson.build(args=["-j1"])
             # meson.build(args=["-k0"])
             meson.build()

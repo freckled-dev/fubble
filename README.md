@@ -171,7 +171,7 @@ install cmake for, needed by qt dependencies
 
 add conan remotes
 ```bat
-conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
+conan remote add bincrafters "https://api.bintray.com/conan/bincrafters/public-conan"
 conan remote add inexorgame "https://api.bintray.com/conan/inexorgame/inexor-conan"
 conan remote add google_webrtc "https://api.bintray.com/conan/freckled/google-webrtc"
 ```
