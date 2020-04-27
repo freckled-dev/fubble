@@ -38,6 +38,6 @@ build windows release:
     - conan remote add inexorgame "https://api.bintray.com/conan/inexorgame/inexor-conan"
     - conan remote add google_webrtc "https://api.bintray.com/conan/freckled/google-webrtc"
     # - scripts/make_build.py
-    - conan install .
+    - conan install . --build missing
     - conan build .
 
