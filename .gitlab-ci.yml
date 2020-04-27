@@ -1,8 +1,8 @@
 
-include:
-  - local: '/web/landing/.gitlab-ci.yml'
+#include:
+#  - local: '/web/landing/.gitlab-ci.yml'
 
-build debug:
+.build debug:
   image: registry.gitlab.com/acof/fubble/ci/build_ubuntu_1804:v0
   stage: build
   services:
@@ -21,4 +21,12 @@ build debug:
     untracked: true
     expire_in: 1 week
     when: always
+
+build windows release:
+  stage: build
+  tags:
+    - windows
+  script:
+    - choco install python
+    - pip3 install conan meson
 
