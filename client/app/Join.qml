@@ -60,8 +60,6 @@ FocusScope {
                 placeholderText: "Room"
                 Layout.fillWidth: true
                 focus: true
-                placeholderTextColor: Style.current.foreground
-                color: Style.current.foreground
                 onAccepted: name.focus = true
             }
 
