@@ -26,6 +26,7 @@ class FubbleConan(ConanFile):
         #    # there's no out of the box support for qml. and compiling it yourself fails.
         #    # TODO find out why self compile does not work and contribute
         #    self.build_requires("qt/5.14.0@bincrafters/stable")
+        self.build_requires("meson/0.54.0")
         self.build_requires("nlohmann_json/3.7.0")
         self.build_requires("boost-di/1.1.0@inexorgame/stable")
         self.build_requires("boost/1.72.0")
