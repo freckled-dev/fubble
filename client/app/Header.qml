@@ -5,6 +5,8 @@ import QtQuick.Controls.Material 2.0
 
 ToolBar {
     property string title
+    property alias settings: settings
+    Material.foreground: Style.current.buttonTextColor
 
 
     /*
@@ -39,11 +41,13 @@ ToolBar {
             // this nice cog.svg works with qt5.10 onwards :(
             // icon.source: "cog.svg"
             Menu {
+                Material.foreground: Style.current.foreground
                 id: optionsMenu
                 x: parent.width - width
                 transformOrigin: Menu.TopRight
                 MenuItem {
                     text: "Settings"
+                    onTriggered: settings.open()
                 }
                 MenuItem {
                     text: "About"
@@ -55,5 +59,9 @@ ToolBar {
 
     About {
         id: aboutDialog
+    }
+
+    Settings {
+        id: settings
     }
 }
