@@ -31,6 +31,6 @@ build windows release:
     # - refreshenv # did not work
     - $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
     - python --version
-    - pip install -y conan meson
+    - pip install conan meson
     - python scripts/make_build.py
 
