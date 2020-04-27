@@ -29,5 +29,6 @@ build windows release:
   script:
     - choco install -y --no-progress python
     - refreshenv
-    - pip install conan meson
+    - python --version
+    - pyhton -m pip install -y conan meson
 
