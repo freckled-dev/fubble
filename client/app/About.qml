@@ -1,7 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.2
-import QtQuick.Layouts 1.12
-import QtQuick.Controls.Material 2.12
+import QtQuick.Layouts 1.0
+import QtQuick.Controls.Material 2.0
 
 Dialog {
     id: aboutDialog
@@ -31,7 +31,7 @@ Dialog {
             width: 100
             height: 100
             anchors.horizontalCenter: parent.horizontalCenter
-            source: "pics/Logo.svg"
+            source: "pics/logo.svg"
             fillMode: Image.PreserveAspectFit
         }
 
