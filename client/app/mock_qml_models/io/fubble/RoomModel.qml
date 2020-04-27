@@ -11,7 +11,18 @@ QtObject {
         QtObject {
             property var participant: ParticipantModel {
                 name: "second"
-                video_source: "file:///home/mlanner/Downloads/Sintel_webm_extract.webm"
+                video_source: "/home/tamrielle/Downloads/Sintel_webm_extract.webm"
+            }
+        },
+        QtObject {
+            property var participant: ParticipantModel {
+                name: "third"
+                video_source: "/home/tamrielle/Downloads/Sintel_webm_extract.webm"
+            }
+        },
+        QtObject {
+            property var participant: ParticipantModel {
+                name: "fourth"
             }
         }
     ]
