@@ -72,9 +72,9 @@ class FubbleConan(ConanFile):
                 "BOOST_INCLUDEDIR": boost_include_path,
                 "BOOST_LIBRARYDIR": boost_library_path}):
             meson.configure( build_folder="meson", defs=meson_options)
-            # meson.build(args=["-j1"])
+            meson.build(args=["-j1"])
             # meson.build(args=["-k0"])
-            meson.build()
+            # meson.build()
 
     def package(self):
         meson = Meson(self)
