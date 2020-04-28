@@ -13,6 +13,7 @@
         <file>Theme.qml</file>
         <file>qmldir</file>
         <file>pics/logo.svg</file>
+        <file>no_video.svg</file>
     </qresource>
 </RCC>
 
