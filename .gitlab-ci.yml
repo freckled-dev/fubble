@@ -29,7 +29,7 @@ build windows release:
   variables:
     FUBBLE_TREAT_WARNING_AS_ERROR: 0
     FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install
-    FUBBLE_BUILD_NINJA_JOBS: '2'
+    FUBBLE_BUILD_NINJA_JOBS: '1'
   script:
     - choco install -y --no-progress python pkgconfiglite
     # - refreshenv # did not work
