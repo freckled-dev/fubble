@@ -26,6 +26,8 @@ class FubbleConan(ConanFile):
         #    # there's no out of the box support for qml. and compiling it yourself fails.
         #    # TODO find out why self compile does not work and contribute
         #    self.build_requires("qt/5.14.0@bincrafters/stable")
+        if not tools.which('meson'):
+            self.build_requires("meson/0.54.0")
         self.build_requires("nlohmann_json/3.7.0")
         self.build_requires("boost-di/1.1.0@inexorgame/stable")
         self.build_requires("boost/1.72.0")
@@ -57,7 +59,7 @@ class FubbleConan(ConanFile):
             with_servers = True
 
         # https://mesonbuild.com/Builtin-options.html#base-options
-        meson_options = {'cpp_std': 'c++17', 
+        meson_options = {'cpp_std': 'c++17', 'b_ndebug': 'if-release',
                         'with_servers': with_servers, 'with_tests': with_tests}
         # meson_options['warning_level'] = '3'
         # meson_options['werror'] = 'true'
@@ -65,6 +67,7 @@ class FubbleConan(ConanFile):
         if build_type == 'Debug' and self.settings.os == 'Linux':
             meson_options['b_sanitize'] = 'address'
 
+        ninja_jobs = os.getenv('FUBBLE_BUILD_NINJA_JOBS')
         meson = Meson(self)
         with tools.environment_append({
                 "PATH": addtional_paths,
@@ -72,7 +75,10 @@ class FubbleConan(ConanFile):
                 "BOOST_INCLUDEDIR": boost_include_path,
                 "BOOST_LIBRARYDIR": boost_library_path}):
             meson.configure( build_folder="meson", defs=meson_options)
-            meson.build(args=["-j1"])
+            build_args = []
+            if ninja_jobs:
+                build_args += [f'-j {ninja_jobs}']
+            meson.build(args=build_args)
             # meson.build(args=["-k0"])
             # meson.build()
 

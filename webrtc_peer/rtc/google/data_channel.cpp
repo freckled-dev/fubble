@@ -35,7 +35,8 @@ void data_channel::send(const rtc::message &message_) {
   const char *data_ptr = reinterpret_cast<const char *>(message_.data.data());
   rtc::CopyOnWriteBuffer buffer{data_ptr, message_.data.size()};
   const webrtc::DataBuffer wrapped{buffer, message_.binary};
-  [[maybe_unused]] auto success = native->Send(wrapped);
+  auto success = native->Send(wrapped);
+  (void)success;
   BOOST_ASSERT(success);
 }
 
