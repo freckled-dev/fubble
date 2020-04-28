@@ -4,15 +4,17 @@ import QtQuick.Controls 2.2
 import Qt.labs.settings 1.0
 import "."
 
-Dialog {
+Popup {
     id: settingsDialog
     modal: true
     focus: true
     x: (container.width - width) / 2
     y: container.height / 6
-    width: Math.min(container.width, container.height) / 3 * 2
-    contentHeight: settingsContainer.height
     Material.foreground: Style.current.foreground
+    width: 400
+    height: 350
+    topMargin: 1
+    padding: 0
 
     property alias darkMode: settings.darkMode
 
@@ -21,10 +23,20 @@ Dialog {
         property alias darkMode: darkModeSwitch.checked
     }
 
+    Rectangle {
+        id: rectangle
+        color: "#00000000"
+        radius: 5
+        border.width: 1
+        border.color: "#ffffff"
+        anchors.fill: parent
+    }
+
     Column {
         id: settingsContainer
         height: 280
-        spacing: 10
+        anchors.topMargin: 20
+        spacing: 20
         anchors.fill: parent
 
         Label {
