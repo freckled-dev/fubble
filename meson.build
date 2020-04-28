@@ -22,7 +22,7 @@ endif
 
 boost_dep_pkg = dependency('boost', modules : [
     'thread', 'program_options', 'regex', 'log', 'log_setup', 'filesystem'
-    ], static: true
+    ], static: true, include_type : 'system'
 )
 boost_dep_link_with = []
 if host_machine.system() == 'windows'
