@@ -41,7 +41,7 @@ class FubbleConan(ConanFile):
         if self.settings.os == "Windows":
             qt_path_bin = 'C:\\Qt\\5.14.2\\msvc2017_64\\bin'
             self.output.info(f"qt_path_bin:{qt_path_bin}")
-            # addtional_paths += [qt_path_bin]
+            addtional_paths += [qt_path_bin]
 
         boost_path = self.deps_cpp_info["boost"].rootpath
         self.output.info(f"boost_path:{boost_path}")
