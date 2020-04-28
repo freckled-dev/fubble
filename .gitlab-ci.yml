@@ -27,7 +27,7 @@ build windows release:
   tags:
     - windows
   script:
-    - choco install -y --no-progress python
+    - choco install -y --no-progress python pkgconfiglite
     # - refreshenv # did not work
     - $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
     - python --version
