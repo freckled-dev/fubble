@@ -36,7 +36,7 @@ subprocess.run(['conan', 'install',
     '--build', 'missing', 
     '--install-folder', paths.dependencies_dir,
     paths.source_dir
-    ], check=True, shell=True)
+    ], check=True)
 
 werror = 'true'
 werror_environment = os.environ.get('FUBBLE_TREAT_WARNING_AS_ERROR')
@@ -49,7 +49,7 @@ subprocess.run(['conan', 'build',
     '--build-folder', paths.build_dir,
     '--install-folder', paths.dependencies_dir,
     '--package-folder', paths.prefix_dir
-    ], check=True, shell=True)
+    ], check=True)
 
 subprocess.run(['conan', 'package',
     paths.source_dir,

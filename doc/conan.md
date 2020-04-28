@@ -7,3 +7,8 @@ conan search harfbuzz/2.6.4@bincrafters/stable -r bincrafters -q "os=Windows AND
 conan search google-webrtc/m79@
 ```
 
+## more information about proccesses
+
+https://docs.conan.io/en/latest/reference/conanfile/other.html#running-commands
+`CONAN_PRINT_RUN_COMMANDS`
+
