@@ -148,7 +148,7 @@ boost::future<rtc::session_description> connection::create_answer() {
 }
 
 boost::future<void>
-connection::set_local_description(const session_description &description) {
+connection::set_local_description(const rtc::session_description &description) {
   BOOST_LOG_SEV(logger, logging::severity::info) << "set_local_description";
   try {
     auto casted = cast_session_description(description);
@@ -164,7 +164,7 @@ connection::set_local_description(const session_description &description) {
 }
 
 boost::future<void>
-connection::set_remote_description(const session_description &description) {
+connection::set_remote_description(const rtc::session_description &description) {
   BOOST_LOG_SEV(logger, logging::severity::info)
       << "set_remote_description, description:" << description.sdp;
   try {
@@ -180,7 +180,7 @@ connection::set_remote_description(const session_description &description) {
   }
 }
 
-void connection::add_ice_candidate(const ice_candidate &candidate) {
+void connection::add_ice_candidate(const rtc::ice_candidate &candidate) {
   BOOST_LOG_SEV(logger, logging::severity::info) << "on_ice_candidate";
   webrtc::SdpParseError error;
   std::unique_ptr<webrtc::IceCandidateInterface> parsed{

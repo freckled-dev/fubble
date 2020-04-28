@@ -3,14 +3,24 @@ import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.0
 import QtQuick.Controls.Material 2.0
 
-Dialog {
+Popup {
     id: aboutDialog
     modal: true
     focus: true
     x: (container.width - width) / 2
     y: container.height / 6
-    width: Math.min(container.width, container.height) / 3 * 2
-    contentHeight: aboutColumn.height
+    width: 400
+    height: 350
+    padding: 0
+
+    Rectangle {
+        id: rectangle
+        color: "#00000000"
+        radius: 5
+        border.width: 1
+        border.color: "#ffffff"
+        anchors.fill: parent
+    }
 
     Column {
         id: aboutColumn
@@ -24,7 +34,7 @@ Dialog {
             text: qsTr("About")
             font.bold: true
             horizontalAlignment: Text.AlignHCenter
-            font.pixelSize: 16
+            font.pixelSize: 18
         }
 
         Image {
@@ -61,7 +71,7 @@ Dialog {
 
 /*##^##
 Designer {
-    D{i:1;anchors_height:222}
+    D{i:1;anchors_height:200;anchors_width:200;anchors_x:41;anchors_y:29}D{i:2;anchors_height:222}
 }
 ##^##*/
 

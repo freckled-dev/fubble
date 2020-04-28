@@ -8,15 +8,16 @@ import QtQuick.Controls.Material 2.0
 GridLayout {
     property ParticipantModel participant
     columns: 1
+
     ToolBar {
         Layout.fillWidth: true
-        Material.foreground: Style.foreground
 
         RowLayout {
             anchors.fill: parent
             Label {
                 Layout.fillWidth: true
                 font.pixelSize: 20
+                Material.foreground: Style.current.buttonTextColor
                 text: participant.name
                 elide: Label.ElideRight
                 horizontalAlignment: Qt.AlignHCenter
