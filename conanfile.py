@@ -58,7 +58,7 @@ class FubbleConan(ConanFile):
             with_servers = True
 
         # https://mesonbuild.com/Builtin-options.html#base-options
-        meson_options = {'cpp_std': 'c++17', 
+        meson_options = {'cpp_std': 'c++17', 'b_ndebug': 'if-release',
                         'with_servers': with_servers, 'with_tests': with_tests}
         # meson_options['warning_level'] = '3'
         # meson_options['werror'] = 'true'
