@@ -2,7 +2,7 @@
 #include:
 #  - local: '/web/landing/.gitlab-ci.yml'
 
-.build debug:
+.build ubuntu_18.04 release:
   image: registry.gitlab.com/acof/fubble/ci/build_ubuntu_1804:v0
   stage: build
   services:
@@ -26,6 +26,10 @@ build windows release:
   stage: build
   tags:
     - windows
+  variables:
+    FUBBLE_TREAT_WARNING_AS_ERROR: 0
+    FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install
+    FUBBLE_BUILD_NINJA_JOBS: '2'
   script:
     - choco install -y --no-progress python pkgconfiglite
     # - refreshenv # did not work
@@ -38,4 +42,8 @@ build windows release:
     - conan remote add inexorgame "https://api.bintray.com/conan/inexorgame/inexor-conan"
     - conan remote add google_webrtc "https://api.bintray.com/conan/freckled/google-webrtc"
     - python scripts/make_build.py
+  artifacts:
+    untracked: true
+    expire_in: 1 week
+    when: always
 

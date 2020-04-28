@@ -66,6 +66,7 @@ class FubbleConan(ConanFile):
         if build_type == 'Debug' and self.settings.os == 'Linux':
             meson_options['b_sanitize'] = 'address'
 
+        ninja_jobs = os.getenv('FUBBLE_BUILD_NINJA_JOBS')
         meson = Meson(self)
         with tools.environment_append({
                 "PATH": addtional_paths,
@@ -73,7 +74,10 @@ class FubbleConan(ConanFile):
                 "BOOST_INCLUDEDIR": boost_include_path,
                 "BOOST_LIBRARYDIR": boost_library_path}):
             meson.configure( build_folder="meson", defs=meson_options)
-            meson.build(args=["-j1"])
+            build_args = []
+            if ninja_jobs:
+                build_args += [f'-j {ninja_jobs}']
+            meson.build(args=build_args)
             # meson.build(args=["-k0"])
             # meson.build()
 
