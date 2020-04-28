@@ -4,6 +4,8 @@ import os
 import subprocess
 import shutil
 
+print('make_build')
+
 def get_first_line_of_subprocess_result(result):
     return result.stdout.decode('utf-8').partition('\n')[0]
 
@@ -16,7 +18,7 @@ def get_environment_variable_or(variable, or_):
 class Paths:
     def __init__(self):
         script_dir = os.path.realpath(__file__)
-        git_result = subprocess.run(['git', 'rev-parse', '--show-toplevel'], 
+        git_result = subprocess.run(['git', 'rev-parse', '--show-toplevel'],
             stdout=subprocess.PIPE, check=True)
         self.source_dir = get_first_line_of_subprocess_result(git_result)
         self.build_dir = os.path.join(self.source_dir, '..', 'fubble_build')
@@ -32,8 +34,8 @@ try:
 except:
     print("Could not delete the build_dir:'%s'. Ignoring." % (paths.build_dir))
 
-subprocess.run(['conan', 'install', 
-    '--build', 'missing', 
+subprocess.run(['conan', 'install',
+    '--build', 'missing',
     '--install-folder', paths.dependencies_dir,
     paths.source_dir
     ], check=True)
