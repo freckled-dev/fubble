@@ -7,6 +7,10 @@
         <file>Room.qml</file>
         <file>About.qml</file>
         <file>Style.qml</file>
+        <file>Settings.qml</file>
+        <file>ThemeLight.qml</file>
+        <file>ThemeDark.qml</file>
+        <file>Theme.qml</file>
         <file>qmldir</file>
         <file>pics/logo.svg</file>
     </qresource>

@@ -21,7 +21,6 @@ GridLayout {
     Component {
         id: participantComponent
         Participant {
-
             Layout.margins: 10
             // Layout.fillWidth: true
             Layout.maximumWidth: container.width / 2
