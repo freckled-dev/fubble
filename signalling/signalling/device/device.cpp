@@ -3,7 +3,7 @@
 
 using namespace signalling::device;
 
-device::device(connection_ptr connection_) : connection_(connection_) {
+device::device(signalling::connection_ptr connection_) : connection_(connection_) {
   callback_connections.emplace_back(connection_->on_offer.connect(
       [this](const auto &offer) { on_offer(offer); }));
   callback_connections.emplace_back(connection_->on_ice_candidate.connect(
@@ -25,9 +25,9 @@ void device::set_partner(const device_wptr &partner_) {
 
 void device::close() { connection_->close(); }
 
-void device::send_offer(const offer &offer) { connection_->send_offer(offer); }
+void device::send_offer(const signalling::offer &offer) { connection_->send_offer(offer); }
 
-void device::send_answer(const answer &answer) {
+void device::send_answer(const signalling::answer &answer) {
   connection_->send_answer(answer);
   BOOST_ASSERT(active_negotiating);
   active_negotiating = false;
@@ -41,7 +41,7 @@ void device::send_answer(const answer &answer) {
   partner_strong->negotiate();
 }
 
-void device::send_ice_candidate(const ice_candidate &candidate) {
+void device::send_ice_candidate(const signalling::ice_candidate &candidate) {
   connection_->send_ice_candidate(candidate);
 }
 
@@ -64,7 +64,7 @@ void device::negotiate() {
   connection_->send_do_offer();
 }
 
-void device::on_want_to_negotiate(const want_to_negotiate &) {
+void device::on_want_to_negotiate(const signalling::want_to_negotiate &) {
   wants_to_negotiate = true;
   auto partner_strong = partner.lock();
   if (!partner_strong)
@@ -72,7 +72,7 @@ void device::on_want_to_negotiate(const want_to_negotiate &) {
   negotiate();
 }
 
-void device::on_answer(const answer &answer_) {
+void device::on_answer(const signalling::answer &answer_) {
   auto partner_strong = partner.lock();
   if (partner_strong) {
     partner_strong->send_answer(answer_);
@@ -82,7 +82,7 @@ void device::on_answer(const answer &answer_) {
   BOOST_ASSERT(false);
 }
 
-void device::on_offer(const offer &work) {
+void device::on_offer(const signalling::offer &work) {
   auto partner_strong = partner.lock();
   if (partner_strong) {
     partner_strong->send_offer(work);
@@ -92,7 +92,7 @@ void device::on_offer(const offer &work) {
   BOOST_ASSERT(false);
 }
 
-void device::on_ice_candidate(const ice_candidate &candidate) {
+void device::on_ice_candidate(const signalling::ice_candidate &candidate) {
   auto partner_strong = partner.lock();
   if (partner_strong) {
     partner_strong->send_ice_candidate(candidate);

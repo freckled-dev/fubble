@@ -2,7 +2,8 @@
 
 using namespace temporary_room::server;
 
-server::server(net::server::server &net_server, rooms::rooms &rooms)
+server::server(temporary_room::net::server::server &net_server,
+              temporary_room::rooms::rooms &rooms)
     : net_server(net_server), rooms(rooms) {
   net_server.on_join = [this](const auto &name, const auto &user_id) {
     return on_join(name, user_id);
