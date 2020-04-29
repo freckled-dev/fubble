@@ -11,6 +11,9 @@
         <file>ThemeLight.qml</file>
         <file>ThemeDark.qml</file>
         <file>Theme.qml</file>
+        <file>NoVideo.qml</file>
+        <file>Overview.qml</file>
+        <file>VideoWall.qml</file>
         <file>qmldir</file>
         <file>pics/logo.svg</file>
         <file>no_video.svg</file>
