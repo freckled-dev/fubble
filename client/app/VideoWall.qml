@@ -36,8 +36,8 @@ Rectangle {
                 id: participantComponent
 
                 Participant {
-                    Layout.preferredWidth: participantGrid.width / participantGrid.columns - 20
-                    Layout.preferredHeight: participantGrid.height / participantGrid.rows - 20
+                    //Layout.preferredWidth: participantGrid.width / participantGrid.columns - 20
+                    //Layout.preferredHeight: participantGrid.height / participantGrid.rows - 20
                     //Layout.fillHeight: true
                     participant: model.participant
                 }
