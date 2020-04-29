@@ -25,7 +25,7 @@ Rectangle {
             Layout.fillWidth: true
             rowSpacing: 10
             columnSpacing: 10
-            columns: 2
+            columns: calculateColumns()
 
             Repeater {
                 model: layout.room.participants
@@ -46,10 +46,11 @@ Rectangle {
             }
 
             function calculateColumns() {
-                var aspectRatio = Math.round(
-                            participantGrid.width / participantGrid.height)
+                var aspectRatio = participantGrid.width / participantGrid.height
+                var numParticipants = layout.room.participants.length
+                aspectRatio = aspectRatio * Math.sqrt(numParticipants)
+                aspectRatio = Math.round(aspectRatio)
                 aspectRatio = Math.max(1, aspectRatio)
-                console.log(aspectRatio)
                 return aspectRatio
             }
         }
