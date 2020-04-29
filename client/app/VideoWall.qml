@@ -39,6 +39,8 @@ Rectangle {
                     //Layout.preferredWidth: participantGrid.width / participantGrid.columns - 20
                     //Layout.preferredHeight: participantGrid.height / participantGrid.rows - 20
                     //Layout.fillHeight: true
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
                     participant: model.participant
                 }
             }
