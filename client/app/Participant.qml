@@ -37,7 +37,6 @@ ColumnLayout {
     Image {
         Layout.fillWidth: true
         Layout.fillHeight: true
-        Layout.preferredHeight: width * 3 / 4
         fillMode: Image.PreserveAspectFit
         visible: !participant.videoAvailable
         source: "pics/no_video.svg"
