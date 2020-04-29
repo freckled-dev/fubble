@@ -5,27 +5,27 @@ import QtQuick.Layouts 1.0
 import QtQuick.Window 2.0
 import io.fubble 1.0
 
-GridLayout {
+RowLayout {
+
     id: layout
-    columns: 2
-    // rowSpacing: 20
-    // columnSpacing: 20
     property RoomModel room
     property var title: layout.room.name
 
-    Repeater {
-        model: layout.room.participants
-        delegate: participantComponent
+    Overview {
+        id: overview
+        width: 300
+        Layout.fillHeight: true
     }
 
-    Component {
-        id: participantComponent
-        Participant {
-            Layout.margins: 10
-            // Layout.fillWidth: true
-            Layout.maximumWidth: container.width / 2
-            Layout.maximumHeight: container.height / 2
-            participant: model.participant
-        }
+    VideoWall {
+        id: videoWall
+        Layout.fillHeight: true
+        Layout.fillWidth: true
     }
 }
+/*##^##
+Designer {
+    D{i:0;autoSize:true;height:480;width:640}
+}
+##^##*/
+

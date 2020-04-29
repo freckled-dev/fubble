@@ -15,7 +15,6 @@ QtObject {
     }*/
     signal joined(RoomModel room)
     function join(room, name) {
-        console.log("name:", name, "room:", room)
         var component = Qt.createComponent("RoomModel.qml")
         var roomModel = component.createObject(container)
         roomModel.name = room
