@@ -10,11 +10,7 @@ Rectangle {
     color: "#236ab1"
 
     ColumnLayout {
-        height: 21
-        anchors.top: parent.top
-        anchors.topMargin: 0
-        anchors.right: parent.right
-        anchors.left: parent.left
+        anchors.fill: parent
 
         Label {
             text: qsTr("Participants")
@@ -29,7 +25,7 @@ Rectangle {
             Layout.fillWidth: true
             rowSpacing: 10
             columnSpacing: 10
-            columns: 4
+            columns: 2
 
             Repeater {
                 model: layout.room.participants
@@ -40,10 +36,19 @@ Rectangle {
                 id: participantComponent
 
                 Participant {
-                    Layout.fillWidth: true
+                    Layout.preferredWidth: participantGrid.width / participantGrid.columns - 20
+                    Layout.preferredHeight: participantGrid.height / participantGrid.rows - 20
+                    //Layout.fillHeight: true
                     participant: model.participant
-                    Layout.preferredHeight: width
                 }
+            }
+
+            function calculateColumns() {
+                var aspectRatio = Math.round(
+                            participantGrid.width / participantGrid.height)
+                aspectRatio = Math.max(1, aspectRatio)
+                console.log(aspectRatio)
+                return aspectRatio
             }
         }
     }

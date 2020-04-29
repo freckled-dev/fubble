@@ -5,45 +5,44 @@ import QtQuick.Layouts 1.0
 import io.fubble 1.0
 import QtQuick.Controls.Material 2.0
 
-Rectangle {
-    color: "#efd4d4"
-    radius: 5
-    border.color: "#3d556d"
+//Rectangle {
+//    color: "#efd4d4"
+//    radius: 5
+//    border.color: "#3d556d"
+//    property ParticipantModel participant
+ColumnLayout {
     property ParticipantModel participant
 
-    ColumnLayout {
-        anchors.fill: parent
+    ToolBar {
+        Layout.fillWidth: true
 
-        ToolBar {
-            Layout.fillWidth: true
-
-            RowLayout {
-                anchors.fill: parent
-                Label {
-                    font.pixelSize: 20
-                    Material.foreground: Style.current.buttonTextColor
-                    text: participant.name
-                    elide: Label.ElideRight
-                    horizontalAlignment: Qt.AlignHCenter
-                    verticalAlignment: Qt.AlignVCenter
-                }
+        RowLayout {
+            anchors.fill: parent
+            Label {
+                font.pixelSize: 20
+                Material.foreground: Style.current.buttonTextColor
+                text: participant.name
+                elide: Label.ElideRight
+                horizontalAlignment: Qt.AlignHCenter
+                verticalAlignment: Qt.AlignVCenter
             }
         }
-
-        //        VideoOutput {
-        //            //source: videosModel.ownVideo
-        //            source: participant.video
-        //            visible: participant.videoAvailable
-        //        }
-        Image {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            fillMode: Image.PreserveAspectFit
-            visible: !participant.videoAvailable
-            source: "pics/no_video.svg"
-        }
     }
-}
+
+    //        VideoOutput {
+    //            //source: videosModel.ownVideo
+    //            source: participant.video
+    //            visible: participant.videoAvailable
+    //        }
+    Image {
+        Layout.fillWidth: true
+        Layout.fillHeight: true
+        Layout.preferredHeight: width * 3 / 4
+        fillMode: Image.PreserveAspectFit
+        visible: !participant.videoAvailable
+        source: "pics/no_video.svg"
+    }
+} //}
 
 /*##^##
 Designer {
