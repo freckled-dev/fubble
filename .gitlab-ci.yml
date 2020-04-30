@@ -31,7 +31,6 @@ appimage:
   dependencies:
     - build ubuntu_18.04 release
   variables:
-    QML_SOURCES_PATHS: ${CI_PROJECT_DIR}/client/app
     FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install
   script:
     ./scripts/ci/package_appimage
