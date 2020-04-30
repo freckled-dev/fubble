@@ -7,6 +7,23 @@ sudo apt-get install fish
 ./scripts/install_system_dependencies
 FUBBLE_TREAT_WARNING_AS_ERROR=0 ./scripts/make_build.py
 
+# ubuntu 14.04
+sudo apt-get update
+sudo apt-get install -y python3.5 curl
+curl -L https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+python3.5 get-pip.py
+python3.5 -m pip install --user conan
+export PATH="$HOME/.local/bin:$PATH
+sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
+sudo apt-get update
+sudo apt-get install -y g++-9
+conan profile update settings.compiler.version=9 default
+conan profile update settings.compiler.libcxx=libstdc++11 default
+
+curl -LO https://raw.githubusercontent.com/freckled-dev/conan-google-webrtc/master/install-build-deps.sh
+./install-build-deps.sh --no-nacl --no-chromeos-fonts
+sudo dpkg --add-architecture i386
+
 # fedora
 sudo dnf install -y \
   gstreamer1-plugins-bad-free-devel \

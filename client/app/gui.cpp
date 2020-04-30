@@ -31,17 +31,16 @@
 #include "websocket/connection_creator.hpp"
 #include "websocket/connector.hpp"
 #include <QGuiApplication>
+#include <QIcon>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+#include <QQuickStyle>
 #include <boost/asio/executor_work_guard.hpp>
 #include <boost/asio/io_context.hpp>
 #include <fmt/format.h>
 #include <thread>
-#include <QIcon>
-#include <QQuickStyle>
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
   // TODO parse options
 
   logging::add_console_log();
@@ -118,29 +117,22 @@ int main(int argc, char *argv[])
         << "there are no capture devices";
   rtc::google::capture::video::device_creator device_creator;
   std::shared_ptr<rtc::google::capture::video::device> capture_device;
-  for (const auto &current_device : devices)
-  {
-    try
-    {
+  for (const auto &current_device : devices) {
+    try {
       capture_device = device_creator(current_device.id);
       capture_device->start();
       break;
-    }
-    catch (const std::exception &error)
-    {
+    } catch (const std::exception &error) {
       BOOST_LOG_SEV(logger, logging::severity::warning) << fmt::format(
           "could not start capturing from device, id:'{}' error:{}",
           current_device.id, error.what());
     }
   }
   std::unique_ptr<client::add_video_to_connection> video_track_adder;
-  if (!capture_device)
-  {
+  if (!capture_device) {
     BOOST_LOG_SEV(logger, logging::severity::warning)
         << "no capture device could be initialsed";
-  }
-  else
-  {
+  } else {
     video_track_adder = std::make_unique<client::add_video_to_connection>(
         rtc_connection_creator, capture_device);
     tracks_adder.add(*video_track_adder);
@@ -160,7 +152,7 @@ int main(int argc, char *argv[])
   // applying material style
   QQuickStyle::setStyle("Material");
 
-  app.setWindowIcon(QIcon(":/pics/logo.svg"));
+  app.setWindowIcon(QIcon(":/pics/fubble.svg"));
   // we are regestering with full namespace. so use full namespace in signals
   // and properties
   qRegisterMetaType<client::ui::frame_provider_google_video_source *>();

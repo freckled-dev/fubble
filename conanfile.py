@@ -41,15 +41,15 @@ class FubbleConan(ConanFile):
         addtional_paths = []
         if self.settings.os == "Windows":
             qt_path_bin = 'C:\\Qt\\5.14.2\\msvc2017_64\\bin'
-            self.output.info(f"qt_path_bin:{qt_path_bin}")
+            self.output.info("qt_path_bin:%s" % (qt_path_bin))
             addtional_paths += [qt_path_bin]
 
         boost_path = self.deps_cpp_info["boost"].rootpath
-        self.output.info(f"boost_path:{boost_path}")
+        self.output.info("boost_path:%s" % (boost_path))
         boost_include_path = self.deps_cpp_info["boost"].include_paths
-        self.output.info(f"boost_include_path:{boost_include_path}")
+        self.output.info("boost_include_path:%s" % (boost_include_path))
         boost_library_path = self.deps_cpp_info["boost"].lib_paths
-        self.output.info(f"boost_library_path:{boost_library_path}")
+        self.output.info("boost_library_path:%s" % (boost_library_path))
 
         with_servers = False
         with_tests = True
@@ -77,7 +77,7 @@ class FubbleConan(ConanFile):
             meson.configure( build_folder="meson", defs=meson_options)
             build_args = []
             if ninja_jobs:
-                build_args += [f'-j {ninja_jobs}']
+                build_args += ['-j %s' % (ninja_jobs)]
             meson.build(args=build_args)
             # meson.build(args=["-k0"])
             # meson.build()
