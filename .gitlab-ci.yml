@@ -8,11 +8,11 @@ include:
 build ubuntu_18.04 release:
   image: registry.gitlab.com/acof/fubble/ci/build_ubuntu_1804:v0
   stage: build
-  services:
-    - docker:dind
+  # services:
+  #   - docker:dind
   variables:
-    DOCKER_HOST: "tcp://docker:2375"
-    DOCKER_DRIVER: "overlay2"
+    # DOCKER_HOST: "tcp://docker:2375"
+    # DOCKER_DRIVER: "overlay2"
     FUBBLE_TREAT_WARNING_AS_ERROR: 0
     FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install
   script:

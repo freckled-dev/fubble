@@ -5,6 +5,9 @@ source ../environment
 
 time ../make_build.py || exit 1
 ninja -C "$build_dir/meson" install || exit 2
+
+exit 0
+
 time ../../deploy/development/deploy_build_install_background || exit 3
 
 pulseaudio -D
