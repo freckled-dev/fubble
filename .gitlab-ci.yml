@@ -33,20 +33,8 @@ appimage:
   variables:
     QML_SOURCES_PATHS: ${CI_PROJECT_DIR}/client/app
     FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install
-  before_script:
-    - apt-get update
-    - apt-get install -y fuse qml-module-qtquick-\* qml-module-qt-labs-\* qml-module-qtcharts qml-module-qtmultimedia qtdeclarative5-dev-tools
-    - curl -LO https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
-    - curl -LO https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
-    - chmod u+x linuxdeploy-x86_64.AppImage linuxdeploy-plugin-qt-x86_64.AppImage
   script:
-    - ./linuxdeploy-x86_64.AppImage \
-        --executable ${FUBBLE_PREFIX_DIR}/bin/fubble \
-        --desktop-file=client/app/fubble.desktop \
-        --icon-file=client/app/pics/fubble.svg
-        --appdir appdir \
-        --plugin qt \
-        --output appimage
+    ./scripts/ci/package_appimage
   artifacts:
     paths:
       - ./*.AppImage

@@ -4,7 +4,6 @@ cd "$(dirname "$0")"
 source ../environment
 
 time ../make_build.py || exit 1
-ninja -C "$build_dir/meson" install || exit 2
 
 exit 0
 
