@@ -56,7 +56,7 @@ make install
 # unit and integration tests
 make test
 # gui
-../fubble_build/meson/client/app/client_gui
+../fubble_build/meson/client/app/fubble
 ```
 
 ## markus notes - ignore
