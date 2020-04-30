@@ -41,7 +41,7 @@ Popup {
             width: 100
             height: 100
             anchors.horizontalCenter: parent.horizontalCenter
-            source: "pics/logo.svg"
+            source: "pics/fubble.svg"
             fillMode: Image.PreserveAspectFit
         }
 
