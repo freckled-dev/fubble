@@ -1,3 +1,6 @@
+stages:
+  - build
+  - package
 
 include:
   - local: '/web/landing/.gitlab-ci.yml'
@@ -5,11 +8,11 @@ include:
 build ubuntu_18.04 release:
   image: registry.gitlab.com/acof/fubble/ci/build_ubuntu_1804:v0
   stage: build
-  services:
-    - docker:dind
+  # services:
+  #   - docker:dind
   variables:
-    DOCKER_HOST: "tcp://docker:2375"
-    DOCKER_DRIVER: "overlay2"
+    # DOCKER_HOST: "tcp://docker:2375"
+    # DOCKER_DRIVER: "overlay2"
     FUBBLE_TREAT_WARNING_AS_ERROR: 0
     FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install
   script:
@@ -21,6 +24,20 @@ build ubuntu_18.04 release:
     untracked: true
     expire_in: 1 week
     when: always
+
+appimage:
+  image: registry.gitlab.com/acof/fubble/ci/build_ubuntu_1804:v0
+  stage: package
+  dependencies:
+    - build ubuntu_18.04 release
+  variables:
+    FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install
+  script:
+    ./scripts/ci/package_appimage
+  artifacts:
+    paths:
+      - ./Fubble*.AppImage
+    expire_in: 1 week
 
 build windows release:
   stage: build
