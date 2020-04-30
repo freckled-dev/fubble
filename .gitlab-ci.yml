@@ -36,7 +36,7 @@ appimage:
     ./scripts/ci/package_appimage
   artifacts:
     paths:
-      - ./*.AppImage
+      - ./Fubble*.AppImage
     expire_in: 1 week
 
 build windows release:
