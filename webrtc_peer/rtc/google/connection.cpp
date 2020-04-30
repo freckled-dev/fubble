@@ -3,8 +3,8 @@
 #include "data_channel.hpp"
 #include "uuid.hpp"
 #include "video_track_sink.hpp"
-#include <fmt/format.h>
 #include <boost/config.hpp>
+#include <fmt/format.h>
 
 #if defined(ABSL_HAVE_STD_OPTIONAL)
 #if ABSL_HAVE_STD_OPTIONAL == 1
@@ -163,8 +163,8 @@ connection::set_local_description(const rtc::session_description &description) {
   }
 }
 
-boost::future<void>
-connection::set_remote_description(const rtc::session_description &description) {
+boost::future<void> connection::set_remote_description(
+    const rtc::session_description &description) {
   BOOST_LOG_SEV(logger, logging::severity::info)
       << "set_remote_description, description:" << description.sdp;
   try {
@@ -200,7 +200,8 @@ void connection::add_track(rtc::track_ptr track_) {
   BOOST_ASSERT(track_casted);
   auto native_track = track_casted->native_track();
   BOOST_ASSERT(native_track);
-  [[maybe_unused]] auto result = native->AddTrack(native_track, {});
+  auto result = native->AddTrack(native_track, {});
+  (void)result;
   BOOST_ASSERT(result.ok());
   tracks.push_back(track_);
 }
@@ -316,7 +317,8 @@ void connection::create_session_description_observer::OnSuccess(
       << "connection::create_session_description_observer::OnSuccess";
   std::unique_ptr<webrtc::SessionDescriptionInterface> description{
       description_};
-  [[maybe_unused]] bool success = description->ToString(&result.sdp);
+  bool success = description->ToString(&result.sdp);
+  (void)success;
   BOOST_ASSERT(success);
   promise.set_value(result);
 }

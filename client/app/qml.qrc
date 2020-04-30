@@ -12,7 +12,7 @@
         <file>ThemeDark.qml</file>
         <file>Theme.qml</file>
         <file>qmldir</file>
-        <file>pics/logo.svg</file>
+        <file>pics/fubble.svg</file>
     </qresource>
 </RCC>
 
