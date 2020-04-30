@@ -1,3 +1,6 @@
+stages:
+  - build
+  - package
 
 include:
   - local: '/web/landing/.gitlab-ci.yml'
@@ -49,7 +52,7 @@ appimage:
         --output appimage
   artifacts:
     paths:
-      - *.AppImage
+      - ./*.AppImage
     expire_in: 1 week
 
 build windows release:
