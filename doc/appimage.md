@@ -21,16 +21,13 @@ chmod u+x linuxdeploy-x86_64.AppImage linuxdeploy-plugin-qt-x86_64.AppImage
 export QML_SOURCES_PATHS=$PWD/client/app/
 ./linuxdeploy-x86_64.AppImage \
   --plugin qt \
-  --executable ../fubble_build/install/bin/client_gui \
-  --desktop-file=client/app/client_gui.desktop \
-  --icon-file=client_gui.svg
+  --executable ../fubble_build/install/bin/fubble \
+  --desktop-file=client/app/fubble.desktop \
+  --icon-file=client/app/pics/fubble.svg
   --appdir appdir \
   --output fubble.AppImage
 ```
 
 the `*desktop` file controls how the resulting appimage will be named.
-
-env QML_SOURCES_PATHS=client/app/ ./linuxdeploy-x86_64.AppImage --plugin qt --executable fubble_build/install/bin/client_gui --appdir result
-
 
 
