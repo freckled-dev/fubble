@@ -91,7 +91,7 @@ class FubbleConan(ConanFile):
                 bin_dir = os.path.join(self.package_folder, 'bin')
                 with tools.chdir(bin_dir):
                     qml_dir = os.path.join(self.source_folder, 'client', 'app')
-                    self.run('windeployqt.exe client_gui.exe -no-widgets --qmldir "%s"'
+                    self.run('windeployqt.exe fubble.exe -no-widgets --qmldir "%s"'
                         % (qml_dir))
 
     def package_info(self):
