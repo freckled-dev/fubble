@@ -35,8 +35,7 @@ appimage:
     FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install
   before_script:
     - apt-get update
-    - apt-get install fuse \
-        qml-module-qtquick-\* qml-module-qt-labs-\* \
+    - apt-get install fuse qml-module-qtquick-\* qml-module-qt-labs-\* \
         qml-module-qtcharts qml-module-qtmultimedia \
         qtdeclarative5-dev-tools
     - curl -LO https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
