@@ -1,6 +1,10 @@
 version: '3'
 
 services:
+  landing:
+    build:
+      context: .
+      dockerfile: landing/Dockerfile
   signalling:
     build:
       context: .
@@ -40,6 +44,7 @@ services:
       - synapse
       - temporary_room
       - signalling
+      - landing
 
 volumes:
   synapse_data:
