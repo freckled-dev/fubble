@@ -6,13 +6,22 @@ import QtQuick.Window 2.0
 import io.fubble 1.0
 
 Rectangle {
-    color: "#cb2323"
+    color: Style.current.background
 
     ColumnLayout {
+        id: columnLayout
         anchors.right: parent.right
-        anchors.rightMargin: 300
         anchors.left: parent.left
-        anchors.leftMargin: 0
+        anchors.top: parent.top
+        anchors.margins: 20
+
+        Label {
+            text: qsTr("Participants")
+            Layout.bottomMargin: 20
+            font.pointSize: 14
+            Layout.alignment: Qt.AlignHCenter
+            height: 40
+        }
 
         Repeater {
             model: layout.room.participants
@@ -21,7 +30,16 @@ Rectangle {
 
         Component {
             id: participantOverviewComponent
-            ParticipantOverview {}
+            ParticipantOverview {
+                Layout.fillWidth: true
+            }
         }
     }
 }
+
+/*##^##
+Designer {
+    D{i:0;autoSize:true;height:480;width:640}
+}
+##^##*/
+
