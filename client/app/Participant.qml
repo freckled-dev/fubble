@@ -24,7 +24,6 @@ Rectangle {
             RowLayout {
                 anchors.fill: parent
                 Label {
-                    clip: true
                     font.pixelSize: 20
                     Material.foreground: Style.current.buttonTextColor
                     text: participant.name
