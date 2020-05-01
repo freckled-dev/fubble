@@ -16,7 +16,6 @@ json_message::messages_type
 json_message::parse(const std::string &message) const {
   BOOST_LOG_SEV(logger, logging::severity::trace)
       << fmt::format("parsing the message: '{}'", message);
-  std::variant<offer, answer, ice_candidate> result;
   auto json = nlohmann::json::parse(message);
   auto type = json["type"];
   if (type == "offer") {

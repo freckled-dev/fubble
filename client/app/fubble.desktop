@@ -1,0 +1,7 @@
+[Desktop Entry]
+Categories=AudioVideo;Network;Office;Chat;
+Type=Application
+Icon=fubble
+Name=Fubble
+Exec=fubble
+

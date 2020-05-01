@@ -1,15 +1,18 @@
+stages:
+  - build
+  - package
 
 include:
   - local: '/web/landing/.gitlab-ci.yml'
 
-build debug:
+build ubuntu_18.04 release:
   image: registry.gitlab.com/acof/fubble/ci/build_ubuntu_1804:v0
   stage: build
-  services:
-    - docker:dind
+  # services:
+  #   - docker:dind
   variables:
-    DOCKER_HOST: "tcp://docker:2375"
-    DOCKER_DRIVER: "overlay2"
+    # DOCKER_HOST: "tcp://docker:2375"
+    # DOCKER_DRIVER: "overlay2"
     FUBBLE_TREAT_WARNING_AS_ERROR: 0
     FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install
   script:
@@ -17,6 +20,45 @@ build debug:
   after_script:
     - rm -r ./deploy/development/install
     - mv -v ../fubble_build/meson/meson-logs .
+  artifacts:
+    untracked: true
+    expire_in: 1 week
+    when: always
+
+appimage:
+  image: registry.gitlab.com/acof/fubble/ci/build_ubuntu_1804:v0
+  stage: package
+  dependencies:
+    - build ubuntu_18.04 release
+  variables:
+    FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install
+  script:
+    ./scripts/ci/package_appimage
+  artifacts:
+    paths:
+      - ./Fubble*.AppImage
+    expire_in: 1 week
+
+build windows release:
+  stage: build
+  tags:
+    - windows
+  variables:
+    FUBBLE_TREAT_WARNING_AS_ERROR: 0
+    FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install
+    FUBBLE_BUILD_NINJA_JOBS: '1'
+  script:
+    - choco install -y --no-progress python pkgconfiglite
+    # - refreshenv # did not work
+    - $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
+    - python --version
+    - pip install conan aqtinstall
+    - aqt install --outputdir c:\Qt 5.14.2 windows desktop win64_msvc2017_64
+    - conan --version
+    - conan remote add bincrafters "https://api.bintray.com/conan/bincrafters/public-conan"
+    - conan remote add inexorgame "https://api.bintray.com/conan/inexorgame/inexor-conan"
+    - conan remote add google_webrtc "https://api.bintray.com/conan/freckled/google-webrtc"
+    - python scripts/make_build.py
   artifacts:
     untracked: true
     expire_in: 1 week
