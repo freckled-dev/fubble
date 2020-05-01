@@ -7,7 +7,7 @@ import QtQuick.Controls.Material 2.0
 import "."
 
 Rectangle {
-    color: "#00000000"
+    color: Style.current.transparent
     radius: 5
     border.color: Style.current.foreground
     border.width: 1
