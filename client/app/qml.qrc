@@ -16,7 +16,7 @@
         <file>Overview.qml</file>
         <file>VideoWall.qml</file>
         <file>qmldir</file>
-        <file>pics/logo.svg</file>
+        <file>pics/fubble.svg</file>
         <file>pics/no_video.svg</file>
         <file>pics/coming_soon.gif</file>
     </qresource>
