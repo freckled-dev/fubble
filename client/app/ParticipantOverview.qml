@@ -14,8 +14,7 @@ Rectangle {
     Label {
         id: nameLabel
         text: model.participant.name
-        padding: 10
-        //anchors.fill: parent
+        padding: 8
         verticalAlignment: Text.AlignVCenter
         color: Style.current.foreground
     }
@@ -23,7 +22,6 @@ Rectangle {
     MouseArea {
         id: mouseArea
         anchors.fill: parent
-        anchors.margins: -10
         hoverEnabled: true
         onEntered: {
             participantContainer.color = Style.current.primary

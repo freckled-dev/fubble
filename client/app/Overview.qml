@@ -23,7 +23,6 @@ Rectangle {
             Layout.bottomMargin: 20
             font.pointSize: 14
             Layout.alignment: Qt.AlignHCenter
-            height: 40
         }
 
         Repeater {
