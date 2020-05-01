@@ -4,6 +4,7 @@
         <file>Join.qml</file>
         <file>Header.qml</file>
         <file>Participant.qml</file>
+        <file>ParticipantOverview.qml</file>
         <file>Room.qml</file>
         <file>About.qml</file>
         <file>Style.qml</file>
@@ -16,7 +17,8 @@
         <file>VideoWall.qml</file>
         <file>qmldir</file>
         <file>pics/logo.svg</file>
-        <file>no_video.svg</file>
+        <file>pics/no_video.svg</file>
+        <file>pics/coming_soon.gif</file>
     </qresource>
 </RCC>
 
