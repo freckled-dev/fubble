@@ -6,4 +6,5 @@ QtObject {
     property color foreground
     property color background
     property color buttonTextColor
+    property color transparent: '#00000000'
 }

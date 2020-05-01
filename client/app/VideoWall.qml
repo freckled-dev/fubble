@@ -4,18 +4,20 @@ import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.0
 import QtQuick.Window 2.0
 import io.fubble 1.0
+import QtQuick.Controls.Material 2.0
 
 Rectangle {
     id: videoWall
-    color: "#236ab1"
+    color: Style.current.background
 
     ColumnLayout {
+        anchors.margins: 20
         anchors.fill: parent
 
         Label {
-            text: qsTr("Participants")
+            text: qsTr("Video Wall")
+            Layout.bottomMargin: 20
             font.pointSize: 14
-            Layout.margins: 20
             Layout.alignment: Qt.AlignHCenter
             height: 40
         }
@@ -28,7 +30,7 @@ Rectangle {
             columns: calculateColumns()
 
             Repeater {
-                model: layout.room.participants
+                model: layout.room.participantsWithVideo
                 delegate: participantComponent
             }
 
@@ -36,9 +38,6 @@ Rectangle {
                 id: participantComponent
 
                 Participant {
-                    //Layout.preferredWidth: participantGrid.width / participantGrid.columns - 20
-                    //Layout.preferredHeight: participantGrid.height / participantGrid.rows - 20
-                    //Layout.fillHeight: true
                     Layout.fillHeight: true
                     Layout.fillWidth: true
                     participant: model.participant
