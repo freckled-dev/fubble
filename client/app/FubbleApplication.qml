@@ -1,20 +1,19 @@
 import QtMultimedia 5.0
 import QtQuick 2.0
 import QtQuick.Controls 2.2
-import QtQuick.Layouts 1.0
 import QtQuick.Window 2.0
 import io.fubble 1.0
 import QtQuick.Controls.Material 2.0
 import Qt.labs.settings 1.0
 
 ApplicationWindow {
+    id: container
     visible: true
     width: 1024
     height: 800
     minimumWidth: 800
     minimumHeight: 600
     title: "Fubble"
-    id: container
     property JoinModel joinModel: joinModelFromCpp
 
     // theme
@@ -24,6 +23,7 @@ ApplicationWindow {
     Material.foreground: Style.current.foreground
 
     header: Header {
+        id: header
         title: stack.currentItem.title
     }
 

@@ -28,9 +28,18 @@ FocusScope {
             joinModel.join(room.text, name.text)
             loginUi.enabled = false
         }
+
+        NoVideo {
+            id: noVideo
+            width: 500
+            height: 300
+            visible: !joinModel.videoAvailable
+        }
+
         VideoOutput {
             id: videoOutput
             source: joinModel.video
+            visible: joinModel.videoAvailable
             function getAspectRatio() {
                 return videoOutput.sourceRect.width / videoOutput.sourceRect.height
             }
@@ -47,6 +56,7 @@ FocusScope {
                                 (container.width * percentage) / aspectRatio)
             }
         }
+
         ColumnLayout {
             id: inputLayout
             width: 100
@@ -89,7 +99,7 @@ FocusScope {
 
 /*##^##
 Designer {
-    D{i:0;autoSize:true;height:480;width:640}
+    D{i:0;autoSize:true;height:480;width:640}D{i:4;anchors_width:500;anchors_x:0;anchors_y:"-248"}
 }
 ##^##*/
 

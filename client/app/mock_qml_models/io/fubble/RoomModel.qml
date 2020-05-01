@@ -11,7 +11,25 @@ QtObject {
         QtObject {
             property var participant: ParticipantModel {
                 name: qsTr("second")
-                video_source: "/home/tamrielle/Downloads/Sintel_webm_extract.webm"
+            }
+        },
+        QtObject {
+            property var participant: ParticipantModel {
+                name: qsTr("third")
+            }
+        },
+        QtObject {
+            property var participant: ParticipantModel {
+                name: qsTr("fourth")
+            }
+        }
+    ]
+
+    property list<QtObject> participantsWithVideo: [
+        QtObject {
+            property var participant: ParticipantModel {
+                name: qsTr("second")
+                video_source: "/home/tamrielle/Downloads/Big_Buck_Bunny_alt.webm"
             }
         },
         QtObject {
@@ -22,7 +40,8 @@ QtObject {
         },
         QtObject {
             property var participant: ParticipantModel {
-                name: qsTr("fourth")
+                name: qsTr("second")
+                video_source: "/home/tamrielle/Downloads/Big_Buck_Bunny_alt.webm"
             }
         }
     ]

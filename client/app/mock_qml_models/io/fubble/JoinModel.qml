@@ -5,13 +5,16 @@ QtObject {
     id: container
     property string name: "some name"
     property string room: "some room name"
-    property var video: MediaPlayer {
+    property MediaPlayer video
+    property bool videoAvailable: video != null
+
+
+    /*MediaPlayer {
         source: "/home/tamrielle/Downloads/Big_Buck_Bunny_alt.webm"
         autoPlay: true
-    }
+    }*/
     signal joined(RoomModel room)
     function join(room, name) {
-        console.log("name:", name, "room:", room)
         var component = Qt.createComponent("RoomModel.qml")
         var roomModel = component.createObject(container)
         roomModel.name = room
