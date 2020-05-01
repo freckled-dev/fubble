@@ -414,7 +414,9 @@ struct connection {
 
 } // namespace
 
-int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
+int main(int argc, char *argv[]) {
+  (void)argc;
+  (void)argv;
   // https://webrtc.googlesource.com/src/+/refs/heads/master/examples/peerconnection/client/conductor.cc
   // https://github.com/brkho/client-server-webrtc-example/blob/master/server/src/main.cpp
   // https://github.com/llamerada-jp/webrtc-cpp-sample/blob/master/main.cpp

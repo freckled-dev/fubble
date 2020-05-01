@@ -4,7 +4,7 @@
 
 using namespace rtc::google::capture::audio;
 
-device_creator::device_creator(factory &factory_) : factory_(factory_) {}
+device_creator::device_creator(rtc::google::factory &factory_) : factory_(factory_) {}
 
 std::unique_ptr<device> device_creator::create() {
   webrtc::PeerConnectionFactoryInterface &peer_factory = factory_.get_native();
