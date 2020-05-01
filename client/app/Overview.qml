@@ -4,9 +4,12 @@ import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.0
 import QtQuick.Window 2.0
 import io.fubble 1.0
+import "."
 
 Rectangle {
+    id: overviewContainer
     color: Style.current.background
+    property RoomModel roomModel
 
     ColumnLayout {
         id: columnLayout
@@ -24,7 +27,7 @@ Rectangle {
         }
 
         Repeater {
-            model: layout.room.participants
+            model: overviewContainer.roomModel.participants
             delegate: participantOverviewComponent
         }
 

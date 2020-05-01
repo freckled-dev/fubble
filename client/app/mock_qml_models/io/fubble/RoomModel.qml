@@ -37,6 +37,12 @@ QtObject {
                 name: qsTr("third")
                 video_source: "/home/tamrielle/Downloads/Sintel_webm_extract.webm"
             }
+        },
+        QtObject {
+            property var participant: ParticipantModel {
+                name: qsTr("second")
+                video_source: "/home/tamrielle/Downloads/Big_Buck_Bunny_alt.webm"
+            }
         }
     ]
 }

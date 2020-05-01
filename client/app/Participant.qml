@@ -9,7 +9,7 @@ import QtGraphicalEffects 1.0
 Rectangle {
     radius: 5
     layer.enabled: true
-    border.color: Style.current.foreground
+    // border.color: Style.current.foreground
     property ParticipantModel participant
     color: Style.current.background
 
@@ -36,18 +36,10 @@ Rectangle {
         }
 
         VideoOutput {
-            //source: videosModel.ownVideo
             source: participant.video
             visible: participant.videoAvailable
             Layout.fillWidth: true
             Layout.fillHeight: true
-        }
-        Image {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            fillMode: Image.PreserveAspectFit
-            visible: !participant.videoAvailable
-            source: "pics/no_video.svg"
         }
     }
 }
