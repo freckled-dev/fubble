@@ -4,31 +4,48 @@ import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.0
 import io.fubble 1.0
 import QtQuick.Controls.Material 2.0
+import QtGraphicalEffects 1.0
 
-GridLayout {
+Rectangle {
+    radius: 5
+    layer.enabled: true
+    // border.color: Style.current.foreground
     property ParticipantModel participant
-    columns: 1
+    color: Style.current.background
 
-    ToolBar {
-        Layout.fillWidth: true
+    ColumnLayout {
+        anchors.fill: parent
 
-        RowLayout {
-            anchors.fill: parent
-            Label {
-                Layout.fillWidth: true
-                font.pixelSize: 20
-                Material.foreground: Style.current.buttonTextColor
-                text: participant.name
-                elide: Label.ElideRight
-                horizontalAlignment: Qt.AlignHCenter
-                verticalAlignment: Qt.AlignVCenter
+        ToolBar {
+            id: nameToolbar
+            hoverEnabled: false
+            Layout.fillWidth: true
+
+            RowLayout {
+                anchors.fill: parent
+                Label {
+                    font.pixelSize: 20
+                    Material.foreground: Style.current.buttonTextColor
+                    text: participant.name
+                    Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                    horizontalAlignment: Qt.AlignHCenter
+                    verticalAlignment: Qt.AlignVCenter
+                }
             }
         }
-    }
-    VideoOutput {
-        // source: videosModel.ownVideo
-        source: participant.video
-        Layout.fillWidth: true
-        Layout.fillHeight: true
+
+        VideoOutput {
+            source: participant.video
+            visible: participant.videoAvailable
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+        }
     }
 }
+
+/*##^##
+Designer {
+    D{i:0;autoSize:true;height:480;width:640}
+}
+##^##*/
+
