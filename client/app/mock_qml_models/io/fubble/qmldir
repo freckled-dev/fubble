@@ -3,3 +3,4 @@ RoomModel 1.0 RoomModel.qml
 ParticipantModel 1.0 ParticipantModel.qml
 JoinModel 1.0 JoinModel.qml
 LeaveModel 1.0 LeaveModel.qml
+ErrorModel 1.0 ErrorModel.qml
