@@ -2,26 +2,27 @@ import QtQuick 2.0
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.0
 import QtQuick.Controls.Material 2.0
+import io.fubble 1.0
 
 ToolBar {
+    id: header
     property string title
     property alias settings: settings
+    property var stackView
+    property Leave leave
     Material.foreground: Style.current.buttonTextColor
 
-
-    /*
-    Action {
-        id: optionsMenuAction
-        // icon.name: "icon should be part of theme!"
-        onTriggered: optionsMenu.open()
-    }
-    */
     RowLayout {
         spacing: 20
         anchors.fill: parent
 
-        ToolButton {// text: qsTr("‹ back")
-            // action: navigateBackAction
+        ToolButton {
+            text: qsTr("‹")
+            onClicked: {
+                leave.showForceButton = false
+                leave.open()
+            }
+            visible: header.isRoomView()
         }
 
         Label {
@@ -38,8 +39,6 @@ ToolBar {
             onClicked: optionsMenu.open()
             text: qsTr("⋮")
 
-            // this nice cog.svg works with qt5.10 onwards :(
-            // icon.source: "cog.svg"
             Menu {
                 Material.foreground: Style.current.foreground
                 id: optionsMenu
@@ -55,6 +54,14 @@ ToolBar {
                 }
             }
         }
+    }
+
+    function isRoomView() {
+        if (stackView.currentItem.room) {
+            return true
+        }
+
+        return false
     }
 
     About {
