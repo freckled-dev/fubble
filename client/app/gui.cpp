@@ -9,6 +9,7 @@
 #include "client/rooms.hpp"
 #include "client/tracks_adder.hpp"
 #include "executor_asio.hpp"
+#include "gui_options.hpp"
 #include "join_model.hpp"
 #include "logging/initialser.hpp"
 #include "logging/logger.hpp"
@@ -41,7 +42,11 @@
 #include <thread>
 
 int main(int argc, char *argv[]) {
-  // TODO parse options
+  gui_options options_parser;
+  auto config_check = options_parser.parse(argc, argv);
+  if (!config_check)
+    return 1;
+  gui_config config = config_check.value();
 
   logging::add_console_log();
   logging::logger logger{"main"};
@@ -61,18 +66,20 @@ int main(int argc, char *argv[]) {
   signalling::client::connection_creator signalling_connection_creator{
       context, boost_executor, signalling_json};
   signalling::client::client::connect_information connect_information{
-      "localhost", "80", "/api/signalling/v0/"};
+      config.general_.host, config.general_.service, "/api/signalling/v0/"};
   signalling::client::client_creator client_creator{
       websocket_connector, signalling_connection_creator, connect_information};
 
   // session, matrix and temporary_room
-  http::server http_matrix_client_server{"localhost", "80"};
+  http::server http_matrix_client_server{config.general_.host,
+                                         config.general_.service};
   http::fields http_matrix_client_fields{http_matrix_client_server};
   http_matrix_client_fields.target_prefix = "/api/matrix/v0/_matrix/client/r0/";
   http::client_factory http_matrix_client_factory{
       context, http_matrix_client_server, http_matrix_client_fields};
 
-  http::server http_temporary_room_client_server{"localhost", "80"};
+  http::server http_temporary_room_client_server{config.general_.host,
+                                                 config.general_.service};
   http::fields http_temporary_room_client_fields{
       http_temporary_room_client_server};
   http_temporary_room_client_fields.target_prefix = "/api/temporary_room/v0/";
