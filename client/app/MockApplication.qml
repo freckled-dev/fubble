@@ -4,4 +4,5 @@ import io.fubble 1.0
 FubbleApplication {
     joinModel: JoinModel {}
     leaveModel: LeaveModel {}
+    errorModel: ErrorModel {}
 }

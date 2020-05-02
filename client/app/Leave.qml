@@ -74,6 +74,8 @@ Popup {
 
         Button {
             id: force
+            Material.background: Style.current.primary
+            Material.foreground: Style.current.buttonTextColor
             Layout.alignment: Qt.AlignHCenter
             text: qsTr("Force close")
             visible: showForceButton
