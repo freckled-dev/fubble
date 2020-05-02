@@ -32,7 +32,7 @@
     src: "{{ item }}"
     dest: "{{ fubble_deploy_destination_dir }}/appimage/"
   with_fileglob:
-    - "{{ fubble_appimage_dir }}/Fubble*.AppImage"
+    - "{{ fubble_appimage_dir }}/Fubble*.AppImage*"
 
 - name: copy fubble compose file
   template:
