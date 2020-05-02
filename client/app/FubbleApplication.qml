@@ -16,6 +16,8 @@ ApplicationWindow {
     title: "Fubble"
     property JoinModel joinModel: joinModelFromCpp
     property LeaveModel leaveModel: leaveModelFromCpp
+    property ErrorModel errorModel: errorModelFromCpp
+
     property bool shutdown: false
     property int fubbleState: FubbleApplication.FubbleState.Login
 
@@ -86,7 +88,7 @@ ApplicationWindow {
             stack.pop()
             stack.currentItem.setGuiEnabled(true)
             if (shutdown) {
-                close()
+                container.close()
             }
         }
         onLeaving: {
@@ -95,6 +97,11 @@ ApplicationWindow {
         onForceShutdown: {
             container.close()
         }
+    }
+
+    Error {
+        id: errorPopup
+        errorModel: container.errorModel
     }
 
     Component {
