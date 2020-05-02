@@ -5,3 +5,5 @@ bin
 .vs
 obj
 *.exe
+*.AppImage
+__pycache__/

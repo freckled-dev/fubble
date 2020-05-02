@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 current_dir="$PWD"
 cd "$(dirname "$0")"
 source ../environment
@@ -22,3 +24,5 @@ export QML_SOURCES_PATHS="${source_dir}/client/app"
     --appdir appdir \
     --plugin qt \
     --output appimage
+ln -s Fubble*-x86_64.AppImage Fubble-latest-x86_64.AppImage
+

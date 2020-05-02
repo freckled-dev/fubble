@@ -1,6 +1,0 @@
-#!/bin/bash
-
-set -e
-cd "$(dirname "$0")"
-./deploy_build_install --abort-on-container-exit
-

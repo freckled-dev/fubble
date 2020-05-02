@@ -1,24 +1,14 @@
 #include "options.hpp"
-#include <boost/program_options.hpp>
+#include "options_adder.hpp"
 #include <iostream>
 
 namespace bpo = boost::program_options;
 
 namespace {
-struct option_adder {
-  bpo::options_description &options;
-  template <class value_type>
-  void operator()(std::string flag, value_type &value,
-                  std::string description) {
-    options.add_options()(flag.c_str(),
-                          bpo::value<value_type>(&value)->default_value(value),
-                          description.c_str());
-  }
-};
 auto video(config::video &result) {
   bpo::options_description description("video");
   option_adder adder{description};
-  adder("video-send", result.send, "send a video");
+  adder.add("video-send", result.send, "send a video");
   return description;
 }
 } // namespace
@@ -33,29 +23,29 @@ std::optional<config> options::operator()(int argc, char *argv[]) {
   bpo::options_description signalling("signalling");
   {
     option_adder adder{signalling};
-    adder("signalling-host", result.signalling_.host,
-          "hostname of the signalling server");
-    adder("signalling-service", result.signalling_.service,
-          "service of signalling server. eg \"http\" or 80");
-    adder("signalling-id", result.signalling_.id,
-          "the id where two peers shall meet");
+    adder.add("signalling-host", result.signalling_.host,
+              "hostname of the signalling server");
+    adder.add("signalling-service", result.signalling_.service,
+              "service of signalling server. eg \"http\" or 80");
+    adder.add("signalling-id", result.signalling_.id,
+              "the id where two peers shall meet");
   }
 
 #if 0
   bpo::options_description matrix("matrix");
   {
     option_adder adder{matrix};
-    adder("matrix-host", result.matrix_.host, "hostname of the matrix server");
-    adder("matrix-service", result.matrix_.service,
+    adder.add("matrix-host", result.matrix_.host, "hostname of the matrix server");
+    adder.add("matrix-service", result.matrix_.service,
           "service of matrix server. eg \"http\" or 80");
   }
 
   bpo::options_description temporary_room("temporary_room");
   {
     option_adder adder{temporary_room};
-    adder("temporary_room-host", result.temporary_room_.host,
+    adder.add("temporary_room-host", result.temporary_room_.host,
           "hostname of the temporary_room server");
-    adder("temporary_room-service", result.temporary_room_.service,
+    adder.add("temporary_room-service", result.temporary_room_.service,
           "service of temporary_room server. eg \"http\" or 80");
   }
 #endif
