@@ -76,7 +76,7 @@ deploy services:
     - appimage
     - build windows release
   before_script:
-    - apt-get update && apt-get install -y openssh-client ansible git
+    - apt-get update && apt-get install -y openssh-client ansible git rsync
     - eval $(ssh-agent -s)
     - ssh-add <(echo "$SSH_DEPLOY_PRIVATE_KEY")
   script:
