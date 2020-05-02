@@ -1,6 +1,7 @@
 stages:
   - build
   - package
+  - deploy
 
 include:
   - local: '/web/landing/.gitlab-ci.yml'
