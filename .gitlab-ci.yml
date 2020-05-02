@@ -75,6 +75,7 @@ deploy services:
     - build ubuntu_18.04 release
     - appimage
     - build windows release
+    - frontend_build_production
   before_script:
     - apt-get update && apt-get install -y openssh-client ansible git rsync
     - eval $(ssh-agent -s)
