@@ -53,8 +53,10 @@ Popup {
             checked: settings.darkMode
             onCheckedChanged: {
                 if (darkModeSwitch.checked) {
+                    Style.isLightTheme = false
                     Style.current = Style.themeDark
                 } else {
+                    Style.isLightTheme = true
                     Style.current = Style.themeLight
                 }
             }
