@@ -1,0 +1,21 @@
+---
+- hosts: all
+  gather_facts: no
+  tasks:
+    #- name: Log into Gitlab
+    #  docker_login:
+    #    registry: registry.gitlab.com
+    #    username: "{{ gitlab_registry_username }}"
+    #    password: "{{ gitlab_registry_password }}"
+  
+    # https://docs.ansible.com/ansible/latest/modules/package_module.html
+    # https://serverfault.com/questions/587727/how-to-unify-package-installation-tasks-in-ansible
+    - name: system dependencies
+      package:
+        name:
+          - docker-compose
+        state: latest
+
+    - name: fubble
+      import_role:
+        name: fubble

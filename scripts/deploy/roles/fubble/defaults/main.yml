@@ -1,0 +1,9 @@
+---
+fubble_deploy_name: fubble
+fubble_deploy_destination_dir: "/root/{{ fubble_deploy_name }}"
+fubble_host: "fubble-list.com,www.fubble-list.com"
+fubble_binaries_dir: ../../../../../../fubble_build/install
+fubble_binaries_windows_dir: ../../../../../../fubble_build/install_windows
+fubble_landing_dir: ../../../../../web/landing/dist/
+fubble_appimage_dir: ../../../../..
+

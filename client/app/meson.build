@@ -12,6 +12,7 @@ moc_files = qt5.preprocess(
   )
 client_gui = executable('fubble',
   ['gui.cpp', 'join_model.cpp', 'poll_asio_by_qt.cpp', 'participants_model.cpp',
+    'gui_options.cpp',
     'participant_model.cpp', 'room_model.cpp', 'model_creator.cpp'] + moc_files,
   dependencies: [client_dep, ui_dep],
   gui_app: true,

@@ -1,6 +1,10 @@
 version: '3'
 
 services:
+  landing:
+    build:
+      context: .
+      dockerfile: landing/Dockerfile
   signalling:
     build:
       context: .
@@ -11,6 +15,14 @@ services:
       dockerfile: temporary_room/Dockerfile
     depends_on:
       - synapse
+  windows_rclone:
+    build:
+      context: .
+      dockerfile: windows_rclone/Dockerfile
+  download:
+    build:
+      context: .
+      dockerfile: download/Dockerfile
   synapse:
     # https://github.com/matrix-org/synapse/blob/master/contrib/docker/docker-compose.yml
     build:
@@ -40,6 +52,8 @@ services:
       - synapse
       - temporary_room
       - signalling
+      - landing
+      - windows_rclone
 
 volumes:
   synapse_data:

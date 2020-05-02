@@ -1,0 +1,48 @@
+
+- name: ensure project directory exists
+  file:
+    path: "{{ fubble_deploy_destination_dir }}"
+    state: directory
+
+- name: copy docker-compose dependencies
+  synchronize:
+    src: "."
+    dest: "{{ fubble_deploy_destination_dir }}"
+
+- name: copy server binaries
+  synchronize:
+    src: "{{ fubble_binaries_dir }}"
+    dest: "{{ fubble_deploy_destination_dir }}"
+    delete: "yes"
+
+- name: copy landing page files
+  synchronize:
+    src: "{{ fubble_landing_dir }}"
+    dest: "{{ fubble_deploy_destination_dir }}/landing_dist"
+    delete: "yes"
+
+- name: copy windows_install
+  synchronize:
+    src: "{{ fubble_binaries_windows_dir }}"
+    dest: "{{ fubble_deploy_destination_dir }}"
+    delete: "yes"
+
+- name: copy appimage
+  copy:
+    src: "{{ item }}"
+    dest: "{{ fubble_deploy_destination_dir }}/appimage/"
+  with_fileglob:
+    - "{{ fubble_appimage_dir }}/Fubble*.AppImage*"
+
+- name: copy fubble compose file
+  template:
+    src: docker-compose.yml
+    dest: "{{ fubble_deploy_destination_dir }}/docker-compose.yml"
+
+- name: run docker_compose with build
+  docker_compose:
+    project_src: "{{ fubble_deploy_destination_dir }}"
+    state: present
+    remove_orphans: yes
+    build: yes
+    # pull: yes

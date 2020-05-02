@@ -1,9 +1,0 @@
-#!/bin/bash
-
-cd "$(dirname "$0")"
-source ../../scripts/environment
-rsync -r --delete "$prefix_dir" . || exit 1
-docker-compose down
-docker-compose build --parallel || exit 2
-docker-compose up "$@" || exit 3
-
