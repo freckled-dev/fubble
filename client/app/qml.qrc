@@ -19,6 +19,8 @@
         <file>qmldir</file>
         <file>pics/fubble.svg</file>
         <file>pics/no_video.svg</file>
+        <file>pics/close_light.svg</file>
+        <file>pics/close_dark.svg</file>
         <file>pics/coming_soon.gif</file>
         <file>pics/spinner_wave_dark.gif</file>
         <file>pics/spinner_wave_light.gif</file>

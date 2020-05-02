@@ -43,6 +43,8 @@ Rectangle {
 
                 Button {
                     text: qsTr("Stop")
+                    Material.background: Style.current.primary
+                    Material.foreground: Style.current.buttonTextColor
                     font.pointSize: 8
                     x: animation.x + animation.width - width - 5
                     y: animation.y
