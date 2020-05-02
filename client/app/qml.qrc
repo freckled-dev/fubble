@@ -8,6 +8,7 @@
         <file>ParticipantOverview.qml</file>
         <file>Room.qml</file>
         <file>About.qml</file>
+        <file>Error.qml</file>
         <file>Style.qml</file>
         <file>Settings.qml</file>
         <file>ThemeLight.qml</file>
