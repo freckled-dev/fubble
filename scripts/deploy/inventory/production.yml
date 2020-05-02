@@ -1,8 +1,8 @@
 ---
 all:
   hosts:
-    45.76.37.45:
+    fubble.io:
   vars:
     ansible_python_interpreter: "/usr/bin/env python3"
     ansible_user: root
-    ansible_port: 22
+    ansible_port: 20022
