@@ -37,7 +37,7 @@ appimage:
     ./scripts/ci/package_appimage
   artifacts:
     paths:
-      - ./Fubble*.AppImage
+      - ./Fubble*.AppImage*
     expire_in: 1 week
 
 build windows release:
@@ -51,7 +51,7 @@ build windows release:
   script:
     - choco install -y --no-progress python pkgconfiglite
     # - refreshenv # did not work
-    - $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
+    - $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
     - python --version
     - pip install conan aqtinstall
     - aqt install --outputdir c:\Qt 5.14.2 windows desktop win64_msvc2017_64
@@ -71,8 +71,12 @@ deploy services:
   variables:
     ANSIBLE_HOST_KEY_CHECKING: "False"
   when: manual
+  dependencies:
+    - build ubuntu_18.04 release
+    - appimage
+    - build windows release
   before_script:
-    - apt-get update && apt-get install -y openssh-client ansible
+    - apt-get update && apt-get install -y openssh-client ansible git
     - eval $(ssh-agent -s)
     - ssh-add <(echo "$SSH_DEPLOY_PRIVATE_KEY")
   script:
