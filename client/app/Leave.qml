@@ -65,9 +65,9 @@ Popup {
             fillMode: Image.PreserveAspectFit
             source: {
                 if (Style.isLightTheme) {
-                    "pics/spinner_wave_light.gif"
+                    "pics/exit_light.gif"
                 } else {
-                    "pics/spinner_wave_dark.gif"
+                    "pics/exit_dark.gif"
                 }
             }
         }
