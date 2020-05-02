@@ -28,13 +28,12 @@ Rectangle {
                     Material.foreground: Style.current.buttonTextColor
                     text: participant.name
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                    horizontalAlignment: Qt.AlignHCenter
-                    verticalAlignment: Qt.AlignVCenter
                 }
             }
         }
 
         VideoOutput {
+            id: video
             source: participant.video
             visible: participant.videoAvailable
             Layout.fillWidth: true

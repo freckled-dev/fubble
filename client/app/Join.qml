@@ -11,12 +11,18 @@ FocusScope {
     property JoinModel joinModel
     signal joined(RoomModel room)
     Material.foreground: Style.current.foreground
+    property bool guiEnabled: true
+
+    function setGuiEnabled(enabled) {
+        guiEnabled = enabled
+    }
 
     ColumnLayout {
         anchors.verticalCenter: parent.verticalCenter
         anchors.horizontalCenter: parent.horizontalCenter
         id: loginUi
         spacing: 8
+        enabled: guiEnabled
 
         Connections {
             target: joinModel
@@ -26,7 +32,7 @@ FocusScope {
         }
         function joinRoom() {
             joinModel.join(room.text, name.text)
-            loginUi.enabled = false
+            guiEnabled = false
         }
 
         NoVideo {
