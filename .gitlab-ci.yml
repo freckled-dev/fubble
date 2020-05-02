@@ -18,7 +18,7 @@ build ubuntu_18.04 release:
   script:
     - ./scripts/ci/build_debug
   after_script:
-    - rm -r ./deploy/development/install
+    # - rm -r ./deploy/development/install
     - mv -v ../fubble_build/meson/meson-logs .
   artifacts:
     untracked: true
@@ -45,7 +45,7 @@ build windows release:
     - windows
   variables:
     FUBBLE_TREAT_WARNING_AS_ERROR: 0
-    FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install
+    FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install_windows
     FUBBLE_BUILD_NINJA_JOBS: '1'
   script:
     - choco install -y --no-progress python pkgconfiglite
@@ -63,4 +63,17 @@ build windows release:
     untracked: true
     expire_in: 1 week
     when: always
+
+deploy services:
+  stage: deploy
+  image: ubuntu:20.04
+  variables:
+    ANSIBLE_HOST_KEY_CHECKING: "False"
+  when: manual
+  before_script:
+    - apt-get update && apt-get install -y openssh-client ansible
+    - eval $(ssh-agent -s)
+    - ssh-add <(echo "$SSH_DEPLOY_PRIVATE_KEY")
+  script:
+    - ./scripts/deploy.py
 

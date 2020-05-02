@@ -3,23 +3,20 @@
 import os
 import subprocess
 import shutil
+import pathlib
 from paths import Paths
 
 paths = Paths()
 
-deploy_dir = os.path.join(paths.build_dir, 'deploy')
-deploy_source_dir = os.path.join(paths.source_dir, 'deploy', 'development')
+script_dir = pathlib.Path(__file__).parent.resolve()
+deploy_dir = os.path.join(script_dir, 'deploy')
+os.chdir(script_dir)
+install_windows = os.path.join(script_dir, '..', 'install_windows')
 
-try:
-    shutil.rmtree(deploy_dir)
-except:
-    print("Could not delete the deploy_dir:'%s'. Ignoring." % (deploy_dir))
-shutil.copytree(deploy_source_dir, deploy_dir)
-shutil.copytree(paths.prefix_dir, os.path.join(deploy_dir, 'install'))
-shutil.copytree(paths.landing_dist_dir, os.path.join(deploy_dir, 'landing_dist'))
-
-os.chdir(deploy_dir)
-subprocess.run(['docker-compose', 'build'],
+subprocess.run(['ansible-playbook', 
+    '-i', 'deploy/inventory/production.yml',
+    '-e', 'fubble_binaries_dir=%s' % (paths.prefix_dir),
+    '-e', 'fubble_binaries_windows_dir="%s"' % (install_windows),
+    'deploy/site.yml'],
         check=True)
-
 
