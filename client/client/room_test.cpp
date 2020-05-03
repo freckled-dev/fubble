@@ -42,6 +42,7 @@ struct test_client {
   test_client(Room &fixture, const std::string &room_name)
       : context(fixture.context),
         room_name(room_name), rtc_connection_creator{
+                                  rtc::google::settings{},
                                   fixture.rtc_signalling_thread.get_native()} {}
 
   boost::asio::io_context &context;

@@ -8,6 +8,7 @@ struct gui_config {
   struct general {
     std::string host{"fubble.io"};
     std::string service{"http"};
+    bool use_ipv6{false};
   };
   general general_;
 };

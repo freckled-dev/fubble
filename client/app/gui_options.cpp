@@ -14,6 +14,8 @@ std::optional<gui_config> gui_options::parse(int argc, char *argv[]) {
     adder.add("host", result.general_.host, "hostname of the server");
     adder.add("service", result.general_.service,
               "service of the server. eg \"http\" or 80");
+    adder.add("use-ipv6", result.general_.use_ipv6,
+              "enable or disable the usage of ipv6 in webrtc");
   }
   bpo::options_description options;
   options.add(general);
