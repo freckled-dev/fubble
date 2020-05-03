@@ -107,7 +107,7 @@ int main(int argc, char *argv[]) {
                                     rtc_connection_creator};
   client::tracks_adder tracks_adder;
 
-#if 0
+#if 1
   // audio
   rtc::google::capture::audio::device_creator audio_device_creator{
       rtc_connection_creator};

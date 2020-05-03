@@ -25,7 +25,6 @@ factory::~factory() = default;
 
 std::unique_ptr<rtc::connection> factory::create_connection() {
   webrtc::PeerConnectionInterface::RTCConfiguration configuration;
-  // configuration.enable_dtls_srtp = false;
   configuration.sdp_semantics = webrtc::SdpSemantics::kUnifiedPlan;
   if (!settings_.use_ip_v6) {
     BOOST_LOG_SEV(logger, logging::severity::trace)
