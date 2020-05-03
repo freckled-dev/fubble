@@ -8,9 +8,11 @@
 #include "client/room_creator.hpp"
 #include "client/rooms.hpp"
 #include "client/tracks_adder.hpp"
+#include "error_model.hpp"
 #include "executor_asio.hpp"
 #include "gui_options.hpp"
 #include "join_model.hpp"
+#include "leave_model.hpp"
 #include "logging/initialser.hpp"
 #include "logging/logger.hpp"
 #include "model_creator.hpp"
@@ -103,6 +105,7 @@ int main(int argc, char *argv[]) {
                                     rtc_connection_creator};
   client::tracks_adder tracks_adder;
 
+#if 0
   // audio
   rtc::google::capture::audio::device_creator audio_device_creator{
       rtc_connection_creator};
@@ -110,6 +113,7 @@ int main(int argc, char *argv[]) {
   client::add_audio_to_connection audio_track_adder(rtc_connection_creator,
                                                     *audio_device);
   tracks_adder.add(audio_track_adder);
+#endif
   client::rooms rooms;
   client::own_media own_media;
 
@@ -167,6 +171,8 @@ int main(int argc, char *argv[]) {
   qRegisterMetaType<client::participant_model *>();
   qRegisterMetaType<client::participants_model *>();
   qRegisterMetaType<client::join_model *>();
+  qRegisterMetaType<client::error_model *>();
+  qRegisterMetaType<client::leave_model *>();
 
   // https://doc.qt.io/qt-5/qtqml-cppintegration-overview.html#choosing-the-correct-integration-method-between-c-and-qml
   qmlRegisterUncreatableType<client::room_model>(
@@ -176,14 +182,22 @@ int main(int argc, char *argv[]) {
       "can't instance client::participant_model");
   qmlRegisterUncreatableType<client::join_model>(
       "io.fubble", 1, 0, "JoinModel", "can't instance client::join_model");
+  qmlRegisterUncreatableType<client::error_model>(
+      "io.fubble", 1, 0, "ErrorModel", "can't instance client::error_model");
+  qmlRegisterUncreatableType<client::leave_model>(
+      "io.fubble", 1, 0, "LeaveModel", "can't instance client::leave_model");
 
   QQmlApplicationEngine engine;
   client::model_creator model_creator;
   client::join_model join_model{model_creator, joiner, own_media};
+  client::error_model error_model;
+  client::leave_model leave_model;
   //  works from 5.14 onwards
   // engine.setInitialProperties(...)
   //  setContextProperty sets it globaly not as property of the window
   engine.rootContext()->setContextProperty("joinModelFromCpp", &join_model);
+  engine.rootContext()->setContextProperty("errorModelFromCpp", &error_model);
+  engine.rootContext()->setContextProperty("leaveModelFromCpp", &leave_model);
   //  seems not to do it either
   // QVariant property{qMetaTypeId<client::join_model *>(), &join_model};
   // engine.setProperty("joinModel", property);
