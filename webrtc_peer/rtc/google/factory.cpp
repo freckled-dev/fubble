@@ -25,8 +25,9 @@ factory::~factory() = default;
 
 std::unique_ptr<rtc::connection> factory::create_connection() {
   webrtc::PeerConnectionInterface::RTCConfiguration configuration;
-#if 1
+  // configuration.enable_dtls_srtp = false;
   configuration.sdp_semantics = webrtc::SdpSemantics::kUnifiedPlan;
+#if 1
   webrtc::PeerConnectionInterface::IceServer ice_server;
   ice_server.uri = "stun:stun.l.google.com:19302";
   configuration.servers.push_back(ice_server);

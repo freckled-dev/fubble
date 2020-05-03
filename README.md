@@ -33,8 +33,9 @@ sudo dnf install -y \
   qt5-qtquickcontrols2-devel
 
 # opensuse
-sudo zypper install libX11-devel cmake gcc-c++ git libqt5-qttools \
-  libqt5-qtsvg-devel
+sudo zypper install -y \
+  libX11-devel cmake gcc-c++ git libqt5-qttools \
+  libqt5-qtsvg-devel libQt5QuickControls2-devel
 ```
 
 ## build
