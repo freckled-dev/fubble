@@ -99,8 +99,10 @@ int main(int argc, char *argv[]) {
                                               matrix_authentification};
   session::room_joiner session_room_joiner{temporary_room_client};
 
+  rtc::google::settings rtc_settings;
+  rtc_settings.use_ip_v6 = config.general_.use_ipv6;
   rtc::google::factory rtc_connection_creator{
-      asio_signalling_thread.get_native()};
+      rtc_settings, asio_signalling_thread.get_native()};
   client::peer_creator peer_creator{boost_executor, client_creator,
                                     rtc_connection_creator};
   client::tracks_adder tracks_adder;

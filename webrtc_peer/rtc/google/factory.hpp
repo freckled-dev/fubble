@@ -1,6 +1,7 @@
 #ifndef RTC_GOOGLE_FACTORY_HPP
 #define RTC_GOOGLE_FACTORY_HPP
 
+#include "rtc/logger.hpp"
 #include <api/create_peerconnection_factory.h>
 #include <boost/asio/io_context.hpp>
 #include <memory>
@@ -14,9 +15,13 @@ class audio_source;
 class audio_track;
 // TODO don't create a signalling thread in this class. instead use an external
 // one
+struct settings {
+  bool use_ip_v6{true};
+};
 class factory {
 public:
-  explicit factory(rtc::Thread &signaling_thread);
+  explicit factory(const settings &settings_, rtc::Thread &signaling_thread);
+  // TODO remove default constructor
   factory();
   ~factory();
 
@@ -37,6 +42,8 @@ private:
   void instance_video();
   void instance_factory();
 
+  rtc::logger logger{"google::factory"};
+  const settings settings_;
   std::unique_ptr<rtc::Thread> network_thread;
   std::unique_ptr<rtc::Thread> worker_thread;
   // TODO replace signaling_thread with a local thread (asio) implementation

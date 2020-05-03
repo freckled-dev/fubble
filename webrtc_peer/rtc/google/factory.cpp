@@ -14,12 +14,12 @@
 
 using namespace rtc::google;
 
-factory::factory(rtc::Thread &signaling_thread)
-    : signaling_thread(&signaling_thread) {
+factory::factory(const settings &settings_, rtc::Thread &signaling_thread)
+    : settings_(settings_), signaling_thread(&signaling_thread) {
   instance_members();
 }
 
-factory::factory() { instance_members(); }
+factory::factory() : settings_{} { instance_members(); }
 
 factory::~factory() = default;
 
@@ -27,6 +27,11 @@ std::unique_ptr<rtc::connection> factory::create_connection() {
   webrtc::PeerConnectionInterface::RTCConfiguration configuration;
   // configuration.enable_dtls_srtp = false;
   configuration.sdp_semantics = webrtc::SdpSemantics::kUnifiedPlan;
+  if (!settings_.use_ip_v6) {
+    BOOST_LOG_SEV(logger, logging::severity::trace)
+        << "setting `disable_ipv6` to `true`";
+    configuration.disable_ipv6 = true;
+  }
 #if 1
   webrtc::PeerConnectionInterface::IceServer ice_server;
   ice_server.uri = "stun:stun.l.google.com:19302";

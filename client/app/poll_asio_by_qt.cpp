@@ -8,7 +8,7 @@ poll_asio_by_qt::poll_asio_by_qt(boost::asio::io_context &context)
 }
 
 void poll_asio_by_qt::run() {
-  static const auto timeout = std::chrono::milliseconds(5);
+  static const auto timeout = std::chrono::milliseconds(50);
   timer.start(timeout);
 }
 
