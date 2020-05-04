@@ -54,6 +54,7 @@ services:
       - signalling
       - landing
       - windows_rclone
+      - download
 
 volumes:
   synapse_data:
