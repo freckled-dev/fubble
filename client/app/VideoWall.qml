@@ -8,7 +8,6 @@ import QtQuick.Controls.Material 2.0
 import "."
 
 Rectangle {
-
     id: videoWallContainer
     color: Style.current.background
     property RoomModel roomModel
@@ -27,7 +26,7 @@ Rectangle {
         // remove once CHAT feature is availabe
         ColumnLayout {
             id: noVideos
-            visible: roomModel.participantsWithVideo.length === 0
+            visible: participantRepeater.count === 0
 
             Item {
                 Layout.alignment: Qt.AlignHCenter
@@ -76,6 +75,7 @@ Rectangle {
             columns: videoWallContainer.calculateColumns()
 
             Repeater {
+                id: participantRepeater
                 model: roomModel.participantsWithVideo
                 delegate: participantComponent
             }
@@ -94,7 +94,7 @@ Rectangle {
 
     function calculateColumns() {
         var aspectRatio = participantGrid.width / participantGrid.height
-        var numParticipants = roomModel.participants.length
+        var numParticipants = participantRepeater.count
         // aspectRatio = aspectRatio * Math.sqrt(numParticipants)
         aspectRatio = Math.round(aspectRatio)
         aspectRatio = Math.max(1, aspectRatio)
