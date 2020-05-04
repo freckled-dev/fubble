@@ -8,5 +8,4 @@ QtObject {
         source: video_source
         autoPlay: true
     }
-    property bool videoAvailable: video !== null
 }

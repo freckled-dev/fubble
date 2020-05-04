@@ -20,7 +20,11 @@ std::optional<gui_config> gui_options::parse(int argc, char *argv[]) {
   bpo::options_description options;
   options.add(general);
   bpo::variables_map vm;
-  bpo::store(bpo::parse_command_line(argc, argv, options), vm);
+  // allow unregistered options
+  // https://stackoverflow.com/questions/15552284/boostprogram-options-how-to-ignore-unknown-parameters
+  bpo::command_line_parser command_line_parser{argc, argv};
+  bpo::store(command_line_parser.options(options).allow_unregistered().run(),
+             vm);
   bpo::notify(vm);
   if (vm.count("help")) {
     std::cout << options << std::endl;
