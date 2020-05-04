@@ -7,13 +7,13 @@
 #include <boost/thread/future.hpp>
 
 namespace client {
-class rooms;
+class leaver;
 class leave_model : public QObject {
   Q_OBJECT
 public:
   enum class reason : int { normal = 0 };
 
-  leave_model(rooms &rooms_, QObject *parent = nullptr);
+  leave_model(leaver &leaver_, QObject *parent = nullptr);
 
   Q_INVOKABLE void leave();
 
@@ -24,7 +24,7 @@ protected:
   void on_left(boost::future<void> &result);
 
   client::logger logger{"leave_model"};
-  rooms &rooms_;
+  leaver &leaver_;
   boost::inline_executor executor;
 };
 } // namespace client
