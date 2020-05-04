@@ -35,7 +35,7 @@ Rectangle {
         VideoOutput {
             id: video
             source: participant.video
-            visible: participant.videoAvailable
+            visible: participant.video !== null
             Layout.fillWidth: true
             Layout.fillHeight: true
         }

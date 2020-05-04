@@ -16,15 +16,20 @@ public:
 
   enum participant_roles { participant_role = Qt::UserRole + 1 };
 
+protected:
   int rowCount(const QModelIndex &parent = QModelIndex()) const override;
   QVariant data(const QModelIndex &index, int role) const override;
 
-protected:
   QHash<int, QByteArray> roleNames() const override;
   void on_joins(const std::vector<participant *> &joins);
   void on_leaves(std::vector<std::string> leaves);
 
-  mutable client::logger logger{"participant_model"};
+  virtual std::vector<participant *>
+  filter_joining(const std::vector<participant *> &joining);
+  std::vector<participant *>
+  filter_out_bots(const std::vector<participant *> &joining);
+
+  mutable client::logger logger{"participants_model"};
   room &room_;
   struct participant_container {
     std::string id;

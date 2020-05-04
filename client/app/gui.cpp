@@ -172,6 +172,7 @@ int main(int argc, char *argv[]) {
   qRegisterMetaType<client::room_model *>();
   qRegisterMetaType<client::participant_model *>();
   qRegisterMetaType<client::participants_model *>();
+  qRegisterMetaType<client::participants_with_video_model *>();
   qRegisterMetaType<client::join_model *>();
   qRegisterMetaType<client::error_model *>();
   qRegisterMetaType<client::leave_model *>();
