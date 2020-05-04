@@ -55,7 +55,8 @@ protected:
   joiner::room_ptr
   on_room_joined(boost::future<session::room_joiner::room_ptr> &joined) {
     auto got = joined.get();
-    return room_creator_.create(std::move(client_), std::move(got));
+    auto result = room_creator_.create(std::move(client_), std::move(got));
+    return result;
   }
 
   client::logger logger{"joiner::join"};
@@ -80,8 +81,13 @@ boost::future<std::shared_ptr<room>>
 joiner::join(const parameters &parameters_) {
   auto join_ = std::make_shared<class join>(room_creator_, session_connector,
                                             session_room_joiner);
-  return join_->join_(parameters_).then(executor, [join_](auto result) {
-    return result.get();
+  return join_->join_(parameters_).then(executor, [join_, this](auto result) {
+    return on_joined(result);
   });
 }
 
+joiner::room_ptr joiner::on_joined(boost::future<room_ptr> &from_joiner) {
+  auto got_room = from_joiner.get();
+  rooms_.set(got_room);
+  return got_room;
+}

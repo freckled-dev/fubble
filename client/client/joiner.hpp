@@ -31,6 +31,8 @@ public:
   boost::future<room_ptr> join(const parameters &parameters_);
 
 protected:
+  room_ptr on_joined(boost::future<room_ptr> &from_joiner);
+
   client::logger logger{"joiner"};
   boost::inline_executor executor;
   room_creator &room_creator_;
