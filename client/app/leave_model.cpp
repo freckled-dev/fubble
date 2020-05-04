@@ -1,17 +1,15 @@
 #include "leave_model.hpp"
+#include "client/leaver.hpp"
 #include "client/room.hpp"
-#include "client/rooms.hpp"
 
 using namespace client;
 
-leave_model::leave_model(rooms &rooms_, QObject *parent)
-    : QObject(parent), rooms_(rooms_) {}
+leave_model::leave_model(leaver &leaver_, QObject *parent)
+    : QObject(parent), leaver_(leaver_) {}
 
 void leave_model::leave() {
   BOOST_LOG_SEV(logger, logging::severity::trace) << "leave";
-  auto to_leave = rooms_.get();
-  BOOST_ASSERT(to_leave);
-  to_leave->leave().then(executor, [this](auto result) { on_left(result); });
+  leaver_.leave().then(executor, [this](auto result) { on_left(result); });
 }
 
 void leave_model::on_left(boost::future<void> &result) {

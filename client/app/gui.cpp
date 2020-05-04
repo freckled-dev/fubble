@@ -1,6 +1,7 @@
 #include "client/add_audio_to_connection.hpp"
 #include "client/add_video_to_connection.hpp"
 #include "client/joiner.hpp"
+#include "client/leaver.hpp"
 #include "client/own_media.hpp"
 #include "client/participant_creator_creator.hpp"
 #include "client/peer_creator.hpp"
@@ -156,6 +157,7 @@ int main(int argc, char *argv[]) {
   client::room_creator client_room_creator{participant_creator_creator};
   client::joiner joiner{client_room_creator, rooms, session_connector,
                         session_room_joiner};
+  client::leaver leaver{rooms};
 
   BOOST_LOG_SEV(logger, logging::severity::debug) << "starting qt";
 
@@ -194,8 +196,8 @@ int main(int argc, char *argv[]) {
   client::model_creator model_creator;
   client::error_model error_model;
   client::join_model join_model{model_creator, error_model, joiner, own_media};
-  client::leave_model leave_model{rooms};
-   //  works from 5.14 onwards
+  client::leave_model leave_model{leaver};
+  //  works from 5.14 onwards
   // engine.setInitialProperties(...)
   //  setContextProperty sets it globaly not as property of the window
   engine.rootContext()->setContextProperty("joinModelFromCpp", &join_model);
