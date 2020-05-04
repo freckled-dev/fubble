@@ -2,32 +2,30 @@
 #include "client/joiner.hpp"
 #include "client/own_media.hpp"
 #include "client/room.hpp"
+#include "error_model.hpp"
 #include "model_creator.hpp"
 #include "room_model.hpp"
 #include <QStandardPaths>
 
 using namespace client;
 
-namespace
-{
-QString config_file()
-{
+namespace {
+QString config_file() {
   auto config_path =
       QStandardPaths::writableLocation(QStandardPaths::ConfigLocation);
   return config_path + "/fubble-join.ini";
 }
 } // namespace
 
-join_model::join_model(model_creator &model_factory, joiner &joiner_,
-                       own_media &own_media_)
-    : model_factory(model_factory), joiner_(joiner_), own_media_(own_media_),
-      settings(config_file(), QSettings::IniFormat)
-{
+join_model::join_model(model_creator &model_factory, error_model &error_model_,
+                       joiner &joiner_, own_media &own_media_)
+    : model_factory(model_factory), error_model_(error_model_),
+      joiner_(joiner_), own_media_(own_media_),
+      settings(config_file(), QSettings::IniFormat) {
   name = settings.value("name").toString();
   room = settings.value("room").toString();
   auto own_videos = own_media_.get_videos();
-  if (own_videos.empty())
-  {
+  if (own_videos.empty()) {
     video_available = false;
     return;
   }
@@ -41,8 +39,7 @@ join_model::join_model(model_creator &model_factory, joiner &joiner_,
 
 join_model::~join_model() = default;
 
-void join_model::join(const QString &room, const QString &name)
-{
+void join_model::join(const QString &room, const QString &name) {
   settings.setValue("name", name);
   settings.setValue("room", room);
   joiner::parameters parameters;
@@ -53,19 +50,20 @@ void join_model::join(const QString &room, const QString &name)
   });
 }
 
-ui::frame_provider_google_video_source *join_model::get_video() const
-{
+ui::frame_provider_google_video_source *join_model::get_video() const {
   return video;
 }
 
-void join_model::on_joined(boost::future<std::shared_ptr<class room>> room_)
-{
-  if (room_.has_exception())
-  {
-    // TODO do a proper error gui message
-    BOOST_LOG_SEV(logger, logging::severity::warning) << "could not join room";
-    return;
+void join_model::on_joined(boost::future<std::shared_ptr<class room>> room_) {
+  try {
+    auto got_room = room_.get();
+    auto room_model_ = model_factory.create_room_model(got_room, this);
+    joined(room_model_);
+  } catch (const std::exception &error) {
+    BOOST_LOG_SEV(logger, logging::severity::warning)
+        << "could not join room, what:" << error.what();
+    error_model_.set_error(error_model::type::could_not_connect_to_backend,
+                           error.what());
+    join_failed();
   }
-  auto room_model_ = model_factory.create_room_model(room_.get(), this);
-  joined(room_model_);
 }
