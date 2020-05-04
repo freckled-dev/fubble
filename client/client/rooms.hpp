@@ -12,6 +12,7 @@ public:
 
   boost::signals2::signal<void()> on_set;
   void set(const std::shared_ptr<room> &set_);
+  std::shared_ptr<room> get() const;
 
 protected:
   std::shared_ptr<room> room_;
