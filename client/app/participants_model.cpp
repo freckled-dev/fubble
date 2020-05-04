@@ -38,13 +38,7 @@ QHash<int, QByteArray> participants_model::roleNames() const {
 
 void participants_model::on_joins(
     const std::vector<participant *> &joins_to_filter) {
-  std::vector<participant *> joins;
-  std::copy_if(joins_to_filter.cbegin(), joins_to_filter.cend(),
-               std::back_inserter(joins), [&](auto check) {
-                 // dont do bots
-                 // TODO do a class witch just holds media participants per room
-                 return dynamic_cast<bot_participant *>(check) == nullptr;
-               });
+  std::vector<participant *> joins = filter_joining(joins_to_filter);
   if (joins.empty())
     return;
   int participants_count = participants.size();
@@ -63,6 +57,23 @@ void participants_model::on_joins(
   std::transform(joins.cbegin(), joins.cend(), std::back_inserter(participants),
                  instance_participant_model);
   endInsertRows();
+}
+
+std::vector<participant *>
+participants_model::filter_joining(const std::vector<participant *> &joining) {
+  return filter_out_bots(joining);
+}
+
+std::vector<participant *>
+participants_model::filter_out_bots(const std::vector<participant *> &joining) {
+  std::vector<participant *> result;
+  std::copy_if(joining.cbegin(), joining.cend(), std::back_inserter(result),
+               [&](auto check) {
+                 // dont do bots
+                 // TODO do a class witch just holds media participants per room
+                 return dynamic_cast<bot_participant *>(check) == nullptr;
+               });
+  return result;
 }
 
 void participants_model::on_leaves(std::vector<std::string> leaves) {

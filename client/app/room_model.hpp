@@ -2,7 +2,7 @@
 #define UUID_3B809525_60BA_4E59_9647_52C23E7A52EE
 
 #include "client/logger.hpp"
-#include "participants_model.hpp"
+#include "participants_with_video_model.hpp"
 #include <QObject>
 #include <boost/thread/future.hpp>
 #include <memory>
@@ -14,9 +14,8 @@ class room_model : public QObject {
   Q_PROPERTY(QString name MEMBER name NOTIFY name_changed)
   Q_PROPERTY(participants_model *participants MEMBER participants NOTIFY
                  participants_changed)
-  // TODO dirty. do an actual model that filters fors participants with video!
-  Q_PROPERTY(participants_model *participantsWithVideo MEMBER participants NOTIFY
-                 participants_changed)
+  Q_PROPERTY(participants_with_video_model *participantsWithVideo MEMBER
+                 participants_with_video NOTIFY participants_with_video_changed)
 
 public:
   room_model(const std::shared_ptr<room> &room_, QObject *parent);
@@ -24,6 +23,7 @@ public:
 signals:
   void name_changed(QString);
   void participants_changed(participants_model *);
+  void participants_with_video_changed(participants_with_video_model *);
 
 protected:
   void set_name();
@@ -32,6 +32,7 @@ protected:
   std::shared_ptr<room> room_;
   QString name;
   participants_model *participants;
+  participants_with_video_model *participants_with_video;
   std::vector<boost::signals2::scoped_connection> signal_connections;
 };
 } // namespace client
