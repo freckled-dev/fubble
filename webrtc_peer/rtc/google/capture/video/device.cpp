@@ -19,11 +19,9 @@ void device::start() {
   BOOST_LOG_SEV(logger, logging::severity::debug) << "start()";
   // webrtc::VideoCaptureCapability capabilities;
   webrtc::VideoCaptureCapability capabilities;
-  capabilities.width = 1920;
-  capabilities.height = 1080;
-  // capabilities.width = 640;
-  // capabilities.height = 480;
-  capabilities.maxFPS = 60;
+  capabilities.width = 1280;
+  capabilities.height = 720;
+  capabilities.maxFPS = 30;
   auto result = device_->StartCapture(capabilities);
   if (result == 0)
     return;

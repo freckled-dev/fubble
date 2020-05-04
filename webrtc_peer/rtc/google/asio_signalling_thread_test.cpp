@@ -15,7 +15,8 @@ struct AsioSignallingThread : ::testing::Test {
 
 TEST_F(AsioSignallingThread, AddDataChannel) {
   rtc::google::asio_signalling_thread signaling_thread{context};
-  rtc::google::factory creator{signaling_thread.get_native()};
+  rtc::google::settings rtc_settings;
+  rtc::google::factory creator{rtc_settings, signaling_thread.get_native()};
   test_peer peer{creator};
   peer.instance->on_negotiation_needed.connect([&] {
     BOOST_LOG_SEV(logger, logging::severity::debug) << "done";

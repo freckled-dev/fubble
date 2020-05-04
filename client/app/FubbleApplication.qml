@@ -19,19 +19,13 @@ ApplicationWindow {
     property ErrorModel errorModel: errorModelFromCpp
 
     property bool shutdown: false
-    property int fubbleState: FubbleApplication.FubbleState.Login
+    property string fubbleState: "Login"
 
     // theme
     Material.primary: Style.current.primary
     Material.accent: Style.current.accent
     Material.background: Style.current.background
     Material.foreground: Style.current.foreground
-
-    enum FubbleState {
-        Login,
-        Leaving,
-        Room
-    }
 
     header: Header {
         id: header
@@ -63,13 +57,13 @@ ApplicationWindow {
                 stack.push(roomComponent, {
                                "room": room
                            })
-                fubbleState = FubbleApplication.FubbleState.Room
+                fubbleState = "Room"
             }
         }
     }
 
     onClosing: {
-        if (fubbleState === FubbleApplication.FubbleState.Room) {
+        if (fubbleState === "Room") {
             shutdown = true
             close.accepted = false
             leave.showForceButton = true
@@ -92,7 +86,7 @@ ApplicationWindow {
             }
         }
         onLeaving: {
-            fubbleState = FubbleApplication.FubbleState.Leaving
+            fubbleState = "Leaving"
         }
         onForceShutdown: {
             container.close()

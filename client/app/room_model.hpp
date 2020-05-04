@@ -14,6 +14,9 @@ class room_model : public QObject {
   Q_PROPERTY(QString name MEMBER name NOTIFY name_changed)
   Q_PROPERTY(participants_model *participants MEMBER participants NOTIFY
                  participants_changed)
+  // TODO dirty. do an actual model that filters fors participants with video!
+  Q_PROPERTY(participants_model *participantsWithVideo MEMBER participants NOTIFY
+                 participants_changed)
 
 public:
   room_model(const std::shared_ptr<room> &room_, QObject *parent);
