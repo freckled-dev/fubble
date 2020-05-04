@@ -78,6 +78,11 @@ namespace Updater
         {
             string host = ConfigurationManager.AppSettings.Get("Host");
             string port = ConfigurationManager.AppSettings.Get("Port");
+            if (String.IsNullOrEmpty(port))
+            {
+                return $"{host}";
+            }
+
             return $"{host}:{port}";
         }
 
