@@ -194,8 +194,8 @@ int main(int argc, char *argv[]) {
   client::model_creator model_creator;
   client::error_model error_model;
   client::join_model join_model{model_creator, error_model, joiner, own_media};
-  client::leave_model leave_model;
-  //  works from 5.14 onwards
+  client::leave_model leave_model{rooms};
+   //  works from 5.14 onwards
   // engine.setInitialProperties(...)
   //  setContextProperty sets it globaly not as property of the window
   engine.rootContext()->setContextProperty("joinModelFromCpp", &join_model);

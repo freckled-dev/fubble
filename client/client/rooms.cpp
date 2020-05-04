@@ -11,3 +11,4 @@ void rooms::set(const std::shared_ptr<room> &set_) {
   on_set();
 }
 
+std::shared_ptr<room> rooms::get() const { return room_; }
