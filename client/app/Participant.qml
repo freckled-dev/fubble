@@ -5,6 +5,7 @@ import QtQuick.Layouts 1.0
 import io.fubble 1.0
 import QtQuick.Controls.Material 2.0
 import QtGraphicalEffects 1.0
+import "."
 
 Rectangle {
     radius: 5
