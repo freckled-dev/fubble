@@ -40,6 +40,18 @@ appimage:
       - ./Fubble*.AppImage*
     expire_in: 1 week
 
+build windows updater release:
+  stage: build
+  tags:
+    - windows
+  script:
+    - cd updater
+    - msbuild /p:Configuration=Release
+  artifacts:
+    paths:
+      - ./updater/bin/
+    expire_in: 1 week
+
 build windows release:
   stage: build
   tags:
