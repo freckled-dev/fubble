@@ -44,10 +44,12 @@ build windows updater release:
   stage: build
   tags:
     - windows
+  before_script:
+    - cd updater
+    - 'nuget restore Updater.sln'
   script:
     - cd updater
-    - VsDevCmd.bat
-    - msbuild /p:Configuration=Release
+    - 'msbuild /p:Configuration=Release Updater.sln'
   artifacts:
     paths:
       - ./updater/bin/
