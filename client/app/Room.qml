@@ -33,6 +33,13 @@ RowLayout {
         Layout.fillWidth: true
     }
 
+    Chat {
+        id: chat
+        Layout.fillHeight: true
+        Layout.fillWidth: true
+        Layout.margins: 10
+    }
+
     // remove this once we have the new layout
     Component.onCompleted: {
         container.width = 1400
