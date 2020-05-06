@@ -7,9 +7,12 @@ import "."
 
 Rectangle {
     radius: 5
+    border.color: Style.current.foreground
     border.width: 1
     implicitWidth: chatColumn.implicitWidth
     implicitHeight: chatColumn.implicitHeight
+    Material.foreground: Style.current.foreground
+    color: Style.current.background
 
     ColumnLayout {
         id: chatColumn
@@ -18,7 +21,7 @@ Rectangle {
             Layout.leftMargin: 10
             Layout.rightMargin: 10
             Layout.topMargin: 10
-            color: own ? Style.themeLight.accent : Style.themeLight.primary
+            color: own ? Style.current.accent : Style.current.primary
             text: name + " - " + new Date(timestamp).toTimeString()
         }
 

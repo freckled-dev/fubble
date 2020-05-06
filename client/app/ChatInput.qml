@@ -7,7 +7,7 @@ import io.fubble 1.0
 
 Rectangle {
     radius: 5
-    color: "#E0E0E0"
+    color: Style.current.backgroundTextInput
     border.color: Style.current.foreground
     implicitHeight: inputText.implicitHeight
 
@@ -19,9 +19,8 @@ Rectangle {
         padding: 10
         topPadding: 20
         cursorVisible: true
-        horizontalAlignment: Text.AlignLeft
         placeholderText: qsTr("Write your message here...")
-        placeholderTextColor: "#757575"
+        placeholderTextColor: Style.current.placeholderTextColor
         text: ""
         wrapMode: Text.WrapAtWordBoundaryOrAnywhere
 
