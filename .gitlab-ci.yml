@@ -46,10 +46,10 @@ build windows updater release:
     - windows
   script:
     - cd updater
+    - nuget restore
     - msbuild /p:Configuration=Release
   artifacts:
     paths:
-      - nuget restore
       - ./updater/bin/
     expire_in: 1 week
 
