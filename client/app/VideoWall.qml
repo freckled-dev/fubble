@@ -11,7 +11,9 @@ Rectangle {
     id: videoWallContainer
     color: Style.current.background
     property RoomModel roomModel
+    visible: participantRepeater.count !== 0
 
+    // Video Wall
     ColumnLayout {
         anchors.margins: 20
         anchors.fill: parent
@@ -21,50 +23,6 @@ Rectangle {
             Layout.bottomMargin: 20
             font.pointSize: 14
             Layout.alignment: Qt.AlignHCenter
-        }
-
-        // remove once CHAT feature is availabe
-        ColumnLayout {
-            id: noVideos
-            visible: participantRepeater.count === 0
-
-            Item {
-                Layout.alignment: Qt.AlignHCenter
-                Layout.fillWidth: true
-
-                Layout.preferredHeight: animation.height
-
-                AnimatedImage {
-                    id: animation
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    source: "pics/coming_soon.gif"
-                }
-
-                Button {
-                    text: qsTr("Stop")
-                    Material.background: Style.current.primary
-                    Material.foreground: Style.current.buttonTextColor
-                    font.pointSize: 8
-                    x: animation.x + animation.width - width - 5
-                    y: animation.y
-
-                    onClicked: {
-                        var playing = animation.playing
-                        animation.playing = !playing
-                        if (playing)
-                            text = qsTr("Start")
-                        else
-                            text = qsTr("Stop")
-                    }
-                }
-            }
-
-            Label {
-                text: qsTr("Do not worry! In the next Fubble Version, there will be a Chat. It will fill this awful empty space, if no one is sharing a video :-)")
-                Layout.fillWidth: true
-                Layout.topMargin: 30
-                font.pointSize: 14
-            }
         }
 
         GridLayout {
@@ -92,6 +50,7 @@ Rectangle {
         }
     }
 
+    // Chat
     function calculateColumns() {
         var aspectRatio = participantGrid.width / participantGrid.height
         var numParticipants = participantRepeater.count
