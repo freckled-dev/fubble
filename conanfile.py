@@ -1,4 +1,5 @@
 from conans import ConanFile, Meson, tools
+from conans.errors import ConanInvalidConfiguration
 import os
 
 class FubbleConan(ConanFile):
@@ -40,7 +41,7 @@ class FubbleConan(ConanFile):
         #qt_path_bin = self.deps_cpp_info["qt"].bin_paths
         addtional_paths = []
         if self.settings.os == "Windows":
-            qt_path_bin = 'C:\\Qt\\5.14.2\\msvc2017_64\\bin'
+            qt_path_bin = 'C:\\Qt\\5.15.0\\msvc2019_64\\bin'
             self.output.info("qt_path_bin:%s" % (qt_path_bin))
             addtional_paths += [qt_path_bin]
 
@@ -86,12 +87,28 @@ class FubbleConan(ConanFile):
         meson = Meson(self)
         meson.install(build_dir="meson")
         if self.settings.os == "Windows":
-            qt_path_bin = 'C:\\Qt\\5.14.2\\msvc2017_64\\bin'
+            qt_path_bin = 'C:\\Qt\\5.15.0\\msvc2019_64\\bin'
+            bin_dir = os.path.join(self.package_folder, 'bin')
+            vars_dict = tools.vcvars_dict(self.settings)
+
+            windows_sdk_dir = vars_dict['WindowsSdkDir']
+            windows_sdk_version = vars_dict['WindowsSDKVersion']
+            ucrt_redist_dir = os.path.join(windows_sdk_dir, 'Redist', windows_sdk_version, 'ucrt', 'DLLs', 'x64')
+            if not os.path.exists(ucrt_redist_dir):
+                raise ConanInvalidConfiguration("ucrt redist dir does not exist: %s" % (ucrt_redist_dir))
+            self.copy('*.dll', dst=bin_dir, src=ucrt_redist_dir)
+
+            vctoolsredist_dir = vars_dict['VCToolsRedistDir']
+            vcredist_dir = os.path.join(vctoolsredist_dir, 'x64', 'Microsoft.VC142.CRT')
+            if not os.path.exists(vcredist_dir):
+                raise ConanInvalidConfiguration("ucrt redist dir does not exist: %s" % (ucrt_redist_dir))
+            self.copy('*.dll', dst=bin_dir, src=vcredist_dir)
+
             with tools.environment_append({"PATH": [qt_path_bin]}):
-                bin_dir = os.path.join(self.package_folder, 'bin')
                 with tools.chdir(bin_dir):
                     qml_dir = os.path.join(self.source_folder, 'client', 'app')
-                    self.run('windeployqt.exe fubble.exe -no-widgets --qmldir "%s"'
+                    # dont do -no-widgets # widgets is needed for svg
+                    self.run('windeployqt.exe fubble.exe --no-compiler-runtime --qmldir "%s"'
                         % (qml_dir))
 
     def package_info(self):
