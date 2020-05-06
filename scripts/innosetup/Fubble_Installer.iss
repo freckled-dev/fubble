@@ -20,6 +20,8 @@ Source: "rclone.exe"; DestDir: "{app}"
 Source: "Updater.exe.config"; DestDir: "{app}"
 Source: "de\Updater.resources.dll"; DestDir: "{app}\de"
 
+[Dirs]
+Name: {app}; Permissions: users-full
 
 [UninstallDelete]
 Type: filesandordirs; Name: "{app}\fubble"
