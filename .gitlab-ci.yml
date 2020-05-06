@@ -46,7 +46,7 @@ build windows updater release:
     - windows
   script:
     - cd updater
-    - nuget restore
+    - VsDevCmd.bat
     - msbuild /p:Configuration=Release
   artifacts:
     paths:
