@@ -6,4 +6,6 @@ Theme {
     property color foreground: '#000000'
     property color background: '#ffffff'
     property color buttonTextColor: '#ffffff'
+    property color backgroundTextInput: '#E0E0E0'
+    property color placeholderTextColor: '#757575'
 }

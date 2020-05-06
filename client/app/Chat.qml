@@ -44,7 +44,6 @@ Item {
 
         function updateCurrentIndex() {
             chatScrollBar.setPosition(1)
-            //chatList.currentIndex = count - 1
         }
     }
 
