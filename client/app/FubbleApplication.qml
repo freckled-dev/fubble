@@ -8,15 +8,17 @@ import Qt.labs.settings 1.0
 
 ApplicationWindow {
     id: container
-    visible: true
+    title: qsTr("Fubble")
+
     width: 1024
     height: 800
     minimumWidth: 800
     minimumHeight: 600
-    title: "Fubble"
+
     property JoinModel joinModel: joinModelFromCpp
     property LeaveModel leaveModel: leaveModelFromCpp
     property ErrorModel errorModel: errorModelFromCpp
+    property ChatModel chatModel: chatModelFromCpp
 
     property bool shutdown: false
     property string fubbleState: "Login"
