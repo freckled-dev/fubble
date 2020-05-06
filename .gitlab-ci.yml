@@ -48,7 +48,6 @@ build windows updater release:
     - cd updater
     - 'nuget restore Updater.sln'
   script:
-    - cd updater
     - 'msbuild /p:Configuration=Release Updater.sln'
   artifacts:
     paths:
