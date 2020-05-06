@@ -25,7 +25,6 @@
         <file>pics/no_video.svg</file>
         <file>pics/close_light.svg</file>
         <file>pics/close_dark.svg</file>
-        <file>pics/coming_soon.gif</file>
         <file>pics/exit_dark.gif</file>
         <file>pics/exit_light.gif</file>
     </qresource>

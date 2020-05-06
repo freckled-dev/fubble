@@ -38,6 +38,7 @@ RowLayout {
         Layout.fillHeight: true
         Layout.fillWidth: true
         Layout.margins: 10
+        visible: videoWall.videoCount === 0
     }
 
     // remove this once we have the new layout

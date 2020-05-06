@@ -11,7 +11,8 @@ Rectangle {
     id: videoWallContainer
     color: Style.current.background
     property RoomModel roomModel
-    visible: participantRepeater.count !== 0
+    property alias videoCount: participantRepeater.count
+    visible: videoCount !== 0
 
     // Video Wall
     ColumnLayout {
