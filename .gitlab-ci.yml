@@ -3,8 +3,8 @@ stages:
   - package
   - deploy
 
-# include:
-#  - local: '/web/landing/.gitlab-ci.yml'
+include:
+  - local: '/web/landing/.gitlab-ci.yml'
 
 build ubuntu_18.04 release:
   image: registry.gitlab.com/acof/fubble/ci/build_ubuntu_1804:v0
