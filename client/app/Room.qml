@@ -35,6 +35,7 @@ RowLayout {
 
     Chat {
         id: chat
+        chatModel: room.chat
         Layout.fillHeight: true
         Layout.fillWidth: true
         Layout.margins: 10

@@ -1,3 +1,4 @@
+#include "chat_model.hpp"
 #include "client/add_audio_to_connection.hpp"
 #include "client/add_video_to_connection.hpp"
 #include "client/joiner.hpp"
@@ -191,6 +192,8 @@ int main(int argc, char *argv[]) {
       "io.fubble", 1, 0, "ErrorModel", "can't instance client::error_model");
   qmlRegisterUncreatableType<client::leave_model>(
       "io.fubble", 1, 0, "LeaveModel", "can't instance client::leave_model");
+  qmlRegisterUncreatableType<client::chat_model>(
+      "io.fubble", 1, 0, "ChatModel", "can't instance client::chat_model");
 
   QQmlApplicationEngine engine;
   client::model_creator model_creator;

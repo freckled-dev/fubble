@@ -7,6 +7,7 @@ import io.fubble 1.0
 
 Item {
     id: element
+    property ChatModel chatModel
 
     Label {
         anchors.left: parent.left
