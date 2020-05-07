@@ -27,10 +27,17 @@
     dest: "{{ fubble_deploy_destination_dir }}"
     delete: "yes"
 
+- name: copy windows_setup
+  copy:
+    src: "{{ item }}"
+    dest: "{{ fubble_deploy_destination_dir }}/download_files/"
+  with_fileglob:
+    - "{{ fubble_windows_setup_dir }}/Fubble*.exe"
+
 - name: copy appimage
   copy:
     src: "{{ item }}"
-    dest: "{{ fubble_deploy_destination_dir }}/appimage/"
+    dest: "{{ fubble_deploy_destination_dir }}/download_files/"
   with_fileglob:
     - "{{ fubble_appimage_dir }}/Fubble*.AppImage*"
 

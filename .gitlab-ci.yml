@@ -6,7 +6,7 @@ stages:
 # include:
 #  - local: '/web/landing/.gitlab-ci.yml'
 
-.build ubuntu_18.04 release:
+build ubuntu_18.04 release:
   image: registry.gitlab.com/acof/fubble/ci/build_ubuntu_1804:v0
   stage: build
   # services:
@@ -26,7 +26,7 @@ stages:
     expire_in: 1 week
     when: always
 
-.appimage:
+appimage:
   image: registry.gitlab.com/acof/fubble/ci/build_ubuntu_1804:v0
   stage: package
   dependencies:
@@ -70,7 +70,7 @@ innosetup:
     paths:
       - ./*.exe
 
-.build windows release:
+build windows release:
   stage: build
   tags:
     - windows
@@ -95,7 +95,7 @@ innosetup:
     expire_in: 1 week
     when: always
 
-.deploy services:
+deploy services:
   stage: deploy
   image: ubuntu:20.04
   variables:
@@ -106,6 +106,7 @@ innosetup:
     - appimage
     - build windows release
     - frontend_build_production
+    - innosetup
   before_script:
     - apt-get update && apt-get install -y openssh-client ansible git rsync
     - eval $(ssh-agent -s)

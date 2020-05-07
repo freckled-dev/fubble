@@ -7,7 +7,7 @@ from paths import Paths
 from distutils.dir_util import copy_tree
 import pathlib
 
-print('fun')
+print('making a FubbleSetup.exe')
 
 paths = Paths()
 
