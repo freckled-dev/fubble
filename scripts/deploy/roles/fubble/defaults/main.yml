@@ -6,4 +6,5 @@ fubble_binaries_dir: ../../../../../../fubble_build/install
 fubble_binaries_windows_dir: ../../../../../../fubble_build/install_windows
 fubble_landing_dir: ../../../../../web/landing/dist/
 fubble_appimage_dir: ../../../../..
+fubble_windows_setup_dir: ../../../../..
 

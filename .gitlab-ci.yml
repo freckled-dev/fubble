@@ -40,6 +40,36 @@ appimage:
       - ./Fubble*.AppImage*
     expire_in: 1 week
 
+# documentation about windows runner on gitlab.com
+# https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/blob/master/cookbooks/preinstalled-software/README.md
+build windows updater release:
+  stage: build
+  tags:
+    - windows
+  before_script:
+    - cd updater
+    - $env:Path += ";C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\bin"
+  script:
+    - 'msbuild /p:Configuration=Release Updater.sln'
+  artifacts:
+    paths:
+      - ./updater/bin/
+    expire_in: 1 week
+
+innosetup:
+  stage: package
+  tags:
+    - windows
+  dependencies:
+    - build windows updater release
+  script:
+    - choco install -y --no-progress python innosetup
+    - $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+    - python scripts/make_innosetup.py
+  artifacts:
+    paths:
+      - ./*.exe
+
 build windows release:
   stage: build
   tags:
@@ -76,6 +106,7 @@ deploy services:
     - appimage
     - build windows release
     - frontend_build_production
+    - innosetup
   before_script:
     - apt-get update && apt-get install -y openssh-client ansible git rsync
     - eval $(ssh-agent -s)
