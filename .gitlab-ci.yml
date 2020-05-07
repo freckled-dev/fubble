@@ -40,13 +40,15 @@ appimage:
       - ./Fubble*.AppImage*
     expire_in: 1 week
 
+# documentation about windows runner on gitlab.com
+# https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/blob/master/cookbooks/preinstalled-software/README.md
 build windows updater release:
   stage: build
   tags:
     - windows
   before_script:
     - cd updater
-    - 'nuget restore Updater.sln'
+    - $env:Path += ";C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\bin"
   script:
     - 'msbuild /p:Configuration=Release Updater.sln'
   artifacts:
