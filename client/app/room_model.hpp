@@ -1,6 +1,7 @@
 #ifndef UUID_3B809525_60BA_4E59_9647_52C23E7A52EE
 #define UUID_3B809525_60BA_4E59_9647_52C23E7A52EE
 
+#include "chat_model.hpp"
 #include "client/logger.hpp"
 #include "participants_with_video_model.hpp"
 #include <QObject>
@@ -16,6 +17,7 @@ class room_model : public QObject {
                  participants_changed)
   Q_PROPERTY(participants_with_video_model *participantsWithVideo MEMBER
                  participants_with_video NOTIFY participants_with_video_changed)
+  Q_PROPERTY(chat_model *chat MEMBER chat NOTIFY chat_changed);
 
 public:
   room_model(const std::shared_ptr<room> &room_, QObject *parent);
@@ -24,6 +26,7 @@ signals:
   void name_changed(QString);
   void participants_changed(participants_model *);
   void participants_with_video_changed(participants_with_video_model *);
+  void chat_changed(chat_model *);
 
 protected:
   void set_name();
@@ -33,6 +36,7 @@ protected:
   QString name;
   participants_model *participants;
   participants_with_video_model *participants_with_video;
+  chat_model *chat;
   std::vector<boost::signals2::scoped_connection> signal_connections;
 };
 } // namespace client
