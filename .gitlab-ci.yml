@@ -58,6 +58,8 @@ build windows updater release:
 
 innosetup:
   stage: package
+  tags:
+    - windows
   dependencies:
     - build windows updater release
   script:
