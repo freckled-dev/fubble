@@ -3,10 +3,10 @@ stages:
   - package
   - deploy
 
-include:
-  - local: '/web/landing/.gitlab-ci.yml'
+# include:
+#  - local: '/web/landing/.gitlab-ci.yml'
 
-build ubuntu_18.04 release:
+.build ubuntu_18.04 release:
   image: registry.gitlab.com/acof/fubble/ci/build_ubuntu_1804:v0
   stage: build
   # services:
@@ -26,7 +26,7 @@ build ubuntu_18.04 release:
     expire_in: 1 week
     when: always
 
-appimage:
+.appimage:
   image: registry.gitlab.com/acof/fubble/ci/build_ubuntu_1804:v0
   stage: package
   dependencies:
@@ -56,7 +56,16 @@ build windows updater release:
       - ./updater/bin/
     expire_in: 1 week
 
-build windows release:
+innosetup:
+  stage: package
+  dependencies:
+    - build windows updater release
+  script:
+    - choco install -y --no-progress python innosetup
+    - $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+    - python scripts/make_innosetup.py
+
+.build windows release:
   stage: build
   tags:
     - windows
@@ -81,7 +90,7 @@ build windows release:
     expire_in: 1 week
     when: always
 
-deploy services:
+.deploy services:
   stage: deploy
   image: ubuntu:20.04
   variables:
