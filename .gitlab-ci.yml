@@ -54,7 +54,7 @@ build windows release:
     - $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
     - python --version
     - pip install conan aqtinstall
-    - aqt install --outputdir c:\Qt 5.14.2 windows desktop win64_msvc2017_64
+    - aqt install --outputdir c:\Qt 5.15.0 windows desktop win64_msvc2019_64
     - conan --version
     - conan remote add bincrafters "https://api.bintray.com/conan/bincrafters/public-conan"
     - conan remote add inexorgame "https://api.bintray.com/conan/inexorgame/inexor-conan"
