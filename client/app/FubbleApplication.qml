@@ -14,6 +14,7 @@ ApplicationWindow {
     height: 800
     minimumWidth: 800
     minimumHeight: 600
+    visible: true
 
     property JoinModel joinModel: joinModelFromCpp
     property LeaveModel leaveModel: leaveModelFromCpp
