@@ -5,13 +5,14 @@ import subprocess
 import shutil
 from paths import Paths
 from distutils.dir_util import copy_tree
+import pathlib
 
 print('fun')
 
 paths = Paths()
 
 innosetup_build_dir = os.path.join(paths.build_dir, 'innosetup')
-os.mkdir(innosetup_build_dir)
+pathlib.Path(innosetup_build_dir).mkdir(parents=True, exist_ok=True)
 
 inno_file = os.path.join(paths.source_dir, 'scripts', 'innosetup', 'Fubble_Installer.iss')
 shutil.copy2(inno_file, innosetup_build_dir)
