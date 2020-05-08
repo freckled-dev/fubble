@@ -28,6 +28,7 @@ public:
   http::client &get_http_client();
   // TODO make protected
   std::unique_ptr<http::client> create_http_client();
+  std::string create_transaction_id();
 
   boost::future<void> set_display_name(const std::string &name);
   boost::future<void> set_presence(presence set);
@@ -66,6 +67,7 @@ protected:
   std::optional<std::string> sync_next_batch;
   std::unique_ptr<users> users_;
   std::unique_ptr<rooms> rooms_;
+  int transaction_id_counter{};
 };
 } // namespace matrix
 
