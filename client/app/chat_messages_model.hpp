@@ -23,7 +23,8 @@ public:
     role_type
   };
 
-  struct message {
+  // Don't call this struct `message`, or msvc will fail.
+  struct chat_message {
     QString name;
     bool own;
     QDateTime timestamp;
@@ -32,7 +33,7 @@ public:
   };
 
 protected:
-  void add_message(const message &add);
+  void add_message(const chat_message &add);
 
   int rowCount(const QModelIndex &parent = QModelIndex()) const override;
   QVariant data(const QModelIndex &index, int role) const override;
@@ -40,7 +41,7 @@ protected:
 
   client::logger logger{"chat_messages_model"};
   chat &chat_;
-  std::deque<message> messages;
+  std::deque<chat_message> messages;
   boost::signals2::scoped_connection on_message_connection;
 };
 } // namespace client
