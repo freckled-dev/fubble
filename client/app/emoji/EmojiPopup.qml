@@ -9,6 +9,7 @@ Popup {
     id: emojiPopup
     property var emojiJson
     property TextArea textArea
+    clip: true
 
     function initJson() {
         var jsonObject = JSON.parse(EmojiJSON.emoji_json)

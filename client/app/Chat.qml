@@ -67,7 +67,7 @@ Item {
         id: emojiPopup
 
         height: 400
-        width: 360
+        width: 370
         x: parent.width - width
         y: parent.height - height - textArea.height - 10
 
