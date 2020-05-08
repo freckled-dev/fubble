@@ -13,10 +13,11 @@ Rectangle {
 
     Label {
         id: nameLabel
-        text: model.participant.name
-        padding: 8
-        verticalAlignment: Text.AlignVCenter
         color: Style.current.foreground
+        font.pointSize: Style.current.normalPointSize
+        padding: 8
+        text: model.participant.name
+        verticalAlignment: Text.AlignVCenter
     }
 
     MouseArea {

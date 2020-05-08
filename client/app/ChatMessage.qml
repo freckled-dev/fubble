@@ -14,6 +14,12 @@ Rectangle {
     Material.foreground: Style.current.foreground
     color: Style.current.background
 
+    FontLoader {
+        id: emojiFont
+        source: "emoji/" + Style.current.emojiFontName
+        //Component.onCompleted: console.log(name)
+    }
+
     ColumnLayout {
         id: chatColumn
 
@@ -22,6 +28,8 @@ Rectangle {
             Layout.rightMargin: 10
             Layout.topMargin: 10
             color: own ? Style.current.accent : Style.current.primary
+            font.family: emojiFont.name
+            font.pointSize: Style.current.normalPointSize
             text: name + " - " + new Date(timestamp).toTimeString()
         }
 
@@ -30,9 +38,16 @@ Rectangle {
             Layout.leftMargin: 10
             Layout.maximumWidth: element.width * 2 / 3
             Layout.rightMargin: 10
+            font.family: emojiFont.name
+            font.pointSize: Style.current.normalPointSize
             text: message
+            textFormat: Text.RichText
             wrapMode: Text.WrapAtWordBoundaryOrAnywhere
         }
+    }
+
+    function replaceAll(str, find, replace) {
+        return str.replace(new RegExp(find, 'g'), replace)
     }
 }
 

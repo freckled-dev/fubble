@@ -28,7 +28,7 @@ ToolBar {
         Label {
             id: titleLabel
             text: title
-            font.pixelSize: 20
+            font.pointSize: Style.current.headerPointSize
             elide: Label.ElideRight
             horizontalAlignment: Qt.AlignHCenter
             verticalAlignment: Qt.AlignVCenter

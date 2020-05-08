@@ -12,36 +12,36 @@ QtObject {
 
             // message, join, leave, kick
             type: "message"
-        }
-        ListElement {
-            name: "Susi Smith"
-            own: false
-            timestamp: 1588754962085
-            message: "Hey Hubby! Doing the dishes and you? asdasdasddas<br><br> asd<br> asdas  asdasdasddas asd asdas  asdasdasddas asd asdas  asdasdasddas asd asdas  asdasdasddas asd asdas  asdasdasddas asd asdas  asdasdasddas asd asdas  asdasdasddas asd asdas  asdasdasddas asd asdas  asdasdasddas asd asdas  asdasdasddas asd asdas  "
+        } /*
+                ListElement {
+                            name: "Susi Smith"
+                                        own: false
+                                                    timestamp: 1588754962085
+                                                                message: "Hey Hubby! Doing the dishes and you? asdasdasddas<br><br> asd<br> asdas  asdasdasddas asd asdas  asdasdasddas asd asdas  asdasdasddas asd asdas  asdasdasddas asd asdas  asdasdasddas asd asdas  asdasdasddas asd asdas  asdasdasddas asd asdas  asdasdasddas asd asdas  asdasdasddas asd asdas  asdasdasddas asd asdas  "
 
-            // message, join, leave, kick
-            type: "message"
-        }
+                                                                            // message, join, leave, kick
+                                                                                        type: "message"
+                                                                                                }
 
-        ListElement {
-            name: "Tamrielle"
-            own: true
-            timestamp: 1588754962085
-            message: "Making money!"
+                                                                                                        ListElement {
+                                                                                                                    name: "Tamrielle"
+                                                                                                                                own: true
+                                                                                                                                            timestamp: 1588754962085
+                                                                                                                                                        message: "Making money!"
 
-            // message, join, leave, kick
-            type: "message"
-        }
+                                                                                                                                                                    // message, join, leave, kick
+                                                                                                                                                                                type: "message"
+                                                                                                                                                                                        }
 
-        ListElement {
-            name: "Tamrielle"
-            own: true
-            timestamp: 1588754962085
-            message: "Soon we can buy a house!"
+                                                                                                                                                                                                ListElement {
+                                                                                                                                                                                                            name: "Tamrielle"
+                                                                                                                                                                                                                        own: true
+                                                                                                                                                                                                                                    timestamp: 1588754962085
+                                                                                                                                                                                                                                                message: "Soon we can buy a house!"
 
-            // message, join, leave, kick
-            type: "message"
-        }
+                                                                                                                                                                                                                                                            // message, join, leave, kick
+                                                                                                                                                                                                                                                                        type: "message"
+                                                                                                                                                                                                                                                                                }*/
     }
 
     function sendMessage(message) {

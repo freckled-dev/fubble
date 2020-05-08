@@ -4,6 +4,7 @@ import QtQuick.Controls 2.2
 import QtQuick.Controls.Material 2.0
 import QtQuick.Layouts 1.0
 import io.fubble 1.0
+import "emoji"
 
 Item {
     id: element
@@ -12,7 +13,7 @@ Item {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.top: parent.top
-        font.pointSize: 14
+        font.pointSize: Style.current.headerPointSize
         horizontalAlignment: Text.AlignHCenter
         id: titleLabel
         text: qsTr("Chat")
@@ -56,10 +57,19 @@ Item {
     }
 
     ChatInput {
+        id: chatInput
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.right: parent.right
-        id: chatInput
+    }
+
+    EmojiPopup {
+        id: emojiPopup
+
+        textArea: chatInput.textArea
+        onClosed: {
+            chatInput.textArea.forceActiveFocus()
+        }
     }
 }
 
