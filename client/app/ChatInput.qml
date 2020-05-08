@@ -15,7 +15,6 @@ Rectangle {
 
     TextArea {
         id: inputText
-        textFormat: Text.RichText
         anchors.left: parent.left
         anchors.right: smileyButton.left
         font.family: emojiFont.name
@@ -51,7 +50,9 @@ Rectangle {
         anchors.rightMargin: 10
         width: 40
         anchors.right: parent.right
-        onClicked: emojiPopup.open()
+        onClicked: {
+            return emojiPopup.visible ? emojiPopup.close() : emojiPopup.open()
+        }
     }
 
     function onInputFinished(event) {

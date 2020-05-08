@@ -6,81 +6,80 @@ import "emoji.js" as EmojiJSON
 import "../."
 
 Popup {
-
+    id: emojiPopup
     property var emojiJson
     property TextArea textArea
-    height: 500
-    clip: true
-
-    x: parent.width - width
-    y: parent.height - height - textArea.height - 5
 
     function initJson() {
         var jsonObject = JSON.parse(EmojiJSON.emoji_json)
         emojiJson = jsonObject
     }
 
-    //    Rectangle {
-    //        id: rectangle
-    //        color: Style.current.transparent
-    //        radius: 5
-    //        border.width: 1
-    //        border.color: Style.current.background
-    //        anchors.fill: parent
-    //    }
-    ScrollView {
+    Rectangle {
+        id: rectangle
+        color: Style.current.transparent
+        radius: 5
+        border.width: 1
+        border.color: Style.current.foreground
         anchors.fill: parent
 
-        ColumnLayout {
-            Repeater {
-                id: categoryRepeater
-                model: emojiJson.emoji_categories
+        ScrollView {
+            id: emojiScrollView
+            anchors.fill: parent
+            anchors.margins: 10
+            clip: true
 
-                ColumnLayout {
-                    Label {
-                        text: modelData.description
-                        font.pointSize: Style.current.subHeaderPointSize
-                    }
+            ColumnLayout {
+                Repeater {
+                    id: categoryRepeater
+                    model: emojiJson.emoji_categories
 
-                    GridLayout {
-                        columns: 8
-                        Repeater {
-                            id: participantRepeater
-                            model: {
-                                return emojiJson.emoji_by_category[modelData.name]
-                            }
+                    ColumnLayout {
+                        Label {
+                            text: modelData.description
+                            font.pointSize: Style.current.subHeaderPointSize
+                        }
 
-                            Label {
-                                id: emoji
-                                text: modelData
-                                font.pointSize: Style.current.subHeaderPointSize
-                                padding: 4
-                                font.family: emojiFont.name
-                                FontLoader {
-                                    id: emojiFont
-                                    source: Style.current.emojiFontName
+                        GridLayout {
+                            columns: 8
+                            Repeater {
+                                id: participantRepeater
+                                model: {
+                                    return emojiJson.emoji_by_category[modelData.name]
                                 }
 
-                                Rectangle {
-                                    id: emojiBackground
-                                    color: Style.current.transparent
-                                    radius: 5
-                                    border.width: 1
-                                    anchors.fill: parent
-                                    visible: false
-                                }
+                                Label {
+                                    id: emoji
+                                    text: modelData
+                                    font.pointSize: 20
+                                    padding: 4
+                                    font.family: emojiFont.name
+                                    FontLoader {
+                                        id: emojiFont
+                                        source: Style.current.emojiFontName
+                                    }
 
-                                MouseArea {
-                                    id: mouseArea
-                                    anchors.fill: parent
-                                    hoverEnabled: true
-                                    onEntered: emojiBackground.visible = true
-                                    onExited: emojiBackground.visible = false
-                                    onClicked: {
-                                        textArea.insert(
-                                                    textArea.cursorPosition,
-                                                    modelData)
-                                        close()
+                                    Rectangle {
+                                        id: emojiBackground
+                                        color: Style.current.transparent
+                                        radius: 5
+                                        border.width: 1
+                                        anchors.fill: parent
+                                        visible: false
+                                    }
+
+                                    MouseArea {
+                                        id: mouseArea
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        onEntered: emojiBackground.visible = true
+                                        onExited: emojiBackground.visible = false
+                                        onClicked: {
+                                            textArea.insert(
+                                                        textArea.cursorPosition,
+                                                        modelData)
+                                            close()
+                                        }
                                     }
                                 }
                             }
@@ -90,6 +89,7 @@ Popup {
             }
         }
     }
+
     Component.onCompleted: initJson()
 }
 
