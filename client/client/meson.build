@@ -8,20 +8,20 @@ client = library('client',
     'own_participant.cpp', 'bot_participant.cpp', 'participant.cpp',
     'add_data_channel.cpp'],
   dependencies: [boost_dep, utils_dep, signalling_client_dep,
-    webrtc_google_peer_dep, session_dep],
+    webrtc_google_peer_dep, matrix_dep],
   include_directories: ['..'],
   install: true
   )
 client_dep = declare_dependency(
   link_with: [client],
   dependencies: [boost_dep, utils_dep, signalling_client_dep,
-    webrtc_google_peer_dep, session_dep],
+    webrtc_google_peer_dep],
   include_directories: ['..']
   )
 
 client_room_test = executable('client_room_test',
   ['room_test.cpp'],
-  dependencies: [client_dep, gtest_dep],
+  dependencies: [client_dep, gtest_dep, temporary_room_dep],
   link_with: [test_main]
   )
 suppr_file = meson.source_root() / 'webrtc_peer/lsan_suppressions_google'

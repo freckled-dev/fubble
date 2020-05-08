@@ -1,6 +1,10 @@
 #include "add_data_channel.hpp"
 #include "executor_asio.hpp"
+#include "http/client_factory.hpp"
 #include "joiner.hpp"
+#include "matrix/authentification.hpp"
+#include "matrix/client_factory.hpp"
+#include "matrix/factory.hpp"
 #include "matrix/testing.hpp"
 #include "own_media.hpp"
 #include "own_participant.hpp"
@@ -12,12 +16,11 @@
 #include "rtc/data_channel.hpp"
 #include "rtc/google/asio_signalling_thread.hpp"
 #include "rtc/google/factory.hpp"
-#include "session/client_connector.hpp"
-#include "session/room_joiner.hpp"
 #include "signalling/client/client_creator.hpp"
 #include "signalling/client/connection_creator.hpp"
 #include "signalling/json_message.hpp"
 #include "signalling/testing.hpp"
+#include "temporary_room/net/client.hpp"
 #include "temporary_room/testing.hpp"
 #include "tracks_adder.hpp"
 #include "uuid.hpp"
@@ -63,7 +66,7 @@ struct test_client {
   signalling::client::client_creator client_creator{
       websocket_connector, signalling_connection_creator, connect_information};
 
-  // session and matrix
+  // matrix
   http::client_factory http_client_factory{
       context, matrix::testing::make_http_server_and_fields()};
   http::client http_client_temporary_room{
@@ -74,11 +77,7 @@ struct test_client {
                                                http_client_factory};
   matrix::authentification matrix_authentification{http_client_factory,
                                                    matrix_client_factory};
-  session::client_factory client_factory;
-  session::client_connector session_connector{client_factory,
-                                              matrix_authentification};
-  session::room_joiner session_room_joiner{temporary_room_client};
-
+  //
   // rtc
   rtc::google::factory rtc_connection_creator;
   client::peer_creator peer_creator{boost_executor, client_creator,
@@ -91,8 +90,8 @@ struct test_client {
   client::participant_creator_creator participant_creator_creator{
       peer_creator, tracks_adder, own_media};
   client::room_creator client_room_creator{participant_creator_creator};
-  client::joiner joiner{client_room_creator, rooms, session_connector,
-                        session_room_joiner};
+  client::joiner joiner{client_room_creator, rooms, matrix_authentification,
+                        temporary_room_client};
 
   boost::future<std::shared_ptr<client::room>> join(std::string name) {
     client::joiner::parameters join_paramenters;

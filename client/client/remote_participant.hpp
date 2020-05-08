@@ -4,7 +4,6 @@
 #include "client/logger.hpp"
 #include "participant.hpp"
 #include "rtc/track_ptr.hpp"
-#include "session/participant.hpp"
 
 namespace client {
 class peer;
@@ -12,7 +11,7 @@ class peer_creator;
 class remote_participant : public participant {
 public:
   remote_participant(std::unique_ptr<peer> peer_,
-                     session::participant &session_participant);
+                     matrix::user &matrix_participant);
   ~remote_participant();
 
   boost::future<void> close() override;

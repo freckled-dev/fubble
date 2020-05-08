@@ -2,15 +2,18 @@
 #define UUID_709FB41B_8B14_446F_B83F_E736A4371022
 
 #include "rtc/google/video_source_ptr.hpp"
-#include "session/participant.hpp"
 #include <boost/signals2/signal.hpp>
 #include <boost/thread/future.hpp>
 #include <memory>
 
+namespace matrix {
+class user;
+}
+
 namespace client {
 class participant {
 public:
-  participant(session::participant &session_participant);
+  participant(matrix::user &matrix_participant);
   virtual ~participant();
 
   virtual boost::future<void> close() = 0;
@@ -26,10 +29,10 @@ public:
 protected:
   void update();
 
-  session::participant &session_participant;
-  // on a delete the session_participant gets delted before the signal
-  // `on_session_participant_leaves` gets called
-  const std::string id{session_participant.get_id()};
+  matrix::user &matrix_participant;
+  // on a delete the matrix_participant gets delted before the signal
+  // `on_matrix_participant_leaves` gets called
+  const std::string id;
   boost::signals2::scoped_connection connection_update;
 };
 } // namespace client

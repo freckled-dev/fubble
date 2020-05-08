@@ -2,7 +2,6 @@
 #define UUID_5ACD0027_5192_4804_B778_E80244B84D45
 
 #include "participant.hpp"
-#include "session/participant.hpp"
 
 namespace client {
 class peer_creator;
@@ -14,8 +13,7 @@ public:
   participant_creator(peer_creator &peer_creator_, tracks_adder &tracks_adder_,
                       const std::string &own_id, own_media &own_media_);
 
-  std::unique_ptr<participant>
-  create(session::participant &session_information);
+  std::unique_ptr<participant> create(matrix::user &session_information);
 
 protected:
   peer_creator &peer_creator_;

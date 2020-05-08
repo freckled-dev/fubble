@@ -4,9 +4,9 @@
 
 using namespace client;
 
-remote_participant::remote_participant(
-    std::unique_ptr<peer> peer_moved, session::participant &session_participant)
-    : participant(session_participant), peer_(std::move(peer_moved)) {
+remote_participant::remote_participant(std::unique_ptr<peer> peer_moved,
+                                       matrix::user &matrix_participant)
+    : participant(matrix_participant), peer_(std::move(peer_moved)) {
   peer_->rtc_connection().on_track.connect(
       [this](auto track) { on_track(track); });
   // TODO track removal!
