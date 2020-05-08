@@ -22,7 +22,7 @@ Rectangle {
         Label {
             text: qsTr("Video Wall")
             Layout.bottomMargin: 20
-            font.pointSize: 14
+            font.pointSize: Style.current.subHeaderPointSize
             Layout.alignment: Qt.AlignHCenter
         }
 

@@ -25,10 +25,10 @@ Popup {
 
     Rectangle {
         id: rectangle
-        color: "#00000000"
+        color: Style.current.transparent
         radius: 5
         border.width: 1
-        border.color: "#ffffff"
+        border.color: Style.current.white
         anchors.fill: parent
     }
 
@@ -43,13 +43,14 @@ Popup {
             id: settingsTitle
             text: qsTr("Settings")
             horizontalAlignment: Text.AlignHCenter
-            font.pointSize: 14
+            font.pointSize: Style.current.subHeaderPointSize
             width: settingsDialog.availableWidth
         }
 
         Switch {
             id: darkModeSwitch
             text: qsTr("Enable dark mode")
+            font.pointSize: Style.current.normalPointSize
             checked: settings.darkMode
             onCheckedChanged: {
                 if (darkModeSwitch.checked) {

@@ -25,7 +25,7 @@ Rectangle {
             RowLayout {
                 anchors.fill: parent
                 Label {
-                    font.pixelSize: 20
+                    font.pointSize: Style.current.headerPointSize
                     Material.foreground: Style.current.buttonTextColor
                     text: participant.name
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter

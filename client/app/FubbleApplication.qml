@@ -10,7 +10,7 @@ ApplicationWindow {
     id: container
     title: qsTr("Fubble")
 
-    width: 1024
+    width: 1400
     height: 800
     minimumWidth: 800
     minimumHeight: 600

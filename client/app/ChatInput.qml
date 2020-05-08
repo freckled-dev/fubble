@@ -6,6 +6,8 @@ import QtQuick.Layouts 1.0
 import io.fubble 1.0
 
 Rectangle {
+    id: rectangle
+    property alias textArea: inputText
     radius: 5
     color: Style.current.backgroundTextInput
     border.color: Style.current.foreground
@@ -13,16 +15,23 @@ Rectangle {
 
     TextArea {
         id: inputText
+        textFormat: Text.RichText
         anchors.left: parent.left
-        anchors.right: parent.right
+        anchors.right: smileyButton.left
+        font.family: emojiFont.name
+        font.pointSize: Style.current.normalPointSize
         background: null
         padding: 10
         topPadding: 20
         cursorVisible: true
-        placeholderText: qsTr("Write your message here...")
         placeholderTextColor: Style.current.placeholderTextColor
-        text: ""
+        placeholderText: "Write your message here..."
         wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+
+        FontLoader {
+            id: emojiFont
+            source: "emoji/" + Style.current.emojiFontName
+        }
 
         Keys.onEnterPressed: {
             onInputFinished(event)
@@ -31,6 +40,18 @@ Rectangle {
         Keys.onReturnPressed: {
             onInputFinished(event)
         }
+    }
+
+    Button {
+        id: smileyButton
+        text: qsTr("😃")
+        font.family: emojiFont.name
+        font.pointSize: 16
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.rightMargin: 10
+        width: 40
+        anchors.right: parent.right
+        onClicked: emojiPopup.open()
     }
 
     function onInputFinished(event) {
