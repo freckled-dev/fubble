@@ -1,5 +1,6 @@
 #include "initialser.hpp"
 #include "logger.hpp"
+#include <boost/filesystem.hpp>
 #include <boost/log/expressions.hpp>
 #include <boost/log/keywords/auto_flush.hpp>
 #include <boost/log/keywords/format.hpp>
@@ -7,7 +8,6 @@
 #include <boost/log/utility/setup/common_attributes.hpp>
 #include <boost/log/utility/setup/console.hpp>
 #include <boost/log/utility/setup/file.hpp>
-#include <filesystem>
 #include <iostream>
 
 BOOST_LOG_ATTRIBUTE_KEYWORD(tag_attr, "Tag", std::string)
@@ -109,8 +109,8 @@ void logging::add_console_log() {
 
 void logging::add_file_log() {
   initialise_globals();
-  std::error_code error;
-  auto temporary_dir = std::filesystem::temp_directory_path(error);
+  boost::system::error_code error;
+  auto temporary_dir = boost::filesystem::temp_directory_path(error);
   BOOST_ASSERT(!error);
   if (error)
     return;
