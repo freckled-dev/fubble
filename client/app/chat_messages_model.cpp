@@ -5,8 +5,8 @@
 using namespace client;
 
 namespace {
-chat_messages_model::message cast_client_message(const chat::message &to_cast) {
-  chat_messages_model::message result;
+chat_messages_model::chat_message cast_client_message(const chat::message &to_cast) {
+  chat_messages_model::chat_message result;
   result.message = QString::fromStdString(to_cast.body);
   result.name = QString::fromStdString(to_cast.sender);
   result.own = to_cast.own;
@@ -27,7 +27,7 @@ chat_messages_model::chat_messages_model(room &room_, QObject *parent)
   });
 }
 
-void chat_messages_model::add_message(const message &add) {
+void chat_messages_model::add_message(const chat_message &add) {
   beginInsertRows(QModelIndex(), rowCount(), rowCount());
   messages.push_back(add);
   endInsertRows();
@@ -42,7 +42,7 @@ QVariant chat_messages_model::data(const QModelIndex &index,
                                    [[maybe_unused]] int role) const {
   const std::size_t row = static_cast<std::size_t>(index.row());
   BOOST_ASSERT(row < messages.size());
-  const message &message_ = messages[row];
+  const chat_message &message_ = messages[row];
   switch (role) {
   case role_name:
     return QVariant::fromValue(message_.name);
