@@ -16,7 +16,7 @@ client_gui = executable('fubble',
     'gui_options.cpp', 'error_model.cpp', 'leave_model.cpp',
     'participants_with_video_model.cpp', 'chat_model.cpp',
     'participant_model.cpp', 'room_model.cpp', 'model_creator.cpp'] + moc_files,
-  dependencies: [client_dep, ui_dep],
+  dependencies: [client_dep, ui_dep, temporary_room_dep],
   gui_app: true,
   install: true)
 

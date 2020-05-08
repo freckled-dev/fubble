@@ -1,7 +1,6 @@
 #include "participants_model.hpp"
 #include "client/bot_participant.hpp"
 #include "client/participant.hpp"
-#include "session/room.hpp"
 #include <boost/assert.hpp>
 #include <fmt/format.h>
 

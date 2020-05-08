@@ -5,11 +5,13 @@
 #include <boost/thread/executors/inline_executor.hpp>
 #include <boost/thread/future.hpp>
 
-namespace session {
+namespace matrix {
 class client;
-class client_connector;
-class room_joiner;
-} // namespace session
+class authentification;
+} // namespace matrix
+namespace temporary_room::net {
+class client;
+}
 
 namespace client {
 class room;
@@ -18,8 +20,8 @@ class room_creator;
 class joiner {
 public:
   joiner(room_creator &room_creator_, rooms &rooms_,
-         session::client_connector &session_connector,
-         session::room_joiner &session_room_joiner);
+         matrix::authentification &matrix_authentification,
+         temporary_room::net::client &temporary_room_client);
   ~joiner();
 
   struct parameters {
@@ -36,9 +38,9 @@ protected:
   client::logger logger{"joiner"};
   boost::inline_executor executor;
   room_creator &room_creator_;
-  session::client_connector &session_connector;
-  session::room_joiner &session_room_joiner;
   rooms &rooms_;
+  matrix::authentification &matrix_authentification;
+  temporary_room::net::client &temporary_room_client;
 };
 } // namespace client
 
