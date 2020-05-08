@@ -30,6 +30,7 @@ Popup {
             clip: true
 
             ColumnLayout {
+                spacing: 20
                 Repeater {
                     id: categoryRepeater
                     model: emojiJson.emoji_categories
