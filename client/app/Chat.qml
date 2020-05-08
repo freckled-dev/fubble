@@ -66,6 +66,11 @@ Item {
     EmojiPopup {
         id: emojiPopup
 
+        height: 400
+        width: 360
+        x: parent.width - width
+        y: parent.height - height - textArea.height - 10
+
         textArea: chatInput.textArea
         onClosed: {
             chatInput.textArea.forceActiveFocus()
