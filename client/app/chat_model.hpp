@@ -1,41 +1,28 @@
 #ifndef UUID_3B21F68E_73A7_4D7C_A073_A4457CCCE1AB
 #define UUID_3B21F68E_73A7_4D7C_A073_A4457CCCE1AB
 
-#include "client/logger.hpp"
-#include <QAbstractItemModel>
-#include <QtCore/QDateTime>
-#include <deque>
+#include "chat_messages_model.hpp"
 
 namespace client {
 class room;
-class chat_model : public QAbstractListModel {
+class chat;
+class chat_model : public QObject {
   Q_OBJECT
+  Q_PROPERTY(
+      chat_messages_model *messages MEMBER messages NOTIFY messages_changed);
+
 public:
   chat_model(room &room_, QObject *parent);
 
-  enum role {
-    role_name = Qt::UserRole + 1,
-    role_own,
-    role_timestamp,
-    role_message,
-    role_type
-  };
+  Q_INVOKABLE void sendMessage(const QString &message);
+
+signals:
+  void messages_changed(chat_messages_model *);
 
 protected:
-  int rowCount(const QModelIndex &parent = QModelIndex()) const override;
-  QVariant data(const QModelIndex &index, int role) const override;
-  QHash<int, QByteArray> roleNames() const override;
-
-  struct message {
-    QString name;
-    bool own;
-    QDateTime timestamp;
-    QString message;
-    QString type{"message"};
-  };
-
   client::logger logger{"chat_model"};
-  std::deque<message> messages;
+  chat &chat_;
+  chat_messages_model *messages;
 };
 } // namespace client
 

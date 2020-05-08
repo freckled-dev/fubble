@@ -2,6 +2,7 @@
 #define UUID_06D4FF02_B490_4688_827B_072E6148116A
 
 #include "logger.hpp"
+#include <boost/signals2/signal.hpp>
 #include <boost/thread/executors/inline_executor.hpp>
 #include <boost/thread/future.hpp>
 #include <chrono>
@@ -28,6 +29,7 @@ public:
   using messages = std::deque<message>;
   const messages &get_messages() const;
   boost::future<void> send(const std::string &to_send);
+  boost::signals2::signal<void(const message &)> on_message;
 
   bool sync_event(const std::string &type, const nlohmann::json &content);
 
