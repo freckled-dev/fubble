@@ -1,3 +1,4 @@
+#include "chat_model.hpp"
 #include "client/add_audio_to_connection.hpp"
 #include "client/add_video_to_connection.hpp"
 #include "client/joiner.hpp"
@@ -16,6 +17,11 @@
 #include "leave_model.hpp"
 #include "logging/initialser.hpp"
 #include "logging/logger.hpp"
+#include "matrix/authentification.hpp"
+#include "matrix/client.hpp"
+#include "matrix/client_factory.hpp"
+#include "matrix/factory.hpp"
+#include "matrix/rooms.hpp"
 #include "model_creator.hpp"
 #include "poll_asio_by_qt.hpp"
 #include "room_model.hpp"
@@ -26,11 +32,10 @@
 #include "rtc/google/capture/video/device_creator.hpp"
 #include "rtc/google/capture/video/enumerator.hpp"
 #include "rtc/google/factory.hpp"
-#include "session/client_connector.hpp"
-#include "session/room_joiner.hpp"
 #include "signalling/client/client_creator.hpp"
 #include "signalling/client/connection_creator.hpp"
 #include "signalling/json_message.hpp"
+#include "temporary_room/net/client.hpp"
 #include "ui/frame_provider_google_video_frame.hpp"
 #include "websocket/connection_creator.hpp"
 #include "websocket/connector.hpp"
@@ -95,11 +100,6 @@ int main(int argc, char *argv[]) {
                                                http_matrix_client_factory};
   matrix::authentification matrix_authentification{http_matrix_client_factory,
                                                    matrix_client_factory};
-  session::client_factory client_factory;
-  session::client_connector session_connector{client_factory,
-                                              matrix_authentification};
-  session::room_joiner session_room_joiner{temporary_room_client};
-
   rtc::google::settings rtc_settings;
   rtc_settings.use_ip_v6 = config.general_.use_ipv6;
   rtc::google::factory rtc_connection_creator{
@@ -155,14 +155,17 @@ int main(int argc, char *argv[]) {
   client::participant_creator_creator participant_creator_creator{
       peer_creator, tracks_adder, own_media};
   client::room_creator client_room_creator{participant_creator_creator};
-  client::joiner joiner{client_room_creator, rooms, session_connector,
-                        session_room_joiner};
+  client::joiner joiner{client_room_creator, rooms, matrix_authentification,
+                        temporary_room_client};
   client::leaver leaver{rooms};
 
   BOOST_LOG_SEV(logger, logging::severity::debug) << "starting qt";
 
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
   QGuiApplication app(argc, argv);
+  app.setOrganizationName("Freckled OG");
+  app.setOrganizationDomain("freckled.dev");
+  app.setApplicationName("Fubble");
 
   // applying material style
   QQuickStyle::setStyle("Material");
@@ -191,6 +194,11 @@ int main(int argc, char *argv[]) {
       "io.fubble", 1, 0, "ErrorModel", "can't instance client::error_model");
   qmlRegisterUncreatableType<client::leave_model>(
       "io.fubble", 1, 0, "LeaveModel", "can't instance client::leave_model");
+  qmlRegisterUncreatableType<client::chat_model>(
+      "io.fubble", 1, 0, "ChatModel", "can't instance client::chat_model");
+  qmlRegisterUncreatableType<client::chat_messages_model>(
+      "io.fubble", 1, 0, "ChatMessagesModel",
+      "can't instance client::chat_messages_model");
 
   QQmlApplicationEngine engine;
   client::model_creator model_creator;

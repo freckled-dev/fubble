@@ -1,3 +1,4 @@
+#include "chat.hpp"
 #include "fixture.hpp"
 
 using namespace matrix;
@@ -122,8 +123,9 @@ TEST_F(Rooms, Leave) {
 
 TEST_F(Rooms, Online) {
   auto [client_, room_] = register_and_create_room();
-  EXPECT_EQ(room_->get_members().front()->get_presence(),
-            matrix::presence::online);
+  auto &members = room_->get_members();
+  ASSERT_FALSE(members.empty());
+  EXPECT_EQ(members.front()->get_presence(), matrix::presence::online);
 }
 
 TEST_F(Rooms,
@@ -186,4 +188,28 @@ TEST_F(Rooms, JoinJoinLeaveJoin) {
   leave_future.get();
   auto [third, third_room] = create_and_invite_guest(*first_room);
   sync_client(*third);
+}
+
+TEST_F(Rooms, ChatSend) {
+  auto [first, first_room] = register_and_create_room();
+  auto &chat_ = first_room->get_chat();
+  auto result = chat_.send("fun");
+  run_context();
+  result.get();
+  EXPECT_TRUE(chat_.get_messages().empty());
+}
+
+TEST_F(Rooms, ChatReceive) {
+  auto [first, first_room] = register_and_create_room();
+  auto &chat_ = first_room->get_chat();
+  const std::string message = "fun";
+  auto sent = chat_.send(message);
+  run_context();
+  sent.get();
+  sync_client(*first);
+  ASSERT_EQ(chat_.get_messages().size(), 1);
+  auto chat_message = chat_.get_messages().front();
+  EXPECT_EQ(chat_message.body, message);
+  EXPECT_EQ(first->get_user_id(), chat_message.user_->get_id());
+  EXPECT_LE(chat_message.timestamp, std::chrono::system_clock::now());
 }

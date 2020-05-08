@@ -1,24 +1,30 @@
 #include "room.hpp"
+#include "chat.hpp"
+#include "matrix/client.hpp"
+#include "matrix/room.hpp"
 #include "participant.hpp"
 #include "participant_creator.hpp"
-#include "session/client.hpp"
-#include "session/room.hpp"
 #include <fmt/format.h>
 
 using namespace client;
 
 room::room(std::unique_ptr<participant_creator> participant_creator_parameter,
-           std::unique_ptr<session::client> client_parameter,
-           std::unique_ptr<session::room> room_parameter)
-    : logger{fmt::format("room:{}", room_parameter->get_id())},
+           std::unique_ptr<matrix::client> client_parameter,
+           matrix::room &room_parameter)
+    : logger{fmt::format("room:{}", room_parameter.get_id())},
       participant_creator_(std::move(participant_creator_parameter)),
-      client_(std::move(client_parameter)), room_(std::move(room_parameter)) {
-  on_session_participant_joins(room_->get_participants());
-  room_->on_joins.connect(
-      [this](const auto joins) { on_session_participant_joins(joins); });
-  room_->on_leaves.connect(
-      [this](const auto leaves) { on_session_participant_leaves(leaves); });
-  room_->on_name_changed.connect(
+      client_(std::move(client_parameter)),
+      room_(room_parameter), chat_{std::make_unique<chat>(
+                                 room_.get_chat(), client_->get_user_id())} {
+  on_session_participant_joins(room_.get_members());
+  room_.on_join.connect([this](matrix::user &joined) {
+    std::deque<matrix::user *> casted;
+    casted.push_back(&joined);
+    on_session_participant_joins(casted);
+  });
+  room_.on_leave.connect(
+      [this](const auto leaves) { on_session_participant_leaves({leaves}); });
+  room_.on_name_changed.connect(
       [this](const auto &name) { on_name_changed(name); });
 }
 
@@ -36,9 +42,9 @@ std::vector<participant *> room::get_participants() const {
   return result;
 }
 
-std::string room::get_name() const { return room_->get_name(); }
+std::string room::get_name() const { return room_.get_name(); }
 
-std::string room::get_own_id() const { return client_->get_id(); }
+std::string room::get_own_id() const { return client_->get_user_id(); }
 
 namespace {
 struct leaver : std::enable_shared_from_this<leaver> {
@@ -79,9 +85,8 @@ private:
 } // namespace
 
 boost::future<void> room::leave() {
-  BOOST_ASSERT(room_);
   BOOST_ASSERT(client_);
-  client_->close(); // no more updates
+  client_->stop_sync(); // no more updates
   auto leaver_ = std::make_shared<leaver>();
   std::transform(participants_.begin(), participants_.end(),
                  std::back_inserter(leaver_->futures),
@@ -90,13 +95,15 @@ boost::future<void> room::leave() {
       .then(executor,
             [this](auto result) {
               result.get();
-              return client_->leave_room(*room_);
+              return client_->get_rooms().leave_room(room_);
             })
       .unwrap();
 }
 
+chat &room::get_chat() const { return *chat_; }
+
 void room::on_session_participant_joins(
-    const std::vector<session::participant *> &joins) {
+    const std::deque<matrix::user *> &joins) {
   BOOST_LOG_SEV(logger, logging::severity::trace)
       << "on_session_participant_joins, count:" << joins.size();
   std::vector<participant *> signal_joins;

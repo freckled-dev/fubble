@@ -4,10 +4,10 @@
 #include "participant_creator_creator.hpp"
 #include <boost/thread/executor.hpp>
 
-namespace session {
+namespace matrix {
 class client;
 class room;
-} // namespace session
+} // namespace matrix
 
 namespace client {
 class room;
@@ -15,8 +15,8 @@ class room_creator {
 public:
   room_creator(participant_creator_creator &participant_creator_creator_);
 
-  std::unique_ptr<room> create(std::unique_ptr<session::client> client_,
-                               std::unique_ptr<session::room> room_);
+  std::unique_ptr<room> create(std::unique_ptr<matrix::client> client_,
+                               matrix::room &room_);
 
 protected:
   participant_creator_creator &participant_creator_creator_;

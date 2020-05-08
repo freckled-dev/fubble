@@ -13,9 +13,11 @@
 namespace matrix {
 class client;
 class user;
+class chat;
 class room {
 public:
   room(client &client_, const std::string &id);
+  ~room();
   const std::string &get_id() const;
   boost::future<void> invite_by_user_id(const std::string &user_id);
   boost::future<void> kick(const std::string &user_id);
@@ -23,6 +25,7 @@ public:
   const members_type &get_members() const;
   std::optional<user *> get_member_by_id(const std::string &id);
   std::string get_name() const;
+  chat &get_chat() const;
 
   boost::signals2::signal<void(user &)> on_join;
   boost::signals2::signal<void(const std::string &)> on_leave;
@@ -49,6 +52,7 @@ protected:
   boost::signals2::scoped_connection on_sync_connection;
   members_type members;
   std::string name;
+  const std::unique_ptr<chat> chat_;
 };
 } // namespace matrix
 
