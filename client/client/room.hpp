@@ -5,6 +5,7 @@
 #include <boost/signals2/signal.hpp>
 #include <boost/thread/executors/inline_executor.hpp>
 #include <boost/thread/future.hpp>
+#include <deque>
 
 namespace matrix {
 class client;
@@ -15,6 +16,7 @@ class user;
 namespace client {
 class participant;
 class participant_creator;
+class chat;
 class room {
 public:
   // TODO refactor. client shall not be owned by room
@@ -33,6 +35,7 @@ public:
   std::string get_name() const;
   std::string get_own_id() const;
   boost::future<void> leave();
+  chat &get_chat() const;
 
 protected:
   void on_session_participant_joins(const std::deque<matrix::user *> &joins);
@@ -46,6 +49,7 @@ protected:
   std::unique_ptr<matrix::client> client_;
   matrix::room &room_;
   participants participants_;
+  std::unique_ptr<chat> chat_;
 };
 } // namespace client
 

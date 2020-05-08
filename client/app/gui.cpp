@@ -196,6 +196,9 @@ int main(int argc, char *argv[]) {
       "io.fubble", 1, 0, "LeaveModel", "can't instance client::leave_model");
   qmlRegisterUncreatableType<client::chat_model>(
       "io.fubble", 1, 0, "ChatModel", "can't instance client::chat_model");
+  qmlRegisterUncreatableType<client::chat_messages_model>(
+      "io.fubble", 1, 0, "ChatMessagesModel",
+      "can't instance client::chat_messages_model");
 
   QQmlApplicationEngine engine;
   client::model_creator model_creator;

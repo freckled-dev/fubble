@@ -1,4 +1,5 @@
 #include "room.hpp"
+#include "chat.hpp"
 #include "matrix/client.hpp"
 #include "matrix/room.hpp"
 #include "participant.hpp"
@@ -12,7 +13,9 @@ room::room(std::unique_ptr<participant_creator> participant_creator_parameter,
            matrix::room &room_parameter)
     : logger{fmt::format("room:{}", room_parameter.get_id())},
       participant_creator_(std::move(participant_creator_parameter)),
-      client_(std::move(client_parameter)), room_(room_parameter) {
+      client_(std::move(client_parameter)),
+      room_(room_parameter), chat_{std::make_unique<chat>(
+                                 room_.get_chat(), client_->get_user_id())} {
   on_session_participant_joins(room_.get_members());
   room_.on_join.connect([this](matrix::user &joined) {
     std::deque<matrix::user *> casted;
@@ -96,6 +99,8 @@ boost::future<void> room::leave() {
             })
       .unwrap();
 }
+
+chat &room::get_chat() const { return *chat_; }
 
 void room::on_session_participant_joins(
     const std::deque<matrix::user *> &joins) {
