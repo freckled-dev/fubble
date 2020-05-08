@@ -57,8 +57,11 @@ int main(int argc, char *argv[]) {
   gui_config config = config_check.value();
 
   logging::add_console_log();
+  logging::add_file_log();
+   
   logging::logger logger{"main"};
-  BOOST_LOG_SEV(logger, logging::severity::debug) << "starting up";
+
+    BOOST_LOG_SEV(logger, logging::severity::debug) << "starting up";
 
   boost::asio::io_context context;
   boost::asio::executor executor{context.get_executor()};
