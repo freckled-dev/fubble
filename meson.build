@@ -84,6 +84,5 @@ subdir('matrix')
 subdir('signalling')
 subdir('webrtc_peer')
 subdir('temporary_room')
-subdir('session')
 subdir('client')
 

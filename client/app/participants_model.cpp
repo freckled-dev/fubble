@@ -1,7 +1,6 @@
 #include "participants_model.hpp"
 #include "client/bot_participant.hpp"
 #include "client/participant.hpp"
-#include "session/room.hpp"
 #include <boost/assert.hpp>
 #include <fmt/format.h>
 
@@ -21,7 +20,7 @@ int participants_model::rowCount([
   return participants.size();
 }
 
-QVariant participants_model::data([[maybe_unused]] const QModelIndex &index,
+QVariant participants_model::data(const QModelIndex &index,
                                   [[maybe_unused]] int role) const {
   BOOST_ASSERT(role == participant_role);
   BOOST_LOG_SEV(logger, logging::severity::trace) << "getting some data";

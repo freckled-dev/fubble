@@ -1,11 +1,12 @@
 #include "participant.hpp"
+#include "matrix/user.hpp"
 
 using namespace client;
 
-participant::participant(session::participant &session_participant)
-    : session_participant(session_participant) {
+participant::participant(matrix::user &matrix_participant)
+    : matrix_participant(matrix_participant), id{matrix_participant.get_id()} {
   connection_update =
-      session_participant.on_update.connect([this] { update(); });
+      matrix_participant.on_update.connect([this] { update(); });
 }
 
 participant::~participant() = default;
@@ -13,7 +14,9 @@ participant::~participant() = default;
 std::string participant::get_id() const { return id; }
 
 std::string participant::get_name() const {
-  return session_participant.get_name();
+  return matrix_participant.get_display_name();
 }
 
-void participant::update() { on_name_changed(session_participant.get_name()); }
+void participant::update() {
+  on_name_changed(matrix_participant.get_display_name());
+}

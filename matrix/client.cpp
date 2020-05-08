@@ -42,6 +42,11 @@ std::unique_ptr<http::client> client::create_http_client() {
   return http_factory.create(fields);
 }
 
+std::string client::create_transaction_id() {
+  ++transaction_id_counter;
+  return std::to_string(transaction_id_counter);
+}
+
 boost::future<void> client::set_display_name(const std::string &name) {
   nlohmann::json request = nlohmann::json::object();
   request["displayname"] = name;

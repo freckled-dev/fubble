@@ -2,8 +2,8 @@
 
 using namespace client;
 
-bot_participant::bot_participant(session::participant &session_participant)
-    : participant(session_participant) {}
+bot_participant::bot_participant(matrix::user &matrix_participant)
+    : participant(matrix_participant) {}
 
 bot_participant::~bot_participant() = default;
 

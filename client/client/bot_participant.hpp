@@ -3,13 +3,11 @@
 
 #include "client/logger.hpp"
 #include "participant.hpp"
-#include "rtc/track_ptr.hpp"
-#include "session/participant.hpp"
 
 namespace client {
 class bot_participant : public participant {
 public:
-  bot_participant(session::participant &session_participant);
+  bot_participant(matrix::user &matrix_participant);
   ~bot_participant();
 
   boost::future<void> close() override;

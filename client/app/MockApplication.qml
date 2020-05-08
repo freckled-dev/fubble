@@ -5,5 +5,4 @@ FubbleApplication {
     joinModel: JoinModel {}
     leaveModel: LeaveModel {}
     errorModel: ErrorModel {}
-    chatModel: ChatModel {}
 }

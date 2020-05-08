@@ -1,14 +1,18 @@
 #include "room.hpp"
+#include "chat.hpp"
 #include "client.hpp"
 #include "error.hpp"
 #include <fmt/format.h>
 
 using namespace matrix;
 
-room::room(client &client_, const std::string &id) : client_(client_), id(id) {
+room::room(client &client_, const std::string &id)
+    : client_(client_), id(id), chat_{std::make_unique<chat>(client_, id)} {
   BOOST_ASSERT(!id.empty());
   http_client = client_.create_http_client();
 }
+
+room::~room() = default;
 
 const std::string &room::get_id() const { return id; }
 
@@ -45,6 +49,8 @@ std::optional<user *> room::get_member_by_id(const std::string &id) {
 
 std::string room::get_name() const { return name; }
 
+chat &room::get_chat() const { return *chat_; }
+
 void room::sync(const nlohmann::json &content) {
   const auto joined_rooms = content["rooms"]["join"];
   BOOST_ASSERT(joined_rooms.contains(id));
@@ -54,6 +60,8 @@ void room::sync(const nlohmann::json &content) {
   auto events = our_room["timeline"]["events"];
   for (const auto &event : events) {
     const std::string type = event["type"];
+    if (chat_->sync_event(type, event))
+      continue;
     if (type == "m.room.member") {
       on_event_m_room_member(event);
       continue;

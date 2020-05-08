@@ -2,25 +2,26 @@
 #define UUID_D136BB60_81E5_4336_A54C_72FACE9EE23A
 
 #include "client/logger.hpp"
-#include "session/participant.hpp"
 #include <boost/signals2/signal.hpp>
 #include <boost/thread/executors/inline_executor.hpp>
 #include <boost/thread/future.hpp>
+#include <deque>
 
-namespace session {
+namespace matrix {
 class client;
 class room;
-} // namespace session
+class user;
+} // namespace matrix
 
 namespace client {
 class participant;
 class participant_creator;
+class chat;
 class room {
 public:
   // TODO refactor. client shall not be owned by room
   room(std::unique_ptr<participant_creator> participant_creator_,
-       std::unique_ptr<session::client> client_,
-       std::unique_ptr<session::room> room_);
+       std::unique_ptr<matrix::client> client_, matrix::room &room_);
   ~room();
 
   // these signals could be in a class calles participants. Do so if room grows
@@ -34,12 +35,10 @@ public:
   std::string get_name() const;
   std::string get_own_id() const;
   boost::future<void> leave();
+  chat &get_chat() const;
 
 protected:
-  void on_session_participant_joins(
-      const std::vector<session::participant *> &joins);
-  void on_session_participant_updates(
-      const std::vector<session::participant> &updates);
+  void on_session_participant_joins(const std::deque<matrix::user *> &joins);
   void on_session_participant_leaves(const std::vector<std::string> &leaves);
   using participants = std::vector<std::unique_ptr<participant>>;
   participants::iterator find(const std::string &id);
@@ -47,9 +46,10 @@ protected:
   client::logger logger;
   std::unique_ptr<participant_creator> participant_creator_;
   boost::inline_executor executor;
-  std::unique_ptr<session::client> client_;
-  std::unique_ptr<session::room> room_;
+  std::unique_ptr<matrix::client> client_;
+  matrix::room &room_;
   participants participants_;
+  std::unique_ptr<chat> chat_;
 };
 } // namespace client
 

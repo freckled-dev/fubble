@@ -2,6 +2,7 @@ import QtQml 2.0
 
 QtObject {
     property string name: "room name not set"
+    property var chat: ChatModel {}
     property list<QtObject> participants: [
         QtObject {
             property var participant: ParticipantModel {
@@ -26,6 +27,7 @@ QtObject {
     ]
 
     property list<QtObject> participantsWithVideo
+
 
     /*: [
         QtObject {

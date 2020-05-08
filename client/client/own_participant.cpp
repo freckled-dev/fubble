@@ -3,9 +3,9 @@
 
 using namespace client;
 
-own_participant::own_participant(session::participant &session_participant,
+own_participant::own_participant(matrix::user &matrix_participant,
                                  own_media &own_media_)
-    : participant(session_participant), own_media_(own_media_) {}
+    : participant(matrix_participant), own_media_(own_media_) {}
 
 own_participant::~own_participant() = default;
 

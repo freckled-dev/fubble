@@ -2,7 +2,6 @@
 #include "client/bot_participant.hpp"
 #include "client/own_participant.hpp"
 #include "client/participant.hpp"
-#include "session/room.hpp"
 #include <boost/assert.hpp>
 #include <fmt/format.h>
 
