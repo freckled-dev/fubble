@@ -9,6 +9,7 @@ Rectangle {
     id: rectangle
     property alias textArea: inputText
     radius: 5
+    border.width: 1
     color: Style.current.backgroundTextInput
     border.color: Style.current.foreground
     implicitHeight: inputText.implicitHeight
@@ -17,20 +18,14 @@ Rectangle {
         id: inputText
         anchors.left: parent.left
         anchors.right: smileyButton.left
-        font.family: emojiFont.name
-        font.pointSize: Style.current.normalPointSize
+        font.pointSize: Style.current.textPointSize
         background: null
         padding: 10
         topPadding: 20
         cursorVisible: true
         placeholderTextColor: Style.current.placeholderTextColor
-        placeholderText: "Write your message here..."
+        placeholderText: qsTr("Write your message here...")
         wrapMode: Text.WrapAtWordBoundaryOrAnywhere
-
-        FontLoader {
-            id: emojiFont
-            source: "emoji/" + Style.current.emojiFontName
-        }
 
         Keys.onEnterPressed: {
             onInputFinished(event)
@@ -44,7 +39,6 @@ Rectangle {
     Button {
         id: smileyButton
         text: qsTr("😃")
-        font.family: emojiFont.name
         font.pointSize: 16
         anchors.verticalCenter: parent.verticalCenter
         anchors.rightMargin: 10

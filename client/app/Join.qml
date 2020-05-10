@@ -75,7 +75,7 @@ FocusScope {
                 text: joinModel.room
                 placeholderText: qsTr("Room")
                 Layout.fillWidth: true
-                font.pointSize: Style.current.normalPointSize
+                font.pointSize: Style.current.textPointSize
                 focus: true
                 onAccepted: name.focus = true
             }
@@ -85,7 +85,7 @@ FocusScope {
                 text: joinModel.name
                 placeholderText: qsTr("Your Name")
                 Layout.fillWidth: true
-                font.pointSize: Style.current.normalPointSize
+                font.pointSize: Style.current.textPointSize
                 onAccepted: loginUi.joinRoom()
             }
 

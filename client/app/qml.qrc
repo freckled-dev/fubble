@@ -8,7 +8,7 @@
         <file>ParticipantOverview.qml</file>
         <file>Room.qml</file>
         <file>Chat.qml</file>
-        <file>ChatMessage.qml</file>
+        <file>ChatItem.qml</file>
         <file>ChatInput.qml</file>
         <file>About.qml</file>
         <file>Error.qml</file>

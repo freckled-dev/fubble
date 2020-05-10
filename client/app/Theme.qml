@@ -14,7 +14,7 @@ QtObject {
     property color placeholderTextColor
 
     property string emojiFontName: 'EmojiOneFont.ttf'
-    property int normalPointSize: 12
+    property int textPointSize: 10
     property int headerPointSize: 16
-    property int subHeaderPointSize: 16
+    property int subHeaderPointSize: 14
 }

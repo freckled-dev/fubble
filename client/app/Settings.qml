@@ -50,7 +50,7 @@ Popup {
         Switch {
             id: darkModeSwitch
             text: qsTr("Enable dark mode")
-            font.pointSize: Style.current.normalPointSize
+            font.pointSize: Style.current.textPointSize
             checked: settings.darkMode
             onCheckedChanged: {
                 if (darkModeSwitch.checked) {

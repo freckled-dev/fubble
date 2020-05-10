@@ -28,7 +28,7 @@ ToolBar {
         Label {
             id: titleLabel
             text: title
-            font.pointSize: Style.current.headerPointSize
+            font.pointSize: Style.current.subHeaderPointSize
             elide: Label.ElideRight
             horizontalAlignment: Qt.AlignHCenter
             verticalAlignment: Qt.AlignVCenter
@@ -47,10 +47,12 @@ ToolBar {
                 MenuItem {
                     text: qsTr("Settings")
                     onTriggered: settings.open()
+                    font.pointSize: Style.current.textPointSize
                 }
                 MenuItem {
                     text: qsTr("About")
                     onTriggered: aboutDialog.open()
+                    font.pointSize: Style.current.textPointSize
                 }
             }
         }
