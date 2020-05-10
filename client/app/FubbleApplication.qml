@@ -29,6 +29,8 @@ ApplicationWindow {
     Material.background: Style.current.background
     Material.foreground: Style.current.foreground
 
+    font.family: emojiFont.name
+
     header: Header {
         id: header
         title: stack.currentItem.title
@@ -93,6 +95,11 @@ ApplicationWindow {
         onForceShutdown: {
             container.close()
         }
+    }
+
+    FontLoader {
+        id: emojiFont
+        source: "emoji/" + Style.current.emojiFontName
     }
 
     Error {

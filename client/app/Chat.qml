@@ -51,8 +51,10 @@ Item {
     Component {
         id: chatDelegate
 
-        ChatMessage {
-            anchors.right: own ? parent.right : undefined
+        ChatItem {
+            anchors.right: own && type === "message" ? parent.right : undefined
+            anchors.horizontalCenter: type !== "message" ? parent.horizontalCenter : undefined
+            rectangleBorder.width: type === "message" ? 1 : 0
         }
     }
 

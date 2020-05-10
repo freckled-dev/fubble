@@ -55,11 +55,6 @@ Popup {
                                     text: modelData
                                     font.pointSize: 20
                                     padding: 4
-                                    font.family: emojiFont.name
-                                    FontLoader {
-                                        id: emojiFont
-                                        source: Style.current.emojiFontName
-                                    }
 
                                     Rectangle {
                                         id: emojiBackground
