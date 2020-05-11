@@ -62,16 +62,6 @@ Rectangle {
         }
     }
 
-    SoundEffect {
-        id: joinSound
-        source: "sounds/join.wav"
-    }
-
-    SoundEffect {
-        id: leaveSound
-        source: "sounds/leave.wav"
-    }
-
     Component {
         id: infoComponent
 
