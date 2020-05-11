@@ -115,10 +115,12 @@ void action::on_response_read(const boost::system::error_code &error) {
   auto promise_copy = std::move(promise);
   auto body = response.body();
   const auto content_type = response[boost::beast::http::field::content_type];
-  BOOST_LOG_SEV(logger, logging::severity::trace) << fmt::format(
-      "got a response, for target'{}', code:{}, "
-      "content_type:'{}', body.size():{}",
-      target, static_cast<int>(http_code), content_type, body.size());
+  const std::string target_with_prefix = fields_.target_prefix + target;
+  BOOST_LOG_SEV(logger, logging::severity::trace)
+      << fmt::format("got a response, for target'{}', code:{}, "
+                     "content_type:'{}', body.size():{}",
+                     target_with_prefix, static_cast<int>(http_code),
+                     content_type, body.size());
   nlohmann::json json_body;
   try {
     json_body = nlohmann::json::parse(body);
