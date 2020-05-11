@@ -90,8 +90,8 @@ protected:
   void check_and_call_participant_count_changed() {
     auto result =
         std::count_if(users.cbegin(), users.cend(), [](const auto &check) {
-          return check->participant->get_join_state() ==
-                 matrix::join_state::join;
+          return check->participant->get_join_state() !=
+                 matrix::join_state::leave;
         });
     if (result > 0)
       return;

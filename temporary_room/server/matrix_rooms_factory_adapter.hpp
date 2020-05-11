@@ -5,6 +5,8 @@
 #include "temporary_room/rooms/rooms.hpp"
 
 namespace temporary_room::server {
+// TODO there's a bug. if there is an invited user, but no joined ones, the room
+// won't get closed
 class matrix_rooms_factory_adapter : public rooms::room_factory {
 public:
   matrix_rooms_factory_adapter(matrix::client &matrix_client);
