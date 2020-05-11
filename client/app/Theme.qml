@@ -14,7 +14,7 @@ QtObject {
     property color placeholderTextColor
 
     property string emojiOneFontSrc: 'EmojiOneFont.ttf'
-    property string verdanaFontSrc: 'Verdana_small.ttf'
+    property string verdanaFontSrc: 'VerdanaFont.ttf'
 
     property int textPointSize: 10
     property int headerPointSize: 16

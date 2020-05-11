@@ -29,6 +29,9 @@
         <file>pics/close_dark.svg</file>
         <file>pics/exit_dark.gif</file>
         <file>pics/exit_light.gif</file>
+        <file>sounds/join.wav</file>
+        <file>sounds/error.wav</file>
+        <file>sounds/leave.wav</file>
     </qresource>
 </RCC>
 
