@@ -29,7 +29,8 @@ ApplicationWindow {
     Material.background: Style.current.background
     Material.foreground: Style.current.foreground
 
-    font.family: emojiFont.name
+    font.family: verdanaFont.name + ", " + emojiOneFont.name
+    font.pointSize: Style.current.textPointSize
 
     header: Header {
         id: header
@@ -98,8 +99,13 @@ ApplicationWindow {
     }
 
     FontLoader {
-        id: emojiFont
-        source: "emoji/" + Style.current.emojiFontName
+        id: emojiOneFont
+        source: Style.current.emojiOneFontSrc
+    }
+
+    FontLoader {
+        id: verdanaFont
+        source: Style.current.verdanaFontSrc
     }
 
     Error {

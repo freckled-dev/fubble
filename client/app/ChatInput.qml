@@ -18,7 +18,6 @@ Rectangle {
         id: inputText
         anchors.left: parent.left
         anchors.right: smileyButton.left
-        font.pointSize: Style.current.textPointSize
         background: null
         padding: 10
         topPadding: 20

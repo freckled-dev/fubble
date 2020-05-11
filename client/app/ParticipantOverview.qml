@@ -14,7 +14,6 @@ Rectangle {
     Label {
         id: nameLabel
         color: Style.current.foreground
-        font.pointSize: Style.current.textPointSize
         padding: 8
         text: model.participant.name
         verticalAlignment: Text.AlignVCenter

@@ -73,9 +73,10 @@ FocusScope {
             TextField {
                 id: room
                 text: joinModel.room
+                leftPadding: 0
+                padding: 0
                 placeholderText: qsTr("Room")
                 Layout.fillWidth: true
-                font.pointSize: Style.current.textPointSize
                 focus: true
                 onAccepted: name.focus = true
             }
@@ -83,9 +84,10 @@ FocusScope {
             TextField {
                 id: name
                 text: joinModel.name
+                leftPadding: 0
+                padding: 0
                 placeholderText: qsTr("Your Name")
                 Layout.fillWidth: true
-                font.pointSize: Style.current.textPointSize
                 onAccepted: loginUi.joinRoom()
             }
 
