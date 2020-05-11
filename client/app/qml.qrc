@@ -13,7 +13,7 @@
         <file>About.qml</file>
         <file>Error.qml</file>
         <file>Style.qml</file>
-        <file>emoji/EmojiPopup.qml</file>
+        <file>EmojiPopup.qml</file>
         <file>emoji/emoji.js</file>
         <file>Settings.qml</file>
         <file>ThemeLight.qml</file>
@@ -29,6 +29,9 @@
         <file>pics/close_dark.svg</file>
         <file>pics/exit_dark.gif</file>
         <file>pics/exit_light.gif</file>
+        <file>sounds/join.wav</file>
+        <file>sounds/error.wav</file>
+        <file>sounds/leave.wav</file>
     </qresource>
 </RCC>
 
