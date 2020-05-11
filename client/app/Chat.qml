@@ -21,6 +21,7 @@ Item {
     }
 
     ListView {
+        id: chatList
         ScrollBar.vertical: ScrollBar {
             id: chatScrollBar
         }
@@ -31,7 +32,7 @@ Item {
         anchors.top: titleLabel.bottom
         clip: true
         delegate: chatDelegate
-        id: chatList
+
         model: chatModel.messages
         snapMode: ListView.SnapToItem
         spacing: 10
