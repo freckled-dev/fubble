@@ -1,5 +1,6 @@
 #include "chat.hpp"
 #include "fixture.hpp"
+#include "room_participant.hpp"
 
 using namespace matrix;
 
@@ -123,9 +124,10 @@ TEST_F(Rooms, Leave) {
 
 TEST_F(Rooms, Online) {
   auto [client_, room_] = register_and_create_room();
-  auto &members = room_->get_members();
+  auto members = room_->get_members();
   ASSERT_FALSE(members.empty());
-  EXPECT_EQ(members.front()->get_presence(), matrix::presence::online);
+  EXPECT_EQ(members.front()->get_user().get_presence(),
+            matrix::presence::online);
 }
 
 TEST_F(Rooms,
