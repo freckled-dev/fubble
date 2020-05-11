@@ -14,10 +14,10 @@ Popup {
 
     Rectangle {
         id: rectangle
-        color: "#00000000"
+        color: Style.current.transparent
         radius: 5
         border.width: 1
-        border.color: "#ffffff"
+        border.color: Style.current.white
         anchors.fill: parent
     }
 
@@ -33,7 +33,7 @@ Popup {
             text: qsTr("About")
             font.bold: true
             horizontalAlignment: Text.AlignHCenter
-            font.pixelSize: 18
+            font.pointSize: Style.current.headerPointSize
         }
 
         Image {
@@ -48,21 +48,18 @@ Popup {
             width: aboutDialog.availableWidth
             text: qsTr("Fubble")
             horizontalAlignment: Text.AlignHCenter
-            font.pixelSize: 16
         }
 
         Label {
             width: aboutDialog.availableWidth
             text: qsTr("by Freckled OG")
             horizontalAlignment: Text.AlignHCenter
-            font.pixelSize: 14
         }
 
         Label {
             width: aboutDialog.availableWidth
             text: qsTr("<a href='https://freckled.dev/contact'>Contact us...</a>")
             horizontalAlignment: Text.AlignHCenter
-            font.pixelSize: 14
             onLinkActivated: Qt.openUrlExternally(link)
         }
     }

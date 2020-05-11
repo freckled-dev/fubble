@@ -41,13 +41,6 @@ RowLayout {
         Layout.margins: 10
         visible: videoWall.videoCount === 0
     }
-
-    // remove this once we have the new layout
-    Component.onCompleted: {
-        container.width = 1400
-        setX(Screen.width / 2 - container.width / 2)
-        setY(Screen.height / 2 - container.height / 2)
-    }
 }
 /*##^##
 Designer {

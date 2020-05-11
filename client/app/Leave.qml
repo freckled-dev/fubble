@@ -55,7 +55,6 @@ Popup {
 
         Label {
             text: qsTr("Leaving the room...")
-            font.pointSize: 12
             Layout.alignment: Qt.AlignHCenter
         }
 

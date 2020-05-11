@@ -6,7 +6,10 @@ import QtQuick.Layouts 1.0
 import io.fubble 1.0
 
 Rectangle {
+    id: rectangle
+    property alias textArea: inputText
     radius: 5
+    border.width: 1
     color: Style.current.backgroundTextInput
     border.color: Style.current.foreground
     implicitHeight: inputText.implicitHeight
@@ -14,14 +17,13 @@ Rectangle {
     TextArea {
         id: inputText
         anchors.left: parent.left
-        anchors.right: parent.right
+        anchors.right: smileyButton.left
         background: null
         padding: 10
         topPadding: 20
         cursorVisible: true
-        placeholderText: qsTr("Write your message here...")
         placeholderTextColor: Style.current.placeholderTextColor
-        text: ""
+        placeholderText: qsTr("Write your message here...")
         wrapMode: Text.WrapAtWordBoundaryOrAnywhere
 
         Keys.onEnterPressed: {
@@ -30,6 +32,19 @@ Rectangle {
 
         Keys.onReturnPressed: {
             onInputFinished(event)
+        }
+    }
+
+    Button {
+        id: smileyButton
+        text: qsTr("😃")
+        font.pointSize: 16
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.rightMargin: 10
+        width: 40
+        anchors.right: parent.right
+        onClicked: {
+            return emojiPopup.visible ? emojiPopup.close() : emojiPopup.open()
         }
     }
 
