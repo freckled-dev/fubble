@@ -48,21 +48,18 @@ Popup {
             width: aboutDialog.availableWidth
             text: qsTr("Fubble")
             horizontalAlignment: Text.AlignHCenter
-            font.pointSize: Style.current.textPointSize
         }
 
         Label {
             width: aboutDialog.availableWidth
             text: qsTr("by Freckled OG")
             horizontalAlignment: Text.AlignHCenter
-            font.pointSize: Style.current.textPointSize
         }
 
         Label {
             width: aboutDialog.availableWidth
             text: qsTr("<a href='https://freckled.dev/contact'>Contact us...</a>")
             horizontalAlignment: Text.AlignHCenter
-            font.pointSize: Style.current.textPointSize
             onLinkActivated: Qt.openUrlExternally(link)
         }
     }

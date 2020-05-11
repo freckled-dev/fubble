@@ -47,12 +47,10 @@ ToolBar {
                 MenuItem {
                     text: qsTr("Settings")
                     onTriggered: settings.open()
-                    font.pointSize: Style.current.textPointSize
                 }
                 MenuItem {
                     text: qsTr("About")
                     onTriggered: aboutDialog.open()
-                    font.pointSize: Style.current.textPointSize
                 }
             }
         }

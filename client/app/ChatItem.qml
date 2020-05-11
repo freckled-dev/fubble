@@ -33,7 +33,6 @@ Rectangle {
                 Layout.rightMargin: 10
                 Layout.topMargin: 10
                 color: own ? Style.current.accent : Style.current.primary
-                font.pointSize: Style.current.textPointSize
                 text: name + " - " + new Date(timestamp).toTimeString()
             }
 

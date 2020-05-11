@@ -16,6 +16,8 @@ Rectangle {
 
     ColumnLayout {
         id: noImageColumnLayout
+        anchors.rightMargin: 10
+        anchors.leftMargin: 10
         spacing: 20
         anchors.verticalCenter: parent.verticalCenter
         anchors.right: parent.right
@@ -31,7 +33,6 @@ Rectangle {
         }
         Label {
             text: qsTr("Please check your video camera and settings and restart the app or continue without video...")
-            font.pointSize: Style.current.textPointSize
             horizontalAlignment: Text.AlignHCenter
             Layout.fillWidth: true
             wrapMode: Text.WordWrap
