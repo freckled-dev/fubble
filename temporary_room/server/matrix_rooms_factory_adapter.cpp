@@ -1,4 +1,5 @@
 #include "matrix_rooms_factory_adapter.hpp"
+#include "matrix/room_participant.hpp"
 #include <fmt/format.h>
 #include <fmt/ostream.h>
 
@@ -18,8 +19,6 @@ public:
     BOOST_LOG_SEV(logger, logging::severity::trace) << "constructor";
     signals_connections.emplace_back(
         matrix_room.on_join.connect([this](auto &join) { on_join(join); }));
-    signals_connections.emplace_back(matrix_room.on_leave.connect(
-        [this](const auto &leave) { on_leave(leave); }));
   }
   ~rooms_room_matrix_adapter() = default;
   temporary_room::rooms::room_id get_room_id() const override {
@@ -33,14 +32,18 @@ public:
 protected:
   struct user_wrapper {
     std::string id;
-    matrix::user *user{};
+    matrix::room_participant *participant{};
     boost::signals2::scoped_connection update_connection;
+    boost::signals2::scoped_connection join_state_connection;
   };
-  void on_join(matrix::user &user) {
+  void on_join(matrix::room_participant &room_participant_) {
+    auto &user = room_participant_.get_user();
     auto user_id = user.get_id();
     auto user_presence = user.get_presence();
-    BOOST_LOG_SEV(logger, logging::severity::info) << fmt::format(
-        "a user joined (id:'{}', presence:{})", user_id, user_presence);
+    auto join_state = room_participant_.get_join_state();
+    BOOST_LOG_SEV(logger, logging::severity::info)
+        << fmt::format("a user joined (id:'{}', presence:{}, join_state:{})",
+                       user_id, user_presence, join_state);
     if (user_id == own_user_id) {
       BOOST_LOG_SEV(logger, logging::severity::trace)
           << "our own user joined - skipping";
@@ -51,36 +54,33 @@ protected:
           << fmt::format("a user joined (id:'{}') that is offline", user_id);
       // BOOST_ASSERT(false);
     }
+    if (join_state == matrix::join_state::leave) {
+      BOOST_LOG_SEV(logger, logging::severity::warning) << fmt::format(
+          "a user got added (id:'{}') that is join_state::leave", user_id);
+      // BOOST_ASSERT(false);
+    }
     auto add = std::make_unique<user_wrapper>();
-    add->user = &user;
+    add->participant = &room_participant_;
     add->id = user_id;
     add->update_connection = user.on_update.connect(
         [this, added = add.get()] { on_update(*added); });
+    add->join_state_connection =
+        room_participant_.on_join_state_changed.connect(
+            [this, added = add.get()] { on_join_state_changed(*added); });
     users.push_back(std::move(add));
     check_and_call_participant_count_changed();
   }
 
-  void on_leave(const std::string &id) {
-    BOOST_LOG_SEV(logger, logging::severity::info)
-        << fmt::format("on_leave, user_id:'{}')", id);
-    if (id == own_user_id) {
-      BOOST_LOG_SEV(logger, logging::severity::trace)
-          << "our own user left - skipping";
-      return;
-    }
-    auto found =
-        std::find_if(users.cbegin(), users.cend(),
-                     [&](const auto &check) { return check->id == id; });
-    BOOST_ASSERT(found != users.cend());
-    users.erase(found);
+  void on_join_state_changed(const user_wrapper &user) {
     check_and_call_participant_count_changed();
   }
 
   void on_update(const user_wrapper &user) {
+    auto presence = user.participant->get_user().get_presence();
     BOOST_LOG_SEV(logger, logging::severity::info)
-        << fmt::format("on_update, user_id:'{}', presence:{}", user.id,
-                       user.user->get_presence());
-    if (user.user->get_presence() != matrix::presence::offline)
+        << fmt::format("on_update, user_id:'{}', presence:{}, join_state:{}",
+                       user.id, presence, user.participant->get_join_state());
+    if (presence != matrix::presence::offline)
       return;
     BOOST_LOG_SEV(logger, logging::severity::trace) << fmt::format(
         "on_update, the user with the id:'{}' got offline", user.id);
@@ -88,7 +88,12 @@ protected:
   }
 
   void check_and_call_participant_count_changed() {
-    if (!users.empty())
+    auto result =
+        std::count_if(users.cbegin(), users.cend(), [](const auto &check) {
+          return check->participant->get_join_state() ==
+                 matrix::join_state::join;
+        });
+    if (result > 0)
       return;
     on_empty();
   }

@@ -1,6 +1,7 @@
 #include "participants_model.hpp"
 #include "client/bot_participant.hpp"
 #include "client/participant.hpp"
+#include "client/participants.hpp"
 #include <boost/assert.hpp>
 #include <fmt/format.h>
 
@@ -8,10 +9,11 @@ using namespace client;
 
 participants_model::participants_model(room &room_, QObject *parent)
     : QAbstractListModel(parent), room_(room_) {
-  on_joins(room_.get_participants());
-  signal_connections.emplace_back(room_.on_participants_join.connect(
-      [this](auto joins) { on_joins(joins); }));
-  signal_connections.emplace_back(room_.on_participants_left.connect(
+  auto &participants_ = room_.get_participants();
+  on_joins(participants_.get_all());
+  signal_connections.emplace_back(
+      participants_.on_added.connect([this](auto joins) { on_joins(joins); }));
+  signal_connections.emplace_back(participants_.on_removed.connect(
       [this](auto leaves) { on_leaves(leaves); }));
 }
 
