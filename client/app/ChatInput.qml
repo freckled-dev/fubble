@@ -4,6 +4,7 @@ import QtQuick.Controls 2.2
 import QtQuick.Controls.Material 2.0
 import QtQuick.Layouts 1.0
 import io.fubble 1.0
+import QtQuick.Controls.Styles 1.4
 
 Rectangle {
     id: rectangle
@@ -22,7 +23,6 @@ Rectangle {
         padding: 10
         topPadding: 20
         cursorVisible: true
-        placeholderTextColor: Style.current.placeholderTextColor
         placeholderText: qsTr("Write your message here...")
         wrapMode: Text.WrapAtWordBoundaryOrAnywhere
 
