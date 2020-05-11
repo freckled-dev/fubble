@@ -2,6 +2,7 @@ import QtQuick 2.0
 import io.fubble 1.0
 import QtQuick.Controls.Material 2.0
 import QtQuick.Controls 2.2
+import QtMultimedia 5.0
 import QtQuick.Layouts 1.0
 import "."
 
@@ -61,6 +62,16 @@ Rectangle {
         }
     }
 
+    SoundEffect {
+        id: joinSound
+        source: "sounds/join.wav"
+    }
+
+    SoundEffect {
+        id: leaveSound
+        source: "sounds/leave.wav"
+    }
+
     Component {
         id: infoComponent
 
@@ -74,9 +85,11 @@ Rectangle {
                 text: {
                     switch (type) {
                     case "leave":
-                        return qsTr("X has left the room...")
+                        leaveSound.play()
+                        return qsTr(name + " has left the room...")
                     case "join":
-                        return qsTr("X has joined the room...")
+                        joinSound.play()
+                        return qsTr(name + " has joined the room...")
                     default:
                         return qsTr("")
                     }

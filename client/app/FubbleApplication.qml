@@ -63,8 +63,20 @@ ApplicationWindow {
                                "room": room
                            })
                 fubbleState = "Room"
+
+                joinSound.play()
             }
         }
+    }
+
+    SoundEffect {
+        id: joinSound
+        source: "sounds/join.wav"
+    }
+
+    SoundEffect {
+        id: leaveSound
+        source: "sounds/leave.wav"
     }
 
     onClosing: {
@@ -84,6 +96,7 @@ ApplicationWindow {
         leaveModel: container.leaveModel
         showForceButton: true
         onLeft: {
+            leaveSound.play()
             stack.pop()
             stack.currentItem.setGuiEnabled(true)
             if (shutdown) {
