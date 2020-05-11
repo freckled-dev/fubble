@@ -15,7 +15,6 @@
         <file>Style.qml</file>
         <file>emoji/EmojiPopup.qml</file>
         <file>emoji/emoji.js</file>
-        <file>emoji/EmojiOneFont.ttf</file>
         <file>Settings.qml</file>
         <file>ThemeLight.qml</file>
         <file>ThemeDark.qml</file>
