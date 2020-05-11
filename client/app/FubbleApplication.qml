@@ -10,7 +10,7 @@ ApplicationWindow {
     id: container
     title: qsTr("Fubble")
 
-    width: 1024
+    width: 1400
     height: 800
     minimumWidth: 800
     minimumHeight: 600
@@ -28,6 +28,9 @@ ApplicationWindow {
     Material.accent: Style.current.accent
     Material.background: Style.current.background
     Material.foreground: Style.current.foreground
+
+    font.family: verdanaFont.name + ", " + emojiOneFont.name
+    font.pointSize: Style.current.textPointSize
 
     header: Header {
         id: header
@@ -93,6 +96,16 @@ ApplicationWindow {
         onForceShutdown: {
             container.close()
         }
+    }
+
+    FontLoader {
+        id: emojiOneFont
+        source: Style.current.emojiOneFontSrc
+    }
+
+    FontLoader {
+        id: verdanaFont
+        source: Style.current.verdanaFontSrc
     }
 
     Error {

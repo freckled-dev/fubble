@@ -25,10 +25,10 @@ Popup {
 
     Rectangle {
         id: rectangle
-        color: "#00000000"
+        color: Style.current.transparent
         radius: 5
         border.width: 1
-        border.color: "#ffffff"
+        border.color: Style.current.white
         anchors.fill: parent
     }
 
@@ -43,7 +43,7 @@ Popup {
             id: settingsTitle
             text: qsTr("Settings")
             horizontalAlignment: Text.AlignHCenter
-            font.pointSize: 14
+            font.pointSize: Style.current.subHeaderPointSize
             width: settingsDialog.availableWidth
         }
 

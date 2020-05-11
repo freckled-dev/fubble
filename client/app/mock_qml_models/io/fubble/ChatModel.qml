@@ -42,6 +42,34 @@ QtObject {
             // message, join, leave, kick
             type: "message"
         }
+
+        ListElement {
+            name: "Tamrielle"
+            own: true
+            timestamp: 1588754962090
+
+            // message, join, leave, kick
+            type: "leave"
+        }
+
+        ListElement {
+            name: "Horst"
+            own: true
+            timestamp: 1588754962090
+
+            // message, join, leave, kick
+            type: "join"
+        }
+
+        ListElement {
+            name: "Horst"
+            own: true
+            timestamp: 1588754962085
+            message: "Hi guys!"
+
+            // message, join, leave, kick
+            type: "message"
+        }
     }
 
     function sendMessage(message) {
@@ -50,7 +78,7 @@ QtObject {
         messages.append({
                             "message": message,
                             "name": "Tamrielle",
-                            "type:": "message",
+                            "type": "message",
                             "own": true,
                             "timestamp": currentTimeStamp
                         })

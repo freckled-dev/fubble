@@ -6,22 +6,22 @@ QtObject {
     property list<QtObject> participants: [
         QtObject {
             property var participant: ParticipantModel {
-                name: qsTr("first")
+                name: qsTr("First")
             }
         },
         QtObject {
             property var participant: ParticipantModel {
-                name: qsTr("second")
+                name: qsTr("Second")
             }
         },
         QtObject {
             property var participant: ParticipantModel {
-                name: qsTr("third")
+                name: qsTr("Third")
             }
         },
         QtObject {
             property var participant: ParticipantModel {
-                name: qsTr("fourth")
+                name: qsTr("Fourth")
             }
         }
     ]
