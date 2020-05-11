@@ -16,7 +16,7 @@ moc_files = qt5.preprocess(
   qresources: 'qml.qrc',
   moc_headers: ['join_model.hpp',  'room_model.hpp', 'error_model.hpp',
     'leave_model.hpp', 'participants_with_video_model.hpp', 'chat_model.hpp',
-    'chat_messages_model.hpp', 
+    'chat_messages_model.hpp',
     'participants_model.hpp', 'participant_model.hpp', 'poll_asio_by_qt.hpp']
   )
 client_gui = executable('fubble',
