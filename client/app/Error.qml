@@ -29,11 +29,6 @@ Popup {
         }
     }
 
-    SoundEffect {
-        id: errorSound
-        source: "sounds/error.wav"
-    }
-
     Label {
         id: label
         text: errorModel.text

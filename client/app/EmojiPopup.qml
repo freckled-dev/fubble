@@ -75,7 +75,6 @@ Popup {
                                             textArea.insert(
                                                         textArea.cursorPosition,
                                                         modelData)
-                                            close()
                                         }
                                     }
                                 }

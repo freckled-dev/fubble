@@ -69,16 +69,6 @@ ApplicationWindow {
         }
     }
 
-    SoundEffect {
-        id: joinSound
-        source: "sounds/join.wav"
-    }
-
-    SoundEffect {
-        id: leaveSound
-        source: "sounds/leave.wav"
-    }
-
     onClosing: {
         if (fubbleState === "Room") {
             shutdown = true
@@ -129,5 +119,21 @@ ApplicationWindow {
     Component {
         id: roomComponent
         Room {}
+    }
+
+    // declare SoundEffect instances and refer to them elsewhere
+    SoundEffect {
+        id: joinSound
+        source: "sounds/join.wav"
+    }
+
+    SoundEffect {
+        id: leaveSound
+        source: "sounds/leave.wav"
+    }
+
+    SoundEffect {
+        id: errorSound
+        source: "sounds/error.wav"
     }
 }
