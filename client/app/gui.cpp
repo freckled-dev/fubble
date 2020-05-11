@@ -44,6 +44,7 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QQuickStyle>
+#include <QResource>
 #include <boost/asio/executor_work_guard.hpp>
 #include <boost/asio/io_context.hpp>
 #include <fmt/format.h>
@@ -58,10 +59,10 @@ int main(int argc, char *argv[]) {
 
   logging::add_console_log();
   logging::add_file_log();
-   
+
   logging::logger logger{"main"};
 
-    BOOST_LOG_SEV(logger, logging::severity::debug) << "starting up";
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "starting up";
 
   boost::asio::io_context context;
   boost::asio::executor executor{context.get_executor()};
@@ -169,6 +170,13 @@ int main(int argc, char *argv[]) {
   app.setOrganizationName("Freckled OG");
   app.setOrganizationDomain("freckled.dev");
   app.setApplicationName("Fubble");
+
+  // load font
+  QString font_path = QCoreApplication::applicationDirPath() + "/font.rcc";
+  BOOST_LOG_SEV(logger, logging::severity::trace)
+      << "font rcc path:" << font_path.toStdString();
+  [[maybe_unused]] bool loaded = QResource::registerResource(font_path);
+  BOOST_ASSERT(loaded);
 
   // applying material style
   QQuickStyle::setStyle("Material");
