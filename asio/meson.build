@@ -1,5 +1,5 @@
 asio = library('asio',
-  ['asio_impl.cpp'],
+  ['asio_impl.cpp', 'beast_impl.cpp'],
   dependencies: [boost_dep, ssl_dep],
   install: true
   )

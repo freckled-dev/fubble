@@ -31,6 +31,7 @@ endif
 boost_dep = declare_dependency(
     compile_args : ['-DBOOST_THREAD_VERSION=5',
       '-DBOOST_ASIO_SEPARATE_COMPILATION',
+      '-DBOOST_BEAST_SEPARATE_COMPILATION',
       # '-DBOOST_LOG_DYN_LINK'
       ],
     dependencies : [boost_dep_pkg],
