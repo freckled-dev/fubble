@@ -9,44 +9,45 @@ import "."
 
 Rectangle {
     id: videoWallContainer
-    color: Style.current.background
     property RoomModel roomModel
     property alias videoCount: participantRepeater.count
     visible: videoCount !== 0
+    color: Style.current.background
 
     // Video Wall
-    ColumnLayout {
-        anchors.margins: 20
-        anchors.fill: parent
+    Label {
+        id: videoWallHeader
+        text: qsTr("Video Wall")
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        anchors.topMargin: 20
+        font.pointSize: Style.current.subHeaderPointSize
+    }
 
-        Label {
-            text: qsTr("Video Wall")
-            Layout.bottomMargin: 20
-            font.pointSize: Style.current.subHeaderPointSize
-            Layout.alignment: Qt.AlignHCenter
+    GridLayout {
+        id: participantGrid
+        anchors.top: videoWallHeader.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        anchors.margins: 20
+        rowSpacing: 10
+        columnSpacing: 10
+        columns: videoWallContainer.calculateColumns()
+
+        Repeater {
+            id: participantRepeater
+            model: roomModel.participantsWithVideo
+            delegate: participantComponent
         }
 
-        GridLayout {
-            id: participantGrid
-            Layout.fillWidth: true
-            rowSpacing: 10
-            columnSpacing: 10
-            columns: videoWallContainer.calculateColumns()
+        Component {
+            id: participantComponent
 
-            Repeater {
-                id: participantRepeater
-                model: roomModel.participantsWithVideo
-                delegate: participantComponent
-            }
-
-            Component {
-                id: participantComponent
-
-                Participant {
-                    Layout.fillHeight: true
-                    Layout.fillWidth: true
-                    participant: model.participant
-                }
+            Participant {
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+                participant: model.participant
             }
         }
     }
@@ -64,7 +65,7 @@ Rectangle {
 
 /*##^##
 Designer {
-    D{i:0;autoSize:true;height:480;width:640}D{i:1;anchors_height:21;anchors_width:640}
+    D{i:0;autoSize:true;height:480;width:640}
 }
 ##^##*/
 
