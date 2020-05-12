@@ -172,10 +172,16 @@ int main(int argc, char *argv[]) {
   app.setApplicationName("Fubble");
 
   // load font
-  QString font_path = QCoreApplication::applicationDirPath() + "/font.rcc";
+  QString font_path_share =
+      QCoreApplication::applicationDirPath() + "/../share/fubble/resources.rcc";
+  QString font_path_executable =
+      QCoreApplication::applicationDirPath() + "/resources.rcc";
   BOOST_LOG_SEV(logger, logging::severity::trace)
-      << "font rcc path:" << font_path.toStdString();
-  [[maybe_unused]] bool loaded = QResource::registerResource(font_path);
+      << "font rcc path_share:" << font_path_share.toStdString()
+      << ", path_executable:" << font_path_executable.toStdString();
+  bool loaded = QResource::registerResource(font_path_share);
+  if (!loaded)
+    loaded |= QResource::registerResource(font_path_executable);
   BOOST_ASSERT(loaded);
 
   // applying material style

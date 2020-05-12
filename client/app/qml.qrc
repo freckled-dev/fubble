@@ -23,15 +23,6 @@
         <file>Overview.qml</file>
         <file>VideoWall.qml</file>
         <file>qmldir</file>
-        <file>pics/fubble.svg</file>
-        <file>pics/no_video.svg</file>
-        <file>pics/close_light.svg</file>
-        <file>pics/close_dark.svg</file>
-        <file>pics/exit_dark.gif</file>
-        <file>pics/exit_light.gif</file>
-        <file>sounds/join.wav</file>
-        <file>sounds/error.wav</file>
-        <file>sounds/leave.wav</file>
     </qresource>
 </RCC>
 

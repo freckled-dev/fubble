@@ -7,10 +7,12 @@ if host_machine.system() == 'linux'
 endif
 # https://mesonbuild.com/Generating-sources.html
 rcc = find_program('rcc-qt5', 'rcc')
-font_rcc = custom_target('generate font.rcc',
-  input: ['font.qrc'],
-  output: ['font.rcc'],
-  command: [rcc, '-binary', '@INPUT@', '-o', '@OUTPUT@']
+resources_rcc = custom_target('generating resources.rcc',
+  input: ['resources.qrc'],
+  output: ['resources.rcc'],
+  command: [rcc, '-binary', '@INPUT@', '-o', '@OUTPUT@'],
+  install: true,
+  install_dir: 'share/fubble'
   )
 moc_files = qt5.preprocess(
   qresources: 'qml.qrc',
@@ -25,7 +27,7 @@ client_gui = executable('fubble',
     'participants_with_video_model.cpp', 'chat_model.cpp',
     'chat_messages_model.cpp',
     'participant_model.cpp', 'room_model.cpp', 'model_creator.cpp'
-    ] + moc_files + [font_rcc],
+    ] + moc_files,
   dependencies: [client_dep, ui_dep, temporary_room_dep],
   gui_app: true,
   install: true)
