@@ -42,22 +42,31 @@ Rectangle {
                 Layout.leftMargin: 10
                 Layout.maximumWidth: element.width * 2 / 3
                 Layout.rightMargin: 10
-                font.pointSize: isEmoji(
-                                    message) ? 25 : Style.current.textPointSize
-                text: message
+                text: modifyMessage(message)
 
+                textFormat: Text.RichText
                 wrapMode: Text.WrapAtWordBoundaryOrAnywhere
             }
 
-            function isEmoji(str) {
+            function modifyMessage(message) {
+                message = message.replace(/\n/g, "<br />")
                 var ranges = ['(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])']
-                var removeEmoji = str.replace(new RegExp(ranges, 'g'), '')
+                var reg = new RegExp(ranges, 'g')
+                var removeEmoji = message.replace(reg, "").replace(/ /g, "")
+                var isEmojiMessage = removeEmoji.length === 0
 
-                return removeEmoji.length === 0
-            }
+                if (isEmojiMessage) {
+                    // enlarge more if there are only emojis
+                    message = message.replace(
+                                reg, '<span style="font-size:25pt">$1</span>')
+                    return message
+                }
 
-            function replaceAll(str, find, replace) {
-                return str.replace(new RegExp(find, 'g'), replace)
+                // enlarge the emojis
+                message = message.replace(
+                            reg, '<span style="font-size:18pt">$1</span>')
+
+                return message
             }
         }
     }
