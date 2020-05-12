@@ -37,6 +37,12 @@ Rectangle {
             }
         }
     }
+
+    ParticipantAction {
+        id: selfAction
+        imageSize: 40
+        anchors.bottom: parent.bottom
+    }
 }
 
 /*##^##
