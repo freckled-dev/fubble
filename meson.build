@@ -29,8 +29,9 @@ if host_machine.system() == 'windows'
   boost_dep_link_with = ['bcrypt.lib']
 endif
 boost_dep = declare_dependency(
-    compile_args : ['-DBOOST_THREAD_VERSION=5'
-      # , '-DBOOST_LOG_DYN_LINK'
+    compile_args : ['-DBOOST_THREAD_VERSION=5',
+      '-DBOOST_ASIO_SEPARATE_COMPILATION',
+      # '-DBOOST_LOG_DYN_LINK'
       ],
     dependencies : [boost_dep_pkg],
     link_args: boost_dep_link_with
@@ -76,7 +77,9 @@ google_webrtc_dep_fixme = dependency('google-webrtc', include_type : 'system')
 google_webrtc_dep = declare_dependency(
   dependencies: [google_webrtc_dep_fixme, x11_dep]
   )
+ssl_dep = dependency('openssl', include_type: 'system', required: false)
 
+subdir('asio')
 subdir('utils')
 subdir('http')
 subdir('websocket')
