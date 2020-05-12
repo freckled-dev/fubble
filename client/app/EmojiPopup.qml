@@ -71,11 +71,9 @@ Popup {
                                         hoverEnabled: true
                                         onEntered: emojiBackground.visible = true
                                         onExited: emojiBackground.visible = false
-                                        onClicked: {
-                                            textArea.insert(
-                                                        textArea.cursorPosition,
-                                                        modelData)
-                                        }
+                                        onClicked: textArea.insert(
+                                                       textArea.cursorPosition,
+                                                       modelData)
                                     }
                                 }
                             }

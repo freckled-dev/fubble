@@ -24,7 +24,7 @@ Rectangle {
         topPadding: 20
         cursorVisible: true
         placeholderText: qsTr("Write your message here...")
-        wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+        wrapMode: Text.WordWrap
 
         Keys.onEnterPressed: {
             onInputFinished(event)
