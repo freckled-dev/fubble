@@ -6,13 +6,13 @@ utils = library('utils',
   ['executor_asio.cpp', 'logging/logger.cpp', 'logging/initialser.cpp',
     'exit_signals.cpp', 'uuid.cpp'
     ],
-  dependencies: [boost_dep, fmt_dep],
+  dependencies: [asio_dep, fmt_dep],
   install: true
   )
 utils_dep = declare_dependency(
   include_directories: '.',
   link_with: [utils],
-  dependencies: [boost_dep]
+  dependencies: [asio_dep]
   )
 utils_test = executable('utils_test',
   ['executor_asio_test.cpp', 'boost_thread_test.cpp'],

@@ -1,0 +1,7 @@
+// when it comes to versioning and company/product details check out:
+// https://docs.microsoft.com/en-us/windows/win32/menurc/versioninfo-resource#examples
+
+// the Logo.ico contains the logo in several resolutions
+// https://doc.qt.io/qt-5/appicon.html#setting-the-application-icon-on-windows
+IDI_ICON1 ICON "../../updater/Logo.ico"
+
