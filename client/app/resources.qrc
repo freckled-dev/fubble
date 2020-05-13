@@ -1,16 +1,19 @@
 <RCC>
     <qresource>
-        <file>sounds/join.wav</file>
-        <file>sounds/error.wav</file>
-        <file>sounds/leave.wav</file>
-        <file>VerdanaFont.ttf</file>
         <file>EmojiOneFont.ttf</file>
-        <file>pics/fubble.svg</file>
-        <file>pics/no_video.svg</file>
-        <file>pics/close_light.svg</file>
+        <file>VerdanaFont.ttf</file>
         <file>pics/close_dark.svg</file>
+        <file>pics/close_light.svg</file>
         <file>pics/exit_dark.gif</file>
         <file>pics/exit_light.gif</file>
+        <file>pics/fubble.svg</file>
+        <file>pics/overlay_mute.svg</file>
+        <file>pics/overlay_mute_off.svg</file>
+        <file>pics/overlay_video.svg</file>
+        <file>pics/overlay_video_off.svg</file>
+        <file>sounds/error.wav</file>
+        <file>sounds/join.wav</file>
+        <file>sounds/leave.wav</file>
     </qresource>
 </RCC>
 

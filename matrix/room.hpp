@@ -7,13 +7,13 @@
 #include <boost/signals2/signal.hpp>
 #include <boost/thread/executors/inline_executor.hpp>
 #include <boost/thread/future.hpp>
-#include <deque>
 #include <string>
 
 namespace matrix {
 class client;
 class user;
 class chat;
+class room_participant;
 class room {
 public:
   room(client &client_, const std::string &id);
@@ -21,28 +21,20 @@ public:
   const std::string &get_id() const;
   boost::future<void> invite_by_user_id(const std::string &user_id);
   boost::future<void> kick(const std::string &user_id);
-  using members_type = std::deque<user *>;
-  const members_type &get_members() const;
-  std::optional<user *> get_member_by_id(const std::string &id);
+  std::vector<room_participant *> get_members() const;
+  std::optional<room_participant *> get_member_by_id(const std::string &id);
   std::string get_name() const;
   chat &get_chat() const;
 
-  boost::signals2::signal<void(user &)> on_join;
-  boost::signals2::signal<void(const std::string &)> on_leave;
+  // TODO refactor to `on_added`
+  boost::signals2::signal<void(room_participant &)> on_join;
   boost::signals2::signal<void(const std::string &)> on_name_changed;
 
   void sync(const nlohmann::json &content);
 
 protected:
-  // TODO this struct is kinda legacy - remove it
-  struct member {
-    std::string id;
-    std::string display_name;
-  };
   void on_event_m_room_member(const nlohmann::json &parse);
   void on_event_m_room_name(const nlohmann::json &parse);
-  void add_or_update_member(const member &member_);
-  void remove_member(const std::string &member_);
 
   matrix::logger logger{"room"};
   boost::inline_executor executor;
@@ -50,6 +42,7 @@ protected:
   const std::string id;
   std::unique_ptr<http::client> http_client;
   boost::signals2::scoped_connection on_sync_connection;
+  using members_type = std::vector<std::unique_ptr<room_participant>>;
   members_type members;
   std::string name;
   const std::unique_ptr<chat> chat_;

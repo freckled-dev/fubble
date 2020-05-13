@@ -2,6 +2,7 @@
 #include "chat.hpp"
 #include "client.hpp"
 #include "error.hpp"
+#include "room_participant.hpp"
 #include <fmt/format.h>
 
 using namespace matrix;
@@ -36,15 +37,21 @@ boost::future<void> room::kick(const std::string &user_id) {
   });
 }
 
-const room::members_type &room::get_members() const { return members; }
+std::vector<room_participant *> room::get_members() const {
+  std::vector<room_participant *> result;
+  std::transform(members.cbegin(), members.cend(), std::back_inserter(result),
+                 [](auto &item) { return item.get(); });
+  return result;
+}
 
-std::optional<user *> room::get_member_by_id(const std::string &id) {
+std::optional<room_participant *>
+room::get_member_by_id(const std::string &id) {
   auto found =
       std::find_if(members.begin(), members.end(),
                    [&](const auto &check) { return check->get_id() == id; });
   if (found == members.end())
     return {};
-  return *found;
+  return found->get();
 }
 
 std::string room::get_name() const { return name; }
@@ -80,15 +87,34 @@ void room::on_event_m_room_member(const nlohmann::json &parse) {
   const std::string user_id = parse["state_key"];
   const auto content = parse["content"];
   const std::string membership = content["membership"];
-  if (membership == "leave")
-    return remove_member(user_id);
-  if (membership == "join") {
-    member member_;
-    member_.display_name = content["displayname"];
-    member_.id = user_id;
-    return add_or_update_member(member_);
-  }
-  // lots more - not implemented
+  const std::optional<std::string> display_name =
+      [&]() -> std::optional<std::string> {
+    auto found = content.find("displayname");
+    if (found != content.cend())
+      return *found;
+    return std::nullopt;
+  }();
+  const join_state join_state_ = [&] {
+    if (membership == "leave")
+      return join_state::leave;
+    if (membership == "join")
+      return join_state::join;
+    if (membership == "invite")
+      return join_state::invite;
+    BOOST_ASSERT(false);
+    return join_state::join;
+  }();
+  user &add_or_update = client_.get_users().get_or_add_user(user_id);
+  if (display_name)
+    add_or_update.set_display_name(display_name.value());
+
+  auto got = get_member_by_id(user_id);
+  if (got)
+    return got.value()->set_join_state(join_state_);
+
+  auto add = std::make_unique<room_participant>(add_or_update, join_state_);
+  members.push_back(std::move(add));
+  on_join(*members.back());
 }
 
 void room::on_event_m_room_name(const nlohmann::json &parse) {
@@ -98,30 +124,3 @@ void room::on_event_m_room_name(const nlohmann::json &parse) {
   on_name_changed(name);
 }
 
-void room::add_or_update_member(const member &member_) {
-  BOOST_LOG_SEV(logger, logging::severity::info)
-      << fmt::format("add_member, id:'{}', display_name:'{}'", member_.id,
-                     member_.display_name);
-  user &add_or_update = client_.get_users().get_or_add_user(member_.id);
-  add_or_update.set_display_name(member_.display_name);
-  if (get_member_by_id(member_.id))
-    return;
-  members.push_back(&add_or_update);
-  on_join(add_or_update);
-}
-
-void room::remove_member(const std::string &user_id) {
-  BOOST_LOG_SEV(logger, logging::severity::info)
-      << fmt::format("remove_member, id:'{}'", user_id);
-  const auto found =
-      std::find_if(members.cbegin(), members.cend(),
-                   [&](auto &check) { return check->get_id() == user_id; });
-  if (found == members.cend()) {
-    BOOST_LOG_SEV(logger, logging::severity::warning)
-        << "cant remove user because not found, user_id:" << user_id
-        << ", this may occur if user left before we joined";
-    return;
-  }
-  members.erase(found);
-  on_leave(user_id);
-}

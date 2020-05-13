@@ -9,6 +9,7 @@
 #include "own_media.hpp"
 #include "own_participant.hpp"
 #include "participant_creator_creator.hpp"
+#include "participants.hpp"
 #include "peer_creator.hpp"
 #include "room.hpp"
 #include "room_creator.hpp"
@@ -108,13 +109,13 @@ struct participants_waiter {
 
   participants_waiter(client::room &room) : room(room) {}
   boost::future<void> wait() {
-    joins =
-        room.on_participants_join.connect([this](auto) { check_if_enough(); });
+    joins = room.get_participants().on_added.connect(
+        [this](auto) { check_if_enough(); });
     check_if_enough();
     return promise.get_future();
   }
   void check_if_enough() {
-    if (static_cast<int>(room.get_participants().size()) !=
+    if (static_cast<int>(room.get_participants().get_all().size()) !=
         wait_until + 1) // +1 because of bot
       return;
     joins.disconnect();
@@ -169,7 +170,7 @@ TEST_F(Room, Participant) {
   auto done = test.join().then(boost_executor, [&](auto result) {
     result.get();
     context.stop();
-    auto participants = test.room->get_participants();
+    auto participants = test.room->get_participants().get_all();
     EXPECT_EQ(static_cast<int>(participants.size()), 1 + 1); // +1 for bot
     auto participant = std::find_if(
         participants.cbegin(), participants.cend(),
@@ -192,10 +193,10 @@ TEST_F(Room, TwoParticipants) {
           .then(boost_executor, [&](auto result) {
             context.stop();
             EXPECT_FALSE(result.has_exception());
-            EXPECT_EQ(3,
-                      static_cast<int>(first.room->get_participants().size()));
-            EXPECT_EQ(3,
-                      static_cast<int>(second.room->get_participants().size()));
+            EXPECT_EQ(3, static_cast<int>(
+                             first.room->get_participants().get_all().size()));
+            EXPECT_EQ(3, static_cast<int>(
+                             second.room->get_participants().get_all().size()));
           });
   context.run();
   done.get();
@@ -213,12 +214,12 @@ TEST_F(Room, ThreeParticipants) {
           .then(boost_executor, [&](auto result) {
             context.stop();
             result.get();
-            EXPECT_EQ(4,
-                      static_cast<int>(first.room->get_participants().size()));
-            EXPECT_EQ(4,
-                      static_cast<int>(second.room->get_participants().size()));
-            EXPECT_EQ(4,
-                      static_cast<int>(third.room->get_participants().size()));
+            EXPECT_EQ(4, static_cast<int>(
+                             first.room->get_participants().get_all().size()));
+            EXPECT_EQ(4, static_cast<int>(
+                             second.room->get_participants().get_all().size()));
+            EXPECT_EQ(4, static_cast<int>(
+                             third.room->get_participants().get_all().size()));
           });
   context.run();
   done.get();
@@ -287,7 +288,7 @@ TEST_F(Room, SaneShutdown) {
   auto &second_room = test.participants->second.room;
   auto done = test.do_().then(boost_executor, [&](auto result) {
     result.get();
-    second_room->on_participants_left.connect([&](auto left) {
+    second_room->get_participants().on_removed.connect([&](auto left) {
       EXPECT_EQ(left.front(), first_room->get_own_id());
       second_room->leave().then(inline_executor, [this](auto result) {
         EXPECT_FALSE(result.has_exception());
