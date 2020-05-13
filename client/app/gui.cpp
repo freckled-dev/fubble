@@ -32,6 +32,7 @@
 #include "rtc/google/capture/video/device_creator.hpp"
 #include "rtc/google/capture/video/enumerator.hpp"
 #include "rtc/google/factory.hpp"
+#include "rtc/google/log_webrtc_to_logging.hpp"
 #include "signalling/client/client_creator.hpp"
 #include "signalling/client/connection_creator.hpp"
 #include "signalling/json_message.hpp"
@@ -61,6 +62,7 @@ int main(int argc, char *argv[]) {
   logging::add_console_log();
   logging::add_file_log();
   client::ui::log_qt_to_logging qt_logger;
+  rtc::google::log_webrtc_to_logging webrtc_logger;
 
   logging::logger logger{"main"};
 
@@ -168,7 +170,7 @@ int main(int argc, char *argv[]) {
   BOOST_LOG_SEV(logger, logging::severity::debug) << "starting qt";
 
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-  std::vector<char*> argv_adopted{argv, argv+argc};
+  std::vector<char *> argv_adopted{argv, argv + argc};
 #if BOOST_OS_WINDOWS
   std::string arg_plaform = "-platform";
   std::string arg_fontengine_freetype = "windows:fontengine=freetype";
@@ -195,7 +197,8 @@ int main(int argc, char *argv[]) {
   BOOST_ASSERT(loaded);
   if (!loaded)
     BOOST_LOG_SEV(logger, logging::severity::error)
-        << "could not load external resources. This might lead to fatal errors!";
+        << "could not load external resources. This might lead to fatal "
+           "errors!";
 
   // applying material style
   QQuickStyle::setStyle("Material");
