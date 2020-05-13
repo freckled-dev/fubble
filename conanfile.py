@@ -17,6 +17,7 @@ class FubbleConan(ConanFile):
     generators = "pkg_config"
     exports_sources = "*"
     # no_copy_source = True
+    _qt_win_path_bin = 'C:\\Qt\\5.15.0\\msvc2019_64\\bin'
 
     def imports(self):
         self.copy("*.dll", dst="bin", keep_path=False)
@@ -41,7 +42,7 @@ class FubbleConan(ConanFile):
         #qt_path_bin = self.deps_cpp_info["qt"].bin_paths
         addtional_paths = []
         if self.settings.os == "Windows":
-            qt_path_bin = 'C:\\Qt\\5.15.0\\msvc2019_64\\bin'
+            qt_path_bin = self._qt_win_path_bin
             self.output.info("qt_path_bin:%s" % (qt_path_bin))
             addtional_paths += [qt_path_bin]
 
@@ -87,7 +88,6 @@ class FubbleConan(ConanFile):
         meson = Meson(self)
         meson.install(build_dir="meson")
         if self.settings.os == "Windows":
-            qt_path_bin = 'C:\\Qt\\5.15.0\\msvc2019_64\\bin'
             bin_dir = os.path.join(self.package_folder, 'bin')
             vars_dict = tools.vcvars_dict(self.settings)
 
@@ -104,7 +104,7 @@ class FubbleConan(ConanFile):
                 raise ConanInvalidConfiguration("ucrt redist dir does not exist: %s" % (ucrt_redist_dir))
             self.copy('*.dll', dst=bin_dir, src=vcredist_dir)
 
-            with tools.environment_append({"PATH": [qt_path_bin]}):
+            with tools.environment_append({"PATH": [self._qt_win_path_bin]}):
                 with tools.chdir(bin_dir):
                     qml_dir = os.path.join(self.source_folder, 'client', 'app')
                     # dont do -no-widgets # widgets is needed for svg

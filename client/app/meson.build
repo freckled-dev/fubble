@@ -25,7 +25,7 @@ if host_machine.system() == 'windows'
 endif
 client_gui = executable('fubble', client_gui_sources,
   dependencies: [client_dep, ui_dep, temporary_room_dep],
-  gui_app: true,
+  gui_app: false,
   install: true)
 
 # https://mesonbuild.com/Generating-sources.html
