@@ -29,7 +29,7 @@ client_gui = executable('fubble',
     'participant_model.cpp', 'room_model.cpp', 'model_creator.cpp'
     ] + moc_files,
   dependencies: [client_dep, ui_dep, temporary_room_dep],
-  gui_app: true,
+  gui_app: false,
   install: true)
 
 

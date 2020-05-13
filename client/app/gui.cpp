@@ -166,7 +166,15 @@ int main(int argc, char *argv[]) {
   BOOST_LOG_SEV(logger, logging::severity::debug) << "starting qt";
 
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-  QGuiApplication app(argc, argv);
+  std::vector<char*> argv_adopted{argv, argv+argc};
+#if BOOST_OS_WINDOWS
+  std::string arg_plaform = "-platform";
+  std::string arg_fontengine_freetype = "windows:fontengine=freetype";
+  argv_adopted.push_back(arg_plaform.data());
+  argv_adopted.push_back(arg_fontengine_freetype.data());
+#endif
+  int argc_adopted = argv_adopted.size();
+  QGuiApplication app(argc_adopted, argv_adopted.data());
   app.setOrganizationName("Freckled OG");
   app.setOrganizationDomain("freckled.dev");
   app.setApplicationName("Fubble");
@@ -183,6 +191,9 @@ int main(int argc, char *argv[]) {
   if (!loaded)
     loaded |= QResource::registerResource(font_path_executable);
   BOOST_ASSERT(loaded);
+  if (!loaded)
+    BOOST_LOG_SEV(logger, logging::severity::error)
+        << "could not load external resources. This might lead to fatal errors!";
 
   // applying material style
   QQuickStyle::setStyle("Material");
