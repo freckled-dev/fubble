@@ -42,6 +42,16 @@ Rectangle {
         id: selfAction
         imageSize: 40
         anchors.bottom: parent.bottom
+        participant: getOwnParticipant()
+    }
+
+    function getOwnParticipant() {
+        for (var index = 0; index < roomModel.participants.length; index++) {
+            var current = roomModel.participants[index].participant
+            if (current.own) {
+                return current
+            }
+        }
     }
 }
 

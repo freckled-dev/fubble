@@ -7,6 +7,7 @@ QtObject {
         QtObject {
             property var participant: ParticipantModel {
                 name: qsTr("First")
+                own: true
             }
         },
         QtObject {
