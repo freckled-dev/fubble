@@ -34,11 +34,7 @@ void users::on_sync(const nlohmann::json &content) {
       continue;
     const std::string user_id = event["sender"];
     user &user_ = get_or_add_user(user_id);
-    const auto event_content = event["content"];
-    std::string presence = event_content["presence"];
-    user_.set_presence_from_string(presence);
-    if (event_content.contains("displayname"))
-      user_.set_display_name(event_content["displayname"]);
+    user_.on_m_presence(event);
   }
 }
 

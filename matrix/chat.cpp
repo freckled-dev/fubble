@@ -42,8 +42,10 @@ void chat::on_event_m_room_message(const nlohmann::json &event) {
   message result;
   result.body = content["body"];
   std::int64_t timestamp_milliseconds = event["origin_server_ts"];
+  std::chrono::milliseconds timestamp_milliseconds_casted{
+      timestamp_milliseconds};
   result.timestamp =
-      std::chrono::system_clock::from_time_t(timestamp_milliseconds / 1000);
+      std::chrono::system_clock::time_point{timestamp_milliseconds_casted};
   std::string user_id = event["sender"];
   auto &user_ = client_.get_users().get_or_add_user(user_id);
   result.user_ = &user_;
