@@ -44,6 +44,7 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QQuickStyle>
+#include <QResource>
 #include <boost/asio/executor_work_guard.hpp>
 #include <boost/asio/io_context.hpp>
 #include <fmt/format.h>
@@ -58,10 +59,10 @@ int main(int argc, char *argv[]) {
 
   logging::add_console_log();
   logging::add_file_log();
-   
+
   logging::logger logger{"main"};
 
-    BOOST_LOG_SEV(logger, logging::severity::debug) << "starting up";
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "starting up";
 
   boost::asio::io_context context;
   boost::asio::executor executor{context.get_executor()};
@@ -165,10 +166,34 @@ int main(int argc, char *argv[]) {
   BOOST_LOG_SEV(logger, logging::severity::debug) << "starting qt";
 
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-  QGuiApplication app(argc, argv);
+  std::vector<char*> argv_adopted{argv, argv+argc};
+#if BOOST_OS_WINDOWS
+  std::string arg_plaform = "-platform";
+  std::string arg_fontengine_freetype = "windows:fontengine=freetype";
+  argv_adopted.push_back(arg_plaform.data());
+  argv_adopted.push_back(arg_fontengine_freetype.data());
+#endif
+  int argc_adopted = argv_adopted.size();
+  QGuiApplication app(argc_adopted, argv_adopted.data());
   app.setOrganizationName("Freckled OG");
   app.setOrganizationDomain("freckled.dev");
   app.setApplicationName("Fubble");
+
+  // load font
+  QString font_path_share =
+      QCoreApplication::applicationDirPath() + "/../share/fubble/resources.rcc";
+  QString font_path_executable =
+      QCoreApplication::applicationDirPath() + "/resources.rcc";
+  BOOST_LOG_SEV(logger, logging::severity::trace)
+      << "font rcc path_share:" << font_path_share.toStdString()
+      << ", path_executable:" << font_path_executable.toStdString();
+  bool loaded = QResource::registerResource(font_path_share);
+  if (!loaded)
+    loaded |= QResource::registerResource(font_path_executable);
+  BOOST_ASSERT(loaded);
+  if (!loaded)
+    BOOST_LOG_SEV(logger, logging::severity::error)
+        << "could not load external resources. This might lead to fatal errors!";
 
   // applying material style
   QQuickStyle::setStyle("Material");
