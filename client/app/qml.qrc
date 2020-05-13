@@ -14,6 +14,7 @@
         <file>Error.qml</file>
         <file>Style.qml</file>
         <file>EmojiPopup.qml</file>
+        <file>ParticipantAction.qml</file>
         <file>emoji/emoji.js</file>
         <file>Settings.qml</file>
         <file>ThemeLight.qml</file>
