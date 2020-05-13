@@ -37,9 +37,13 @@ Rectangle {
 
     Button {
         id: smileyButton
-        text: qsTr("😃")
-        font.pointSize: 16
         anchors.verticalCenter: parent.verticalCenter
+
+        contentItem: Text {
+            font.family: emojiOneFont.name
+            text: "😃"
+            font.pointSize: 18
+        }
         anchors.rightMargin: 10
         width: 40
         anchors.right: parent.right
