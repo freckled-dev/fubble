@@ -37,6 +37,7 @@
 #include "signalling/json_message.hpp"
 #include "temporary_room/net/client.hpp"
 #include "ui/frame_provider_google_video_frame.hpp"
+#include "ui/log_qt_to_logging.hpp"
 #include "websocket/connection_creator.hpp"
 #include "websocket/connector.hpp"
 #include <QGuiApplication>
@@ -59,6 +60,7 @@ int main(int argc, char *argv[]) {
 
   logging::add_console_log();
   logging::add_file_log();
+  client::ui::log_qt_to_logging qt_logger;
 
   logging::logger logger{"main"};
 
