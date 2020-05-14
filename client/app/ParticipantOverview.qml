@@ -63,8 +63,14 @@ Item {
                 anchors.fill: parent
                 hoverEnabled: true
 
-                onEntered: participantBorder.color = Style.current.gray300
-                onExited: participantBorder.color = Style.current.gray100
+                onEntered: {
+                    participantBorder.color = Style.current.gray300
+                    model.participant.highlighted = true
+                }
+                onExited: {
+                    participantBorder.color = Style.current.gray100
+                    model.participant.highlighted = false
+                }
 
                 onClicked: {
                     details.visible = !details.visible

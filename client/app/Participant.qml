@@ -23,12 +23,10 @@ Item {
             anchors.fill: parent
             hoverEnabled: true
             onEntered: {
-                overlay.visible = true
-                overlayBorder.visible = true
+                participant.highlighted = true
             }
             onExited: {
-                overlay.visible = false
-                overlayBorder.visible = false
+                participant.highlighted = false
             }
         }
 
@@ -37,7 +35,7 @@ Item {
             color: Style.current.gray300Transparent
             anchors.left: parent.left
             anchors.right: parent.right
-            visible: false
+            visible: participant.highlighted
             implicitHeight: nameLabel.height
             anchors.bottom: video.bottom
 
@@ -56,7 +54,7 @@ Item {
             radius: 2
             border.width: 1
             anchors.fill: parent
-            visible: false
+            visible: participant.highlighted
         }
     }
 }
