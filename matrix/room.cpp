@@ -85,6 +85,8 @@ void room::on_event_m_room_member(const nlohmann::json &parse) {
   // https://matrix.org/docs/spec/client_server/latest#m-room-member
   // Adjusts the membership state for a user in a room.
   const std::string user_id = parse["state_key"];
+  const std::int64_t origin_server_ts = parse["origin_server_ts"];
+  std::chrono::milliseconds origin_server_ts_casted{origin_server_ts};
   const auto content = parse["content"];
   const std::string membership = content["membership"];
   const std::optional<std::string> display_name =
@@ -104,15 +106,18 @@ void room::on_event_m_room_member(const nlohmann::json &parse) {
     BOOST_ASSERT(false);
     return join_state::join;
   }();
+  std::chrono::system_clock::time_point timestamp_casted{
+      origin_server_ts_casted};
   user &add_or_update = client_.get_users().get_or_add_user(user_id);
   if (display_name)
     add_or_update.set_display_name(display_name.value());
 
   auto got = get_member_by_id(user_id);
   if (got)
-    return got.value()->set_join_state(join_state_);
+    return got.value()->set_join_state(join_state_, timestamp_casted);
 
-  auto add = std::make_unique<room_participant>(add_or_update, join_state_);
+  auto add = std::make_unique<room_participant>(add_or_update, join_state_,
+                                                timestamp_casted);
   members.push_back(std::move(add));
   on_join(*members.back());
 }

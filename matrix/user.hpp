@@ -2,6 +2,7 @@
 #define UUID_48B04D24_4E47_4D66_9D93_6D24AAC137EB
 
 #include <boost/signals2/signal.hpp>
+#include <nlohmann/json.hpp>
 
 namespace matrix {
 
@@ -30,21 +31,6 @@ public:
 
   inline const std::string &get_id() const { return id; }
 
-  inline void set_presence_from_string(const std::string &presence_parameter) {
-    if (presence_parameter == "online")
-      return set_presence(presence::online);
-    if (presence_parameter == "offline")
-      return set_presence(presence::offline);
-    if (presence_parameter == "unavailable")
-      return set_presence(presence::unavailable);
-    BOOST_ASSERT(false);
-  }
-  inline void set_presence(const presence &presence_parameter) {
-    if (presence_ == presence_parameter)
-      return;
-    presence_ = presence_parameter;
-    on_update();
-  }
   inline const presence &get_presence() const { return presence_; }
 
   inline void set_display_name(const std::string &display_name_) {
@@ -57,6 +43,12 @@ public:
 
   // TODO optimise. on_update gets called more often than neccessary
   boost::signals2::signal<void()> on_update;
+
+  void on_m_presence(const nlohmann::json &event);
+
+protected:
+  void set_presence(const presence &presence_parameter);
+  void set_presence_from_string(const std::string &presence_parameter);
 };
 } // namespace matrix
 
