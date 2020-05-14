@@ -7,38 +7,56 @@ import QtQuick.Controls.Material 2.0
 import QtGraphicalEffects 1.0
 import "."
 
-Rectangle {
-    radius: 5
-    layer.enabled: true
+Item {
+    // layer.enabled: true
     // border.color: Style.current.foreground
     property ParticipantModel participant
-    color: Style.current.background
 
-    ColumnLayout {
+    VideoOutput {
+        id: video
         anchors.fill: parent
+        source: participant.video
+        fillMode: VideoOutput.Stretch
+        visible: participant.video !== null
 
-        ToolBar {
-            id: nameToolbar
-            hoverEnabled: false
-            Layout.fillWidth: true
-
-            RowLayout {
-                anchors.fill: parent
-                Label {
-                    font.pointSize: Style.current.headerPointSize
-                    Material.foreground: Style.current.buttonTextColor
-                    text: participant.name
-                    Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                }
+        MouseArea {
+            anchors.fill: parent
+            hoverEnabled: true
+            onEntered: {
+                overlay.visible = true
+                overlayBorder.visible = true
+            }
+            onExited: {
+                overlay.visible = false
+                overlayBorder.visible = false
             }
         }
 
-        VideoOutput {
-            id: video
-            source: participant.video
-            visible: participant.video !== null
-            Layout.fillWidth: true
-            Layout.fillHeight: true
+        Rectangle {
+            id: overlay
+            color: Style.current.gray300Transparent
+            anchors.left: parent.left
+            anchors.right: parent.right
+            visible: false
+            implicitHeight: nameLabel.height
+            anchors.bottom: video.bottom
+
+            Label {
+                id: nameLabel
+                text: participant.name
+                padding: 10
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+        }
+
+        Rectangle {
+            id: overlayBorder
+            border.color: Style.current.foreground
+            color: Style.current.transparent
+            radius: 2
+            border.width: 1
+            anchors.fill: parent
+            visible: false
         }
     }
 }
