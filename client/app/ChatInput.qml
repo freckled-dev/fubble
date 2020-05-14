@@ -22,6 +22,8 @@ Rectangle {
         background: null
         padding: 10
         topPadding: 20
+        selectByMouse: true
+        selectByKeyboard: true
         cursorVisible: true
         placeholderText: qsTr("Write your message here...")
         wrapMode: Text.WordWrap
