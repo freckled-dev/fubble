@@ -13,7 +13,7 @@ QtObject {
     // asdf
     property bool silenced
     // self muted
-    property double volume
+    property double volume: 1.0
 
     property bool videoDisabled
 

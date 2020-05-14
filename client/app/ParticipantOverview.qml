@@ -4,67 +4,115 @@ import QtQuick.Controls 2.2
 import io.fubble 1.0
 import "."
 
-Rectangle {
+Item {
     id: participantContainer
-    color: Style.current.transparent
-    implicitWidth: nameLabel.implicitWidth
-    implicitHeight: nameLabel.implicitHeight
+    Layout.fillWidth: true
+    implicitHeight: participantColumn.height
 
-    Item {
-        id: element
-        anchors.fill: parent
+    ColumnLayout {
+        id: participantColumn
+        anchors.right: parent.right
+        anchors.left: parent.left
+        anchors.leftMargin: 0
+        implicitHeight: overview.height
 
-        Label {
-            id: nameLabel
-            anchors.left: parent.left
-            color: Style.current.foreground
-            padding: 8
-            text: model.participant.name
-            anchors.verticalCenter: parent.verticalCenter
+        Item {
+            id: overview
+            Layout.fillWidth: true
+            implicitHeight: nameLabel.height + 10
+
+            Rectangle {
+                id: participantBorder
+                anchors.fill: parent
+                color: Style.current.gray100
+                radius: 5
+                visible: true
+            }
+
+            Label {
+                id: nameLabel
+                anchors.left: parent.left
+                anchors.leftMargin: 10
+                color: Style.current.foreground
+                text: model.participant.name
+                anchors.verticalCenter: parent.verticalCenter
+            }
+
+            Image {
+                id: videoDisabledImage
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.right: mutedImage.left
+                sourceSize.height: 20
+                sourceSize.width: 20
+                source: "pics/video_disabled.svg"
+                visible: model.participant.videoDisabled
+            }
+
+            Image {
+                id: mutedImage
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.right: parent.right
+                sourceSize.height: 20
+                sourceSize.width: 20
+                source: "pics/muted.svg"
+                visible: model.participant.muted
+            }
+
+            MouseArea {
+                id: mouseArea
+                anchors.fill: parent
+                hoverEnabled: true
+
+                onEntered: participantBorder.color = Style.current.gray300
+                onExited: participantBorder.color = Style.current.gray100
+
+                onClicked: {
+                    details.visible = !details.visible
+                }
+            }
         }
 
-        Image {
-            id: videoDisabledImage
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.right: mutedImage.left
-            sourceSize.height: 20
-            sourceSize.width: 20
-            anchors.rightMargin: 8
-            source: "pics/video_disabled.svg"
-            visible: model.participant.videoDisabled
-        }
+        Item {
+            id: details
+            visible: false
+            Layout.fillWidth: true
+            implicitHeight: 70
 
-        Image {
-            id: mutedImage
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.right: parent.right
-            sourceSize.height: 20
-            sourceSize.width: 20
-            anchors.rightMargin: 8
-            source: "pics/muted.svg"
-            visible: model.participant.muted
-        }
-    }
+            Text {
+                id: volumeHeader
+                anchors.left: parent.left
+                anchors.leftMargin: 10
+                anchors.top: parent.top
+                anchors.topMargin: 10
+                text: qsTr("Volume")
+            }
 
-    MouseArea {
-        id: mouseArea
-        anchors.fill: parent
-        hoverEnabled: true
-        onEntered: {
-            //participantContainer.color = Style.current.primary
-            participantContainer.radius = 5
-            participantContainer.border.width = 1
-            //            nameLabel.color = Qt.binding(function () {
-            //                return Style.current.buttonTextColor
-            //            })
-        }
-        onExited: {
-            //participantContainer.color = Style.current.transparent
-            participantContainer.radius = 0
-            participantContainer.border.width = 0
-            //            nameLabel.color = Qt.binding(function () {
-            //                return Style.current.foreground
-            //            })
+            VolumeSlider {
+                id: volumeSlider
+                sliderColor: volumeSlider.enabled ? Style.current.primary : Style.current.gray300
+                value: model.participant.volume
+                anchors.top: volumeHeader.bottom
+                anchors.right: muteImage.left
+                enabled: !participant.muted
+            }
+
+            Image {
+                id: muteImage
+                anchors.verticalCenter: volumeSlider.verticalCenter
+                sourceSize.height: 20
+                sourceSize.width: 20
+                anchors.right: parent.right
+                source: model.participant.muted ? "pics/muted.svg" : "pics/muted_off.svg"
+
+                MouseArea {
+                    id: maMute
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    onClicked: {
+                        participant.muted = !participant.muted
+                    }
+                }
+            }
         }
     }
 }
