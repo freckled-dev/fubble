@@ -8,11 +8,14 @@ QtObject {
 
     // self muted
     property bool muted
-    // self muted
+
+    // all others muted
     property bool deafed
-    // asdf
+
+    // specific participant muted
     property bool silenced
-    // self muted
+
+    // volume setting from 0 to 1
     property double volume: 1.0
 
     property bool videoDisabled
