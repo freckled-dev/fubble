@@ -17,6 +17,8 @@ chmod u+x linuxdeploy-x86_64.AppImage linuxdeploy-plugin-qt-x86_64.AppImage
 
 export QML_SOURCES_PATHS="${source_dir}/client/app"
 
+mkdir -p appdir/usr
+cp -rv "${prefix_dir}/share" appdir/usr
 ./linuxdeploy-x86_64.AppImage \
     --executable "${prefix_dir}/bin/fubble" \
     --desktop-file="${source_dir}/client/app/fubble.desktop" \
