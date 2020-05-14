@@ -9,9 +9,8 @@ import "."
 
 RowLayout {
     id: actionOverlay
+    property ParticipantModel participant
     property int imageSize: 40
-    property bool videoOff: false
-    property bool muted: false
 
     spacing: 10
     anchors.bottomMargin: 20
@@ -19,23 +18,23 @@ RowLayout {
     anchors.bottom: parent.bottom
 
     Image {
-        id: videoOffImage
+        id: videoDisabledImage
         sourceSize.height: imageSize
         sourceSize.width: imageSize
-        source: videoOff ? "pics/overlay_video_off.svg" : "pics/overlay_video.svg"
+        source: participant.videoDisabled ? "pics/overlay_video_off.svg" : "pics/overlay_video.svg"
 
         ToolTip {
-            id: ttVideoOff
-            text: videoOff ? qsTr("Turn on your video") : qsTr(
-                                 "Turn off your video")
-            visible: maVideoOff.containsMouse
+            id: ttVideoDisabled
+            text: participant.videoDisabled ? qsTr("Enable your video") : qsTr(
+                                                  "Disable your video")
+            visible: maVideoDisabled.containsMouse
         }
 
         MouseArea {
-            id: maVideoOff
+            id: maVideoDisabled
             anchors.fill: parent
             hoverEnabled: true
-            onClicked: videoOff = !videoOff
+            onClicked: participant.videoDisabled = !participant.videoDisabled
         }
     }
 
@@ -43,11 +42,12 @@ RowLayout {
         id: muteImage
         sourceSize.height: imageSize
         sourceSize.width: imageSize
-        source: muted ? "pics/overlay_mute_off.svg" : "pics/overlay_mute.svg"
+        source: participant.muted ? "pics/overlay_mute_off.svg" : "pics/overlay_mute.svg"
 
         ToolTip {
             id: ttMute
-            text: muted ? qsTr("Unmute yourself") : qsTr("Mute yourself")
+            text: participant.muted ? qsTr("Unmute yourself") : qsTr(
+                                          "Mute yourself")
             visible: maMute.containsMouse
         }
 
@@ -55,7 +55,28 @@ RowLayout {
             id: maMute
             anchors.fill: parent
             hoverEnabled: true
-            onClicked: muted = !muted
+            onClicked: participant.muted = !participant.muted
+        }
+    }
+
+    Image {
+        id: silenceImage
+        sourceSize.height: imageSize
+        sourceSize.width: imageSize
+        source: participant.silenced ? "pics/overlay_silence_off.svg" : "pics/overlay_silence.svg"
+
+        ToolTip {
+            id: ttSilence
+            text: participant.silenced ? qsTr("Hear everyone") : qsTr(
+                                             "Silence everyone")
+            visible: maSilence.containsMouse
+        }
+
+        MouseArea {
+            id: maSilence
+            anchors.fill: parent
+            hoverEnabled: true
+            onClicked: participant.silenced = !participant.silenced
         }
     }
 }
