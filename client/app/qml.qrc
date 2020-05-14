@@ -21,6 +21,7 @@
         <file>ThemeDark.qml</file>
         <file>Theme.qml</file>
         <file>NoVideo.qml</file>
+        <file>VolumeSlider.qml</file>
         <file>Overview.qml</file>
         <file>VideoWall.qml</file>
         <file>qmldir</file>

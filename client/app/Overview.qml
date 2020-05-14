@@ -6,42 +6,43 @@ import QtQuick.Window 2.0
 import io.fubble 1.0
 import "."
 
-Rectangle {
+Item {
     id: overviewContainer
-    color: Style.current.background
     property RoomModel roomModel
 
+    Label {
+        id: participantLabel
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        anchors.topMargin: 20
+        text: qsTr("Participants")
+        font.pointSize: Style.current.subHeaderPointSize
+    }
+
     ColumnLayout {
-        id: columnLayout
         anchors.right: parent.right
         anchors.left: parent.left
-        anchors.top: parent.top
-        anchors.margins: 20
-
-        Label {
-            text: qsTr("Participants")
-            Layout.bottomMargin: 20
-            font.pointSize: Style.current.subHeaderPointSize
-            Layout.alignment: Qt.AlignHCenter
-        }
+        anchors.top: participantLabel.bottom
+        anchors.topMargin: 30
+        anchors.leftMargin: 10
+        anchors.rightMargin: 10
 
         Repeater {
             model: overviewContainer.roomModel.participants
             delegate: participantOverviewComponent
         }
+    }
 
-        Component {
-            id: participantOverviewComponent
-            ParticipantOverview {
-                Layout.fillWidth: true
-            }
-        }
+    Component {
+        id: participantOverviewComponent
+        ParticipantOverview {}
     }
 
     ParticipantAction {
         id: selfAction
         imageSize: 40
         anchors.bottom: parent.bottom
+        participant: roomModel.ownParticipant
     }
 }
 
