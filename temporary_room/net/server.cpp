@@ -1,5 +1,6 @@
 #include "server.hpp"
 #include <fmt/format.h>
+#include <nlohmann/json.hpp>
 
 using namespace temporary_room::net::server;
 

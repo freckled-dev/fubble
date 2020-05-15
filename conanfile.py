@@ -13,7 +13,7 @@ class FubbleConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     options = {"shared": [False, True]}
     # https://docs.conan.io/en/latest/reference/conanfile/attributes.html#default-options
-    default_options = {"shared": False}
+    default_options = {"shared": False, "nlohmann_json:multiple_headers": True}
     generators = "pkg_config"
     exports_sources = "*"
     # no_copy_source = True

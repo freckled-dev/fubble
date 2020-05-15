@@ -10,7 +10,7 @@
 #include <boost/beast/http.hpp>
 #include <boost/thread/executors/inline_executor.hpp>
 #include <boost/thread/future.hpp>
-#include <nlohmann/json.hpp>
+#include <nlohmann/json_fwd.hpp>
 
 namespace temporary_room::net::server {
 // TODO add http result code
