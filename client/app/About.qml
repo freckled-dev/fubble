@@ -22,53 +22,74 @@ Popup {
         anchors.fill: parent
     }
 
-    Column {
-        id: aboutColumn
-        height: 280
+    Label {
+        id: headerLabel
+        anchors.top: parent.top
+        text: qsTr("About")
+        anchors.topMargin: 20
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
-        spacing: 20
+        font.bold: true
+        horizontalAlignment: Text.AlignHCenter
+        font.pointSize: Style.current.headerPointSize
+    }
+
+    Image {
+        id: fubbleIcon
+        width: 100
+        anchors.top: headerLabel.bottom
+        height: 100
+        anchors.topMargin: 20
+        anchors.horizontalCenter: parent.horizontalCenter
+        source: "pics/fubble.svg"
+        fillMode: Image.PreserveAspectFit
+    }
+
+    Item {
+        id: nameAndVersionLabel
+        anchors.topMargin: 20
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: fubbleIcon.bottom
+        implicitHeight: childrenRect.height
 
         Label {
-            width: aboutDialog.availableWidth
-            text: qsTr("About")
-            font.bold: true
-            horizontalAlignment: Text.AlignHCenter
-            font.pointSize: Style.current.headerPointSize
-        }
-
-        Image {
-            width: 100
-            height: 100
+            id: appNameLabel
+            anchors.top: parent.top
             anchors.horizontalCenter: parent.horizontalCenter
-            source: "pics/fubble.svg"
-            fillMode: Image.PreserveAspectFit
-        }
-
-        Label {
-            width: aboutDialog.availableWidth
             text: qsTr("Fubble")
             horizontalAlignment: Text.AlignHCenter
         }
 
         Label {
-            width: aboutDialog.availableWidth
-            text: qsTr("by Freckled OG")
+            text: appVersion
+            anchors.top: appNameLabel.bottom
+            anchors.horizontalCenter: parent.horizontalCenter
             horizontalAlignment: Text.AlignHCenter
         }
+    }
 
-        Label {
-            width: aboutDialog.availableWidth
-            text: qsTr("<a href='https://freckled.dev/contact'>Contact us...</a>")
-            horizontalAlignment: Text.AlignHCenter
-            onLinkActivated: Qt.openUrlExternally(link)
-        }
+    Label {
+        id: companyLabel
+        anchors.top: nameAndVersionLabel.bottom
+        text: qsTr("by Freckled OG")
+        anchors.topMargin: 20
+        anchors.horizontalCenter: parent.horizontalCenter
+        horizontalAlignment: Text.AlignHCenter
+    }
+
+    Label {
+        id: websiteLabel
+        anchors.top: companyLabel.bottom
+        text: qsTr("<a href='https://freckled.dev/contact'>Contact us...</a>")
+        anchors.topMargin: 20
+        anchors.horizontalCenter: parent.horizontalCenter
+        onLinkActivated: Qt.openUrlExternally(link)
     }
 }
 
 /*##^##
 Designer {
     D{i:1;anchors_height:200;anchors_width:200;anchors_x:41;anchors_y:29}D{i:2;anchors_height:222}
+D{i:3;anchors_height:100;anchors_width:100}
 }
 ##^##*/
 
