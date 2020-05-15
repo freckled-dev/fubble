@@ -21,7 +21,7 @@ public:
       break;
     case LoggingSeverity::LS_VERBOSE:
       severity = logging::severity::trace;
-      break;
+      return; // VERY verbose!
     default:
       break;
     }
