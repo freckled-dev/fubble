@@ -8,6 +8,7 @@ client = library('client',
     'own_participant.cpp', 'bot_participant.cpp', 'participant.cpp',
     'participants.cpp', 'users.cpp',
     'add_data_channel.cpp'],
+  cpp_pch: '../../pch/precompiled.hpp',
   dependencies: [boost_dep, utils_dep, signalling_client_dep,
     webrtc_google_peer_dep, matrix_dep],
   include_directories: ['..'],
@@ -22,6 +23,7 @@ client_dep = declare_dependency(
 
 client_room_test = executable('client_room_test',
   ['room_test.cpp'],
+  cpp_pch: '../../pch/precompiled.hpp',
   dependencies: [client_dep, gtest_dep, temporary_room_dep],
   link_with: [test_main]
   )

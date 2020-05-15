@@ -2,7 +2,7 @@ websocket = library('websocket',
   ['acceptor.cpp', 'connection.cpp',
     'connection_creator.cpp', 'connector.cpp'],
   dependencies: [boost_dep, fmt_dep, utils_dep],
-  link_with: [],
+  cpp_pch: '../pch/precompiled.hpp',
   install: true
   )
 websocket_dep = declare_dependency(
@@ -13,6 +13,7 @@ websocket_dep = declare_dependency(
 websocket_test = executable('websocket_test',
   ['test.cpp'],
   dependencies : [gtest_dep, boost_dep, websocket_dep],
+  cpp_pch: '../pch/precompiled.hpp',
   link_with: [test_main]
   )
 test('websocket test', websocket_test, timeout: 8)
