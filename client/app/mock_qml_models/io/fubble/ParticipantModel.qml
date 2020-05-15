@@ -20,6 +20,9 @@ QtObject {
 
     property bool videoDisabled
 
+    // just used in the GUI
+    property bool highlighted
+
     property var video: MediaPlayer {
         source: video_source
         autoPlay: true
