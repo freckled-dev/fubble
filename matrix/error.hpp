@@ -4,7 +4,7 @@
 #include <boost/beast/http/status.hpp>
 #include <boost/exception/exception.hpp>
 #include <boost/thread/future.hpp>
-#include <nlohmann/json.hpp>
+#include <nlohmann/json_fwd.hpp>
 
 namespace matrix::error {
 

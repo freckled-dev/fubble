@@ -5,7 +5,7 @@
 #include "room.hpp"
 #include <boost/signals2/signal.hpp>
 #include <deque>
-#include <nlohmann/json.hpp>
+#include <nlohmann/json_fwd.hpp>
 
 namespace matrix {
 class client;

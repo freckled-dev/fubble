@@ -1,5 +1,6 @@
 #include "client.hpp"
 #include "action.hpp"
+#include <nlohmann/json.hpp>
 
 using namespace http;
 

@@ -4,6 +4,7 @@
 #include "error.hpp"
 #include "room_participant.hpp"
 #include <fmt/format.h>
+#include <nlohmann/json.hpp>
 
 using namespace matrix;
 
@@ -128,4 +129,3 @@ void room::on_event_m_room_name(const nlohmann::json &parse) {
       << "room_name changed to:" << name;
   on_name_changed(name);
 }
-
