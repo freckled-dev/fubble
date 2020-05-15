@@ -78,7 +78,7 @@ build windows release:
   variables:
     FUBBLE_TREAT_WARNING_AS_ERROR: 0
     FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install_windows
-    FUBBLE_BUILD_NINJA_JOBS: '1'
+    # FUBBLE_BUILD_NINJA_JOBS: '1'
   script:
     - choco install -y --no-progress python pkgconfiglite cmake --installargs 'ADD_CMAKE_TO_PATH=System'
     # - refreshenv # did not work
@@ -87,9 +87,9 @@ build windows release:
     - pip install conan aqtinstall
     - aqt install --outputdir c:\Qt 5.15.0 windows desktop win64_msvc2019_64
     - conan --version
-    - conan remote add bincrafters "https://api.bintray.com/conan/bincrafters/public-conan"
-    - conan remote add inexorgame "https://api.bintray.com/conan/inexorgame/inexor-conan"
-    - conan remote add google_webrtc "https://api.bintray.com/conan/freckled/google-webrtc"
+    - conan remote add -f bincrafters "https://api.bintray.com/conan/bincrafters/public-conan"
+    - conan remote add -f inexorgame "https://api.bintray.com/conan/inexorgame/inexor-conan"
+    - conan remote add -f google_webrtc "https://api.bintray.com/conan/freckled/google-webrtc"
     - python scripts/make_build.py
   artifacts:
     untracked: true
