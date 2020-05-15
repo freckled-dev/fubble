@@ -1,5 +1,5 @@
 ui_sources = ['frame_provider_google_video_frame.cpp', 'executor_qt.cpp',
-  'log_qt_to_logging.cpp']
+  'log_qt_to_logging.cpp', 'add_version_to_qml_context.cpp']
 ui_sources += qt5.preprocess(
   moc_headers: ['frame_provider_google_video_frame.hpp']
   )

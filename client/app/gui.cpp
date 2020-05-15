@@ -37,6 +37,7 @@
 #include "signalling/client/connection_creator.hpp"
 #include "signalling/json_message.hpp"
 #include "temporary_room/net/client.hpp"
+#include "ui/add_version_to_qml_context.hpp"
 #include "ui/frame_provider_google_video_frame.hpp"
 #include "ui/log_qt_to_logging.hpp"
 #include "websocket/connection_creator.hpp"
@@ -244,6 +245,7 @@ int main(int argc, char *argv[]) {
   engine.rootContext()->setContextProperty("joinModelFromCpp", &join_model);
   engine.rootContext()->setContextProperty("errorModelFromCpp", &error_model);
   engine.rootContext()->setContextProperty("leaveModelFromCpp", &leave_model);
+  client::ui::add_version_to_qml_context version_adder{*engine.rootContext()};
   //  seems not to do it either
   // QVariant property{qMetaTypeId<client::join_model *>(), &join_model};
   // engine.setProperty("joinModel", property);
