@@ -16,6 +16,10 @@ ApplicationWindow {
     minimumHeight: 600
     visible: true
 
+    screen: Qt.application.screens[0]
+    x: screen.virtualX + (screen.width / 2 - width / 2)
+    y: screen.virtualY + (screen.height / 2 - height / 2)
+
     property JoinModel joinModel: joinModelFromCpp
     property LeaveModel leaveModel: leaveModelFromCpp
     property ErrorModel errorModel: errorModelFromCpp
@@ -46,12 +50,6 @@ ApplicationWindow {
         focus: true
     }
 
-    // center app in display
-    Component.onCompleted: {
-        setX(Screen.width / 2 - width / 2)
-        setY(Screen.height / 2 - height / 2)
-    }
-
     Component {
         id: joinComponent
 
@@ -64,7 +62,7 @@ ApplicationWindow {
                            })
                 fubbleState = "Room"
 
-                joinSound.play()
+                playJoinSound()
             }
         }
     }
@@ -86,7 +84,7 @@ ApplicationWindow {
         leaveModel: container.leaveModel
         showForceButton: true
         onLeft: {
-            leaveSound.play()
+            playLeaveSound()
             stack.pop()
             stack.currentItem.setGuiEnabled(true)
             if (shutdown) {
@@ -121,7 +119,7 @@ ApplicationWindow {
         Room {}
     }
 
-    // declare SoundEffect instances and refer to them elsewhere
+    // audio effects
     SoundEffect {
         id: joinSound
         source: "sounds/join.wav"
@@ -135,5 +133,23 @@ ApplicationWindow {
     SoundEffect {
         id: errorSound
         source: "sounds/error.wav"
+    }
+
+    function playJoinSound() {
+        if (header.settings.joinSound) {
+            joinSound.play()
+        }
+    }
+
+    function playLeaveSound() {
+        if (header.settings.leaveSound) {
+            leaveSound.play()
+        }
+    }
+
+    function playErrorSound() {
+        if (header.settings.errorSound) {
+            errorSound.play()
+        }
     }
 }
