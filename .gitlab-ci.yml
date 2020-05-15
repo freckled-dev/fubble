@@ -74,6 +74,7 @@ build windows release:
   stage: build
   tags:
     - windows
+    - standalone
   variables:
     FUBBLE_TREAT_WARNING_AS_ERROR: 0
     FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install_windows
