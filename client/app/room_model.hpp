@@ -13,7 +13,7 @@ class room;
 class room_model : public QObject {
   Q_OBJECT
   Q_PROPERTY(QString name MEMBER name NOTIFY name_changed)
-   Q_PROPERTY(participant_model *ownParticipant MEMBER own_participant NOTIFY
+  Q_PROPERTY(participant_model *ownParticipant MEMBER own_participant NOTIFY
                  own_participant_changed)
   Q_PROPERTY(participants_model *participants MEMBER participants NOTIFY
                  participants_changed)
@@ -33,14 +33,15 @@ signals:
 
 protected:
   void set_name();
+  void set_own();
 
   client::logger logger{"room_model"};
   std::shared_ptr<room> room_;
   QString name;
-  participant_model *own_participant;
-  participants_model *participants;
-  participants_with_video_model *participants_with_video;
-  chat_model *chat;
+  participant_model *own_participant{};
+  participants_model *participants{};
+  participants_with_video_model *participants_with_video{};
+  chat_model *chat{};
   std::vector<boost::signals2::scoped_connection> signal_connections;
 };
 } // namespace client
