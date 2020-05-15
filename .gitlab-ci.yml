@@ -48,7 +48,8 @@ build windows updater release:
     - windows
   before_script:
     - cd updater
-    - $env:Path += ";C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\bin"
+    - $env:Path += ";C:/Program Files (x86)/Microsoft Visual Studio/2019/BuildTools/MSBuild/Current/bin"
+    - $env:Path += ";C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/MSBuild/Current/Bin/"
   script:
     - 'msbuild /p:Configuration=Release Updater.sln'
   artifacts:
