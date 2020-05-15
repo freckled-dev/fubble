@@ -7,7 +7,7 @@
 #include <boost/thread/future.hpp>
 #include <chrono>
 #include <deque>
-#include <nlohmann/json.hpp>
+#include <nlohmann/json_fwd.hpp>
 #include <string>
 
 namespace http {

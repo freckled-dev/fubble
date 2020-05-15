@@ -3,6 +3,7 @@
 #include "error.hpp"
 #include "http/client.hpp"
 #include <fmt/format.h>
+#include <nlohmann/json.hpp>
 
 using namespace matrix;
 

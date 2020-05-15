@@ -1,5 +1,6 @@
 #include "server.hpp"
 #include <boost/beast/version.hpp>
+#include <nlohmann/json.hpp>
 
 using namespace temporary_room::net::server;
 
@@ -131,7 +132,8 @@ void acceptor::accept_next() {
     if (error) {
       auto promise_copy = run_promise;
       if (error == boost::asio::error::operation_aborted) {
-        BOOST_LOG_SEV(this->logger, logging::severity::trace) << "operation_aborted";
+        BOOST_LOG_SEV(this->logger, logging::severity::trace)
+            << "operation_aborted";
         run_promise->set_value(); // stop() got called
       } else
         run_promise->set_exception(boost::system::system_error(error));

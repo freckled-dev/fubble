@@ -1,6 +1,7 @@
 #include "http/client.hpp"
 #include "server.hpp"
 #include <gtest/gtest.h>
+#include <nlohmann/json.hpp>
 
 TEST(NetAcceptor, Put) {
   logging::logger logger{"NetAcceptor"};

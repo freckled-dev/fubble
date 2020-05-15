@@ -2,6 +2,7 @@
 #include "utils/testing.hpp"
 #include <boost/thread/executors/inline_executor.hpp>
 #include <gtest/gtest.h>
+#include <nlohmann/json.hpp>
 
 TEST(HttpClient, Instance) {
   using namespace http;
