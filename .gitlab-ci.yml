@@ -63,7 +63,7 @@ innosetup:
   dependencies:
     - build windows updater release
   script:
-    - choco install -y --no-progress python innosetup cmake
+    - choco install -y --no-progress python innosetup
     - $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
     - python scripts/make_innosetup.py
   artifacts:
@@ -79,7 +79,7 @@ build windows release:
     FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install_windows
     FUBBLE_BUILD_NINJA_JOBS: '1'
   script:
-    - choco install -y --no-progress python pkgconfiglite
+    - choco install -y --no-progress python pkgconfiglite cmake --installargs 'ADD_CMAKE_TO_PATH=System'
     # - refreshenv # did not work
     - $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
     - python --version
