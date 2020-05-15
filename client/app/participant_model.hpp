@@ -22,7 +22,7 @@ class participant_model : public QObject {
    // volume setting from 0 to 1
   Q_PROPERTY(double volume MEMBER volume NOTIFY volume_changed)
   // own video disabled
-  Q_PROPERTY(bool video_disabled MEMBER video_disabled NOTIFY video_disabled_changed)
+  Q_PROPERTY(bool videoDisabled MEMBER video_disabled NOTIFY video_disabled_changed)
   // just used in the GUI - do not change it
   Q_PROPERTY(bool highlighted MEMBER highlighted NOTIFY highlighted_changed)
 
