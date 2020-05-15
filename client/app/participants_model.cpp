@@ -17,6 +17,15 @@ participants_model::participants_model(room &room_, QObject *parent)
       [this](auto leaves) { on_leaves(leaves); }));
 }
 
+std::optional<participant_model *> participants_model::get_own() const {
+  for (auto participant_ : participants) {
+    if (participant_.id != room_.get_own_id())
+      continue;
+    return participant_.model;
+  }
+  return std::nullopt;
+}
+
 int participants_model::rowCount([
     [maybe_unused]] const QModelIndex &parent) const {
   return participants.size();
@@ -58,6 +67,13 @@ void participants_model::on_joins(
   std::transform(joins.cbegin(), joins.cend(), std::back_inserter(participants),
                  instance_participant_model);
   endInsertRows();
+  auto found_own_participant =
+      std::find_if(joins.cbegin(), joins.cend(), [&](auto check) {
+        return check->get_id() == room_.get_own_id();
+      });
+  if (found_own_participant == joins.cend())
+    return;
+  on_own_changed();
 }
 
 std::vector<participant *>
