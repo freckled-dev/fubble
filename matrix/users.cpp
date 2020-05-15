@@ -1,5 +1,6 @@
 #include "users.hpp"
 #include "client.hpp"
+#include <nlohmann/json.hpp>
 
 using namespace matrix;
 

@@ -4,6 +4,7 @@
 #include "room.hpp"
 #include <fmt/format.h>
 #include <fmt/ostream.h>
+#include <nlohmann/json.hpp>
 
 using namespace matrix;
 

@@ -2,7 +2,7 @@
 #define UUID_48B04D24_4E47_4D66_9D93_6D24AAC137EB
 
 #include <boost/signals2/signal.hpp>
-#include <nlohmann/json.hpp>
+#include <nlohmann/json_fwd.hpp>
 
 namespace matrix {
 

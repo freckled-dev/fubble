@@ -1,5 +1,6 @@
 #include "authentification.hpp"
 #include "error.hpp"
+#include <nlohmann/json.hpp>
 
 using namespace matrix;
 

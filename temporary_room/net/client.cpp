@@ -2,6 +2,7 @@
 #include "http/client.hpp"
 #include <boost/thread/future.hpp>
 #include <fmt/format.h>
+#include <nlohmann/json.hpp>
 
 using namespace temporary_room::net;
 
@@ -31,4 +32,3 @@ boost::future<std::string> client::join(const std::string &name,
     return room_id;
   });
 }
-

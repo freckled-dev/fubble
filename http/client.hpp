@@ -7,7 +7,7 @@
 #include <boost/beast/http/status.hpp>
 #include <boost/thread/executors/inline_executor.hpp>
 #include <boost/thread/future.hpp>
-#include <nlohmann/json.hpp>
+#include <nlohmann/json_fwd.hpp>
 
 namespace http {
 class action;
