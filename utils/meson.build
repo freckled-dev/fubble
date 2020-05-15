@@ -14,6 +14,7 @@ utils_sources += vcs_tag(
 utils = library('utils',
   utils_sources,
   dependencies: [asio_dep, fmt_dep],
+  cpp_pch: '../pch/precompiled.hpp',
   install: true
   )
 utils_dep = declare_dependency(
@@ -24,6 +25,7 @@ utils_dep = declare_dependency(
 utils_test = executable('utils_test',
   ['executor_asio_test.cpp', 'boost_thread_test.cpp'],
   dependencies: [gtest_dep, utils_dep],
+  cpp_pch: '../pch/precompiled.hpp',
   link_with: [test_main]
   )
 test('utils test', utils_test)
