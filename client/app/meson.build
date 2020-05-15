@@ -1,6 +1,7 @@
 if host_machine.system() == 'linux'
   client_cli = executable('fubble_cli',
     ['client.cpp', 'options.cpp'],
+    cpp_pch: '../../pch/precompiled.hpp',
     dependencies: [client_dep],
     install: true
     )
@@ -25,6 +26,7 @@ if host_machine.system() == 'windows'
 endif
 client_gui = executable('fubble', client_gui_sources,
   dependencies: [client_dep, ui_dep, temporary_room_dep],
+  cpp_pch: '../../pch/precompiled.hpp',
   gui_app: false,
   install: true)
 

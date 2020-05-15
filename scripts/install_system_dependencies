@@ -53,7 +53,7 @@ if grep -i ubuntu /etc/os-release
     ninja-build g++ libx11-dev libssl-dev ccache \
     qt5-default qttools5-dev-tools qtquickcontrols2-5-dev qtmultimedia5-dev \
     qtdeclarative5-dev libqt5svg5-dev qml-module-qtmultimedia \
-    pkg-config git \
+    pkg-config git cmake \
     rsync rclone curl \
     pulseaudio docker.io
   and sudo -H pip3 install conan meson==0.53.0 docker-compose

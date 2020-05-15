@@ -4,6 +4,7 @@ matrix = library('matrix',
     'client_factory.cpp', 'room.cpp', 'user.cpp', 'users.cpp', 'rooms.cpp'],
   dependencies: [fmt_dep, http_dep],
   include_directories: ['..'],
+  cpp_pch: '../pch/precompiled.hpp',
   install: true
   )
 matrix_dep = declare_dependency(
@@ -14,6 +15,7 @@ matrix_dep = declare_dependency(
 matrix_test = executable('matrix_test',
   [ 'evaluation.cpp', 'authentification_test.cpp', 'client_test.cpp',
     'rooms_test.cpp', 'users_test.cpp' ],
+  cpp_pch: '../pch/precompiled.hpp',
   dependencies : [gtest_dep, matrix_dep, fmt_dep],
   link_with: [test_main]
   )
