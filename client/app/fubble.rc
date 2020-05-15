@@ -1,3 +1,5 @@
+#include "winres.h"
+
 // when it comes to versioning and company/product details check out:
 // https://docs.microsoft.com/en-us/windows/win32/menurc/versioninfo-resource#examples
 
@@ -5,3 +7,60 @@
 // https://doc.qt.io/qt-5/appicon.html#setting-the-application-icon-on-windows
 IDI_ICON1 ICON "../../updater/Logo.ico"
 
+#define VER_FILEVERSION             1,0,0,0
+#define VER_FILEVERSION_STR         "1.0.0.0\0"
+
+// unused because not properly set
+#define VER_PRODUCTVERSION          1,0,0,0
+#define VER_PRODUCTVERSION_STR      "1.0.0\0"
+
+#define VER_COMPANYNAME_STR         "Freckled OG"
+#define VER_FILEDESCRIPTION_STR     "Fubble. Meetings that just work."
+#define VER_INTERNALNAME_STR        "Fubble"
+#define VER_LEGALCOPYRIGHT_STR      "All rights reserved"
+#define VER_ORIGINALFILENAME_STR    "fubble.exe"
+#define VER_PRODUCTNAME_STR         "Fubble"
+
+#ifndef DEBUG
+#define VER_DEBUG                   0
+#else
+#define VER_DEBUG                   VS_FF_DEBUG
+#endif
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION     VER_FILEVERSION
+PRODUCTVERSION  VER_PRODUCTVERSION
+FILEFLAGSMASK   VS_FFI_FILEFLAGSMASK
+FILEFLAGS       VER_DEBUG
+FILEOS          VOS__WINDOWS32
+FILETYPE        VFT_APP
+FILESUBTYPE     VFT2_UNKNOWN
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904E4"
+        BEGIN
+            VALUE "CompanyName",      VER_COMPANYNAME_STR
+            VALUE "FileDescription",  VER_FILEDESCRIPTION_STR
+            VALUE "FileVersion",      VER_FILEVERSION_STR
+            VALUE "InternalName",     VER_INTERNALNAME_STR
+            VALUE "LegalCopyright",   VER_LEGALCOPYRIGHT_STR
+            VALUE "OriginalFilename", VER_ORIGINALFILENAME_STR
+            VALUE "ProductName",      VER_PRODUCTNAME_STR
+            // VALUE "ProductVersion",   VER_PRODUCTVERSION_STR
+        END
+    END
+
+    BLOCK "VarFileInfo"
+    BEGIN
+        /* The following line should only be modified for localized versions.     */
+        /* It consists of any number of WORD,WORD pairs, with each pair           */
+        /* describing a language,codepage combination supported by the file.      */
+        /*                                                                        */
+        /* For example, a file might have values "0x409,1252" indicating that it  */
+        /* supports English language (0x409) in the Windows ANSI codepage (1252). */
+
+        VALUE "Translation", 0x409, 1252
+
+    END
+END
