@@ -63,7 +63,7 @@ innosetup:
   dependencies:
     - build windows updater release
   script:
-    - choco install -y --no-progress python innosetup
+    - choco install -y --no-progress python innosetup cmake
     - $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
     - python scripts/make_innosetup.py
   artifacts:
