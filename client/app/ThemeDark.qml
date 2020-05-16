@@ -8,4 +8,10 @@ Theme {
     property color buttonTextColor: '#000000'
     property color backgroundTextInput: '#757575'
     property color placeholderTextColor: '#E0E0E0'
+
+    property color gray100: '#212121'
+    property color gray200: '#424242'
+    property color gray300: '#616161'
+    property color gray300Transparent: '#CC616161'
+    property color gray700: '#E0E0E0'
 }
