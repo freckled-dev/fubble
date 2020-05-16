@@ -15,6 +15,7 @@
 #include "gui_options.hpp"
 #include "join_model.hpp"
 #include "leave_model.hpp"
+#include "utils_model.hpp"
 #include "logging/initialser.hpp"
 #include "logging/logger.hpp"
 #include "matrix/authentification.hpp"
@@ -214,6 +215,7 @@ int main(int argc, char *argv[]) {
   qRegisterMetaType<client::participants_with_video_model *>();
   qRegisterMetaType<client::join_model *>();
   qRegisterMetaType<client::error_model *>();
+  qRegisterMetaType<client::utils_model *>();
   qRegisterMetaType<client::leave_model *>();
 
   // https://doc.qt.io/qt-5/qtqml-cppintegration-overview.html#choosing-the-correct-integration-method-between-c-and-qml
@@ -224,6 +226,8 @@ int main(int argc, char *argv[]) {
       "can't instance client::participant_model");
   qmlRegisterUncreatableType<client::join_model>(
       "io.fubble", 1, 0, "JoinModel", "can't instance client::join_model");
+  qmlRegisterUncreatableType<client::utils_model>(
+      "io.fubble", 1, 0, "UtilsModel", "can't instance client::utils_model");
   qmlRegisterUncreatableType<client::error_model>(
       "io.fubble", 1, 0, "ErrorModel", "can't instance client::error_model");
   qmlRegisterUncreatableType<client::leave_model>(
@@ -237,6 +241,7 @@ int main(int argc, char *argv[]) {
   QQmlApplicationEngine engine;
   client::model_creator model_creator;
   client::error_model error_model;
+  client::utils_model utils_model;
   client::join_model join_model{model_creator, error_model, joiner, own_media};
   client::leave_model leave_model{leaver};
   //  works from 5.14 onwards
@@ -244,6 +249,7 @@ int main(int argc, char *argv[]) {
   //  setContextProperty sets it globaly not as property of the window
   engine.rootContext()->setContextProperty("joinModelFromCpp", &join_model);
   engine.rootContext()->setContextProperty("errorModelFromCpp", &error_model);
+  engine.rootContext()->setContextProperty("utilsModelFromCpp", &utils_model);
   engine.rootContext()->setContextProperty("leaveModelFromCpp", &leave_model);
   client::ui::add_version_to_qml_context version_adder{*engine.rootContext()};
   //  seems not to do it either

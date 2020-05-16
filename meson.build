@@ -51,7 +51,7 @@ gstreamer_webrtc_dep_pkg = dependency('gstreamer-webrtc-1.0',
 gstreamer_sdp_dep = dependency('gstreamer-sdp-1.0',
   required : false, disabler : true)
 qt5 = import('qt5')
-qt5_clear_dep = dependency('qt5', modules: ['Core', 'Gui', 'Qml', 'Quick', 'Multimedia', 'Svg', 'QuickControls2'])
+qt5_clear_dep = dependency('qt5', modules: ['Core', 'Gui', 'Qml', 'Quick', 'Widgets', 'Multimedia', 'Svg', 'QuickControls2'])
 # `QT_NO_EMIT` is neccessary because google webrtc declares a method/function called `emit`
 qt5_dep_compile_args = ['-DQT_DEPRECATED_WARNINGS', '-DQT_NO_EMIT']
 is_debug = get_option('debug')

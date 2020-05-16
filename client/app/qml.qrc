@@ -13,6 +13,7 @@
         <file>About.qml</file>
         <file>Error.qml</file>
         <file>Style.qml</file>
+        <file>FubbleToolTip.qml</file>
         <file>EmojiPopup.qml</file>
         <file>ParticipantAction.qml</file>
         <file>emoji/emoji.js</file>
