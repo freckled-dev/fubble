@@ -23,7 +23,7 @@ RowLayout {
         sourceSize.width: imageSize
         source: participant.videoDisabled ? "pics/overlay_video_off.svg" : "pics/overlay_video.svg"
 
-        ToolTip {
+        FubbleToolTip {
             id: ttVideoDisabled
             text: participant.videoDisabled ? qsTr("Enable your video") : qsTr(
                                                   "Disable your video")
@@ -44,7 +44,7 @@ RowLayout {
         sourceSize.width: imageSize
         source: participant.muted ? "pics/overlay_mute_off.svg" : "pics/overlay_mute.svg"
 
-        ToolTip {
+        FubbleToolTip {
             id: ttMute
             text: participant.muted ? qsTr("Unmute yourself") : qsTr(
                                           "Mute yourself")
@@ -65,7 +65,7 @@ RowLayout {
         sourceSize.width: imageSize
         source: participant.silenced ? "pics/overlay_silence_off.svg" : "pics/overlay_silence.svg"
 
-        ToolTip {
+        FubbleToolTip {
             id: ttSilence
             text: participant.silenced ? qsTr("Hear everyone") : qsTr(
                                              "Silence everyone")

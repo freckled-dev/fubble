@@ -7,7 +7,7 @@ if host_machine.system() == 'linux'
     )
 endif
 
-client_gui_sources = ['gui.cpp', 'join_model.cpp', 'poll_asio_by_qt.cpp', 'participants_model.cpp',
+client_gui_sources = ['gui.cpp', 'utils_model.cpp', 'join_model.cpp', 'poll_asio_by_qt.cpp', 'participants_model.cpp',
     'gui_options.cpp', 'error_model.cpp', 'leave_model.cpp',
     'participants_with_video_model.cpp', 'chat_model.cpp',
     'chat_messages_model.cpp',
@@ -15,7 +15,7 @@ client_gui_sources = ['gui.cpp', 'join_model.cpp', 'poll_asio_by_qt.cpp', 'parti
     ]
 client_gui_sources += qt5.preprocess(
   qresources: 'qml.qrc',
-  moc_headers: ['join_model.hpp',  'room_model.hpp', 'error_model.hpp',
+  moc_headers: ['join_model.hpp', 'utils_model.hpp',  'room_model.hpp', 'error_model.hpp',
     'leave_model.hpp', 'participants_with_video_model.hpp', 'chat_model.hpp',
     'chat_messages_model.hpp',
     'participants_model.hpp', 'participant_model.hpp', 'poll_asio_by_qt.hpp']

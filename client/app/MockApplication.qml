@@ -8,4 +8,5 @@ FubbleApplication {
     joinModel: JoinModel {}
     leaveModel: LeaveModel {}
     errorModel: ErrorModel {}
+    utilsModel: UtilsModel {}
 }

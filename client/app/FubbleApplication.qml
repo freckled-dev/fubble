@@ -23,6 +23,7 @@ ApplicationWindow {
     property JoinModel joinModel: joinModelFromCpp
     property LeaveModel leaveModel: leaveModelFromCpp
     property ErrorModel errorModel: errorModelFromCpp
+    property UtilsModel utilsModel: utilsModelFromCpp
 
     property bool shutdown: false
     property string fubbleState: "Login"
