@@ -9,11 +9,6 @@ QtObject {
 
     property color white: '#ffffff'
     property color transparent: '#00000000'
-    property color gray100: '#F5F5F5'
-    property color gray200: '#EEEEEE'
-    property color gray300: '#E0E0E0'
-    property color gray300Transparent: '#CCE0E0E0'
-    property color gray700: '#616161'
 
     property color backgroundTextInput
     property color placeholderTextColor
