@@ -47,14 +47,27 @@ ToolBar {
             visible: maCopy.containsMouse
         }
 
+        FubbleToolTip {
+            id: ttCopied
+            delay: 2
+        }
+
+        Timer {
+            id: timer
+            triggeredOnStart: false
+            interval: 1000
+            onTriggered: ttCopied.close()
+        }
+
         MouseArea {
             id: maCopy
             anchors.fill: parent
             hoverEnabled: true
             onExited: ttCopy.text = qsTr("Copy room name")
             onClicked: {
-                ttCopy.text = qsTr("Room name copied!")
                 utilsModel.copyToClipboard(title)
+                ttCopied.show(qsTr("Room name copied to clipboard..."))
+                timer.start()
             }
         }
     }
