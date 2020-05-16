@@ -30,7 +30,6 @@ FocusScope {
                 joined(room)
             }
             onJoin_failed: {
-                console.log("bla")
                 setGuiEnabled(true)
             }
         }
