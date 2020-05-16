@@ -8,6 +8,9 @@ include:
 
 build ubuntu_18.04 release:
   image: registry.gitlab.com/acof/fubble/ci/build_ubuntu_1804:v0
+  tags:
+    - linux
+    - dedicated
   stage: build
   # services:
   #   - docker:dind
