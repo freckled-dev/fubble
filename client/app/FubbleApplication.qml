@@ -11,10 +11,10 @@ ApplicationWindow {
     title: qsTr("Fubble")
 
     // initial values - will be overwritten by users settings
-    width: 1024
-    height: 768
-    x: 100
-    y: 100
+    width: Math.min(container.width, 1280)
+    height: Math.min(container.height, 768)
+    x: 0
+    y: 0
 
     minimumWidth: 800
     minimumHeight: 600
