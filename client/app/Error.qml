@@ -24,7 +24,7 @@ Popup {
     Connections {
         target: errorModel
         onError: {
-            player
+            playErrorSound()
             open()
         }
     }

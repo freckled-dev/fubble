@@ -14,6 +14,8 @@ QtObject {
         autoPlay: true
     }*/
     signal joined(RoomModel room)
+    signal join_failed
+
     function join(room, name) {
         var component = Qt.createComponent("RoomModel.qml")
         var roomModel = component.createObject(container)
