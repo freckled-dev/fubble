@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+import sys
 import subprocess
 import platform
 import shutil
@@ -24,7 +25,7 @@ final_dir = os.path.join(qt_prefix_dir, qt_version, qt_target)
 qmake_path = os.path.join(final_dir, 'bin', 'qmake')
 if os.path.exists(qmake_path):
     print("skipping installation of qt, because '%s' does already exists" % qmake_path)
-    return
+    sys.exit()
 
 subprocess.run(['aqt', 'install', 
     '--outputdir', qt_prefix_dir,
