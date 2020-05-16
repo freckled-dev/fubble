@@ -23,7 +23,7 @@ export QML_SOURCES_PATHS=$PWD/client/app/
   --plugin qt \
   --executable ../fubble_build/install/bin/fubble \
   --desktop-file=client/app/fubble.desktop \
-  --icon-file=client/app/pics/fubble.svg
+  --icon-file=client/app/images/fubble.svg
   --appdir appdir \
   --output fubble.AppImage
 ```
