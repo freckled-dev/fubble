@@ -38,11 +38,21 @@ Item {
         ParticipantOverview {}
     }
 
-    ParticipantAction {
-        id: selfAction
-        imageSize: 40
+    Loader {
+        id: actionLoader
+        anchors.horizontalCenter: parent.horizontalCenter
+        sourceComponent: roomModel.ownParticipant ? actionComponent : undefined
         anchors.bottom: parent.bottom
-        participant: roomModel.ownParticipant
+    }
+
+    Component {
+        id: actionComponent
+
+        ParticipantAction {
+            id: selfAction
+            imageSize: 40
+            participant: roomModel.ownParticipant
+        }
     }
 }
 

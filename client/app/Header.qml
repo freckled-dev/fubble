@@ -36,7 +36,7 @@ ToolBar {
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: titleLabel.right
         anchors.leftMargin: 10
-        source: "pics/copy.svg"
+        source: Style.current.copyImage
         sourceSize.height: 30
         sourceSize.width: 30
         visible: header.isRoomView()
@@ -50,13 +50,15 @@ ToolBar {
         FubbleToolTip {
             id: ttCopied
             delay: 2
+            visible: false
+            text: qsTr("Room name copied to clipboard...")
         }
 
         Timer {
             id: timer
             triggeredOnStart: false
             interval: 1000
-            onTriggered: ttCopied.close()
+            onTriggered: ttCopied.visible = false
         }
 
         MouseArea {
@@ -66,7 +68,7 @@ ToolBar {
             onExited: ttCopy.text = qsTr("Copy room name")
             onClicked: {
                 utilsModel.copyToClipboard(title)
-                ttCopied.show(qsTr("Room name copied to clipboard..."))
+                ttCopied.visible = true
                 timer.start()
             }
         }

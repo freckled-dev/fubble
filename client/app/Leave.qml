@@ -62,13 +62,7 @@ Popup {
             id: animation
             Layout.alignment: Qt.AlignHCenter
             fillMode: Image.PreserveAspectFit
-            source: {
-                if (Style.isLightTheme) {
-                    "pics/exit_light.gif"
-                } else {
-                    "pics/exit_dark.gif"
-                }
-            }
+            source: Style.current.exitImage
         }
 
         Button {

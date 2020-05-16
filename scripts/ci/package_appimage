@@ -22,7 +22,7 @@ cp -rv "${prefix_dir}/share" appdir/usr
 ./linuxdeploy-x86_64.AppImage \
     --executable "${prefix_dir}/bin/fubble" \
     --desktop-file="${source_dir}/client/app/fubble.desktop" \
-    --icon-file="${source_dir}/client/app/pics/fubble.svg" \
+    --icon-file="${source_dir}/client/app/images/fubble.svg" \
     --appdir appdir \
     --plugin qt \
     --output appimage
