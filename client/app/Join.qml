@@ -29,6 +29,10 @@ FocusScope {
             onJoined: {
                 joined(room)
             }
+            onJoin_failed: {
+                console.log("bla")
+                setGuiEnabled(true)
+            }
         }
         function joinRoom() {
             joinModel.join(room.text, name.text)
