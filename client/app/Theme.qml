@@ -13,8 +13,8 @@ QtObject {
     property color backgroundTextInput
     property color placeholderTextColor
 
-    property string emojiOneFontSrc: 'EmojiOneFont.ttf'
-    property string verdanaFontSrc: 'VerdanaFont.ttf'
+    property string emojiOneFontSrc: 'fonts/EmojiOneFont.ttf'
+    property string verdanaFontSrc: 'fonts/VerdanaFont.ttf'
 
     property int textPointSize: 10
     property int headerPointSize: 16
