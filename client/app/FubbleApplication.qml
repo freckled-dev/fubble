@@ -10,15 +10,15 @@ ApplicationWindow {
     id: container
     title: qsTr("Fubble")
 
-    width: 1400
-    height: 800
+    // initial values - will be overwritten by users settings
+    width: Math.min(Screen.width, 1024)
+    height: Math.min(Screen.height, 768)
+    x: 0
+    y: 0
+
     minimumWidth: 800
     minimumHeight: 600
     visible: true
-
-    screen: Qt.application.screens[0]
-    x: screen.virtualX + (screen.width / 2 - width / 2)
-    y: screen.virtualY + (screen.height / 2 - height / 2)
 
     property JoinModel joinModel: joinModelFromCpp
     property LeaveModel leaveModel: leaveModelFromCpp
@@ -42,6 +42,13 @@ ApplicationWindow {
         title: stack.currentItem.title
         stackView: stack
         leave: leave
+    }
+
+    Settings {
+        property alias x: container.x
+        property alias y: container.y
+        property alias width: container.width
+        property alias height: container.height
     }
 
     StackView {

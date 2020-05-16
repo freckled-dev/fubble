@@ -25,6 +25,6 @@ os.chdir(innosetup_build_dir)
 subprocess.run(['curl.exe', '-Lo', 'rclone.zip',
     'https://downloads.rclone.org/v1.51.0/rclone-v1.51.0-windows-amd64.zip'],
     check=True)
-subprocess.run(['7z.exe', 'e', '-r', 'rclone.zip', '*.exe'], check=True)
+subprocess.run(['7z.exe', 'e', '-aoa', '-r', 'rclone.zip', '*.exe'], check=True)
 
 subprocess.run(['iscc', '/O' + paths.source_dir, 'Fubble_Installer.iss'], check=True)

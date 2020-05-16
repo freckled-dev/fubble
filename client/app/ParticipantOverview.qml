@@ -44,7 +44,7 @@ Item {
                 anchors.right: mutedImage.left
                 sourceSize.height: 20
                 sourceSize.width: 20
-                source: "pics/video_disabled.svg"
+                source: Style.isLightTheme ? "pics/video_disabled.svg" : "pics/video_disabled_dark.svg"
                 visible: model.participant.videoDisabled
             }
 
@@ -54,7 +54,7 @@ Item {
                 anchors.right: parent.right
                 sourceSize.height: 20
                 sourceSize.width: 20
-                source: "pics/muted.svg"
+                source: Style.isLightTheme ? "pics/muted.svg" : "pics/muted_dark.svg"
                 visible: model.participant.muted
             }
 
@@ -84,7 +84,7 @@ Item {
             Layout.fillWidth: true
             implicitHeight: 70
 
-            Text {
+            Label {
                 id: volumeHeader
                 anchors.left: parent.left
                 anchors.leftMargin: 10
@@ -108,7 +108,15 @@ Item {
                 sourceSize.height: 20
                 sourceSize.width: 20
                 anchors.right: parent.right
-                source: model.participant.muted ? "pics/muted.svg" : "pics/muted_off.svg"
+                source: {
+                    var imagePath = model.participant.muted ? "pics/muted" : "pics/muted_off"
+
+                    if (!Style.isLightTheme) {
+                        imagePath += "_dark"
+                    }
+
+                    return imagePath + ".svg"
+                }
 
                 MouseArea {
                     id: maMute
