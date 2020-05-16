@@ -23,7 +23,7 @@ qt_target = "win64_msvc2019_64"
 qt_target_folder = "msvc2019_64"
 
 final_dir = os.path.join(qt_prefix_dir, qt_version, qt_target_folder)
-qmake_path = os.path.join(final_dir, 'bin', 'qmake')
+qmake_path = os.path.join(final_dir, 'bin', 'qmake.exe')
 if os.path.exists(qmake_path):
     print("skipping installation of qt, because '%s' does already exists" % qmake_path)
     sys.exit()
