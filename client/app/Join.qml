@@ -78,6 +78,7 @@ FocusScope {
                 text: joinModel.room
                 leftPadding: 0
                 padding: 0
+                selectByMouse: true
                 placeholderText: qsTr("Room")
                 Layout.fillWidth: true
                 focus: true
@@ -88,6 +89,7 @@ FocusScope {
                 id: name
                 text: joinModel.name
                 leftPadding: 0
+                selectByMouse: true
                 padding: 0
                 placeholderText: qsTr("Your Name")
                 Layout.fillWidth: true
