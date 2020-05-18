@@ -3,8 +3,7 @@ import QtMultimedia 5.0
 
 QtObject {
     id: container
-    property string name: "some name"
-    property string room: "some room name"
+
     property MediaPlayer video
     property bool videoAvailable: video != null
 
