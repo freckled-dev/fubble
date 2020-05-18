@@ -16,6 +16,7 @@ QtObject {
     property string emojiOneFontSrc: 'fonts/EmojiOneFont.ttf'
     property string verdanaFontSrc: 'fonts/VerdanaFont.ttf'
 
+    property int subTextPointSize: 8
     property int textPointSize: 10
     property int headerPointSize: 16
     property int subHeaderPointSize: 14
