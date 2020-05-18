@@ -40,8 +40,27 @@ FocusScope {
             }
         }
         function joinRoom() {
+            var noRoomName = isEmpty(roomTextField.text)
+            var noName = isEmpty(nameTextField.text)
+
+            if (noRoomName) {
+                roomMandatory.visible = true
+            }
+
+            if (noName) {
+                nameMandatory.visible = true
+            }
+
+            if (noRoomName || noName) {
+                return
+            }
+
             joinModel.join(roomTextField.text, nameTextField.text)
             guiEnabled = false
+        }
+
+        function isEmpty(text) {
+            return text.length === 0
         }
 
         NoVideo {
@@ -74,34 +93,72 @@ FocusScope {
 
         ColumnLayout {
             id: inputLayout
-            width: 100
+            width: 500
             height: 100
             spacing: 8
             Layout.topMargin: 40
 
-            TextField {
-                id: roomTextField
-                leftPadding: 0
-                padding: 0
-                selectByMouse: true
-                placeholderText: qsTr("Room name")
+            Item {
+                implicitHeight: roomTextField.height + roomMandatory.height
                 Layout.fillWidth: true
-                focus: true
-                onAccepted: name.focus = true
 
-                Settings {
-                    property alias roomName: roomTextField.text
+                TextField {
+                    id: roomTextField
+                    leftPadding: 0
+                    padding: 0
+                    selectByMouse: true
+                    placeholderText: qsTr("Room name *")
+                    Layout.fillWidth: true
+                    focus: true
+                    anchors.right: parent.right
+                    anchors.left: parent.left
+                    onAccepted: name.focus = true
+
+                    Settings {
+                        property alias roomName: roomTextField.text
+                    }
+
+                    onTextChanged: {
+                        roomMandatory.visible = false
+                    }
+                }
+
+                Label {
+                    id: roomMandatory
+                    text: qsTr("Please enter a room name.")
+                    font.pointSize: Style.current.subTextPointSize
+                    color: Style.current.accent
+                    anchors.top: roomTextField.bottom
+                    visible: false
                 }
             }
 
-            TextField {
-                id: nameTextField
-                leftPadding: 0
-                selectByMouse: true
-                padding: 0
-                placeholderText: qsTr("Your name")
+            Item {
+                implicitHeight: nameTextField.height + nameTextField.height
                 Layout.fillWidth: true
-                onAccepted: loginUi.joinRoom()
+
+                TextField {
+                    id: nameTextField
+                    anchors.right: parent.right
+                    anchors.left: parent.left
+                    selectByMouse: true
+                    placeholderText: qsTr("Your name *")
+                    Layout.fillWidth: true
+                    onAccepted: loginUi.joinRoom()
+
+                    onTextChanged: {
+                        nameMandatory.visible = false
+                    }
+                }
+
+                Label {
+                    id: nameMandatory
+                    color: Style.current.accent
+                    font.pointSize: Style.current.subTextPointSize
+                    text: qsTr("Please enter a (nick) name.")
+                    visible: false
+                    anchors.top: nameTextField.bottom
+                }
             }
 
             Button {
