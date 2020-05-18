@@ -5,25 +5,14 @@
 #include "error_model.hpp"
 #include "model_creator.hpp"
 #include "room_model.hpp"
-#include <QStandardPaths>
 
 using namespace client;
 
-namespace {
-QString config_file() {
-  auto config_path =
-      QStandardPaths::writableLocation(QStandardPaths::ConfigLocation);
-  return config_path + "/fubble-join.ini";
-}
-} // namespace
 
 join_model::join_model(model_creator &model_factory, error_model &error_model_,
                        joiner &joiner_, own_media &own_media_)
     : model_factory(model_factory), error_model_(error_model_),
-      joiner_(joiner_), own_media_(own_media_),
-      settings(config_file(), QSettings::IniFormat) {
-  name = settings.value("name").toString();
-  room = settings.value("room").toString();
+      joiner_(joiner_), own_media_(own_media_){
   auto own_videos = own_media_.get_videos();
   if (own_videos.empty()) {
     video_available = false;
@@ -40,8 +29,6 @@ join_model::join_model(model_creator &model_factory, error_model &error_model_,
 join_model::~join_model() = default;
 
 void join_model::join(const QString &room, const QString &name) {
-  settings.setValue("name", name);
-  settings.setValue("room", room);
   joiner::parameters parameters;
   parameters.room = room.toStdString();
   parameters.name = name.toStdString();

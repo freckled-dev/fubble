@@ -3,6 +3,7 @@ import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.0
 import QtMultimedia 5.0
 import io.fubble 1.0
+import Qt.labs.settings 1.0 as QtSettings
 import QtQuick.Controls.Material 2.0
 import "."
 
@@ -12,6 +13,11 @@ FocusScope {
     signal joined(RoomModel room)
     Material.foreground: Style.current.foreground
     property bool guiEnabled: true
+
+    QtSettings.Settings {
+        property alias userName: nameTextField.text
+        property alias roomName: roomTextField.text
+    }
 
     function setGuiEnabled(enabled) {
         guiEnabled = enabled
@@ -34,7 +40,7 @@ FocusScope {
             }
         }
         function joinRoom() {
-            joinModel.join(room.text, name.text)
+            joinModel.join(roomTextField.text, nameTextField.text)
             guiEnabled = false
         }
 
@@ -74,24 +80,26 @@ FocusScope {
             Layout.topMargin: 40
 
             TextField {
-                id: room
-                text: joinModel.room
+                id: roomTextField
                 leftPadding: 0
                 padding: 0
                 selectByMouse: true
-                placeholderText: qsTr("Room")
+                placeholderText: qsTr("Room name")
                 Layout.fillWidth: true
                 focus: true
                 onAccepted: name.focus = true
+
+                Settings {
+                    property alias roomName: roomTextField.text
+                }
             }
 
             TextField {
-                id: name
-                text: joinModel.name
+                id: nameTextField
                 leftPadding: 0
                 selectByMouse: true
                 padding: 0
-                placeholderText: qsTr("Your Name")
+                placeholderText: qsTr("Your name")
                 Layout.fillWidth: true
                 onAccepted: loginUi.joinRoom()
             }

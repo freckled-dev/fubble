@@ -3,7 +3,6 @@
 
 #include "client/logger.hpp"
 #include <QObject>
-#include <QSettings>
 #include <boost/thread/executors/inline_executor.hpp>
 #include <boost/thread/future.hpp>
 
@@ -51,7 +50,6 @@ protected:
   joiner &joiner_;
   own_media &own_media_;
   boost::inline_executor qt_executor;
-  QSettings settings;
   QString name;
   QString room;
   bool video_available;
