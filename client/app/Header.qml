@@ -10,9 +10,13 @@ ToolBar {
     property alias settings: settings
     property var stackView
     property Leave leave
+    signal toggleChat
+    signal toggleOverview
+
     Material.foreground: Style.current.buttonTextColor
 
     ToolButton {
+        id: backButton
         anchors.left: parent.left
         text: qsTr("‹")
         onClicked: {
@@ -20,6 +24,37 @@ ToolBar {
             leave.open()
         }
         visible: header.isRoomView()
+    }
+
+    Image {
+        id: overviewIcon
+        anchors.verticalCenter: parent.verticalCenter
+        sourceSize.width: 30
+        sourceSize.height: 30
+        anchors.left: backButton.right
+        anchors.leftMargin: 10
+        source: Style.current.overviewImage
+        visible: header.isRoomView()
+
+        MouseArea {
+            id: maOverview
+            anchors.fill: parent
+            hoverEnabled: true
+
+            onPressedChanged: {
+                maOverview.pressed ? overviewIcon.source = Qt.binding(
+                                         function () {
+                                             return Style.current.overviewPressedImage
+                                         }) : overviewIcon.source = Qt.binding(
+                                         function () {
+                                             return Style.current.overviewImage
+                                         })
+            }
+
+            onClicked: {
+                toggleOverview()
+            }
+        }
     }
 
     Label {
@@ -71,10 +106,48 @@ ToolBar {
                 ttCopied.visible = true
                 timer.start()
             }
+
+            onPressedChanged: {
+                maCopy.pressed ? copyImage.source = Qt.binding(function () {
+                    return Style.current.copyPressedImage
+                }) : copyImage.source = Qt.binding(function () {
+                    return Style.current.copyImage
+                })
+            }
+        }
+    }
+
+    Image {
+        id: chatIcon
+        anchors.verticalCenter: parent.verticalCenter
+        sourceSize.width: 30
+        sourceSize.height: 30
+        anchors.right: moreButton.left
+        anchors.rightMargin: 10
+        source: Style.current.chatImage
+        visible: header.isRoomView()
+
+        MouseArea {
+            id: maChat
+            anchors.fill: parent
+            hoverEnabled: true
+
+            onPressedChanged: {
+                maChat.pressed ? chatIcon.source = Qt.binding(function () {
+                    return Style.current.chatPressedImage
+                }) : chatIcon.source = Qt.binding(function () {
+                    return Style.current.chatImage
+                })
+            }
+
+            onClicked: {
+                toggleChat()
+            }
         }
     }
 
     ToolButton {
+        id: moreButton
         anchors.right: parent.right
         onClicked: optionsMenu.open()
         text: qsTr("⋮")
