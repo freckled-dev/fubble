@@ -112,7 +112,7 @@ FocusScope {
                     focus: true
                     anchors.right: parent.right
                     anchors.left: parent.left
-                    onAccepted: name.focus = true
+                    onAccepted: nameTextField.focus = true
 
                     Settings {
                         property alias roomName: roomTextField.text
@@ -162,6 +162,7 @@ FocusScope {
             }
 
             Button {
+                id: joinButton
                 width: 300
                 text: qsTr("Join")
                 Layout.topMargin: 20
