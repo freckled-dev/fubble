@@ -9,23 +9,34 @@ import "."
 Item {
     id: overviewContainer
     property RoomModel roomModel
+    property int overviewWidth: 200
+    property bool overviewVisible: true
+    width: overviewVisible ? overviewWidth : 0
+
+    Behavior on width {
+        PropertyAnimation {
+            id: overviewAnimation
+            //            onRunningChanged: {
+            //                console.log(overviewAnimation.running)
+            //            }
+        }
+    }
 
     Label {
         id: participantLabel
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
-        anchors.topMargin: 20
         text: qsTr("Participants")
+        visible: overviewVisible || overviewAnimation.running
         font.pointSize: Style.current.subHeaderPointSize
     }
 
     ColumnLayout {
         anchors.right: parent.right
         anchors.left: parent.left
+        visible: overviewVisible || overviewAnimation.running
         anchors.top: participantLabel.bottom
         anchors.topMargin: 30
-        anchors.leftMargin: 10
-        anchors.rightMargin: 10
 
         Repeater {
             model: overviewContainer.roomModel.participants
@@ -42,6 +53,7 @@ Item {
         id: actionLoader
         anchors.horizontalCenter: parent.horizontalCenter
         sourceComponent: roomModel.ownParticipant ? actionComponent : undefined
+        visible: overviewVisible || overviewAnimation.running
         anchors.bottom: parent.bottom
     }
 
@@ -55,10 +67,3 @@ Item {
         }
     }
 }
-
-/*##^##
-Designer {
-    D{i:0;autoSize:true;height:480;width:640}
-}
-##^##*/
-

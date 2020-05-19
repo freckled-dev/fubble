@@ -64,11 +64,15 @@ Item {
                 hoverEnabled: true
 
                 onEntered: {
-                    participantBorder.color = Style.current.gray300
+                    participantBorder.color = Qt.binding(function () {
+                        return Style.current.gray300
+                    })
                     model.participant.highlighted = true
                 }
                 onExited: {
-                    participantBorder.color = Style.current.gray100
+                    participantBorder.color = Qt.binding(function () {
+                        return Style.current.gray100
+                    })
                     model.participant.highlighted = false
                 }
 
@@ -98,6 +102,7 @@ Item {
                 sliderColor: volumeSlider.enabled ? Style.current.primary : Style.current.gray300
                 value: model.participant.volume
                 anchors.top: volumeHeader.bottom
+                anchors.left: parent.left
                 anchors.right: muteImage.left
                 enabled: !participant.muted
             }

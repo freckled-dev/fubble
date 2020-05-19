@@ -19,6 +19,7 @@ Theme {
     // images
     property var closeImage: "images/close_dark.svg"
     property var copyImage: "images/copy_dark.svg"
+    property var copyPressedImage: "images/copy_pressed_dark.svg"
     property var exitImage: "images/exit_dark.gif"
     property var logoImage: "images/fubble.svg"
     property var mutedImage: "images/muted_dark.svg"
@@ -30,4 +31,12 @@ Theme {
     property var overlayVideoImage: "images/overlay_video.svg"
     property var overlayVideoOffImage: "images/overlay_video_off.svg"
     property var videoDisabledImage: "images/video_disabled_dark.svg"
+
+    // Chat Images
+    property var chatImage: "images/chat_dark.svg"
+    property var chatPressedImage: "images/chat_pressed_dark.svg"
+
+    // Overview Images
+    property var overviewImage: "images/overview_dark.svg"
+    property var overviewPressedImage: "images/overview_pressed_dark.svg"
 }

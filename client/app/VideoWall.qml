@@ -11,26 +11,15 @@ Rectangle {
     id: videoWallContainer
     property RoomModel roomModel
     property alias videoCount: participantRepeater.count
-    visible: videoCount !== 0
     color: Style.current.background
-
-    // Video Wall
-    Label {
-        id: videoWallHeader
-        text: qsTr("Video Wall")
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: parent.top
-        anchors.topMargin: 20
-        font.pointSize: Style.current.subHeaderPointSize
-    }
+    visible: videoCount !== 0
 
     GridLayout {
         id: participantGrid
-        anchors.top: videoWallHeader.bottom
+        anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
-        anchors.margins: 20
         rowSpacing: 10
         columnSpacing: 10
         columns: videoWallContainer.calculateColumns()
