@@ -8,6 +8,7 @@ import io.fubble 1.0
 Rectangle {
     id: rectangle
     property alias textArea: inputText
+    property alias smileyButton: smileyButton
     radius: 5
     border.width: 1
     color: Style.current.backgroundTextInput
@@ -38,18 +39,20 @@ Rectangle {
 
     Button {
         id: smileyButton
+        width: 40
         anchors.verticalCenter: parent.verticalCenter
+        enabled: false
+        anchors.right: parent.right
+        anchors.rightMargin: 10
 
         contentItem: Text {
             font.family: emojiOneFont.name
             text: "😃"
             font.pointSize: 18
         }
-        anchors.rightMargin: 10
-        width: 40
-        anchors.right: parent.right
         onClicked: {
-            return emojiPopup.visible ? emojiPopup.close() : emojiPopup.open()
+            var loaderItem = emojiLoader.item
+            return loaderItem.visible ? loaderItem.close() : loaderItem.open()
         }
     }
 

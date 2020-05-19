@@ -40,7 +40,7 @@ Rectangle {
             Label {
                 Layout.bottomMargin: 10
                 Layout.leftMargin: 10
-                Layout.maximumWidth: element.width * 2 / 3
+                Layout.maximumWidth: chatContainer.width * 2 / 3
                 Layout.rightMargin: 10
                 text: modifyMessage(message)
 
