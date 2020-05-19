@@ -15,7 +15,6 @@
 #include "gui_options.hpp"
 #include "join_model.hpp"
 #include "leave_model.hpp"
-#include "utils_model.hpp"
 #include "logging/initialser.hpp"
 #include "logging/logger.hpp"
 #include "matrix/authentification.hpp"
@@ -41,6 +40,7 @@
 #include "ui/add_version_to_qml_context.hpp"
 #include "ui/frame_provider_google_video_frame.hpp"
 #include "ui/log_qt_to_logging.hpp"
+#include "utils_model.hpp"
 #include "websocket/connection_creator.hpp"
 #include "websocket/connector.hpp"
 #include <QGuiApplication>
