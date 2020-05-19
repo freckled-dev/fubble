@@ -7,7 +7,7 @@ import io.fubble 1.0
 import "emoji"
 
 Item {
-    id: element
+    id: chatContainer
     property ChatModel chatModel
 
     Label {
@@ -67,17 +67,28 @@ Item {
         anchors.right: parent.right
     }
 
-    EmojiPopup {
-        id: emojiPopup
+    Loader {
+        id: emojiLoader
+        sourceComponent: emojiComponent
+        asynchronous: true
+        onLoaded: chatInput.smileyButton.enabled = true
+    }
 
-        height: 400
-        width: 370
-        x: parent.width - width
-        y: parent.height - height - textArea.height - 10
+    Component {
+        id: emojiComponent
 
-        textArea: chatInput.textArea
-        onClosed: {
-            chatInput.textArea.forceActiveFocus()
+        EmojiPopup {
+            id: emojiPopup
+
+            height: 400
+            width: 370
+            x: chatContainer.width - width
+            y: chatContainer.height - height - textArea.height - 10
+
+            textArea: chatInput.textArea
+            onClosed: {
+                chatInput.textArea.forceActiveFocus()
+            }
         }
     }
 }
