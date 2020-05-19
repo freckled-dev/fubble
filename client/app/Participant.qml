@@ -7,17 +7,28 @@ import QtQuick.Controls.Material 2.0
 import QtGraphicalEffects 1.0
 import "."
 
-Item {
+Rectangle {
     // layer.enabled: true
     // border.color: Style.current.foreground
     property ParticipantModel participant
+    property double aspect: {
+        var width = video.sourceRect.width
+        var height = video.sourceRect.height
+        var result = width / height
+        // console.log("width:" + width + ", height:" + height + ", result:" + result)
+        return result
+    }
 
+    color: "red"
+
+    //    width: 100
+    //    height: 100
     VideoOutput {
         id: video
         anchors.fill: parent
         source: participant.video
-        fillMode: VideoOutput.Stretch
         visible: participant.video !== null
+        fillMode: VideoOutput.Stretch
 
         MouseArea {
             anchors.fill: parent
