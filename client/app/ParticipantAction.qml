@@ -13,7 +13,6 @@ RowLayout {
     property int imageSize: 40
 
     spacing: 10
-    anchors.bottomMargin: 20
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.bottom: parent.bottom
 
