@@ -43,15 +43,17 @@ std::optional<rects_type> try_pack(const QList<QQuickItem *> &children_,
   rbp::GuillotineBinPack packer{static_cast<int>(packer_width), packer_height,
                                 false};
   const bool merge{true};
-  const auto choice = rbp::GuillotineBinPack::RectBestAreaFit;
-  const auto split = rbp::GuillotineBinPack::SplitMaximizeArea;
+  const auto choice = rbp::GuillotineBinPack::RectWorstShortSideFit;
+  const auto split = rbp::GuillotineBinPack::SplitMinimizeArea;
   rects_type results;
   int fun{};
   for (const auto &child : children_) {
     auto child_aspect = get_aspect(*child);
     qDebug() << "child_aspect:" << child_aspect;
+#if 0
     if (fun == 1)
       child_aspect = 1.0 / child_aspect;
+#endif
     ++fun;
     auto [child_width, child_height] =
         calculate_width_and_hight_by_aspect(child_aspect);
