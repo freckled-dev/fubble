@@ -36,6 +36,7 @@ class FubbleConan(ConanFile):
         self.build_requires("gtest/1.10.0")
         self.build_requires("fmt/6.2.0")
         self.build_requires("google-webrtc/m79")
+        self.build_requires("RectangleBinPack/1.0.0")
 
     def build(self):
         # https://docs.conan.io/en/latest/reference/build_helpers/meson.html
@@ -67,7 +68,9 @@ class FubbleConan(ConanFile):
         # meson_options['werror'] = 'true'
         build_type = self.settings.get_safe("build_type", default="Release")
         if build_type == 'Debug' and self.settings.os == 'Linux':
-            meson_options['b_sanitize'] = 'address'
+            # meson_options['b_sanitize'] = 'address'
+            pass
+        meson_options['b_pch'] = 'false'
 
         ninja_jobs = os.getenv('FUBBLE_BUILD_NINJA_JOBS')
         meson = Meson(self)
