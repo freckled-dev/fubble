@@ -30,3 +30,10 @@ utils_test = executable('utils_test',
   )
 test('utils test', utils_test)
 
+pack_dep_test = executable('shelf_pack_cpp_test',
+  ['shelf_pack_cpp_test.cpp'],
+  dependencies: [utils_dep, rectangle_bin_pack_dep],
+  link_with: [test_main]
+  )
+test('pack_dep test', pack_dep_test)
+
