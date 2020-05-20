@@ -11,6 +11,16 @@ try:
 except:
     print("Could not delete the build_dir:'%s'. Ignoring." % (paths.build_dir))
 
+conan_remotes = [
+        ('bincrafters', 'https://api.bintray.com/conan/bincrafters/public-conan'),
+        ('inexorgame', 'https://api.bintray.com/conan/inexorgame/inexor-conan'),
+        ('google_webrtc', 'https://api.bintray.com/conan/freckled/google-webrtc'),
+        ('rectangle_bin_pack', 'https://api.bintray.com/conan/freckled/RectangleBinPack')
+        ]
+for remote_name, remote_url in conan_remotes:
+    subprocess.run(['conan', 'remote', 'add', '-f', remote_name, remote_url],
+            check=True)
+
 subprocess.run(['conan', 'install',
     '--build', 'missing',
     '--install-folder', paths.dependencies_dir,
