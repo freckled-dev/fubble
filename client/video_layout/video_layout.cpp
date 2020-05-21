@@ -4,26 +4,12 @@
 #include <cmath>
 #include <utility>
 
-video_layout::video_layout(QQuickItem *parent) : QQuickItem(parent) {
-  qDebug() << "video_layout got instanced";
-  connect(this, &QQuickItem::heightChanged, this, [=] { recalculate(); });
-  connect(this, &QQuickItem::widthChanged, this, [=] { recalculate(); });
-}
-
-void video_layout::itemChange(QQuickItem::ItemChange change,
-                              const QQuickItem::ItemChangeData &value) {
-  qDebug() << "change:" << change << ", width:" << width();
-  if (change == QQuickItem::ItemChange::ItemChildAddedChange)
-    return recalculate();
-  if (change == QQuickItem::ItemChange::ItemChildRemovedChange)
-    return recalculate();
-}
-
-void video_layout::on_child_added(const QQuickItem::ItemChangeData &value) {
-  recalculate();
-}
+#define ENABLE_LOGGING 0
 
 namespace {
+bool has_property_aspect(QQuickItem &check) {
+  return check.property("aspect").isValid();
+}
 std::pair<int, int> calculate_width_and_hight_by_aspect(double aspect) {
   const int area{10000};
   const int x = std::sqrt(area * aspect);
@@ -38,8 +24,10 @@ std::optional<rects_type> try_pack(const QList<QQuickItem *> &children_,
                                    const double container_aspect,
                                    const int packer_width) {
   const auto packer_height = static_cast<int>(packer_width / container_aspect);
+#if ENABLE_LOGGING
   qDebug() << "packer_width:" << packer_width
            << ", packer_height:" << packer_height;
+#endif
   rbp::GuillotineBinPack packer{static_cast<int>(packer_width), packer_height,
                                 false};
   const bool merge{true};
@@ -49,7 +37,9 @@ std::optional<rects_type> try_pack(const QList<QQuickItem *> &children_,
   int fun{};
   for (const auto &child : children_) {
     auto child_aspect = get_aspect(*child);
+#if ENABLE_LOGGING
     qDebug() << "child_aspect:" << child_aspect;
+#endif
 #if 0
     if (fun == 1)
       child_aspect = 1.0 / child_aspect;
@@ -61,7 +51,9 @@ std::optional<rects_type> try_pack(const QList<QQuickItem *> &children_,
         packer.Insert(child_width, child_height, merge, choice, split);
     results.push_back(result);
     if (result.width == 0 || result.height == 0) {
+#if ENABLE_LOGGING
       qDebug() << "has no width||height";
+#endif
       return std::nullopt;
     }
   }
@@ -96,6 +88,39 @@ void set_rects_to_qml(const rects_type &rects, QList<QQuickItem *> &children,
 }
 } // namespace
 
+video_layout::video_layout(QQuickItem *parent) : QQuickItem(parent) {
+#if ENABLE_LOGGING
+  qDebug() << "video_layout got instanced";
+#endif
+  connect(this, &QQuickItem::heightChanged, this, [=] { recalculate(); });
+  connect(this, &QQuickItem::widthChanged, this, [=] { recalculate(); });
+}
+
+void video_layout::itemChange(QQuickItem::ItemChange change,
+                              const QQuickItem::ItemChangeData &value) {
+#if ENABLE_LOGGING
+  qDebug() << "change:" << change << ", width:" << width();
+#endif
+  if (change == QQuickItem::ItemChange::ItemChildAddedChange)
+    return on_child_added(value);
+  if (change == QQuickItem::ItemChange::ItemChildRemovedChange)
+    return recalculate();
+}
+
+void video_layout::on_child_added(const QQuickItem::ItemChangeData &value) {
+  if (!has_property_aspect(*value.item))
+    return;
+  connect(value.item, SIGNAL(aspectChanged()), this, SLOT(on_aspect_changed()));
+  recalculate();
+}
+
+void video_layout::on_aspect_changed() {
+#if ENABLE_LOGGING
+  qDebug() << "on_aspect_changed()";
+#endif
+  recalculate();
+}
+
 void video_layout::recalculate() {
   // TODO save width/height/count - and dont recalculate
   auto width_ = width();
@@ -104,11 +129,13 @@ void video_layout::recalculate() {
   QList<QQuickItem *> children_;
   std::copy_if(children_all.begin(), children_all.end(),
                std::back_inserter(children_),
-               [&](auto check) { return check->property("aspect").isValid(); });
+               [&](auto check) { return has_property_aspect(*check); });
   if (width_ == 0 || height_ == 0 || children_.empty())
     return;
+#if ENABLE_LOGGING
   qDebug() << "recalculate, width_:" << width_ << ", height_:" << height_
            << "children_.size():" << children_.size();
+#endif
   const double container_aspect = width_ / height_;
   const double first_child_aspect = get_aspect(*children_.first());
   const auto [first_child_width, first_child_height] =

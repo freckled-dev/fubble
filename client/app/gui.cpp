@@ -10,6 +10,7 @@
 #include "client/room_creator.hpp"
 #include "client/rooms.hpp"
 #include "client/tracks_adder.hpp"
+#include "client/video_layout/video_layout.hpp"
 #include "error_model.hpp"
 #include "executor_asio.hpp"
 #include "gui_options.hpp"
@@ -40,6 +41,7 @@
 #include "ui/add_version_to_qml_context.hpp"
 #include "ui/frame_provider_google_video_frame.hpp"
 #include "ui/log_qt_to_logging.hpp"
+#include "utils/version.hpp"
 #include "utils_model.hpp"
 #include "websocket/connection_creator.hpp"
 #include "websocket/connector.hpp"
@@ -68,7 +70,8 @@ int main(int argc, char *argv[]) {
 
   logging::logger logger{"main"};
 
-  BOOST_LOG_SEV(logger, logging::severity::debug) << "starting up";
+  BOOST_LOG_SEV(logger, logging::severity::debug)
+      << "starting up, version:" << utils::version();
 
   boost::asio::io_context context;
   boost::asio::executor executor{context.get_executor()};
@@ -218,6 +221,7 @@ int main(int argc, char *argv[]) {
   qRegisterMetaType<client::utils_model *>();
   qRegisterMetaType<client::leave_model *>();
 
+#if 1 // works without too!
   // https://doc.qt.io/qt-5/qtqml-cppintegration-overview.html#choosing-the-correct-integration-method-between-c-and-qml
   qmlRegisterUncreatableType<client::room_model>(
       "io.fubble", 1, 0, "RoomModel", "can't instance client::room_model");
@@ -237,6 +241,8 @@ int main(int argc, char *argv[]) {
   qmlRegisterUncreatableType<client::chat_messages_model>(
       "io.fubble", 1, 0, "ChatMessagesModel",
       "can't instance client::chat_messages_model");
+  qmlRegisterType<video_layout>("io.fubble", 1, 0, "VideoLayout");
+#endif
 
   QQmlApplicationEngine engine;
   client::model_creator model_creator;
