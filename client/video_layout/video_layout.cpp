@@ -2,6 +2,7 @@
 #include <GuillotineBinPack.h>
 #include <QDebug>
 #include <cmath>
+#include <optional>
 #include <utility>
 
 #define ENABLE_LOGGING 0
