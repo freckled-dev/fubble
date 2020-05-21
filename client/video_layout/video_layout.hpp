@@ -10,9 +10,12 @@ public:
   void itemChange(QQuickItem::ItemChange change,
                   const QQuickItem::ItemChangeData &value) override;
 
+public slots:
+  void on_aspect_changed();
+  void recalculate();
+
 protected:
   void on_child_added(const QQuickItem::ItemChangeData &value);
-  void recalculate();
 };
 
 #endif
