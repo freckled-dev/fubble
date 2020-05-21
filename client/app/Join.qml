@@ -3,6 +3,7 @@ import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.0
 import QtMultimedia 5.0
 import io.fubble 1.0
+import Qt.labs.settings 1.0 as QtSettings
 import QtQuick.Controls.Material 2.0
 import "."
 
@@ -12,6 +13,11 @@ FocusScope {
     signal joined(RoomModel room)
     Material.foreground: Style.current.foreground
     property bool guiEnabled: true
+
+    QtSettings.Settings {
+        property alias userName: nameTextField.text
+        property alias roomName: roomTextField.text
+    }
 
     function setGuiEnabled(enabled) {
         guiEnabled = enabled
@@ -29,10 +35,32 @@ FocusScope {
             onJoined: {
                 joined(room)
             }
+            onJoin_failed: {
+                setGuiEnabled(true)
+            }
         }
         function joinRoom() {
-            joinModel.join(room.text, name.text)
+            var noRoomName = isEmpty(roomTextField.text)
+            var noName = isEmpty(nameTextField.text)
+
+            if (noRoomName) {
+                roomMandatory.visible = true
+            }
+
+            if (noName) {
+                nameMandatory.visible = true
+            }
+
+            if (noRoomName || noName) {
+                return
+            }
+
+            joinModel.join(roomTextField.text, nameTextField.text)
             guiEnabled = false
+        }
+
+        function isEmpty(text) {
+            return text.length === 0
         }
 
         NoVideo {
@@ -65,33 +93,76 @@ FocusScope {
 
         ColumnLayout {
             id: inputLayout
-            width: 100
+            width: 500
             height: 100
             spacing: 8
             Layout.topMargin: 40
 
-            TextField {
-                id: room
-                text: joinModel.room
-                leftPadding: 0
-                padding: 0
-                placeholderText: qsTr("Room")
+            Item {
+                implicitHeight: roomTextField.height + roomMandatory.height
                 Layout.fillWidth: true
-                focus: true
-                onAccepted: name.focus = true
+
+                TextField {
+                    id: roomTextField
+                    leftPadding: 0
+                    padding: 0
+                    selectByMouse: true
+                    placeholderText: qsTr("Room name *")
+                    Layout.fillWidth: true
+                    focus: true
+                    anchors.right: parent.right
+                    anchors.left: parent.left
+                    onAccepted: nameTextField.focus = true
+
+                    Settings {
+                        property alias roomName: roomTextField.text
+                    }
+
+                    onTextChanged: {
+                        roomMandatory.visible = false
+                    }
+                }
+
+                Label {
+                    id: roomMandatory
+                    text: qsTr("Please enter a room name.")
+                    font.pointSize: Style.current.subTextPointSize
+                    color: Style.current.accent
+                    anchors.top: roomTextField.bottom
+                    visible: false
+                }
             }
 
-            TextField {
-                id: name
-                text: joinModel.name
-                leftPadding: 0
-                padding: 0
-                placeholderText: qsTr("Your Name")
+            Item {
+                implicitHeight: nameTextField.height + nameTextField.height
                 Layout.fillWidth: true
-                onAccepted: loginUi.joinRoom()
+
+                TextField {
+                    id: nameTextField
+                    anchors.right: parent.right
+                    anchors.left: parent.left
+                    selectByMouse: true
+                    placeholderText: qsTr("Your name *")
+                    Layout.fillWidth: true
+                    onAccepted: loginUi.joinRoom()
+
+                    onTextChanged: {
+                        nameMandatory.visible = false
+                    }
+                }
+
+                Label {
+                    id: nameMandatory
+                    color: Style.current.accent
+                    font.pointSize: Style.current.subTextPointSize
+                    text: qsTr("Please enter a (nick) name.")
+                    visible: false
+                    anchors.top: nameTextField.bottom
+                }
             }
 
             Button {
+                id: joinButton
                 width: 300
                 text: qsTr("Join")
                 Layout.topMargin: 20

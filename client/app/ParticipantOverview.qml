@@ -44,7 +44,7 @@ Item {
                 anchors.right: mutedImage.left
                 sourceSize.height: 20
                 sourceSize.width: 20
-                source: Style.isLightTheme ? "pics/video_disabled.svg" : "pics/video_disabled_dark.svg"
+                source: Style.current.videoDisabledImage
                 visible: model.participant.videoDisabled
             }
 
@@ -54,7 +54,7 @@ Item {
                 anchors.right: parent.right
                 sourceSize.height: 20
                 sourceSize.width: 20
-                source: Style.isLightTheme ? "pics/muted.svg" : "pics/muted_dark.svg"
+                source: Style.current.mutedImage
                 visible: model.participant.muted
             }
 
@@ -64,11 +64,15 @@ Item {
                 hoverEnabled: true
 
                 onEntered: {
-                    participantBorder.color = Style.current.gray300
+                    participantBorder.color = Qt.binding(function () {
+                        return Style.current.gray300
+                    })
                     model.participant.highlighted = true
                 }
                 onExited: {
-                    participantBorder.color = Style.current.gray100
+                    participantBorder.color = Qt.binding(function () {
+                        return Style.current.gray100
+                    })
                     model.participant.highlighted = false
                 }
 
@@ -98,6 +102,7 @@ Item {
                 sliderColor: volumeSlider.enabled ? Style.current.primary : Style.current.gray300
                 value: model.participant.volume
                 anchors.top: volumeHeader.bottom
+                anchors.left: parent.left
                 anchors.right: muteImage.left
                 enabled: !participant.muted
             }
@@ -108,15 +113,7 @@ Item {
                 sourceSize.height: 20
                 sourceSize.width: 20
                 anchors.right: parent.right
-                source: {
-                    var imagePath = model.participant.muted ? "pics/muted" : "pics/muted_off"
-
-                    if (!Style.isLightTheme) {
-                        imagePath += "_dark"
-                    }
-
-                    return imagePath + ".svg"
-                }
+                source: model.participant.muted ? Style.current.mutedImage : Style.current.mutedOffImage
 
                 MouseArea {
                     id: maMute

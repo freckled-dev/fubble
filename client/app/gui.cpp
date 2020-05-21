@@ -208,7 +208,7 @@ int main(int argc, char *argv[]) {
   // applying material style
   QQuickStyle::setStyle("Material");
 
-  app.setWindowIcon(QIcon(":/pics/fubble.svg"));
+  app.setWindowIcon(QIcon(":/images/fubble.svg"));
   // we are regestering with full namespace. so use full namespace in signals
   // and properties
   qRegisterMetaType<client::ui::frame_provider_google_video_source *>();

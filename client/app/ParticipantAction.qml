@@ -13,7 +13,6 @@ RowLayout {
     property int imageSize: 40
 
     spacing: 10
-    anchors.bottomMargin: 20
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.bottom: parent.bottom
 
@@ -21,7 +20,7 @@ RowLayout {
         id: videoDisabledImage
         sourceSize.height: imageSize
         sourceSize.width: imageSize
-        source: participant.videoDisabled ? "pics/overlay_video_off.svg" : "pics/overlay_video.svg"
+        source: participant.videoDisabled ? Style.current.overlayVideoOffImage : Style.current.overlayVideoImage
 
         FubbleToolTip {
             id: ttVideoDisabled
@@ -42,7 +41,7 @@ RowLayout {
         id: muteImage
         sourceSize.height: imageSize
         sourceSize.width: imageSize
-        source: participant.muted ? "pics/overlay_mute_off.svg" : "pics/overlay_mute.svg"
+        source: participant.muted ? Style.current.overlayMuteOffImage : Style.current.overlayMuteImage
 
         FubbleToolTip {
             id: ttMute
@@ -63,7 +62,7 @@ RowLayout {
         id: silenceImage
         sourceSize.height: imageSize
         sourceSize.width: imageSize
-        source: participant.silenced ? "pics/overlay_silence_off.svg" : "pics/overlay_silence.svg"
+        source: participant.silenced ? Style.current.overlaySilenceOffImage : Style.current.overlaySilenceImage
 
         FubbleToolTip {
             id: ttSilence

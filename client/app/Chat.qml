@@ -7,17 +7,16 @@ import io.fubble 1.0
 import "emoji"
 
 Item {
-    id: element
+    id: chatContainer
     property ChatModel chatModel
+    property bool chatVisible: true
+    property int chatWidth: 300
+    width: chatVisible ? chatWidth : 0
 
-    Label {
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.top: parent.top
-        font.pointSize: Style.current.headerPointSize
-        horizontalAlignment: Text.AlignHCenter
-        id: titleLabel
-        text: qsTr("Chat")
+    Behavior on width {
+        PropertyAnimation {
+            id: chatAnimation
+        }
     }
 
     ListView {
@@ -29,7 +28,7 @@ Item {
         anchors.bottomMargin: 20
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.top: titleLabel.bottom
+        anchors.top: parent.top
         clip: true
         delegate: chatDelegate
 
@@ -64,20 +63,32 @@ Item {
         id: chatInput
         anchors.bottom: parent.bottom
         anchors.left: parent.left
+        visible: chatVisible || chatAnimation.running
         anchors.right: parent.right
     }
 
-    EmojiPopup {
-        id: emojiPopup
+    Loader {
+        id: emojiLoader
+        sourceComponent: emojiComponent
+        asynchronous: true
+        onLoaded: chatInput.smileyButton.enabled = true
+    }
 
-        height: 400
-        width: 370
-        x: parent.width - width
-        y: parent.height - height - textArea.height - 10
+    Component {
+        id: emojiComponent
 
-        textArea: chatInput.textArea
-        onClosed: {
-            chatInput.textArea.forceActiveFocus()
+        EmojiPopup {
+            id: emojiPopup
+
+            height: 400
+            width: 370
+            x: chatContainer.width - width
+            y: chatContainer.height - height - textArea.height - 10
+
+            textArea: chatInput.textArea
+            onClosed: {
+                chatInput.textArea.forceActiveFocus()
+            }
         }
     }
 }

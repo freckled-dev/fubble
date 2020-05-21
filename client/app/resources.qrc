@@ -1,28 +1,40 @@
 <RCC>
     <qresource>
-        <file>EmojiOneFont.ttf</file>
-        <file>VerdanaFont.ttf</file>
-        <file>pics/close_dark.svg</file>
-        <file>pics/close_light.svg</file>
-        <file>pics/exit_dark.gif</file>
-        <file>pics/exit_light.gif</file>
-        <file>pics/fubble.svg</file>
-        <file>pics/overlay_mute.svg</file>
-        <file>pics/overlay_mute_off.svg</file>
-        <file>pics/overlay_video.svg</file>
-        <file>pics/overlay_video_off.svg</file>
-        <file>pics/overlay_silence.svg</file>
-        <file>pics/overlay_silence_off.svg</file>
-        <file>pics/muted.svg</file>
-        <file>pics/muted_dark.svg</file>
-        <file>pics/copy.svg</file>
-        <file>pics/muted_off.svg</file>
-        <file>pics/muted_off_dark.svg</file>
-        <file>pics/video_disabled_dark.svg</file>
-        <file>pics/video_disabled.svg</file>
+        <file>fonts/EmojiOneFont.ttf</file>
+        <file>fonts/VerdanaFont.ttf</file>
+        <file>images/close_dark.svg</file>
+        <file>images/close_light.svg</file>
+        <file>images/exit_dark.gif</file>
+        <file>images/exit_light.gif</file>
+        <file>images/fubble.svg</file>
+        <file>images/overlay_mute.svg</file>
+        <file>images/overlay_mute_off.svg</file>
+        <file>images/overlay_video.svg</file>
+        <file>images/overlay_video_off.svg</file>
+        <file>images/overlay_silence.svg</file>
+        <file>images/overlay_silence_off.svg</file>
+        <file>images/muted.svg</file>
+        <file>images/muted_dark.svg</file>
+        <file>images/muted_off.svg</file>
+        <file>images/muted_off_dark.svg</file>
+        <file>images/video_disabled_dark.svg</file>
+        <file>images/video_disabled.svg</file>
         <file>sounds/error.wav</file>
         <file>sounds/join.wav</file>
         <file>sounds/leave.wav</file>
+
+        <file>images/copy.svg</file>
+        <file>images/copy_dark.svg</file>
+        <file>images/copy_pressed.svg</file>
+        <file>images/copy_pressed_dark.svg</file>
+        <file>images/chat.svg</file>
+        <file>images/chat_dark.svg</file>
+        <file>images/chat_pressed.svg</file>
+        <file>images/chat_pressed_dark.svg</file>
+        <file>images/overview.svg</file>
+        <file>images/overview_dark.svg</file>
+        <file>images/overview_pressed.svg</file>
+        <file>images/overview_pressed_dark.svg</file>
     </qresource>
 </RCC>
 

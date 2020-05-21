@@ -24,7 +24,7 @@ Popup {
     Connections {
         target: errorModel
         onError: {
-            player
+            playErrorSound()
             open()
         }
     }
@@ -38,13 +38,7 @@ Popup {
     Image {
         anchors.top: parent.top
         anchors.topMargin: 8
-        source: {
-            if (Style.isLightTheme) {
-                "pics/close_light.svg"
-            } else {
-                "pics/close_dark.svg"
-            }
-        }
+        source: Style.current.closeImage
         anchors.right: parent.right
         anchors.rightMargin: 8
 

@@ -10,7 +10,7 @@ utils_sources = ['executor_asio.cpp', 'logging/logger.cpp',
 # https://github.com/mesonbuild/meson/issues/688
 utils_sources += vcs_tag(
   # command: ['git', 'rev-parse', '--short', 'HEAD'],
-  input: 'version.cpp.in', output: 'version.cpp')
+  input: 'version.cpp.in', output: 'version.cpp', fallback: '1.0.0-undefined+deadbeef')
 utils = library('utils',
   utils_sources,
   dependencies: [asio_dep, fmt_dep],

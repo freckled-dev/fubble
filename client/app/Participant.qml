@@ -30,10 +30,14 @@ Rectangle {
             anchors.fill: parent
             hoverEnabled: true
             onEntered: {
-                participant.highlighted = true
+                participant.highlighted = Qt.binding(function () {
+                    return true
+                })
             }
             onExited: {
-                participant.highlighted = false
+                participant.highlighted = Qt.binding(function () {
+                    return false
+                })
             }
         }
 
