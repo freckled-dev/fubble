@@ -3,8 +3,7 @@ import QtMultimedia 5.0
 
 QtObject {
     id: container
-    property string name: "some name"
-    property string room: "some room name"
+
     property MediaPlayer video
     property bool videoAvailable: video != null
 
@@ -14,6 +13,8 @@ QtObject {
         autoPlay: true
     }*/
     signal joined(RoomModel room)
+    signal join_failed
+
     function join(room, name) {
         var component = Qt.createComponent("RoomModel.qml")
         var roomModel = component.createObject(container)

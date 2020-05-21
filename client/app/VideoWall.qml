@@ -11,12 +11,12 @@ Rectangle {
     id: videoWallContainer
     property RoomModel roomModel
     property alias videoCount: participantRepeater.count
-    visible: videoCount !== 0
     color: Style.current.background
 
     VideoLayout {
         id: participantGrid
         anchors.fill: parent
+        visible: videoCount !== 0
 
         Repeater {
             id: participantRepeater
