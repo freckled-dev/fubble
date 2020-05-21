@@ -43,7 +43,7 @@ if get_option('with_tests')
 else
   gtest_dep = disabled
 endif
-fmt_dep = dependency('fmt')
+fmt_dep = dependency('fmt', include_type: 'system')
 json_dep = dependency('nlohmann_json')
 boost_di_dep = dependency('boost-di')
 gstreamer_webrtc_dep_pkg = dependency('gstreamer-webrtc-1.0',
@@ -80,6 +80,7 @@ google_webrtc_dep = declare_dependency(
   dependencies: [google_webrtc_dep_fixme, x11_dep]
   )
 ssl_dep = dependency('openssl', include_type: 'system', required: false)
+rectangle_bin_pack_dep = dependency('RectangleBinPack', include_type: 'system')
 
 subdir('asio')
 subdir('utils')
