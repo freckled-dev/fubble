@@ -12,17 +12,11 @@ Rectangle {
     property RoomModel roomModel
     property alias videoCount: participantRepeater.count
     color: Style.current.background
-    visible: videoCount !== 0
 
-    GridLayout {
+    VideoLayout {
         id: participantGrid
-        anchors.top: parent.top
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
-        rowSpacing: 10
-        columnSpacing: 10
-        columns: videoWallContainer.calculateColumns()
+        anchors.fill: parent
+        visible: videoCount !== 0
 
         Repeater {
             id: participantRepeater
@@ -39,16 +33,6 @@ Rectangle {
                 participant: model.participant
             }
         }
-    }
-
-    // Chat
-    function calculateColumns() {
-        var aspectRatio = participantGrid.width / participantGrid.height
-        var numParticipants = participantRepeater.count
-        // aspectRatio = aspectRatio * Math.sqrt(numParticipants)
-        aspectRatio = Math.round(aspectRatio)
-        aspectRatio = Math.max(1, aspectRatio)
-        return aspectRatio
     }
 }
 

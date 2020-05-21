@@ -92,9 +92,6 @@ build windows release:
     - pip install conan aqtinstall
     - python scripts/install_qt.py
     - conan --version
-    - conan remote add -f bincrafters "https://api.bintray.com/conan/bincrafters/public-conan"
-    - conan remote add -f inexorgame "https://api.bintray.com/conan/inexorgame/inexor-conan"
-    - conan remote add -f google_webrtc "https://api.bintray.com/conan/freckled/google-webrtc"
     - python scripts/make_build.py
   artifacts:
     untracked: true
