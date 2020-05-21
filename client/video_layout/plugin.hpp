@@ -5,7 +5,6 @@
 
 class plugin : public QQmlExtensionPlugin {
   Q_OBJECT
-  // Q_PLUGIN_METADATA(IID QQmlExtensionInterface_iid)
   Q_PLUGIN_METADATA(IID "io.fubble")
 public:
   void registerTypes(const char *uri) override;

@@ -8,8 +8,6 @@ import QtGraphicalEffects 1.0
 import "."
 
 Rectangle {
-    // layer.enabled: true
-    // border.color: Style.current.foreground
     property ParticipantModel participant
     property double aspect: {
         var width = video.sourceRect.width
@@ -21,8 +19,6 @@ Rectangle {
 
     color: "red"
 
-    //    width: 100
-    //    height: 100
     VideoOutput {
         id: video
         anchors.fill: parent
