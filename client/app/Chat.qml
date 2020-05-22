@@ -24,6 +24,8 @@ Item {
         ScrollBar.vertical: ScrollBar {
             id: chatScrollBar
         }
+
+        visible: chatVisible || chatAnimation.running
         anchors.bottom: chatInput.top
         anchors.bottomMargin: 20
         anchors.left: parent.left
@@ -92,10 +94,3 @@ Item {
         }
     }
 }
-
-/*##^##
-Designer {
-    D{i:0;autoSize:true;height:480;width:640}
-}
-##^##*/
-
