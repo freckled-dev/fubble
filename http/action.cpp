@@ -88,7 +88,6 @@ void action::on_connected(const boost::system::error_code &error) {
   // BOOST_LOG_SEV(logger, logging::severity::trace) << "on_connected";
   if (!check_and_handle_error(error))
     return;
-  BOOST_ASSERT(!server_.secure);
   if (server_.secure)
     return secure_connection();
   send_request();

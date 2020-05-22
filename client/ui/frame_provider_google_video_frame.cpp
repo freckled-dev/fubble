@@ -84,7 +84,7 @@ QAbstractVideoSurface *frame_provider_google_video_source::get_surface() const {
 void frame_provider_google_video_source::on_frame(
     const webrtc::VideoFrame &frame) {
   auto frame_buffer = frame.video_frame_buffer();
-  webrtc::VideoFrameBuffer::Type type = frame_buffer->type();
+  [[maybe_unused]] webrtc::VideoFrameBuffer::Type type = frame_buffer->type();
 #if 0
   BOOST_LOG_SEV(logger, logging::severity::debug)
       << "frame, width:" << frame.width() << ", height:" << frame.height()
