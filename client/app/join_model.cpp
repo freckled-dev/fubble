@@ -8,11 +8,10 @@
 
 using namespace client;
 
-
 join_model::join_model(model_creator &model_factory, error_model &error_model_,
                        joiner &joiner_, own_media &own_media_)
     : model_factory(model_factory), error_model_(error_model_),
-      joiner_(joiner_), own_media_(own_media_){
+      joiner_(joiner_), own_media_(own_media_) {
   auto own_videos = own_media_.get_videos();
   if (own_videos.empty()) {
     video_available = false;
@@ -42,6 +41,7 @@ ui::frame_provider_google_video_source *join_model::get_video() const {
 }
 
 void join_model::on_joined(boost::future<std::shared_ptr<class room>> room_) {
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "on_joined";
   try {
     auto got_room = room_.get();
     auto room_model_ = model_factory.create_room_model(got_room, this);

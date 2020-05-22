@@ -10,6 +10,9 @@
 #include <boost/beast/http.hpp>
 #include <boost/thread/future.hpp>
 #include <nlohmann/json_fwd.hpp>
+#if FUBBLE_ENABLE_SSL
+#include <boost/beast/ssl/ssl_stream.hpp>
+#endif
 
 namespace http {
 class action {
@@ -32,7 +35,9 @@ protected:
   on_resolved(const boost::system::error_code &error,
               const boost::asio::ip::tcp::resolver::results_type &resolved);
   void on_connected(const boost::system::error_code &error);
-  void do_request();
+  void secure_connection();
+  void on_secured(const boost::system::error_code &error);
+  void send_request();
   void on_request_send(const boost::system::error_code &error);
   void read_response();
   void on_response_read(const boost::system::error_code &error);
@@ -40,6 +45,10 @@ protected:
 
   http::logger logger{"action"};
   boost::beast::tcp_stream stream;
+#if FUBBLE_ENABLE_SSL
+  boost::asio::ssl::context ssl_context;
+  boost::beast::ssl_stream<boost::beast::tcp_stream &> ssl_stream;
+#endif
   boost::asio::ip::tcp::resolver resolver;
   const server server_;
   const boost::beast::http::verb verb;

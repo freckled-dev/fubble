@@ -1,9 +1,11 @@
 #include "user.hpp"
+#include <fmt/format.h>
 #include <nlohmann/json.hpp>
 
 using namespace matrix;
 
-user::user(const std::string &id) : id(id) {}
+user::user(const std::string &id)
+    : logger{fmt::format("user {}", id)}, id(id) {}
 
 void user::on_m_presence(const nlohmann::json &event) {
   const auto event_content = event["content"];
@@ -16,6 +18,8 @@ void user::on_m_presence(const nlohmann::json &event) {
 void user::set_presence(const presence &presence_parameter) {
   if (presence_ == presence_parameter)
     return;
+  BOOST_LOG_SEV(logger, logging::severity::trace)
+      << "set_presence, presence:" << presence_parameter;
   presence_ = presence_parameter;
   on_update();
 }
