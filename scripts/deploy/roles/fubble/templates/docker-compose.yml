@@ -46,8 +46,10 @@ services:
     build:
       context: proxy
     command: [nginx-debug, '-g', 'daemon off;']
-    ports:
-      - "80:80"
+    environment:
+      - LETSENCRYPT_EMAIL=contact@freckled.dev
+      - LETSENCRYPT_HOST=fubble.io,www.fubble.io
+      - VIRTUAL_HOST=fubble.io,www.fubble.io
     depends_on:
       - synapse
       - temporary_room
@@ -56,7 +58,39 @@ services:
       - windows_rclone
       - download
 
+  ssl-proxy:
+    image: jwilder/nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - conf:/etc/nginx/conf.d
+      - vhost:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+      - dhparam:/etc/nginx/dhparam
+      - certs:/etc/nginx/certs:ro
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    labels:
+      - "com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy=true"
+    depends_on:
+      - proxy
+
+  letsencrypt:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    volumes:
+      - certs:/etc/nginx/certs:rw
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - vhost:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+    depends_on:
+      - ssl-proxy
+
 volumes:
   synapse_data:
   synapse_database_data:
+  conf:
+  vhost:
+  html:
+  dhparam:
+  certs:
 
