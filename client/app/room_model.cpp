@@ -13,7 +13,17 @@ room_model::room_model(const std::shared_ptr<room> &room_, QObject *parent)
       participants->on_own_changed.connect([this]() { set_own(); }));
   signal_connections.emplace_back(
       room_->on_name_changed.connect([this](const auto &) { set_name(); }));
+  connect(participants_with_video, &QAbstractListModel::dataChanged, this,
+          &room_model::recalculate_video_available);
   set_name();
+}
+
+void room_model::recalculate_video_available() {
+  auto has_videos = participants_with_video->rowCount() != 0;
+  if (has_videos == videos_available)
+    return;
+  videos_available = has_videos;
+  videos_available_changed(videos_available);
 }
 
 void room_model::set_name() {

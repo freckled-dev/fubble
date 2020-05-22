@@ -19,10 +19,10 @@ public:
   std::optional<participant_model *> get_own() const;
   boost::signals2::signal<void()> on_own_changed;
 
-protected:
   int rowCount(const QModelIndex &parent = QModelIndex()) const override;
   QVariant data(const QModelIndex &index, int role) const override;
 
+protected:
   QHash<int, QByteArray> roleNames() const override;
   void on_joins(const std::vector<participant *> &joins);
   void on_leaves(std::vector<std::string> leaves);

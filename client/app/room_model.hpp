@@ -13,7 +13,8 @@ class room;
 class room_model : public QObject {
   Q_OBJECT
   Q_PROPERTY(QString name MEMBER name NOTIFY name_changed)
-  Q_PROPERTY(bool videosAvailable MEMBER videos_available NOTIFY videos_available_changed)
+  Q_PROPERTY(bool videosAvailable MEMBER videos_available NOTIFY
+                 videos_available_changed)
   Q_PROPERTY(participant_model *ownParticipant MEMBER own_participant NOTIFY
                  own_participant_changed)
   Q_PROPERTY(participants_model *participants MEMBER participants NOTIFY
@@ -24,6 +25,9 @@ class room_model : public QObject {
 
 public:
   room_model(const std::shared_ptr<room> &room_, QObject *parent);
+
+public slots:
+  void recalculate_video_available();
 
 signals:
   void name_changed(QString);
