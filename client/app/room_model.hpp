@@ -13,6 +13,7 @@ class room;
 class room_model : public QObject {
   Q_OBJECT
   Q_PROPERTY(QString name MEMBER name NOTIFY name_changed)
+  Q_PROPERTY(bool videosAvailable MEMBER videos_available NOTIFY videos_available_changed)
   Q_PROPERTY(participant_model *ownParticipant MEMBER own_participant NOTIFY
                  own_participant_changed)
   Q_PROPERTY(participants_model *participants MEMBER participants NOTIFY
@@ -28,6 +29,7 @@ signals:
   void name_changed(QString);
   void own_participant_changed(participant_model *);
   void participants_changed(participants_model *);
+  void videos_available_changed(bool);
   void participants_with_video_changed(participants_with_video_model *);
   void chat_changed(chat_model *);
 
@@ -38,6 +40,7 @@ protected:
   client::logger logger{"room_model"};
   std::shared_ptr<room> room_;
   QString name;
+  bool videos_available{};
   participant_model *own_participant{};
   participants_model *participants{};
   participants_with_video_model *participants_with_video{};

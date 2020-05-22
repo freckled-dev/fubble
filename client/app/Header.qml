@@ -26,37 +26,6 @@ ToolBar {
         visible: header.isRoomView()
     }
 
-    Image {
-        id: overviewIcon
-        anchors.verticalCenter: parent.verticalCenter
-        sourceSize.width: 30
-        sourceSize.height: 30
-        anchors.left: backButton.right
-        anchors.leftMargin: 10
-        source: Style.current.overviewImage
-        visible: header.isRoomView()
-
-        MouseArea {
-            id: maOverview
-            anchors.fill: parent
-            hoverEnabled: true
-
-            onPressedChanged: {
-                maOverview.pressed ? overviewIcon.source = Qt.binding(
-                                         function () {
-                                             return Style.current.overviewPressedImage
-                                         }) : overviewIcon.source = Qt.binding(
-                                         function () {
-                                             return Style.current.overviewImage
-                                         })
-            }
-
-            onClicked: {
-                toggleOverview()
-            }
-        }
-    }
-
     Label {
         id: titleLabel
         text: title
@@ -118,6 +87,37 @@ ToolBar {
     }
 
     Image {
+        id: overviewIcon
+        anchors.verticalCenter: parent.verticalCenter
+        sourceSize.width: 30
+        sourceSize.height: 30
+        anchors.right: chatIcon.visible ? chatIcon.left : moreButton.left
+        anchors.rightMargin: 10
+        source: Style.current.overviewImage
+        visible: header.isRoomView()
+
+        MouseArea {
+            id: maOverview
+            anchors.fill: parent
+            hoverEnabled: true
+
+            onPressedChanged: {
+                maOverview.pressed ? overviewIcon.source = Qt.binding(
+                                         function () {
+                                             return Style.current.overviewPressedImage
+                                         }) : overviewIcon.source = Qt.binding(
+                                         function () {
+                                             return Style.current.overviewImage
+                                         })
+            }
+
+            onClicked: {
+                toggleOverview()
+            }
+        }
+    }
+
+    Image {
         id: chatIcon
         anchors.verticalCenter: parent.verticalCenter
         sourceSize.width: 30
@@ -125,7 +125,7 @@ ToolBar {
         anchors.right: moreButton.left
         anchors.rightMargin: 10
         source: Style.current.chatImage
-        visible: header.isRoomView()
+        visible: header.isRoomView() && header.roomHasVideos()
 
         MouseArea {
             id: maChat
@@ -174,6 +174,11 @@ ToolBar {
         }
 
         return false
+    }
+
+    function roomHasVideos() {
+        var room = stackView.currentItem.room
+        return room.videosAvailable
     }
 
     About {
