@@ -72,6 +72,7 @@ protected:
   }
 
   void on_join_state_changed(const user_wrapper &user) {
+    (void)user;
     check_and_call_participant_count_changed();
   }
 

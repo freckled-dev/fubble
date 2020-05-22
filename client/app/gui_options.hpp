@@ -9,6 +9,7 @@ struct gui_config {
     std::string host{"fubble.io"};
     std::string service{"http"};
     bool use_ipv6{false};
+    bool use_ssl{false};
   };
   general general_;
 };

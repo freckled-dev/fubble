@@ -113,6 +113,7 @@ void client::do_sync() {
     return;
   }
   auto target = make_sync_target(sync_till_stop_timeout);
+  BOOST_ASSERT(!http_sync_action);
   http_sync_action = http_client->get_action(target);
   http_sync_action->do_().then(
       executor, [this](auto result) { on_sync_till_stop(result); });
@@ -122,6 +123,7 @@ void client::on_sync_till_stop(
     boost::future<std::pair<boost::beast::http::status, nlohmann::json>>
         &result) {
   try {
+    auto action_done = std::move(http_sync_action);
     auto response = result.get();
     auto response_json = response.second;
     error::check_matrix_response(response.first, response_json);
@@ -135,6 +137,8 @@ void client::on_sync_till_stop(
 }
 
 void client::stop_sync() {
+  BOOST_ASSERT(http_sync_action);
+  BOOST_ASSERT(sync_till_stop_active);
   sync_till_stop_active = false;
   http_sync_action->cancel();
 }

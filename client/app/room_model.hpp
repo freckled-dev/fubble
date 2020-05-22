@@ -19,7 +19,7 @@ class room_model : public QObject {
                  participants_changed)
   Q_PROPERTY(participants_with_video_model *participantsWithVideo MEMBER
                  participants_with_video NOTIFY participants_with_video_changed)
-  Q_PROPERTY(chat_model *chat MEMBER chat NOTIFY chat_changed);
+  Q_PROPERTY(chat_model *chat MEMBER chat NOTIFY chat_changed)
 
 public:
   room_model(const std::shared_ptr<room> &room_, QObject *parent);

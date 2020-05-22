@@ -12,6 +12,11 @@ if get_option('with_servers')
 else
   enable_servers = disabled
 endif
+if get_option('with_ssl')
+  add_project_arguments('-DFUBBLE_ENABLE_SSL=1', language: 'cpp')
+else
+  add_project_arguments('-DFUBBLE_ENABLE_SSL=0', language: 'cpp')
+endif
 
 if host_machine.system() == 'windows'
   # support windows 7 onwards
@@ -79,7 +84,8 @@ google_webrtc_dep_fixme = dependency('google-webrtc', include_type : 'system')
 google_webrtc_dep = declare_dependency(
   dependencies: [google_webrtc_dep_fixme, x11_dep]
   )
-ssl_dep = dependency('openssl', include_type: 'system', required: false)
+# ssl_dep = dependency('openssl', include_type: 'system', required: false)
+ssl_dep = google_webrtc_dep
 rectangle_bin_pack_dep = dependency('RectangleBinPack', include_type: 'system')
 
 subdir('asio')

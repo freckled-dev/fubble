@@ -8,8 +8,16 @@ using namespace http;
 action::action(boost::asio::io_context &context, boost::beast::http::verb verb,
                const std::string &target, const server &server_,
                const fields &fields_)
-    : stream{context}, resolver{context}, server_{server_}, verb(verb),
-      target(target), fields_(fields_) {
+    : stream{context},
+#if FUBBLE_ENABLE_SSL
+      ssl_context{boost::asio::ssl::context::tlsv12_client},
+      ssl_stream{stream, ssl_context},
+#endif
+      resolver{context}, server_{server_}, verb(verb), target(target),
+      fields_(fields_) {
+#if !FUBBLE_ENABLE_SSL
+  BOOST_ASSERT(!server_.secure);
+#endif
   // promise is a shared ref, for the case that the promise callbacks destroy
   // this class
   promise = std::make_shared<async_result_promise>();
@@ -46,7 +54,7 @@ action::async_result_future action::do_() {
   request.prepare_payload();
 #if 0
   BOOST_LOG_SEV(logger, logging::severity::trace) << fmt::format(
-      "resolving, server:'{}', port:'{}'", server_.server, server_.port);
+      "resolving, server:'{}', port:'{}'", server_.host, server_.port);
 #endif
   std::weak_ptr<int> alive = alive_check;
   resolver.async_resolve(server_.host, server_.port,
@@ -80,14 +88,57 @@ void action::on_connected(const boost::system::error_code &error) {
   // BOOST_LOG_SEV(logger, logging::severity::trace) << "on_connected";
   if (!check_and_handle_error(error))
     return;
+  BOOST_ASSERT(!server_.secure);
+  if (server_.secure)
+    return secure_connection();
+  send_request();
+}
+
+void action::secure_connection() {
+#if FUBBLE_ENABLE_SSL
+  // TODO verify the ssl https://github.com/djarek/certify
+  // https://www.boost.org/doc/libs/1_73_0/doc/html/boost_asio/reference/ssl__host_name_verification.html
+  ssl_context.set_verify_mode(boost::asio::ssl::verify_none);
+  // TODO replace the following line with certify
+  if (!SSL_set_tlsext_host_name(ssl_stream.native_handle(),
+                                server_.host.c_str())) {
+    boost::beast::error_code error{static_cast<int>(::ERR_get_error()),
+                                   boost::asio::error::get_ssl_category()};
+    check_and_handle_error(error);
+    return;
+  }
   std::weak_ptr<int> alive = alive_check;
-  boost::beast::http::async_write(
-      stream, buffers_->request,
-      [buffers_ = buffers_, this, alive = std::move(alive)](auto error, auto) {
+  ssl_stream.async_handshake(
+      boost::asio::ssl::stream_base::client,
+      [this, alive = std::move(alive)](const auto error) {
         if (!alive.lock())
           return;
-        on_request_send(error);
+        on_secured(error);
       });
+#endif
+}
+
+void action::on_secured(const boost::system::error_code &error) {
+  if (!check_and_handle_error(error))
+    return;
+  send_request();
+}
+
+void action::send_request() {
+  std::weak_ptr<int> alive = alive_check;
+  auto callback = [buffers_ = buffers_, this,
+                   alive = std::move(alive)](auto error, auto) {
+    if (!alive.lock())
+      return;
+    on_request_send(error);
+  };
+#if FUBBLE_ENABLE_SSL
+  if (server_.secure)
+    return boost::beast::http::async_write(ssl_stream, buffers_->request,
+                                           std::move(callback));
+#endif
+  boost::beast::http::async_write(stream, buffers_->request,
+                                  std::move(callback));
 }
 
 void action::on_request_send(const boost::system::error_code &error) {
@@ -98,13 +149,20 @@ void action::on_request_send(const boost::system::error_code &error) {
 
 void action::read_response() {
   std::weak_ptr<int> alive = alive_check;
-  boost::beast::http::async_read(
-      stream, buffers_->response_buffer, buffers_->response,
-      [buffers_ = buffers_, this, alive = std::move(alive)](auto error, auto) {
-        if (!alive.lock())
-          return;
-        on_response_read(error);
-      });
+  auto callback = [buffers_ = buffers_, this,
+                   alive = std::move(alive)](auto error, auto) {
+    if (!alive.lock())
+      return;
+    on_response_read(error);
+  };
+#if FUBBLE_ENABLE_SSL
+  if (server_.secure)
+    return boost::beast::http::async_read(ssl_stream, buffers_->response_buffer,
+                                          buffers_->response,
+                                          std::move(callback));
+#endif
+  boost::beast::http::async_read(stream, buffers_->response_buffer,
+                                 buffers_->response, std::move(callback));
 }
 
 void action::on_response_read(const boost::system::error_code &error) {

@@ -94,6 +94,7 @@ int main(int argc, char *argv[]) {
   // session, matrix and temporary_room
   http::server http_matrix_client_server{config.general_.host,
                                          config.general_.service};
+  http_matrix_client_server.secure = config.general_.use_ssl;
   http::fields http_matrix_client_fields{http_matrix_client_server};
   http_matrix_client_fields.target_prefix = "/api/matrix/v0/_matrix/client/r0/";
   http::client_factory http_matrix_client_factory{
@@ -101,6 +102,7 @@ int main(int argc, char *argv[]) {
 
   http::server http_temporary_room_client_server{config.general_.host,
                                                  config.general_.service};
+  http_temporary_room_client_server.secure = config.general_.use_ssl;
   http::fields http_temporary_room_client_fields{
       http_temporary_room_client_server};
   http_temporary_room_client_fields.target_prefix = "/api/temporary_room/v0/";
@@ -221,7 +223,6 @@ int main(int argc, char *argv[]) {
   qRegisterMetaType<client::utils_model *>();
   qRegisterMetaType<client::leave_model *>();
 
-#if 1 // works without too!
   // https://doc.qt.io/qt-5/qtqml-cppintegration-overview.html#choosing-the-correct-integration-method-between-c-and-qml
   qmlRegisterUncreatableType<client::room_model>(
       "io.fubble", 1, 0, "RoomModel", "can't instance client::room_model");
@@ -242,7 +243,6 @@ int main(int argc, char *argv[]) {
       "io.fubble", 1, 0, "ChatMessagesModel",
       "can't instance client::chat_messages_model");
   qmlRegisterType<video_layout>("io.fubble", 1, 0, "VideoLayout");
-#endif
 
   QQmlApplicationEngine engine;
   client::model_creator model_creator;
@@ -253,11 +253,12 @@ int main(int argc, char *argv[]) {
   //  works from 5.14 onwards
   // engine.setInitialProperties(...)
   //  setContextProperty sets it globaly not as property of the window
-  engine.rootContext()->setContextProperty("joinModelFromCpp", &join_model);
-  engine.rootContext()->setContextProperty("errorModelFromCpp", &error_model);
-  engine.rootContext()->setContextProperty("utilsModelFromCpp", &utils_model);
-  engine.rootContext()->setContextProperty("leaveModelFromCpp", &leave_model);
-  client::ui::add_version_to_qml_context version_adder{*engine.rootContext()};
+  QQmlContext *qml_context = engine.rootContext();
+  qml_context->setContextProperty("joinModelFromCpp", &join_model);
+  qml_context->setContextProperty("errorModelFromCpp", &error_model);
+  qml_context->setContextProperty("utilsModelFromCpp", &utils_model);
+  qml_context->setContextProperty("leaveModelFromCpp", &leave_model);
+  client::ui::add_version_to_qml_context version_adder{*qml_context};
   //  seems not to do it either
   // QVariant property{qMetaTypeId<client::join_model *>(), &join_model};
   // engine.setProperty("joinModel", property);
