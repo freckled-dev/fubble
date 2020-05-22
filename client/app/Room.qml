@@ -44,8 +44,8 @@ Item {
         anchors.left: separator1.right
         anchors.topMargin: roomMargin
         anchors.bottomMargin: roomMargin
-        anchors.right: videoCount !== 0 ? separator2.left : undefined
-        width: videoCount === 0 ? 0 : undefined
+        anchors.right: room.videosAvailable ? separator2.left : undefined
+        width: !room.videosAvailable ? 0 : undefined
     }
 
     Rectangle {
@@ -57,7 +57,7 @@ Item {
         anchors.bottom: parent.bottom
         anchors.right: chat.left
         anchors.rightMargin: visible ? roomMargin : 0
-        visible: chat.chatVisible && videoWall.videoCount !== 0
+        visible: chat.chatVisible && room.videosAvailable
     }
 
     Chat {
