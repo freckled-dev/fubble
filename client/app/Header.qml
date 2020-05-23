@@ -13,6 +13,8 @@ ToolBar {
     signal toggleChat
     signal toggleOverview
 
+    property var numUnreadMessages: 0
+
     Material.foreground: Style.current.buttonTextColor
 
     ToolButton {
@@ -91,7 +93,7 @@ ToolBar {
         anchors.verticalCenter: parent.verticalCenter
         sourceSize.width: 30
         sourceSize.height: 30
-        anchors.right: chatIcon.visible ? chatIcon.left : moreButton.left
+        anchors.right: chatIconContainer.visible ? chatIconContainer.left : moreButton.left
         anchors.rightMargin: 10
         source: Style.current.overviewImage
         visible: header.isRoomView()
@@ -117,32 +119,53 @@ ToolBar {
         }
     }
 
-    Image {
-        id: chatIcon
+    Item {
+        id: chatIconContainer
         anchors.verticalCenter: parent.verticalCenter
-        sourceSize.width: 30
-        sourceSize.height: 30
         anchors.right: moreButton.left
         anchors.rightMargin: 10
-        source: Style.current.chatImage
+        implicitHeight: 30
+        implicitWidth: 30
+
         visible: header.isRoomView() && header.roomHasVideos()
 
-        MouseArea {
-            id: maChat
+        Image {
+            id: chatIcon
             anchors.fill: parent
-            hoverEnabled: true
+            sourceSize.width: 30
+            sourceSize.height: 30
+            source: numUnreadMessages
+                    > 0 ? Style.current.chatNewMessageImage : Style.current.chatImage
 
-            onPressedChanged: {
-                maChat.pressed ? chatIcon.source = Qt.binding(function () {
-                    return Style.current.chatPressedImage
-                }) : chatIcon.source = Qt.binding(function () {
-                    return Style.current.chatImage
-                })
-            }
+            MouseArea {
+                id: maChat
+                anchors.fill: parent
+                hoverEnabled: true
 
-            onClicked: {
-                toggleChat()
+                onPressedChanged: {
+                    maChat.pressed ? chatIcon.source = Qt.binding(function () {
+                        return numUnreadMessages > 0 ? Style.current.chatNewMessageImage : Style.current.chatPressedImage
+                    }) : chatIcon.source = Qt.binding(function () {
+                        return numUnreadMessages
+                                > 0 ? Style.current.chatNewMessageImage : Style.current.chatImage
+                    })
+                }
+
+                onClicked: {
+                    toggleChat()
+                }
             }
+        }
+
+        Label {
+            id: chatNumber
+            visible: numUnreadMessages > 0
+            Material.foreground: Style.current.accentLight
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.horizontalCenter: parent.horizontalCenter
+            font.pointSize: 8
+            text: numUnreadMessages
+            font.bold: true
         }
     }
 
