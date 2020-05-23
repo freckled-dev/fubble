@@ -17,8 +17,6 @@ Rectangle {
         return result
     }
 
-    color: "red"
-
     VideoOutput {
         id: video
         anchors.fill: parent

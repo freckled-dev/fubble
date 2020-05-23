@@ -38,6 +38,13 @@ QtObject {
             // message, join, leave, kick
             type: "message"
         }
+        ListElement {
+            name: "Tamrielle"
+            timestamp: 1588754962085
+
+            // message, join, leave, kick
+            type: "leave"
+        }
     }
 
     function sendMessage(message) {

@@ -18,6 +18,7 @@
         <file>ParticipantAction.qml</file>
         <file>emoji/emoji.js</file>
         <file>Settings.qml</file>
+        <file>CustomRectangle.qml</file>
         <file>ThemeLight.qml</file>
         <file>ThemeDark.qml</file>
         <file>Theme.qml</file>

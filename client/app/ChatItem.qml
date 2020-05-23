@@ -30,6 +30,7 @@ Rectangle {
             id: chatColumn
 
             Label {
+                id: headerLabel
                 Layout.leftMargin: 10
                 Layout.rightMargin: 10
                 Layout.topMargin: 10
@@ -38,9 +39,10 @@ Rectangle {
             }
 
             Label {
+                width: headerLabel.width
                 Layout.bottomMargin: 10
                 Layout.leftMargin: 10
-                Layout.maximumWidth: chatContainer.width - 20
+                Layout.maximumWidth: chatContainer.width - 40
                 Layout.rightMargin: 10
                 text: modifyMessage(message)
 
