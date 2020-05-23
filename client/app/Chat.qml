@@ -10,86 +10,87 @@ Item {
     id: chatContainer
     property ChatModel chatModel
     property bool chatVisible: true
-    property int chatWidth: 300
-    width: chatVisible ? chatWidth : 0
+    property int chatWidth: 400
+    signal newMessage
 
-    Behavior on width {
-        PropertyAnimation {
-            id: chatAnimation
-        }
-    }
-
-    ListView {
-        id: chatList
-        ScrollBar.vertical: ScrollBar {
-            id: chatScrollBar
-        }
-
+    Item {
+        id: chatHolder
+        anchors.fill: parent
+        anchors.margins: 10
         visible: chatVisible || chatAnimation.running
-        anchors.bottom: chatInput.top
-        anchors.bottomMargin: 20
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.top: parent.top
-        clip: true
-        delegate: chatDelegate
 
-        model: chatModel.messages
-        snapMode: ListView.SnapToItem
-        spacing: 10
+        ListView {
+            id: chatList
+            ScrollBar.vertical: ScrollBar {
+                id: chatScrollBar
+            }
+            clip: true
 
-        onCountChanged: {
-            updateCurrentIndex()
+            anchors.bottom: chatInput.top
+            anchors.bottomMargin: 10
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.top: parent.top
+            delegate: chatDelegate
+
+            model: chatModel.messages
+            snapMode: ListView.SnapToItem
+            spacing: 10
+
+            onCountChanged: {
+                updateCurrentIndex()
+                newMessage()
+            }
+
+            onHeightChanged: {
+                updateCurrentIndex()
+            }
+
+            function updateCurrentIndex() {
+                chatScrollBar.setPosition(1)
+            }
         }
 
-        onHeightChanged: {
-            updateCurrentIndex()
+        Component {
+            id: chatDelegate
+
+            ChatItem {
+                anchors.right: own
+                               && type === "message" ? parent.right : undefined
+                anchors.horizontalCenter: type !== "message" ? parent.horizontalCenter : undefined
+                rectangleBorder.width: type === "message" ? 1 : 0
+            }
         }
 
-        function updateCurrentIndex() {
-            chatScrollBar.setPosition(1)
+        ChatInput {
+            id: chatInput
+            anchors.bottom: parent.bottom
+            anchors.left: parent.left
+            anchors.right: parent.right
         }
-    }
 
-    Component {
-        id: chatDelegate
-
-        ChatItem {
-            anchors.right: own && type === "message" ? parent.right : undefined
-            anchors.horizontalCenter: type !== "message" ? parent.horizontalCenter : undefined
-            rectangleBorder.width: type === "message" ? 1 : 0
+        Loader {
+            id: emojiLoader
+            sourceComponent: emojiComponent
+            asynchronous: true
+            onLoaded: chatInput.smileyButton.enabled = true
         }
-    }
 
-    ChatInput {
-        id: chatInput
-        anchors.bottom: parent.bottom
-        anchors.left: parent.left
-        visible: chatVisible || chatAnimation.running
-        anchors.right: parent.right
-    }
+        Component {
+            id: emojiComponent
 
-    Loader {
-        id: emojiLoader
-        sourceComponent: emojiComponent
-        asynchronous: true
-        onLoaded: chatInput.smileyButton.enabled = true
-    }
+            EmojiPopup {
+                id: emojiPopup
 
-    Component {
-        id: emojiComponent
+                height: 400
+                width: 350
+                x: chatHolder.width - width
+                y: chatHolder.height - height - textArea.height - 10
 
-        EmojiPopup {
-            id: emojiPopup
-
-            height: 400
-            width: 370
-            x: chatContainer.width - width
-            y: chatContainer.height - height - textArea.height - 10
-
-            textArea: chatInput.textArea
-            onClosed: {
-                chatInput.textArea.forceActiveFocus()
+                textArea: chatInput.textArea
+                onClosed: {
+                    chatInput.textArea.forceActiveFocus()
+                }
             }
         }
     }
