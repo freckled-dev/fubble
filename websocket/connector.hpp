@@ -1,8 +1,8 @@
 #ifndef WEBSOCKET_CONNECTOR_HPP
 #define WEBSOCKET_CONNECTOR_HPP
 
-#include "connection_ptr.hpp"
 #include "connection.hpp"
+#include "connection_ptr.hpp"
 #include "logger.hpp"
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/thread/executors/executor.hpp>
@@ -14,6 +14,7 @@ class connection_creator;
 class connector {
 public:
   struct config {
+    bool ssl{};
     std::string service;
     std::string url;
     std::string path = "/";

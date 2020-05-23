@@ -83,14 +83,15 @@ int main(int argc, char *argv[]) {
   http::connection_creator connection_creator_{context};
   websocket::connection_creator websocket_connection_creator{context};
   websocket::connector_creator websocket_connector{
-      connection_creator_, websocket_connection_creator};
+      context, websocket_connection_creator};
 
   // signalling
   signalling::json_message signalling_json;
   signalling::client::connection_creator signalling_connection_creator{
       context, boost_executor, signalling_json};
   signalling::client::client::connect_information connect_information{
-      config.general_.host, config.general_.service, "/api/signalling/v0/"};
+      config.general_.use_ssl, config.general_.host, config.general_.service,
+      "/api/signalling/v0/"};
   signalling::client::client_creator client_creator{
       websocket_connector, signalling_connection_creator, connect_information};
 

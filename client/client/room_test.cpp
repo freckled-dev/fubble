@@ -57,10 +57,9 @@ struct test_client {
   boost::asio::executor executor{context.get_executor()};
   boost::executor_adaptor<executor_asio> boost_executor{
       context}; // TODO remove!
-  websocket::connection_creator websocket_connection_creator{
-      connection_creator_};
+  websocket::connection_creator websocket_connection_creator{context};
   websocket::connector_creator websocket_connector{
-      connection_creator_, websocket_connection_creator};
+      context, websocket_connection_creator};
 
   // signalling
   signalling::json_message signalling_json;
