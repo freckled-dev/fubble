@@ -21,6 +21,8 @@ Item {
 
         ListView {
             id: chatList
+            property bool initialized: false
+
             ScrollBar.vertical: ScrollBar {
                 id: chatScrollBar
             }
@@ -37,17 +39,19 @@ Item {
             snapMode: ListView.SnapToItem
             spacing: 10
 
+            Component.onCompleted: initialized = true
+
             onCountChanged: {
-                updateCurrentIndex()
-                newMessage()
+                if (initialized) {
+                    scrollToBottom()
+                    newMessage()
+                }
             }
 
             onHeightChanged: {
-                updateCurrentIndex()
-            }
-
-            function updateCurrentIndex() {
-                chatScrollBar.setPosition(1)
+                if (initialized) {
+                    scrollToBottom()
+                }
             }
         }
 
@@ -93,5 +97,13 @@ Item {
                 }
             }
         }
+    }
+
+    onChatVisibleChanged: {
+        scrollToBottom()
+    }
+
+    function scrollToBottom() {
+        chatScrollBar.setPosition(1)
     }
 }
