@@ -114,7 +114,7 @@ int main(int argc, char *argv[]) {
   http::connection_creator http_connection_creator{context};
   websocket::connection_creator websocket_connection_creator{context};
   websocket::connector_creator websocket_connector{
-      http_connection_creator, websocket_connection_creator};
+      context, websocket_connection_creator};
 
   signalling::json_message signalling_json;
   signalling::client::connection_creator signalling_connection_creator{
@@ -122,7 +122,7 @@ int main(int argc, char *argv[]) {
   signalling::client::client signalling_client{websocket_connector,
                                                signalling_connection_creator};
   signalling::client::client::connect_information connect_information{
-      config_.signalling_.host, config_.signalling_.service,
+      false, config_.signalling_.host, config_.signalling_.service,
       "/api/signalling/v0/"};
   signalling_client.set_connect_information(connect_information);
   signalling_client.on_error.connect([&](auto /*error*/) { signals_.close(); });

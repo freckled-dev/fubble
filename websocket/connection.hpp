@@ -3,22 +3,28 @@
 
 #include "logger.hpp"
 #include <boost/asio/ip/tcp.hpp>
-#include <boost/beast/websocket/stream.hpp>
+#include <boost/asio/ssl.hpp>
+#include <boost/beast/ssl.hpp>
+#include <boost/beast/websocket.hpp>
+#include <boost/beast/websocket/ssl.hpp>
 #include <boost/thread/future.hpp>
 #include <queue>
 
 namespace websocket {
 class connection {
 public:
-  connection(boost::asio::io_context &context);
+  connection(boost::asio::io_context &context, bool secure);
   ~connection();
 
   boost::future<void> send(const std::string &message);
   boost::future<std::string> read();
   boost::future<void> close();
 
-  using stream_type =
+  using http_stream_type =
       boost::beast::websocket::stream<boost::asio::ip::tcp::socket>;
+  using https_stream_type = boost::beast::websocket::stream<
+      boost::beast::ssl_stream<boost::asio::ip::tcp::socket>>;
+  using stream_type = std::variant<http_stream_type, https_stream_type>;
   stream_type &get_native();
 
 private:
@@ -26,9 +32,8 @@ private:
   void on_send(const boost::system::error_code &error, std::size_t);
   void on_read(const boost::system::error_code &error, std::size_t);
 
-  class logger logger {
-    "connection"
-  };
+  websocket::logger logger{"connection"};
+  boost::asio::ssl::context ssl_context;
   stream_type stream;
   boost::beast::flat_buffer buffer;
 

@@ -45,7 +45,7 @@ void action::set_request_body(const nlohmann::json &body) {
 action::async_result_future action::do_() {
   auto &request = buffers_->request;
   request.prepare_payload();
-#if 0
+#if 1
   BOOST_LOG_SEV(logger, logging::severity::trace) << fmt::format(
       "resolving, server:'{}', port:'{}'", server_.host, server_.port);
 #endif
@@ -72,6 +72,7 @@ void action::cancel() {
 }
 
 void action::send_request() {
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "send_request()";
   std::weak_ptr<int> alive = alive_check;
   auto callback = [buffers_ = buffers_, this,
                    alive = std::move(alive)](auto error, auto) {
@@ -88,12 +89,14 @@ void action::send_request() {
 }
 
 void action::on_request_send(const boost::system::error_code &error) {
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "on_request_send";
   if (!check_and_handle_error(error))
     return;
   read_response();
 }
 
 void action::read_response() {
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "read_response";
   std::weak_ptr<int> alive = alive_check;
   auto callback = [buffers_ = buffers_, this,
                    alive = std::move(alive)](auto error, auto) {
@@ -111,6 +114,8 @@ void action::read_response() {
 }
 
 void action::on_response_read(const boost::system::error_code &error) {
+  BOOST_LOG_SEV(logger, logging::severity::trace)
+      << "on_response_read, response:" << buffers_->response;
   if (!check_and_handle_error(error))
     return;
   auto &response = buffers_->response;

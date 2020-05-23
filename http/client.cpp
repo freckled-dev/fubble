@@ -55,11 +55,11 @@ client::async_result_future
 client::do_action(std::unique_ptr<action> &&action_) {
   std::shared_ptr shared = std::move(action_);
   add_action(shared);
-  return action_->do_().then(executor,
-                             [this, action_ptr = shared.get()](auto result) {
-                               remove_action(action_ptr);
-                               return result.get();
-                             });
+  return shared->do_().then(executor,
+                            [this, action_ptr = shared.get()](auto result) {
+                              remove_action(action_ptr);
+                              return result.get();
+                            });
 }
 
 void client::add_action(const std::shared_ptr<action> &action_) {

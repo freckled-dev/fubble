@@ -54,6 +54,7 @@ void client::client::send_want_to_negotiate() {
 void client::client::connect(const std::string &key) {
   BOOST_ASSERT(!connection_);
   websocket::connector::config connector_config;
+  connector_config.ssl = connect_information_.secure;
   connector_config.url = connect_information_.host;
   connector_config.service = connect_information_.service;
   connector_config.path = connect_information_.target;

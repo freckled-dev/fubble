@@ -41,7 +41,7 @@ struct WebsocketOpenConnection : Websocket {
   WebsocketOpenConnection() {
     acceptor.on_connection.connect(
         [&](auto &result) { first = std::move(result); });
-    websocket::connector::config connector_config{
+    websocket::connector::config connector_config{false,
         std::to_string(acceptor.get_port()), "localhost"};
     auto connector = connector_creator.create(connector_config);
     connector->connect().then(executor, [&](auto result) {
