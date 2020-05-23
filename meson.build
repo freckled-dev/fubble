@@ -12,11 +12,6 @@ if get_option('with_servers')
 else
   enable_servers = disabled
 endif
-if get_option('with_ssl')
-  add_project_arguments('-DFUBBLE_ENABLE_SSL=1', language: 'cpp')
-else
-  add_project_arguments('-DFUBBLE_ENABLE_SSL=0', language: 'cpp')
-endif
 
 if host_machine.system() == 'windows'
   # support windows 7 onwards

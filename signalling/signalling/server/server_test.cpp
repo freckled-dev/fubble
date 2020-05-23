@@ -1,6 +1,7 @@
 #include "boost_di_extension_scopes_session.hpp"
 #include "connection_creator.hpp"
 #include "executor_asio.hpp"
+#include "http/connection_creator.hpp"
 #include "server.hpp"
 #include "signalling/client/client.hpp"
 #include "signalling/client/connection.hpp"

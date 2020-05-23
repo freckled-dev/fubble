@@ -17,6 +17,7 @@ Rectangle {
         return result
     }
 
+    // TODO delete
     color: "red"
 
     VideoOutput {
