@@ -1,5 +1,8 @@
+#include "action_factory.hpp"
 #include "client_factory.hpp"
+#include "connection_creator.hpp"
 #include "utils/testing.hpp"
+#include <boost/asio/io_context.hpp>
 #include <boost/thread/executors/inline_executor.hpp>
 #include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
@@ -9,7 +12,9 @@ TEST(HttpClient, Instance) {
   boost::asio::io_context context;
   server server_{utils::testing::server, "http"};
   fields fields{server_};
-  client_factory factory{context, server_, fields};
+  connection_creator connection_creator_{context};
+  action_factory action_factory_{connection_creator_};
+  client_factory factory{action_factory_, server_, fields};
   EXPECT_TRUE(factory.create());
 }
 
@@ -20,7 +25,9 @@ TEST(HttpClient, Get) {
   server server_{utils::testing::server, "80"};
   fields fields{server_};
   fields.target_prefix = "/api/matrix/v0/_matrix/client/";
-  client_factory factory{context, server_, fields};
+  connection_creator connection_creator_{context};
+  action_factory action_factory_{connection_creator_};
+  client_factory factory{action_factory_, server_, fields};
   auto client_ = factory.create();
   bool called{};
   auto got = client_->get("versions").then(executor, [&](auto result) {

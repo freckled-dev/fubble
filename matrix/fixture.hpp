@@ -4,17 +4,22 @@
 #include "authentification.hpp"
 #include "client_factory.hpp"
 #include "error.hpp"
+#include "http/action_factory.hpp"
+#include "http/connection_creator.hpp"
 #include "matrix/testing.hpp"
 #include "room.hpp"
 #include "users.hpp"
+#include <boost/asio/io_context.hpp>
 #include <boost/thread/executors/inline_executor.hpp>
 #include <gtest/gtest.h>
 
 struct fixture : ::testing::Test {
   boost::inline_executor executor;
   boost::asio::io_context context;
+  http::connection_creator connection_factory_{context};
+  http::action_factory action_factory_{connection_factory_};
   http::client_factory http_client_factory{
-      context, matrix::testing::make_http_server_and_fields()};
+      action_factory_, matrix::testing::make_http_server_and_fields()};
   matrix::factory room_factory_;
   matrix::client_factory client_factory_{room_factory_, http_client_factory};
   matrix::authentification authentification_{http_client_factory,

@@ -14,6 +14,8 @@
 #include "error_model.hpp"
 #include "executor_asio.hpp"
 #include "gui_options.hpp"
+#include "http/action_factory.hpp"
+#include "http/connection_creator.hpp"
 #include "join_model.hpp"
 #include "leave_model.hpp"
 #include "logging/initialser.hpp"
@@ -78,9 +80,10 @@ int main(int argc, char *argv[]) {
   boost::executor_adaptor<executor_asio> boost_executor{context};
   rtc::google::asio_signalling_thread asio_signalling_thread{context};
 
+  http::connection_creator connection_creator_{context};
   websocket::connection_creator websocket_connection_creator{context};
   websocket::connector_creator websocket_connector{
-      context, websocket_connection_creator};
+      connection_creator_, websocket_connection_creator};
 
   // signalling
   signalling::json_message signalling_json;
@@ -97,8 +100,9 @@ int main(int argc, char *argv[]) {
   http_matrix_client_server.secure = config.general_.use_ssl;
   http::fields http_matrix_client_fields{http_matrix_client_server};
   http_matrix_client_fields.target_prefix = "/api/matrix/v0/_matrix/client/r0/";
+  http::action_factory action_factory_{connection_creator_};
   http::client_factory http_matrix_client_factory{
-      context, http_matrix_client_server, http_matrix_client_fields};
+      action_factory_, http_matrix_client_server, http_matrix_client_fields};
 
   http::server http_temporary_room_client_server{config.general_.host,
                                                  config.general_.service};
@@ -106,7 +110,7 @@ int main(int argc, char *argv[]) {
   http::fields http_temporary_room_client_fields{
       http_temporary_room_client_server};
   http_temporary_room_client_fields.target_prefix = "/api/temporary_room/v0/";
-  http::client http_client_temporary_room{context,
+  http::client http_client_temporary_room{action_factory_,
                                           http_temporary_room_client_server,
                                           http_temporary_room_client_fields};
   temporary_room::net::client temporary_room_client{http_client_temporary_room};
