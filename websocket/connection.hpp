@@ -26,6 +26,7 @@ public:
       boost::beast::ssl_stream<boost::asio::ip::tcp::socket>>;
   using stream_type = std::variant<http_stream_type, https_stream_type>;
   stream_type &get_native();
+  boost::asio::ssl::context &get_ssl_context();
 
 private:
   void send_next_from_queue();
