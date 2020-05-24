@@ -141,11 +141,16 @@ ApplicationWindow {
                 }
             }
 
-            onNewChatMessage: {
-                if (!chat.chatVisible) {
-                    header.numUnreadMessages += 1
-                }
-            }
+            //            onNewMessage: {
+            //
+            //            }
+
+            //            onNewParticipant: {
+            //                if (!overview.overviewVisible) {
+            //                    console.log("new participant")
+            //                    header.newParticipants = true
+            //                }
+            //            }
         }
     }
 

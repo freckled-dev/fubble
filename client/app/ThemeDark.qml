@@ -35,10 +35,11 @@ Theme {
 
     // Chat Images
     property var chatImage: "images/chat_dark.svg"
-    property var chatNewMessageImage: "images/chat_new.svg"
+    property var chatNewMessageImage: "images/chat_new_dark.svg"
     property var chatPressedImage: "images/chat_pressed_dark.svg"
 
     // Overview Images
     property var overviewImage: "images/overview_dark.svg"
+    property var overviewNewImage: "images/overview_new.svg"
     property var overviewPressedImage: "images/overview_pressed_dark.svg"
 }
