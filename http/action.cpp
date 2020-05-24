@@ -115,7 +115,7 @@ void action::read_response() {
 
 void action::on_response_read(const boost::system::error_code &error) {
   BOOST_LOG_SEV(logger, logging::severity::trace)
-      << "on_response_read, response:" << buffers_->response;
+      << "on_response_read:"; // response:" << buffers_->response;
   if (!check_and_handle_error(error))
     return;
   auto &response = buffers_->response;

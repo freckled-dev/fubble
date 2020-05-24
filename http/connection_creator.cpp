@@ -8,20 +8,60 @@
 using namespace http;
 
 namespace {
+struct connection_ssl : public connection {
+  boost::beast::tcp_stream stream;
+  boost::asio::ssl::context ssl_context{
+      boost::asio::ssl::context::tlsv12_client};
+  boost::beast::ssl_stream<boost::beast::tcp_stream &> ssl_stream;
+
+  connection_ssl(boost::asio::io_context &context)
+      : stream(context), ssl_stream(stream, ssl_context) {}
+
+  void cancel() override { stream.socket().close(); }
+
+  void shutdown() override {
+    stream.socket().shutdown(boost::asio::socket_base::shutdown_both);
+  }
+
+  http_or_https get_native() override { return &ssl_stream; }
+};
+
+class connection_insecure : public connection {
+public:
+  boost::beast::tcp_stream stream;
+
+  connection_insecure(boost::asio::io_context &context) : stream(context) {}
+
+  void cancel() override { stream.socket().close(); }
+
+  void shutdown() override {
+    stream.socket().shutdown(boost::asio::socket_base::shutdown_both);
+  }
+
+  http_or_https get_native() override { return &stream; }
+};
 struct connector : std::enable_shared_from_this<connector> {
   http::logger logger{"connector"};
   boost::asio::io_context &context;
   boost::asio::ip::tcp::resolver resolver{context};
   boost::promise<void> promise;
-  boost::beast::tcp_stream stream{context};
-  boost::asio::ssl::context ssl_context{
-      boost::asio::ssl::context::tlsv12_client};
-  boost::beast::ssl_stream<boost::beast::tcp_stream &> ssl_stream{stream,
-                                                                  ssl_context};
   const server server_;
+  std::unique_ptr<connection_insecure> tcp_connection;
+  std::unique_ptr<connection_ssl> ssl_connection;
 
   connector(boost::asio::io_context &context_, const server server_)
-      : context(context_), server_(server_) {}
+      : context(context_), server_(server_) {
+    if (server_.secure)
+      ssl_connection = std::make_unique<connection_ssl>(context);
+    else
+      tcp_connection = std::make_unique<connection_insecure>(context);
+  }
+
+  connection::http_type &get_http() {
+    if (ssl_connection)
+      return ssl_connection->stream;
+    return tcp_connection->stream;
+  }
 
   boost::future<void> do_() {
     resolve();
@@ -45,6 +85,7 @@ struct connector : std::enable_shared_from_this<connector> {
     if (!check_and_handle_error(error))
       return;
     std::weak_ptr<connector> alive = shared_from_this();
+    auto &stream = get_http();
     stream.async_connect(resolved,
                          [this, alive = std::move(alive)](auto error, auto) {
                            if (!alive.lock())
@@ -60,12 +101,13 @@ struct connector : std::enable_shared_from_this<connector> {
     done();
   }
   void secure_connection() {
+    BOOST_ASSERT(ssl_connection);
     // TODO verify the ssl https://github.com/djarek/certify
     // https://www.boost.org/doc/libs/1_73_0/doc/html/boost_asio/reference/ssl__host_name_verification.html
-    ssl_context.set_default_verify_paths();
-    ssl_context.set_verify_mode(boost::asio::ssl::verify_none);
+    ssl_connection->ssl_context.set_default_verify_paths();
+    ssl_connection->ssl_context.set_verify_mode(boost::asio::ssl::verify_none);
     // TODO replace the following line with certify
-    if (!SSL_set_tlsext_host_name(ssl_stream.native_handle(),
+    if (!SSL_set_tlsext_host_name(ssl_connection->ssl_stream.native_handle(),
                                   server_.host.c_str())) {
       boost::beast::error_code error{static_cast<int>(::ERR_get_error()),
                                      boost::asio::error::get_ssl_category()};
@@ -73,7 +115,7 @@ struct connector : std::enable_shared_from_this<connector> {
       return;
     }
     std::weak_ptr<connector> alive = shared_from_this();
-    ssl_stream.async_handshake(
+    ssl_connection->ssl_stream.async_handshake(
         boost::asio::ssl::stream_base::client,
         [this, alive = std::move(alive)](const auto error) {
           if (!alive.lock())
@@ -105,40 +147,6 @@ struct connector : std::enable_shared_from_this<connector> {
   }
 };
 
-struct connection_ssl : public connection {
-  boost::beast::tcp_stream stream;
-  boost::beast::ssl_stream<boost::beast::tcp_stream &> ssl_stream;
-
-  connection_ssl(
-      boost::beast::tcp_stream &&stream,
-      boost::beast::ssl_stream<boost::beast::tcp_stream &> &&ssl_stream)
-      : stream(std::move(stream)), ssl_stream(std::move(ssl_stream)) {}
-
-  void cancel() override { stream.socket().close(); }
-
-  void shutdown() override {
-    stream.socket().shutdown(boost::asio::socket_base::shutdown_both);
-  }
-
-  http_or_https get_native() override { return &ssl_stream; }
-};
-
-class connection_insecure : public connection {
-public:
-  boost::beast::tcp_stream stream;
-
-  connection_insecure(boost::beast::tcp_stream &&stream)
-      : stream(std::move(stream)) {}
-
-  void cancel() override { stream.socket().close(); }
-
-  void shutdown() override {
-    stream.socket().shutdown(boost::asio::socket_base::shutdown_both);
-  }
-
-  http_or_https get_native() override { return &stream; }
-};
-
 } // namespace
 
 connection_creator::connection_creator(boost::asio::io_context &context)
@@ -147,10 +155,9 @@ connection_creator::connection_creator(boost::asio::io_context &context)
 namespace {
 std::unique_ptr<connection>
 create_connection_from_connector(connector &connector_) {
-  if (connector_.server_.secure)
-    return std::make_unique<connection_insecure>(std::move(connector_.stream));
-  return std::make_unique<connection_ssl>(std::move(connector_.stream),
-                                          std::move(connector_.ssl_stream));
+  if (connector_.ssl_connection)
+    return std::move(connector_.ssl_connection);
+  return std::move(connector_.tcp_connection);
 }
 } // namespace
 

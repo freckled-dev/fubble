@@ -3,7 +3,19 @@
 
 using namespace websocket;
 
-connection::connection(boost::asio::io_context &context) : stream(context) {}
+namespace {
+connection::stream_type make_stream(boost::asio::io_context &context,
+                                    boost::asio::ssl::context &ssl_context,
+                                    bool secure) {
+  if (secure)
+    return connection::https_stream_type(context, ssl_context);
+  return connection::http_stream_type(context);
+}
+} // namespace
+
+connection::connection(boost::asio::io_context &context, bool secure)
+    : ssl_context{boost::asio::ssl::context::tlsv12_client},
+      stream(make_stream(context, ssl_context, secure)) {}
 
 connection::~connection() {
   BOOST_LOG_SEV(logger, logging::severity::trace) << "websocket::~connection()";
@@ -24,7 +36,7 @@ static void completion_error(const boost::system::error_code &error) {
 }
 
 boost::future<void> connection::send(const std::string &message) {
-#if 0
+#if 1
   BOOST_LOG_SEV(logger, logging::severity::trace)
       << "sending message: '" << message << "'";
 #endif
@@ -37,17 +49,23 @@ boost::future<void> connection::send(const std::string &message) {
   return result;
 }
 
+boost::asio::ssl::context &connection::get_ssl_context() { return ssl_context; }
+
 void connection::send_next_from_queue() {
   sending = true;
   auto &item = send_queue.front();
   std::weak_ptr<int> weak_alive_check = alive_check;
-  stream.async_write(
-      boost::asio::buffer(item.message),
-      [this, weak_alive_check](const auto &error, auto transferred) {
-        if (!weak_alive_check.lock())
-          return;
-        on_send(error, transferred);
-      });
+  std::visit(
+      [&](auto &stream_) {
+        stream_.async_write(
+            boost::asio::buffer(item.message),
+            [this, weak_alive_check](const auto &error, auto transferred) {
+              if (!weak_alive_check.lock())
+                return;
+              on_send(error, transferred);
+            });
+      },
+      stream);
 }
 
 void connection::on_send(const boost::system::error_code &error, std::size_t) {
@@ -71,8 +89,12 @@ boost::future<void> connection::close() {
       << "closing websocket connection, this:" << this;
   boost::packaged_task<void(boost::system::error_code)> task(completion_error);
   auto result = task.get_future();
-  stream.async_close(boost::beast::websocket::close_code::normal,
-                     std::move(task));
+  std::visit(
+      [&](auto &stream_) {
+        stream_.async_close(boost::beast::websocket::close_code::normal,
+                            std::move(task));
+      },
+      stream);
   return result;
 }
 
@@ -83,12 +105,17 @@ boost::future<std::string> connection::read() {
   reading = true;
   read_promise = boost::promise<std::string>();
   std::weak_ptr<int> weak_alive_check = alive_check;
-  stream.async_read(buffer, [this, weak_alive_check](const auto &error,
-                                                     auto bytes_transferred) {
-    if (!weak_alive_check.lock())
-      return;
-    on_read(error, bytes_transferred);
-  });
+  std::visit(
+      [&](auto &stream_) {
+        stream_.async_read(buffer,
+                           [this, weak_alive_check](const auto &error,
+                                                    auto bytes_transferred) {
+                             if (!weak_alive_check.lock())
+                               return;
+                             on_read(error, bytes_transferred);
+                           });
+      },
+      stream);
   return read_promise.get_future();
 }
 

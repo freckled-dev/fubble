@@ -70,6 +70,36 @@ void connector::on_connected(const boost::system::error_code &error) {
       << "on_connected, error:" << error.message();
   if (check_error(error))
     return;
+  if (!config_.ssl)
+    return handshake();
+  secure();
+}
+
+void connector::secure() {
+  // TODO unify with http::connection_cretor::secure!!!
+  auto &stream =
+      std::get<connection::https_stream_type>(connection->get_native());
+  auto &ssl_context = connection->get_ssl_context();
+  ssl_context.set_default_verify_paths();
+  ssl_context.set_verify_mode(boost::asio::ssl::verify_none);
+  // TODO replace the following line with certify
+  if (!SSL_set_tlsext_host_name(stream.next_layer().native_handle(),
+                                config_.url.c_str())) {
+    boost::beast::error_code error{static_cast<int>(::ERR_get_error()),
+                                   boost::asio::error::get_ssl_category()};
+    check_error(error);
+    return;
+  }
+  stream.next_layer().async_handshake(
+      boost::asio::ssl::stream_base::client,
+      [this](const auto error) { on_secured(error); });
+}
+
+void connector::on_secured(const boost::system::error_code &error) {
+  BOOST_LOG_SEV(logger, logging::severity::trace)
+      << "on_secured, error:" << error.message();
+  if (check_error(error))
+    return;
   handshake();
 }
 
