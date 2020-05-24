@@ -13,7 +13,9 @@ ToolBar {
     signal toggleChat
     signal toggleOverview
 
-    property var numUnreadMessages: 0
+    // icon indicators
+    property RoomModel room
+    property ChatModel chat
 
     Material.foreground: Style.current.buttonTextColor
 
@@ -88,84 +90,106 @@ ToolBar {
         }
     }
 
-    Image {
-        id: overviewIcon
+    Loader {
+        id: overviewIconLoader
+        sourceComponent: header.isRoomView() ? overviewIconComponent : undefined
+
         anchors.verticalCenter: parent.verticalCenter
-        sourceSize.width: 30
-        sourceSize.height: 30
-        anchors.right: chatIconContainer.visible ? chatIconContainer.left : moreButton.left
+        anchors.right: chatIconLoader.visible ? chatIconLoader.left : moreButton.left
         anchors.rightMargin: 10
-        source: Style.current.overviewImage
-        visible: header.isRoomView()
-
-        MouseArea {
-            id: maOverview
-            anchors.fill: parent
-            hoverEnabled: true
-
-            onPressedChanged: {
-                maOverview.pressed ? overviewIcon.source = Qt.binding(
-                                         function () {
-                                             return Style.current.overviewPressedImage
-                                         }) : overviewIcon.source = Qt.binding(
-                                         function () {
-                                             return Style.current.overviewImage
-                                         })
-            }
-
-            onClicked: {
-                toggleOverview()
-            }
-        }
     }
 
-    Item {
-        id: chatIconContainer
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.right: moreButton.left
-        anchors.rightMargin: 10
-        implicitHeight: 30
-        implicitWidth: 30
-
-        visible: header.isRoomView() && header.roomHasVideos()
+    Component {
+        id: overviewIconComponent
 
         Image {
-            id: chatIcon
-            anchors.fill: parent
+            id: overviewIcon
             sourceSize.width: 30
             sourceSize.height: 30
-            source: numUnreadMessages
-                    > 0 ? Style.current.chatNewMessageImage : Style.current.chatImage
+
+            source: room.newParticipants ? Style.current.overviewNewImage : Style.current.overviewImage
 
             MouseArea {
-                id: maChat
+                id: maOverview
                 anchors.fill: parent
                 hoverEnabled: true
 
                 onPressedChanged: {
-                    maChat.pressed ? chatIcon.source = Qt.binding(function () {
-                        return numUnreadMessages > 0 ? Style.current.chatNewMessageImage : Style.current.chatPressedImage
-                    }) : chatIcon.source = Qt.binding(function () {
-                        return numUnreadMessages
-                                > 0 ? Style.current.chatNewMessageImage : Style.current.chatImage
-                    })
+                    maOverview.pressed ? overviewIcon.source = Qt.binding(
+                                             function () {
+                                                 return room.newParticipants ? Style.current.overviewNewImage : Style.current.overviewPressedImage
+                                             }) : overviewIcon.source = Qt.binding(
+                                             function () {
+                                                 return room.newParticipants ? Style.current.overviewNewImage : Style.current.overviewImage
+                                             })
                 }
 
                 onClicked: {
-                    toggleChat()
+                    toggleOverview()
                 }
             }
         }
+    }
 
-        Label {
-            id: chatNumber
-            visible: numUnreadMessages > 0
-            Material.foreground: Style.current.accentLight
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.horizontalCenter: parent.horizontalCenter
-            font.pointSize: 8
-            text: numUnreadMessages
-            font.bold: true
+    Loader {
+        id: chatIconLoader
+        sourceComponent: header.isRoomView() ? chatIconComponent : undefined
+
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.right: moreButton.left
+        anchors.rightMargin: 10
+
+        visible: header.isRoomView() && header.roomHasVideos()
+    }
+
+    Component {
+        id: chatIconComponent
+
+        Item {
+            id: chatIconContainer
+
+            implicitHeight: 30
+            implicitWidth: 30
+
+            Image {
+                id: chatIcon
+                anchors.fill: parent
+                sourceSize.width: 30
+                sourceSize.height: 30
+                source: chat.newMessages
+                        > 0 ? Style.current.chatNewMessageImage : Style.current.chatImage
+
+                MouseArea {
+                    id: maChat
+                    anchors.fill: parent
+                    hoverEnabled: true
+
+                    onPressedChanged: {
+                        maChat.pressed ? chatIcon.source = Qt.binding(
+                                             function () {
+                                                 return chat.newMessages > 0 ? Style.current.chatNewMessageImage : Style.current.chatPressedImage
+                                             }) : chatIcon.source = Qt.binding(
+                                             function () {
+                                                 return chat.newMessages > 0 ? Style.current.chatNewMessageImage : Style.current.chatImage
+                                             })
+                    }
+
+                    onClicked: {
+                        toggleChat()
+                    }
+                }
+            }
+
+            Label {
+                id: chatNumber
+                visible: chat.newMessages > 0
+                Material.foreground: Style.current.accentLight
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                font.pointSize: 8
+                text: chat.newMessages
+                font.bold: true
+            }
         }
     }
 
@@ -193,6 +217,8 @@ ToolBar {
 
     function isRoomView() {
         if (stackView.currentItem.room) {
+            room = stackView.currentItem.room
+            chat = stackView.currentItem.room.chat
             return true
         }
 

@@ -11,7 +11,12 @@ Item {
     property ChatModel chatModel
     property bool chatVisible: true
     property int chatWidth: 400
-    signal newMessage
+
+    onChatVisibleChanged: {
+        if (chatVisible) {
+            chatModel.resetNewMessages()
+        }
+    }
 
     Item {
         id: chatHolder
@@ -44,7 +49,6 @@ Item {
             onCountChanged: {
                 if (initialized) {
                     scrollToBottom()
-                    newMessage()
                 }
             }
 
