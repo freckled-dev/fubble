@@ -9,61 +9,57 @@ import "."
 Item {
     id: overviewContainer
     property RoomModel roomModel
-    property int overviewWidth: 200
+    property int overviewWidth: 250
     property bool overviewVisible: true
-    width: overviewVisible ? overviewWidth : 0
 
-    Behavior on width {
-        PropertyAnimation {
-            id: overviewAnimation
-            //            onRunningChanged: {
-            //                console.log(overviewAnimation.running)
-            //            }
+    Item {
+        anchors.fill: parent
+        anchors.margins: 10
+
+        Label {
+            id: participantLabel
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: parent.top
+            text: qsTr("Participants")
+            visible: overviewVisible || overviewAnimation.running
+            font.pointSize: Style.current.subHeaderPointSize
         }
-    }
 
-    Label {
-        id: participantLabel
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: parent.top
-        text: qsTr("Participants")
-        visible: overviewVisible || overviewAnimation.running
-        font.pointSize: Style.current.subHeaderPointSize
-    }
+        ColumnLayout {
+            id: participantColumns
+            anchors.right: parent.right
+            anchors.left: parent.left
+            visible: overviewVisible || overviewAnimation.running
+            anchors.top: participantLabel.bottom
+            anchors.topMargin: 30
 
-    ColumnLayout {
-        anchors.right: parent.right
-        anchors.left: parent.left
-        visible: overviewVisible || overviewAnimation.running
-        anchors.top: participantLabel.bottom
-        anchors.topMargin: 30
-
-        Repeater {
-            model: overviewContainer.roomModel.participants
-            delegate: participantOverviewComponent
+            Repeater {
+                model: overviewContainer.roomModel.participants
+                delegate: participantOverviewComponent
+            }
         }
-    }
 
-    Component {
-        id: participantOverviewComponent
-        ParticipantOverview {}
-    }
+        Component {
+            id: participantOverviewComponent
+            ParticipantOverview {}
+        }
 
-    Loader {
-        id: actionLoader
-        anchors.horizontalCenter: parent.horizontalCenter
-        sourceComponent: roomModel.ownParticipant ? actionComponent : undefined
-        visible: overviewVisible || overviewAnimation.running
-        anchors.bottom: parent.bottom
-    }
+        Loader {
+            id: actionLoader
+            anchors.horizontalCenter: parent.horizontalCenter
+            sourceComponent: roomModel.ownParticipant ? actionComponent : undefined
+            visible: overviewVisible || overviewAnimation.running
+            anchors.bottom: parent.bottom
+        }
 
-    Component {
-        id: actionComponent
+        Component {
+            id: actionComponent
 
-        ParticipantAction {
-            id: selfAction
-            imageSize: 40
-            participant: roomModel.ownParticipant
+            ParticipantAction {
+                id: selfAction
+                imageSize: 40
+                participant: roomModel.ownParticipant
+            }
         }
     }
 }

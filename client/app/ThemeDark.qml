@@ -3,6 +3,7 @@ import QtQuick 2.0
 Theme {
     property color primary: '#82d5fa'
     property color accent: '#ffe393'
+    property color accentLight: '#fd7d3e'
     property color foreground: '#ffffff'
     property color background: '#303030'
     property color buttonTextColor: '#000000'
@@ -34,6 +35,7 @@ Theme {
 
     // Chat Images
     property var chatImage: "images/chat_dark.svg"
+    property var chatNewMessageImage: "images/chat_new.svg"
     property var chatPressedImage: "images/chat_pressed_dark.svg"
 
     // Overview Images
