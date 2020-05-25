@@ -41,5 +41,6 @@ Theme {
     // Overview Images
     property var overviewImage: "images/overview.svg"
     property var overviewNewImage: "images/overview_new.svg"
+    property var overviewNewPressedImage: "images/overview_new_pressed.svg"
     property var overviewPressedImage: "images/overview_pressed.svg"
 }
