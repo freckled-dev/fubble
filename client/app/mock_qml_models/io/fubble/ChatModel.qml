@@ -3,6 +3,12 @@ import QtQuick 2.0
 QtObject {
     id: chatContainer
 
+    property int newMessages
+
+    function resetNewMessages() {
+        console.log("resetNewMessages")
+    }
+
     property var messages: ListModel {
         ListElement {
             name: "Tamrielle"
@@ -44,6 +50,14 @@ QtObject {
 
             // message, join, leave, kick
             type: "leave"
+        }
+
+        ListElement {
+            name: "Hugo"
+            timestamp: 1588754962085
+
+            // message, join, leave, kick
+            type: "join"
         }
     }
 

@@ -8,18 +8,18 @@ import io.fubble 1.0
 
 Item {
 
-    id: layout
+    id: roomContainer
     property RoomModel room
-    property var title: layout.room.name
+    property var title: roomContainer.room.name
     property alias chat: chat
     property alias overview: overview
-    signal newChatMessage
 
     CustomRectangle {
         id: overviewContainer
         rBorderwidth: 1
         anchors.top: parent.top
         anchors.bottom: parent.bottom
+        color: Style.current.background
         anchors.left: parent.left
         borderColor: Style.current.foreground
         width: overview.overviewVisible ? overview.overviewWidth : 0
@@ -33,13 +33,13 @@ Item {
         Overview {
             id: overview
             anchors.fill: parent
-            roomModel: layout.room
+            roomModel: roomContainer.room
         }
     }
 
     VideoWall {
         id: videoWall
-        roomModel: layout.room
+        roomModel: roomContainer.room
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         anchors.left: room.videosAvailable ? overviewContainer.right : undefined
@@ -50,10 +50,11 @@ Item {
 
     CustomRectangle {
         id: chatContainer
-        lBorderwidth: room.videosAvailable ? 1 : undefined
+        lBorderwidth: room.videosAvailable ? 1 : 0
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         anchors.right: parent.right
+        color: Style.current.background
         implicitWidth: chat.width
         anchors.left: !room.videosAvailable ? overviewContainer.right : undefined
         borderColor: Style.current.foreground
@@ -69,7 +70,6 @@ Item {
             id: chat
             anchors.fill: parent
             chatModel: room.chat
-            onNewMessage: newChatMessage()
         }
     }
 }
