@@ -168,5 +168,4 @@ connection_creator::create(const server &server_) {
     result.get();
     return create_connection_from_connector(*connector_);
   });
-  //
 }
