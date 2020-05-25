@@ -34,6 +34,8 @@ action::~action() {
       "action is getting destructed before done, target:{}", target);
   promise->set_exception(
       boost::system::system_error(boost::asio::error::operation_aborted));
+  if (!connection_)
+    return;
   connection_->cancel();
 }
 
@@ -55,7 +57,8 @@ action::async_result_future action::do_() {
         if (!alive.lock())
           return;
         try {
-          connection_ = result.get();
+          auto got = result.get();
+          connection_ = std::move(got);
         } catch (const boost::system::system_error &error) {
           check_and_handle_error(error.code());
           return;
