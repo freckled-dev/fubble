@@ -10,13 +10,12 @@ import "."
 Rectangle {
     id: videoWallContainer
     property RoomModel roomModel
-    property alias videoCount: participantRepeater.count
     color: Style.current.background
+    visible: roomModel.videosAvailable
 
     VideoLayout {
         id: participantGrid
         anchors.fill: parent
-        visible: videoCount !== 0
 
         Repeater {
             id: participantRepeater

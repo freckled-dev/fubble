@@ -10,92 +10,100 @@ Item {
     id: chatContainer
     property ChatModel chatModel
     property bool chatVisible: true
-    property int chatWidth: 300
-    width: chatVisible ? chatWidth : 0
+    property int chatWidth: 400
+    signal newMessage
 
-    Behavior on width {
-        PropertyAnimation {
-            id: chatAnimation
-        }
-    }
-
-    ListView {
-        id: chatList
-        ScrollBar.vertical: ScrollBar {
-            id: chatScrollBar
-        }
-        anchors.bottom: chatInput.top
-        anchors.bottomMargin: 20
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.top: parent.top
-        clip: true
-        delegate: chatDelegate
-
-        model: chatModel.messages
-        snapMode: ListView.SnapToItem
-        spacing: 10
-
-        onCountChanged: {
-            updateCurrentIndex()
-        }
-
-        onHeightChanged: {
-            updateCurrentIndex()
-        }
-
-        function updateCurrentIndex() {
-            chatScrollBar.setPosition(1)
-        }
-    }
-
-    Component {
-        id: chatDelegate
-
-        ChatItem {
-            anchors.right: own && type === "message" ? parent.right : undefined
-            anchors.horizontalCenter: type !== "message" ? parent.horizontalCenter : undefined
-            rectangleBorder.width: type === "message" ? 1 : 0
-        }
-    }
-
-    ChatInput {
-        id: chatInput
-        anchors.bottom: parent.bottom
-        anchors.left: parent.left
+    Item {
+        id: chatHolder
+        anchors.fill: parent
+        anchors.margins: 10
         visible: chatVisible || chatAnimation.running
-        anchors.right: parent.right
-    }
 
-    Loader {
-        id: emojiLoader
-        sourceComponent: emojiComponent
-        asynchronous: true
-        onLoaded: chatInput.smileyButton.enabled = true
-    }
+        ListView {
+            id: chatList
+            property bool initialized: false
 
-    Component {
-        id: emojiComponent
+            ScrollBar.vertical: ScrollBar {
+                id: chatScrollBar
+            }
+            clip: true
 
-        EmojiPopup {
-            id: emojiPopup
+            anchors.bottom: chatInput.top
+            anchors.bottomMargin: 10
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.top: parent.top
+            delegate: chatDelegate
 
-            height: 400
-            width: 370
-            x: chatContainer.width - width
-            y: chatContainer.height - height - textArea.height - 10
+            model: chatModel.messages
+            snapMode: ListView.SnapToItem
+            spacing: 10
 
-            textArea: chatInput.textArea
-            onClosed: {
-                chatInput.textArea.forceActiveFocus()
+            Component.onCompleted: initialized = true
+
+            onCountChanged: {
+                if (initialized) {
+                    scrollToBottom()
+                    newMessage()
+                }
+            }
+
+            onHeightChanged: {
+                if (initialized) {
+                    scrollToBottom()
+                }
+            }
+        }
+
+        Component {
+            id: chatDelegate
+
+            ChatItem {
+                anchors.right: own
+                               && type === "message" ? parent.right : undefined
+                anchors.horizontalCenter: type !== "message" ? parent.horizontalCenter : undefined
+                rectangleBorder.width: type === "message" ? 1 : 0
+            }
+        }
+
+        ChatInput {
+            id: chatInput
+            anchors.bottom: parent.bottom
+            anchors.left: parent.left
+            anchors.right: parent.right
+        }
+
+        Loader {
+            id: emojiLoader
+            sourceComponent: emojiComponent
+            asynchronous: true
+            onLoaded: chatInput.smileyButton.enabled = true
+        }
+
+        Component {
+            id: emojiComponent
+
+            EmojiPopup {
+                id: emojiPopup
+
+                height: 400
+                width: 350
+                x: chatHolder.width - width
+                y: chatHolder.height - height - textArea.height - 10
+
+                textArea: chatInput.textArea
+                onClosed: {
+                    chatInput.textArea.forceActiveFocus()
+                }
             }
         }
     }
-}
 
-/*##^##
-Designer {
-    D{i:0;autoSize:true;height:480;width:640}
-}
-##^##*/
+    onChatVisibleChanged: {
+        scrollToBottom()
+    }
 
+    function scrollToBottom() {
+        chatScrollBar.setPosition(1)
+    }
+}

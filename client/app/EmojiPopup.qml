@@ -9,6 +9,8 @@ Popup {
     id: emojiPopup
     property var emojiJson
     property TextArea textArea
+    margins: 0
+    padding: 0
     clip: true
 
     function initJson() {
