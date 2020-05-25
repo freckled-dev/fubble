@@ -130,27 +130,11 @@ ApplicationWindow {
                 target: header
                 onToggleChat: {
                     chat.chatVisible = !chat.chatVisible
-
-                    // since the chat is shown to the user - we assume the messages have been read
-                    if (chat.chatVisible) {
-                        header.numUnreadMessages = 0
-                    }
                 }
                 onToggleOverview: {
                     overview.overviewVisible = !overview.overviewVisible
                 }
             }
-
-            //            onNewMessage: {
-            //
-            //            }
-
-            //            onNewParticipant: {
-            //                if (!overview.overviewVisible) {
-            //                    console.log("new participant")
-            //                    header.newParticipants = true
-            //                }
-            //            }
         }
     }
 

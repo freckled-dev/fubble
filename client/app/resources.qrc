@@ -2,6 +2,11 @@
     <qresource>
         <file>fonts/EmojiOneFont.ttf</file>
         <file>fonts/VerdanaFont.ttf</file>
+
+        <file>sounds/error.wav</file>
+        <file>sounds/join.wav</file>
+        <file>sounds/leave.wav</file>
+
         <file>images/close_dark.svg</file>
         <file>images/close_light.svg</file>
         <file>images/exit_dark.gif</file>
@@ -19,10 +24,6 @@
         <file>images/muted_off_dark.svg</file>
         <file>images/video_disabled_dark.svg</file>
         <file>images/video_disabled.svg</file>
-        <file>sounds/error.wav</file>
-        <file>sounds/join.wav</file>
-        <file>sounds/leave.wav</file>
-
         <file>images/copy.svg</file>
         <file>images/copy_dark.svg</file>
         <file>images/copy_pressed.svg</file>
@@ -35,6 +36,12 @@
         <file>images/overview_dark.svg</file>
         <file>images/overview_pressed.svg</file>
         <file>images/overview_pressed_dark.svg</file>
+        <file>images/chat_new_dark.svg</file>
+        <file>images/chat_new.svg</file>
+        <file>images/overview_new.svg</file>
+        <file>images/overview_new_dark.svg</file>
+        <file>images/overview_new_pressed.svg</file>
+        <file>images/overview_new_pressed_dark.svg</file>
     </qresource>
 </RCC>
 

@@ -117,7 +117,7 @@ ToolBar {
                 onPressedChanged: {
                     maOverview.pressed ? overviewIcon.source = Qt.binding(
                                              function () {
-                                                 return room.newParticipants ? Style.current.overviewNewImage : Style.current.overviewPressedImage
+                                                 return room.newParticipants ? Style.current.overviewNewPressedImage : Style.current.overviewPressedImage
                                              }) : overviewIcon.source = Qt.binding(
                                              function () {
                                                  return room.newParticipants ? Style.current.overviewNewImage : Style.current.overviewImage
