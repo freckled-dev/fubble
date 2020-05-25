@@ -11,29 +11,30 @@ Item {
     id: layout
     property RoomModel room
     property var title: layout.room.name
-    property int roomMargin: 20
     property alias chat: chat
     property alias overview: overview
+    signal newChatMessage
 
-    Overview {
-        id: overview
+    CustomRectangle {
+        id: overviewContainer
+        rBorderwidth: 1
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         anchors.left: parent.left
-        anchors.margins: roomMargin
-        roomModel: layout.room
-    }
+        borderColor: Style.current.foreground
+        width: overview.overviewVisible ? overview.overviewWidth : 0
 
-    Rectangle {
-        id: separator1
-        color: Style.current.foreground
-        border.width: 0
-        width: 1
-        anchors.top: parent.top
-        anchors.bottom: parent.bottom
-        anchors.left: overview.right
-        anchors.leftMargin: visible ? roomMargin : 0
-        visible: overview.overviewVisible
+        Behavior on width {
+            PropertyAnimation {
+                id: overviewAnimation
+            }
+        }
+
+        Overview {
+            id: overview
+            anchors.fill: parent
+            roomModel: layout.room
+        }
     }
 
     VideoWall {
@@ -41,36 +42,35 @@ Item {
         roomModel: layout.room
         anchors.top: parent.top
         anchors.bottom: parent.bottom
-        anchors.left: separator1.right
-        anchors.topMargin: roomMargin
-        anchors.bottomMargin: roomMargin
-        anchors.right: videoCount !== 0 ? separator2.left : undefined
-        width: videoCount === 0 ? 0 : undefined
+        anchors.left: room.videosAvailable ? overviewContainer.right : undefined
+        anchors.margins: 10
+        anchors.right: room.videosAvailable ? chatContainer.left : undefined
+        width: !room.videosAvailable ? 0 : undefined
     }
 
-    Rectangle {
-        id: separator2
-        color: Style.current.foreground
-        border.width: 0
-        width: 1
-        anchors.top: parent.top
-        anchors.bottom: parent.bottom
-        anchors.right: chat.left
-        anchors.rightMargin: visible ? roomMargin : 0
-        visible: chat.chatVisible && videoWall.videoCount !== 0
-    }
-
-    Chat {
-        id: chat
+    CustomRectangle {
+        id: chatContainer
+        lBorderwidth: room.videosAvailable ? 1 : undefined
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         anchors.right: parent.right
-        anchors.topMargin: roomMargin
-        anchors.bottomMargin: roomMargin
-        anchors.rightMargin: roomMargin
-        anchors.leftMargin: separator1.visible ? roomMargin : undefined
-        anchors.left: !videoWall.visible ? separator1.right : undefined
-        chatModel: room.chat
+        implicitWidth: chat.width
+        anchors.left: !room.videosAvailable ? overviewContainer.right : undefined
+        borderColor: Style.current.foreground
+        width: chat.chatVisible ? chat.chatWidth : 0
+
+        Behavior on width {
+            PropertyAnimation {
+                id: chatAnimation
+            }
+        }
+
+        Chat {
+            id: chat
+            anchors.fill: parent
+            chatModel: room.chat
+            onNewMessage: newChatMessage()
+        }
     }
 }
 /*##^##

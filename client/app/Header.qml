@@ -13,6 +13,8 @@ ToolBar {
     signal toggleChat
     signal toggleOverview
 
+    property var numUnreadMessages: 0
+
     Material.foreground: Style.current.buttonTextColor
 
     ToolButton {
@@ -24,37 +26,6 @@ ToolBar {
             leave.open()
         }
         visible: header.isRoomView()
-    }
-
-    Image {
-        id: overviewIcon
-        anchors.verticalCenter: parent.verticalCenter
-        sourceSize.width: 30
-        sourceSize.height: 30
-        anchors.left: backButton.right
-        anchors.leftMargin: 10
-        source: Style.current.overviewImage
-        visible: header.isRoomView()
-
-        MouseArea {
-            id: maOverview
-            anchors.fill: parent
-            hoverEnabled: true
-
-            onPressedChanged: {
-                maOverview.pressed ? overviewIcon.source = Qt.binding(
-                                         function () {
-                                             return Style.current.overviewPressedImage
-                                         }) : overviewIcon.source = Qt.binding(
-                                         function () {
-                                             return Style.current.overviewImage
-                                         })
-            }
-
-            onClicked: {
-                toggleOverview()
-            }
-        }
     }
 
     Label {
@@ -118,31 +89,83 @@ ToolBar {
     }
 
     Image {
-        id: chatIcon
+        id: overviewIcon
         anchors.verticalCenter: parent.verticalCenter
         sourceSize.width: 30
         sourceSize.height: 30
-        anchors.right: moreButton.left
+        anchors.right: chatIconContainer.visible ? chatIconContainer.left : moreButton.left
         anchors.rightMargin: 10
-        source: Style.current.chatImage
+        source: Style.current.overviewImage
         visible: header.isRoomView()
 
         MouseArea {
-            id: maChat
+            id: maOverview
             anchors.fill: parent
             hoverEnabled: true
 
             onPressedChanged: {
-                maChat.pressed ? chatIcon.source = Qt.binding(function () {
-                    return Style.current.chatPressedImage
-                }) : chatIcon.source = Qt.binding(function () {
-                    return Style.current.chatImage
-                })
+                maOverview.pressed ? overviewIcon.source = Qt.binding(
+                                         function () {
+                                             return Style.current.overviewPressedImage
+                                         }) : overviewIcon.source = Qt.binding(
+                                         function () {
+                                             return Style.current.overviewImage
+                                         })
             }
 
             onClicked: {
-                toggleChat()
+                toggleOverview()
             }
+        }
+    }
+
+    Item {
+        id: chatIconContainer
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.right: moreButton.left
+        anchors.rightMargin: 10
+        implicitHeight: 30
+        implicitWidth: 30
+
+        visible: header.isRoomView() && header.roomHasVideos()
+
+        Image {
+            id: chatIcon
+            anchors.fill: parent
+            sourceSize.width: 30
+            sourceSize.height: 30
+            source: numUnreadMessages
+                    > 0 ? Style.current.chatNewMessageImage : Style.current.chatImage
+
+            MouseArea {
+                id: maChat
+                anchors.fill: parent
+                hoverEnabled: true
+
+                onPressedChanged: {
+                    maChat.pressed ? chatIcon.source = Qt.binding(function () {
+                        return numUnreadMessages > 0 ? Style.current.chatNewMessageImage : Style.current.chatPressedImage
+                    }) : chatIcon.source = Qt.binding(function () {
+                        return numUnreadMessages
+                                > 0 ? Style.current.chatNewMessageImage : Style.current.chatImage
+                    })
+                }
+
+                onClicked: {
+                    toggleChat()
+                }
+            }
+        }
+
+        Label {
+            id: chatNumber
+            visible: numUnreadMessages > 0
+            Material.foreground: Style.current.accentLight
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.horizontalCenter: parent.horizontalCenter
+            font.pointSize: 8
+            text: numUnreadMessages
+            font.bold: true
         }
     }
 
@@ -174,6 +197,11 @@ ToolBar {
         }
 
         return false
+    }
+
+    function roomHasVideos() {
+        var room = stackView.currentItem.room
+        return room.videosAvailable
     }
 
     About {
