@@ -12,6 +12,12 @@ Item {
     property int overviewWidth: 250
     property bool overviewVisible: true
 
+    onOverviewVisibleChanged: {
+        if (overviewVisible) {
+            roomModel.resetNewParticipants()
+        }
+    }
+
     Item {
         anchors.fill: parent
         anchors.margins: 10
