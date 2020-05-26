@@ -48,25 +48,35 @@ Rectangle {
 
                 textFormat: Text.RichText
                 wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+                onLinkActivated: Qt.openUrlExternally(link)
             }
 
             function modifyMessage(message) {
                 message = message.replace(/\n/g, "<br />")
-                var ranges = ['(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])']
-                var reg = new RegExp(ranges, 'g')
-                var removeEmoji = message.replace(reg, "").replace(/ /g, "")
+                var emojiRanges = ['(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])']
+                var linkRange = /(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)(\/)?)/
+
+                var emojiRegex = new RegExp(emojiRanges, 'gi')
+                var linkRegex = new RegExp(linkRange, 'gi')
+
+                var removeEmoji = message.replace(emojiRegex,
+                                                  "").replace(/ /g, "")
                 var isEmojiMessage = removeEmoji.length === 0
 
+                message = message.replace(linkRegex,
+                                          '<a href=$1 title="">$1</a>')
                 if (isEmojiMessage) {
                     // enlarge more if there are only emojis
                     message = message.replace(
-                                reg, '<span style="font-size:25pt">$1</span>')
+                                emojiRegex,
+                                '<span style="font-size:25pt">$1</span>')
                     return message
                 }
 
                 // enlarge the emojis
                 message = message.replace(
-                            reg, '<span style="font-size:18pt">$1</span>')
+                            emojiRegex,
+                            '<span style="font-size:18pt">$1</span>')
 
                 return message
             }
