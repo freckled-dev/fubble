@@ -1,5 +1,5 @@
 websocket = library('websocket',
-  ['acceptor.cpp', 'connection.cpp',
+  ['acceptor.cpp', 'connection.cpp', 'connection_impl.cpp',
     'connection_creator.cpp', 'connector.cpp'],
   dependencies: [boost_dep, fmt_dep, utils_dep],
   cpp_pch: '../pch/precompiled.hpp',

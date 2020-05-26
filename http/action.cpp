@@ -1,10 +1,23 @@
 #include "action.hpp"
 #include "connection_creator.hpp"
+#include "connection_impl.hpp"
 #include <fmt/format.h>
 #include <fmt/ostream.h>
 #include <nlohmann/json.hpp>
 
 using namespace http;
+
+namespace {
+http_or_https get_native_from_connection(connection &connection_) {
+  auto ssl = dynamic_cast<connection_ssl *>(&connection_);
+  if (ssl)
+    return ssl->get_native();
+  auto tcp = dynamic_cast<connection_insecure *>(&connection_);
+  BOOST_ASSERT(tcp);
+  return tcp->get_native();
+  //
+}
+} // namespace
 
 action::action(connection_creator &creator, boost::beast::http::verb verb,
                const std::string &target, const server &server_,
@@ -83,12 +96,13 @@ void action::send_request() {
       return;
     on_request_send(error);
   };
+  auto native = get_native_from_connection(*connection_);
   std::visit(
       [&](auto stream) {
         return boost::beast::http::async_write(*stream, buffers_->request,
                                                std::move(callback));
       },
-      connection_->get_native());
+      native);
 }
 
 void action::on_request_send(const boost::system::error_code &error) {
@@ -107,13 +121,14 @@ void action::read_response() {
       return;
     on_response_read(error);
   };
+  auto native = get_native_from_connection(*connection_);
   std::visit(
       [&](auto stream) {
         return boost::beast::http::async_read(
             *stream, buffers_->response_buffer, buffers_->response,
             std::move(callback));
       },
-      connection_->get_native());
+      native);
 }
 
 void action::on_response_read(const boost::system::error_code &error) {

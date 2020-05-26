@@ -17,5 +17,7 @@
         state: latest
 
     - name: fubble
+      vars:
+        - fubble_deploy_type: production
       import_role:
         name: fubble

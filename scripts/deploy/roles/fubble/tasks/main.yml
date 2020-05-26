@@ -46,8 +46,17 @@
     src: docker-compose.yml
     dest: "{{ fubble_deploy_destination_dir }}/docker-compose.yml"
 
+- name: copy fubble compose deplpy_type file
+  template:
+    src: docker-compose_{{ fubble_deploy_type }}.yml
+    dest: "{{ fubble_deploy_destination_dir }}/docker-compose_{{ fubble_deploy_type }}.yml"
+
 - name: run docker_compose with build
+  # https://docs.ansible.com/ansible/latest/modules/docker_compose_module.html
   docker_compose:
+    files:
+      - docker-compose.yml
+      - docker-compose_{{ fubble_deploy_type }}.yml
     project_src: "{{ fubble_deploy_destination_dir }}"
     state: present
     remove_orphans: yes
