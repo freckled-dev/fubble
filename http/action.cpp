@@ -1,14 +1,28 @@
 #include "action.hpp"
+#include "connection_creator.hpp"
+#include "connection_impl.hpp"
 #include <fmt/format.h>
 #include <fmt/ostream.h>
 #include <nlohmann/json.hpp>
 
 using namespace http;
 
-action::action(boost::asio::io_context &context, boost::beast::http::verb verb,
+namespace {
+http_or_https get_native_from_connection(connection &connection_) {
+  auto ssl = dynamic_cast<connection_ssl *>(&connection_);
+  if (ssl)
+    return ssl->get_native();
+  auto tcp = dynamic_cast<connection_insecure *>(&connection_);
+  BOOST_ASSERT(tcp);
+  return tcp->get_native();
+  //
+}
+} // namespace
+
+action::action(connection_creator &creator, boost::beast::http::verb verb,
                const std::string &target, const server &server_,
                const fields &fields_)
-    : stream{context}, resolver{context}, server_{server_}, verb(verb),
+    : connection_creator_(creator), server_{server_}, verb(verb),
       target(target), fields_(fields_) {
   // promise is a shared ref, for the case that the promise callbacks destroy
   // this class
@@ -33,7 +47,9 @@ action::~action() {
       "action is getting destructed before done, target:{}", target);
   promise->set_exception(
       boost::system::system_error(boost::asio::error::operation_aborted));
-  stream.cancel();
+  if (!connection_)
+    return;
+  connection_->cancel();
 }
 
 void action::set_request_body(const nlohmann::json &body) {
@@ -44,75 +60,85 @@ void action::set_request_body(const nlohmann::json &body) {
 action::async_result_future action::do_() {
   auto &request = buffers_->request;
   request.prepare_payload();
-#if 0
+#if 1
   BOOST_LOG_SEV(logger, logging::severity::trace) << fmt::format(
-      "resolving, server:'{}', port:'{}'", server_.server, server_.port);
+      "resolving, server:'{}', port:'{}'", server_.host, server_.port);
 #endif
   std::weak_ptr<int> alive = alive_check;
-  resolver.async_resolve(server_.host, server_.port,
-                         [buffers_ = buffers_, this,
-                          alive = std::move(alive)](auto error, auto result) {
-                           if (!alive.lock())
-                             return;
-                           on_resolved(error, result);
-                         });
+  connection_creator_.create(server_).then(
+      [this, alive = std::move(alive)](auto result) {
+        if (!alive.lock())
+          return;
+        try {
+          auto got = result.get();
+          connection_ = std::move(got);
+        } catch (const boost::system::system_error &error) {
+          check_and_handle_error(error.code());
+          return;
+        }
+        send_request();
+      });
   return promise->get_future();
 }
 
-void action::cancel() { stream.socket().close(); }
-
-void action::on_resolved(
-    const boost::system::error_code &error,
-    const boost::asio::ip::tcp::resolver::results_type &resolved) {
-  // BOOST_LOG_SEV(logger, logging::severity::trace) << "on_resolved";
-  if (!check_and_handle_error(error))
+void action::cancel() {
+  if (!connection_)
     return;
-  std::weak_ptr<int> alive = alive_check;
-  stream.async_connect(resolved, [buffers_ = buffers_, this,
-                                  alive = std::move(alive)](auto error, auto) {
-    if (!alive.lock())
-      return;
-    on_connected(error);
-  });
+  connection_->cancel();
 }
 
-void action::on_connected(const boost::system::error_code &error) {
-  // BOOST_LOG_SEV(logger, logging::severity::trace) << "on_connected";
-  if (!check_and_handle_error(error))
-    return;
+void action::send_request() {
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "send_request()";
   std::weak_ptr<int> alive = alive_check;
-  boost::beast::http::async_write(
-      stream, buffers_->request,
-      [buffers_ = buffers_, this, alive = std::move(alive)](auto error, auto) {
-        if (!alive.lock())
-          return;
-        on_request_send(error);
-      });
+  auto callback = [buffers_ = buffers_, this,
+                   alive = std::move(alive)](auto error, auto) {
+    if (!alive.lock())
+      return;
+    on_request_send(error);
+  };
+  auto native = get_native_from_connection(*connection_);
+  std::visit(
+      [&](auto stream) {
+        return boost::beast::http::async_write(*stream, buffers_->request,
+                                               std::move(callback));
+      },
+      native);
 }
 
 void action::on_request_send(const boost::system::error_code &error) {
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "on_request_send";
   if (!check_and_handle_error(error))
     return;
   read_response();
 }
 
 void action::read_response() {
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "read_response";
   std::weak_ptr<int> alive = alive_check;
-  boost::beast::http::async_read(
-      stream, buffers_->response_buffer, buffers_->response,
-      [buffers_ = buffers_, this, alive = std::move(alive)](auto error, auto) {
-        if (!alive.lock())
-          return;
-        on_response_read(error);
-      });
+  auto callback = [buffers_ = buffers_, this,
+                   alive = std::move(alive)](auto error, auto) {
+    if (!alive.lock())
+      return;
+    on_response_read(error);
+  };
+  auto native = get_native_from_connection(*connection_);
+  std::visit(
+      [&](auto stream) {
+        return boost::beast::http::async_read(
+            *stream, buffers_->response_buffer, buffers_->response,
+            std::move(callback));
+      },
+      native);
 }
 
 void action::on_response_read(const boost::system::error_code &error) {
+  BOOST_LOG_SEV(logger, logging::severity::trace)
+      << "on_response_read:"; // response:" << buffers_->response;
   if (!check_and_handle_error(error))
     return;
   auto &response = buffers_->response;
   auto http_code = response.result();
-  stream.socket().shutdown(boost::asio::socket_base::shutdown_both);
+  connection_->shutdown();
   auto promise_copy = std::move(promise);
   auto body = response.body();
   const auto content_type = response[boost::beast::http::field::content_type];

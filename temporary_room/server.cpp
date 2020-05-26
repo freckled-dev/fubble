@@ -1,4 +1,6 @@
 #include "server/server.hpp"
+#include "http/action_factory.hpp"
+#include "http/connection_creator.hpp"
 #include "logging/initialser.hpp"
 #include "matrix/authentification.hpp"
 #include "matrix/client_factory.hpp"
@@ -65,8 +67,10 @@ int main(int argc, char *argv[]) {
   http::server http_server_matrix{options_.matrix_server, options_.matrix_port};
   http::fields http_fields_matrix{http_server_matrix};
   http_fields_matrix.target_prefix = options_.matrix_target_prefix;
-  http::client_factory http_client_factory_matrix{context, http_server_matrix,
-                                                  http_fields_matrix};
+  http::connection_creator connection_creator_{context};
+  http::action_factory action_factory_{connection_creator_};
+  http::client_factory http_client_factory_matrix{
+      action_factory_, http_server_matrix, http_fields_matrix};
   matrix::client_factory matrix_client_factory{matrix_factory,
                                                http_client_factory_matrix};
   matrix::authentification matrix_authentification{http_client_factory_matrix,

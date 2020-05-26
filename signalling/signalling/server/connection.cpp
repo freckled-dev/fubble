@@ -1,5 +1,6 @@
 #include "connection.hpp"
 #include "websocket/connection.hpp"
+#include <boost/asio/error.hpp>
 #include <fmt/format.h>
 
 using namespace signalling::server;

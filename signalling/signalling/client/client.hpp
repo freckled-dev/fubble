@@ -7,8 +7,8 @@
 #include "signalling/ice_candidate.hpp"
 #include "signalling/logger.hpp"
 #include "signalling/offer.hpp"
-#include "websocket/connector.hpp"
 #include "websocket/connection.hpp"
+#include "websocket/connector.hpp"
 #include <boost/signals2/signal.hpp>
 #include <boost/thread/executors/inline_executor.hpp>
 #include <boost/thread/future.hpp>
@@ -17,6 +17,7 @@ namespace signalling::client {
 class client {
 public:
   struct connect_information {
+    bool secure{};
     std::string host;
     std::string service;
     std::string target;

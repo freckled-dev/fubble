@@ -7,9 +7,8 @@ using namespace matrix;
 
 room_participant::room_participant(user &user_, const join_state join_state_,
                                    const timestamp_type &join_state_timestamp)
-    : user_(user_), logger{fmt::format("room_participant {}", user_.get_id())} {
-  set_join_state(join_state_, join_state_timestamp);
-}
+    : user_(user_), logger{fmt::format("room_participant {}", user_.get_id())},
+      join_state_timestamp(join_state_timestamp), join_state_(join_state_) {}
 
 user &room_participant::get_user() const { return user_; }
 

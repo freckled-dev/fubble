@@ -1,6 +1,6 @@
 #include "connector.hpp"
-#include "connection.hpp"
 #include "connection_creator.hpp"
+#include "connection_impl.hpp"
 #include <boost/asio/connect.hpp>
 #include <fmt/format.h>
 
@@ -44,13 +44,26 @@ void connector::on_resolved(
   connect_to_endpoints(endpoints);
 }
 
+template <class... Ts> struct overloaded : Ts... { using Ts::operator()...; };
+template <class... Ts>
+overloaded(Ts...) -> overloaded<Ts...>; // not needed as of C++20
+
 void connector::connect_to_endpoints(
     const boost::asio::ip::tcp::resolver::results_type &endpoints) {
-  connection = creator();
-  auto &native = connection->get_native();
-  boost::asio::ip::tcp::socket &tcp = native.next_layer();
+  connection = creator.create(config_.ssl);
+  auto connection_impl_ = dynamic_cast<connection_impl *>(connection.get());
+  BOOST_ASSERT(connection_impl_);
+  auto &native = connection_impl_->get_native();
+  auto *tcp =
+      std::visit(overloaded{[&](connection_impl::http_stream_type &stream_) {
+                              return &stream_.next_layer();
+                            },
+                            [&](connection_impl::https_stream_type &stream_) {
+                              return &stream_.next_layer().next_layer();
+                            }},
+                 native);
   boost::asio::async_connect(
-      tcp, endpoints,
+      *tcp, endpoints,
       [this](const auto &error, const auto &) { on_connected(error); });
 }
 
@@ -59,21 +72,61 @@ void connector::on_connected(const boost::system::error_code &error) {
       << "on_connected, error:" << error.message();
   if (check_error(error))
     return;
+  if (!config_.ssl)
+    return handshake();
+  secure();
+}
+
+void connector::secure() {
+  // TODO unify with http::connection_cretor::secure!!!
+  auto connection_impl_ = dynamic_cast<connection_impl *>(connection.get());
+  BOOST_ASSERT(connection_impl_);
+  auto &stream = std::get<connection_impl::https_stream_type>(
+      connection_impl_->get_native());
+  auto &ssl_context = connection_impl_->get_ssl_context();
+  ssl_context.set_default_verify_paths();
+  ssl_context.set_verify_mode(boost::asio::ssl::verify_none);
+  // TODO replace the following line with certify
+  if (!SSL_set_tlsext_host_name(stream.next_layer().native_handle(),
+                                config_.url.c_str())) {
+    boost::beast::error_code error{static_cast<int>(::ERR_get_error()),
+                                   boost::asio::error::get_ssl_category()};
+    check_error(error);
+    return;
+  }
+  stream.next_layer().async_handshake(
+      boost::asio::ssl::stream_base::client,
+      [this](const auto error) { on_secured(error); });
+}
+
+void connector::on_secured(const boost::system::error_code &error) {
+  BOOST_LOG_SEV(logger, logging::severity::trace)
+      << "on_secured, error:" << error.message();
+  if (check_error(error))
+    return;
   handshake();
 }
 
 void connector::handshake() {
   BOOST_LOG_SEV(logger, logging::severity::trace) << "goiing to handshake";
-  auto &native = connection->get_native();
-  native.async_handshake(config_.url, config_.path, [this](const auto &error) {
-    BOOST_LOG_SEV(this->logger, logging::severity::trace) << "did handshake";
-    if (check_error(error))
-      return;
-    BOOST_LOG_SEV(this->logger, logging::severity::info)
-        << "did handshake successfully";
-    done = true;
-    promise.set_value(std::move(connection));
-  });
+  auto connection_impl_ = dynamic_cast<connection_impl *>(connection.get());
+  BOOST_ASSERT(connection_impl_);
+  auto &native = connection_impl_->get_native();
+  std::visit(
+      [&](auto &item) {
+        item.async_handshake(
+            config_.url, config_.path, [this](const auto &error) {
+              BOOST_LOG_SEV(this->logger, logging::severity::trace)
+                  << "did handshake";
+              if (check_error(error))
+                return;
+              BOOST_LOG_SEV(this->logger, logging::severity::info)
+                  << "did handshake successfully";
+              done = true;
+              promise.set_value(std::move(connection));
+            });
+      },
+      native);
 }
 
 bool connector::check_error(const boost::system::error_code &error) {

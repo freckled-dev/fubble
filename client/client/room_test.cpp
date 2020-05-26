@@ -1,6 +1,8 @@
 #include "add_data_channel.hpp"
 #include "executor_asio.hpp"
+#include "http/action_factory.hpp"
 #include "http/client_factory.hpp"
+#include "http/connection_creator.hpp"
 #include "joiner.hpp"
 #include "matrix/authentification.hpp"
 #include "matrix/client_factory.hpp"
@@ -50,6 +52,7 @@ struct test_client {
                                   fixture.rtc_signalling_thread.get_native()} {}
 
   boost::asio::io_context &context;
+  http::connection_creator connection_creator_{context};
   std::string room_name;
   boost::asio::executor executor{context.get_executor()};
   boost::executor_adaptor<executor_asio> boost_executor{
@@ -68,10 +71,11 @@ struct test_client {
       websocket_connector, signalling_connection_creator, connect_information};
 
   // matrix
+  http::action_factory action_factory_{connection_creator_};
   http::client_factory http_client_factory{
-      context, matrix::testing::make_http_server_and_fields()};
+      action_factory_, matrix::testing::make_http_server_and_fields()};
   http::client http_client_temporary_room{
-      context, temporary_room::testing::make_http_server_and_fields()};
+      action_factory_, temporary_room::testing::make_http_server_and_fields()};
   temporary_room::net::client temporary_room_client{http_client_temporary_room};
   matrix::factory matrix_factory;
   matrix::client_factory matrix_client_factory{matrix_factory,

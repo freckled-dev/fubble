@@ -113,6 +113,7 @@ void client::do_sync() {
     return;
   }
   auto target = make_sync_target(sync_till_stop_timeout);
+  BOOST_ASSERT(!http_sync_action);
   http_sync_action = http_client->get_action(target);
   http_sync_action->do_().then(
       executor, [this](auto result) { on_sync_till_stop(result); });
@@ -123,6 +124,10 @@ void client::on_sync_till_stop(
         &result) {
   try {
     auto response = result.get();
+    // don't destroy http_sync_action before result.get. In case the descructor
+    // destroies the result, this would lead else to double-free of
+    // http_sync_action
+    auto action_done = std::move(http_sync_action);
     auto response_json = response.second;
     error::check_matrix_response(response.first, response_json);
     on_synced(response_json);
@@ -135,6 +140,10 @@ void client::on_sync_till_stop(
 }
 
 void client::stop_sync() {
+  BOOST_ASSERT(sync_till_stop_active);
   sync_till_stop_active = false;
+  if (!http_sync_action) // may be nullptr if is getting called from
+                         // on_sync_till_stop callback
+    return;
   http_sync_action->cancel();
 }
