@@ -31,17 +31,24 @@ Item {
             font.pointSize: Style.current.subHeaderPointSize
         }
 
-        ColumnLayout {
-            id: participantColumns
-            anchors.right: parent.right
-            anchors.left: parent.left
-            visible: overviewVisible || overviewAnimation.running
+        ScrollView {
             anchors.top: participantLabel.bottom
+            anchors.right: parent.right
+            anchors.bottom: actionLoader.top
+            anchors.left: parent.left
             anchors.topMargin: 30
+            anchors.bottomMargin: 30
+            clip: true
 
-            Repeater {
-                model: overviewContainer.roomModel.participants
-                delegate: participantOverviewComponent
+            ColumnLayout {
+                id: participantColumns
+                anchors.fill: parent
+                visible: overviewVisible || overviewAnimation.running
+
+                Repeater {
+                    model: overviewContainer.roomModel.participants
+                    delegate: participantOverviewComponent
+                }
             }
         }
 
@@ -69,3 +76,10 @@ Item {
         }
     }
 }
+
+/*##^##
+Designer {
+    D{i:0;autoSize:true;height:480;width:640}
+}
+##^##*/
+
