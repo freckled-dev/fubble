@@ -30,7 +30,7 @@ QtObject {
         ListElement {
             name: "Horst"
             timestamp: 1588754962085
-            message: "Lorem ipsum dolor sit amet, consete et justo duo dolores et ea rebum. Stet clita kasd, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd Lorem ipsum dolor sit amet."
+            message: "www.google.com"
 
             // message, join, leave, kick
             type: "message"
