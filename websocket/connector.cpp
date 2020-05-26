@@ -1,6 +1,6 @@
 #include "connector.hpp"
-#include "connection.hpp"
 #include "connection_creator.hpp"
+#include "connection_impl.hpp"
 #include <boost/asio/connect.hpp>
 #include <fmt/format.h>
 
@@ -51,12 +51,14 @@ overloaded(Ts...) -> overloaded<Ts...>; // not needed as of C++20
 void connector::connect_to_endpoints(
     const boost::asio::ip::tcp::resolver::results_type &endpoints) {
   connection = creator.create(config_.ssl);
-  auto &native = connection->get_native();
-  boost::asio::ip::tcp::socket *tcp =
-      std::visit(overloaded{[&](connection::http_stream_type &stream_) {
+  auto connection_impl_ = dynamic_cast<connection_impl *>(connection.get());
+  BOOST_ASSERT(connection_impl_);
+  auto &native = connection_impl_->get_native();
+  auto *tcp =
+      std::visit(overloaded{[&](connection_impl::http_stream_type &stream_) {
                               return &stream_.next_layer();
                             },
-                            [&](connection::https_stream_type &stream_) {
+                            [&](connection_impl::https_stream_type &stream_) {
                               return &stream_.next_layer().next_layer();
                             }},
                  native);
@@ -77,9 +79,11 @@ void connector::on_connected(const boost::system::error_code &error) {
 
 void connector::secure() {
   // TODO unify with http::connection_cretor::secure!!!
-  auto &stream =
-      std::get<connection::https_stream_type>(connection->get_native());
-  auto &ssl_context = connection->get_ssl_context();
+  auto connection_impl_ = dynamic_cast<connection_impl *>(connection.get());
+  BOOST_ASSERT(connection_impl_);
+  auto &stream = std::get<connection_impl::https_stream_type>(
+      connection_impl_->get_native());
+  auto &ssl_context = connection_impl_->get_ssl_context();
   ssl_context.set_default_verify_paths();
   ssl_context.set_verify_mode(boost::asio::ssl::verify_none);
   // TODO replace the following line with certify
@@ -105,7 +109,9 @@ void connector::on_secured(const boost::system::error_code &error) {
 
 void connector::handshake() {
   BOOST_LOG_SEV(logger, logging::severity::trace) << "goiing to handshake";
-  auto &native = connection->get_native();
+  auto connection_impl_ = dynamic_cast<connection_impl *>(connection.get());
+  BOOST_ASSERT(connection_impl_);
+  auto &native = connection_impl_->get_native();
   std::visit(
       [&](auto &item) {
         item.async_handshake(

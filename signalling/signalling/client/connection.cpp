@@ -1,6 +1,7 @@
 #include "connection.hpp"
 #include "signalling/json_message.hpp"
 #include "websocket/connection.hpp"
+#include <boost/beast.hpp>
 #include <fmt/format.h>
 
 using namespace signalling::client;

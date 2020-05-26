@@ -1,6 +1,6 @@
 #include "acceptor.hpp"
-#include "connection.hpp"
 #include "connection_creator.hpp"
+#include "connection_impl.hpp"
 
 using namespace websocket;
 
@@ -32,9 +32,10 @@ std::uint16_t acceptor::get_port() const {
 
 void acceptor::run() {
   auto connection_ = creator.create(false);
-  auto &native = connection_->get_native();
-  boost::asio::ip::tcp::socket &tcp =
-      std::get<connection::http_stream_type>(native).next_layer();
+  auto connection_impl_ = dynamic_cast<connection_impl *>(connection_.get());
+  BOOST_ASSERT(connection_impl_);
+  auto &native = connection_impl_->get_native();
+  auto &tcp = std::get<connection_impl::http_stream_type>(native).next_layer();
   acceptor_.async_accept(tcp, [this, connection_ = std::move(connection_)](
                                   const auto &error) mutable {
     if (error) {
@@ -53,8 +54,11 @@ void acceptor::run() {
 }
 
 void acceptor::successful_tcp(connection_ptr connection_parameter) {
-  auto &native = std::get<connection::http_stream_type>(
-      connection_parameter->get_native());
+  auto connection_impl_ =
+      dynamic_cast<connection_impl *>(connection_parameter.get());
+  BOOST_ASSERT(connection_impl_);
+  auto &native = std::get<connection_impl::http_stream_type>(
+      connection_impl_->get_native());
   native.async_accept([this, connection_ = std::move(connection_parameter)](
                           const auto &error) mutable {
     if (error) {

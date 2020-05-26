@@ -1,4 +1,5 @@
 #include "connection_creator.hpp"
+#include "connection_impl.hpp"
 #include "http/logger.hpp"
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/asio/ssl/stream.hpp>
@@ -8,38 +9,6 @@
 using namespace http;
 
 namespace {
-struct connection_ssl : public connection {
-  boost::beast::tcp_stream stream;
-  boost::asio::ssl::context ssl_context{
-      boost::asio::ssl::context::tlsv12_client};
-  boost::beast::ssl_stream<boost::beast::tcp_stream &> ssl_stream;
-
-  connection_ssl(boost::asio::io_context &context)
-      : stream(context), ssl_stream(stream, ssl_context) {}
-
-  void cancel() override { stream.socket().close(); }
-
-  void shutdown() override {
-    stream.socket().shutdown(boost::asio::socket_base::shutdown_both);
-  }
-
-  http_or_https get_native() override { return &ssl_stream; }
-};
-
-class connection_insecure : public connection {
-public:
-  boost::beast::tcp_stream stream;
-
-  connection_insecure(boost::asio::io_context &context) : stream(context) {}
-
-  void cancel() override { stream.socket().close(); }
-
-  void shutdown() override {
-    stream.socket().shutdown(boost::asio::socket_base::shutdown_both);
-  }
-
-  http_or_https get_native() override { return &stream; }
-};
 struct connector : std::enable_shared_from_this<connector> {
   http::logger logger{"connector"};
   boost::asio::io_context &context;
@@ -57,7 +26,7 @@ struct connector : std::enable_shared_from_this<connector> {
       tcp_connection = std::make_unique<connection_insecure>(context);
   }
 
-  connection::http_type &get_http() {
+  http_type &get_http() {
     if (ssl_connection)
       return ssl_connection->stream;
     return tcp_connection->stream;
