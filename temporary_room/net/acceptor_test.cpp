@@ -1,4 +1,6 @@
+#include "http/action_factory.hpp"
 #include "http/client.hpp"
+#include "http/connection_creator.hpp"
 #include "server.hpp"
 #include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
@@ -17,7 +19,9 @@ TEST(NetAcceptor, Put) {
   };
   http::server server_{"localhost", std::to_string(server.get_port())};
   http::fields fields_{server_};
-  http::client client{context, server_, fields_};
+  http::connection_creator connection_creator_{context};
+  http::action_factory action_factory_{connection_creator_};
+  http::client client{action_factory_, server_, fields_};
   auto content = nlohmann::json::object();
   auto get_future = client.put(path, content);
   context.run();

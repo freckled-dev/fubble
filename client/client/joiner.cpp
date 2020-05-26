@@ -49,7 +49,10 @@ protected:
     return client_->set_display_name(parameters_.name);
   }
 
-  void on_name_set(boost::future<void> &name_set) { name_set.get(); }
+  void on_name_set(boost::future<void> &name_set) {
+    BOOST_LOG_SEV(logger, logging::severity::trace) << "on_name_set";
+    name_set.get();
+  }
 
   boost::future<matrix::room *> join_room() {
     BOOST_LOG_SEV(logger, logging::severity::info)
@@ -64,6 +67,7 @@ protected:
   }
 
   joiner::room_ptr on_room_joined(boost::future<matrix::room *> &joined) {
+    BOOST_LOG_SEV(logger, logging::severity::trace) << "on_room_joined";
     auto got = joined.get();
     auto result = room_creator_.create(std::move(client_), *got);
     return result;

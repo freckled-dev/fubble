@@ -22,6 +22,7 @@ for remote_name, remote_url in conan_remotes:
             check=True)
 
 subprocess.run(['conan', 'install',
+    '--update', # Check updates exist from upstream remotes
     '--build', 'missing',
     '--install-folder', paths.dependencies_dir,
     paths.source_dir

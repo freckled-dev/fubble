@@ -1,6 +1,7 @@
 #include "boost_di_extension_scopes_session.hpp"
 #include "connection_creator.hpp"
 #include "executor_asio.hpp"
+#include "http/connection_creator.hpp"
 #include "server.hpp"
 #include "signalling/client/client.hpp"
 #include "signalling/client/connection.hpp"
@@ -44,7 +45,7 @@ struct Server : testing::Test {
 
   void connect(signalling::client::client &client) const {
     auto service = std::to_string(acceptor.get_port());
-    client.set_connect_information({"localhost", service, "/"});
+    client.set_connect_information({false, "localhost", service, "/"});
     client.connect(session_key);
   }
   static void shall_want_to_negotiate(signalling::client::client &client) {
@@ -115,7 +116,7 @@ TEST_F(Server, CantConnect) {
     (void)error;
     called = true;
   });
-  client_.set_connect_information({"localhost", "", "/"});
+  client_.set_connect_information({false, "localhost", "", "/"});
   client_.connect(session_key);
   context.run();
   EXPECT_TRUE(called);

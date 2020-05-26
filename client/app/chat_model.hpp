@@ -9,7 +9,7 @@ class chat;
 class chat_model : public QObject {
   Q_OBJECT
   Q_PROPERTY(
-      chat_messages_model *messages MEMBER messages NOTIFY messages_changed);
+      chat_messages_model *messages MEMBER messages NOTIFY messages_changed)
 
 public:
   chat_model(room &room_, QObject *parent);

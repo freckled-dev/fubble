@@ -8,13 +8,16 @@
 #include <boost/beast/core/flat_buffer.hpp>
 #include <boost/beast/core/tcp_stream.hpp>
 #include <boost/beast/http.hpp>
+#include <boost/beast/ssl/ssl_stream.hpp>
 #include <boost/thread/future.hpp>
 #include <nlohmann/json_fwd.hpp>
 
 namespace http {
+class connection_creator;
+class connection;
 class action {
 public:
-  action(boost::asio::io_context &context, boost::beast::http::verb verb,
+  action(connection_creator &creator, boost::beast::http::verb verb,
          const std::string &target, const server &server_,
          const fields &fields_);
   ~action();
@@ -28,23 +31,19 @@ public:
   void cancel();
 
 protected:
-  void
-  on_resolved(const boost::system::error_code &error,
-              const boost::asio::ip::tcp::resolver::results_type &resolved);
-  void on_connected(const boost::system::error_code &error);
-  void do_request();
+  void send_request();
   void on_request_send(const boost::system::error_code &error);
   void read_response();
   void on_response_read(const boost::system::error_code &error);
   bool check_and_handle_error(const boost::system::error_code &error);
 
   http::logger logger{"action"};
-  boost::beast::tcp_stream stream;
-  boost::asio::ip::tcp::resolver resolver;
+  connection_creator &connection_creator_;
   const server server_;
   const boost::beast::http::verb verb;
   const std::string target;
   const fields fields_;
+  std::unique_ptr<connection> connection_;
 
   using response_type =
       boost::beast::http::response<boost::beast::http::string_body>;

@@ -1,3 +1,5 @@
+#include "http/action_factory.hpp"
+#include "http/connection_creator.hpp"
 #include "matrix/authentification.hpp"
 #include "matrix/client_factory.hpp"
 #include "matrix/testing.hpp"
@@ -13,8 +15,10 @@ TEST(Server, Join) {
   boost::asio::io_context context;
   // matrix
   matrix::factory matrix_factory;
+  http::connection_creator connection_creator_{context};
+  http::action_factory action_factory_{connection_creator_};
   http::client_factory http_client_factory_matrix{
-      context, matrix::testing::make_http_server_and_fields()};
+      action_factory_, matrix::testing::make_http_server_and_fields()};
   matrix::client_factory matrix_client_factory{matrix_factory,
                                                http_client_factory_matrix};
   matrix::authentification matrix_authentification{http_client_factory_matrix,
@@ -38,7 +42,8 @@ TEST(Server, Join) {
   // temporary_room client
   http::server http_server{"localhost", std::to_string(acceptor.get_port())};
   http::fields http_fields{http_server};
-  http::client_factory http_client_factory{context, http_server, http_fields};
+  http::client_factory http_client_factory{action_factory_, http_server,
+                                           http_fields};
   auto http_client = http_client_factory.create();
   temporary_room::net::client client{*http_client};
   bool called{};

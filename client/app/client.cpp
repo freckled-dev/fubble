@@ -3,6 +3,7 @@
 #include "client/p2p/negotiation/offer_answer.hpp"
 #include "executor_asio.hpp"
 #include "exit_signals.hpp"
+#include "http/connection_creator.hpp"
 #include "logging/initialser.hpp"
 #include "options.hpp"
 #include "rtc/connection.hpp"
@@ -110,6 +111,7 @@ int main(int argc, char *argv[]) {
 
   exit_signals signals_{executor};
 
+  http::connection_creator http_connection_creator{context};
   websocket::connection_creator websocket_connection_creator{context};
   websocket::connector_creator websocket_connector{
       context, websocket_connection_creator};
@@ -120,7 +122,7 @@ int main(int argc, char *argv[]) {
   signalling::client::client signalling_client{websocket_connector,
                                                signalling_connection_creator};
   signalling::client::client::connect_information connect_information{
-      config_.signalling_.host, config_.signalling_.service,
+      false, config_.signalling_.host, config_.signalling_.service,
       "/api/signalling/v0/"};
   signalling_client.set_connect_information(connect_information);
   signalling_client.on_error.connect([&](auto /*error*/) { signals_.close(); });

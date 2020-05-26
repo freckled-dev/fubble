@@ -3,7 +3,6 @@
 
 #include "fields.hpp"
 #include "logger.hpp"
-#include <boost/asio/io_context.hpp>
 #include <boost/beast/http/status.hpp>
 #include <boost/thread/executors/inline_executor.hpp>
 #include <boost/thread/future.hpp>
@@ -11,12 +10,12 @@
 
 namespace http {
 class action;
+class action_factory;
 class client {
 public:
-  // TODO remove context, replace with action_factory
-  client(boost::asio::io_context &context,
+  client(action_factory &action_factory_,
          const std::pair<server, fields> &server_and_fields);
-  client(boost::asio::io_context &context, const server &server_,
+  client(action_factory &action_factory_, const server &server_,
          const fields &fields_);
   ~client();
 
@@ -30,12 +29,12 @@ public:
                           const nlohmann::json &content);
 
 protected:
-  async_result_future do_action(std::shared_ptr<action> &action_);
+  async_result_future do_action(std::unique_ptr<action> &&action_);
   void add_action(const std::shared_ptr<action> &action_);
   void remove_action(const action *action_);
 
   http::logger logger{"client"};
-  boost::asio::io_context &context;
+  action_factory &action_factory_;
   boost::inline_executor executor;
   const server server_;
   const fields fields_;

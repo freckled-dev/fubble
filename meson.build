@@ -79,7 +79,8 @@ google_webrtc_dep_fixme = dependency('google-webrtc', include_type : 'system')
 google_webrtc_dep = declare_dependency(
   dependencies: [google_webrtc_dep_fixme, x11_dep]
   )
-ssl_dep = dependency('openssl', include_type: 'system', required: false)
+# ssl_dep = dependency('openssl', include_type: 'system', required: false)
+ssl_dep = google_webrtc_dep
 rectangle_bin_pack_dep = dependency('RectangleBinPack', include_type: 'system')
 
 subdir('asio')

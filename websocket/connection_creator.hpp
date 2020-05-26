@@ -10,7 +10,7 @@ public:
   connection_creator(boost::asio::io_context &context);
   virtual ~connection_creator() = default;
 
-  virtual connection_ptr operator()();
+  virtual connection_ptr create(bool secure);
 
 private:
   boost::asio::io_context &context;
