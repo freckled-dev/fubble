@@ -16,4 +16,3 @@ std::vector<participant *> participants_with_video_model::filter_joining(
                [&](auto check) { return !check->get_videos().empty(); });
   return result;
 }
-

@@ -280,5 +280,4 @@ int main(int argc, char *argv[]) {
   BOOST_LOG_SEV(logger, logging::severity::debug) << "gui stopped";
   context.stop();
   return result;
-  return 0;
 }

@@ -139,13 +139,18 @@ void video_layout::recalculate() {
 #endif
   const double container_aspect = width_ / height_;
   const double first_child_aspect = get_aspect(*children_.first());
+  if (container_aspect <= 0. || first_child_aspect <= 0.)
+    return;
   const auto [first_child_width, first_child_height] =
       calculate_width_and_hight_by_aspect(first_child_aspect);
   auto packer_width = static_cast<int>(first_child_width);
   while (true) {
     auto packed = try_pack(children_, container_aspect, packer_width);
     if (!packed) {
+      auto packer_width_old = packer_width;
       packer_width += (packer_width * 5) / 100;
+      if (packer_width_old >= packer_width)
+        return; // this is going nowhere. there's an invalid number involved
       continue;
     }
     const double container_packer_factor =
