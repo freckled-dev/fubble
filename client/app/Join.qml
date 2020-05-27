@@ -13,6 +13,7 @@ FocusScope {
     signal joined(RoomModel room)
     Material.foreground: Style.current.foreground
     property bool guiEnabled: true
+    property alias history: history
 
     QtSettings.Settings {
         property alias userName: nameTextField.text
@@ -39,6 +40,7 @@ FocusScope {
                 setGuiEnabled(true)
             }
         }
+
         function joinRoom() {
             var noRoomName = isEmpty(roomTextField.text)
             var noName = isEmpty(nameTextField.text)
@@ -94,7 +96,7 @@ FocusScope {
         ColumnLayout {
             id: inputLayout
             width: 500
-            height: 100
+            height: 60
             spacing: 8
             Layout.topMargin: 40
 
@@ -165,7 +167,6 @@ FocusScope {
                 id: joinButton
                 width: 300
                 text: qsTr("Join")
-                Layout.topMargin: 20
                 Layout.fillHeight: false
                 Material.background: Style.current.primary
                 Material.foreground: Style.current.buttonTextColor
@@ -174,6 +175,13 @@ FocusScope {
                 Layout.fillWidth: false
                 onClicked: loginUi.joinRoom()
             }
+        }
+
+        RoomHistory {
+            id: history
+            Layout.fillWidth: true
+            Layout.topMargin: 20
+            Layout.bottomMargin: 40
         }
     }
 }

@@ -73,7 +73,7 @@ Item {
 
         Loader {
             id: emojiLoader
-            sourceComponent: emojiComponent
+            //sourceComponent: emojiComponent
             asynchronous: true
             onLoaded: chatInput.smileyButton.enabled = true
         }
