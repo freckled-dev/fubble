@@ -30,7 +30,6 @@ private:
   Verifier verifier_;
 };
 
-///@brief Auxiliary function to make verbose_verification objects.
 template <typename Verifier>
 verbose_verification<Verifier> make_verbose_verification(Verifier verifier) {
   return verbose_verification<Verifier>(verifier);
