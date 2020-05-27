@@ -1,6 +1,8 @@
 #include "action.hpp"
 #include "connection_creator.hpp"
 #include "connection_impl.hpp"
+#include "http_connection.hpp"
+#include "https_connection.hpp"
 #include <fmt/format.h>
 #include <fmt/ostream.h>
 #include <nlohmann/json.hpp>
@@ -9,13 +11,12 @@ using namespace http;
 
 namespace {
 http_or_https get_native_from_connection(connection &connection_) {
-  auto ssl = dynamic_cast<connection_ssl *>(&connection_);
+  auto ssl = dynamic_cast<http_connection *>(&connection_);
   if (ssl)
-    return ssl->get_native();
-  auto tcp = dynamic_cast<connection_insecure *>(&connection_);
+    return &ssl->get_native();
+  auto tcp = dynamic_cast<https_connection *>(&connection_);
   BOOST_ASSERT(tcp);
-  return tcp->get_native();
-  //
+  return &tcp->get_native();
 }
 } // namespace
 
