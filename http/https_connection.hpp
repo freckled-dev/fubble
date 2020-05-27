@@ -20,8 +20,7 @@ public:
 
 protected:
   std::unique_ptr<http_connection> http_connection_;
-  boost::asio::ssl::context ssl_context{
-      boost::asio::ssl::context::tlsv12_client};
+  boost::asio::ssl::context ssl_context{boost::asio::ssl::context::sslv23};
   boost::beast::ssl_stream<boost::beast::tcp_stream &> ssl_stream;
 };
 } // namespace http
