@@ -13,17 +13,26 @@ room_model::room_model(const std::shared_ptr<room> &room_, QObject *parent)
       participants->on_own_changed.connect([this]() { set_own(); }));
   signal_connections.emplace_back(
       room_->on_name_changed.connect([this](const auto &) { set_name(); }));
-  connect(participants_with_video, &QAbstractListModel::dataChanged, this,
-          &room_model::recalculate_video_available);
+  connect(participants_with_video, &participants_with_video_model::rowsInserted,
+          this, &room_model::recalculate_video_available);
+  recalculate_video_available();
   set_name();
 }
 
 void room_model::recalculate_video_available() {
   auto has_videos = participants_with_video->rowCount() != 0;
+  BOOST_LOG_SEV(logger, logging::severity::trace)
+      << "recalculate_video_available has_videos:" << has_videos
+      << ", videos_available:" << videos_available;
   if (has_videos == videos_available)
     return;
   videos_available = has_videos;
   videos_available_changed(videos_available);
+}
+
+void room_model::raise_new_participants_count() {
+  ++new_participants_count;
+  new_participants_count_changed(new_participants_count);
 }
 
 void room_model::set_name() {
@@ -37,4 +46,9 @@ void room_model::set_own() {
   BOOST_ASSERT(own);
   own_participant = own.value();
   own_participant_changed(own_participant);
+}
+
+void room_model::resetNewParticipants() {
+  new_participants_count = 0;
+  new_participants_count_changed(new_participants_count);
 }

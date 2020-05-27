@@ -22,12 +22,17 @@ class room_model : public QObject {
   Q_PROPERTY(participants_with_video_model *participantsWithVideo MEMBER
                  participants_with_video NOTIFY participants_with_video_changed)
   Q_PROPERTY(chat_model *chat MEMBER chat NOTIFY chat_changed)
+  Q_PROPERTY(int newParticipants MEMBER new_participants_count NOTIFY
+                 new_participants_count_changed)
 
 public:
   room_model(const std::shared_ptr<room> &room_, QObject *parent);
 
+  Q_INVOKABLE void resetNewParticipants();
+
 public slots:
   void recalculate_video_available();
+  void raise_new_participants_count();
 
 signals:
   void name_changed(QString);
@@ -36,6 +41,7 @@ signals:
   void videos_available_changed(bool);
   void participants_with_video_changed(participants_with_video_model *);
   void chat_changed(chat_model *);
+  void new_participants_count_changed(int);
 
 protected:
   void set_name();
@@ -49,6 +55,7 @@ protected:
   participants_model *participants{};
   participants_with_video_model *participants_with_video{};
   chat_model *chat{};
+  int new_participants_count{};
   std::vector<boost::signals2::scoped_connection> signal_connections;
 };
 } // namespace client
