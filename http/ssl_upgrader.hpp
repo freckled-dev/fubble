@@ -9,6 +9,33 @@
 #include <boost/thread/future.hpp>
 
 namespace http {
+namespace internal {
+// https://stackoverflow.com/questions/28264313/ssl-certificates-and-boost-asio
+template <typename Verifier> class verbose_verification {
+public:
+  verbose_verification(Verifier verifier) : verifier_(verifier) {}
+
+  bool operator()(bool preverified, boost::asio::ssl::verify_context &ctx) {
+    char subject_name[256];
+    X509 *cert = X509_STORE_CTX_get_current_cert(ctx.native_handle());
+    X509_NAME_oneline(X509_get_subject_name(cert), subject_name, 256);
+    bool verified = verifier_(preverified, ctx);
+    BOOST_LOG_SEV(logger, logging::severity::trace)
+        << "Verifying: " << subject_name << ", Verified: " << verified;
+    return verified;
+  }
+
+private:
+  http::logger logger{"ssl_verification"};
+  Verifier verifier_;
+};
+
+///@brief Auxiliary function to make verbose_verification objects.
+template <typename Verifier>
+verbose_verification<Verifier> make_verbose_verification(Verifier verifier) {
+  return verbose_verification<Verifier>(verifier);
+}
+} // namespace internal
 template <class connection_type> class ssl_upgrader {
 public:
   ssl_upgrader(const server &server_, connection_type &connection_,
@@ -23,11 +50,11 @@ public:
 
   boost::future<void> secure_connection() {
     auto promise_copy = promise;
-    // TODO verify the ssl https://github.com/djarek/certify
     // https://www.boost.org/doc/libs/1_73_0/doc/html/boost_asio/reference/ssl__host_name_verification.html
     ssl_context.set_default_verify_paths();
-    ssl_context.set_verify_mode(boost::asio::ssl::verify_none);
-    // TODO replace the following line with certify
+    connection_.set_verify_mode(boost::asio::ssl::verify_peer);
+    connection_.set_verify_callback(internal::make_verbose_verification(
+        boost::asio::ssl::host_name_verification(server_.host)));
     if (!SSL_set_tlsext_host_name(connection_.native_handle(),
                                   server_.host.c_str())) {
       boost::beast::error_code error{static_cast<int>(::ERR_get_error()),
