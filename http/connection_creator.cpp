@@ -22,7 +22,7 @@ struct connector : std::enable_shared_from_this<connector> {
   std::unique_ptr<http_connection> tcp_connection_owning;
   http_connection *tcp_connection;
   std::unique_ptr<https_connection> ssl_connection;
-  std::unique_ptr<ssl_upgrader> ssl_upgrader_;
+  std::unique_ptr<ssl_upgrader<https_connection::native_type>> ssl_upgrader_;
   boost::inline_executor executor;
 
   connector(boost::asio::io_context &context_, const server server_)
@@ -33,7 +33,10 @@ struct connector : std::enable_shared_from_this<connector> {
       return;
     ssl_connection =
         std::make_unique<https_connection>(std::move(tcp_connection_owning));
-    ssl_upgrader_ = std::make_unique<ssl_upgrader>(server_, *ssl_connection);
+    ssl_upgrader_ =
+        std::make_unique<ssl_upgrader<https_connection::native_type>>(
+            server_, ssl_connection->get_native(),
+            ssl_connection->get_native_ssl_context());
   }
 
   http_type &get_http() { return tcp_connection->get_native(); }

@@ -1,6 +1,7 @@
 #include "connector.hpp"
 #include "connection_creator.hpp"
 #include "connection_impl.hpp"
+#include "http/ssl_upgrader.hpp"
 #include <boost/asio/connect.hpp>
 #include <fmt/format.h>
 
@@ -84,28 +85,23 @@ void connector::secure() {
   auto &stream = std::get<connection_impl::https_stream_type>(
       connection_impl_->get_native());
   auto &ssl_context = connection_impl_->get_ssl_context();
-  ssl_context.set_default_verify_paths();
-  ssl_context.set_verify_mode(boost::asio::ssl::verify_none);
-  // TODO replace the following line with certify
-  if (!SSL_set_tlsext_host_name(stream.next_layer().native_handle(),
-                                config_.url.c_str())) {
-    boost::beast::error_code error{static_cast<int>(::ERR_get_error()),
-                                   boost::asio::error::get_ssl_category()};
-    check_error(error);
-    return;
-  }
-  stream.next_layer().async_handshake(
-      boost::asio::ssl::stream_base::client,
-      [this](const auto error) { on_secured(error); });
+  http::server server_;
+  server_.host = config_.url;
+  server_.port = config_.service;
+  auto upgrader =
+      std::make_shared<http::ssl_upgrader<connection_impl::ssl_stream_type>>(
+          server_, stream.next_layer(), ssl_context);
+  upgrader->secure_connection().then([this, upgrader](auto result) {
+    try {
+      result.get();
+      on_secured();
+    } catch (const boost::system::system_error &error) {
+      check_error(error.code());
+    }
+  });
 }
 
-void connector::on_secured(const boost::system::error_code &error) {
-  BOOST_LOG_SEV(logger, logging::severity::trace)
-      << "on_secured, error:" << error.message();
-  if (check_error(error))
-    return;
-  handshake();
-}
+void connector::on_secured() { handshake(); }
 
 void connector::handshake() {
   BOOST_LOG_SEV(logger, logging::severity::trace) << "goiing to handshake";
