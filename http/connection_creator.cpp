@@ -1,6 +1,9 @@
 #include "connection_creator.hpp"
 #include "connection_impl.hpp"
 #include "http/logger.hpp"
+#include "http_connection.hpp"
+#include "https_connection.hpp"
+#include "ssl_upgrader.hpp"
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/asio/ssl/stream.hpp>
 #include <boost/beast/core.hpp>
@@ -9,30 +12,36 @@
 using namespace http;
 
 namespace {
+// TODO refactor to own files. remove enable_shared_from_this
 struct connector : std::enable_shared_from_this<connector> {
   http::logger logger{"connector"};
   boost::asio::io_context &context;
   boost::asio::ip::tcp::resolver resolver{context};
-  boost::promise<void> promise;
+  boost::promise<std::unique_ptr<connection>> promise;
   const server server_;
-  std::unique_ptr<connection_insecure> tcp_connection;
-  std::unique_ptr<connection_ssl> ssl_connection;
+  std::unique_ptr<http_connection> tcp_connection_owning;
+  http_connection *tcp_connection;
+  std::unique_ptr<https_connection> ssl_connection;
+  std::unique_ptr<ssl_upgrader<https_connection::native_type>> ssl_upgrader_;
+  boost::inline_executor executor;
 
   connector(boost::asio::io_context &context_, const server server_)
       : context(context_), server_(server_) {
-    if (server_.secure)
-      ssl_connection = std::make_unique<connection_ssl>(context);
-    else
-      tcp_connection = std::make_unique<connection_insecure>(context);
+    tcp_connection_owning = std::make_unique<http_connection>(context);
+    tcp_connection = tcp_connection_owning.get();
+    if (!server_.secure)
+      return;
+    ssl_connection =
+        std::make_unique<https_connection>(std::move(tcp_connection_owning));
+    ssl_upgrader_ =
+        std::make_unique<ssl_upgrader<https_connection::native_type>>(
+            server_, ssl_connection->get_native(),
+            ssl_connection->get_native_ssl_context());
   }
 
-  http_type &get_http() {
-    if (ssl_connection)
-      return ssl_connection->stream;
-    return tcp_connection->stream;
-  }
+  http_type &get_http() { return tcp_connection->get_native(); }
 
-  boost::future<void> do_() {
+  boost::future<std::unique_ptr<connection>> do_() {
     resolve();
     return promise.get_future();
   }
@@ -69,35 +78,20 @@ struct connector : std::enable_shared_from_this<connector> {
       return secure_connection();
     done();
   }
+
   void secure_connection() {
     BOOST_ASSERT(ssl_connection);
-    // TODO verify the ssl https://github.com/djarek/certify
-    // https://www.boost.org/doc/libs/1_73_0/doc/html/boost_asio/reference/ssl__host_name_verification.html
-    ssl_connection->ssl_context.set_default_verify_paths();
-    ssl_connection->ssl_context.set_verify_mode(boost::asio::ssl::verify_none);
-    // TODO replace the following line with certify
-    if (!SSL_set_tlsext_host_name(ssl_connection->ssl_stream.native_handle(),
-                                  server_.host.c_str())) {
-      boost::beast::error_code error{static_cast<int>(::ERR_get_error()),
-                                     boost::asio::error::get_ssl_category()};
-      check_and_handle_error(error);
-      return;
-    }
-    std::weak_ptr<connector> alive = shared_from_this();
-    ssl_connection->ssl_stream.async_handshake(
-        boost::asio::ssl::stream_base::client,
-        [this, alive = std::move(alive)](const auto error) {
-          if (!alive.lock())
-            return;
-          on_secured(error);
-        });
+    ssl_upgrader_->secure_connection().then(executor, [this](auto result) {
+      try {
+        result.get();
+        on_secured();
+      } catch (const boost::system::system_error &error) {
+        check_and_handle_error(error.code());
+      }
+    });
   }
 
-  void on_secured(const boost::system::error_code &error) {
-    if (!check_and_handle_error(error))
-      return;
-    done();
-  }
+  void on_secured() { done(); }
 
   bool check_and_handle_error(const boost::system::error_code &error) {
     if (!error)
@@ -112,7 +106,12 @@ struct connector : std::enable_shared_from_this<connector> {
 
   void done() {
     auto self = shared_from_this();
-    promise.set_value();
+    auto result = [this]() -> std::unique_ptr<connection> {
+      if (ssl_connection)
+        return std::move(ssl_connection);
+      return std::move(tcp_connection_owning);
+    }();
+    promise.set_value(std::move(result));
   }
 };
 
@@ -121,20 +120,9 @@ struct connector : std::enable_shared_from_this<connector> {
 connection_creator::connection_creator(boost::asio::io_context &context)
     : context(context) {}
 
-namespace {
-std::unique_ptr<connection>
-create_connection_from_connector(connector &connector_) {
-  if (connector_.ssl_connection)
-    return std::move(connector_.ssl_connection);
-  return std::move(connector_.tcp_connection);
-}
-} // namespace
-
 boost::future<std::unique_ptr<connection>>
 connection_creator::create(const server &server_) {
   auto connector_ = std::make_shared<connector>(context, server_);
-  return connector_->do_().then(executor, [connector_](auto result) {
-    result.get();
-    return create_connection_from_connector(*connector_);
-  });
+  return connector_->do_().then(
+      executor, [connector_](auto result) { return result.get(); });
 }

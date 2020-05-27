@@ -32,7 +32,7 @@ class FubbleConan(ConanFile):
             self.build_requires("meson/0.54.0")
         self.build_requires("nlohmann_json/3.7.0")
         self.build_requires("boost-di/1.1.0@inexorgame/stable")
-        self.build_requires("boost/1.72.0")
+        self.build_requires("boost/1.73.0")
         self.build_requires("gtest/1.10.0")
         self.build_requires("fmt/6.2.0")
         self.build_requires("google-webrtc/m79")

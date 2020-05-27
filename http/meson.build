@@ -1,6 +1,6 @@
 http = library('http',
   ['client.cpp', 'action.cpp', 'connection_creator.cpp', 'action_factory.cpp',
-    'connection_impl.cpp'],
+    'connection_impl.cpp', 'ssl_upgrader.cpp'],
   dependencies: [utils_dep, fmt_dep, json_dep],
   include_directories: ['..'],
   cpp_pch: '../pch/precompiled.hpp',

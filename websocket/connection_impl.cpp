@@ -14,7 +14,7 @@ connection_impl::stream_type make_stream(boost::asio::io_context &context,
 } // namespace
 
 connection_impl::connection_impl(boost::asio::io_context &context, bool secure)
-    : ssl_context{boost::asio::ssl::context::tlsv12_client},
+    : ssl_context{boost::asio::ssl::context::sslv23},
       stream(make_stream(context, ssl_context, secure)) {}
 
 connection_impl::~connection_impl() {
