@@ -19,8 +19,9 @@ public:
 
   using http_stream_type =
       boost::beast::websocket::stream<boost::asio::ip::tcp::socket>;
-  using https_stream_type = boost::beast::websocket::stream<
-      boost::beast::ssl_stream<boost::asio::ip::tcp::socket>>;
+  using ssl_stream_type =
+      boost::beast::ssl_stream<boost::asio::ip::tcp::socket>;
+  using https_stream_type = boost::beast::websocket::stream<ssl_stream_type>;
   using stream_type = std::variant<http_stream_type, https_stream_type>;
   stream_type &get_native();
   boost::asio::ssl::context &get_ssl_context();
