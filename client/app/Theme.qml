@@ -18,6 +18,7 @@ QtObject {
 
     property int subTextPointSize: 8
     property int textPointSize: 10
-    property int headerPointSize: 16
+    property int largeTextPointSize: 12
     property int subHeaderPointSize: 14
+    property int headerPointSize: 16
 }
