@@ -3,19 +3,23 @@ import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.0
 import QtMultimedia 5.0
 import io.fubble 1.0
-import Qt.labs.settings 1.0 as QtSettings
+import Qt.labs.settings 1.0
 import QtQuick.Controls.Material 2.0
 import "."
 
 FocusScope {
+    id: joinRoomContainer
     property var title: qsTr("Join a room")
     property JoinModel joinModel
-    signal joined(RoomModel room)
-    Material.foreground: Style.current.foreground
     property bool guiEnabled: true
     property alias history: history
 
-    QtSettings.Settings {
+    signal joined(RoomModel room)
+
+    Material.foreground: Style.current.foreground
+    Material.background: Style.current.background
+
+    Settings {
         property alias userName: nameTextField.text
         property alias roomName: roomTextField.text
     }
@@ -25,9 +29,10 @@ FocusScope {
     }
 
     ColumnLayout {
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.horizontalCenter: parent.horizontalCenter
         id: loginUi
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.left: parent.left
+        anchors.right: historyUi.visible ? historyUi.left : parent.right
         spacing: 8
         enabled: guiEnabled
 
@@ -41,50 +46,33 @@ FocusScope {
             }
         }
 
-        function joinRoom() {
-            var noRoomName = isEmpty(roomTextField.text)
-            var noName = isEmpty(nameTextField.text)
-
-            if (noRoomName) {
-                roomMandatory.visible = true
-            }
-
-            if (noName) {
-                nameMandatory.visible = true
-            }
-
-            if (noRoomName || noName) {
-                return
-            }
-
-            joinModel.join(roomTextField.text, nameTextField.text)
-            guiEnabled = false
-        }
-
-        function isEmpty(text) {
-            return text.length === 0
-        }
-
         NoVideo {
             id: noVideo
             width: 500
             height: 300
+            Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+            Layout.fillWidth: false
             visible: !joinModel.videoAvailable
         }
 
         VideoOutput {
             id: videoOutput
+            Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+            Layout.fillWidth: false
             source: joinModel.video
             visible: joinModel.videoAvailable
+
             function getAspectRatio() {
                 return videoOutput.sourceRect.width / videoOutput.sourceRect.height
             }
+
             Layout.maximumWidth: {
                 var percentage = 0.6
                 var aspectRatio = getAspectRatio()
                 return Math.min(container.width * percentage,
                                 container.height * percentage * aspectRatio)
             }
+
             Layout.maximumHeight: {
                 var percentage = 0.6
                 var aspectRatio = getAspectRatio()
@@ -95,8 +83,10 @@ FocusScope {
 
         ColumnLayout {
             id: inputLayout
-            width: 500
+            Layout.fillWidth: false
             height: 60
+            Layout.minimumWidth: 500
+            Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
             spacing: 8
             Layout.topMargin: 40
 
@@ -146,7 +136,7 @@ FocusScope {
                     selectByMouse: true
                     placeholderText: qsTr("Your name *")
                     Layout.fillWidth: true
-                    onAccepted: loginUi.joinRoom()
+                    onAccepted: joinRoomContainer.joinRoom()
 
                     onTextChanged: {
                         nameMandatory.visible = false
@@ -173,22 +163,63 @@ FocusScope {
                 Layout.preferredWidth: 300
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 Layout.fillWidth: false
-                onClicked: loginUi.joinRoom()
+                onClicked: joinRoomContainer.joinRoom()
             }
         }
+    }
+
+    CustomRectangle {
+        id: historyUi
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        lBorderwidth: 1
+        color: Style.current.background
+        borderColor: Style.current.foreground
+        width: 300
+        visible: history.hasRoomHistory
 
         RoomHistory {
             id: history
-            Layout.fillWidth: true
-            Layout.topMargin: 20
-            Layout.bottomMargin: 40
+            anchors.fill: parent
+            anchors.topMargin: 20
+            anchors.bottomMargin: 20
+            anchors.leftMargin: 20
+            onJoinRoom: {
+                roomTextField.text = roomName
+                joinRoomContainer.joinRoom()
+            }
         }
+    }
+
+    function joinRoom() {
+        var noRoomName = isEmpty(roomTextField.text)
+        var noName = isEmpty(nameTextField.text)
+
+        if (noRoomName) {
+            roomMandatory.visible = true
+        }
+
+        if (noName) {
+            nameMandatory.visible = true
+        }
+
+        if (noRoomName || noName) {
+            return
+        }
+
+        joinModel.join(roomTextField.text, nameTextField.text)
+        guiEnabled = false
+    }
+
+    function isEmpty(text) {
+        return text.length === 0
     }
 }
 
 /*##^##
 Designer {
-    D{i:0;autoSize:true;height:480;width:640}D{i:4;anchors_width:500;anchors_x:0;anchors_y:"-248"}
+    D{i:0;autoSize:true;height:480;width:640}
 }
 ##^##*/
 

@@ -1,43 +1,57 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.2
 import Qt.labs.settings 1.0
+import QtQuick.Controls.Material 2.0
+import "."
 
 Item {
     id: roomHistoryContainer
 
     property string history: ""
+    property bool hasRoomHistory: historyList.count > 0
+
+    signal joinRoom(string roomName)
 
     Settings {
+        id: settings
         property alias roomHistory: roomHistoryContainer.history
     }
 
     Label {
         id: historyHeader
         text: qsTr("Room History")
+        anchors.horizontalCenter: parent.horizontalCenter
         font.pointSize: Style.current.largeTextPointSize
     }
 
-    ListView {
-        id: view
+    ScrollView {
         anchors.top: historyHeader.bottom
-        height: childrenRect.height
-        width: childrenRect.width
-        anchors.topMargin: 10
+        anchors.topMargin: 20
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
 
-        model: ListModel {
-            id: dataModel
+        ListView {
+            id: historyList
+            anchors.fill: parent
+            spacing: 20
+
+            model: ListModel {
+                id: dataModel
+            }
+
+            delegate: roomHistoryComponent
         }
-
-        delegate: roomHistoryComponent
     }
 
     Component.onCompleted: loadRoomHistory()
 
     function loadRoomHistory() {
         if (history) {
-            var datamodel = JSON.parse(history)
-            for (var index = 0; index < datamodel.length; index++) {
-                dataModel.append(datamodel[index])
+            var parsed = JSON.parse(history)
+            for (var index = 0; index < parsed.length; index++) {
+                dataModel.append(parsed[index])
             }
         }
     }
@@ -59,24 +73,66 @@ Item {
         id: roomHistoryComponent
 
         Item {
-            implicitHeight: roomNameLabel.height
+            id: element
+            implicitHeight: roomNameLabel.height + enterTimeLabel.height + durationLabel.height
+            implicitWidth: roomHistoryContainer.width
 
             Label {
                 id: roomNameLabel
-                text: roomName + ", " + new Date(enterTime).toTimeString(
-                          ) + ", " + toHHMMSS(duration)
+                text: roomName
+                font.bold: true
             }
 
-            //            Label {
-            //                id: enterTimeLabel
-            //                text: new Date(enterTime).toTimeString()
-            //            }
+            Label {
+                id: enterTimeLabel
+                anchors.top: roomNameLabel.bottom
+                text: new Date(enterTime).toLocaleDateString()
+            }
 
-            //            Label {
-            //                id: durationLabel
-            //                text: duration
-            //            }
+            Label {
+                id: durationLabel
+                anchors.top: enterTimeLabel.bottom
+                text: new Date(enterTime).toTimeString(
+                          ) + " lasting " + toHHMMSS(duration)
+            }
+
+            Image {
+                id: deleteHistoryIcon
+                height: 20
+                anchors.rightMargin: 40
+                anchors.verticalCenter: parent.verticalCenter
+                width: 20
+                source: Style.current.closeIcon
+                anchors.right: parent.right
+
+                MouseArea {
+                    id: maDelete
+                    property bool hoverDeleteIcon: false
+
+                    anchors.fill: parent
+                    hoverEnabled: true
+
+                    onEntered: hoverDeleteIcon = true
+                    onExited: hoverDeleteIcon = false
+                }
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    if (!maDelete.hoverDeleteIcon) {
+                        joinRoom(roomName)
+                    } else {
+                        deleteHistory(index)
+                    }
+                }
+            }
         }
+    }
+
+    function deleteHistory(historyIndex) {
+        dataModel.remove(historyIndex, 1)
+        saveRoomHistory()
     }
 
     function toHHMMSS(timestring) {
@@ -102,3 +158,10 @@ Item {
         return hours + ':' + minutes + ':' + seconds
     }
 }
+
+/*##^##
+Designer {
+    D{i:0;autoSize:true;height:480;width:640}
+}
+##^##*/
+

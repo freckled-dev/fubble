@@ -54,10 +54,10 @@ Rectangle {
             function modifyMessage(message) {
                 message = message.replace(/\n/g, "<br />")
                 var emojiRanges = ['(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])']
-                var linkRange = /(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)(\/)?)/
+                var linkRange = /(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)(\/)?)/gi
 
                 var emojiRegex = new RegExp(emojiRanges, 'gi')
-                var linkRegex = new RegExp(linkRange, 'gi')
+                var linkRegex = new RegExp(linkRange)
 
                 var removeEmoji = message.replace(emojiRegex,
                                                   "").replace(/ /g, "")
