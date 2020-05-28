@@ -26,6 +26,9 @@
 #include "matrix/factory.hpp"
 #include "matrix/rooms.hpp"
 #include "model_creator.hpp"
+#include "participant_model.hpp"
+#include "participants_model.hpp"
+#include "participants_with_video_model.hpp"
 #include "poll_asio_by_qt.hpp"
 #include "room_model.hpp"
 #include "rtc/google/asio_signalling_thread.hpp"
@@ -149,12 +152,15 @@ int main(int argc, char *argv[]) {
   if (devices.empty())
     BOOST_LOG_SEV(logger, logging::severity::warning)
         << "there are no capture devices";
+  // TODO move the camera init logic to its own class
   rtc::google::capture::video::device_creator device_creator;
   std::shared_ptr<rtc::google::capture::video::device> capture_device;
   for (const auto &current_device : devices) {
     try {
-      capture_device = device_creator(current_device.id);
-      capture_device->start();
+      std::shared_ptr<rtc::google::capture::video::device>
+          capture_device_check = device_creator(current_device.id);
+      capture_device_check->start();
+      capture_device = capture_device_check;
       break;
     } catch (const std::exception &error) {
       BOOST_LOG_SEV(logger, logging::severity::warning) << fmt::format(
@@ -280,5 +286,4 @@ int main(int argc, char *argv[]) {
   BOOST_LOG_SEV(logger, logging::severity::debug) << "gui stopped";
   context.stop();
   return result;
-  return 0;
 }
