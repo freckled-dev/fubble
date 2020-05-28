@@ -17,7 +17,7 @@ ApplicationWindow {
     y: 0
 
     minimumWidth: 800
-    minimumHeight: 600
+    minimumHeight: 800
     visible: true
 
     property JoinModel joinModel: joinModelFromCpp
@@ -27,6 +27,8 @@ ApplicationWindow {
 
     property bool shutdown: false
     property string fubbleState: "Login"
+
+    property var currentRoomInfo
 
     // theme
     Material.primary: Style.current.primary
@@ -53,24 +55,25 @@ ApplicationWindow {
 
     StackView {
         id: stack
-        initialItem: joinComponent
+        initialItem: join
         anchors.fill: parent
         focus: true
     }
 
-    Component {
-        id: joinComponent
+    Join {
+        id: join
+        joinModel: container.joinModel
+        onJoined: {
+            stack.push(roomComponent, {
+                           "room": room
+                       })
+            fubbleState = "Room"
 
-        Join {
-            id: join
-            joinModel: container.joinModel
-            onJoined: {
-                stack.push(roomComponent, {
-                               "room": room
-                           })
-                fubbleState = "Room"
+            playJoinSound()
 
-                playJoinSound()
+            currentRoomInfo = {
+                "roomName": room.name,
+                "enterTime": new Date().getTime()
             }
         }
     }
@@ -98,7 +101,15 @@ ApplicationWindow {
             if (shutdown) {
                 container.close()
             }
+
+            // seconds spent in the room
+            var duration = (new Date().getTime(
+                                ) - currentRoomInfo.enterTime) / 1000
+            var durationRounded = Math.round(duration)
+            currentRoomInfo.duration = durationRounded
+            join.history.addRoomToHistory(currentRoomInfo)
         }
+
         onLeaving: {
             fubbleState = "Leaving"
         }

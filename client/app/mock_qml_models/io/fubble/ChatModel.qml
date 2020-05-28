@@ -30,7 +30,7 @@ QtObject {
         ListElement {
             name: "Horst"
             timestamp: 1588754962085
-            message: "www.google.com"
+            message: "https://www.google.at/"
 
             // message, join, leave, kick
             type: "message"
