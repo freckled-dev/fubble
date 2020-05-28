@@ -29,6 +29,7 @@ void remote_participant::on_track(rtc::track_ptr track) {
     // BOOST_ASSERT(false && "not implemented");
     return;
   }
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "on_track, video";
   videos.emplace_back(video_track.get());
   on_video_added(video_track);
 }

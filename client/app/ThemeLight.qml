@@ -29,7 +29,7 @@ Theme {
     property var overlayMuteImage: "images/overlay_mute.svg"
     property var overlayMuteOffImage: "images/overlay_mute_off.svg"
     property var overlaySilenceImage: "images/overlay_silence.svg"
-    property var overlaySilenceOffImage: "imagesoverlay_silence_off.svg"
+    property var overlaySilenceOffImage: "images/overlay_silence_off.svg"
     property var overlayVideoImage: "images/overlay_video.svg"
     property var overlayVideoOffImage: "images/overlay_video_off.svg"
     property var videoDisabledImage: "images/video_disabled.svg"

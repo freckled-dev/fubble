@@ -34,11 +34,7 @@ protected:
 
   mutable client::logger logger{"participants_model"};
   room &room_;
-  struct participant_container {
-    std::string id;
-    participant_model *model;
-  };
-  std::deque<participant_container> participants;
+  std::deque<participant_model *> participants;
   std::vector<boost::signals2::scoped_connection> signal_connections;
 };
 

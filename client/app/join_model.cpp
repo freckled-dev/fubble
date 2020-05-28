@@ -2,6 +2,7 @@
 #include "client/joiner.hpp"
 #include "client/own_media.hpp"
 #include "client/room.hpp"
+#include "client/ui/frame_provider_google_video_frame.hpp"
 #include "error_model.hpp"
 #include "model_creator.hpp"
 #include "room_model.hpp"
