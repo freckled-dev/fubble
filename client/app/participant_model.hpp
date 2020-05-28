@@ -19,10 +19,11 @@ class participant_model : public QObject {
   Q_PROPERTY(bool deafed MEMBER deafed NOTIFY deafed_changed)
   // specific participant muted
   Q_PROPERTY(bool silenced MEMBER silenced NOTIFY silenced_changed)
-   // volume setting from 0 to 1
+  // volume setting from 0 to 1
   Q_PROPERTY(double volume MEMBER volume NOTIFY volume_changed)
   // own video disabled
-  Q_PROPERTY(bool videoDisabled MEMBER video_disabled NOTIFY video_disabled_changed)
+  Q_PROPERTY(
+      bool videoDisabled MEMBER video_disabled NOTIFY video_disabled_changed)
   // just used in the GUI - do not change it
   Q_PROPERTY(bool highlighted MEMBER highlighted NOTIFY highlighted_changed)
 
@@ -30,6 +31,9 @@ class participant_model : public QObject {
                  get_video NOTIFY video_changed)
 public:
   participant_model(participant &participant_, QObject *parent);
+
+  std::string get_id() const;
+  ui::frame_provider_google_video_source *get_video() const;
 
 signals:
   void name_changed(QString);
@@ -43,12 +47,12 @@ signals:
   void video_changed(ui::frame_provider_google_video_source *);
 
 protected:
-  ui::frame_provider_google_video_source *get_video() const;
   void set_name();
   void video_added(rtc::google::video_source &);
 
   mutable client::logger logger{"participant_model"};
   participant &participant_;
+  const std::string id;
   QString name;
   bool own = false;
   bool muted = false;

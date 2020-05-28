@@ -19,9 +19,9 @@ participants_model::participants_model(room &room_, QObject *parent)
 
 std::optional<participant_model *> participants_model::get_own() const {
   for (auto participant_ : participants) {
-    if (participant_.id != room_.get_own_id())
+    if (participant_->get_id() != room_.get_own_id())
       continue;
-    return participant_.model;
+    return participant_;
   }
   return std::nullopt;
 }
@@ -34,9 +34,9 @@ int participants_model::rowCount([
 QVariant participants_model::data(const QModelIndex &index,
                                   [[maybe_unused]] int role) const {
   BOOST_ASSERT(role == participant_role);
-  BOOST_LOG_SEV(logger, logging::severity::trace) << "getting some data";
   auto index_casted = static_cast<std::size_t>(index.row());
-  client::participant_model *result = participants[index_casted].model;
+  BOOST_ASSERT(index_casted < participants.size());
+  client::participant_model *result = participants[index_casted];
   return QVariant::fromValue(result);
 }
 
@@ -58,10 +58,7 @@ void participants_model::on_joins(
                      participants_count, joins_count);
 
   auto instance_participant_model = [&](participant *source) {
-    participant_container result;
-    result.id = source->get_id();
-    result.model = new participant_model(*source, this);
-    return result;
+    return new participant_model(*source, this);
   };
   beginInsertRows(QModelIndex(), rowCount(), rowCount());
   std::transform(joins.cbegin(), joins.cend(), std::back_inserter(participants),
@@ -100,14 +97,15 @@ void participants_model::on_leaves(std::vector<std::string> leaves) {
       << fmt::format("on_leaves, participants_count:{}, leaves_count:{}",
                      participants_count, leaves_count);
   for (const auto &leave : leaves) {
-    auto found = std::find_if(participants.begin(), participants.end(),
-                              [&](auto check) { return check.id == leave; });
+    auto found =
+        std::find_if(participants.begin(), participants.end(),
+                     [&](auto check) { return check->get_id() == leave; });
     if (found == participants.end())
       continue; // bots will get skipped in this list
     int found_index = std::distance(participants.begin(), found);
     beginRemoveRows(QModelIndex(), found_index, found_index);
-    found->model->deleteLater();
     participants.erase(found);
     endRemoveRows();
+    (*found)->deleteLater();
   }
 }
