@@ -4,7 +4,7 @@
 using namespace client;
 
 participant_model::participant_model(participant &participant_, QObject *parent)
-    : QObject(parent), participant_(participant_) {
+    : QObject(parent), participant_(participant_), id(participant_.get_id()) {
   set_name();
   participant_.on_name_changed.connect([this](auto) { set_name(); });
   // TODO support video removal
@@ -18,6 +18,8 @@ participant_model::participant_model(participant &participant_, QObject *parent)
     video_added(*video);
   }
 }
+
+std::string participant_model::get_id() const { return id; }
 
 ui::frame_provider_google_video_source *participant_model::get_video() const {
   BOOST_LOG_SEV(logger, logging::severity::trace) << "get_video";
