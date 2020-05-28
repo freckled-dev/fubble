@@ -19,6 +19,7 @@ Theme {
 
     // images
     property var closeImage: "images/close_dark.svg"
+    property var closeIcon: "images/close_icon_dark.svg"
     property var copyImage: "images/copy_dark.svg"
     property var copyPressedImage: "images/copy_pressed_dark.svg"
     property var exitImage: "images/exit_dark.gif"
