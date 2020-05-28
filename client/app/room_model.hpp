@@ -3,6 +3,8 @@
 
 #include "chat_model.hpp"
 #include "client/logger.hpp"
+#include "participant_model.hpp"
+#include "participants_model.hpp"
 #include "participants_with_video_model.hpp"
 #include <QObject>
 #include <boost/thread/future.hpp>
@@ -28,11 +30,10 @@ class room_model : public QObject {
 public:
   room_model(const std::shared_ptr<room> &room_, QObject *parent);
 
-  Q_INVOKABLE void resetNewParticipants();
-
 public slots:
   void recalculate_video_available();
   void raise_new_participants_count();
+  void resetNewParticipants();
 
 signals:
   void name_changed(QString);
