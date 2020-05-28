@@ -13,7 +13,6 @@ Rectangle {
         var width = video.sourceRect.width
         var height = video.sourceRect.height
         var result = width / height
-        // console.log("width:" + width + ", height:" + height + ", result:" + result)
         return result
     }
 

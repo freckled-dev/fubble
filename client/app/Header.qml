@@ -234,7 +234,7 @@ ToolBar {
         id: aboutDialog
     }
 
-    Settings {
+    FubbleSettings {
         id: settings
     }
 }
