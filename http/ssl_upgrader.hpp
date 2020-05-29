@@ -7,6 +7,8 @@
 #include <boost/asio/ssl.hpp>
 #include <boost/beast/core/error.hpp>
 #include <boost/thread/future.hpp>
+#include "add_windows_root_certs.hpp"
+#include <boost/predef/os/windows.h>
 
 namespace http {
 namespace internal {
@@ -50,7 +52,11 @@ public:
   boost::future<void> secure_connection() {
     auto promise_copy = promise;
     // https://www.boost.org/doc/libs/1_73_0/doc/html/boost_asio/reference/ssl__host_name_verification.html
+#if BOOST_OS_WINDOWS
+    add_windows_root_certs(ssl_context);
+#else
     ssl_context.set_default_verify_paths();
+#endif
     connection_.set_verify_mode(boost::asio::ssl::verify_peer);
     connection_.set_verify_callback(internal::make_verbose_verification(
         boost::asio::ssl::host_name_verification(server_.host)));
