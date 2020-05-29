@@ -41,14 +41,15 @@ public:
         boost::system::system_error(boost::asio::error::operation_aborted));
   }
 
-  http_type &get_http() { return tcp_connection->get_native(); }
-
   boost::future<void> do_() {
     BOOST_ASSERT(!promise);
     promise = std::make_shared<boost::promise<void>>();
     resolve();
     return promise->get_future();
   }
+
+protected:
+  http_type &get_http() { return tcp_connection->get_native(); }
 
   void resolve() {
     std::weak_ptr<boost::promise<void>> alive = promise;
@@ -114,11 +115,9 @@ public:
     fullfill->set_value();
   }
 
-protected:
   http::logger logger{"connector"};
   boost::asio::io_context &context;
   boost::asio::ip::tcp::resolver resolver{context};
-  using connection_ptr = std::unique_ptr<connection>;
   std::shared_ptr<boost::promise<void>> promise;
   const server server_;
   http_connection *tcp_connection{};
