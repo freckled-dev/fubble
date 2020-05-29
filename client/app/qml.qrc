@@ -2,7 +2,7 @@
     <qresource>
         <file>FubbleApplication.qml</file>
         <file>Join.qml</file>
-        <file>Leave.qml</file>
+        <file>ProgressPopup.qml</file>
         <file>Header.qml</file>
         <file>Participant.qml</file>
         <file>ParticipantOverview.qml</file>

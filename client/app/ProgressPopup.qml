@@ -11,19 +11,26 @@ Popup {
     signal leaving
     signal forceShutdown
     property bool showForceButton: true
+    property alias progressText: progressLabel.text
+
+    property bool isLeavePopup
+    property bool isJoinPopup
 
     x: (container.width - width) / 2
-    y: container.height / 6
+    y: (container.height - height) / 3
+
     Material.foreground: Style.current.foreground
-    width: 400
-    height: 350
+    width: 300
+    height: 250
     modal: true
     topMargin: 1
     padding: 0
     closePolicy: Popup.NoAutoClose
 
     onOpened: {
-        leaveRoom()
+        if (isLeavePopup) {
+            leaveRoom()
+        }
     }
 
     Connections {
@@ -36,10 +43,22 @@ Popup {
 
     Rectangle {
         id: rectangle
-        color: "#00000000"
         radius: 5
+        gradient: Gradient {
+            GradientStop {
+                position: 0
+                color: Style.current.wildAppleGradientStart
+            }
+
+            GradientStop {
+                position: 1
+                color: Style.current.wildAppleGradientEnd
+            }
+        }
+
         border.width: 1
-        border.color: "#ffffff"
+
+        border.color: Style.current.background
         anchors.fill: parent
     }
 
@@ -54,24 +73,18 @@ Popup {
         anchors.fill: parent
 
         Label {
-            text: qsTr("Leaving the room...")
+            id: progressLabel
+            font.pointSize: Style.current.subHeaderPointSize
             Layout.alignment: Qt.AlignHCenter
-        }
-
-        AnimatedImage {
-            id: animation
-            Layout.alignment: Qt.AlignHCenter
-            fillMode: Image.PreserveAspectFit
-            source: Style.current.exitImage
         }
 
         Button {
             id: force
-            Material.background: Style.current.primary
+            Material.background: Style.current.gray700
             Material.foreground: Style.current.buttonTextColor
             Layout.alignment: Qt.AlignHCenter
             text: qsTr("Force close")
-            visible: showForceButton
+            visible: showForceButton && isLeavePopup
             onClicked: forceShutdown()
         }
     }
