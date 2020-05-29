@@ -1,6 +1,7 @@
 #include "action.hpp"
 #include "connection_creator.hpp"
 #include "connection_impl.hpp"
+#include "connector.hpp"
 #include "http_connection.hpp"
 #include "https_connection.hpp"
 #include <fmt/format.h>
@@ -65,20 +66,17 @@ action::async_result_future action::do_() {
   BOOST_LOG_SEV(logger, logging::severity::trace) << fmt::format(
       "resolving, server:'{}', port:'{}'", server_.host, server_.port);
 #endif
-  std::weak_ptr<int> alive = alive_check;
-  connection_creator_.create(server_).then(
-      [this, alive = std::move(alive)](auto result) {
-        if (!alive.lock())
-          return;
-        try {
-          auto got = result.get();
-          connection_ = std::move(got);
-        } catch (const boost::system::system_error &error) {
-          check_and_handle_error(error.code());
-          return;
-        }
-        send_request();
-      });
+  connection_ = connection_creator_.create(server_);
+  connector_ = connection_creator_.create_connector(*connection_, server_);
+  connector_->do_().then(executor, [this](auto result) {
+    try {
+      result.get();
+    } catch (const boost::system::system_error &error) {
+      check_and_handle_error(error.code());
+      return;
+    }
+    send_request();
+  });
   return promise->get_future();
 }
 

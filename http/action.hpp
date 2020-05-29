@@ -9,12 +9,14 @@
 #include <boost/beast/core/tcp_stream.hpp>
 #include <boost/beast/http.hpp>
 #include <boost/beast/ssl/ssl_stream.hpp>
+#include <boost/thread/executors/inline_executor.hpp>
 #include <boost/thread/future.hpp>
 #include <nlohmann/json_fwd.hpp>
 
 namespace http {
 class connection_creator;
 class connection;
+class connector;
 class action {
 public:
   action(connection_creator &creator, boost::beast::http::verb verb,
@@ -38,18 +40,20 @@ protected:
   bool check_and_handle_error(const boost::system::error_code &error);
 
   http::logger logger{"action"};
+  boost::inline_executor executor;
   connection_creator &connection_creator_;
   const server server_;
   const boost::beast::http::verb verb;
   const std::string target;
   const fields fields_;
+  std::shared_ptr<async_result_promise> promise;
   std::unique_ptr<connection> connection_;
+  std::unique_ptr<connector> connector_;
 
   using response_type =
       boost::beast::http::response<boost::beast::http::string_body>;
   using request_type =
       boost::beast::http::request<boost::beast::http::string_body>;
-  std::shared_ptr<async_result_promise> promise;
   struct buffers {
     request_type request;
     response_type response;
