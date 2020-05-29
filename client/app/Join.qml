@@ -39,6 +39,7 @@ FocusScope {
         Connections {
             target: joinModel
             onJoined: {
+                joinPopup.close()
                 joined(room)
             }
             onJoin_failed: {
@@ -192,6 +193,12 @@ FocusScope {
         }
     }
 
+    ProgressPopup {
+        id: joinPopup
+        progressText: qsTr("Joining the room...")
+        isJoinPopup: true
+    }
+
     function joinRoom() {
         var noRoomName = isEmpty(roomTextField.text)
         var noName = isEmpty(nameTextField.text)
@@ -207,6 +214,8 @@ FocusScope {
         if (noRoomName || noName) {
             return
         }
+
+        joinPopup.open()
 
         joinModel.join(roomTextField.text, nameTextField.text)
         guiEnabled = false
