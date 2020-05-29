@@ -75,6 +75,7 @@ Popup {
         Label {
             id: progressLabel
             font.pointSize: Style.current.subHeaderPointSize
+            color: Style.current.black
             Layout.alignment: Qt.AlignHCenter
         }
 

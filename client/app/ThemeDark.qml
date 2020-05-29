@@ -5,6 +5,7 @@ Theme {
     property color accent: '#ffe393'
     property color accentLight: '#fd7d3e'
     property color foreground: '#ffffff'
+    property color black: '#000000'
     property color background: '#303030'
     property color buttonTextColor: '#000000'
     property color backgroundTextInput: '#757575'
