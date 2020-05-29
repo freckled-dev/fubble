@@ -65,7 +65,16 @@ void room::sync(const nlohmann::json &content) {
   if (!joined_rooms.contains(id))
     return;
   auto our_room = joined_rooms[id];
-  auto events = our_room["timeline"]["events"];
+  // check note `The /sync API returns a state list which is separate from the
+  // timeline.` for the difference between state and timeline
+  // https://matrix.org/docs/spec/client_server/latest#syncing
+  auto timeline_events = our_room["timeline"]["events"];
+  on_events(timeline_events);
+  auto state_events = our_room["state"]["events"];
+  on_events(state_events);
+}
+
+void room::on_events(const nlohmann::json &events) {
   for (const auto &event : events) {
     const std::string type = event["type"];
     if (chat_->sync_event(type, event))
@@ -85,6 +94,7 @@ void room::sync(const nlohmann::json &content) {
 void room::on_event_m_room_member(const nlohmann::json &parse) {
   // https://matrix.org/docs/spec/client_server/latest#m-room-member
   // Adjusts the membership state for a user in a room.
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "on_event_m_room_member";
   const std::string user_id = parse["state_key"];
   const std::int64_t origin_server_ts = parse["origin_server_ts"];
   std::chrono::milliseconds origin_server_ts_casted{origin_server_ts};
@@ -124,6 +134,7 @@ void room::on_event_m_room_member(const nlohmann::json &parse) {
 }
 
 void room::on_event_m_room_name(const nlohmann::json &parse) {
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "on_event_m_room_name";
   name = parse["content"]["name"];
   BOOST_LOG_SEV(logger, logging::severity::info)
       << "room_name changed to:" << name;
