@@ -5,6 +5,7 @@ Theme {
     property color accent: '#ffe393'
     property color accentLight: '#fd7d3e'
     property color foreground: '#ffffff'
+    property color black: '#000000'
     property color background: '#303030'
     property color buttonTextColor: '#000000'
     property color backgroundTextInput: '#757575'
@@ -16,6 +17,9 @@ Theme {
     property color gray400: '#757575'
     property color gray300Transparent: '#CC616161'
     property color gray700: '#E0E0E0'
+
+    property color wildAppleGradientStart: '#d299c2'
+    property color wildAppleGradientEnd: '#fef9d7'
 
     // images
     property var closeImage: "images/close_dark.svg"
