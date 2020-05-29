@@ -18,6 +18,8 @@ public:
   native_type &get_native() { return ssl_stream; }
   boost::asio::ssl::context &get_native_ssl_context() { return ssl_context; }
 
+  http_connection &get_http_connection() { return *http_connection_; }
+
 protected:
   std::unique_ptr<http_connection> http_connection_;
   boost::asio::ssl::context ssl_context{boost::asio::ssl::context::sslv23};
