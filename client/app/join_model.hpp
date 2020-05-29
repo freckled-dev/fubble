@@ -19,8 +19,6 @@ class own_media;
 // TODO do we have to pause the frameprovider?!
 class join_model : public QObject {
   Q_OBJECT
-  Q_PROPERTY(QString name MEMBER name NOTIFY name_changed)
-  Q_PROPERTY(QString room MEMBER room NOTIFY room_changed)
   Q_PROPERTY(
       bool videoAvailable MEMBER video_available NOTIFY video_available_changed)
   Q_PROPERTY(client::ui::frame_provider_google_video_source *video READ
@@ -34,8 +32,6 @@ public:
   ui::frame_provider_google_video_source *get_video() const;
 
 signals:
-  void name_changed(QString);
-  void room_changed(QString);
   void video_available_changed(bool);
   void video_changed(ui::frame_provider_google_video_source *);
   void joined(client::room_model *room);
@@ -50,8 +46,6 @@ protected:
   joiner &joiner_;
   own_media &own_media_;
   boost::inline_executor qt_executor;
-  QString name;
-  QString room;
   bool video_available;
   ui::frame_provider_google_video_source *video{};
 };
