@@ -20,8 +20,12 @@ public:
       severity = logging::severity::warning;
       break;
     case LoggingSeverity::LS_VERBOSE:
-      severity = logging::severity::trace;
-      return; // VERY verbose!
+#if 0 // VERY verbose! // TODO make an option!
+      severity = logging::severity::debug;
+      break;
+#else
+      return;
+#endif
     default:
       break;
     }
