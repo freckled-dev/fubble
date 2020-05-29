@@ -4,18 +4,24 @@
 using namespace websocket;
 
 namespace {
-connection_impl::stream_type make_stream(boost::asio::io_context &context,
-                                         boost::asio::ssl::context &ssl_context,
-                                         bool secure) {
+std::shared_ptr<connection_impl::stream_type>
+make_stream(boost::asio::io_context &context,
+            boost::asio::ssl::context &ssl_context, bool secure) {
   if (secure)
-    return connection_impl::https_stream_type(context, ssl_context);
-  return connection_impl::http_stream_type(context);
+    return std::make_shared<connection_impl::stream_type>(
+        connection_impl::https_stream_type(context, ssl_context));
+  return std::make_shared<connection_impl::stream_type>(
+      connection_impl::http_stream_type(context));
 }
 } // namespace
 
 connection_impl::connection_impl(boost::asio::io_context &context, bool secure)
     : ssl_context{boost::asio::ssl::context::sslv23},
-      stream(make_stream(context, ssl_context, secure)) {}
+      stream(make_stream(context, ssl_context, secure)) {
+  // stream and buffer are shared, because they all have to stay valid as long
+  // an async operation is active
+  // https://www.boost.org/doc/libs/1_73_0/libs/beast/doc/html/beast/ref/boost__beast__websocket__stream/_stream.html
+}
 
 connection_impl::~connection_impl() {
   BOOST_LOG_SEV(logger, logging::severity::trace) << "websocket::~connection()";
@@ -27,21 +33,23 @@ connection_impl::~connection_impl() {
       boost::system::system_error(boost::asio::error::operation_aborted));
 }
 
-connection_impl::stream_type &connection_impl::get_native() { return stream; }
+connection_impl::stream_type &connection_impl::get_native() { return *stream; }
 
-static void completion_error(const boost::system::error_code &error) {
+namespace {
+void completion_error(const boost::system::error_code &error) {
   if (!error)
     return;
   throw boost::system::system_error(error);
 }
+} // namespace
 
 boost::future<void> connection_impl::send(const std::string &message) {
 #if 1
   BOOST_LOG_SEV(logger, logging::severity::trace)
       << "sending message: '" << message << "'";
 #endif
-  send_queue.emplace();
-  send_item &item = send_queue.back();
+  send_queue->emplace();
+  send_item &item = send_queue->back();
   item.message = message;
   if (!sending)
     send_next_from_queue();
@@ -55,31 +63,32 @@ boost::asio::ssl::context &connection_impl::get_ssl_context() {
 
 void connection_impl::send_next_from_queue() {
   sending = true;
-  auto &item = send_queue.front();
+  auto &item = send_queue->front();
   std::weak_ptr<int> weak_alive_check = alive_check;
   std::visit(
-      [&](auto &stream_) {
+      [&, this](auto &stream_) {
         stream_.async_write(
             boost::asio::buffer(item.message),
-            [this, weak_alive_check](const auto &error, auto transferred) {
+            [this, weak_alive_check, send_queue = send_queue,
+             stream = stream](const auto &error, auto transferred) {
               if (!weak_alive_check.lock())
                 return;
               on_send(error, transferred);
             });
       },
-      stream);
+      *stream);
 }
 
 void connection_impl::on_send(const boost::system::error_code &error,
                               std::size_t) {
-  auto &did_send = send_queue.front();
+  auto &did_send = send_queue->front();
   if (error) {
     did_send.completion.set_exception(boost::system::system_error(error));
     return;
   }
   did_send.completion.set_value();
-  send_queue.pop();
-  if (send_queue.empty()) {
+  send_queue->pop();
+  if (send_queue->empty()) {
     BOOST_ASSERT(sending);
     sending = false;
     return;
@@ -90,14 +99,15 @@ void connection_impl::on_send(const boost::system::error_code &error,
 boost::future<void> connection_impl::close() {
   BOOST_LOG_SEV(logger, logging::severity::trace)
       << "closing websocket connection, this:" << this;
-  boost::packaged_task<void(boost::system::error_code)> task(completion_error);
+  boost::packaged_task<void(boost::system::error_code)> task(
+      [stream = stream](auto result) { completion_error(result); });
   auto result = task.get_future();
   std::visit(
       [&](auto &stream_) {
         stream_.async_close(boost::beast::websocket::close_code::normal,
                             std::move(task));
       },
-      stream);
+      *stream);
   return result;
 }
 
@@ -109,16 +119,17 @@ boost::future<std::string> connection_impl::read() {
   read_promise = boost::promise<std::string>();
   std::weak_ptr<int> weak_alive_check = alive_check;
   std::visit(
-      [&](auto &stream_) {
-        stream_.async_read(buffer,
-                           [this, weak_alive_check](const auto &error,
-                                                    auto bytes_transferred) {
-                             if (!weak_alive_check.lock())
-                               return;
-                             on_read(error, bytes_transferred);
-                           });
+      [&, this](auto &stream_) {
+        stream_.async_read(
+            *read_buffer,
+            [this, weak_alive_check, read_buffer = read_buffer,
+             stream = stream](const auto &error, auto bytes_transferred) {
+              if (!weak_alive_check.lock())
+                return;
+              on_read(error, bytes_transferred);
+            });
       },
-      stream);
+      *stream);
   return read_promise.get_future();
 }
 
@@ -131,8 +142,8 @@ void connection_impl::on_read(const boost::system::error_code &error,
     read_promise.set_exception(boost::system::system_error(error));
     return;
   }
-  std::string result = boost::beast::buffers_to_string(buffer.data());
-  buffer.consume(buffer.size());
+  std::string result = boost::beast::buffers_to_string(read_buffer->data());
+  read_buffer->consume(read_buffer->size());
   read_promise.set_value(result);
   reading = false;
 }

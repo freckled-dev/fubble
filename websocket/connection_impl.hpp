@@ -33,15 +33,17 @@ private:
 
   websocket::logger logger{"connection_impl"};
   boost::asio::ssl::context ssl_context;
-  stream_type stream;
-  boost::beast::flat_buffer buffer;
+  std::shared_ptr<stream_type> stream;
+  std::shared_ptr<boost::beast::flat_buffer> read_buffer =
+      std::make_shared<boost::beast::flat_buffer>();
 
   boost::promise<std::string> read_promise;
   struct send_item {
     std::string message;
     boost::promise<void> completion;
   };
-  std::queue<send_item> send_queue;
+  std::shared_ptr<std::queue<send_item>> send_queue =
+      std::make_shared<std::queue<send_item>>();
   bool sending{};
   bool reading{};
   std::shared_ptr<int> alive_check = std::make_shared<int>(42);
