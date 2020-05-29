@@ -134,6 +134,8 @@ void client::on_sync_till_stop(
     do_sync();
   } catch (...) {
     auto error = boost::current_exception();
+    BOOST_LOG_SEV(logger, logging::severity::error)
+        << "an error occured while parsing the sync response!";
     sync_till_stop_promise->set_exception(error);
     sync_till_stop_promise.reset();
   }
