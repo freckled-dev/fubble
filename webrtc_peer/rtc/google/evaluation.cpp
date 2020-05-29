@@ -139,8 +139,10 @@ public:
     BOOST_LOG_SEV(logger, logging::severity::info)
         << "OnAddTrack, streams.size():" << streams.size()
         << ", kind:" << track->kind();
+    BOOST_ASSERT(track->kind() ==
+                 webrtc::MediaStreamTrackInterface::kVideoKind);
     auto track_casted =
-        dynamic_cast<webrtc::VideoTrackInterface *>(track.release());
+        static_cast<webrtc::VideoTrackInterface *>(track.release());
     if (track_casted == nullptr)
       throw std::runtime_error("only video is supported");
     track_casted->AddOrUpdateSink(&video_receiver_, rtc::VideoSinkWants());
