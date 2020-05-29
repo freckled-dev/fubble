@@ -266,18 +266,18 @@ void connection::OnAddTrack(
 
 ::rtc::track_ptr connection::check_handle_video_track(
     ::webrtc::MediaStreamTrackInterface &interface_) {
-  auto track_casted = dynamic_cast<webrtc::VideoTrackInterface *>(&interface_);
-  if (track_casted == nullptr)
+  if (interface_.kind() != ::webrtc::MediaStreamTrackInterface::kVideoKind)
     return nullptr;
+  auto track_casted = static_cast<webrtc::VideoTrackInterface *>(&interface_);
   return std::make_shared<video_track_sink>(track_casted);
 }
 
 ::rtc::track_ptr connection::check_handle_audio_track(
     ::webrtc::MediaStreamTrackInterface &interface_) {
-  rtc::scoped_refptr<webrtc::AudioTrackInterface> track_casted =
-      dynamic_cast<webrtc::AudioTrackInterface *>(&interface_);
-  if (track_casted == nullptr)
+  if (interface_.kind() != ::webrtc::MediaStreamTrackInterface::kAudioKind)
     return nullptr;
+  rtc::scoped_refptr<webrtc::AudioTrackInterface> track_casted =
+      static_cast<webrtc::AudioTrackInterface *>(&interface_);
   return std::make_shared<audio_track_sink>(track_casted);
 }
 
