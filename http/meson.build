@@ -1,7 +1,14 @@
+http_sources = ['client.cpp', 'action.cpp', 'connection_creator.cpp', 
+    'action_factory.cpp', 'connection_impl.cpp', 'ssl_upgrader.cpp']
+http_dependencies = [utils_dep, fmt_dep, json_dep]
+if host_machine.system() == 'windows'
+  http_sources += 'add_windows_root_certs.cpp'
+  crypt32_dep = meson.get_compiler('cpp').find_library('crypt32')
+  http_dependencies += crypt32_dep
+endif
 http = library('http',
-  ['client.cpp', 'action.cpp', 'connection_creator.cpp', 'action_factory.cpp',
-    'connection_impl.cpp', 'ssl_upgrader.cpp'],
-  dependencies: [utils_dep, fmt_dep, json_dep],
+  http_sources,
+  dependencies: http_dependencies,
   include_directories: ['..'],
   cpp_pch: '../pch/precompiled.hpp',
   install: true
