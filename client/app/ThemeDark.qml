@@ -17,6 +17,9 @@ Theme {
     property color gray300Transparent: '#CC616161'
     property color gray700: '#E0E0E0'
 
+    property color wildAppleGradientStart: '#d299c2'
+    property color wildAppleGradientEnd: '#fef9d7'
+
     // images
     property var closeImage: "images/close_dark.svg"
     property var closeIcon: "images/close_icon_dark.svg"

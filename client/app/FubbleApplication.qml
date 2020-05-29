@@ -26,6 +26,8 @@ ApplicationWindow {
     property UtilsModel utilsModel: utilsModelFromCpp
 
     property bool shutdown: false
+
+    // Login, Joining, Leaving, Room
     property string fubbleState: "Login"
 
     property var currentRoomInfo
@@ -43,7 +45,7 @@ ApplicationWindow {
         id: header
         title: stack.currentItem.title
         stackView: stack
-        leave: leave
+        leave: leavePopup
     }
 
     Settings {
@@ -82,18 +84,21 @@ ApplicationWindow {
         if (fubbleState === "Room") {
             shutdown = true
             close.accepted = false
-            leave.showForceButton = true
-            leave.open()
+            leavePopup.showForceButton = true
+            leavePopup.open()
             return
         }
 
         close.accepted = true
     }
 
-    Leave {
-        id: leave
+    ProgressPopup {
+        id: leavePopup
         leaveModel: container.leaveModel
         showForceButton: true
+        progressText: qsTr("Leaving the room...")
+        isLeavePopup: true
+
         onLeft: {
             playLeaveSound()
             stack.pop()

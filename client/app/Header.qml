@@ -9,7 +9,7 @@ ToolBar {
     property string title
     property alias settings: settings
     property var stackView
-    property Leave leave
+    property ProgressPopup leave
     signal toggleChat
     signal toggleOverview
 
