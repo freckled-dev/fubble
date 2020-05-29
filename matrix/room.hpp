@@ -33,6 +33,7 @@ public:
   void sync(const nlohmann::json &content);
 
 protected:
+  void on_events(const nlohmann::json &events);
   void on_event_m_room_member(const nlohmann::json &parse);
   void on_event_m_room_name(const nlohmann::json &parse);
 
