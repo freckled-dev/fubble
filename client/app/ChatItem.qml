@@ -81,8 +81,6 @@ Rectangle {
                             emojiRegex,
                             '<span style="font-size:18pt">$1</span>')
 
-                console.log(formattedMessage)
-
                 return formattedMessage
             }
         }

@@ -12,6 +12,15 @@ Item {
     property bool chatVisible: true
     property int chatWidth: 400
 
+    Connections {
+        target: chatModel
+        onNewMessagesChanged: {
+            if (chatVisible) {
+                chatModel.resetNewMessages()
+            }
+        }
+    }
+
     Item {
         id: chatHolder
         anchors.fill: parent
