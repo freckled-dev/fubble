@@ -19,6 +19,7 @@ ApplicationWindow {
     minimumWidth: 800
     minimumHeight: 800
     visible: true
+    visibility: "Windowed"
 
     property JoinModel joinModel: joinModelFromCpp
     property LeaveModel leaveModel: leaveModelFromCpp
@@ -53,6 +54,7 @@ ApplicationWindow {
         property alias y: container.y
         property alias width: container.width
         property alias height: container.height
+        property alias visibility: container.visibility
     }
 
     StackView {
