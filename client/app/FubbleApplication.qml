@@ -74,7 +74,7 @@ ApplicationWindow {
             playJoinSound()
 
             currentRoomInfo = {
-                "roomName": room.name,
+                "roomName": join.roomName,
                 "enterTime": new Date().getTime()
             }
         }
