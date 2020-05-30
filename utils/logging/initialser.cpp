@@ -100,14 +100,16 @@ void initialise_globals() {
 }
 } // namespace
 
-void logging::add_console_log() {
+void logging::add_console_log(logging::severity severity_) {
   initialise_globals();
   boost::log::add_console_log(std::cout,
+                              boost::log::keywords::filter =
+                                  boost::log::trivial::severity >= severity_,
                               boost::log::keywords::auto_flush = true)
       ->set_formatter(&colorized_console_formatter);
 }
 
-void logging::add_file_log() {
+void logging::add_file_log(logging::severity severity_) {
   initialise_globals();
   boost::system::error_code error;
   auto temporary_dir = boost::filesystem::temp_directory_path(error);
@@ -116,6 +118,8 @@ void logging::add_file_log() {
     return;
   auto log_file = temporary_dir / "fubble.log";
   boost::log::add_file_log(log_file, boost::log::keywords::auto_flush = true,
+                           boost::log::keywords::filter =
+                               boost::log::trivial::severity >= severity_,
                            boost::log::keywords::open_mode = std::ios_base::app)
       ->set_formatter(&file_formatter);
 }

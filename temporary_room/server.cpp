@@ -49,7 +49,7 @@ std::optional<options> parse_options(int argc, char *argv[]) {
   return result;
 }
 
-void set_up_logging() { logging::add_console_log(); }
+void set_up_logging() { logging::add_console_log(logging::severity::trace); }
 } // namespace
 
 int main(int argc, char *argv[]) {

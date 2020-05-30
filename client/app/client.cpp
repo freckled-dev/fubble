@@ -95,7 +95,7 @@ struct message_writer {
 } // namespace
 
 int main(int argc, char *argv[]) {
-  logging::add_console_log();
+  logging::add_console_log(logging::severity::trace);
   logging::logger logger{"main"};
   BOOST_LOG_SEV(logger, logging::severity::info) << "starting";
 

@@ -68,8 +68,8 @@ int main(int argc, char *argv[]) {
     return 1;
   gui_config config = config_check.value();
 
-  logging::add_console_log();
-  logging::add_file_log();
+  logging::add_console_log(config.general_.log_severity);
+  logging::add_file_log(config.general_.log_severity);
   client::ui::log_qt_to_logging qt_logger;
   rtc::google::log_webrtc_to_logging webrtc_logger;
 

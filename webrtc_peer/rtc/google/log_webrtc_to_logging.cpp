@@ -20,8 +20,8 @@ public:
       severity = logging::severity::warning;
       break;
     case LoggingSeverity::LS_VERBOSE:
-      severity = logging::severity::trace;
-      return; // VERY verbose!
+      severity = logging::severity::debug;
+      break;
     default:
       break;
     }
