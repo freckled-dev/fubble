@@ -13,6 +13,7 @@ FocusScope {
     property JoinModel joinModel
     property bool guiEnabled: true
     property alias history: history
+    property alias roomName: roomTextField.text
 
     signal joined(RoomModel room)
 
