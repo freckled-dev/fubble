@@ -75,7 +75,7 @@ int main(int argc, char *argv[]) {
 
   logging::logger logger{"main"};
 
-  BOOST_LOG_SEV(logger, logging::severity::debug)
+  BOOST_LOG_SEV(logger, logging::severity::trace)
       << "starting up, version:" << utils::version();
 
   boost::asio::io_context context;
@@ -89,6 +89,7 @@ int main(int argc, char *argv[]) {
       context, websocket_connection_creator};
 
   // signalling
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up signalling";
   signalling::json_message signalling_json;
   signalling::client::connection_creator signalling_connection_creator{
       context, boost_executor, signalling_json};
@@ -125,6 +126,8 @@ int main(int argc, char *argv[]) {
                                                http_matrix_client_factory};
   matrix::authentification matrix_authentification{http_matrix_client_factory,
                                                    matrix_client_factory};
+
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up webrtc";
   rtc::google::settings rtc_settings;
   rtc_settings.use_ip_v6 = config.general_.use_ipv6;
   rtc::google::factory rtc_connection_creator{
