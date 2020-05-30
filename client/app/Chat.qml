@@ -15,7 +15,7 @@ Item {
     Connections {
         target: chatModel
         onNewMessagesChanged: {
-            if (chatVisible) {
+            if (chatVisible && chatModel.newMessages > 0) {
                 chatModel.resetNewMessages()
             }
         }
