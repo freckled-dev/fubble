@@ -4,6 +4,7 @@
 #include "rtc/logger.hpp"
 #include <api/create_peerconnection_factory.h>
 #include <boost/asio/io_context.hpp>
+#include <boost/predef/os/windows.h>
 #include <memory>
 
 namespace rtc {
@@ -17,6 +18,9 @@ class audio_track;
 // one
 struct settings {
   bool use_ip_v6{true};
+#if BOOST_OS_WINDOWS
+  bool windows_use_core_audio2{false}; // windows core audio 2 is experimental
+#endif
 };
 class factory {
 public:
@@ -49,11 +53,15 @@ private:
   // TODO replace signaling_thread with a local thread (asio) implementation
   std::unique_ptr<rtc::Thread> signaling_thread_own;
   rtc::Thread *signaling_thread{};
-  rtc::scoped_refptr<webrtc::AudioDeviceModule> default_adm;
+  std::unique_ptr<webrtc::TaskQueueFactory> task_queue_factory;
   rtc::scoped_refptr<webrtc::AudioMixer> audio_mixer;
   rtc::scoped_refptr<webrtc::AudioProcessing> audio_processing;
   rtc::scoped_refptr<webrtc::AudioDecoderFactory> audio_decoder;
   rtc::scoped_refptr<webrtc::AudioEncoderFactory> audio_encoder;
+#if BOOST_OS_WINDOWS
+  std::unique_ptr<webrtc_win::ScopedCOMInitializer> com_initializer_;
+#endif
+  rtc::scoped_refptr<webrtc::AudioDeviceModule> audio_device_module;
   std::unique_ptr<webrtc::VideoDecoderFactory> video_decoder;
   std::unique_ptr<webrtc::VideoEncoderFactory> video_encoder;
   rtc::scoped_refptr<webrtc::PeerConnectionFactoryInterface> factory_;

@@ -9,6 +9,7 @@
 #include "video_track_source.hpp"
 #include <api/audio_codecs/builtin_audio_decoder_factory.h>
 #include <api/audio_codecs/builtin_audio_encoder_factory.h>
+#include <api/task_queue/default_task_queue_factory.h>
 #include <api/video_codecs/builtin_video_decoder_factory.h>
 #include <api/video_codecs/builtin_video_encoder_factory.h>
 
@@ -21,7 +22,12 @@ factory::factory(const settings &settings_, rtc::Thread &signaling_thread)
 
 factory::factory() : settings_{} { instance_members(); }
 
-factory::~factory() = default;
+factory::~factory() {
+  if (!audio_device_module)
+    return;
+  worker_thread->Invoke<void>(RTC_FROM_HERE,
+                              [this] { audio_device_module = nullptr; });
+}
 
 std::unique_ptr<rtc::connection> factory::create_connection() {
   webrtc::PeerConnectionInterface::RTCConfiguration configuration;
@@ -84,6 +90,7 @@ webrtc::PeerConnectionFactoryInterface &factory::get_native() const {
 }
 
 void factory::instance_threads() {
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "instance_threads";
   network_thread = rtc::Thread::CreateWithSocketServer();
   network_thread->Start();
   worker_thread = rtc::Thread::Create();
@@ -96,11 +103,33 @@ void factory::instance_threads() {
 }
 
 void factory::instance_audio() {
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "instance_audio";
+  // let audio_device_module be null, except we use windows core audio 2
   audio_decoder = webrtc::CreateBuiltinAudioDecoderFactory();
   audio_encoder = webrtc::CreateBuiltinAudioEncoderFactory();
+#if BOOST_OS_WINDOWS
+  if (!settings_.windows_use_core_audio2)
+    return;
+  BOOST_ASSERT(!task_queue_factory);
+  task_queue_factory = webrtc::CreateDefaultTaskQueueFactory();
+  audio_device_module = worker_thread->Invoke<decltype(audio_device_module)>(
+      RTC_FROM_HERE, [this] {
+        com_initializer_ = std::make_unique<webrtc_win::ScopedCOMInitializer>(
+            webrtc_win::ScopedCOMInitializer::kMTA);
+        if (!com_initializer_->Succeeded()) {
+          BOOST_LOG_SEV(logger, logging::severity::error)
+              << "could not initialze COM";
+          return nullptr;
+        }
+        return CreateWindowsCoreAudioAudioDeviceModule(
+            task_queue_factory.get());
+      });
+  BOOST_ASSERT(audio_device_module);
+#endif
 }
 
 void factory::instance_video() {
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "instance_video";
   // WATCHOUT. `instance_factory` will move them inside factory!
   // weird api design.
   video_decoder = webrtc::CreateBuiltinVideoDecoderFactory();
@@ -108,11 +137,15 @@ void factory::instance_video() {
 }
 
 void factory::instance_factory() {
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "instance_factory";
   factory_ = webrtc::CreatePeerConnectionFactory(
-      network_thread.get(), worker_thread.get(), signaling_thread, default_adm,
-      audio_encoder, audio_decoder, std::move(video_encoder),
-      std::move(video_decoder), audio_mixer, audio_processing);
+      network_thread.get(), worker_thread.get(), signaling_thread,
+      audio_device_module, audio_encoder, audio_decoder,
+      std::move(video_encoder), std::move(video_decoder), audio_mixer,
+      audio_processing);
   if (factory_)
     return;
+  BOOST_LOG_SEV(logger, logging::severity::error)
+      << "could not instance peer factory!";
   throw std::runtime_error("could not instance peer factory");
 }
