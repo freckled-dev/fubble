@@ -179,7 +179,7 @@ FocusScope {
         color: Style.current.background
         borderColor: Style.current.foreground
         width: 300
-        visible: history.hasRoomHistory
+        visible: history.hasRoomHistory && header.settings.showRoomHistory
 
         RoomHistory {
             id: history
