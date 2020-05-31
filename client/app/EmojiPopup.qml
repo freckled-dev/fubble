@@ -7,7 +7,7 @@ import "."
 
 Popup {
     id: emojiPopup
-    property var emojiJson
+    property var emojiJson: "{\"emoji_categories\": []"
     property TextArea textArea
     margins: 0
     padding: 0
@@ -45,6 +45,7 @@ Popup {
                         }
 
                         GridLayout {
+                            id: emojiGrid
                             columns: 8
                             Repeater {
                                 id: participantRepeater
@@ -89,7 +90,11 @@ Popup {
         }
     }
 
-    Component.onCompleted: initJson()
+    onEnabledChanged: {
+        if (enabled) {
+            initJson()
+        }
+    }
 }
 
 /*##^##
