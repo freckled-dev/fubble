@@ -97,8 +97,10 @@ Item {
                 width: 350
                 x: chatHolder.width - width
                 y: chatHolder.height - height - textArea.height - 10
+                enabled: false
 
                 textArea: chatInput.textArea
+                onOpened: enabled = true
                 onClosed: {
                     chatInput.textArea.forceActiveFocus()
                 }
