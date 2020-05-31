@@ -52,36 +52,50 @@ Rectangle {
             }
 
             function modifyMessage(message) {
-                var formattedMessage = "<style>a:link { color: "
-                        + Style.current.linkColor + "; }</style>" + message
-                formattedMessage = formattedMessage.replace(/\n/g, "<br />")
+                message = message.replace(/\n/g, "<br />")
 
-                var emojiRanges = ['(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])']
+                message = handleEmojis(message)
+                message = handleLinks(message)
+
+                return message
+            }
+
+            function handleLinks(message) {
                 var linkRange = /(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)(\/)?)/gi
 
-                var emojiRegex = new RegExp(emojiRanges, 'gi')
                 var linkRegex = new RegExp(linkRange)
+                var hasLink = message.match(linkRegex) !== null
+                if (hasLink) {
+                    message = "<style>a:link { color: "
+                            + Style.current.linkColor + "; }</style>" + message
+                }
 
-                var removeEmoji = formattedMessage.replace(emojiRegex,
-                                                           "").replace(/ /g, "")
-                var isEmojiMessage = removeEmoji.length === 0
+                message = message.replace(linkRegex,
+                                          '<a href=$1 title="">$1</a>')
+                return message
+            }
 
-                formattedMessage = formattedMessage.replace(
-                            linkRegex, '<a href=$1 title="">$1</a>')
-                if (isEmojiMessage) {
-                    // enlarge more if there are only emojis
-                    formattedMessage = formattedMessage.replace(
+            function handleEmojis(message) {
+                var emojiRanges = ['(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])']
+                var emojiRegex = new RegExp(emojiRanges, 'gi')
+                var removeEmoji = message.replace(emojiRegex,
+                                                  "").replace(/ /g, "")
+                var isOnlyEmojiMessage = removeEmoji.length === 0
+
+                // enlarge more if it is an emoji only message
+                if (isOnlyEmojiMessage) {
+                    message = message.replace(
                                 emojiRegex,
                                 '<span style="font-size:25pt">$1</span>')
-                    return formattedMessage
+                    return message
                 }
 
                 // enlarge the emojis
-                formattedMessage = formattedMessage.replace(
+                message = message.replace(
                             emojiRegex,
                             '<span style="font-size:18pt">$1</span>')
 
-                return formattedMessage
+                return message
             }
         }
     }
