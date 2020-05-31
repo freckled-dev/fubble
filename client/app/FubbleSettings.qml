@@ -12,13 +12,14 @@ Popup {
     y: container.height / 6
     Material.foreground: Style.current.foreground
     width: 450
-    height: 400
+    height: 420
     padding: 0
 
     property alias darkMode: settings.darkMode
     property alias joinSound: settings.joinSound
     property alias leaveSound: settings.leaveSound
     property alias errorSound: settings.errorSound
+    property alias showRoomHistory: settings.showRoomHistory
 
     Settings {
         id: settings
@@ -26,6 +27,7 @@ Popup {
         property alias joinSound: joinSoundSwitch.checked
         property alias leaveSound: leaveSoundSwitch.checked
         property alias errorSound: errorSoundSwitch.checked
+        property alias showRoomHistory: roomHistorySwitch.checked
     }
 
     Rectangle {
@@ -75,11 +77,18 @@ Popup {
                 }
             }
 
+            Switch {
+                id: roomHistorySwitch
+                anchors.top: darkModeSwitch.bottom
+                text: qsTr("Show the room history")
+                checked: true || settings.saveRoomHistory
+            }
+
             Label {
                 id: audioTitle
                 text: qsTr("Audio")
                 anchors.topMargin: 20
-                anchors.top: darkModeSwitch.bottom
+                anchors.top: roomHistorySwitch.bottom
                 font.pointSize: Style.current.subHeaderPointSize
                 width: settingsDialog.availableWidth
             }
@@ -97,21 +106,21 @@ Popup {
                 id: joinSoundSwitch
                 anchors.top: audioDescription.bottom
                 text: qsTr("user joins the room")
-                checked: settings.joinSound
+                checked: true || settings.joinSound
             }
 
             Switch {
                 id: leaveSoundSwitch
                 anchors.top: joinSoundSwitch.bottom
                 text: qsTr("user leaves the room")
-                checked: settings.leaveSound
+                checked: true || settings.leaveSound
             }
 
             Switch {
                 id: errorSoundSwitch
                 anchors.top: leaveSoundSwitch.bottom
                 text: qsTr("an error occurred")
-                checked: settings.errorSound
+                checked: true || settings.errorSound
             }
         }
     }
