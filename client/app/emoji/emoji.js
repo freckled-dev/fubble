@@ -2,44 +2,34 @@ var emoji_json = ' \{
 "emoji_categories": [
 {
 "name": "faces",
-"emoji_unified": "😜",
 "description": "Faces"
 },
 {
 "name": "cat_faces",
-"emoji_unified": "😸",
 "description": "Faces of Cats"
 },{
 "name": "animals_and_plants",
-"emoji_unified": "🐧",
 "description": "Animals and Plants"
 },{
 "name": "food_and_drink",
-"emoji_unified": "🍻",
 "description": "Food and Drinks"
 },{
 "name": "places",
-"emoji_unified": "🏯",
 "description": "Places"
 },{
 "name": "music_and_sport",
-"emoji_unified": "🎧",
 "description": "Music and Sport"
 },{
 "name": "objects",
-"emoji_unified": "💽",
 "description": "Objects"
 },{
 "name": "misc",
-"emoji_unified": "👌",
 "description": "Miscellaneous"
 },{
 "name": "symbols",
-"emoji_unified": "🔞",
 "description": "Symbols"
 },{
 "name": "transport",
-"emoji_unified": "🚎",
 "description": "Transport"
 }],
 "emoji_by_category": {
