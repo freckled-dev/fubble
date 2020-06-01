@@ -14,6 +14,7 @@ Popup {
             emojis: []
         }
     }
+    property bool shouldShow: false
     margins: 0
     padding: 0
     clip: true
@@ -144,8 +145,8 @@ Popup {
         }
     }
 
-    onEnabledChanged: {
-        if (enabled) {
+    onShouldShowChanged: {
+        if (shouldShow) {
             initJson()
         }
     }
