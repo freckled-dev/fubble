@@ -105,11 +105,10 @@ Item {
                 width: 350
                 x: chatHolder.width - width
                 y: chatHolder.height - height - chatInput.textArea.height - 10
-                enabled: false
                 favouriteEmojis: settings.recentlyUsedEmojis
 
                 onOpened: {
-                    enabled = true
+                    shouldShow = true
                     emojiPopup.initFavourites()
                 }
                 onClosed: {
