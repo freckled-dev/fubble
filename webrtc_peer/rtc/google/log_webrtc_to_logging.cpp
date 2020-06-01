@@ -11,7 +11,8 @@ public:
     logging::severity severity{logging::severity::debug};
     switch (severity_to_cast) {
     case LoggingSeverity::LS_INFO:
-      severity = logging::severity::trace;
+    case LoggingSeverity::LS_NONE:
+      severity = logging::severity::debug;
       break;
     case LoggingSeverity::LS_ERROR:
       severity = logging::severity::error;
@@ -21,7 +22,7 @@ public:
       break;
     case LoggingSeverity::LS_VERBOSE:
       severity = logging::severity::trace;
-      return; // VERY verbose!
+      break;
     default:
       break;
     }
@@ -29,7 +30,7 @@ public:
     BOOST_LOG_SEV(logger, severity) << message.substr(0, message.size() - 1);
   }
   void OnLogMessage(const std::string &message) override {
-    BOOST_LOG_SEV(logger, logging::severity::trace) << message;
+    BOOST_LOG_SEV(logger, logging::severity::debug) << message;
   }
 
 protected:

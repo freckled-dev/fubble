@@ -21,7 +21,7 @@ remote_participant::videos_type remote_participant::get_videos() const {
 }
 
 void remote_participant::on_track(rtc::track_ptr track) {
-  BOOST_LOG_SEV(logger, logging::severity::trace) << "on_track";
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "on_track";
   auto video_track =
       std::dynamic_pointer_cast<rtc::google::video_source>(track);
   if (!video_track) {
@@ -29,7 +29,7 @@ void remote_participant::on_track(rtc::track_ptr track) {
     // BOOST_ASSERT(false && "not implemented");
     return;
   }
-  BOOST_LOG_SEV(logger, logging::severity::trace) << "on_track, video";
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "on_track, video";
   videos.emplace_back(video_track.get());
   on_video_added(video_track);
 }

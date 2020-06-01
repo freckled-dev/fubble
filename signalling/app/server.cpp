@@ -56,7 +56,9 @@ int main(int argc, char *argv[]) {
   return 0;
 }
 
-static void set_up_logging() { logging::add_console_log(); }
+static void set_up_logging() {
+  logging::add_console_log(logging::severity::debug);
+}
 
 static std::optional<options> parse_options(int argc, char *argv[]) {
   namespace bpo = boost::program_options;

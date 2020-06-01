@@ -24,7 +24,7 @@ connection_impl::connection_impl(boost::asio::io_context &context, bool secure)
 }
 
 connection_impl::~connection_impl() {
-  BOOST_LOG_SEV(logger, logging::severity::trace) << "websocket::~connection()";
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "websocket::~connection()";
   if (!reading)
     return;
   BOOST_LOG_SEV(logger, logging::severity::warning)
@@ -45,7 +45,7 @@ void completion_error(const boost::system::error_code &error) {
 
 boost::future<void> connection_impl::send(const std::string &message) {
 #if 1
-  BOOST_LOG_SEV(logger, logging::severity::trace)
+  BOOST_LOG_SEV(logger, logging::severity::debug)
       << "sending message: '" << message << "'";
 #endif
   send_queue->emplace();
@@ -97,7 +97,7 @@ void connection_impl::on_send(const boost::system::error_code &error,
 }
 
 boost::future<void> connection_impl::close() {
-  BOOST_LOG_SEV(logger, logging::severity::trace)
+  BOOST_LOG_SEV(logger, logging::severity::debug)
       << "closing websocket connection, this:" << this;
   boost::packaged_task<void(boost::system::error_code)> task(
       [stream = stream](auto result) { completion_error(result); });
@@ -112,7 +112,7 @@ boost::future<void> connection_impl::close() {
 }
 
 boost::future<std::string> connection_impl::read() {
-  BOOST_LOG_SEV(logger, logging::severity::trace)
+  BOOST_LOG_SEV(logger, logging::severity::debug)
       << "reading websocket connection, this:" << this;
   BOOST_ASSERT(!reading);
   reading = true;
@@ -135,7 +135,7 @@ boost::future<std::string> connection_impl::read() {
 
 void connection_impl::on_read(const boost::system::error_code &error,
                               std::size_t) {
-  BOOST_LOG_SEV(logger, logging::severity::trace)
+  BOOST_LOG_SEV(logger, logging::severity::debug)
       << "stream.async_read, this:" << this << ", error:" << error.message();
   if (error) {
     reading = false;

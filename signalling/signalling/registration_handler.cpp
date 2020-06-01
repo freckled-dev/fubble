@@ -48,7 +48,7 @@ void registration_handler::register_(const connection_ptr &connection_,
 
 void registration_handler::register_as_first(const connection_ptr &connection_,
                                              const std::string &key) {
-  BOOST_LOG_SEV(logger, logging::severity::trace) << fmt::format(
+  BOOST_LOG_SEV(logger, logging::severity::debug) << fmt::format(
       "a device wants to register itself as first, key:'{}'", key);
   auto first_device = device_creator_.create(connection_);
   auto connection_on_close = connection_->on_closed.connect(
@@ -61,7 +61,7 @@ void registration_handler::register_as_first(const connection_ptr &connection_,
 }
 void registration_handler::register_as_second(
     const connection_ptr &connection_, const devices_type::iterator &pair) {
-  BOOST_LOG_SEV(logger, logging::severity::trace) << fmt::format(
+  BOOST_LOG_SEV(logger, logging::severity::debug) << fmt::format(
       "a device wants to register itself as answering, key:'{}'", pair->key);
   auto first_device = pair->devices.front();
   auto second_device = device_creator_.create(connection_);

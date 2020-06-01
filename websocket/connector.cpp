@@ -12,7 +12,7 @@ connector::connector(boost::asio::io_context &context,
     : creator(creator), resolver{context}, config_(config_) {}
 
 connector::~connector() {
-  BOOST_LOG_SEV(logger, logging::severity::trace) << "~connector()";
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "~connector()";
   if (done)
     return;
   check_error(boost::asio::error::operation_aborted);
@@ -37,7 +37,7 @@ void connector::resolve() {
 void connector::on_resolved(
     const boost::system::error_code &error,
     const boost::asio::ip::tcp::resolver::results_type &endpoints) {
-  BOOST_LOG_SEV(logger, logging::severity::trace)
+  BOOST_LOG_SEV(logger, logging::severity::debug)
       << "on_resolved, error:" << error.message()
       << ", results.size():" << endpoints.size();
   if (check_error(error))
@@ -69,7 +69,7 @@ void connector::connect_to_endpoints(
 }
 
 void connector::on_connected(const boost::system::error_code &error) {
-  BOOST_LOG_SEV(logger, logging::severity::trace)
+  BOOST_LOG_SEV(logger, logging::severity::debug)
       << "on_connected, error:" << error.message();
   if (check_error(error))
     return;
@@ -104,7 +104,7 @@ void connector::secure() {
 void connector::on_secured() { handshake(); }
 
 void connector::handshake() {
-  BOOST_LOG_SEV(logger, logging::severity::trace) << "goiing to handshake";
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "goiing to handshake";
   auto connection_impl_ = dynamic_cast<connection_impl *>(connection.get());
   BOOST_ASSERT(connection_impl_);
   auto &native = connection_impl_->get_native();
@@ -112,7 +112,7 @@ void connector::handshake() {
       [&](auto &item) {
         item.async_handshake(
             config_.url, config_.path, [this](const auto &error) {
-              BOOST_LOG_SEV(this->logger, logging::severity::trace)
+              BOOST_LOG_SEV(this->logger, logging::severity::debug)
                   << "did handshake";
               if (check_error(error))
                 return;

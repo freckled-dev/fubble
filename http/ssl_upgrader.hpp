@@ -1,14 +1,14 @@
 #ifndef UUID_FA86766A_7231_4254_9E64_C74DEBFFBAC7
 #define UUID_FA86766A_7231_4254_9E64_C74DEBFFBAC7
 
+#include "add_windows_root_certs.hpp"
 #include "http/logger.hpp"
 #include "server.hpp"
 #include <boost/asio/error.hpp>
 #include <boost/asio/ssl.hpp>
 #include <boost/beast/core/error.hpp>
-#include <boost/thread/future.hpp>
-#include "add_windows_root_certs.hpp"
 #include <boost/predef/os/windows.h>
+#include <boost/thread/future.hpp>
 
 namespace http {
 namespace internal {
@@ -22,7 +22,7 @@ public:
     X509 *cert = X509_STORE_CTX_get_current_cert(ctx.native_handle());
     X509_NAME_oneline(X509_get_subject_name(cert), subject_name, 256);
     bool verified = verifier_(preverified, ctx);
-    BOOST_LOG_SEV(logger, logging::severity::trace)
+    BOOST_LOG_SEV(logger, logging::severity::debug)
         << "Verifying: " << subject_name << ", Verified: " << verified;
     return verified;
   }
@@ -89,7 +89,7 @@ protected:
     if (!error)
       return true;
     auto promise_moved = std::move(promise);
-    BOOST_LOG_SEV(logger, logging::severity::trace)
+    BOOST_LOG_SEV(logger, logging::severity::debug)
         << "got an error, error:" << error.message();
     promise_moved->set_exception(boost::system::system_error{error});
     return false;
