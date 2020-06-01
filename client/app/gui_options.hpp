@@ -11,7 +11,7 @@ struct gui_config {
     std::string service{"https"};
     bool use_ipv6{false};
     bool use_ssl{true};
-    logging::severity log_severity{logging::severity::trace};
+    logging::severity log_severity{logging::severity::debug};
   };
   general general_;
 };

@@ -95,7 +95,7 @@ struct message_writer {
 } // namespace
 
 int main(int argc, char *argv[]) {
-  logging::add_console_log(logging::severity::trace);
+  logging::add_console_log(logging::severity::debug);
   logging::logger logger{"main"};
   BOOST_LOG_SEV(logger, logging::severity::info) << "starting";
 
@@ -179,6 +179,6 @@ int main(int argc, char *argv[]) {
   });
 
   context.run();
-  BOOST_LOG_SEV(logger, logging::severity::trace) << "context.run() ended";
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "context.run() ended";
   return 0;
 }

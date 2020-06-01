@@ -25,7 +25,7 @@ room_model::room_model(const std::shared_ptr<room> &room_, QObject *parent)
 
 void room_model::recalculate_video_available() {
   auto has_videos = participants_with_video->rowCount() != 0;
-  BOOST_LOG_SEV(logger, logging::severity::trace)
+  BOOST_LOG_SEV(logger, logging::severity::debug)
       << "recalculate_video_available has_videos:" << has_videos
       << ", videos_available:" << videos_available;
   if (has_videos == videos_available)

@@ -206,7 +206,7 @@ int main(int argc, char *argv[]) {
       QCoreApplication::applicationDirPath() + "/../share/fubble/resources.rcc";
   QString font_path_executable =
       QCoreApplication::applicationDirPath() + "/resources.rcc";
-  BOOST_LOG_SEV(logger, logging::severity::trace)
+  BOOST_LOG_SEV(logger, logging::severity::debug)
       << "font rcc path_share:" << font_path_share.toStdString()
       << ", path_executable:" << font_path_executable.toStdString();
   bool loaded = QResource::registerResource(font_path_share);

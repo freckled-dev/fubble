@@ -37,7 +37,7 @@ void chat::send_message(const std::string &message) {
 }
 
 void chat::add_message(const message &add) {
-  BOOST_LOG_SEV(logger, logging::severity::trace)
+  BOOST_LOG_SEV(logger, logging::severity::debug)
       << "add_message, from:" << add.sender;
   messages_.push_back(add);
   on_message(add);
