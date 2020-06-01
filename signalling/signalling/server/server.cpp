@@ -21,7 +21,7 @@ clazz::server(boost::executor &executor_, websocket::acceptor &acceptor,
 }
 
 clazz::~server() {
-  BOOST_LOG_SEV(logger, logging::severity::trace) << "~server()";
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "~server()";
 }
 
 void clazz::on_connection(websocket::connection_ptr websocket_connection) {

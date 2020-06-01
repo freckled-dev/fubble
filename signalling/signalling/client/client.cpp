@@ -28,26 +28,26 @@ boost::future<void> client::client::close() {
 
 void client::client::send_offer(const signalling::offer &offer_) {
   BOOST_ASSERT(connection_);
-  BOOST_LOG_SEV(logger, logging::severity::trace) << "send_offer";
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "send_offer";
   connection_->send_offer(offer_);
 }
 
 void client::client::send_answer(const signalling::answer &answer_) {
   BOOST_ASSERT(connection_);
-  BOOST_LOG_SEV(logger, logging::severity::trace) << "send_answer";
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "send_answer";
   connection_->send_answer(answer_);
 }
 
 void client::client::send_ice_candidate(
     const signalling::ice_candidate &candidate) {
   BOOST_ASSERT(connection_);
-  BOOST_LOG_SEV(logger, logging::severity::trace) << "send_ice_candidate";
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "send_ice_candidate";
   connection_->send_ice_candidate(candidate);
 }
 
 void client::client::send_want_to_negotiate() {
   BOOST_ASSERT(connection_);
-  BOOST_LOG_SEV(logger, logging::severity::trace) << "send_want_to_negotiate";
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "send_want_to_negotiate";
   connection_->send_want_to_negotiate();
 }
 

@@ -114,7 +114,7 @@ cast_session_description(const rtc::session_description &description) {
 } // namespace
 
 connection::~connection() {
-  BOOST_LOG_SEV(logger, logging::severity::trace)
+  BOOST_LOG_SEV(logger, logging::severity::debug)
       << "google::webrtc::connection::~connection(), this:" << this;
 }
 

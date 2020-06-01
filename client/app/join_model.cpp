@@ -42,7 +42,7 @@ ui::frame_provider_google_video_source *join_model::get_video() const {
 }
 
 void join_model::on_joined(boost::future<std::shared_ptr<class room>> room_) {
-  BOOST_LOG_SEV(logger, logging::severity::trace) << "on_joined";
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "on_joined";
   try {
     auto got_room = room_.get();
     auto room_model_ = model_factory.create_room_model(got_room, this);

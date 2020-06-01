@@ -9,7 +9,7 @@ logging::logger *logger{};
 void on_message(QtMsgType type, const QMessageLogContext &context,
                 const QString &msg) {
   (void)context;
-  logging::severity severity{logging::severity::trace};
+  logging::severity severity{logging::severity::debug};
   switch (type) {
   case QtDebugMsg:
     severity = logging::severity::debug;
