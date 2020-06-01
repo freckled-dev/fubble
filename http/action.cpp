@@ -30,7 +30,7 @@ action::action(connection_creator &creator, boost::beast::http::verb verb,
   // this class
   promise = std::make_shared<async_result_promise>();
   std::string target_with_prefix = fields_.target_prefix + target;
-  BOOST_LOG_SEV(logger, logging::severity::trace)
+  BOOST_LOG_SEV(logger, logging::severity::debug)
       << "doing target_with_prefix:" << target_with_prefix;
   auto &request = buffers_->request;
   request = request_type{verb, target_with_prefix, fields_.version};
@@ -63,7 +63,7 @@ action::async_result_future action::do_() {
   auto &request = buffers_->request;
   request.prepare_payload();
 #if 1
-  BOOST_LOG_SEV(logger, logging::severity::trace) << fmt::format(
+  BOOST_LOG_SEV(logger, logging::severity::debug) << fmt::format(
       "resolving, server:'{}', port:'{}'", server_.host, server_.port);
 #endif
   connection_ = connection_creator_.create(server_);
@@ -87,7 +87,9 @@ void action::cancel() {
 }
 
 void action::send_request() {
-  BOOST_LOG_SEV(logger, logging::severity::trace) << "send_request()";
+  BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
+  BOOST_LOG_SEV(logger, logging::severity::debug)
+      << "sending_request(), request:" << buffers_->request;
   std::weak_ptr<int> alive = alive_check;
   auto callback = [buffers_ = buffers_, this,
                    alive = std::move(alive)](auto error, auto) {
@@ -105,14 +107,14 @@ void action::send_request() {
 }
 
 void action::on_request_send(const boost::system::error_code &error) {
-  BOOST_LOG_SEV(logger, logging::severity::trace) << "on_request_send";
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "on_request_send";
   if (!check_and_handle_error(error))
     return;
   read_response();
 }
 
 void action::read_response() {
-  BOOST_LOG_SEV(logger, logging::severity::trace) << "read_response";
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "read_response";
   std::weak_ptr<int> alive = alive_check;
   auto callback = [buffers_ = buffers_, this,
                    alive = std::move(alive)](auto error, auto) {
@@ -131,8 +133,9 @@ void action::read_response() {
 }
 
 void action::on_response_read(const boost::system::error_code &error) {
-  BOOST_LOG_SEV(logger, logging::severity::trace)
-      << "on_response_read:"; // response:" << buffers_->response;
+  BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
+  BOOST_LOG_SEV(logger, logging::severity::debug)
+      << "on_response_read, response:" << buffers_->response;
   if (!check_and_handle_error(error))
     return;
   auto &response = buffers_->response;
@@ -142,7 +145,7 @@ void action::on_response_read(const boost::system::error_code &error) {
   auto body = response.body();
   const auto content_type = response[boost::beast::http::field::content_type];
   const std::string target_with_prefix = fields_.target_prefix + target;
-  BOOST_LOG_SEV(logger, logging::severity::trace)
+  BOOST_LOG_SEV(logger, logging::severity::debug)
       << fmt::format("got a response, for target'{}', code:{}, "
                      "content_type:'{}', body.size():{}",
                      target_with_prefix, static_cast<int>(http_code),
@@ -161,7 +164,7 @@ void action::on_response_read(const boost::system::error_code &error) {
 bool action::check_and_handle_error(const boost::system::error_code &error) {
   if (!error)
     return true;
-  BOOST_LOG_SEV(logger, logging::severity::trace)
+  BOOST_LOG_SEV(logger, logging::severity::debug)
       << "got an error, error:" << error.message();
   auto promise_copy = std::move(promise);
   promise_copy->set_exception(boost::system::system_error{error});

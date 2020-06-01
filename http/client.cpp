@@ -16,26 +16,26 @@ client::client(action_factory &action_factory_, const server &server_,
 
 client::~client() {
 #if 0
-  BOOST_LOG_SEV(logger, logging::severity::trace) << "destructor";
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "destructor";
 #endif
 }
 
 client::async_result_future client::get(const std::string &target) {
-  BOOST_LOG_SEV(logger, logging::severity::trace) << "get, target:" << target;
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "get, target:" << target;
   auto action_ = action_factory_.create(server_, target, fields_,
                                         boost::beast::http::verb::get);
   return do_action(std::move(action_));
 }
 
 std::unique_ptr<action> client::get_action(const std::string &target) {
-  BOOST_LOG_SEV(logger, logging::severity::trace) << "get, target:" << target;
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "get, target:" << target;
   return action_factory_.create(server_, target, fields_,
                                 boost::beast::http::verb::get);
 }
 
 client::async_result_future client::post(const std::string &target,
                                          const nlohmann::json &content) {
-  BOOST_LOG_SEV(logger, logging::severity::trace) << "post, target:" << target;
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "post, target:" << target;
   auto action_ = action_factory_.create(server_, target, fields_,
                                         boost::beast::http::verb::post);
   action_->set_request_body(content);
@@ -44,7 +44,7 @@ client::async_result_future client::post(const std::string &target,
 
 client::async_result_future client::put(const std::string &target,
                                         const nlohmann::json &content) {
-  BOOST_LOG_SEV(logger, logging::severity::trace) << "put, target:" << target;
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "put, target:" << target;
   auto action_ = action_factory_.create(server_, target, fields_,
                                         boost::beast::http::verb::put);
   action_->set_request_body(content);
