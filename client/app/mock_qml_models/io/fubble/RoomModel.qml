@@ -3,7 +3,7 @@ import QtQml 2.0
 QtObject {
     property string name: "room name not set"
     property var chat: ChatModel {}
-    property bool videosAvailable: true
+    property bool videosAvailable: false
 
     property var ownParticipant: participants[0].participant
 
