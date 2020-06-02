@@ -79,6 +79,8 @@ ApplicationWindow {
                 "roomName": join.roomName,
                 "enterTime": new Date().getTime()
             }
+
+            header.timer.start()
         }
     }
 
