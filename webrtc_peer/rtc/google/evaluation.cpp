@@ -167,11 +167,11 @@ public:
         << "set_session_description_observer::OnSuccess, description:"
         << description;
   }
-  void OnFailure(const std::string &error) override {
+  void OnFailure(webrtc::RTCError error) override {
     BOOST_LOG_SEV(logger, logging::severity::error)
-        << "set_session_description_observer::OnFailure, description:"
-        << description;
-    throw std::runtime_error(error);
+        << "set_session_description_observer::OnFailure, error:"
+        << error.message();
+    throw std::runtime_error(error.message());
   }
 
   std::string description;
@@ -243,10 +243,10 @@ public:
     }
     signaling_.on_answer(sdp);
   }
-  void OnFailure(const std::string &error) override {
+  void OnFailure(webrtc::RTCError error) override {
     BOOST_LOG_SEV(logger, logging::severity::info)
         << "create_session_description_observer::OnFailure";
-    throw std::runtime_error(error);
+    throw std::runtime_error(error.message());
   }
 
   signaling &signaling_;
