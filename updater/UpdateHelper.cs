@@ -41,9 +41,24 @@ namespace Updater
                 StartInfo = startInfo
             };
 
-            AppDomain.CurrentDomain.DomainUnload += (s, e) => { process.Kill(); process.WaitForExit(); };
-            AppDomain.CurrentDomain.ProcessExit += (s, e) => { process.Kill(); process.WaitForExit(); };
-            AppDomain.CurrentDomain.UnhandledException += (s, e) => { process.Kill(); process.WaitForExit(); };
+            AppDomain.CurrentDomain.DomainUnload += (s, e) => {
+                if (!process.HasExited)
+                {
+                    process.Kill();
+                }
+            };
+            AppDomain.CurrentDomain.ProcessExit += (s, e) => {
+                if (!process.HasExited)
+                {
+                    process.Kill();
+                }
+            };
+            AppDomain.CurrentDomain.UnhandledException += (s, e) => {
+                if (!process.HasExited)
+                {
+                    process.Kill();
+                }
+            };
 
             process.OutputDataReceived += new DataReceivedEventHandler(OutputHandler);
             process.ErrorDataReceived += new DataReceivedEventHandler(OutputHandler);

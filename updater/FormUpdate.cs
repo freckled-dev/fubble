@@ -14,8 +14,6 @@ namespace Updater
         {
             rm = new ResourceManager("Updater.Properties.UpdateResource", typeof(FormUpdate).Assembly);
             InitializeComponent();
-
-            this.FormClosing += Form1_FormClosing;
         }
 
         private void StartUpdate()
@@ -138,10 +136,6 @@ namespace Updater
             }
         }
 
-        void Form1_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            // check if the rclone child process is still running
-        }
     }
 
     interface UpdateListener
