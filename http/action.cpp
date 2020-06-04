@@ -88,7 +88,7 @@ void action::cancel() {
 
 void action::send_request() {
   BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
-  BOOST_LOG_SEV(logger, logging::severity::debug)
+  BOOST_LOG_SEV(logger, logging::severity::trace)
       << "sending_request(), request:" << buffers_->request;
   std::weak_ptr<int> alive = alive_check;
   auto callback = [buffers_ = buffers_, this,
@@ -134,7 +134,7 @@ void action::read_response() {
 
 void action::on_response_read(const boost::system::error_code &error) {
   BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
-  BOOST_LOG_SEV(logger, logging::severity::debug)
+  BOOST_LOG_SEV(logger, logging::severity::trace)
       << "on_response_read, response:" << buffers_->response;
   if (!check_and_handle_error(error))
     return;
