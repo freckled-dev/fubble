@@ -25,6 +25,7 @@ ApplicationWindow {
     property LeaveModel leaveModel: leaveModelFromCpp
     property ErrorModel errorModel: errorModelFromCpp
     property UtilsModel utilsModel: utilsModelFromCpp
+    property ShareDesktopModel shareDesktopModel: utilsModelFromCpp
 
     property bool shutdown: false
 

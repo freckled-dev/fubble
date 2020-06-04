@@ -9,4 +9,5 @@ FubbleApplication {
     leaveModel: LeaveModel {}
     errorModel: ErrorModel {}
     utilsModel: UtilsModel {}
+    shareDesktopModel: ShareDesktopModel {}
 }
