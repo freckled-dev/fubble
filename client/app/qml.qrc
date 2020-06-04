@@ -21,6 +21,7 @@
         <file>scripts/utils.js</file>
         <file>FubbleSettings.qml</file>
         <file>CustomRectangle.qml</file>
+        <file>ShareDesktopSelection.qml</file>
         <file>ThemeLight.qml</file>
         <file>ThemeDark.qml</file>
         <file>Theme.qml</file>
