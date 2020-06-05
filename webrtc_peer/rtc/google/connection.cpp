@@ -114,7 +114,7 @@ cast_session_description(const rtc::session_description &description) {
 } // namespace
 
 connection::~connection() {
-  BOOST_LOG_SEV(logger, logging::severity::trace)
+  BOOST_LOG_SEV(logger, logging::severity::debug)
       << "google::webrtc::connection::~connection(), this:" << this;
 }
 
@@ -325,11 +325,12 @@ void connection::create_session_description_observer::OnSuccess(
 }
 
 void connection::create_session_description_observer::OnFailure(
-    const std::string &error) {
+    webrtc::RTCError error) {
   BOOST_LOG_SEV(logger, logging::severity::info)
       << "connection::create_session_description_observer::OnFailure, error:"
-      << error;
-  promise.set_exception(std::runtime_error(error));
+      << error.message();
+  // TODO do a propper exception!
+  promise.set_exception(std::runtime_error(error.message()));
 }
 
 void connection::set_session_description_observer::OnSuccess() {
@@ -339,9 +340,9 @@ void connection::set_session_description_observer::OnSuccess() {
 }
 
 void connection::set_session_description_observer::OnFailure(
-    const std::string &error) {
+    webrtc::RTCError error) {
   BOOST_LOG_SEV(logger, logging::severity::info)
       << "connection::set_session_description_observer::OnFailure, error:"
-      << error;
-  promise.set_exception(std::runtime_error(error));
+      << error.message();
+  promise.set_exception(std::runtime_error(error.message()));
 }

@@ -85,11 +85,9 @@ void frame_provider_google_video_source::on_frame(
     const webrtc::VideoFrame &frame) {
   auto frame_buffer = frame.video_frame_buffer();
   [[maybe_unused]] webrtc::VideoFrameBuffer::Type type = frame_buffer->type();
-#if 0
-  BOOST_LOG_SEV(logger, logging::severity::debug)
+  BOOST_LOG_SEV(logger, logging::severity::trace)
       << "frame, width:" << frame.width() << ", height:" << frame.height()
       << ", type:" << static_cast<int>(type);
-#endif
   BOOST_ASSERT(type == webrtc::VideoFrameBuffer::Type::kI420);
   // destruction happens through VideoFrame
   // https://doc.qt.io/qt-5/qabstractvideobuffer.html#release
@@ -107,11 +105,9 @@ void frame_provider_google_video_source::on_frame_ui_thread(
   BOOST_LOG_SEV(logger, logging::severity::debug) << "on_frame_ui_thread";
 #endif
   if (!surface) {
-#if 0
-    BOOST_LOG_SEV(logger, logging::severity::debug)
+    BOOST_LOG_SEV(logger, logging::severity::trace)
         << "on_frame_ui_thread a frame gets discarded because no surface "
            "is set";
-#endif
     return;
   }
   set_format(frame.size());

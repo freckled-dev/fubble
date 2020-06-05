@@ -84,7 +84,7 @@ void room::on_events(const nlohmann::json &events) {
       continue;
     }
     if (type == "m.room.name") {
-      BOOST_LOG_SEV(logger, logging::severity::trace) << "m.room.name";
+      BOOST_LOG_SEV(logger, logging::severity::debug) << "m.room.name";
       on_event_m_room_name(event);
       continue;
     }
@@ -94,7 +94,7 @@ void room::on_events(const nlohmann::json &events) {
 void room::on_event_m_room_member(const nlohmann::json &parse) {
   // https://matrix.org/docs/spec/client_server/latest#m-room-member
   // Adjusts the membership state for a user in a room.
-  BOOST_LOG_SEV(logger, logging::severity::trace) << "on_event_m_room_member";
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "on_event_m_room_member";
   const std::string user_id = parse["state_key"];
   const std::int64_t origin_server_ts = parse["origin_server_ts"];
   std::chrono::milliseconds origin_server_ts_casted{origin_server_ts};
@@ -134,7 +134,7 @@ void room::on_event_m_room_member(const nlohmann::json &parse) {
 }
 
 void room::on_event_m_room_name(const nlohmann::json &parse) {
-  BOOST_LOG_SEV(logger, logging::severity::trace) << "on_event_m_room_name";
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "on_event_m_room_name";
   name = parse["content"]["name"];
   BOOST_LOG_SEV(logger, logging::severity::info)
       << "room_name changed to:" << name;

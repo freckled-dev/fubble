@@ -18,7 +18,7 @@ client::client(factory &factory_, http::client_factory &http_factory,
 }
 
 client::~client() {
-  BOOST_LOG_SEV(logger, logging::severity::trace) << "destructor";
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "destructor";
   if (!sync_till_stop_promise)
     return;
   BOOST_LOG_SEV(logger, logging::severity::warning)
@@ -58,7 +58,7 @@ boost::future<void> client::set_display_name(const std::string &name) {
 }
 
 boost::future<void> client::set_presence(presence set) {
-  BOOST_LOG_SEV(logger, logging::severity::trace)
+  BOOST_LOG_SEV(logger, logging::severity::debug)
       << "setting presence to:" << set;
   nlohmann::json request = nlohmann::json::object();
   std::string presence_casted = fmt::format("{}", set);
@@ -82,7 +82,7 @@ boost::future<void> client::sync(std::chrono::milliseconds timeout) {
 void client::on_synced(const nlohmann::json &content) {
   sync_next_batch = content["next_batch"];
 #if 0
-  BOOST_LOG_SEV(logger, logging::severity::trace)
+  BOOST_LOG_SEV(logger, logging::severity::debug)
       << "content:" << content.dump(2);
 #endif
   on_sync(content);

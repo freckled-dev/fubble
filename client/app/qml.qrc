@@ -17,7 +17,8 @@
         <file>FubbleToolTip.qml</file>
         <file>EmojiPopup.qml</file>
         <file>ParticipantAction.qml</file>
-        <file>emoji/emoji.js</file>
+        <file>scripts/emoji.js</file>
+        <file>scripts/utils.js</file>
         <file>FubbleSettings.qml</file>
         <file>CustomRectangle.qml</file>
         <file>ThemeLight.qml</file>

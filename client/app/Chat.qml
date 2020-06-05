@@ -2,15 +2,31 @@ import "."
 import QtQuick 2.9
 import QtQuick.Controls 2.2
 import QtQuick.Controls.Material 2.0
+import Qt.labs.settings 1.0
 import QtQuick.Layouts 1.0
 import io.fubble 1.0
-import "emoji"
 
 Item {
     id: chatContainer
     property ChatModel chatModel
     property bool chatVisible: true
     property int chatWidth: 400
+
+    property string recentlyUsedEmojis
+
+    Connections {
+        target: chatModel
+        onNewMessagesChanged: {
+            if (chatVisible && chatModel.newMessages > 0) {
+                chatModel.resetNewMessages()
+            }
+        }
+    }
+
+    Settings {
+        id: settings
+        property alias recentlyUsedEmojis: chatContainer.recentlyUsedEmojis
+    }
 
     Item {
         id: chatHolder
@@ -87,11 +103,43 @@ Item {
                 height: 400
                 width: 350
                 x: chatHolder.width - width
-                y: chatHolder.height - height - textArea.height - 10
+                y: chatHolder.height - height - chatInput.textArea.height - 10
+                favouriteEmojis: settings.recentlyUsedEmojis
 
-                textArea: chatInput.textArea
+                onOpened: {
+                    shouldShow = true
+                    emojiPopup.initFavourites()
+                }
                 onClosed: {
                     chatInput.textArea.forceActiveFocus()
+                }
+
+                onInsertEmoji: {
+                    var cursorPosition = chatInput.textArea.cursorPosition
+                    chatInput.textArea.insert(cursorPosition, emoji)
+                    addEmoji(emoji)
+                }
+
+                function addEmoji(emoji) {
+                    var emojiArray = recentlyUsedEmojis.split(",")
+
+                    // remove emoji, if it is already in the array
+                    for (var index = 0; index < emojiArray.length; index++) {
+                        var current = emojiArray[index]
+                        if (emoji === current) {
+                            emojiArray.splice(index, 1)
+                        }
+                    }
+
+                    // add emoji at the array start
+                    emojiArray.unshift(emoji)
+
+                    // allow a maximum of 16 emojis -> remove last one
+                    if (emojiArray.length === 17) {
+                        emojiArray.splice(16, 1)
+                    }
+
+                    recentlyUsedEmojis = emojiArray.toString()
                 }
             }
         }

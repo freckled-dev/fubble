@@ -5,8 +5,8 @@
 #include "rtc/logger.hpp"
 #include "video_track_ptr.hpp"
 #include <api/candidate.h>
-#include <api/peer_connection_interface.h>
 #include <api/media_stream_interface.h>
+#include <api/peer_connection_interface.h>
 
 namespace rtc {
 namespace google {
@@ -59,14 +59,14 @@ protected:
     session_description result;
     rtc::logger logger{"create_session_description_observer"};
     void OnSuccess(webrtc::SessionDescriptionInterface *description) override;
-    void OnFailure(const std::string &error) override;
+    void OnFailure(webrtc::RTCError error) override;
   };
   struct set_session_description_observer
       : public webrtc::SetSessionDescriptionObserver {
     boost::promise<void> promise;
     rtc::logger logger{"set_session_description_observer"};
     void OnSuccess() override;
-    void OnFailure(const std::string &error) override;
+    void OnFailure(webrtc::RTCError error) override;
   };
 
   rtc::logger logger{"connection"};

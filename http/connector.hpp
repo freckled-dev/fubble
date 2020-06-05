@@ -64,7 +64,7 @@ protected:
   void
   on_resolved(const boost::system::error_code &error,
               const boost::asio::ip::tcp::resolver::results_type &resolved) {
-    // BOOST_LOG_SEV(logger, logging::severity::trace) << "on_resolved";
+    // BOOST_LOG_SEV(logger, logging::severity::debug) << "on_resolved";
     if (!check_and_handle_error(error))
       return;
     std::weak_ptr<boost::promise<void>> alive = promise;
@@ -101,7 +101,7 @@ protected:
   bool check_and_handle_error(const boost::system::error_code &error) {
     if (!error)
       return true;
-    BOOST_LOG_SEV(logger, logging::severity::trace)
+    BOOST_LOG_SEV(logger, logging::severity::debug)
         << "got an error, error:" << error.message();
     auto fullfill =
         std::move(promise); // move away from member, in case class gets

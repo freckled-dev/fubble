@@ -26,7 +26,7 @@ room::room(std::unique_ptr<participant_creator> participant_creator_parameter,
 }
 
 room::~room() {
-  BOOST_LOG_SEV(logger, logging::severity::trace) << "destructor";
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "destructor";
 }
 
 std::string room::get_name() const { return room_.get_name(); }

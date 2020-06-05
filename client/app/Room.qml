@@ -13,6 +13,7 @@ Item {
     property var title: roomContainer.room.name
     property alias chat: chat
     property alias overview: overview
+    property bool videosAvailable: room.videosAvailable
 
     CustomRectangle {
         id: overviewContainer
@@ -37,28 +38,35 @@ Item {
         }
     }
 
+    Connections {
+        target: room
+        onVideosAvailableChanged: {
+            videosAvailable = room.videosAvailable
+        }
+    }
+
     VideoWall {
         id: videoWall
         roomModel: roomContainer.room
         anchors.top: parent.top
         anchors.bottom: parent.bottom
-        anchors.left: room.videosAvailable ? overviewContainer.right : undefined
+        anchors.left: videosAvailable ? overviewContainer.right : undefined
         anchors.margins: 10
-        anchors.right: room.videosAvailable ? chatContainer.left : undefined
-        width: !room.videosAvailable ? 0 : undefined
+        anchors.right: videosAvailable ? chatContainer.left : undefined
+        width: !videosAvailable ? 0 : undefined
     }
 
     CustomRectangle {
         id: chatContainer
-        lBorderwidth: room.videosAvailable ? 1 : 0
+        lBorderwidth: videosAvailable ? 1 : 0
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         anchors.right: parent.right
         color: Style.current.background
-        implicitWidth: chat.width
-        anchors.left: !room.videosAvailable ? overviewContainer.right : undefined
+        anchors.left: !videosAvailable ? overviewContainer.right : undefined
+
         borderColor: Style.current.foreground
-        width: chat.chatVisible ? chat.chatWidth : 0
+        width: chat.chatVisible && videosAvailable ? chat.chatWidth : 0
 
         Behavior on width {
             PropertyAnimation {

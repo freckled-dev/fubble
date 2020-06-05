@@ -8,12 +8,12 @@ leave_model::leave_model(leaver &leaver_, QObject *parent)
     : QObject(parent), leaver_(leaver_) {}
 
 void leave_model::leave() {
-  BOOST_LOG_SEV(logger, logging::severity::trace) << "leave";
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "leave";
   leaver_.leave().then(executor, [this](auto result) { on_left(result); });
 }
 
 void leave_model::on_left(boost::future<void> &result) {
-  BOOST_LOG_SEV(logger, logging::severity::trace) << "left";
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "left";
   try {
     result.get();
   } catch (const std::exception &error) {
