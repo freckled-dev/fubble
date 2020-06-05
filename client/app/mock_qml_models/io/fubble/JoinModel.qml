@@ -6,29 +6,15 @@ QtObject {
 
     property MediaPlayer video
     property bool videoAvailable: video != null
-    property RoomModel model
-
-
-    /*MediaPlayer {
-        source: "/home/tamrielle/Downloads/Big_Buck_Bunny_alt.webm"
-        autoPlay: true
-    }*/
-    property var timer: Timer {
-        id: timer
-        interval: 50
-        running: false
-        repeat: false
-        onTriggered: joined(model)
-    }
 
     signal joined(RoomModel room)
     signal join_failed
 
-    function join(room, name) {
+    function join(roomName, nickName) {
         var component = Qt.createComponent("RoomModel.qml")
         var roomModel = component.createObject(container)
-        roomModel.name = room
-        model = roomModel
-        timer.start()
+        roomModel.name = roomName
+
+        joined(roomModel)
     }
 }

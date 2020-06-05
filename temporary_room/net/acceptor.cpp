@@ -17,7 +17,7 @@ bool connection::check_error(const boost::system::error_code error) {
     return false;
   auto promise_copy = promise;
   if (error == boost::beast::http::error::end_of_stream) {
-    BOOST_LOG_SEV(logger, logging::severity::trace) << "end_of_stream";
+    BOOST_LOG_SEV(logger, logging::severity::debug) << "end_of_stream";
     promise_copy->set_value();
   } else
     promise_copy->set_exception(boost::system::system_error(error));
@@ -25,7 +25,7 @@ bool connection::check_error(const boost::system::error_code error) {
 }
 
 void connection::read_next_request() {
-  BOOST_LOG_SEV(logger, logging::severity::trace) << "read_next_request";
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "read_next_request";
   request = std::make_shared<request_type>();
   boost::beast::http::async_read(stream, buffer, *request,
                                  [this](auto error, auto) {
@@ -79,7 +79,7 @@ void connection::on_got_response(response_future &response_future_) {
 }
 
 void connection::send_response() {
-  BOOST_LOG_SEV(logger, logging::severity::trace) << "send_response";
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "send_response";
   response->prepare_payload();
   boost::beast::http::async_write(stream, *response, [this](auto error, auto) {
     if (check_error(error))
@@ -96,7 +96,7 @@ acceptor::acceptor(boost::asio::io_context &context, const config &config_)
 void acceptor::listen() {
   if (listening)
     return;
-  BOOST_LOG_SEV(logger, logging::severity::trace)
+  BOOST_LOG_SEV(logger, logging::severity::debug)
       << "listening on port: " << config_.port;
   const auto address = boost::asio::ip::make_address("0.0.0.0");
   const boost::asio::ip::tcp::endpoint endpoint{address, config_.port};
@@ -124,15 +124,15 @@ unsigned short acceptor::get_port() const {
 }
 
 void acceptor::accept_next() {
-  BOOST_LOG_SEV(logger, logging::severity::trace) << "accept_next";
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "accept_next";
   socket = std::make_unique<boost::asio::ip::tcp::socket>(context);
   acceptor_.async_accept(*socket, [this](auto error) {
-    BOOST_LOG_SEV(this->logger, logging::severity::trace)
+    BOOST_LOG_SEV(this->logger, logging::severity::debug)
         << "accepted, error:" << error.message();
     if (error) {
       auto promise_copy = run_promise;
       if (error == boost::asio::error::operation_aborted) {
-        BOOST_LOG_SEV(this->logger, logging::severity::trace)
+        BOOST_LOG_SEV(this->logger, logging::severity::debug)
             << "operation_aborted";
         run_promise->set_value(); // stop() got called
       } else

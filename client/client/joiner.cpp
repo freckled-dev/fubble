@@ -17,7 +17,7 @@ public:
       : room_creator_(room_creator_),
         matrix_authentification(matrix_authentification),
         temporary_room_client(temporary_room_client) {}
-  ~join() { BOOST_LOG_SEV(logger, logging::severity::trace) << "destructor"; }
+  ~join() { BOOST_LOG_SEV(logger, logging::severity::debug) << "destructor"; }
 
   boost::future<joiner::room_ptr> join_(const joiner::parameters &parameters_) {
     this->parameters_ = parameters_;
@@ -50,7 +50,7 @@ protected:
   }
 
   void on_name_set(boost::future<void> &name_set) {
-    BOOST_LOG_SEV(logger, logging::severity::trace) << "on_name_set";
+    BOOST_LOG_SEV(logger, logging::severity::debug) << "on_name_set";
     name_set.get();
   }
 
@@ -67,7 +67,7 @@ protected:
   }
 
   joiner::room_ptr on_room_joined(boost::future<matrix::room *> &joined) {
-    BOOST_LOG_SEV(logger, logging::severity::trace) << "on_room_joined";
+    BOOST_LOG_SEV(logger, logging::severity::debug) << "on_room_joined";
     auto got = joined.get();
     auto result = room_creator_.create(std::move(client_), *got);
     return result;

@@ -18,7 +18,7 @@ void user::on_m_presence(const nlohmann::json &event) {
 void user::set_presence(const presence &presence_parameter) {
   if (presence_ == presence_parameter)
     return;
-  BOOST_LOG_SEV(logger, logging::severity::trace)
+  BOOST_LOG_SEV(logger, logging::severity::debug)
       << "set_presence, presence:" << presence_parameter;
   presence_ = presence_parameter;
   on_update();
