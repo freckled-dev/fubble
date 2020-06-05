@@ -75,7 +75,7 @@ int main(int argc, char *argv[]) {
 
   logging::logger logger{"main"};
 
-  BOOST_LOG_SEV(logger, logging::severity::debug)
+  BOOST_LOG_SEV(logger, logging::severity::trace)
       << "starting up, version:" << utils::version();
 
   boost::asio::io_context context;
@@ -89,6 +89,7 @@ int main(int argc, char *argv[]) {
       context, websocket_connection_creator};
 
   // signalling
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up signalling";
   signalling::json_message signalling_json;
   signalling::client::connection_creator signalling_connection_creator{
       context, boost_executor, signalling_json};
@@ -99,6 +100,8 @@ int main(int argc, char *argv[]) {
       websocket_connector, signalling_connection_creator, connect_information};
 
   // session, matrix and temporary_room
+  BOOST_LOG_SEV(logger, logging::severity::trace)
+      << "setting up matrix and temporary_room";
   http::server http_matrix_client_server{config.general_.host,
                                          config.general_.service};
   http_matrix_client_server.secure = config.general_.use_ssl;
@@ -123,6 +126,8 @@ int main(int argc, char *argv[]) {
                                                http_matrix_client_factory};
   matrix::authentification matrix_authentification{http_matrix_client_factory,
                                                    matrix_client_factory};
+
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up webrtc";
   rtc::google::settings rtc_settings;
   rtc_settings.use_ip_v6 = config.general_.use_ipv6;
   rtc::google::factory rtc_connection_creator{
@@ -133,17 +138,28 @@ int main(int argc, char *argv[]) {
 
 #if 1
   // audio
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up audio device";
   rtc::google::capture::audio::device_creator audio_device_creator{
       rtc_connection_creator};
-  auto audio_device = audio_device_creator.create();
-  client::add_audio_to_connection audio_track_adder(rtc_connection_creator,
-                                                    *audio_device);
-  tracks_adder.add(audio_track_adder);
+  std::unique_ptr<rtc::google::capture::audio::device> audio_device;
+  try {
+    audio_device = audio_device_creator.create();
+  } catch (const std::runtime_error &error) {
+    BOOST_LOG_SEV(logger, logging::severity::error)
+        << "could not initialise a audio_track_adder, error:" << error.what();
+  }
+  std::unique_ptr<client::add_audio_to_connection> audio_track_adder;
+  if (audio_device) {
+    audio_track_adder = std::make_unique<client::add_audio_to_connection>(
+        rtc_connection_creator, *audio_device);
+    tracks_adder.add(*audio_track_adder);
+  }
 #endif
   client::rooms rooms;
   client::own_media own_media;
 
   // video
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up video device";
   rtc::google::capture::video::enumerator enumerator;
   auto devices = enumerator();
   for (const auto device : devices)
@@ -178,6 +194,8 @@ int main(int argc, char *argv[]) {
     tracks_adder.add(*video_track_adder);
     own_media.add_video(*capture_device);
   }
+
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up client";
   client::participant_creator_creator participant_creator_creator{
       peer_creator, tracks_adder, own_media};
   client::room_creator client_room_creator{participant_creator_creator};
