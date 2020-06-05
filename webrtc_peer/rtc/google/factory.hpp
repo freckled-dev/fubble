@@ -6,6 +6,9 @@
 #include <boost/asio/io_context.hpp>
 #include <boost/predef/os/windows.h>
 #include <memory>
+#if BOOST_OS_WINDOWS
+#include <modules/audio_device/win/core_audio_utility_win.h>
+#endif
 
 namespace rtc {
 class connection;
@@ -19,7 +22,7 @@ class audio_track;
 struct settings {
   bool use_ip_v6{true};
 #if BOOST_OS_WINDOWS
-  bool windows_use_core_audio2{false}; // windows core audio 2 is experimental
+  bool windows_use_core_audio2{true}; // windows core audio 2 is experimental
 #endif
 };
 class factory {
@@ -59,7 +62,7 @@ private:
   rtc::scoped_refptr<webrtc::AudioDecoderFactory> audio_decoder;
   rtc::scoped_refptr<webrtc::AudioEncoderFactory> audio_encoder;
 #if BOOST_OS_WINDOWS
-  std::unique_ptr<webrtc_win::ScopedCOMInitializer> com_initializer_;
+  std::unique_ptr<webrtc::webrtc_win::ScopedCOMInitializer> com_initializer_;
 #endif
   rtc::scoped_refptr<webrtc::AudioDeviceModule> audio_device_module;
   std::unique_ptr<webrtc::VideoDecoderFactory> video_decoder;
