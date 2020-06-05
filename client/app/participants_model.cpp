@@ -53,7 +53,7 @@ void participants_model::on_joins(
     return;
   int participants_count = participants.size();
   int joins_count = joins.size();
-  BOOST_LOG_SEV(logger, logging::severity::trace)
+  BOOST_LOG_SEV(logger, logging::severity::debug)
       << fmt::format("on_joins, participants_count:{}, joins_count:{}",
                      participants_count, joins_count);
 
@@ -93,7 +93,7 @@ participants_model::filter_out_bots(const std::vector<participant *> &joining) {
 void participants_model::on_leaves(std::vector<std::string> leaves) {
   int participants_count = participants.size();
   int leaves_count = leaves.size();
-  BOOST_LOG_SEV(logger, logging::severity::trace)
+  BOOST_LOG_SEV(logger, logging::severity::debug)
       << fmt::format("on_leaves, participants_count:{}, leaves_count:{}",
                      participants_count, leaves_count);
   for (const auto &leave : leaves) {

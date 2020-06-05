@@ -14,7 +14,7 @@ chat::chat(client &client_, const std::string &room_id)
 const chat::messages &chat::get_messages() const { return messages_; }
 
 boost::future<void> chat::send(const std::string &to_send) {
-  BOOST_LOG_SEV(logger, logging::severity::trace)
+  BOOST_LOG_SEV(logger, logging::severity::debug)
       << "sending a chat message with the size:" << to_send.size();
   BOOST_ASSERT(!to_send.empty());
   auto transaction_id = client_.create_transaction_id();
@@ -38,7 +38,7 @@ bool chat::sync_event(const std::string &type, const nlohmann::json &content) {
 
 void chat::on_event_m_room_message(const nlohmann::json &event) {
   // https://matrix.org/docs/spec/client_server/latest#m-text
-  BOOST_LOG_SEV(logger, logging::severity::trace) << "on_event_m_room_message";
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "on_event_m_room_message";
   auto content = event["content"];
   message result;
   result.body = content["body"];

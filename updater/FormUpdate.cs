@@ -135,6 +135,7 @@ namespace Updater
                 UpdateProgressLabel("fubbleStart");
             }
         }
+
     }
 
     interface UpdateListener

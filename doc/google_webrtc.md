@@ -8,6 +8,8 @@ gn args --list out/my_build
 ```
 notable flags: `rtc_use_x11`, `rtc_use_h264`, `rtc_use_gtk`
 
+get help for a variable by using `gn args help <arg>`, eg `gn args help target_cpu`
+
 ## linux
 
 dependencies: run `install-build-deps.sh` or checkout https://chromium.googlesource.com/chromium/src/+/master/docs/linux_build_instructions.md#notes
@@ -21,6 +23,9 @@ https://stackoverflow.com/questions/47348330/error-linking-webrtc-native-due-to-
 ```bash
 gn gen out/Default --args='is_debug=true use_custom_libcxx=false use_custom_libcxx_for_host=false cc_wrapper="ccache" use_rtti=true'
 ```
+
+### 32 bit
+`target_cpu="x86"`
 
 ### arm
 https://gn.googlesource.com/gn/+/master/docs/quick_start.md

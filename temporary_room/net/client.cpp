@@ -14,7 +14,7 @@ const char *error::what() const noexcept { return message.c_str(); }
 client::client(http::client &http_client) : http_client(http_client) {}
 
 client::~client() {
-  BOOST_LOG_SEV(logger, logging::severity::trace) << "destructor";
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "destructor";
 }
 
 boost::future<std::string> client::join(const std::string &name,

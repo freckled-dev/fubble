@@ -68,14 +68,14 @@ int main(int argc, char *argv[]) {
     return 1;
   gui_config config = config_check.value();
 
-  logging::add_console_log();
-  logging::add_file_log();
+  logging::add_console_log(config.general_.log_severity);
+  logging::add_file_log(config.general_.log_severity);
   client::ui::log_qt_to_logging qt_logger;
   rtc::google::log_webrtc_to_logging webrtc_logger;
 
   logging::logger logger{"main"};
 
-  BOOST_LOG_SEV(logger, logging::severity::debug)
+  BOOST_LOG_SEV(logger, logging::severity::trace)
       << "starting up, version:" << utils::version();
 
   boost::asio::io_context context;
@@ -89,6 +89,7 @@ int main(int argc, char *argv[]) {
       context, websocket_connection_creator};
 
   // signalling
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up signalling";
   signalling::json_message signalling_json;
   signalling::client::connection_creator signalling_connection_creator{
       context, boost_executor, signalling_json};
@@ -125,6 +126,8 @@ int main(int argc, char *argv[]) {
                                                http_matrix_client_factory};
   matrix::authentification matrix_authentification{http_matrix_client_factory,
                                                    matrix_client_factory};
+
+  BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up webrtc";
   rtc::google::settings rtc_settings;
   rtc_settings.use_ip_v6 = config.general_.use_ipv6;
   rtc::google::factory rtc_connection_creator{
@@ -221,7 +224,7 @@ int main(int argc, char *argv[]) {
       QCoreApplication::applicationDirPath() + "/../share/fubble/resources.rcc";
   QString font_path_executable =
       QCoreApplication::applicationDirPath() + "/resources.rcc";
-  BOOST_LOG_SEV(logger, logging::severity::trace)
+  BOOST_LOG_SEV(logger, logging::severity::debug)
       << "font rcc path_share:" << font_path_share.toStdString()
       << ", path_executable:" << font_path_executable.toStdString();
   bool loaded = QResource::registerResource(font_path_share);

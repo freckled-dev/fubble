@@ -3,6 +3,7 @@ import QtQuick.Controls 2.2
 import Qt.labs.settings 1.0
 import QtQuick.Controls.Material 2.0
 import "."
+import "scripts/utils.js" as Utils
 
 Item {
     id: roomHistoryContainer
@@ -81,6 +82,9 @@ Item {
                 id: roomNameLabel
                 text: roomName
                 font.bold: true
+                wrapMode: "WrapAnywhere"
+                anchors.left: parent.left
+                anchors.right: parent.right
             }
 
             Label {
@@ -93,7 +97,7 @@ Item {
                 id: durationLabel
                 anchors.top: enterTimeLabel.bottom
                 text: new Date(enterTime).toTimeString(
-                          ) + " lasting " + toHHMMSS(duration)
+                          ) + " lasting " + Utils.toHHMMSS(duration)
             }
 
             Image {
@@ -133,29 +137,6 @@ Item {
     function deleteHistory(historyIndex) {
         dataModel.remove(historyIndex, 1)
         saveRoomHistory()
-    }
-
-    function toHHMMSS(timestring) {
-        var sec_num = parseInt(timestring, 10)
-        var hours = Math.floor(sec_num / 3600)
-        var minutes = Math.floor((sec_num - (hours * 3600)) / 60)
-        var seconds = sec_num - (hours * 3600) - (minutes * 60)
-
-        if (hours < 10) {
-            hours = "0" + hours
-        }
-        if (minutes < 10) {
-            minutes = "0" + minutes
-        }
-        if (seconds < 10) {
-            seconds = "0" + seconds
-        }
-
-        if (hours < 1) {
-            return minutes + ':' + seconds
-        }
-
-        return hours + ':' + minutes + ':' + seconds
     }
 }
 
