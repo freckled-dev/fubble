@@ -16,7 +16,7 @@ public:
   rooms_room_matrix_adapter(const std::string &own_user_id,
                             matrix::room &matrix_room)
       : own_user_id(own_user_id), matrix_room(matrix_room) {
-    BOOST_LOG_SEV(logger, logging::severity::trace) << "constructor";
+    BOOST_LOG_SEV(logger, logging::severity::debug) << "constructor";
     signals_connections.emplace_back(
         matrix_room.on_join.connect([this](auto &join) { on_join(join); }));
   }
@@ -45,7 +45,7 @@ protected:
         << fmt::format("a user joined (id:'{}', presence:{}, join_state:{})",
                        user_id, user_presence, join_state);
     if (user_id == own_user_id) {
-      BOOST_LOG_SEV(logger, logging::severity::trace)
+      BOOST_LOG_SEV(logger, logging::severity::debug)
           << "our own user joined - skipping";
       return;
     }
@@ -83,7 +83,7 @@ protected:
                        user.id, presence, user.participant->get_join_state());
     if (presence != matrix::presence::offline)
       return;
-    BOOST_LOG_SEV(logger, logging::severity::trace) << fmt::format(
+    BOOST_LOG_SEV(logger, logging::severity::debug) << fmt::format(
         "on_update, the user with the id:'{}' got offline", user.id);
     matrix_room.kick(user.id);
   }

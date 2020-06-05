@@ -13,6 +13,7 @@ FocusScope {
     property JoinModel joinModel
     property bool guiEnabled: true
     property alias history: history
+    property alias roomName: roomTextField.text
 
     signal joined(RoomModel room)
 
@@ -92,7 +93,7 @@ FocusScope {
             Layout.topMargin: 40
 
             Item {
-                implicitHeight: roomTextField.height + roomMandatory.height
+                implicitHeight: roomTextField.height + validRoomName.height
                 Layout.fillWidth: true
 
                 TextField {
@@ -112,13 +113,12 @@ FocusScope {
                     }
 
                     onTextChanged: {
-                        roomMandatory.visible = false
+                        validRoomName.visible = false
                     }
                 }
 
                 Label {
-                    id: roomMandatory
-                    text: qsTr("Please enter a room name.")
+                    id: validRoomName
                     font.pointSize: Style.current.subTextPointSize
                     color: Style.current.accent
                     anchors.top: roomTextField.bottom
@@ -140,15 +140,14 @@ FocusScope {
                     onAccepted: joinRoomContainer.joinRoom()
 
                     onTextChanged: {
-                        nameMandatory.visible = false
+                        validName.visible = false
                     }
                 }
 
                 Label {
-                    id: nameMandatory
+                    id: validName
                     color: Style.current.accent
                     font.pointSize: Style.current.subTextPointSize
-                    text: qsTr("Please enter a (nick) name.")
                     visible: false
                     anchors.top: nameTextField.bottom
                 }
@@ -178,7 +177,7 @@ FocusScope {
         color: Style.current.background
         borderColor: Style.current.foreground
         width: 300
-        visible: history.hasRoomHistory
+        visible: history.hasRoomHistory && header.settings.showRoomHistory
 
         RoomHistory {
             id: history
@@ -202,16 +201,32 @@ FocusScope {
     function joinRoom() {
         var noRoomName = isEmpty(roomTextField.text)
         var noName = isEmpty(nameTextField.text)
+        var tooLongRoomName = isTooLong(roomTextField.text)
+        var tooLongName = isTooLong(nameTextField.text)
 
+        if (tooLongRoomName) {
+            validRoomName.text = qsTr(
+                        "Room name is too long (max 50 characters).")
+        }
+        if (tooLongName) {
+            validName.text = qsTr("Name is too long (max 50 characters).")
+        }
         if (noRoomName) {
-            roomMandatory.visible = true
+            validRoomName.text = qsTr("Please enter a room name.")
         }
-
         if (noName) {
-            nameMandatory.visible = true
+            validName.text = qsTr("Please enter a (nick) name.")
         }
 
-        if (noRoomName || noName) {
+        if (noRoomName || tooLongRoomName) {
+            validRoomName.visible = true
+        }
+
+        if (noName || tooLongName) {
+            validName.visible = true
+        }
+
+        if (noRoomName || noName || tooLongName || tooLongRoomName) {
             return
         }
 
@@ -223,6 +238,10 @@ FocusScope {
 
     function isEmpty(text) {
         return text.length === 0
+    }
+
+    function isTooLong(text) {
+        return text.length > 50
     }
 }
 

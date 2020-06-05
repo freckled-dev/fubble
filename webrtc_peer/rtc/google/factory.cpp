@@ -33,7 +33,7 @@ std::unique_ptr<rtc::connection> factory::create_connection() {
   webrtc::PeerConnectionInterface::RTCConfiguration configuration;
   configuration.sdp_semantics = webrtc::SdpSemantics::kUnifiedPlan;
   if (!settings_.use_ip_v6) {
-    BOOST_LOG_SEV(logger, logging::severity::trace)
+    BOOST_LOG_SEV(logger, logging::severity::debug)
         << "setting `disable_ipv6` to `true`";
     configuration.disable_ipv6 = true;
   }

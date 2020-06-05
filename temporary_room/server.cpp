@@ -49,7 +49,7 @@ std::optional<options> parse_options(int argc, char *argv[]) {
   return result;
 }
 
-void set_up_logging() { logging::add_console_log(); }
+void set_up_logging() { logging::add_console_log(logging::severity::debug); }
 } // namespace
 
 int main(int argc, char *argv[]) {
@@ -102,9 +102,9 @@ int main(int argc, char *argv[]) {
         acceptor.stop();
         matrix_client_server->stop_sync();
       });
-  BOOST_LOG_SEV(logger, logging::severity::trace) << "context.run()";
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "context.run()";
   context.run();
-  BOOST_LOG_SEV(logger, logging::severity::trace) << "after context.run()";
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "after context.run()";
   auto check_for_operation_cancelled = [](boost::future<void> &check) {
     try {
       check.get();

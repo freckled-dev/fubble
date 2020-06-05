@@ -1,5 +1,4 @@
 #include "signalling/server/server.hpp"
-#include "boost_di_extension_scopes_session.hpp"
 #include "executor_asio.hpp"
 #include "logging/initialser.hpp"
 #include "signalling/device/creator.hpp"
@@ -10,7 +9,6 @@
 #include "websocket/connection_creator.hpp"
 #include <boost/asio/io_context.hpp>
 #include <boost/asio/signal_set.hpp>
-#include <boost/di.hpp>
 #include <boost/program_options.hpp>
 #include <boost/thread/executors/executor_adaptor.hpp>
 #include <fmt/format.h>
@@ -36,12 +34,18 @@ int main(int argc, char *argv[]) {
       static_cast<std::uint16_t>(options.port)};
   boost::asio::io_context context;
   using executor_type = boost::executor_adaptor<executor_asio>;
-  auto injector = boost::di::make_injector<boost::di::extension::shared_config>(
-      boost::di::bind<boost::asio::io_context>.to(context),
-      boost::di::bind<websocket::acceptor::config>.to(acceptor_config),
-      boost::di::bind<boost::executor>.to(
-          std::make_shared<executor_type>(context)));
-  auto &server = injector.create<signalling::server::server &>();
+  executor_type asio_executor{context};
+  websocket::connection_creator websocket_connection_creator{context};
+  websocket::acceptor websocket_acceptor{context, websocket_connection_creator,
+                                         acceptor_config};
+  signalling::json_message signalling_json;
+  signalling::server::connection_creator server_connection_creator{
+      asio_executor, signalling_json};
+  signalling::device::creator device_creator_{asio_executor};
+  signalling::registration_handler registration_handler{device_creator_};
+  signalling::server::server server{asio_executor, websocket_acceptor,
+                                    server_connection_creator,
+                                    registration_handler};
   BOOST_LOG_SEV(logger, logging::severity::info)
       << fmt::format("server is listening on port {}", server.port());
 
@@ -56,7 +60,9 @@ int main(int argc, char *argv[]) {
   return 0;
 }
 
-static void set_up_logging() { logging::add_console_log(); }
+static void set_up_logging() {
+  logging::add_console_log(logging::severity::debug);
+}
 
 static std::optional<options> parse_options(int argc, char *argv[]) {
   namespace bpo = boost::program_options;

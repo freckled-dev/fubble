@@ -12,7 +12,7 @@ connection::connection(boost::executor &executor,
       message_parser(message_parser) {}
 
 connection::~connection() {
-  BOOST_LOG_SEV(logger, logging::severity::trace) << "~connection()";
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "~connection()";
 }
 
 namespace {
@@ -89,7 +89,7 @@ void connection::send_do_offer() {
 }
 
 void connection::send(const std::string &message) {
-  BOOST_LOG_SEV(logger, logging::severity::trace)
+  BOOST_LOG_SEV(logger, logging::severity::debug)
       << fmt::format("sending message '{}'", message);
   connection_->send(message);
 }

@@ -68,8 +68,8 @@ int main(int argc, char *argv[]) {
     return 1;
   gui_config config = config_check.value();
 
-  logging::add_console_log();
-  logging::add_file_log();
+  logging::add_console_log(config.general_.log_severity);
+  logging::add_file_log(config.general_.log_severity);
   client::ui::log_qt_to_logging qt_logger;
   rtc::google::log_webrtc_to_logging webrtc_logger;
 
@@ -224,7 +224,7 @@ int main(int argc, char *argv[]) {
       QCoreApplication::applicationDirPath() + "/../share/fubble/resources.rcc";
   QString font_path_executable =
       QCoreApplication::applicationDirPath() + "/resources.rcc";
-  BOOST_LOG_SEV(logger, logging::severity::trace)
+  BOOST_LOG_SEV(logger, logging::severity::debug)
       << "font rcc path_share:" << font_path_share.toStdString()
       << ", path_executable:" << font_path_executable.toStdString();
   bool loaded = QResource::registerResource(font_path_share);

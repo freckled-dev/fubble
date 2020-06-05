@@ -18,6 +18,9 @@ std::optional<gui_config> gui_options::parse(int argc, char *argv[]) {
               "enable or disable the usage of ipv6 in webrtc");
     adder.add("use-ssl", result.general_.use_ssl,
               "enable or disable the usage of ssl");
+    adder.add("log-severity", result.general_.log_severity,
+              "the must-have log_severity for being handled. valid values are: "
+              "[trace, debug, info, warning, error, fatal]");
   }
   bpo::options_description options;
   options.add(general);

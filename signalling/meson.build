@@ -60,7 +60,7 @@ server_dep = declare_dependency(
 server_test = executable('signalling_server_test',
   ['signalling/server/server_test.cpp'],
   cpp_pch: '../pch/precompiled.hpp',
-  dependencies: [boost_dep, gtest_dep, fmt_dep, boost_di_dep, server_dep],
+  dependencies: [boost_dep, gtest_dep, fmt_dep, server_dep],
   link_with: [signalling_client, test_main]
   )
 test('signalling server test', server_test, timeout: 8)
@@ -68,7 +68,7 @@ test('signalling server test', server_test, timeout: 8)
 server_exec = executable('signalling_server',
   ['app/server.cpp'],
   cpp_pch: '../pch/precompiled.hpp',
-  dependencies: [fmt_dep, server_dep, boost_di_dep],
+  dependencies: [fmt_dep, server_dep],
   link_with: [],
   install: true
   )

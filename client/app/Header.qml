@@ -3,6 +3,7 @@ import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.0
 import QtQuick.Controls.Material 2.0
 import io.fubble 1.0
+import "scripts/utils.js" as Utils
 
 ToolBar {
     id: header
@@ -12,6 +13,8 @@ ToolBar {
     property ProgressPopup leave
     signal toggleChat
     signal toggleOverview
+
+    property alias timer: roomTimer
 
     // icon indicators
     property RoomModel room
@@ -24,10 +27,20 @@ ToolBar {
         anchors.left: parent.left
         text: qsTr("‹")
         onClicked: {
+            console.log("clicked")
             leave.showForceButton = false
             leave.open()
         }
         visible: header.isRoomView()
+    }
+
+    MouseArea {
+        id: maHeader
+        anchors.left: backButton.right
+        anchors.right: overviewIconLoader.left
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        hoverEnabled: true
     }
 
     Label {
@@ -87,6 +100,26 @@ ToolBar {
                     return Style.current.copyImage
                 })
             }
+        }
+    }
+
+    Label {
+        id: roomTimeLabel
+        property int timePassed: 0
+        text: Utils.toHHMMSS(timePassed)
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.right: overviewIconLoader.left
+        anchors.rightMargin: 40
+        font.pointSize: Style.current.textPointSize
+        elide: Label.ElideRight
+        visible: header.isRoomView() && maHeader.containsMouse
+
+        Timer {
+            id: roomTimer
+            interval: 1000
+            running: true
+            repeat: true
+            onTriggered: roomTimeLabel.timePassed += 1
         }
     }
 

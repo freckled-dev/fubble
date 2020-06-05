@@ -50,7 +50,7 @@ void rooms::on_sync(const nlohmann::json &content) {
 }
 
 boost::future<room *> rooms::create_room(const create_room_fields &fields) {
-  BOOST_LOG_SEV(logger, logging::severity::trace) << fmt::format(
+  BOOST_LOG_SEV(logger, logging::severity::debug) << fmt::format(
       "create_room, fields.name:'{}'", fields.name.value_or("--"));
 
   nlohmann::json content = nlohmann::json::object();
@@ -74,9 +74,6 @@ boost::future<room *> rooms::create_room(const create_room_fields &fields) {
   history_visibility["content"] = history_visibility_content;
   initial_state.push_back(history_visibility);
   content["initial_state"] = initial_state;
-#if 0
-  BOOST_LOG_SEV(logger, logging::severity::trace) << "fun:" << content.dump(2);
-#endif
   return http_client->post("createRoom", content)
       .then(executor, [this](auto result) {
         auto response = result.get();
@@ -104,7 +101,7 @@ boost::future<room *> rooms::join_room_by_id(const std::string &id) {
   auto target = fmt::format("rooms/{}/join", id);
   nlohmann::json content = nlohmann::json::object();
   return http_client->post(target, content).then(executor, [this](auto result) {
-    BOOST_LOG_SEV(this->logger, logging::severity::trace)
+    BOOST_LOG_SEV(this->logger, logging::severity::debug)
         << "joined room, result not validated yet";
     auto response = result.get();
     auto response_json = response.second;

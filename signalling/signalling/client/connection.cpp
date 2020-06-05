@@ -13,7 +13,7 @@ connection::connection(boost::executor &executor_,
       message_parser(message_parser) {}
 
 connection::~connection() {
-  BOOST_LOG_SEV(logger, logging::severity::trace) << "client ~connection()";
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "client ~connection()";
 }
 
 boost::future<void> connection::close() {

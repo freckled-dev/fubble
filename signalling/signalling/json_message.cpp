@@ -14,7 +14,7 @@ json_message::invalid_type::invalid_type(const std::string &type)
 
 json_message::messages_type
 json_message::parse(const std::string &message) const {
-  BOOST_LOG_SEV(logger, logging::severity::trace)
+  BOOST_LOG_SEV(logger, logging::severity::debug)
       << fmt::format("parsing the message: '{}'", message);
   auto json = nlohmann::json::parse(message);
   auto type = json["type"];

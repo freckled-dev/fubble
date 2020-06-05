@@ -22,7 +22,7 @@ participant_model::participant_model(participant &participant_, QObject *parent)
 std::string participant_model::get_id() const { return id; }
 
 ui::frame_provider_google_video_source *participant_model::get_video() const {
-  BOOST_LOG_SEV(logger, logging::severity::trace) << "get_video";
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "get_video";
   return video;
 }
 
