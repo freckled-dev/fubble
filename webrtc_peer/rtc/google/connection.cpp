@@ -253,6 +253,7 @@ void connection::OnAddTrack(
     is_video = false;
   }
   if (!result) {
+    BOOST_LOG_SEV(logger, logging::severity::error) << "OnAddTrack !result";
     BOOST_ASSERT_MSG(false, "implement");
     return;
   }
