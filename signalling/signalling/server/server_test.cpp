@@ -1,4 +1,3 @@
-#include "boost_di_extension_scopes_session.hpp"
 #include "connection_creator.hpp"
 #include "executor_asio.hpp"
 #include "http/connection_creator.hpp"
@@ -19,26 +18,26 @@
 #include <gtest/gtest.h>
 
 namespace {
-auto make_injector(boost::asio::io_context &context) {
-  namespace di = boost::di;
-  using executor_type = boost::executor_adaptor<executor_asio>;
-  return di::make_injector<di::extension::shared_config>(
-      di::bind<boost::asio::io_context>.to(context),
-      di::bind<boost::executor>.to(std::make_shared<executor_type>(context)));
-}
 
 struct Server : testing::Test {
   const std::string session_key = "fun session key";
   boost::asio::io_context context;
-  decltype(make_injector(context)) injector = make_injector(context);
   boost::executor_adaptor<executor_asio> executor{context};
-  websocket::acceptor &acceptor = injector.create<websocket::acceptor &>();
-  signalling::server::server &server_ =
-      injector.create<signalling::server::server &>();
-  websocket::connector_creator &websocket_connector =
-      injector.create<websocket::connector_creator &>();
-  signalling::client::connection_creator &connection_creator =
-      injector.create<signalling::client::connection_creator &>();
+  websocket::connection_creator websocket_connection_creator{context};
+  websocket::acceptor acceptor{context, websocket_connection_creator,
+                               websocket::acceptor::config{}};
+  signalling::json_message signalling_json;
+  signalling::server::connection_creator server_connection_creator{
+      executor, signalling_json};
+  signalling::device::creator device_creator_{executor};
+  signalling::registration_handler registration_handler{device_creator_};
+  signalling::server::server server_{
+      executor, acceptor, server_connection_creator, registration_handler};
+
+  websocket::connector_creator websocket_connector{
+      context, websocket_connection_creator};
+  signalling::client::connection_creator connection_creator{context, executor,
+                                                            signalling_json};
   signalling::client::client client_{websocket_connector, connection_creator};
   signalling::client::client client_answering{websocket_connector,
                                               connection_creator};
