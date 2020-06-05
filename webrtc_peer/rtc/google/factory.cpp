@@ -12,7 +12,11 @@
 #include <api/task_queue/default_task_queue_factory.h>
 #include <api/video_codecs/builtin_video_decoder_factory.h>
 #include <api/video_codecs/builtin_video_encoder_factory.h>
-#if BOOST_OS_WINDOWS
+
+// kWindowsCoreAudio2 https://chromium.googlesource.com/external/webrtc/+/HEAD/modules/audio_device/include/audio_device_factory.h
+#define FUBBLE_ENABLE_GOOGLE_WEBRTC_CORE_AUDIO2 0
+
+#if BOOST_OS_WINDOWS && FUBBLE_ENABLE_GOOGLE_WEBRTC_CORE_AUDIO2
 #include <modules/audio_device/include/audio_device_factory.h>
 #endif
 
@@ -110,9 +114,10 @@ void factory::instance_audio() {
   // let audio_device_module be null, except we use windows core audio 2
   audio_decoder = webrtc::CreateBuiltinAudioDecoderFactory();
   audio_encoder = webrtc::CreateBuiltinAudioEncoderFactory();
-#if BOOST_OS_WINDOWS
   if (!settings_.windows_use_core_audio2)
     return;
+#if BOOST_OS_WINDOWS 
+#if FUBBLE_ENABLE_GOOGLE_WEBRTC_CORE_AUDIO2
   BOOST_LOG_SEV(logger, logging::severity::trace) << "due to windows_use_core_audio2 using CreateWindowsCoreAudioAudioDeviceModule";
   BOOST_ASSERT(!task_queue_factory);
   task_queue_factory = webrtc::CreateDefaultTaskQueueFactory();
@@ -130,6 +135,11 @@ void factory::instance_audio() {
             task_queue_factory.get());
       });
   BOOST_ASSERT(audio_device_module);
+#else
+  BOOST_LOG_SEV(this->logger, logging::severity::error)
+              << "no windows core audio2 enabled at compile time";
+  BOOST_ASSERT(false);
+#endif
 #endif
 }
 
