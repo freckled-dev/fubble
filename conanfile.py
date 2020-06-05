@@ -31,11 +31,10 @@ class FubbleConan(ConanFile):
         if not tools.which('meson'):
             self.build_requires("meson/0.54.0")
         self.build_requires("nlohmann_json/3.7.0")
-        self.build_requires("boost-di/1.1.0@inexorgame/stable")
         self.build_requires("boost/1.73.0")
         self.build_requires("gtest/1.10.0")
         self.build_requires("fmt/6.2.0")
-        self.build_requires("google-webrtc/83")
+        self.build_requires("google-webrtc/84")
         self.build_requires("RectangleBinPack/1.0.2")
 
     def build(self):
