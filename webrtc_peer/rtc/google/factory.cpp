@@ -114,9 +114,9 @@ void factory::instance_audio() {
   // let audio_device_module be null, except we use windows core audio 2
   audio_decoder = webrtc::CreateBuiltinAudioDecoderFactory();
   audio_encoder = webrtc::CreateBuiltinAudioEncoderFactory();
+#if BOOST_OS_WINDOWS
   if (!settings_.windows_use_core_audio2)
     return;
-#if BOOST_OS_WINDOWS 
 #if FUBBLE_ENABLE_GOOGLE_WEBRTC_CORE_AUDIO2
   BOOST_LOG_SEV(logger, logging::severity::trace) << "due to windows_use_core_audio2 using CreateWindowsCoreAudioAudioDeviceModule";
   BOOST_ASSERT(!task_queue_factory);
