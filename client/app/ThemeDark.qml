@@ -31,13 +31,15 @@ Theme {
     property var logoImage: "images/fubble.svg"
     property var mutedImage: "images/muted_dark.svg"
     property var mutedOffImage: "images/muted_off_dark.svg"
+    property var videoDisabledImage: "images/video_disabled_dark.svg"
+
     property var overlayMuteImage: "images/overlay_mute.svg"
     property var overlayMuteOffImage: "images/overlay_mute_off.svg"
     property var overlaySilenceImage: "images/overlay_silence.svg"
     property var overlaySilenceOffImage: "imagesoverlay_silence_off.svg"
     property var overlayVideoImage: "images/overlay_video.svg"
     property var overlayVideoOffImage: "images/overlay_video_off.svg"
-    property var videoDisabledImage: "images/video_disabled_dark.svg"
+    property var shareDesktopImage: "images/overlay_share_desktop.svg"
 
     // Chat Images
     property var chatImage: "images/chat_dark.svg"
