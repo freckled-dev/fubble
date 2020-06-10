@@ -58,8 +58,22 @@ Item {
     }
 
     function addRoomToHistory(newHistoryItem) {
+        var historyIndex = getDuplicateEntryIndex(newHistoryItem)
+        if (historyIndex) {
+            dataModel.remove(historyIndex)
+        }
+
         dataModel.insert(0, newHistoryItem)
         saveRoomHistory()
+    }
+
+    function getDuplicateEntryIndex(newHistoryItem) {
+        for (var index = 0; index < dataModel.count; index++) {
+            var currentItem = dataModel.get(index)
+            if (currentItem.roomName === newHistoryItem.roomName) {
+                return index
+            }
+        }
     }
 
     function saveRoomHistory() {
