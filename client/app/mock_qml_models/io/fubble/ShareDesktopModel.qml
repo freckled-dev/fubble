@@ -4,16 +4,29 @@ import QtMultimedia 5.0
 QtObject {
 
     function startPreviews() {
-        for (var i = 0; i < categories.length; i++) {
-            var previews = categories[i].previews
-            for (var j = 0; j < previews.length; j++) {
-                var preview = previews[j]
+        for (var categoryIndex = 0; categoryIndex < categories.length; categoryIndex++) {
+            var previews = categories[categoryIndex].previews
+            for (var previewIndex = 0; previewIndex < previews.length; previewIndex++) {
+                var preview = previews[previewIndex]
                 preview.player.play()
             }
         }
     }
 
-    function stopPreviews() {}
+    function stopPreviews() {
+        for (var categoryIndex = 0; categoryIndex < categories.length; categoryIndex++) {
+            var previews = categories[categoryIndex].previews
+            for (var previewIndex = 0; previewIndex < previews.length; previewIndex++) {
+                var preview = previews[previewIndex]
+                preview.player.stop()
+            }
+        }
+    }
+
+    function shareDesktop(model) {
+        console.log("User wants to share the following screen: " + model.description)
+        // TODO - switch layout
+    }
 
     property list<QtObject> categories: [
         QtObject {
