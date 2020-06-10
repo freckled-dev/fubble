@@ -17,6 +17,30 @@ RowLayout {
     anchors.bottom: parent.bottom
 
     Image {
+        id: shareDesktopImage
+        sourceSize.height: imageSize
+        sourceSize.width: imageSize
+        source: Style.current.shareDesktopImage
+
+        FubbleToolTip {
+            id: ttShareDesktop
+            text: qsTr("Share your screen")
+            visible: maShareDesktop.containsMouse
+        }
+
+        MouseArea {
+            id: maShareDesktop
+            anchors.fill: parent
+            hoverEnabled: true
+            onClicked: shareDesktopPopup.open()
+        }
+    }
+
+    ShareDesktopSelection {
+        id: shareDesktopPopup
+    }
+
+    Image {
         id: videoDisabledImage
         sourceSize.height: imageSize
         sourceSize.width: imageSize
