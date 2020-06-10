@@ -39,6 +39,7 @@
 #include "rtc/google/capture/video/enumerator.hpp"
 #include "rtc/google/factory.hpp"
 #include "rtc/google/log_webrtc_to_logging.hpp"
+#include "share_desktop_model.hpp"
 #include "signalling/client/client_creator.hpp"
 #include "signalling/client/connection_creator.hpp"
 #include "signalling/json_message.hpp"
@@ -248,6 +249,7 @@ int main(int argc, char *argv[]) {
   qRegisterMetaType<client::participants_model *>();
   qRegisterMetaType<client::participants_with_video_model *>();
   qRegisterMetaType<client::join_model *>();
+  qRegisterMetaType<client::share_desktop_model *>();
   qRegisterMetaType<client::error_model *>();
   qRegisterMetaType<client::utils_model *>();
   qRegisterMetaType<client::leave_model *>();
@@ -260,6 +262,9 @@ int main(int argc, char *argv[]) {
       "can't instance client::participant_model");
   qmlRegisterUncreatableType<client::join_model>(
       "io.fubble", 1, 0, "JoinModel", "can't instance client::join_model");
+  qmlRegisterUncreatableType<client::share_desktop_model>(
+      "io.fubble", 1, 0, "ShareDesktopModel",
+      "can't instance client::share_desktop_model");
   qmlRegisterUncreatableType<client::utils_model>(
       "io.fubble", 1, 0, "UtilsModel", "can't instance client::utils_model");
   qmlRegisterUncreatableType<client::error_model>(
@@ -278,6 +283,7 @@ int main(int argc, char *argv[]) {
   client::error_model error_model;
   client::utils_model utils_model;
   client::join_model join_model{model_creator, error_model, joiner, own_media};
+  client::share_desktop_model share_desktop_model{};
   client::leave_model leave_model{leaver};
   //  works from 5.14 onwards
   // engine.setInitialProperties(...)
@@ -287,6 +293,8 @@ int main(int argc, char *argv[]) {
   qml_context->setContextProperty("errorModelFromCpp", &error_model);
   qml_context->setContextProperty("utilsModelFromCpp", &utils_model);
   qml_context->setContextProperty("leaveModelFromCpp", &leave_model);
+  qml_context->setContextProperty("shareDesktopModelFromCpp",
+                                  &share_desktop_model);
   client::ui::add_version_to_qml_context version_adder{*qml_context};
   //  seems not to do it either
   // QVariant property{qMetaTypeId<client::join_model *>(), &join_model};
