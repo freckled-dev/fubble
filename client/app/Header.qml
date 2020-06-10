@@ -27,7 +27,6 @@ ToolBar {
         anchors.left: parent.left
         text: qsTr("‹")
         onClicked: {
-            console.log("clicked")
             leave.showForceButton = false
             leave.open()
         }
