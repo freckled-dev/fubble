@@ -54,7 +54,9 @@ Item {
 
         Component {
             id: participantOverviewComponent
-            ParticipantOverview {}
+            ParticipantOverview {
+                width: overviewWidth - 20
+            }
         }
 
         Loader {
