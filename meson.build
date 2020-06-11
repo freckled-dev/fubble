@@ -13,12 +13,17 @@ else
   enable_servers = disabled
 endif
 
+is_debug = get_option('debug')
+
 if host_machine.system() == 'windows'
   # support windows 7 onwards
   add_project_arguments('-D_WIN32_WINNT=0x0601', language: 'cpp')
   # https://stackoverflow.com/questions/39689162/qt-project-in-visual-studio-2015-unresolved-external-symbol-wwinmain
   # TODO shall be only disabled on release
   add_project_link_arguments('/entry:mainCRTStartup', language: 'cpp')
+  if is_debug
+    add_project_arguments('/bigobj', language: 'cpp')
+  endif
 endif
 
 boost_dep_pkg = dependency('boost', modules : [
@@ -50,10 +55,25 @@ gstreamer_webrtc_dep_pkg = dependency('gstreamer-webrtc-1.0',
 gstreamer_sdp_dep = dependency('gstreamer-sdp-1.0',
   required : false, disabler : true)
 qt5 = import('qt5')
-qt5_clear_dep = dependency('qt5', modules: ['Core', 'Gui', 'Qml', 'Quick', 'Widgets', 'Multimedia', 'Svg', 'QuickControls2'])
+qt5_clear_dep = dependency('qt5', 
+  modules: ['Core', 'Gui', 'Qml', 'Quick', 'Widgets', 'Network', 'Multimedia',
+    'Svg', 'QuickControls2'])
+qt5_dep_dependencies = [qt5_clear_dep]
+qt5_dep_link_with = []
+if host_machine.system() == 'windows' and false
+  # needed because of static linking
+  # dependencies are from qt.pc
+  qt_pc_depends = ['zlib',
+    # 'openssl',
+    'libpcre2', 'glib', 'double-conversion', 'freetype2',
+    'harfbuzz', 'libjpeg', 'libpng', 'sqlite3', 'libpq', 'openal', 'zstd', 'opengl']
+  foreach dependency : qt_pc_depends
+    qt5_dep_dependencies += dependency(dependency)
+  endforeach
+  qt5_dep_link_with += []
+endif
 # `QT_NO_EMIT` is neccessary because google webrtc declares a method/function called `emit`
 qt5_dep_compile_args = ['-DQT_DEPRECATED_WARNINGS', '-DQT_NO_EMIT']
-is_debug = get_option('debug')
 if is_debug
   qt5_dep_compile_args += '-DQT_QML_DEBUG=1'
   message('enabled QT_QML_DEBUG')
@@ -61,8 +81,9 @@ else
   message('disabled QT_QML_DEBUG')
 endif
 qt5_dep = declare_dependency(
-  compile_args : qt5_dep_compile_args,
-  dependencies : [qt5_clear_dep]
+  compile_args: qt5_dep_compile_args,
+  dependencies: qt5_dep_dependencies,
+  link_with: qt5_dep_link_with
   )
 gstreamer_webrtc_dep = declare_dependency(
   dependencies : [gstreamer_webrtc_dep_pkg, gstreamer_sdp_dep,

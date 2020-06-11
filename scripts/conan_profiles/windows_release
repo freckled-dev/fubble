@@ -1,0 +1,16 @@
+[settings]
+os=Windows
+os_build=Windows
+arch=x86_64
+arch_build=x86_64
+compiler=Visual Studio
+compiler.version=16
+compiler.runtime=MD
+build_type=Release
+# compiler.cppstd=17
+[options]
+boost:shared=False
+boost:layout=tagged
+
+[build_requires]
+[env]

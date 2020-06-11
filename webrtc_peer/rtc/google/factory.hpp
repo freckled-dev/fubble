@@ -17,12 +17,10 @@ class video_source;
 class video_track;
 class audio_source;
 class audio_track;
-// TODO don't create a signalling thread in this class. instead use an external
-// one
 struct settings {
   bool use_ip_v6{true};
 #if BOOST_OS_WINDOWS
-  bool windows_use_core_audio2{true}; // windows core audio 2 is experimental
+  bool windows_use_core_audio2{false}; // windows core audio 2 is experimental
 #endif
 };
 class factory {
