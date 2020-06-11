@@ -93,7 +93,7 @@ FocusScope {
             Layout.topMargin: 40
 
             Item {
-                implicitHeight: roomTextField.height + validRoomName.height
+                implicitHeight: roomTextField.height + 5
                 Layout.fillWidth: true
 
                 TextField {
@@ -127,7 +127,7 @@ FocusScope {
             }
 
             Item {
-                implicitHeight: nameTextField.height + nameTextField.height
+                implicitHeight: nameTextField.height + 5
                 Layout.fillWidth: true
 
                 TextField {
@@ -137,7 +137,7 @@ FocusScope {
                     selectByMouse: true
                     placeholderText: qsTr("Your name *")
                     Layout.fillWidth: true
-                    onAccepted: joinRoomContainer.joinRoom()
+                    onAccepted: passwordTextField.focus = true
 
                     onTextChanged: {
                         validName.visible = false
@@ -150,6 +150,33 @@ FocusScope {
                     font.pointSize: Style.current.subTextPointSize
                     visible: false
                     anchors.top: nameTextField.bottom
+                }
+            }
+
+            Item {
+                implicitHeight: passwordTextField.height + 20
+                Layout.fillWidth: true
+
+                TextField {
+                    id: passwordTextField
+                    anchors.right: parent.right
+                    anchors.left: parent.left
+                    selectByMouse: true
+                    placeholderText: qsTr("Password (optional)")
+                    Layout.fillWidth: true
+                    onAccepted: joinRoomContainer.joinRoom()
+
+                    onTextChanged: {
+                        validPassword.visible = false
+                    }
+                }
+
+                Label {
+                    id: validPassword
+                    color: Style.current.accent
+                    font.pointSize: Style.current.subTextPointSize
+                    visible: false
+                    anchors.top: passwordTextField.bottom
                 }
             }
 
@@ -232,7 +259,13 @@ FocusScope {
 
         joinPopup.open()
 
-        joinModel.join(roomTextField.text, nameTextField.text)
+        if (passwordTextField.text) {
+            joinModel.joinWithPassword(roomTextField.text, nameTextField.text,
+                                       passwordTextField.text)
+        } else {
+            joinModel.join(roomTextField.text, nameTextField.text)
+        }
+
         guiEnabled = false
     }
 
