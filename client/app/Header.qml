@@ -26,11 +26,27 @@ ToolBar {
         id: backButton
         anchors.left: parent.left
         text: qsTr("‹")
-        onClicked: {
+        onClicked: dialogQuit.open()
+        visible: header.isRoomView()
+    }
+
+    Dialog {
+        id: dialogQuit
+        title: qsTr("Leave room")
+        modal: true
+        standardButtons: Dialog.Ok | Dialog.Cancel
+        x: 20
+        y: 20
+
+        Label {
+            id: contentLabel
+            text: qsTr("Are you sure you want to leave the room?")
+        }
+
+        onAccepted: {
             leave.showForceButton = false
             leave.open()
         }
-        visible: header.isRoomView()
     }
 
     MouseArea {
