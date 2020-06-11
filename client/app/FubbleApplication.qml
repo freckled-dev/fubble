@@ -26,6 +26,7 @@ ApplicationWindow {
     property ErrorModel errorModel: errorModelFromCpp
     property UtilsModel utilsModel: utilsModelFromCpp
     property ShareDesktopModel shareDesktopModel: shareDesktopModelFromCpp
+    property AudioVideoSettingsModel audioVideoModel: audioVideoModelFromCpp
 
     property bool shutdown: false
 
@@ -176,19 +177,19 @@ ApplicationWindow {
     }
 
     function playJoinSound() {
-        if (header.settings.joinSound) {
+        if (header.fubbleSettings.generalSettings.joinSound) {
             joinSound.play()
         }
     }
 
     function playLeaveSound() {
-        if (header.settings.leaveSound) {
+        if (header.fubbleSettings.generalSettings.leaveSound) {
             leaveSound.play()
         }
     }
 
     function playErrorSound() {
-        if (header.settings.errorSound) {
+        if (header.fubbleSettings.generalSettings.errorSound) {
             errorSound.play()
         }
     }

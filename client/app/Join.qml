@@ -177,7 +177,8 @@ FocusScope {
         color: Style.current.background
         borderColor: Style.current.foreground
         width: 300
-        visible: history.hasRoomHistory && header.settings.showRoomHistory
+        visible: history.hasRoomHistory
+                 && header.fubbleSettings.generalSettings.showRoomHistory
 
         RoomHistory {
             id: history
