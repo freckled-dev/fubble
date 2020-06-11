@@ -109,7 +109,7 @@ class FubbleConan(ConanFile):
                 raise ConanInvalidConfiguration("ucrt redist dir does not exist: %s" % (ucrt_redist_dir))
             self.copy('*.dll', dst=bin_dir, src=vcredist_dir)
 
-            qt_path_bin = _get_qt_bin_paths()
+            qt_path_bin = self._get_qt_bin_paths()
             with tools.environment_append({"PATH": qt_path_bin}):
                 with tools.chdir(bin_dir):
                     qml_dir = os.path.join(self.source_folder, 'client', 'app')
