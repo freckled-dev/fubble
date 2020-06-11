@@ -1,0 +1,23 @@
+[settings]
+os=Windows
+os_build=Windows
+arch=x86_64
+arch_build=x86_64
+compiler=Visual Studio
+compiler.version=16
+compiler.runtime=MDd
+build_type=Debug
+# compiler.cppstd=17
+[options]
+boost:shared=False
+boost:layout=tagged
+#qt:shared=True
+#qt:qtsvg=True
+## no openssl, because it conflicts with boringssl in webrtc
+#qt:openssl=False
+#qt:qtmultimedia=True
+#qt:qttools=True
+#qt:qtquickcontrols2=True
+
+[build_requires]
+[env]

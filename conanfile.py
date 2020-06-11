@@ -17,17 +17,20 @@ class FubbleConan(ConanFile):
     generators = "pkg_config"
     exports_sources = "*"
     # no_copy_source = True
-    _qt_win_path_bin = 'C:\\Qt\\5.15.0\\msvc2019_64\\bin'
+
+    def _get_qt_bin_paths(self):
+        if self.settings.os != "Windows":
+            return []
+        return ['C:\\Qt\\5.15.0\\msvc2019_64\\bin']
+        # return self.deps_cpp_info["qt"].bin_paths
 
     def imports(self):
         self.copy("*.dll", dst="bin", keep_path=False)
 
     def build_requirements(self):
-        #if self.settings.os != "Linux":
-        #    # qt/5.14.2 is available but conan can't find the prebuild dependencies
-        #    # there's no out of the box support for qml. and compiling it yourself fails.
-        #    # TODO find out why self compile does not work and contribute
-        #    self.build_requires("qt/5.14.0@bincrafters/stable")
+        # if self.settings.os == "Windows":
+        #     # will not compile with less than visual studio 2019
+        #     self.build_requires("qt/5.15.0@bincrafters/stable")
         if not tools.which('meson'):
             self.build_requires("meson/0.54.0")
         self.build_requires("nlohmann_json/3.7.0")
@@ -39,12 +42,11 @@ class FubbleConan(ConanFile):
 
     def build(self):
         # https://docs.conan.io/en/latest/reference/build_helpers/meson.html
-        #qt_path_bin = self.deps_cpp_info["qt"].bin_paths
         addtional_paths = []
         if self.settings.os == "Windows":
-            qt_path_bin = self._qt_win_path_bin
+            qt_path_bin = self._get_qt_bin_paths()
             self.output.info("qt_path_bin:%s" % (qt_path_bin))
-            addtional_paths += [qt_path_bin]
+            addtional_paths += qt_path_bin
 
         boost_path = self.deps_cpp_info["boost"].rootpath
         self.output.info("boost_path:%s" % (boost_path))
@@ -70,6 +72,7 @@ class FubbleConan(ConanFile):
             # meson_options['b_sanitize'] = 'address,undefined'
             pass
         meson_options['b_pch'] = 'false'
+        # meson_options['b_vscrt'] = 'mtd'
 
         ninja_jobs = os.getenv('FUBBLE_BUILD_NINJA_JOBS')
         meson = Meson(self)
@@ -106,7 +109,8 @@ class FubbleConan(ConanFile):
                 raise ConanInvalidConfiguration("ucrt redist dir does not exist: %s" % (ucrt_redist_dir))
             self.copy('*.dll', dst=bin_dir, src=vcredist_dir)
 
-            with tools.environment_append({"PATH": [self._qt_win_path_bin]}):
+            qt_path_bin = _get_qt_bin_paths()
+            with tools.environment_append({"PATH": qt_path_bin}):
                 with tools.chdir(bin_dir):
                     qml_dir = os.path.join(self.source_folder, 'client', 'app')
                     # dont do -no-widgets # widgets is needed for svg
