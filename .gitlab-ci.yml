@@ -75,7 +75,7 @@ innosetup:
     paths:
       - ./*.exe
 
-build windows release:
+.build windows: &build_windows
   stage: build
   tags:
     - windows
@@ -84,7 +84,7 @@ build windows release:
     FUBBLE_TREAT_WARNING_AS_ERROR: 0
     FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install_windows
     # FUBBLE_BUILD_NINJA_JOBS: '1'
-  script:
+  before_script:
     - choco install -y --no-progress python pkgconfiglite cmake --installargs 'ADD_CMAKE_TO_PATH=System'
     # - refreshenv # did not work
     - $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
@@ -92,11 +92,20 @@ build windows release:
     - pip install conan aqtinstall
     - python scripts/install_qt.py
     - conan --version
-    - python scripts/make_build.py
   artifacts:
     untracked: true
     expire_in: 1 week
     when: always
+
+build windows release:
+  <<: *build_windows
+  script:
+    - python scripts/make_build.py --profile scripts/conan_profiles/windows_release
+
+build windows release:
+  <<: *build_windows
+  script:
+    - python scripts/make_build.py --profile scripts/conan_profiles/windows_debug
 
 deploy services:
   stage: deploy

@@ -104,8 +104,9 @@ void participants_model::on_leaves(std::vector<std::string> leaves) {
       continue; // bots will get skipped in this list
     int found_index = std::distance(participants.begin(), found);
     beginRemoveRows(QModelIndex(), found_index, found_index);
+    auto delete_me = (*found);
     participants.erase(found);
     endRemoveRows();
-    (*found)->deleteLater();
+    delete_me->deleteLater();
   }
 }
