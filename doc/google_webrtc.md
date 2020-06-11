@@ -6,7 +6,7 @@ list possible arguments
 ```
 gn args --list out/my_build
 ```
-notable flags: `rtc_use_x11`, `rtc_use_h264`, `rtc_use_gtk`
+notable flags: `rtc_use_x11`, `rtc_use_h264`, `rtc_use_gtk`, `enable_iterator_debugging`
 
 get help for a variable by using `gn args help <arg>`, eg `gn args help target_cpu`
 
