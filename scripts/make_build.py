@@ -11,6 +11,8 @@ parser.add_argument('--skip_remove', help='don\'t remove the build directory',
         action="store_true")
 parser.add_argument('--skip_install', help='don\'t run conan install',
         action="store_true")
+parser.add_argument('--skip_build', help='don\'t run conan build',
+        action="store_true")
 parser.add_argument('--skip_package', help='don\'t run conan package',
         action="store_true")
 parser.add_argument('--profile', help='the conan profile to use', default='default')
@@ -48,13 +50,14 @@ werror_environment = os.environ.get('FUBBLE_TREAT_WARNING_AS_ERROR')
 if werror_environment == '0':
     werror = 'false'
 
-subprocess.run(['conan', 'build',
-    paths.source_dir,
-    # '--build', 'missing',
-    '--build-folder', paths.build_dir,
-    '--install-folder', paths.dependencies_dir,
-    '--package-folder', paths.prefix_dir,
-    ], check=True)
+if not args.skip_build:
+    subprocess.run(['conan', 'build',
+        paths.source_dir,
+        # '--build', 'missing',
+        '--build-folder', paths.build_dir,
+        '--install-folder', paths.dependencies_dir,
+        '--package-folder', paths.prefix_dir,
+        ], check=True)
 
 if not args.skip_package:
     subprocess.run(['conan', 'package',
