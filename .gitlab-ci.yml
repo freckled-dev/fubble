@@ -102,7 +102,7 @@ build windows release:
   script:
     - python scripts/make_build.py --profile scripts/conan_profiles/windows_release
 
-build windows release:
+build windows debug:
   <<: *build_windows
   script:
     - python scripts/make_build.py --profile scripts/conan_profiles/windows_debug
