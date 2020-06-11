@@ -9,14 +9,38 @@ namespace {
 class video_buffer_adapter : public QAbstractPlanarVideoBuffer {
 public:
   video_buffer_adapter(const webrtc::VideoFrame &frame)
-      : QAbstractPlanarVideoBuffer(NoHandle), frame(frame) {
+      : QAbstractPlanarVideoBuffer(NoHandle) {
+
     webrtc::VideoFrameBuffer *buffer = frame.video_frame_buffer().get();
+    const webrtc::I420BufferInterface *buffer_accessor{};
+    rtc::scoped_refptr<webrtc::I420BufferInterface> i420_reference;
+
     if (buffer->type() == webrtc::VideoFrameBuffer::Type::kI420) {
       buffer_accessor = buffer->GetI420();
-      return;
+    } else {
+      i420_reference = buffer->ToI420();
+      buffer_accessor = i420_reference.get();
     }
-    i420_reference = buffer->ToI420();
-    buffer_accessor = i420_reference.get();
+    BOOST_ASSERT(buffer_accessor);
+    {
+      stride_y = buffer_accessor->StrideY();
+      auto size_y = stride_y * buffer_accessor->height();
+      auto data_ptr_y = buffer_accessor->DataY();
+      data_y.assign(data_ptr_y, data_ptr_y + size_y);
+    }
+    auto chroma_height = buffer_accessor->ChromaHeight();
+    {
+      stride_u = buffer_accessor->StrideU();
+      auto size_u = stride_u * chroma_height;
+      auto data_ptr_u = buffer_accessor->DataU();
+      data_u.assign(data_ptr_u, data_ptr_u + size_u);
+    }
+    {
+      stride_v = buffer_accessor->StrideV();
+      auto size_v = stride_v * chroma_height;
+      auto data_ptr_v = buffer_accessor->DataV();
+      data_v.assign(data_ptr_v, data_ptr_v + size_v);
+    }
   }
   ~video_buffer_adapter() = default;
 
@@ -25,13 +49,13 @@ public:
   int map([[maybe_unused]] MapMode mode, int *numBytes, int bytesPerLine[4],
           uchar *data[4]) override {
     BOOST_ASSERT(mode == ReadOnly);
-    data[0] = const_cast<uchar *>(buffer_accessor->DataY());
-    data[1] = const_cast<uchar *>(buffer_accessor->DataU());
-    data[2] = const_cast<uchar *>(buffer_accessor->DataV());
-    bytesPerLine[0] = buffer_accessor->StrideY();
-    bytesPerLine[1] = buffer_accessor->StrideU();
-    bytesPerLine[2] = buffer_accessor->StrideV();
-    // numBytes should contain the summed buffer size. Works withouth setting
+    data[0] = data_y.data();
+    data[1] = data_u.data();
+    data[2] = data_v.data();
+    bytesPerLine[0] = stride_y;
+    bytesPerLine[1] = stride_u;
+    bytesPerLine[2] = stride_v;
+    // numBytes should contain the summed buffer size. Works without setting
     // it.
     *numBytes = 0;
     return 3;
@@ -41,9 +65,12 @@ public:
 
 private:
   client::logger logger{"video_buffer_adapter"};
-  webrtc::VideoFrame frame;
-  const webrtc::I420BufferInterface *buffer_accessor;
-  rtc::scoped_refptr<webrtc::I420BufferInterface> i420_reference;
+  std::vector<uchar> data_y;
+  int stride_y{};
+  std::vector<uchar> data_u;
+  int stride_u{};
+  std::vector<uchar> data_v;
+  int stride_v{};
 };
 } // namespace
 
