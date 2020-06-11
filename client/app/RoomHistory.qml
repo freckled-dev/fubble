@@ -59,7 +59,7 @@ Item {
 
     function addRoomToHistory(newHistoryItem) {
         var historyIndex = getDuplicateEntryIndex(newHistoryItem)
-        if (historyIndex) {
+        if (historyIndex !== undefined && historyIndex >= 0) {
             dataModel.remove(historyIndex)
         }
 
