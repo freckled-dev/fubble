@@ -22,51 +22,59 @@ audio_devices::devices audio_devices::get_recording_devices() const {
 }
 
 void audio_devices::mute_speaker(const bool mute) {
+  thread.Invoke<void>(RTC_FROM_HERE, [this, mute]() {
 #ifndef NDEBUG
-  bool ok{};
-  audio_device_module.SpeakerMuteIsAvailable(&ok);
-  BOOST_ASSERT(ok);
+    bool ok{};
+    audio_device_module.SpeakerMuteIsAvailable(&ok);
+    BOOST_ASSERT(ok);
 #endif
-  [[maybe_unused]] auto result = audio_device_module.SetSpeakerMute(mute);
-  BOOST_ASSERT(result == 0);
-  if (result == 0)
-    return;
-  BOOST_LOG_SEV(logger, logging::severity::warning)
-      << "could not set speaker mute to:" << mute;
+    [[maybe_unused]] auto result = audio_device_module.SetSpeakerMute(mute);
+    BOOST_ASSERT(result == 0);
+    if (result == 0)
+      return;
+    BOOST_LOG_SEV(this->logger, logging::severity::warning)
+        << "could not set speaker mute to:" << mute;
+  });
 }
 
 bool audio_devices::is_speaker_muted() {
-  bool muted{};
-  [[maybe_unused]] auto result = audio_device_module.SpeakerMute(&muted);
-  BOOST_ASSERT(result == 0);
-  if (result != 0)
-    BOOST_LOG_SEV(logger, logging::severity::warning)
-        << "could not get speaker mute";
-  return muted;
+  return thread.Invoke<bool>(RTC_FROM_HERE, [this]() {
+    bool muted{};
+    [[maybe_unused]] auto result = audio_device_module.SpeakerMute(&muted);
+    BOOST_ASSERT(result == 0);
+    if (result != 0)
+      BOOST_LOG_SEV(logger, logging::severity::warning)
+          << "could not get speaker mute";
+    return muted;
+  });
 }
 
 void audio_devices::mute_microphone(const bool mute) {
+  thread.Invoke<void>(RTC_FROM_HERE, [this, mute]() {
 #ifndef NDEBUG
-  bool ok{};
-  audio_device_module.MicrophoneMuteIsAvailable(&ok);
-  BOOST_ASSERT(ok);
+    bool ok{};
+    audio_device_module.MicrophoneMuteIsAvailable(&ok);
+    BOOST_ASSERT(ok);
 #endif
-  [[maybe_unused]] auto result = audio_device_module.SetMicrophoneMute(mute);
-  BOOST_ASSERT(result == 0);
-  if (result == 0)
-    return;
-  BOOST_LOG_SEV(logger, logging::severity::warning)
-      << "could not set microphone mute to:" << mute;
+    [[maybe_unused]] auto result = audio_device_module.SetMicrophoneMute(mute);
+    BOOST_ASSERT(result == 0);
+    if (result == 0)
+      return;
+    BOOST_LOG_SEV(logger, logging::severity::warning)
+        << "could not set microphone mute to:" << mute;
+  });
 }
 
 bool audio_devices::is_microphone_muted() {
-  bool muted{};
-  [[maybe_unused]] auto result = audio_device_module.MicrophoneMute(&muted);
-  BOOST_ASSERT(result == 0);
-  if (result != 0)
-    BOOST_LOG_SEV(logger, logging::severity::warning)
-        << "could not get microphone mute";
-  return muted;
+  return thread.Invoke<bool>(RTC_FROM_HERE, [this]() {
+    bool muted{};
+    [[maybe_unused]] auto result = audio_device_module.MicrophoneMute(&muted);
+    BOOST_ASSERT(result == 0);
+    if (result != 0)
+      BOOST_LOG_SEV(logger, logging::severity::warning)
+          << "could not get microphone mute";
+    return muted;
+  });
 }
 
 void audio_devices::enumerate_on_thread() {

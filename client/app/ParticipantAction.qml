@@ -86,11 +86,11 @@ RowLayout {
         id: silenceImage
         sourceSize.height: imageSize
         sourceSize.width: imageSize
-        source: participant.silenced ? Style.current.overlaySilenceOffImage : Style.current.overlaySilenceImage
+        source: participant.deafed ? Style.current.overlaySilenceOffImage : Style.current.overlaySilenceImage
 
         FubbleToolTip {
             id: ttSilence
-            text: participant.silenced ? qsTr("Hear everyone") : qsTr(
+            text: participant.deafed ? qsTr("Hear everyone") : qsTr(
                                              "Silence everyone")
             visible: maSilence.containsMouse
         }
@@ -99,7 +99,7 @@ RowLayout {
             id: maSilence
             anchors.fill: parent
             hoverEnabled: true
-            onClicked: participant.silenced = !participant.silenced
+            onClicked: participant.deafed = !participant.deafed
         }
     }
 }

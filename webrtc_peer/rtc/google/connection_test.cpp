@@ -188,5 +188,7 @@ TEST_F(GoogleConnection, OnVideoTrack) {
 TEST_F(GoogleConnection, EnumerateAudioDevices) {
   auto audio_devices = creator.get_audio_devices();
   audio_devices.enumerate();
+  audio_devices.is_microphone_muted();
+  audio_devices.is_speaker_muted();
 }
 

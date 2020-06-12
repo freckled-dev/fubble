@@ -9,10 +9,12 @@
 
 namespace client {
 class participant;
+class model_creator;
 class participants_model : public QAbstractListModel {
   Q_OBJECT
 public:
-  participants_model(room &room_, QObject *parent);
+  participants_model(model_creator &model_creator_, room &room_,
+                     QObject *parent);
 
   enum participant_roles { participant_role = Qt::UserRole + 1 };
 
@@ -33,6 +35,7 @@ protected:
   filter_out_bots(const std::vector<participant *> &joining);
 
   mutable client::logger logger{"participants_model"};
+  model_creator &model_creator_;
   room &room_;
   std::deque<participant_model *> participants;
   std::vector<boost::signals2::scoped_connection> signal_connections;

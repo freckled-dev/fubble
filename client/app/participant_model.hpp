@@ -8,6 +8,7 @@
 
 namespace client {
 class participant;
+class audio_settings;
 
 class participant_model : public QObject {
   Q_OBJECT
@@ -30,7 +31,8 @@ class participant_model : public QObject {
   Q_PROPERTY(client::ui::frame_provider_google_video_source *video READ
                  get_video NOTIFY video_changed)
 public:
-  participant_model(participant &participant_, QObject *parent);
+  participant_model(participant &participant_, audio_settings &audio_settings_,
+                    QObject *parent);
 
   std::string get_id() const;
   ui::frame_provider_google_video_source *get_video() const;
@@ -49,9 +51,12 @@ signals:
 protected:
   void set_name();
   void video_added(rtc::google::video_source &);
+  void on_muted_changed(bool muted_);
+  void on_deafed_changed(bool muted_);
 
   mutable client::logger logger{"participant_model"};
   participant &participant_;
+  audio_settings &audio_settings_;
   const std::string id;
   QString name;
   bool own = false;

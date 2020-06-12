@@ -2,13 +2,15 @@
 #include "client/bot_participant.hpp"
 #include "client/participant.hpp"
 #include "client/participants.hpp"
+#include "model_creator.hpp"
 #include <boost/assert.hpp>
 #include <fmt/format.h>
 
 using namespace client;
 
-participants_model::participants_model(room &room_, QObject *parent)
-    : QAbstractListModel(parent), room_(room_) {
+participants_model::participants_model(model_creator &model_creator_,
+                                       room &room_, QObject *parent)
+    : QAbstractListModel(parent), model_creator_(model_creator_), room_(room_) {
   auto &participants_ = room_.get_participants();
   on_joins(participants_.get_all());
   signal_connections.emplace_back(
@@ -58,7 +60,7 @@ void participants_model::on_joins(
                      participants_count, joins_count);
 
   auto instance_participant_model = [&](participant *source) {
-    return new participant_model(*source, this);
+    return model_creator_.create_participant_model(*source, this);
   };
   beginInsertRows(QModelIndex(), rowCount(), rowCount());
   std::transform(joins.cbegin(), joins.cend(), std::back_inserter(participants),
