@@ -1,3 +1,4 @@
+#include "audio_devices.hpp"
 #include "data_channel.hpp"
 #include "test_peer.hpp"
 #include "video_track.hpp"
@@ -183,3 +184,9 @@ TEST_F(GoogleConnection, OnVideoTrack) {
   connected.get();
   waiter.wait();
 }
+
+TEST_F(GoogleConnection, EnumerateAudioDevices) {
+  auto audio_devices = creator.get_audio_devices();
+  audio_devices.enumerate();
+}
+

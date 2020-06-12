@@ -17,6 +17,7 @@ class video_source;
 class video_track;
 class audio_source;
 class audio_track;
+class audio_devices;
 struct settings {
   bool use_ip_v6{true};
 #if BOOST_OS_WINDOWS
@@ -39,11 +40,13 @@ public:
   webrtc::PeerConnectionFactoryInterface &get_native() const;
 
   rtc::Thread &get_signaling_thread() const;
+  audio_devices &get_audio_devices();
 
 private:
   void instance_members();
   void instance_threads();
   void instance_audio();
+  void instance_audio_device_module();
   void instance_video();
   void instance_factory();
 
@@ -66,6 +69,7 @@ private:
   std::unique_ptr<webrtc::VideoDecoderFactory> video_decoder;
   std::unique_ptr<webrtc::VideoEncoderFactory> video_encoder;
   rtc::scoped_refptr<webrtc::PeerConnectionFactoryInterface> factory_;
+  std::unique_ptr<audio_devices> audio_devices_;
 };
 } // namespace google
 } // namespace rtc
