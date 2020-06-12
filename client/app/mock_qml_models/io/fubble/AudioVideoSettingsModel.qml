@@ -3,6 +3,10 @@ import QtMultimedia 5.0
 
 QtObject {
 
+    property var userAudioInputDevice
+    property var userAudioOutputDevice
+    property var userVideoDevice
+
     // Audio
     property var inputDevices: ListModel {
         ListElement {
@@ -27,19 +31,21 @@ QtObject {
     }
 
     // Video
-    property var videoDevices: ListModel {
-        ListElement {
-            inputId: "2"
-            name: "Webcam"
-        }
-        ListElement {
-            inputId: "2"
-            name: "Internal Video"
-        }
-    }
+    property var videoDevices: ListModel {}
 
-    property var videoPreview: MediaPlayer {
-        source: "/home/tamrielle/Downloads/Big_Buck_Bunny_alt.webm"
+    //        ListElement {
+    //            inputId: "2"
+    //            name: "Webcam"
+    //        }
+    //        ListElement {
+    //            inputId: "2"
+    //            name: "Internal Video"
+    //        }
+    //    }
+    property var videoPreview
+
+    /*: MediaPlayer {
+        source: "/home/tamrielle/Downloads/Sintel_webm_extract.webm"
         autoLoad: false
-    }
+    }*/
 }

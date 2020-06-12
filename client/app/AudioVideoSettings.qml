@@ -38,7 +38,14 @@ Item {
             id: inputCombo
             Layout.fillWidth: true
             textRole: "name"
-            model: audioVideoModel.inputDevices
+            model: {
+                if (audioVideoModel.inputDevices.count === 0) {
+                    return [{
+                                "name": "No input device found"
+                            }]
+                }
+                return audioVideoModel.inputDevices
+            }
         }
 
         Label {
@@ -50,7 +57,15 @@ Item {
             id: outputCombo
             Layout.fillWidth: true
             textRole: "name"
-            model: audioVideoModel.outputDevices
+            model: {
+                if (audioVideoModel.outputDevices.count === 0) {
+                    return [{
+                                "name": "No output device found"
+                            }]
+                }
+
+                return audioVideoModel.outputDevices
+            }
         }
     }
 
@@ -80,7 +95,15 @@ Item {
             id: videoCombo
             Layout.fillWidth: true
             textRole: "name"
-            model: audioVideoModel.videoDevices
+            model: {
+                if (audioVideoModel.videoDevices.count === 0) {
+                    return [{
+                                "name": "No video device found"
+                            }]
+                }
+
+                return audioVideoModel.videoDevices
+            }
         }
 
         Label {
@@ -91,19 +114,49 @@ Item {
         Rectangle {
             height: 200
             Layout.fillWidth: true
+            visible: audioVideoModel.videoPreview !== undefined
 
-            VideoOutput {
-                id: videoPreview
+            Loader {
                 anchors.fill: parent
-                source: audioVideoModel.videoPreview
-                visible: audioVideoModel.videoPreview !== null
-                fillMode: VideoOutput.PreserveAspectCrop
+
+                sourceComponent: {
+                    if (audioVideoModel.videoPreview) {
+                        return videoPreviewComponent
+                    }
+
+                    return noPreviewComponent
+                }
+            }
+
+            Component {
+                id: noPreviewComponent
+                NoVideo {
+                    height: 200
+                    width: 300
+                    visible: {
+                        console.log(height)
+                        console.log(width)
+                        return true
+                    }
+                }
+            }
+
+            Component {
+                id: videoPreviewComponent
+
+                VideoOutput {
+                    id: videoPreview
+                    anchors.fill: parent
+                    visible: audioVideoModel.videoPreview !== null
+                    source: audioVideoModel.videoPreview
+                    fillMode: VideoOutput.PreserveAspectCrop
+                }
             }
         }
     }
 
     onIsActiveChanged: {
-        if (isActive && audioVideoModel.videoPreview !== null) {
+        if (isActive && audioVideoModel.videoPreview) {
             audioVideoModel.videoPreview.play()
         }
     }
