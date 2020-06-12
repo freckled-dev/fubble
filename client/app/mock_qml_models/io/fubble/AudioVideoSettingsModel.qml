@@ -3,9 +3,9 @@ import QtMultimedia 5.0
 
 QtObject {
 
-    property var userAudioInputDevice
-    property var userAudioOutputDevice
-    property var userVideoDevice
+    property int userAudioInputDeviceIndex
+    property int userAudioOutputDeviceIndex
+    property int userVideoDeviceIndex
 
     // Audio
     property var inputDevices: ListModel {
