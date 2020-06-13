@@ -28,7 +28,7 @@ void audio_devices::mute_speaker(const bool mute) {
     audio_device_module.SpeakerMuteIsAvailable(&ok);
     BOOST_ASSERT(ok);
 #endif
-    [[maybe_unused]] auto result = audio_device_module.SetSpeakerMute(mute);
+    auto result = audio_device_module.SetSpeakerMute(mute);
     BOOST_ASSERT(result == 0);
     if (result == 0)
       return;
@@ -43,7 +43,7 @@ bool audio_devices::is_speaker_muted() {
     [[maybe_unused]] auto result = audio_device_module.SpeakerMute(&muted);
     BOOST_ASSERT(result == 0);
     if (result != 0)
-      BOOST_LOG_SEV(logger, logging::severity::warning)
+      BOOST_LOG_SEV(this->logger, logging::severity::warning)
           << "could not get speaker mute";
     return muted;
   });
@@ -60,7 +60,7 @@ void audio_devices::mute_microphone(const bool mute) {
     BOOST_ASSERT(result == 0);
     if (result == 0)
       return;
-    BOOST_LOG_SEV(logger, logging::severity::warning)
+    BOOST_LOG_SEV(this->logger, logging::severity::warning)
         << "could not set microphone mute to:" << mute;
   });
 }
@@ -71,7 +71,7 @@ bool audio_devices::is_microphone_muted() {
     [[maybe_unused]] auto result = audio_device_module.MicrophoneMute(&muted);
     BOOST_ASSERT(result == 0);
     if (result != 0)
-      BOOST_LOG_SEV(logger, logging::severity::warning)
+      BOOST_LOG_SEV(this->logger, logging::severity::warning)
           << "could not get microphone mute";
     return muted;
   });
