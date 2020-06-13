@@ -87,60 +87,48 @@ Item {
             anchors.right: parent.right
         }
 
-        Loader {
-            id: emojiLoader
-            sourceComponent: emojiComponent
-            asynchronous: true
-            onLoaded: chatInput.smileyButton.enabled = true
-        }
+        EmojiPopup {
+            id: emojiPopup
 
-        Component {
-            id: emojiComponent
+            height: 400
+            width: 350
+            x: chatHolder.width - width
+            y: chatHolder.height - height - chatInput.textArea.height - 10
+            favouriteEmojis: settings.recentlyUsedEmojis
 
-            EmojiPopup {
-                id: emojiPopup
+            onOpened: {
+                emojiPopup.initFavourites()
+            }
+            onClosed: {
+                chatInput.textArea.forceActiveFocus()
+            }
 
-                height: 400
-                width: 350
-                x: chatHolder.width - width
-                y: chatHolder.height - height - chatInput.textArea.height - 10
-                favouriteEmojis: settings.recentlyUsedEmojis
+            onInsertEmoji: {
+                var cursorPosition = chatInput.textArea.cursorPosition
+                chatInput.textArea.insert(cursorPosition, emoji)
+                addEmoji(emoji)
+            }
 
-                onOpened: {
-                    shouldShow = true
-                    emojiPopup.initFavourites()
-                }
-                onClosed: {
-                    chatInput.textArea.forceActiveFocus()
-                }
+            function addEmoji(emoji) {
+                var emojiArray = recentlyUsedEmojis.split(",")
 
-                onInsertEmoji: {
-                    var cursorPosition = chatInput.textArea.cursorPosition
-                    chatInput.textArea.insert(cursorPosition, emoji)
-                    addEmoji(emoji)
-                }
-
-                function addEmoji(emoji) {
-                    var emojiArray = recentlyUsedEmojis.split(",")
-
-                    // remove emoji, if it is already in the array
-                    for (var index = 0; index < emojiArray.length; index++) {
-                        var current = emojiArray[index]
-                        if (emoji === current) {
-                            emojiArray.splice(index, 1)
-                        }
+                // remove emoji, if it is already in the array
+                for (var index = 0; index < emojiArray.length; index++) {
+                    var current = emojiArray[index]
+                    if (emoji === current) {
+                        emojiArray.splice(index, 1)
                     }
-
-                    // add emoji at the array start
-                    emojiArray.unshift(emoji)
-
-                    // allow a maximum of 16 emojis -> remove last one
-                    if (emojiArray.length === 17) {
-                        emojiArray.splice(16, 1)
-                    }
-
-                    recentlyUsedEmojis = emojiArray.toString()
                 }
+
+                // add emoji at the array start
+                emojiArray.unshift(emoji)
+
+                // allow a maximum of 16 emojis -> remove last one
+                if (emojiArray.length === 17) {
+                    emojiArray.splice(16, 1)
+                }
+
+                recentlyUsedEmojis = emojiArray.toString()
             }
         }
     }
