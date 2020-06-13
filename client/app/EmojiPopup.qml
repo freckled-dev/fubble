@@ -14,7 +14,6 @@ Popup {
             emojis: []
         }
     }
-    property bool shouldShow: false
     margins: 0
     padding: 0
     clip: true
@@ -34,11 +33,13 @@ Popup {
                                       "emojis": []
                                   })
 
-            for (var j = 0; j < emojiList.length; j++) {
-                var currentEmoji = emojiList[j]
-                emojiListModel.get(i + 1).emojis.append({
-                                                            "value": currentEmoji
-                                                        })
+            if (emojiList) {
+                for (var j = 0; j < emojiList.length; j++) {
+                    var currentEmoji = emojiList[j]
+                    emojiListModel.get(i + 1).emojis.append({
+                                                                "value": currentEmoji
+                                                            })
+                }
             }
         }
     }
@@ -79,63 +80,83 @@ Popup {
         border.color: Style.current.foreground
         anchors.fill: parent
 
-        ListView {
-            id: categoryRepeater
-            model: emojiListModel
+        Loader {
+            id: emojiLoader
+            sourceComponent: emojiComponent
             anchors.fill: parent
             anchors.margins: 10
-            clip: true
-            cacheBuffer: 5000
+            asynchronous: true
+            visible: status === Loader.Ready
+        }
 
-            ScrollBar.vertical: ScrollBar {
-                id: emojiScrollBar
-                active: true
-            }
+        Label {
+            visible: emojiLoader.status !== Loader.Ready
+            text: qsTr("Loading emojis 😃")
+            verticalAlignment: Text.AlignVCenter
+            horizontalAlignment: Text.AlignHCenter
+            anchors.horizontalCenter: parent.horizontalCenter
+            font.pointSize: Style.current.subHeaderPointSize
+            anchors.verticalCenter: parent.verticalCenter
+        }
 
-            delegate: ColumnLayout {
-                visible: hasEmojis(index)
-                height: hasEmojis(index) ? undefined : 0
+        Component {
+            id: emojiComponent
 
-                Label {
-                    text: {
-                        return description
-                    }
-                    font.pointSize: Style.current.subHeaderPointSize
+            ListView {
+                id: categoryRepeater
+                model: emojiListModel
+                clip: true
+                cacheBuffer: 5000
+
+                ScrollBar.vertical: ScrollBar {
+                    id: emojiScrollBar
+                    active: true
                 }
 
-                GridLayout {
-                    id: emojiGrid
-                    columns: 8
-                    Repeater {
-                        id: participantRepeater
+                delegate: ColumnLayout {
+                    visible: hasEmojis(index)
+                    height: hasEmojis(index) ? undefined : 0
 
-                        model: emojis
-                        Label {
-                            id: emoji
-                            text: index >= 0 ? emojis.get(index).value : ""
+                    Label {
+                        text: description
+                        font.pointSize: Style.current.subHeaderPointSize
+                    }
 
-                            font.pointSize: 20
-                            padding: 4
+                    GridLayout {
+                        id: emojiGrid
+                        columns: 8
 
-                            Rectangle {
-                                id: emojiBackground
-                                color: Style.current.transparent
-                                radius: 5
-                                border.width: 1
-                                anchors.fill: parent
-                                visible: false
-                            }
+                        Repeater {
+                            id: participantRepeater
 
-                            MouseArea {
-                                id: mouseArea
-                                anchors.fill: parent
-                                hoverEnabled: true
-                                onEntered: emojiBackground.visible = true
-                                onExited: emojiBackground.visible = false
-                                onClicked: {
-                                    insertEmoji(modelData)
+                            model: emojis
+                            Label {
+                                id: emoji
+                                text: index >= 0 ? emojis.get(index).value : ""
 
-                                    close()
+                                font.pointSize: 20
+                                padding: 4
+
+                                Rectangle {
+                                    id: emojiBackground
+                                    color: Style.current.transparent
+                                    radius: 5
+                                    border.width: 1
+                                    anchors.fill: parent
+                                    visible: false
+                                }
+
+                                MouseArea {
+                                    id: mouseArea
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    onEntered: emojiBackground.visible = true
+                                    onExited: emojiBackground.visible = false
+                                    onClicked: {
+                                        insertEmoji(modelData)
+
+                                        close()
+                                    }
                                 }
                             }
                         }
@@ -145,11 +166,7 @@ Popup {
         }
     }
 
-    onShouldShowChanged: {
-        if (shouldShow) {
-            initJson()
-        }
-    }
+    Component.onCompleted: initJson()
 }
 
 /*##^##
