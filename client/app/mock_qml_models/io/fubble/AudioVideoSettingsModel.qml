@@ -3,7 +3,7 @@ import QtMultimedia 5.0
 
 QtObject {
 
-    property int userAudioInputDeviceIndex
+    property int userAudioInputDeviceIndex: 1
     property int userAudioOutputDeviceIndex
     property int userVideoDeviceIndex
 
@@ -31,21 +31,20 @@ QtObject {
     }
 
     // Video
-    property var videoDevices: ListModel {}
+    property var videoDevices: ListModel {
 
-    //        ListElement {
-    //            inputId: "2"
-    //            name: "Webcam"
-    //        }
-    //        ListElement {
-    //            inputId: "2"
-    //            name: "Internal Video"
-    //        }
-    //    }
-    property var videoPreview
+        ListElement {
+            inputId: "2"
+            name: "Webcam"
+        }
+        ListElement {
+            inputId: "2"
+            name: "Internal Video"
+        }
+    }
 
-    /*: MediaPlayer {
+    property var videoPreview: MediaPlayer {
         source: "/home/tamrielle/Downloads/Sintel_webm_extract.webm"
         autoLoad: false
-    }*/
+    }
 }

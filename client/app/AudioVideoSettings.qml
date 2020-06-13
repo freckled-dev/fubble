@@ -37,6 +37,7 @@ Item {
         ComboBox {
             id: inputCombo
             Layout.fillWidth: true
+            currentIndex: audioVideoModel.userAudioInputDeviceIndex
             textRole: "name"
             model: {
                 if (audioVideoModel.inputDevices.count === 0) {
@@ -56,6 +57,7 @@ Item {
         ComboBox {
             id: outputCombo
             Layout.fillWidth: true
+            currentIndex: audioVideoModel.userAudioOutputDeviceIndex
             textRole: "name"
             model: {
                 if (audioVideoModel.outputDevices.count === 0) {
@@ -94,6 +96,7 @@ Item {
         ComboBox {
             id: videoCombo
             Layout.fillWidth: true
+            currentIndex: audioVideoModel.userVideoDeviceIndex
             textRole: "name"
             model: {
                 if (audioVideoModel.videoDevices.count === 0) {
@@ -114,7 +117,6 @@ Item {
         Rectangle {
             height: 200
             Layout.fillWidth: true
-            visible: audioVideoModel.videoPreview !== undefined
 
             Loader {
                 anchors.fill: parent
@@ -131,13 +133,8 @@ Item {
             Component {
                 id: noPreviewComponent
                 NoVideo {
-                    height: 200
-                    width: 300
-                    visible: {
-                        console.log(height)
-                        console.log(width)
-                        return true
-                    }
+                    headerLabelText: qsTr("No camera found")
+                    infoLabelText: qsTr("Please check your camera and operating system settings")
                 }
             }
 
