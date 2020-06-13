@@ -1,13 +1,15 @@
 #include "room_model.hpp"
 #include "client/room.hpp"
+#include "model_creator.hpp"
 #include "participants_model.hpp"
 #include "participants_with_video_model.hpp"
 
 using namespace client;
 
-room_model::room_model(const std::shared_ptr<room> &room_, QObject *parent)
-    : QObject(parent), room_(room_) {
-  participants = new participants_model(*room_, this);
+room_model::room_model(model_creator &model_creator_,
+                       const std::shared_ptr<room> &room_, QObject *parent)
+    : QObject(parent), model_creator_(model_creator_), room_(room_) {
+  participants = model_creator_.create_participants_model(*room_, this);
   participants_with_video = new participants_with_video_model(*participants);
   chat = new chat_model(*room_, this);
   own_participant = participants->get_own().value_or(nullptr);

@@ -28,7 +28,8 @@ class room_model : public QObject {
                  new_participants_count_changed)
 
 public:
-  room_model(const std::shared_ptr<room> &room_, QObject *parent);
+  room_model(model_creator &model_creator_, const std::shared_ptr<room> &room_,
+             QObject *parent);
 
 public slots:
   void recalculate_video_available();
@@ -49,6 +50,7 @@ protected:
   void set_own();
 
   client::logger logger{"room_model"};
+  model_creator &model_creator_;
   std::shared_ptr<room> room_;
   QString name;
   bool videos_available{};

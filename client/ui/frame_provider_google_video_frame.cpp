@@ -10,7 +10,8 @@ class video_buffer_adapter : public QAbstractPlanarVideoBuffer {
 public:
   video_buffer_adapter(const webrtc::VideoFrame &frame)
       : QAbstractPlanarVideoBuffer(NoHandle) {
-
+    // copy all data, because frame seems not to be thread safe. got problems on
+    // windows when destructing frame on ui thread
     webrtc::VideoFrameBuffer *buffer = frame.video_frame_buffer().get();
     const webrtc::I420BufferInterface *buffer_accessor{};
     rtc::scoped_refptr<webrtc::I420BufferInterface> i420_reference;

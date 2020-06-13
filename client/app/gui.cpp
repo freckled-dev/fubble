@@ -1,6 +1,7 @@
 #include "chat_model.hpp"
 #include "client/add_audio_to_connection.hpp"
 #include "client/add_video_to_connection.hpp"
+#include "client/audio_settings.hpp"
 #include "client/joiner.hpp"
 #include "client/leaver.hpp"
 #include "client/own_media.hpp"
@@ -155,6 +156,7 @@ int main(int argc, char *argv[]) {
         rtc_connection_creator, *audio_device);
     tracks_adder.add(*audio_track_adder);
   }
+  auto &rtc_audio_devices = rtc_connection_creator.get_audio_devices();
 #endif
   client::rooms rooms;
   client::own_media own_media;
@@ -279,7 +281,8 @@ int main(int argc, char *argv[]) {
   qmlRegisterType<video_layout>("io.fubble", 1, 0, "VideoLayout");
 
   QQmlApplicationEngine engine;
-  client::model_creator model_creator;
+  client::audio_settings audio_settings{rtc_audio_devices};
+  client::model_creator model_creator{audio_settings};
   client::error_model error_model;
   client::utils_model utils_model;
   client::join_model join_model{model_creator, error_model, joiner, own_media};

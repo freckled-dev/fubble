@@ -1,5 +1,6 @@
 #include "factory.hpp"
 #include "asio_signalling_thread.hpp"
+#include "audio_devices.hpp"
 #include "audio_source.hpp"
 #include "audio_track_source.hpp"
 #include "connection.hpp"
@@ -86,6 +87,8 @@ std::unique_ptr<audio_track> factory::create_audio_track(audio_source &source) {
 
 rtc::Thread &factory::get_signaling_thread() const { return *signaling_thread; }
 
+audio_devices &factory::get_audio_devices() { return *audio_devices_; }
+
 void factory::instance_members() {
   instance_threads();
   instance_audio();
@@ -112,9 +115,21 @@ void factory::instance_threads() {
 
 void factory::instance_audio() {
   BOOST_LOG_SEV(logger, logging::severity::trace) << "instance_audio";
-  // let audio_device_module be null, except we use windows core audio 2
   audio_decoder = webrtc::CreateBuiltinAudioDecoderFactory();
   audio_encoder = webrtc::CreateBuiltinAudioEncoderFactory();
+  instance_audio_device_module();
+  audio_devices_ =
+      std::make_unique<audio_devices>(*worker_thread, *audio_device_module);
+}
+
+void factory::instance_audio_device_module() {
+  task_queue_factory = webrtc::CreateDefaultTaskQueueFactory();
+  audio_device_module = worker_thread->Invoke<decltype(audio_device_module)>(
+      RTC_FROM_HERE, [this]() -> rtc::scoped_refptr<webrtc::AudioDeviceModule> {
+        return webrtc::AudioDeviceModule::Create(
+            webrtc::AudioDeviceModule::kPlatformDefaultAudio,
+            task_queue_factory.get());
+      });
 #if BOOST_OS_WINDOWS
   if (!settings_.windows_use_core_audio2)
     return;
@@ -124,7 +139,6 @@ void factory::instance_audio() {
       << "due to windows_use_core_audio2 using "
          "CreateWindowsCoreAudioAudioDeviceModule";
   BOOST_ASSERT(!task_queue_factory);
-  task_queue_factory = webrtc::CreateDefaultTaskQueueFactory();
   audio_device_module = worker_thread->Invoke<decltype(audio_device_module)>(
       RTC_FROM_HERE, [this]() -> rtc::scoped_refptr<webrtc::AudioDeviceModule> {
         com_initializer_ =
@@ -139,13 +153,13 @@ void factory::instance_audio() {
         return webrtc::CreateWindowsCoreAudioAudioDeviceModule(
             task_queue_factory.get());
       });
-  BOOST_ASSERT(audio_device_module);
 #else
   BOOST_LOG_SEV(this->logger, logging::severity::error)
       << "no windows core audio2 enabled at compile time";
   BOOST_ASSERT(false);
 #endif
 #endif
+  BOOST_ASSERT(audio_device_module);
 }
 
 void factory::instance_video() {
