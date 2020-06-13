@@ -9,6 +9,8 @@ import "."
 Rectangle {
     color: Style.current.transparent
     radius: 5
+    property alias headerLabelText: label1.text
+    property alias infoLabelText: label.text
     border.color: Style.current.foreground
     border.width: 1
     Material.foreground: Style.current.foreground
@@ -24,6 +26,7 @@ Rectangle {
         anchors.left: parent.left
 
         Label {
+            id: label1
             text: qsTr("No video camera found.")
             font.pointSize: Style.current.subHeaderPointSize
             horizontalAlignment: Text.AlignHCenter
@@ -32,12 +35,15 @@ Rectangle {
             wrapMode: Text.WordWrap
         }
         Label {
+            id: label
             text: qsTr("Please check your video camera and settings and restart the app or continue without video...")
             horizontalAlignment: Text.AlignHCenter
             Layout.fillWidth: true
             wrapMode: Text.WordWrap
         }
     }
+
+    Component.onCompleted: console.log("novideo")
 }
 
 /*##^##

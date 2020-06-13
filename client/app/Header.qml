@@ -8,11 +8,11 @@ import "scripts/utils.js" as Utils
 ToolBar {
     id: header
     property string title
-    property alias settings: settings
     property var stackView
     property ProgressPopup leave
     signal toggleChat
     signal toggleOverview
+    property alias fubbleSettings: settings
 
     property alias timer: roomTimer
 
@@ -286,10 +286,3 @@ ToolBar {
         id: settings
     }
 }
-
-/*##^##
-Designer {
-    D{i:0;autoSize:true;height:480;width:640}
-}
-##^##*/
-
