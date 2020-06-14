@@ -39,6 +39,7 @@ QtObject {
 
     property list<QtObject> participantsWithVideo
 
+
     /*: [
         QtObject {
             property var participant: ParticipantModel {

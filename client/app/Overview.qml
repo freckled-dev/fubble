@@ -37,6 +37,7 @@ Item {
             anchors.bottom: actionLoader.top
             anchors.left: parent.left
             anchors.topMargin: 30
+            ScrollBar.vertical.policy: ScrollBar.AlwaysOff
             anchors.bottomMargin: 30
             clip: true
 
