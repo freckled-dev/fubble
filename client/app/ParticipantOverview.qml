@@ -24,7 +24,7 @@ Item {
             Rectangle {
                 id: participantBorder
                 anchors.fill: parent
-                color: Style.current.gray100
+                color: model.participant.highlighted ? Style.current.gray300 : Style.current.gray100
                 radius: 5
                 visible: true
             }
