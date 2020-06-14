@@ -24,7 +24,8 @@ Item {
             Rectangle {
                 id: participantBorder
                 anchors.fill: parent
-                color: model.participant.highlighted ? Style.current.gray300 : Style.current.gray100
+                color: model.participant.highlighted
+                       || mouseArea.containsMouse ? Style.current.gray300 : Style.current.gray100
                 radius: 5
                 visible: true
             }
@@ -48,36 +49,36 @@ Item {
                 visible: model.participant.videoDisabled
             }
 
+            MouseArea {
+                id: mouseArea
+                anchors.fill: parent
+                hoverEnabled: true
+
+                onClicked: {
+                    details.visible = !details.visible
+                }
+            }
+
             Image {
                 id: mutedImage
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.right: parent.right
                 sourceSize.height: 20
                 sourceSize.width: 20
-                source: Style.current.mutedImage
-                visible: model.participant.muted
-            }
+                source: model.participant.silenced ? Style.current.silencedImage : Style.current.mutedImage
+                visible: model.participant.muted || model.participant.silenced
 
-            MouseArea {
-                id: mouseArea
-                anchors.fill: parent
-                hoverEnabled: true
-
-                onEntered: {
-                    participantBorder.color = Qt.binding(function () {
-                        return Style.current.gray300
-                    })
-                    model.participant.highlighted = true
-                }
-                onExited: {
-                    participantBorder.color = Qt.binding(function () {
-                        return Style.current.gray100
-                    })
-                    model.participant.highlighted = false
+                FubbleToolTip {
+                    id: ttMuted
+                    text: model.participant.silenced ? qsTr("Muted by you") : qsTr(
+                                                           "Muted")
+                    visible: maMuted.containsMouse
                 }
 
-                onClicked: {
-                    details.visible = !details.visible
+                MouseArea {
+                    id: maMuted
+                    anchors.fill: parent
+                    hoverEnabled: true
                 }
             }
         }
@@ -120,7 +121,7 @@ Item {
                     anchors.fill: parent
                     hoverEnabled: true
                     onClicked: {
-                        participant.muted = !participant.muted
+                        participant.silenced = !participant.silenced
                     }
                 }
             }

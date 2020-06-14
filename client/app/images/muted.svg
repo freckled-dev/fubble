@@ -15,7 +15,7 @@
    y="0px"
    viewBox="0 0 260096 260096"
    xml:space="preserve"
-   sodipodi:docname="muted.svg"
+   sodipodi:docname="silenced.svg"
    inkscape:version="0.92.3 (2405546, 2018-03-11)"
    width="512"
    height="512"
@@ -52,7 +52,7 @@
    id="namedview61"
    showgrid="false"
    inkscape:zoom="0.92913386"
-   inkscape:cx="279.02416"
+   inkscape:cx="-161.51271"
    inkscape:cy="243.54237"
    inkscape:window-x="1920"
    inkscape:window-y="0"
@@ -200,7 +200,8 @@
    transform="matrix(705.63061,0,0,553.42387,-44152.351,-5.5752532)">
 </g>
 <path
-   style="fill:#f9a3a3;fill-opacity:1;stroke:#dc9e9e;stroke-width:20577.16992188;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-   d="M 39117.365,33999.774 223867.35,231954.58"
-   id="path833"
-   inkscape:connector-curvature="0" /></svg>
+   style="fill:#575b6d;fill-opacity:1;stroke:none;stroke-width:508px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+   d="M 33351.492,45771.66 211590.6,242600.14 227992.97,225651.01 51394.103,29369.288 Z"
+   id="path859"
+   inkscape:connector-curvature="0"
+   sodipodi:nodetypes="ccccc" /></svg>

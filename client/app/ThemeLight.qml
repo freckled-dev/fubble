@@ -30,6 +30,7 @@ Theme {
     property var exitImage: "images/exit_light.gif"
     property var logoImage: "images/fubble.svg"
     property var mutedImage: "images/muted.svg"
+    property var silencedImage: "images/silenced.svg"
     property var mutedOffImage: "images/muted_off.svg"
     property var videoDisabledImage: "images/video_disabled.svg"
 
