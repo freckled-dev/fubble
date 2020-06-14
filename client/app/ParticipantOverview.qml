@@ -27,6 +27,7 @@ Item {
                 color: model.participant.highlighted
                        || mouseArea.containsMouse ? Style.current.gray300 : Style.current.gray100
                 radius: 5
+                border.color: model.participant.voiceDetected ? Style.current.primary : Style.current.transparent
                 visible: true
             }
 
