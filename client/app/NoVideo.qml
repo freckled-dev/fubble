@@ -42,8 +42,6 @@ Rectangle {
             wrapMode: Text.WordWrap
         }
     }
-
-    Component.onCompleted: console.log("novideo")
 }
 
 /*##^##
