@@ -27,6 +27,7 @@ Item {
                 color: model.participant.highlighted
                        || mouseArea.containsMouse ? Style.current.gray300 : Style.current.gray100
                 radius: 5
+                border.color: model.participant.voiceDetected ? Style.current.primary : Style.current.transparent
                 visible: true
             }
 
@@ -56,6 +57,7 @@ Item {
 
                 onClicked: {
                     details.visible = !details.visible
+                    audioChart.visible = !audioChart.visible
                 }
             }
 
@@ -81,6 +83,14 @@ Item {
                     hoverEnabled: true
                 }
             }
+        }
+
+        AudioChart {
+            id: audioChart
+            audioParticipant: participant
+            Layout.fillWidth: true
+            visible: false
+            height: 100
         }
 
         Item {

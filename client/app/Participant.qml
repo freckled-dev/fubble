@@ -57,12 +57,12 @@ Rectangle {
 
         Rectangle {
             id: overlayBorder
-            border.color: Style.current.foreground
+            border.color: model.participant.voiceDetected ? Style.current.primary : Style.current.foreground
             color: Style.current.transparent
             radius: 2
             border.width: 1
             anchors.fill: parent
-            visible: participant.highlighted
+            visible: participant.highlighted || model.participant.voiceDetected
         }
     }
 }

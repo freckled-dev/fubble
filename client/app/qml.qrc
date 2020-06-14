@@ -22,6 +22,7 @@
         <file>FubbleSettings.qml</file>
         <file>GeneralSettings.qml</file>
         <file>AudioVideoSettings.qml</file>
+        <file>AudioChart.qml</file>
         <file>CustomRectangle.qml</file>
         <file>ShareDesktopSelection.qml</file>
         <file>ThemeLight.qml</file>
