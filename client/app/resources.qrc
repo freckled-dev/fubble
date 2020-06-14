@@ -19,6 +19,8 @@
         <file>images/overlay_share_desktop.svg</file>
         <file>images/muted.svg</file>
         <file>images/muted_dark.svg</file>
+        <file>images/silenced.svg</file>
+        <file>images/silenced_dark.svg</file>
         <file>images/muted_off.svg</file>
         <file>images/muted_off_dark.svg</file>
         <file>images/video_disabled_dark.svg</file>

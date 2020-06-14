@@ -41,7 +41,6 @@ Rectangle {
         id: smileyButton
         width: 40
         anchors.verticalCenter: parent.verticalCenter
-        enabled: false
         anchors.right: parent.right
         anchors.rightMargin: 10
 
@@ -50,10 +49,7 @@ Rectangle {
             text: "😃"
             font.pointSize: 18
         }
-        onClicked: {
-            var loaderItem = emojiLoader.item
-            return loaderItem.visible ? loaderItem.close() : loaderItem.open()
-        }
+        onClicked: emojiPopup.visible ? emojiPopup.close() : emojiPopup.open()
     }
 
     function onInputFinished(event) {

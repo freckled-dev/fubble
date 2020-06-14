@@ -1,3 +1,4 @@
+#include "audio_video_settings_model.hpp"
 #include "chat_model.hpp"
 #include "client/add_audio_to_connection.hpp"
 #include "client/add_video_to_connection.hpp"
@@ -255,6 +256,8 @@ int main(int argc, char *argv[]) {
   qRegisterMetaType<client::error_model *>();
   qRegisterMetaType<client::utils_model *>();
   qRegisterMetaType<client::leave_model *>();
+  qRegisterMetaType<client::audio_video_settings_model *>();
+  qRegisterMetaType<client::devices_model *>();
 
   // https://doc.qt.io/qt-5/qtqml-cppintegration-overview.html#choosing-the-correct-integration-method-between-c-and-qml
   qmlRegisterUncreatableType<client::room_model>(
@@ -278,6 +281,12 @@ int main(int argc, char *argv[]) {
   qmlRegisterUncreatableType<client::chat_messages_model>(
       "io.fubble", 1, 0, "ChatMessagesModel",
       "can't instance client::chat_messages_model");
+  qmlRegisterUncreatableType<client::audio_video_settings_model>(
+      "io.fubble", 1, 0, "AudioVideoSettingsModel",
+      "can't instance client::audio_video_settings_model");
+  qmlRegisterUncreatableType<client::devices_model>(
+      "io.fubble", 1, 0, "DevicesModel",
+      "can't instance client::devices_model");
   qmlRegisterType<video_layout>("io.fubble", 1, 0, "VideoLayout");
 
   QQmlApplicationEngine engine;
@@ -288,6 +297,7 @@ int main(int argc, char *argv[]) {
   client::join_model join_model{model_creator, error_model, joiner, own_media};
   client::share_desktop_model share_desktop_model{};
   client::leave_model leave_model{leaver};
+  client::audio_video_settings_model audio_video_settings_model{};
   //  works from 5.14 onwards
   // engine.setInitialProperties(...)
   //  setContextProperty sets it globaly not as property of the window
@@ -296,6 +306,8 @@ int main(int argc, char *argv[]) {
   qml_context->setContextProperty("errorModelFromCpp", &error_model);
   qml_context->setContextProperty("utilsModelFromCpp", &utils_model);
   qml_context->setContextProperty("leaveModelFromCpp", &leave_model);
+  qml_context->setContextProperty("audioVideoModelFromCpp",
+                                  &audio_video_settings_model);
   qml_context->setContextProperty("shareDesktopModelFromCpp",
                                   &share_desktop_model);
   client::ui::add_version_to_qml_context version_adder{*qml_context};

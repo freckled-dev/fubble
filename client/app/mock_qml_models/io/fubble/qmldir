@@ -7,4 +7,5 @@ ErrorModel 1.0 ErrorModel.qml
 ChatModel 1.0 ChatModel.qml
 UtilsModel 1.0 UtilsModel.qml
 ShareDesktopModel 1.0 ShareDesktopModel.qml
+AudioVideoSettingsModel 1.0 AudioVideoSettingsModel.qml
 plugin video_layout
