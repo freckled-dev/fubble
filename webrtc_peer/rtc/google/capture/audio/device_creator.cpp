@@ -10,6 +10,8 @@ device_creator::device_creator(rtc::google::factory &factory_)
 std::unique_ptr<device> device_creator::create() {
   webrtc::PeerConnectionFactoryInterface &peer_factory = factory_.get_native();
   cricket::AudioOptions options;
+  options.auto_gain_control = true;
+  options.noise_suppression = true;
   rtc::scoped_refptr<webrtc::AudioSourceInterface> native_source =
       peer_factory.CreateAudioSource(options);
   BOOST_ASSERT(native_source);

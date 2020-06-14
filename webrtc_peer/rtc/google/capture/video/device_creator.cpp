@@ -2,6 +2,7 @@
 #include "device.hpp"
 #include "exception.hpp"
 #include <boost/exception/all.hpp>
+#include <modules/audio_device/include/audio_device.h>
 #include <modules/video_capture/video_capture_factory.h>
 
 using namespace rtc::google::capture::video;

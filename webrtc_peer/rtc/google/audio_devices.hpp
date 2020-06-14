@@ -32,6 +32,10 @@ public:
   void mute_microphone(const bool mute);
   bool is_microphone_muted();
 
+  void start_recording();
+
+  webrtc::AudioDeviceModule &get_native() const;
+
 protected:
   void enumerate_on_thread();
 

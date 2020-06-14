@@ -14,6 +14,7 @@ public:
 
   rtc::scoped_refptr<webrtc::MediaStreamTrackInterface>
   native_track() const override;
+  webrtc::AudioTrackInterface &get_native_audio_track() override;
 
 protected:
   const rtc::scoped_refptr<webrtc::AudioTrackInterface> track;

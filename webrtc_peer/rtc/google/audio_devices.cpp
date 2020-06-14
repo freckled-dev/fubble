@@ -56,7 +56,7 @@ void audio_devices::mute_microphone(const bool mute) {
     audio_device_module.MicrophoneMuteIsAvailable(&ok);
     BOOST_ASSERT(ok);
 #endif
-    [[maybe_unused]] auto result = audio_device_module.SetMicrophoneMute(mute);
+    auto result = audio_device_module.SetMicrophoneMute(mute);
     BOOST_ASSERT(result == 0);
     if (result == 0)
       return;
@@ -68,13 +68,27 @@ void audio_devices::mute_microphone(const bool mute) {
 bool audio_devices::is_microphone_muted() {
   return thread.Invoke<bool>(RTC_FROM_HERE, [this]() {
     bool muted{};
-    [[maybe_unused]] auto result = audio_device_module.MicrophoneMute(&muted);
+    auto result = audio_device_module.MicrophoneMute(&muted);
     BOOST_ASSERT(result == 0);
     if (result != 0)
       BOOST_LOG_SEV(this->logger, logging::severity::warning)
           << "could not get microphone mute";
     return muted;
   });
+}
+
+void audio_devices::start_recording() {
+  thread.Invoke<void>(RTC_FROM_HERE, [this]() {
+    auto result = audio_device_module.StartRecording();
+    BOOST_ASSERT(result == 0);
+    if (result != 0)
+      BOOST_LOG_SEV(this->logger, logging::severity::warning)
+          << "could not get microphone mute";
+  });
+}
+
+webrtc::AudioDeviceModule &audio_devices::get_native() const {
+  return audio_device_module;
 }
 
 void audio_devices::enumerate_on_thread() {

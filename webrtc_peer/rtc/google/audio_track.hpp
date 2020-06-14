@@ -3,10 +3,15 @@
 
 #include "track.hpp"
 
+namespace webrtc {
+class AudioTrackInterface;
+}
+
 namespace rtc {
 namespace google {
 class audio_track : public track {
 public:
+  virtual webrtc::AudioTrackInterface &get_native_audio_track() = 0;
 };
 } // namespace google
 } // namespace rtc

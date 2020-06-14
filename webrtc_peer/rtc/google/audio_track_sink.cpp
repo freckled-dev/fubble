@@ -10,3 +10,7 @@ rtc::scoped_refptr<webrtc::MediaStreamTrackInterface>
 audio_track_sink::native_track() const {
   return track;
 }
+
+webrtc::AudioTrackInterface &audio_track_sink::get_native_audio_track() {
+  return *track;
+}
