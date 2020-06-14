@@ -57,6 +57,7 @@ Item {
 
                 onClicked: {
                     details.visible = !details.visible
+                    audioChart.visible = !audioChart.visible
                 }
             }
 
@@ -82,6 +83,14 @@ Item {
                     hoverEnabled: true
                 }
             }
+        }
+
+        AudioChart {
+            id: audioChart
+            audioParticipant: participant
+            Layout.fillWidth: true
+            visible: false
+            height: 100
         }
 
         Item {
