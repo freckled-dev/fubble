@@ -30,6 +30,10 @@ class participant_model : public QObject {
 
   Q_PROPERTY(client::ui::frame_provider_google_video_source *video READ
                  get_video NOTIFY video_changed)
+  Q_PROPERTY(
+      bool voiceDetected MEMBER voice_detected NOTIFY voice_detected_changed)
+  Q_PROPERTY(int audioLevel MEMBER audio_level NOTIFY audio_level_changed)
+
 public:
   participant_model(participant &participant_, audio_settings &audio_settings_,
                     QObject *parent);
@@ -47,6 +51,8 @@ signals:
   void video_disabled_changed(bool);
   void highlighted_changed(bool);
   void video_changed(ui::frame_provider_google_video_source *);
+  void voice_detected_changed(bool);
+  void audio_level_changed(int);
 
 protected:
   void set_name();
@@ -59,14 +65,16 @@ protected:
   audio_settings &audio_settings_;
   const std::string id;
   QString name;
-  bool own = false;
-  bool muted = false;
-  bool deafed = false;
-  bool silenced = false;
+  bool own{};
+  bool muted{};
+  bool deafed{};
+  bool silenced{};
   bool volume = 1;
-  bool video_disabled = false;
-  bool highlighted = false;
+  bool video_disabled{};
+  bool highlighted{};
   ui::frame_provider_google_video_source *video{};
+  bool voice_detected{};
+  int audio_level{};
 };
 
 } // namespace client

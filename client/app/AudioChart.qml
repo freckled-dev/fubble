@@ -6,15 +6,17 @@ import QtQuick.Controls 2.2
 Rectangle {
     property var audioParticipant
     property int maxValues: 50
+    // just used in the GUI
+    property var audioLevels: []
 
     Connections {
         target: audioParticipant
         onAudioLevelChanged: {
-            if (audioParticipant.audioLevels.length >= maxValues) {
-                audioParticipant.audioLevels.splice(0, 1)
+            if (audioLevels.length >= maxValues) {
+                audioLevels.splice(0, 1)
             }
 
-            audioParticipant.audioLevels.push(audioParticipant.audioLevel)
+            audioLevels.push(audioParticipant.audioLevel)
             insertAudioLevels()
         }
     }
@@ -57,8 +59,8 @@ Rectangle {
     function insertAudioLevels() {
         audioSeries.clear()
 
-        for (var i = 0; i < audioParticipant.audioLevels.length; i++) {
-            var level = audioParticipant.audioLevels[i]
+        for (var i = 0; i < audioLevels.length; i++) {
+            var level = audioLevels[i]
             audioSeries.insert(i, i, level)
         }
     }

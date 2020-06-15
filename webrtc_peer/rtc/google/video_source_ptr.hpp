@@ -3,9 +3,11 @@
 
 #include <memory>
 
-namespace rtc::google {
+namespace rtc {
+namespace google {
 class video_source;
 using video_source_ptr = std::shared_ptr<video_source>;
-} // namespace rtc::google
+} // namespace google
+} // namespace rtc
 
 #endif

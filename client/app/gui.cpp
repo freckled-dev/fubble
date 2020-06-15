@@ -53,7 +53,7 @@
 #include "utils_model.hpp"
 #include "websocket/connection_creator.hpp"
 #include "websocket/connector.hpp"
-#include <QGuiApplication>
+#include <QApplication>
 #include <QIcon>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
@@ -218,7 +218,9 @@ int main(int argc, char *argv[]) {
   argv_adopted.push_back(arg_fontengine_freetype.data());
 #endif
   int argc_adopted = argv_adopted.size();
-  QGuiApplication app(argc_adopted, argv_adopted.data());
+  // do not use QGuiApplication. Charts needs the widgets QApplication
+  // https://doc.qt.io/qt-5/qtcharts-qmlmodule.html
+  QApplication app(argc_adopted, argv_adopted.data());
   app.setOrganizationName("Freckled OG");
   app.setOrganizationDomain("freckled.dev");
   app.setApplicationName("Fubble");
