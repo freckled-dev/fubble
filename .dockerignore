@@ -1,3 +1,4 @@
 .git
-deploy/development/install
+scripts/deploy/fubble
+__pycache__/
 .*cache/

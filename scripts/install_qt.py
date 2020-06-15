@@ -32,7 +32,7 @@ print("installation of qt, because '%s' does not exists" % qmake_path)
 subprocess.run(['aqt', 'install', 
     '--outputdir', qt_prefix_dir,
     qt_version, qt_system, qt_platform, qt_target,
-    '-m', 'charts'],
+    '-m', 'qtcharts'],
         check=True)
 
 
