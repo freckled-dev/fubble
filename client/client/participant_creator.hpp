@@ -7,15 +7,18 @@ namespace client {
 class peer_creator;
 class tracks_adder;
 class own_media;
+class factory;
 class participant_creator {
 public:
   // TODO maybe move `tracks_adder_` to `peer_creator` and into `peer`?
-  participant_creator(peer_creator &peer_creator_, tracks_adder &tracks_adder_,
-                      const std::string &own_id, own_media &own_media_);
+  participant_creator(factory &factory_, peer_creator &peer_creator_,
+                      tracks_adder &tracks_adder_, const std::string &own_id,
+                      own_media &own_media_);
 
   std::unique_ptr<participant> create(matrix::user &session_information);
 
 protected:
+  factory &factory_;
   peer_creator &peer_creator_;
   tracks_adder &tracks_adder_;
   const std::string own_id;

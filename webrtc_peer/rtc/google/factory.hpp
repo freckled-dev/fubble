@@ -46,6 +46,7 @@ private:
   void instance_members();
   void instance_threads();
   void instance_audio();
+  void instance_audio_processing();
   void instance_audio_device_module();
   void instance_video();
   void instance_factory();

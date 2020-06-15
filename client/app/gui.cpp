@@ -3,6 +3,7 @@
 #include "client/add_audio_to_connection.hpp"
 #include "client/add_video_to_connection.hpp"
 #include "client/audio_settings.hpp"
+#include "client/factory.hpp"
 #include "client/joiner.hpp"
 #include "client/leaver.hpp"
 #include "client/own_media.hpp"
@@ -200,8 +201,9 @@ int main(int argc, char *argv[]) {
   }
 
   BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up client";
+  client::factory client_factory{context};
   client::participant_creator_creator participant_creator_creator{
-      peer_creator, tracks_adder, own_media};
+      client_factory, peer_creator, tracks_adder, own_media};
   client::room_creator client_room_creator{participant_creator_creator};
   client::joiner joiner{client_room_creator, rooms, matrix_authentification,
                         temporary_room_client};
