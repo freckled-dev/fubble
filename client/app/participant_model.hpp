@@ -59,6 +59,7 @@ protected:
   void video_added(rtc::google::video_source &);
   void on_muted_changed(bool muted_);
   void on_deafed_changed(bool muted_);
+  void on_sound_level(double level);
 
   mutable client::logger logger{"participant_model"};
   participant &participant_;
@@ -75,6 +76,9 @@ protected:
   ui::frame_provider_google_video_source *video{};
   bool voice_detected{};
   int audio_level{};
+
+  double audio_level_cache{};
+  int audio_level_counter{};
 };
 
 } // namespace client

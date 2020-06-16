@@ -79,7 +79,7 @@ int main(int argc, char *argv[]) {
 
   logging::logger logger{"main"};
 
-  BOOST_LOG_SEV(logger, logging::severity::trace)
+  BOOST_LOG_SEV(logger, logging::severity::info)
       << "starting up, version:" << utils::version();
 
   boost::asio::io_context context;

@@ -3,7 +3,6 @@
 
 #include "rtc/logger.hpp"
 #include "track.hpp"
-#include <boost/optional.hpp> // no c++17 for webrtc
 
 namespace webrtc {
 class AudioTrackInterface;
@@ -11,15 +10,11 @@ class AudioTrackInterface;
 
 namespace rtc {
 namespace google {
+class audio_source;
 class audio_track : public track {
 public:
-  struct stats {
-    boost::optional<int> rms_dbfs;
-    bool voice_detected{};
-  };
-
   virtual webrtc::AudioTrackInterface &get_native_audio_track() = 0;
-  virtual stats get_stats();
+  virtual audio_source &get_source() = 0;
 
 protected:
   rtc::logger logger{"audio_track"};

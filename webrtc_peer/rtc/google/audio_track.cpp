@@ -2,16 +2,7 @@
 
 using namespace rtc::google;
 
-namespace {
-struct bla : webrtc::AudioTrackSinkInterface {
-  void OnData(const void *audio_data, int bits_per_sample, int sample_rate,
-              size_t number_of_channels, size_t number_of_frames,
-              absl::optional<int64_t> absolute_capture_timestamp_ms) override {
-    //
-  }
-};
-} // namespace
-
+#if 0
 audio_track::stats audio_track::get_stats() {
   stats result;
   webrtc::AudioTrackInterface &native = get_native_audio_track();
@@ -41,3 +32,4 @@ audio_track::stats audio_track::get_stats() {
     result.voice_detected = stats_.voice_detected.value();
   return result;
 }
+#endif

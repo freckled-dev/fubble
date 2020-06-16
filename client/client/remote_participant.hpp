@@ -7,7 +7,8 @@
 
 namespace rtc::google {
 class audio_track_sink;
-}
+class audio_source_stats_collector;
+} // namespace rtc::google
 
 namespace client {
 class peer;
@@ -31,7 +32,7 @@ protected:
 
   client::logger logger{"remote_participant"};
   factory &factory_;
-  std::unique_ptr<audio_track_information_listener> audio_information;
+  std::unique_ptr<rtc::google::audio_source_stats_collector> audio_information;
   std::unique_ptr<peer> peer_;
   videos_type videos;
 };

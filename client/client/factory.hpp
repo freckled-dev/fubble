@@ -8,13 +8,9 @@ class audio_track;
 }
 
 namespace client {
-class audio_track_information_listener;
 class factory {
 public:
   factory(boost::asio::io_context &context);
-
-  std::unique_ptr<audio_track_information_listener>
-  create_audio_track_information_listener(rtc::google::audio_track &track);
 
 protected:
   boost::asio::io_context &context;

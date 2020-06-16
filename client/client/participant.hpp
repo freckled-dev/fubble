@@ -26,6 +26,7 @@ public:
   virtual videos_type get_videos() const = 0;
   boost::signals2::signal<void(const rtc::google::video_source_ptr &)>
       on_video_added;
+  boost::signals2::signal<void(double)> on_sound_level;
 
 protected:
   void update();

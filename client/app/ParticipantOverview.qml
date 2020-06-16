@@ -89,7 +89,7 @@ Item {
             id: audioChart
             audioParticipant: participant
             Layout.fillWidth: true
-            visible: false
+            visible: true
             height: 100
         }
 
