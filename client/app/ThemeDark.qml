@@ -22,7 +22,7 @@ Theme {
     property color wildAppleGradientStart: '#d299c2'
     property color wildAppleGradientEnd: '#fef9d7'
 
-    // images
+    // Images
     property var closeImage: "images/close_dark.svg"
     property var closeIcon: "images/close_icon_dark.svg"
     property var copyImage: "images/copy_dark.svg"
@@ -41,6 +41,8 @@ Theme {
     property var overlayVideoImage: "images/overlay_video.svg"
     property var overlayVideoOffImage: "images/overlay_video_off.svg"
     property var shareDesktopImage: "images/overlay_share_desktop.svg"
+
+    property var settingsImage: "images/overlay_settings.svg"
 
     // Chat Images
     property var chatImage: "images/chat_dark.svg"

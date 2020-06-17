@@ -73,7 +73,6 @@ Item {
 
             ParticipantAction {
                 id: selfAction
-                imageSize: 40
                 participant: roomModel.ownParticipant
             }
         }

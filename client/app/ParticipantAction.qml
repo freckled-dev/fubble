@@ -10,96 +10,39 @@ import "."
 RowLayout {
     id: actionOverlay
     property ParticipantModel participant
-    property int imageSize: 40
 
     spacing: 10
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.bottom: parent.bottom
 
-    Image {
-        id: shareDesktopImage
-        sourceSize.height: imageSize
-        sourceSize.width: imageSize
+    FubbleActionButton {
         source: Style.current.shareDesktopImage
-
-        FubbleToolTip {
-            id: ttShareDesktop
-            text: qsTr("Share your screen")
-            visible: maShareDesktop.containsMouse
-        }
-
-        MouseArea {
-            id: maShareDesktop
-            anchors.fill: parent
-            hoverEnabled: true
-            onClicked: shareDesktopPopup.open()
-        }
+        toolTipText: qsTr("Share your screen")
+        onActionClick: shareDesktopPopup.open()
     }
 
     ShareDesktopSelection {
         id: shareDesktopPopup
     }
 
-    Image {
-        id: videoDisabledImage
-        sourceSize.height: imageSize
-        sourceSize.width: imageSize
+    FubbleActionButton {
         source: participant.videoDisabled ? Style.current.overlayVideoOffImage : Style.current.overlayVideoImage
-
-        FubbleToolTip {
-            id: ttVideoDisabled
-            text: participant.videoDisabled ? qsTr("Enable your video") : qsTr(
-                                                  "Disable your video")
-            visible: maVideoDisabled.containsMouse
-        }
-
-        MouseArea {
-            id: maVideoDisabled
-            anchors.fill: parent
-            hoverEnabled: true
-            onClicked: participant.videoDisabled = !participant.videoDisabled
-        }
+        toolTipText: participant.videoDisabled ? qsTr("Enable your video") : qsTr(
+                                                     "Disable your video")
+        onActionClick: participant.videoDisabled = !participant.videoDisabled
     }
 
-    Image {
-        id: muteImage
-        sourceSize.height: imageSize
-        sourceSize.width: imageSize
+    FubbleActionButton {
         source: participant.muted ? Style.current.overlayMuteOffImage : Style.current.overlayMuteImage
-
-        FubbleToolTip {
-            id: ttMute
-            text: participant.muted ? qsTr("Unmute yourself") : qsTr(
-                                          "Mute yourself")
-            visible: maMute.containsMouse
-        }
-
-        MouseArea {
-            id: maMute
-            anchors.fill: parent
-            hoverEnabled: true
-            onClicked: participant.muted = !participant.muted
-        }
+        toolTipText: participant.muted ? qsTr("Unmute yourself") : qsTr(
+                                             "Mute yourself")
+        onActionClick: participant.muted = !participant.muted
     }
 
-    Image {
-        id: silenceImage
-        sourceSize.height: imageSize
-        sourceSize.width: imageSize
+    FubbleActionButton {
         source: participant.deafed ? Style.current.overlaySilenceOffImage : Style.current.overlaySilenceImage
-
-        FubbleToolTip {
-            id: ttSilence
-            text: participant.deafed ? qsTr("Hear everyone") : qsTr(
-                                             "Silence everyone")
-            visible: maSilence.containsMouse
-        }
-
-        MouseArea {
-            id: maSilence
-            anchors.fill: parent
-            hoverEnabled: true
-            onClicked: participant.deafed = !participant.deafed
-        }
+        toolTipText: participant.deafed ? qsTr("Hear everyone") : qsTr(
+                                              "Silence everyone")
+        onActionClick: participant.deafed = !participant.deafed
     }
 }

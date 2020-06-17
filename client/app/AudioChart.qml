@@ -3,41 +3,37 @@ import QtCharts 2.2
 import QtQuick.Layouts 1.0
 import QtQuick.Controls 2.2
 import "."
+import io.fubble 1.0
 
 Rectangle {
     clip: true
-    property var audioParticipant
+    property int audioLevel
     property int maxValues: 50
     property bool talking: audioLevels.length > 0
     property int countLowDezibel: 0
 
     property var audioLevels: []
 
-    Connections {
-        target: audioParticipant
-        onAudioLevelChanged: {
-            var level = audioParticipant.audioLevel
-
-            if (audioLevels.length >= maxValues) {
-                audioLevels.splice(0, 1)
-            }
-
-            if (level < 5) {
-                countLowDezibel++
-            } else {
-                countLowDezibel = 0
-            }
-
-            if (countLowDezibel >= 50) {
-                talking = false
-                audioLevels = []
-            } else {
-                talking = true
-            }
-
-            audioLevels.push(level)
-            insertAudioLevels()
+    onAudioLevelChanged: {
+        if (audioLevels.length >= maxValues) {
+            audioLevels.splice(0, 1)
         }
+
+        if (audioLevel < 5) {
+            countLowDezibel++
+        } else {
+            countLowDezibel = 0
+        }
+
+        if (countLowDezibel >= 50) {
+            talking = false
+            audioLevels = []
+        } else {
+            talking = true
+        }
+
+        audioLevels.push(audioLevel)
+        insertAudioLevels()
     }
 
     ChartView {
