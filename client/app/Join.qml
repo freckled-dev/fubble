@@ -55,6 +55,22 @@ FocusScope {
             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
             Layout.fillWidth: false
             visible: !joinModel.videoAvailable
+
+            AudioVideoOverlay {
+                visible: maNoVideo.containsMouse
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.bottom: parent.bottom
+                height: 60
+                videoOffButtonVisible: false
+            }
+
+            MouseArea {
+                id: maNoVideo
+                anchors.fill: parent
+                hoverEnabled: true
+                propagateComposedEvents: true
+            }
         }
 
         VideoOutput {
@@ -88,6 +104,7 @@ FocusScope {
                 anchors.right: parent.right
                 anchors.bottom: parent.bottom
                 height: 60
+                videoOffButtonVisible: true
             }
 
             MouseArea {

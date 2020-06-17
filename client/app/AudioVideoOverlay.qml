@@ -5,6 +5,7 @@ import io.fubble 1.0
 Rectangle {
     id: rectangle
     color: Style.current.gray300Transparent
+    property alias videoOffButtonVisible: videoOffButton.visible
 
     FubbleActionButton {
         id: settingsButton
@@ -13,6 +14,7 @@ Rectangle {
         anchors.left: parent.left
         source: Style.current.settingsImage
         onActionClick: openSettings()
+        showToolTip: false
     }
 
     function openSettings() {
