@@ -82,18 +82,19 @@ FocusScope {
                                 (container.width * percentage) / aspectRatio)
             }
 
-            MouseArea {
-                id: maVideo
-                anchors.fill: parent
-                hoverEnabled: true
-            }
-
             AudioVideoOverlay {
                 visible: maVideo.containsMouse
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.bottom: parent.bottom
                 height: 60
+            }
+
+            MouseArea {
+                id: maVideo
+                anchors.fill: parent
+                hoverEnabled: true
+                propagateComposedEvents: true
             }
         }
 

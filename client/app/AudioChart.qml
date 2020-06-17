@@ -11,6 +11,8 @@ Rectangle {
     property int maxValues: 50
     property bool talking: audioLevels.length > 0
     property int countLowDezibel: 0
+    color: Style.current.transparent
+    property alias chart: audioChart
 
     property var audioLevels: []
 
@@ -39,10 +41,9 @@ Rectangle {
     ChartView {
         id: audioChart
         antialiasing: true
-        height: parent.height + 50
-        width: parent.width + 90
         clip: true
         legend.visible: false
+        backgroundColor: Style.current.transparent
 
         margins {
             top: 0
@@ -51,9 +52,6 @@ Rectangle {
             right: 0
         }
 
-        x: -45
-        y: -30
-
         ValueAxis {
             id: axisX
             min: 0
@@ -61,6 +59,7 @@ Rectangle {
             labelsVisible: false
             gridVisible: false
             lineVisible: false
+            color: Style.current.transparent
         }
 
         ValueAxis {
@@ -70,6 +69,7 @@ Rectangle {
             labelsVisible: false
             gridVisible: false
             lineVisible: false
+            color: Style.current.transparent
         }
 
         AreaSeries {
@@ -80,6 +80,7 @@ Rectangle {
             axisY: axisY
 
             upperSeries: LineSeries {
+                color: Style.current.transparent
                 XYPoint {
                     x: 0
                     y: 0
@@ -99,10 +100,3 @@ Rectangle {
         }
     }
 }
-
-/*##^##
-Designer {
-    D{i:0;autoSize:true;height:480;width:640}
-}
-##^##*/
-

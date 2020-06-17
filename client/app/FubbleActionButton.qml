@@ -7,20 +7,19 @@ Image {
     property var actionFunction
     property alias toolTipText: actionToolTip.text
     signal actionClick
-    property bool showToolTip: true
 
     sourceSize.height: imageSize
     sourceSize.width: imageSize
 
     FubbleToolTip {
         id: actionToolTip
-        visible: showToolTip && maAction.containsMouse
+        visible: maAction.containsMouse
     }
 
     MouseArea {
         id: maAction
         anchors.fill: parent
-        hoverEnabled: showToolTip
+        hoverEnabled: true
         onClicked: actionClick()
     }
 }

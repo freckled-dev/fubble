@@ -11,7 +11,6 @@ Rectangle {
         anchors.leftMargin: 10
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: parent.left
-        showToolTip: false
         source: Style.current.settingsImage
         onActionClick: openSettings()
     }
@@ -26,11 +25,19 @@ Rectangle {
     }
 
     AudioChart {
+        id: audioChart
         anchors.left: settingsButton.right
         anchors.right: videoOffButton.left
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
         anchors.rightMargin: 20
         anchors.leftMargin: 20
         audioLevel: ownMediaModel.audioLevel
+
+        chart.height: audioChart.height + 25
+        chart.width: audioChart.width + 80
+        chart.x: -30
+        chart.y: -5
     }
 
     FubbleActionButton {
@@ -38,9 +45,8 @@ Rectangle {
         anchors.rightMargin: 10
         anchors.verticalCenter: parent.verticalCenter
         anchors.right: muteButton.left
-        showToolTip: false
         source: ownMediaModel.videoDisabled ? Style.current.overlayVideoOffImage : Style.current.overlayVideoImage
-        //toolTipText: qsTr("Disable your video")
+        toolTipText: qsTr("Disable your video")
         onActionClick: ownMediaModel.videoDisabled = !ownMediaModel.videoDisabled
     }
 
@@ -50,8 +56,7 @@ Rectangle {
         anchors.verticalCenter: parent.verticalCenter
         source: ownMediaModel.muted ? Style.current.overlayMuteOffImage : Style.current.overlayMuteImage
         anchors.right: parent.right
-        showToolTip: false
-        //toolTipText: qsTr("Mute yourself")
+        toolTipText: qsTr("Mute yourself")
         onActionClick: ownMediaModel.muted = !ownMediaModel.muted
     }
 }
