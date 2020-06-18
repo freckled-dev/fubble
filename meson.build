@@ -55,9 +55,9 @@ gstreamer_webrtc_dep_pkg = dependency('gstreamer-webrtc-1.0',
 gstreamer_sdp_dep = dependency('gstreamer-sdp-1.0',
   required : false, disabler : true)
 qt5 = import('qt5')
-qt5_clear_dep = dependency('qt5', 
+qt5_clear_dep = dependency('qt5',
   modules: ['Core', 'Gui', 'Qml', 'Quick', 'Widgets', 'Network', 'Multimedia',
-    'Svg', 'QuickControls2'])
+    'Svg', 'QuickControls2', 'Charts'])
 qt5_dep_dependencies = [qt5_clear_dep]
 qt5_dep_link_with = []
 if host_machine.system() == 'windows' and false

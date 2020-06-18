@@ -15,6 +15,8 @@
         <file>Error.qml</file>
         <file>Style.qml</file>
         <file>FubbleToolTip.qml</file>
+        <file>FubbleActionButton.qml</file>
+        <file>AudioVideoOverlay.qml</file>
         <file>EmojiPopup.qml</file>
         <file>ParticipantAction.qml</file>
         <file>scripts/emoji.js</file>

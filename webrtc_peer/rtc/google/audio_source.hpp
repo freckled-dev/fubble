@@ -30,9 +30,7 @@ protected:
               size_t number_of_channels, size_t number_of_frames) override;
 #endif
 
-  class logger logger {
-    "audio_source"
-  };
+  rtc::logger logger{"audio_source"};
   webrtc::AudioSourceInterface &native_audio_track;
 };
 } // namespace google

@@ -5,15 +5,19 @@
 
 namespace rtc {
 namespace google {
+// audio track on sending side
 class audio_track_source : public audio_track {
 public:
   audio_track_source(rtc::scoped_refptr<webrtc::AudioTrackInterface>);
 
   rtc::scoped_refptr<webrtc::MediaStreamTrackInterface>
   native_track() const override;
+  webrtc::AudioTrackInterface &get_native_audio_track() override;
+  audio_source &get_source() override;
 
 protected:
   rtc::scoped_refptr<webrtc::AudioTrackInterface> native_track_;
+  std::unique_ptr<audio_source> source;
 };
 } // namespace google
 } // namespace rtc

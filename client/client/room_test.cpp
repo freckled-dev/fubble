@@ -1,4 +1,5 @@
 #include "add_data_channel.hpp"
+#include "client/factory.hpp"
 #include "executor_asio.hpp"
 #include "http/action_factory.hpp"
 #include "http/client_factory.hpp"
@@ -92,8 +93,9 @@ struct test_client {
   client::rooms rooms;
   client::tracks_adder tracks_adder;
   client::own_media own_media;
+  client::factory client_factory{context};
   client::participant_creator_creator participant_creator_creator{
-      peer_creator, tracks_adder, own_media};
+      client_factory, peer_creator, tracks_adder, own_media};
   client::room_creator client_room_creator{participant_creator_creator};
   client::joiner joiner{client_room_creator, rooms, matrix_authentification,
                         temporary_room_client};

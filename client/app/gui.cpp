@@ -3,6 +3,7 @@
 #include "client/add_audio_to_connection.hpp"
 #include "client/add_video_to_connection.hpp"
 #include "client/audio_settings.hpp"
+#include "client/factory.hpp"
 #include "client/joiner.hpp"
 #include "client/leaver.hpp"
 #include "client/own_media.hpp"
@@ -28,6 +29,7 @@
 #include "matrix/factory.hpp"
 #include "matrix/rooms.hpp"
 #include "model_creator.hpp"
+#include "own_media_model.hpp"
 #include "participant_model.hpp"
 #include "participants_model.hpp"
 #include "participants_with_video_model.hpp"
@@ -53,7 +55,7 @@
 #include "utils_model.hpp"
 #include "websocket/connection_creator.hpp"
 #include "websocket/connector.hpp"
-#include <QGuiApplication>
+#include <QApplication>
 #include <QIcon>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
@@ -78,7 +80,7 @@ int main(int argc, char *argv[]) {
 
   logging::logger logger{"main"};
 
-  BOOST_LOG_SEV(logger, logging::severity::trace)
+  BOOST_LOG_SEV(logger, logging::severity::info)
       << "starting up, version:" << utils::version();
 
   boost::asio::io_context context;
@@ -200,8 +202,9 @@ int main(int argc, char *argv[]) {
   }
 
   BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up client";
+  client::factory client_factory{context};
   client::participant_creator_creator participant_creator_creator{
-      peer_creator, tracks_adder, own_media};
+      client_factory, peer_creator, tracks_adder, own_media};
   client::room_creator client_room_creator{participant_creator_creator};
   client::joiner joiner{client_room_creator, rooms, matrix_authentification,
                         temporary_room_client};
@@ -218,7 +221,9 @@ int main(int argc, char *argv[]) {
   argv_adopted.push_back(arg_fontengine_freetype.data());
 #endif
   int argc_adopted = argv_adopted.size();
-  QGuiApplication app(argc_adopted, argv_adopted.data());
+  // do not use QGuiApplication. Charts needs the widgets QApplication
+  // https://doc.qt.io/qt-5/qtcharts-qmlmodule.html
+  QApplication app(argc_adopted, argv_adopted.data());
   app.setOrganizationName("Freckled OG");
   app.setOrganizationDomain("freckled.dev");
   app.setApplicationName("Fubble");
@@ -252,6 +257,7 @@ int main(int argc, char *argv[]) {
   qRegisterMetaType<client::participants_model *>();
   qRegisterMetaType<client::participants_with_video_model *>();
   qRegisterMetaType<client::join_model *>();
+  qRegisterMetaType<client::own_media_model *>();
   qRegisterMetaType<client::share_desktop_model *>();
   qRegisterMetaType<client::error_model *>();
   qRegisterMetaType<client::utils_model *>();
@@ -284,6 +290,9 @@ int main(int argc, char *argv[]) {
   qmlRegisterUncreatableType<client::audio_video_settings_model>(
       "io.fubble", 1, 0, "AudioVideoSettingsModel",
       "can't instance client::audio_video_settings_model");
+  qmlRegisterUncreatableType<client::own_media_model>(
+      "io.fubble", 1, 0, "OwnMediaModel",
+      "can't instance client::own_media_model");
   qmlRegisterUncreatableType<client::devices_model>(
       "io.fubble", 1, 0, "DevicesModel",
       "can't instance client::devices_model");
@@ -297,6 +306,7 @@ int main(int argc, char *argv[]) {
   client::join_model join_model{model_creator, error_model, joiner, own_media};
   client::share_desktop_model share_desktop_model{};
   client::leave_model leave_model{leaver};
+  client::own_media_model own_media_model{};
   client::audio_video_settings_model audio_video_settings_model{};
   //  works from 5.14 onwards
   // engine.setInitialProperties(...)
@@ -304,6 +314,7 @@ int main(int argc, char *argv[]) {
   QQmlContext *qml_context = engine.rootContext();
   qml_context->setContextProperty("joinModelFromCpp", &join_model);
   qml_context->setContextProperty("errorModelFromCpp", &error_model);
+  qml_context->setContextProperty("ownMediaModelFromCpp", &own_media_model);
   qml_context->setContextProperty("utilsModelFromCpp", &utils_model);
   qml_context->setContextProperty("leaveModelFromCpp", &leave_model);
   qml_context->setContextProperty("audioVideoModelFromCpp",

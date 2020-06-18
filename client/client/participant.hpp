@@ -1,6 +1,7 @@
 #ifndef UUID_709FB41B_8B14_446F_B83F_E736A4371022
 #define UUID_709FB41B_8B14_446F_B83F_E736A4371022
 
+#include "rtc/google/audio_source_ptr.hpp"
 #include "rtc/google/video_source_ptr.hpp"
 #include <boost/signals2/signal.hpp>
 #include <boost/thread/future.hpp>
@@ -25,6 +26,7 @@ public:
   virtual videos_type get_videos() const = 0;
   boost::signals2::signal<void(const rtc::google::video_source_ptr &)>
       on_video_added;
+  boost::signals2::signal<void(double)> on_sound_level;
 
 protected:
   void update();

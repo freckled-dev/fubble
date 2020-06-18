@@ -117,9 +117,37 @@ void factory::instance_audio() {
   BOOST_LOG_SEV(logger, logging::severity::trace) << "instance_audio";
   audio_decoder = webrtc::CreateBuiltinAudioDecoderFactory();
   audio_encoder = webrtc::CreateBuiltinAudioEncoderFactory();
+  instance_audio_processing();
   instance_audio_device_module();
   audio_devices_ =
       std::make_unique<audio_devices>(*worker_thread, *audio_device_module);
+}
+
+void factory::instance_audio_processing() {
+  webrtc::AudioProcessingBuilder builder;
+  audio_processing = builder.Create();
+  webrtc::AudioProcessing::Config config;
+  config.echo_canceller.enabled = true;
+  config.echo_canceller.mobile_mode = false;
+
+  config.gain_controller1.enabled = true;
+  config.gain_controller1.mode =
+      webrtc::AudioProcessing::Config::GainController1::kAdaptiveAnalog;
+  config.gain_controller1.analog_level_minimum = 0;
+  config.gain_controller1.analog_level_maximum = 255;
+
+  config.gain_controller2.enabled = true;
+
+  config.high_pass_filter.enabled = true;
+
+  config.voice_detection.enabled = true;
+  audio_processing->ApplyConfig(config);
+
+#if 0
+  audio_processing->noise_reduction()->set_level(
+      webrtc::AudioProcessing::kHighSuppression);
+  audio_processing->noise_reduction()->Enable(true);
+#endif
 }
 
 void factory::instance_audio_device_module() {

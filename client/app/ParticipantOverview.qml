@@ -13,6 +13,7 @@ Item {
         id: participantColumn
         anchors.right: parent.right
         anchors.left: parent.left
+        spacing: 0
         anchors.leftMargin: 0
         implicitHeight: overview.height
 
@@ -25,7 +26,7 @@ Item {
                 id: participantBorder
                 anchors.fill: parent
                 color: model.participant.highlighted
-                       || mouseArea.containsMouse ? Style.current.gray300 : Style.current.gray100
+                       || maHeader.containsMouse ? Style.current.gray300 : Style.current.gray100
                 radius: 5
                 border.color: model.participant.voiceDetected ? Style.current.primary : Style.current.transparent
                 visible: true
@@ -51,13 +52,12 @@ Item {
             }
 
             MouseArea {
-                id: mouseArea
+                id: maHeader
                 anchors.fill: parent
                 hoverEnabled: true
 
                 onClicked: {
                     details.visible = !details.visible
-                    audioChart.visible = !audioChart.visible
                 }
             }
 
@@ -85,55 +85,73 @@ Item {
             }
         }
 
-        AudioChart {
-            id: audioChart
-            audioParticipant: participant
-            Layout.fillWidth: true
-            visible: false
-            height: 100
-        }
-
-        Item {
+        Rectangle {
             id: details
-            visible: false
+            border.color: model.participant.highlighted
+                          || maHeader.containsMouse ? Style.current.gray300 : Style.current.gray100
             Layout.fillWidth: true
-            implicitHeight: 70
+            visible: false
+            radius: 5
+            implicitHeight: audioChart.height + moreDetails.height
 
-            Label {
-                id: volumeHeader
+            Item {
+                id: moreDetails
+
                 anchors.left: parent.left
-                anchors.leftMargin: 10
-                anchors.top: parent.top
-                anchors.topMargin: 10
-                text: qsTr("Volume")
-            }
-
-            VolumeSlider {
-                id: volumeSlider
-                sliderColor: volumeSlider.enabled ? Style.current.primary : Style.current.gray300
-                value: model.participant.volume
-                anchors.top: volumeHeader.bottom
-                anchors.left: parent.left
-                anchors.right: muteImage.left
-                enabled: !participant.muted
-            }
-
-            Image {
-                id: muteImage
-                anchors.verticalCenter: volumeSlider.verticalCenter
-                sourceSize.height: 20
-                sourceSize.width: 20
                 anchors.right: parent.right
-                source: model.participant.muted ? Style.current.mutedImage : Style.current.mutedOffImage
+                height: 70
 
-                MouseArea {
-                    id: maMute
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    onClicked: {
-                        participant.silenced = !participant.silenced
+                Label {
+                    id: volumeHeader
+                    anchors.left: parent.left
+                    anchors.leftMargin: 10
+                    anchors.top: parent.top
+                    anchors.topMargin: 10
+                    text: qsTr("Volume")
+                }
+
+                VolumeSlider {
+                    id: volumeSlider
+                    sliderColor: volumeSlider.enabled ? Style.current.primary : Style.current.gray300
+                    value: model.participant.volume
+                    anchors.top: volumeHeader.bottom
+                    anchors.left: parent.left
+                    anchors.right: muteImage.left
+                    enabled: !participant.muted
+                }
+
+                Image {
+                    id: muteImage
+                    anchors.verticalCenter: volumeSlider.verticalCenter
+                    sourceSize.height: 20
+                    sourceSize.width: 20
+                    anchors.right: parent.right
+                    source: model.participant.muted ? Style.current.mutedImage : Style.current.mutedOffImage
+
+                    MouseArea {
+                        id: maMute
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        onClicked: {
+                            participant.silenced = !participant.silenced
+                        }
                     }
                 }
+            }
+
+            AudioChart {
+                id: audioChart
+                anchors.top: moreDetails.bottom
+                audioLevel: participant.audioLevel
+                anchors.left: parent.left
+                anchors.right: parent.right
+                visible: talking
+                height: talking ? 60 : 0
+
+                chart.height: audioChart.height + 50
+                chart.width: audioChart.width + 90
+                chart.x: -45
+                chart.y: -30
             }
         }
     }

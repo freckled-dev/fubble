@@ -8,4 +8,5 @@ ChatModel 1.0 ChatModel.qml
 UtilsModel 1.0 UtilsModel.qml
 ShareDesktopModel 1.0 ShareDesktopModel.qml
 AudioVideoSettingsModel 1.0 AudioVideoSettingsModel.qml
+OwnMediaModel 1.0 OwnMediaModel.qml
 plugin video_layout

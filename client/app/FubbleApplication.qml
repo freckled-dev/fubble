@@ -27,6 +27,7 @@ ApplicationWindow {
     property UtilsModel utilsModel: utilsModelFromCpp
     property ShareDesktopModel shareDesktopModel: shareDesktopModelFromCpp
     property AudioVideoSettingsModel audioVideoModel: audioVideoModelFromCpp
+    property OwnMediaModel ownMediaModel: ownMediaModelFromCpp
 
     property bool shutdown: false
 

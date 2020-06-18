@@ -13,7 +13,7 @@ client_gui_sources = ['gui.cpp', 'utils_model.cpp', 'join_model.cpp',
   'participants_with_video_model.cpp', 'chat_model.cpp',
   'chat_messages_model.cpp', 'share_desktop_model.cpp',
   'participant_model.cpp', 'room_model.cpp', 'model_creator.cpp',
-  'audio_video_settings_model.cpp'
+  'audio_video_settings_model.cpp', 'own_media_model.cpp'
   ]
 client_gui_sources += qt5.preprocess(
   qresources: 'qml.qrc',
@@ -21,6 +21,7 @@ client_gui_sources += qt5.preprocess(
     'error_model.hpp', 'share_desktop_model.hpp',
     'leave_model.hpp', 'participants_with_video_model.hpp', 'chat_model.hpp',
     'chat_messages_model.hpp', 'audio_video_settings_model.hpp',
+    'own_media_model.hpp',
     'participants_model.hpp', 'participant_model.hpp', 'poll_asio_by_qt.hpp']
   )
 if host_machine.system() == 'windows'

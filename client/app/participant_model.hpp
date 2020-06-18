@@ -30,6 +30,10 @@ class participant_model : public QObject {
 
   Q_PROPERTY(client::ui::frame_provider_google_video_source *video READ
                  get_video NOTIFY video_changed)
+  Q_PROPERTY(
+      bool voiceDetected MEMBER voice_detected NOTIFY voice_detected_changed)
+  Q_PROPERTY(int audioLevel MEMBER audio_level NOTIFY audio_level_changed)
+
 public:
   participant_model(participant &participant_, audio_settings &audio_settings_,
                     QObject *parent);
@@ -47,26 +51,40 @@ signals:
   void video_disabled_changed(bool);
   void highlighted_changed(bool);
   void video_changed(ui::frame_provider_google_video_source *);
+  void voice_detected_changed(bool);
+  void audio_level_changed(int);
 
 protected:
   void set_name();
   void video_added(rtc::google::video_source &);
   void on_muted_changed(bool muted_);
   void on_deafed_changed(bool muted_);
+  void on_sound_level(double level);
 
   mutable client::logger logger{"participant_model"};
   participant &participant_;
   audio_settings &audio_settings_;
   const std::string id;
   QString name;
-  bool own = false;
-  bool muted = false;
-  bool deafed = false;
-  bool silenced = false;
-  bool volume = 1;
-  bool video_disabled = false;
-  bool highlighted = false;
+  bool own{};
+  bool muted{};
+  bool deafed{};
+  bool silenced{};
+  double volume{1.};
+  bool video_disabled{};
+  bool highlighted{};
   ui::frame_provider_google_video_source *video{};
+  bool voice_detected{};
+  int audio_level{};
+
+  static constexpr int audio_level_values_to_collect{100 / 30};
+  double audio_level_cache{};
+  int audio_level_counter{};
+
+  static constexpr int voice_audio_level_values_to_collect{100 / 30};
+  static constexpr double voice_detected_threshold{0.1};
+  double voice_detected_audio_level_cache{};
+  int voice_detected_counter{};
 };
 
 } // namespace client
