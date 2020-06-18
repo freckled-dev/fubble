@@ -1,2 +1,4 @@
 *.qmlproject.user
 
+*.qmlc
+*.jsc

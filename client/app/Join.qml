@@ -50,8 +50,9 @@ FocusScope {
 
         NoVideo {
             id: noVideo
-            width: 500
-            height: 300
+            Layout.minimumHeight: 0.4 * container.height
+            Layout.minimumWidth: 0.5 * container.width
+            Layout.maximumWidth: 600
             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
             Layout.fillWidth: false
             visible: !joinModel.videoAvailable
@@ -87,7 +88,7 @@ FocusScope {
             id: inputLayout
             Layout.fillWidth: false
             height: 60
-            Layout.minimumWidth: 500
+            Layout.minimumWidth: 400
             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
             spacing: 8
             Layout.topMargin: 40
