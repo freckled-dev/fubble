@@ -1,3 +1,6 @@
+#ifndef UUID_04C6146E_9EA8_4A08_B962_D5AEEEEC9087
+#define UUID_04C6146E_9EA8_4A08_B962_D5AEEEEC9087
+
 #include <QObject>
 
 namespace client {
@@ -22,3 +25,5 @@ protected:
   bool muted{false};
 };
 } // namespace client
+
+#endif

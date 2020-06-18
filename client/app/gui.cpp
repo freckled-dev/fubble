@@ -29,6 +29,7 @@
 #include "matrix/factory.hpp"
 #include "matrix/rooms.hpp"
 #include "model_creator.hpp"
+#include "own_media_model.hpp"
 #include "participant_model.hpp"
 #include "participants_model.hpp"
 #include "participants_with_video_model.hpp"
@@ -302,10 +303,10 @@ int main(int argc, char *argv[]) {
   client::model_creator model_creator{audio_settings};
   client::error_model error_model;
   client::utils_model utils_model;
-  client::join_model join_model{model_creator, error_model, joiner};
+  client::join_model join_model{model_creator, error_model, joiner, own_media};
   client::share_desktop_model share_desktop_model{};
   client::leave_model leave_model{leaver};
-  client::own_media_model own_media_model;
+  client::own_media_model own_media_model{};
   client::audio_video_settings_model audio_video_settings_model{};
   //  works from 5.14 onwards
   // engine.setInitialProperties(...)
@@ -313,7 +314,7 @@ int main(int argc, char *argv[]) {
   QQmlContext *qml_context = engine.rootContext();
   qml_context->setContextProperty("joinModelFromCpp", &join_model);
   qml_context->setContextProperty("errorModelFromCpp", &error_model);
-  qml_context->setContextProperty("ownMediaModelFromCpp", &own_media);
+  qml_context->setContextProperty("ownMediaModelFromCpp", &own_media_model);
   qml_context->setContextProperty("utilsModelFromCpp", &utils_model);
   qml_context->setContextProperty("leaveModelFromCpp", &leave_model);
   qml_context->setContextProperty("audioVideoModelFromCpp",
