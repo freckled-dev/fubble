@@ -9,13 +9,17 @@ Popup {
     id: settingsDialog
     modal: true
     focus: true
-    x: (container.width - width) / 2
-    y: container.height / 6
+
+    parent: overlay
+    x: Math.round((parent.width - width) / 2)
+    y: Math.round((parent.height - height) / 2)
+
     Material.foreground: Style.current.foreground
     padding: 0
     height: 600
     width: 500
 
+    property alias bar: bar
     property alias generalSettings: general.settings
     property alias audioVideoSettings: audioVideo.settings
 
@@ -36,6 +40,7 @@ Popup {
 
         TabBar {
             id: bar
+            currentIndex: 0
             Layout.topMargin: 10
             Layout.rightMargin: 20
             Layout.leftMargin: 20

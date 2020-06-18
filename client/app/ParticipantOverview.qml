@@ -142,11 +142,16 @@ Item {
             AudioChart {
                 id: audioChart
                 anchors.top: moreDetails.bottom
-                audioParticipant: participant
+                audioLevel: participant.audioLevel
                 anchors.left: parent.left
                 anchors.right: parent.right
                 visible: talking
                 height: talking ? 60 : 0
+
+                chart.height: audioChart.height + 50
+                chart.width: audioChart.width + 90
+                chart.x: -45
+                chart.y: -30
             }
         }
     }

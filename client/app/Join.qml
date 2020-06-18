@@ -55,6 +55,22 @@ FocusScope {
             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
             Layout.fillWidth: false
             visible: !joinModel.videoAvailable
+
+            AudioVideoOverlay {
+                visible: maNoVideo.containsMouse
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.bottom: parent.bottom
+                height: 60
+                videoOffButtonVisible: false
+            }
+
+            MouseArea {
+                id: maNoVideo
+                anchors.fill: parent
+                hoverEnabled: true
+                propagateComposedEvents: true
+            }
         }
 
         VideoOutput {
@@ -80,6 +96,22 @@ FocusScope {
                 var aspectRatio = getAspectRatio()
                 return Math.min(container.height * percentage,
                                 (container.width * percentage) / aspectRatio)
+            }
+
+            AudioVideoOverlay {
+                visible: maVideo.containsMouse
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.bottom: parent.bottom
+                height: 60
+                videoOffButtonVisible: true
+            }
+
+            MouseArea {
+                id: maVideo
+                anchors.fill: parent
+                hoverEnabled: true
+                propagateComposedEvents: true
             }
         }
 
