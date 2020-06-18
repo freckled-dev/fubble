@@ -5,5 +5,5 @@ QtObject {
 
     property int audioLevel
 
-    property bool videoDisabled
+    property bool videoEnabled
 }

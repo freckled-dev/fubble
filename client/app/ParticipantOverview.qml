@@ -48,7 +48,7 @@ Item {
                 sourceSize.height: 20
                 sourceSize.width: 20
                 source: Style.current.videoDisabledImage
-                visible: model.participant.videoDisabled
+                visible: !model.participant.videoEnabled
             }
 
             MouseArea {

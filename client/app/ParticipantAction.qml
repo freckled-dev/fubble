@@ -26,10 +26,10 @@ RowLayout {
     }
 
     FubbleActionButton {
-        source: participant.videoDisabled ? Style.current.overlayVideoOffImage : Style.current.overlayVideoImage
-        toolTipText: participant.videoDisabled ? qsTr("Enable your video") : qsTr(
+        source: !participant.videoEnabled ? Style.current.overlayVideoOffImage : Style.current.overlayVideoImage
+        toolTipText: !participant.videoEnabled ? qsTr("Enable your video") : qsTr(
                                                      "Disable your video")
-        onActionClick: participant.videoDisabled = !participant.videoDisabled
+        onActionClick: participant.videoEnabled = !participant.videoEnabled
     }
 
     FubbleActionButton {

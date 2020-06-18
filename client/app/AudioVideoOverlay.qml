@@ -47,9 +47,9 @@ Rectangle {
         anchors.rightMargin: 10
         anchors.verticalCenter: parent.verticalCenter
         anchors.right: muteButton.left
-        source: ownMediaModel.videoDisabled ? Style.current.overlayVideoOffImage : Style.current.overlayVideoImage
+        source: !ownMediaModel.videoEnabled ? Style.current.overlayVideoOffImage : Style.current.overlayVideoImage
         toolTipText: qsTr("Disable your video")
-        onActionClick: ownMediaModel.videoDisabled = !ownMediaModel.videoDisabled
+        onActionClick: ownMediaModel.videoEnabled = !ownMediaModel.videoEnabled
     }
 
     FubbleActionButton {
