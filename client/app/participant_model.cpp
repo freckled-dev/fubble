@@ -64,7 +64,7 @@ void participant_model::on_deafed_changed(bool deafed_) {
 
 void participant_model::on_sound_level(double level) {
   ++audio_level_counter;
-  if (audio_level_counter > 10) {
+  if (audio_level_counter > audio_level_values_to_collect) {
     audio_level = static_cast<int>(audio_level_cache *= 127.0);
     audio_level = std::min(127, audio_level);
     audio_level_changed(audio_level);
@@ -75,5 +75,26 @@ void participant_model::on_sound_level(double level) {
     audio_level_counter = 0;
     audio_level_cache = 0.;
   }
-  audio_level_cache += level / 10.;
+  audio_level_cache +=
+      level / static_cast<double>(audio_level_values_to_collect);
+
+  ++voice_detected_counter;
+  if (voice_detected_counter > voice_audio_level_values_to_collect) {
+    const bool voice_detected_current =
+        voice_detected_audio_level_cache > voice_detected_threshold;
+#if 1
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << "voice_detected, voice_detected_current:" << voice_detected_current
+        << ", voice_detected_audio_level_cache:"
+        << voice_detected_audio_level_cache;
+#endif
+    if (voice_detected_current != voice_detected) {
+      voice_detected = voice_detected_current;
+      voice_detected_changed(voice_detected);
+    }
+    voice_detected_audio_level_cache = 0.;
+    voice_detected_counter = 0;
+  }
+  voice_detected_audio_level_cache +=
+      level / static_cast<double>(voice_audio_level_values_to_collect);
 }

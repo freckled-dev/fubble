@@ -70,15 +70,21 @@ protected:
   bool muted{};
   bool deafed{};
   bool silenced{};
-  bool volume = 1;
+  double volume{1.};
   bool video_disabled{};
   bool highlighted{};
   ui::frame_provider_google_video_source *video{};
   bool voice_detected{};
   int audio_level{};
 
+  static constexpr int audio_level_values_to_collect{100 / 30};
   double audio_level_cache{};
   int audio_level_counter{};
+
+  static constexpr int voice_audio_level_values_to_collect{100 / 30};
+  static constexpr double voice_detected_threshold{0.1};
+  double voice_detected_audio_level_cache{};
+  int voice_detected_counter{};
 };
 
 } // namespace client
