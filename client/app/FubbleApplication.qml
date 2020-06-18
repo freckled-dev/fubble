@@ -17,7 +17,7 @@ ApplicationWindow {
     y: 0
 
     minimumWidth: 800
-    minimumHeight: 800
+    minimumHeight: 600
     visible: true
     visibility: "Windowed"
 
