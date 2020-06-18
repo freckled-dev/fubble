@@ -24,7 +24,7 @@ QtObject {
     // indicates the volume of the audio stream
     property int audioLevel
 
-    property bool videoEnabled
+    property bool videoDisabled
 
     // just used in the GUI
     property bool highlighted

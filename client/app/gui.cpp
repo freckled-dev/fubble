@@ -256,6 +256,7 @@ int main(int argc, char *argv[]) {
   qRegisterMetaType<client::participants_model *>();
   qRegisterMetaType<client::participants_with_video_model *>();
   qRegisterMetaType<client::join_model *>();
+  qRegisterMetaType<client::own_media_model *>();
   qRegisterMetaType<client::share_desktop_model *>();
   qRegisterMetaType<client::error_model *>();
   qRegisterMetaType<client::utils_model *>();
@@ -288,6 +289,9 @@ int main(int argc, char *argv[]) {
   qmlRegisterUncreatableType<client::audio_video_settings_model>(
       "io.fubble", 1, 0, "AudioVideoSettingsModel",
       "can't instance client::audio_video_settings_model");
+  qmlRegisterUncreatableType<client::own_media_model>(
+      "io.fubble", 1, 0, "OwnMediaModel",
+      "can't instance client::own_media_model");
   qmlRegisterUncreatableType<client::devices_model>(
       "io.fubble", 1, 0, "DevicesModel",
       "can't instance client::devices_model");
@@ -298,9 +302,10 @@ int main(int argc, char *argv[]) {
   client::model_creator model_creator{audio_settings};
   client::error_model error_model;
   client::utils_model utils_model;
-  client::join_model join_model{model_creator, error_model, joiner, own_media};
+  client::join_model join_model{model_creator, error_model, joiner};
   client::share_desktop_model share_desktop_model{};
   client::leave_model leave_model{leaver};
+  client::own_media_model own_media_model;
   client::audio_video_settings_model audio_video_settings_model{};
   //  works from 5.14 onwards
   // engine.setInitialProperties(...)
@@ -308,6 +313,7 @@ int main(int argc, char *argv[]) {
   QQmlContext *qml_context = engine.rootContext();
   qml_context->setContextProperty("joinModelFromCpp", &join_model);
   qml_context->setContextProperty("errorModelFromCpp", &error_model);
+  qml_context->setContextProperty("ownMediaModelFromCpp", &own_media);
   qml_context->setContextProperty("utilsModelFromCpp", &utils_model);
   qml_context->setContextProperty("leaveModelFromCpp", &leave_model);
   qml_context->setContextProperty("audioVideoModelFromCpp",

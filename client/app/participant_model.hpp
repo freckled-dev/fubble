@@ -24,7 +24,7 @@ class participant_model : public QObject {
   Q_PROPERTY(double volume MEMBER volume NOTIFY volume_changed)
   // own video disabled
   Q_PROPERTY(
-      bool videoEnabled MEMBER video_enabled NOTIFY video_enabled_changed)
+      bool videoDisabled MEMBER video_disabled NOTIFY video_disabled_changed)
   // just used in the GUI - do not change it
   Q_PROPERTY(bool highlighted MEMBER highlighted NOTIFY highlighted_changed)
 
@@ -48,7 +48,7 @@ signals:
   void deafed_changed(bool);
   void silenced_changed(bool);
   void volume_changed(double);
-  void video_enabled_changed(bool);
+  void video_disabled_changed(bool);
   void highlighted_changed(bool);
   void video_changed(ui::frame_provider_google_video_source *);
   void voice_detected_changed(bool);
@@ -71,7 +71,7 @@ protected:
   bool deafed{};
   bool silenced{};
   double volume{1.};
-  bool video_enabled{};
+  bool video_disabled{};
   bool highlighted{};
   ui::frame_provider_google_video_source *video{};
   bool voice_detected{};
