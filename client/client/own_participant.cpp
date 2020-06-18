@@ -16,3 +16,11 @@ boost::future<void> own_participant::close() {
 own_participant::videos_type own_participant::get_videos() const {
   return own_media_.get_videos();
 }
+
+own_participant::audios_type own_participant::get_audios() const {
+  audios_type result;
+  auto own_audio = own_media_.get_audio();
+  if (own_audio)
+    result.push_back(own_audio);
+  return result;
+}

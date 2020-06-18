@@ -1,7 +1,6 @@
 #include "remote_participant.hpp"
 #include "client/factory.hpp"
 #include "client/peer.hpp"
-#include "rtc/google/audio_source_stats_collector.hpp"
 #include "rtc/google/audio_track_sink.hpp"
 #include "rtc/google/video_track_sink.hpp"
 
@@ -25,6 +24,10 @@ remote_participant::videos_type remote_participant::get_videos() const {
   return videos;
 }
 
+remote_participant::audios_type remote_participant::get_audios() const {
+  return audios;
+}
+
 void remote_participant::on_track(rtc::track_ptr track) {
   BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
   auto video_track =
@@ -42,14 +45,10 @@ void remote_participant::on_track(rtc::track_ptr track) {
 void remote_participant::on_audio_track(
     std::shared_ptr<rtc::google::audio_track_sink> audio_track) {
   BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
-  BOOST_ASSERT(!audio_information);
 
   rtc::google::audio_source &source = audio_track->get_source();
-  audio_information =
-      std::make_unique<rtc::google::audio_source_stats_collector>(source);
-  audio_information->on_sound_level.connect(
-      [this](auto level) { on_sound_level(level); });
-  audio_information->start();
+  audios.emplace_back(&source);
+  on_audio_added(source);
 }
 
 void remote_participant::on_video_track(

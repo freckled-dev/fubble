@@ -12,3 +12,6 @@ boost::future<void> bot_participant::close() {
 }
 
 participant::videos_type bot_participant::get_videos() const { return {}; }
+
+participant::audios_type bot_participant::get_audios() const { return {}; }
+

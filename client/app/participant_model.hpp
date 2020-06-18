@@ -2,6 +2,7 @@
 #define UUID_912B7A62_19DE_45A9_B92E_0FC0046CE8C5
 
 #include "client/logger.hpp"
+#include "rtc/google/audio_source_ptr.hpp"
 #include "rtc/google/video_source_ptr.hpp"
 #include "ui/frame_provider_google_video_frame.hpp"
 #include <QObject>
@@ -9,6 +10,7 @@
 namespace client {
 class participant;
 class audio_settings;
+class audio_level_calculator;
 
 class participant_model : public QObject {
   Q_OBJECT
@@ -37,6 +39,7 @@ class participant_model : public QObject {
 public:
   participant_model(participant &participant_, audio_settings &audio_settings_,
                     QObject *parent);
+  ~participant_model();
 
   std::string get_id() const;
   ui::frame_provider_google_video_source *get_video() const;
@@ -57,13 +60,16 @@ signals:
 protected:
   void set_name();
   void video_added(rtc::google::video_source &);
+  void audio_added(rtc::google::audio_source &);
   void on_muted_changed(bool muted_);
   void on_deafed_changed(bool muted_);
   void on_sound_level(double level);
+  void on_voice_detected(bool detected);
 
   mutable client::logger logger{"participant_model"};
   participant &participant_;
   audio_settings &audio_settings_;
+  std::unique_ptr<audio_level_calculator> audio_level_calculator_;
   const std::string id;
   QString name;
   bool own{};
@@ -76,15 +82,6 @@ protected:
   ui::frame_provider_google_video_source *video{};
   bool voice_detected{};
   int audio_level{};
-
-  static constexpr int audio_level_values_to_collect{100 / 30};
-  double audio_level_cache{};
-  int audio_level_counter{};
-
-  static constexpr int voice_audio_level_values_to_collect{100 / 30};
-  static constexpr double voice_detected_threshold{0.1};
-  double voice_detected_audio_level_cache{};
-  int voice_detected_counter{};
 };
 
 } // namespace client

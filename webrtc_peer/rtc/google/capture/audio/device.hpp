@@ -2,6 +2,7 @@
 #define UUID_A6DF372E_9854_4798_95D4_28504F6A0DF5
 
 #include "rtc/google/audio_source.hpp"
+#include <api/media_stream_interface.h>
 
 namespace rtc {
 namespace google {
