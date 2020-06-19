@@ -232,6 +232,7 @@ FocusScope {
         id: questionImage
         sourceSize.height: 35
         sourceSize.width: 40
+        height: 35
         anchors.rightMargin: 10
         anchors.topMargin: 10
         anchors.top: parent.top
@@ -241,7 +242,7 @@ FocusScope {
         FubbleToolTip {
             visible: maQuestions.containsMouse
             width: 250
-            text: qsTr("Feedback? Questions? Problems? Feel free to contact us anytime!")
+            text: qsTr("Feedback? Questions? Problems?\nFeel free to contact us anytime!")
         }
 
         MouseArea {
