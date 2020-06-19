@@ -12,6 +12,7 @@ class audio_settings;
 
 class participant_model : public QObject {
   Q_OBJECT
+  Q_PROPERTY(QString identifier MEMBER identifier CONSTANT);
   Q_PROPERTY(QString name MEMBER name NOTIFY name_changed)
   Q_PROPERTY(bool own MEMBER own NOTIFY own_changed)
   // self muted
@@ -65,6 +66,7 @@ protected:
   participant &participant_;
   audio_settings &audio_settings_;
   const std::string id;
+  const QString identifier;
   QString name;
   bool own{};
   bool muted{};
