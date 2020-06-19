@@ -5,12 +5,14 @@ import QtQuick.Controls.Material 2.0
 import Qt.labs.settings 1.0
 import QtQuick.Layouts 1.0
 import io.fubble 1.0
+import "scripts/utils.js" as Utils
 
 Item {
     id: chatContainer
     property ChatModel chatModel
     property bool chatVisible: true
     property int chatWidth: 400
+    property var chatParticipants
 
     property string recentlyUsedEmojis
 
@@ -77,6 +79,8 @@ Item {
                                && type === "message" ? parent.right : undefined
                 anchors.horizontalCenter: type !== "message" ? parent.horizontalCenter : undefined
                 rectangleBorder.width: type === "message" ? 1 : 0
+                participantColor: own ? Style.current.accent : chatContainer.getColorForParticipant(
+                                            participantId)
             }
         }
 
@@ -131,6 +135,29 @@ Item {
                 recentlyUsedEmojis = emojiArray.toString()
             }
         }
+    }
+
+    property variant colorMap: {
+        "": ""
+    }
+
+    function getColorForParticipant(participantId) {
+        var colorFound = colorMap[participantId]
+        if (colorFound) {
+            return colorFound
+        }
+
+        var size = Object.keys(colorMap).length
+        var newColor = Style.current.chatColors[size - 1]
+
+        // we have 16 predefind colors for dark and light mode
+        if (!newColor) {
+            newColor = Utils.getRandomColor()
+        }
+
+        colorMap[participantId] = newColor
+
+        return newColor
     }
 
     onChatVisibleChanged: {

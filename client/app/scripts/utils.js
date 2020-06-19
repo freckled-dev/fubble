@@ -1,4 +1,4 @@
- function toHHMMSS(timestring) {
+function toHHMMSS(timestring) {
     var sec_num = parseInt(timestring, 10)
     var hours = Math.floor(sec_num / 3600)
     var minutes = Math.floor((sec_num - (hours * 3600)) / 60)
@@ -19,4 +19,13 @@
     }
 
     return hours + ':' + minutes + ':' + seconds
+}
+
+function getRandomColor() {
+    var letters = '0123456789ABCDEF'
+    var color = '#'
+    for (var i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)]
+    }
+    return color
 }

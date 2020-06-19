@@ -81,10 +81,6 @@ Rectangle {
 
             upperSeries: LineSeries {
                 color: Style.current.transparent
-                XYPoint {
-                    x: 0
-                    y: 0
-                }
             }
         }
     }

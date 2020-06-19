@@ -19,6 +19,7 @@
         <file>AudioVideoOverlay.qml</file>
         <file>EmojiPopup.qml</file>
         <file>ParticipantAction.qml</file>
+        <file>ParticipantOverlay.qml</file>
         <file>scripts/emoji.js</file>
         <file>scripts/utils.js</file>
         <file>FubbleSettings.qml</file>

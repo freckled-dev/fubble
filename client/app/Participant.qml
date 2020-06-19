@@ -38,31 +38,9 @@ Rectangle {
             }
         }
 
-        Rectangle {
+        ParticipantOverlay {
             id: overlay
-            color: Style.current.gray300Transparent
-            anchors.left: parent.left
-            anchors.right: parent.right
-            visible: participant.highlighted
-            implicitHeight: nameLabel.height
-            anchors.bottom: video.bottom
-
-            Label {
-                id: nameLabel
-                text: participant.name
-                padding: 10
-                anchors.horizontalCenter: parent.horizontalCenter
-            }
-        }
-
-        Rectangle {
-            id: overlayBorder
-            border.color: model.participant.voiceDetected ? Style.current.primary : Style.current.foreground
-            color: Style.current.transparent
-            radius: 2
-            border.width: 1
-            anchors.fill: parent
-            visible: participant.highlighted || model.participant.voiceDetected
+            overlayParticipant: participant
         }
     }
 }

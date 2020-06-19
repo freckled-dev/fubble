@@ -3,7 +3,7 @@ import QtQml 2.0
 QtObject {
     property string name: "room name not set"
     property var chat: ChatModel {}
-    property bool videosAvailable: true
+    property bool videosAvailable: false
 
     property var ownParticipant: participants[0].participant
 
@@ -16,32 +16,49 @@ QtObject {
     property list<QtObject> participants: [
         QtObject {
             property var participant: ParticipantModel {
-                name: qsTr("First Longer name")
+                name: qsTr("Sarah")
                 own: true
             }
         },
         QtObject {
             property var participant: ParticipantModel {
-                name: qsTr("Second name")
+                name: qsTr("Konrad")
             }
         },
         QtObject {
             property var participant: ParticipantModel {
-                name: qsTr("Third Again")
+                name: qsTr("Toni")
             }
         },
         QtObject {
             property var participant: ParticipantModel {
-                name: qsTr("Fourth of May")
+                name: qsTr("Christine")
             }
         }
     ]
 
-    property list<QtObject> participantsWithVideo: [
+    property list<QtObject> participantsWithVideo
+
+    /*: [
         QtObject {
             property var participant: ParticipantModel {
-                name: qsTr("second")
+                name: qsTr("Sarah")
+            }
+        },
+        QtObject {
+            property var participant: ParticipantModel {
+                name: qsTr("Konrad")
+            }
+        },
+        QtObject {
+            property var participant: ParticipantModel {
+                name: qsTr("Toni")
+            }
+        },
+        QtObject {
+            property var participant: ParticipantModel {
+                name: qsTr("Christine")
             }
         }
-    ]
+    ]*/
 }
