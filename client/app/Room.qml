@@ -78,6 +78,7 @@ Item {
             id: chat
             anchors.fill: parent
             chatModel: room.chat
+            chatParticipants: room.participants
         }
     }
 }

@@ -8,7 +8,8 @@ participant_model::participant_model(participant &participant_,
                                      audio_settings &audio_settings_,
                                      QObject *parent)
     : QObject(parent), participant_(participant_),
-      audio_settings_(audio_settings_), id(participant_.get_id()) {
+      audio_settings_(audio_settings_), id(participant_.get_id()),
+      identifier(QString::fromStdString(id)) {
   set_name();
   participant_.on_name_changed.connect([this](auto) { set_name(); });
   // TODO support video removal

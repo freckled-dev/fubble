@@ -17,6 +17,8 @@ Rectangle {
     Material.foreground: Style.current.foreground
     color: Style.current.background
 
+    property string participantColor
+
     Loader {
         id: messageLoader
 
@@ -34,7 +36,7 @@ Rectangle {
                 Layout.leftMargin: 10
                 Layout.rightMargin: 10
                 Layout.topMargin: 10
-                color: own ? Style.current.accent : Style.current.primary
+                color: own ? Style.current.accent : participantColor
                 text: name + " - " + new Date(timestamp).toTimeString()
             }
 
@@ -126,10 +128,3 @@ Rectangle {
         }
     }
 }
-
-/*##^##
-Designer {
-    D{i:0;autoSize:true;height:480;width:640}
-}
-##^##*/
-

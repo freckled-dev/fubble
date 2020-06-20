@@ -47,7 +47,14 @@
         <file>images/close_icon.svg</file>
         <file>images/close_icon_dark.svg</file>
         <file>images/questions.svg</file>
+        <file>images/questions_dark.svg</file>
 
+        <!-- Demo Mode -->
+        <file>images/demomode/Christine.jpg</file>
+        <file>images/demomode/Konrad.jpg</file>
+        <file>images/demomode/Sarah.jpg</file>
+        <file>images/demomode/Toni.jpg</file>
+        
     </qresource>
 </RCC>
 

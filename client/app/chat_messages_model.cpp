@@ -5,11 +5,13 @@
 using namespace client;
 
 namespace {
-chat_messages_model::chat_message cast_client_message(const chat::message &to_cast) {
+chat_messages_model::chat_message
+cast_client_message(const chat::message &to_cast) {
   chat_messages_model::chat_message result;
   result.message = QString::fromStdString(to_cast.body);
   result.name = QString::fromStdString(to_cast.sender);
   result.own = to_cast.own;
+  result.participant_id = QString::fromStdString(to_cast.sender);
   result.timestamp = QDateTime::fromTime_t(
       std::chrono::system_clock::to_time_t(to_cast.timestamp));
   return result;
@@ -50,6 +52,8 @@ QVariant chat_messages_model::data(const QModelIndex &index,
     return QVariant::fromValue(message_.own);
   case role_type:
     return QVariant::fromValue(message_.type);
+  case participant_id:
+    return QVariant::fromValue(message_.participant_id);
   case role_message:
     return QVariant::fromValue(message_.message);
   case role_timestamp:
@@ -67,5 +71,6 @@ QHash<int, QByteArray> chat_messages_model::roleNames() const {
   roles[role_own] = "own";
   roles[role_timestamp] = "timestamp";
   roles[role_type] = "type";
+  roles[participant_id] = "participantId";
   return roles;
 }

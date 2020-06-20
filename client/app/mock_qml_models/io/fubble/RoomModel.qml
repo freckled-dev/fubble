@@ -16,23 +16,23 @@ QtObject {
     property list<QtObject> participants: [
         QtObject {
             property var participant: ParticipantModel {
-                name: qsTr("First Longer name")
+                name: qsTr("Sarah")
                 own: true
             }
         },
         QtObject {
             property var participant: ParticipantModel {
-                name: qsTr("Second name")
+                name: qsTr("Konrad")
             }
         },
         QtObject {
             property var participant: ParticipantModel {
-                name: qsTr("Third Again")
+                name: qsTr("Toni")
             }
         },
         QtObject {
             property var participant: ParticipantModel {
-                name: qsTr("Fourth of May")
+                name: qsTr("Christine")
             }
         }
     ]
@@ -40,7 +40,22 @@ QtObject {
     property list<QtObject> participantsWithVideo: [
         QtObject {
             property var participant: ParticipantModel {
-                name: qsTr("second")
+                name: qsTr("Sarah")
+            }
+        },
+        QtObject {
+            property var participant: ParticipantModel {
+                name: qsTr("Konrad")
+            }
+        },
+        QtObject {
+            property var participant: ParticipantModel {
+                name: qsTr("Toni")
+            }
+        },
+        QtObject {
+            property var participant: ParticipantModel {
+                name: qsTr("Christine")
             }
         }
     ]

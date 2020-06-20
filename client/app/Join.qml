@@ -6,6 +6,7 @@ import io.fubble 1.0
 import Qt.labs.settings 1.0
 import QtQuick.Controls.Material 2.0
 import "."
+import "scripts/utils.js" as Utils
 
 FocusScope {
     id: joinRoomContainer
@@ -14,6 +15,7 @@ FocusScope {
     property bool guiEnabled: true
     property alias history: history
     property alias roomName: roomTextField.text
+    property bool demoMode: Utils.isDemoMode()
 
     signal joined(RoomModel room)
 
@@ -55,7 +57,7 @@ FocusScope {
             Layout.maximumWidth: 600
             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
             Layout.fillWidth: false
-            visible: !joinModel.videoAvailable
+            visible: !joinModel.videoAvailable && !demoMode
 
             AudioVideoOverlay {
                 visible: maNoVideo.containsMouse
@@ -74,12 +76,25 @@ FocusScope {
             }
         }
 
+        Image {
+            Layout.minimumHeight: 0.4 * container.height
+            Layout.minimumWidth: 0.5 * container.width
+            Layout.maximumWidth: 600
+            Layout.maximumHeight: 400
+            Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+            Layout.fillWidth: false
+
+            source: Style.current.demoImagesPath + "Sarah.jpg"
+            fillMode: Image.PreserveAspectCrop
+            visible: demoMode
+        }
+
         VideoOutput {
             id: videoOutput
             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
             Layout.fillWidth: false
             source: joinModel.video
-            visible: joinModel.videoAvailable
+            visible: joinModel.videoAvailable && !demoMode
 
             function getAspectRatio() {
                 return videoOutput.sourceRect.width / videoOutput.sourceRect.height
