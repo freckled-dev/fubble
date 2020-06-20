@@ -20,11 +20,13 @@ public:
     role_own,
     role_timestamp,
     role_message,
-    role_type
+    role_type,
+    participant_id
   };
 
   // Don't call this struct `message`, or msvc will fail.
   struct chat_message {
+    QString participant_id;
     QString name;
     bool own;
     QDateTime timestamp;
