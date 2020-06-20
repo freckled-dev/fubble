@@ -57,4 +57,7 @@ Theme {
     property var overviewPressedImage: "images/overview_pressed_dark.svg"
 
     property var chatColors: ["#43aa8b", "#bc69aa", "#90be6d", "#577590", "#8f2d56", "#ffe6cc", "#b6465f", "#b4dafd", "#a5668b", "#7c98b3", "#edb183", "#a06cd5", "#ffffb3", "#8cd98c", "#694873", "#f94144"]
+
+    // DemoMode
+    property var demoImagesPath: "images/demomode/"
 }

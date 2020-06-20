@@ -49,6 +49,12 @@
         <file>images/questions.svg</file>
         <file>images/questions_dark.svg</file>
 
+        <!-- Demo Mode -->
+        <file>images/Christine.svg</file>
+        <file>images/Konrad.svg</file>
+        <file>images/Sarah.svg</file>
+        <file>images/Toni.svg</file>
+        
     </qresource>
 </RCC>
 

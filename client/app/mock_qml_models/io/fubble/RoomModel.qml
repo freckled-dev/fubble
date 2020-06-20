@@ -3,7 +3,7 @@ import QtQml 2.0
 QtObject {
     property string name: "room name not set"
     property var chat: ChatModel {}
-    property bool videosAvailable: false
+    property bool videosAvailable: true
 
     property var ownParticipant: participants[0].participant
 
@@ -37,9 +37,7 @@ QtObject {
         }
     ]
 
-    property list<QtObject> participantsWithVideo
-
-    /*: [
+    property list<QtObject> participantsWithVideo: [
         QtObject {
             property var participant: ParticipantModel {
                 name: qsTr("Sarah")
@@ -60,5 +58,5 @@ QtObject {
                 name: qsTr("Christine")
             }
         }
-    ]*/
+    ]
 }

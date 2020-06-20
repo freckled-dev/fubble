@@ -29,3 +29,14 @@ function getRandomColor() {
     }
     return color
 }
+
+function isDemoMode() {
+    for (var i = 0; i < Qt.application.arguments.length; i++) {
+        var argument = Qt.application.arguments[i]
+        if (argument === "-demoMode") {
+            return true
+        }
+    }
+
+    return false
+}

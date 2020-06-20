@@ -114,6 +114,11 @@ Item {
                           ) + " lasting " + Utils.toHHMMSS(duration)
             }
 
+            MouseArea {
+                anchors.fill: parent
+                onClicked: joinRoom(roomName)
+            }
+
             Image {
                 id: deleteHistoryIcon
                 height: 20
@@ -125,24 +130,8 @@ Item {
 
                 MouseArea {
                     id: maDelete
-                    property bool hoverDeleteIcon: false
-
                     anchors.fill: parent
-                    hoverEnabled: true
-
-                    onEntered: hoverDeleteIcon = true
-                    onExited: hoverDeleteIcon = false
-                }
-            }
-
-            MouseArea {
-                anchors.fill: parent
-                onClicked: {
-                    if (!maDelete.hoverDeleteIcon) {
-                        joinRoom(roomName)
-                    } else {
-                        deleteHistory(index)
-                    }
+                    onClicked: deleteHistory(index)
                 }
             }
         }

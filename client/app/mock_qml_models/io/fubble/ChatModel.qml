@@ -19,7 +19,7 @@ QtObject {
         }
         ListElement {
             participantId: "2"
-            name: "Horst"
+            name: "Toni"
             type: "join"
         }
         ListElement {
@@ -32,7 +32,7 @@ QtObject {
         }
         ListElement {
             participantId: "2"
-            name: "Horst"
+            name: "Toni"
             timestamp: 1592567780000
             message: "Hi Sarah, doing great today, thanks 😃 And yourself?"
             type: "message"
@@ -47,7 +47,7 @@ QtObject {
         }
         ListElement {
             participantId: "2"
-            name: "Horst"
+            name: "Toni"
             timestamp: 1592568005000
             message: "Oh wow, that sounds delicious!"
             type: "message"
@@ -83,119 +83,6 @@ QtObject {
             timestamp: 1592568450000
             type: "message"
             message: "Hi all! Sorry for being late 😊"
-        }
-
-        ListElement {
-            participantId: "5"
-            name: "Konrad"
-            timestamp: 1592568450000
-            type: "message"
-            message: "Hi"
-        }
-        ListElement {
-            participantId: "6"
-            name: "Konrad"
-            timestamp: 1592568450000
-            type: "message"
-            message: "Hi"
-        }
-        ListElement {
-            participantId: "7"
-            name: "Konrad"
-            timestamp: 1592568450000
-            type: "message"
-            message: "Hi"
-        }
-        ListElement {
-            participantId: "8"
-            name: "Konrad"
-            timestamp: 1592568450000
-            type: "message"
-            message: "Hi"
-        }
-        ListElement {
-            participantId: "9"
-            name: "Konrad"
-            timestamp: 1592568450000
-            type: "message"
-            message: "Hi"
-        }
-        ListElement {
-            participantId: "10"
-            name: "Konrad"
-            timestamp: 1592568450000
-            type: "message"
-            message: "Hi"
-        }
-        ListElement {
-            participantId: "11"
-            name: "Konrad"
-            timestamp: 1592568450000
-            type: "message"
-            message: "Hi"
-        }
-        ListElement {
-            participantId: "12"
-            name: "Konrad"
-            timestamp: 1592568450000
-            type: "message"
-            message: "Hi"
-        }
-        ListElement {
-            participantId: "13"
-            name: "Konrad"
-            timestamp: 1592568450000
-            type: "message"
-            message: "Hi"
-        }
-        ListElement {
-            participantId: "14"
-            name: "Konrad"
-            timestamp: 1592568450000
-            type: "message"
-            message: "Hi"
-        }
-        ListElement {
-            participantId: "15"
-            name: "Konrad"
-            timestamp: 1592568450000
-            type: "message"
-            message: "Hi"
-        }
-        ListElement {
-            participantId: "16"
-            name: "Konrad"
-            timestamp: 1592568450000
-            type: "message"
-            message: "Hi"
-        }
-        ListElement {
-            participantId: "17"
-            name: "Konrad"
-            timestamp: 1592568450000
-            type: "message"
-            message: "Hi"
-        }
-        ListElement {
-            participantId: "18"
-            name: "Konrad"
-            timestamp: 1592568450000
-            type: "message"
-            message: "Hi"
-        }
-        ListElement {
-            participantId: "19"
-            name: "Konrad"
-            timestamp: 1592568450000
-            type: "message"
-            message: "Hi"
-        }
-        ListElement {
-            participantId: "20"
-            name: "Konrad"
-            timestamp: 1592568450000
-            type: "message"
-            message: "Hi"
         }
     }
 
