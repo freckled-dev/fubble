@@ -4,6 +4,7 @@ import QtQuick.Layouts 1.0
 import QtQuick.Controls 2.2
 import "."
 import io.fubble 1.0
+import "scripts/utils.js" as Utils
 
 Rectangle {
     clip: true
@@ -85,7 +86,13 @@ Rectangle {
         }
     }
 
-    Component.onCompleted: insertAudioLevels()
+    Component.onCompleted: {
+        if (Utils.isDemoMode()) {
+            audioLevels = [40, 60, 80, 85, 80, 75, 75, 68, 72, 59, 80, 99, 117, 44, 36, 116, 48, 70, 77, 78, 112, 112, 108, 80, 59, 67, 45, 6, 4, 3, 0, 0, 0, 0, 10, 15, 18, 21, 30, 83, 60, 91, 17, 43, 125, 53, 50, 14, 94, 22]
+        }
+
+        insertAudioLevels()
+    }
 
     function insertAudioLevels() {
         audioSeries.upperSeries.clear()
