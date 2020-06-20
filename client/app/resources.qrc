@@ -50,10 +50,10 @@
         <file>images/questions_dark.svg</file>
 
         <!-- Demo Mode -->
-        <file>images/Christine.svg</file>
-        <file>images/Konrad.svg</file>
-        <file>images/Sarah.svg</file>
-        <file>images/Toni.svg</file>
+        <file>images/demomode/Christine.jpg</file>
+        <file>images/demomode/Konrad.jpg</file>
+        <file>images/demomode/Sarah.jpg</file>
+        <file>images/demomode/Toni.jpg</file>
         
     </qresource>
 </RCC>
