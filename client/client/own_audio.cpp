@@ -1,0 +1,78 @@
+#include "own_audio.hpp"
+#include "client/audio_level_calculator.hpp"
+#include "rtc/google/audio_source.hpp"
+#include "rtc/google/audio_track.hpp"
+#include "rtc/google/audio_track_sink.hpp"
+#include "rtc/google/connection.hpp"
+#include "rtc/google/factory.hpp"
+
+using namespace client;
+
+namespace {
+void connect_ice_signal(rtc::google::connection &from,
+                        rtc::google::connection &to) {
+  from.on_ice_candidate.connect(
+      [&to](auto candidate) { to.add_ice_candidate(candidate); });
+}
+} // namespace
+
+own_audio::own_audio(rtc::google::factory &rtc_factory,
+                     rtc::google::audio_source &audio_source)
+    : rtc_factory(rtc_factory) {
+  rtc_connection_offering = rtc_factory.create_connection();
+  rtc_connection_answering = rtc_factory.create_connection();
+  connect_ice_signal(*rtc_connection_offering, *rtc_connection_answering);
+  connect_ice_signal(*rtc_connection_answering, *rtc_connection_offering);
+  std::shared_ptr<rtc::google::audio_track> audio_track =
+      rtc_factory.create_audio_track(audio_source);
+  rtc_connection_offering->on_negotiation_needed.connect(
+      [this] { negotiation_needed(); });
+  rtc_connection_answering->on_audio_track.connect(
+      [this](rtc::track_ptr track) {
+        auto audio_track =
+            std::dynamic_pointer_cast<rtc::google::audio_track_sink>(track);
+        audio_track->set_enabled(false);
+        audio_level_calculator_ =
+            std::make_unique<audio_level_calculator>(audio_track->get_source());
+      });
+  rtc_connection_offering->add_track(audio_track);
+}
+
+void own_audio::enable_audio_loopback() {}
+
+void own_audio::negotiation_needed() {
+  auto negotiated =
+      rtc_connection_offering->create_offer()
+          .then(executor,
+                [this](auto offer) {
+                  auto got_offer = offer.get();
+                  rtc_connection_offering->set_local_description(got_offer);
+                  return rtc_connection_answering->set_remote_description(
+                      got_offer);
+                })
+          .unwrap()
+          .then(executor,
+                [this](auto future) {
+                  future.get();
+                  return rtc_connection_answering->create_answer();
+                })
+          .unwrap()
+          .then(executor,
+                [this](auto answer) {
+                  auto got_answer = answer.get();
+                  rtc_connection_answering->set_local_description(got_answer);
+                  return rtc_connection_offering->set_remote_description(
+                      got_answer);
+                })
+          .unwrap();
+  negotiated.then(executor, [this](auto result) {
+    try {
+      result.get();
+      BOOST_LOG_SEV(logger, logging::severity::debug) << "negotiated";
+    } catch (...) {
+      BOOST_LOG_SEV(logger, logging::severity::error) << "negotiation, failed";
+    }
+  });
+}
+
+own_audio::~own_audio() = default;

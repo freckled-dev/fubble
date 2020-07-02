@@ -6,6 +6,7 @@
 #include "client/factory.hpp"
 #include "client/joiner.hpp"
 #include "client/leaver.hpp"
+#include "client/own_audio.hpp"
 #include "client/own_media.hpp"
 #include "client/participant_creator_creator.hpp"
 #include "client/peer_creator.hpp"
@@ -162,6 +163,7 @@ int main(int argc, char *argv[]) {
     tracks_adder.add(*audio_track_adder);
     own_media.set_audio(*audio_device);
   }
+  client::own_audio own_audio{rtc_connection_creator, *audio_device};
   auto &rtc_audio_devices = rtc_connection_creator.get_audio_devices();
 #endif
   client::rooms rooms;
@@ -170,7 +172,7 @@ int main(int argc, char *argv[]) {
   BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up video device";
   rtc::google::capture::video::enumerator enumerator;
   auto devices = enumerator();
-  for (const auto device : devices)
+  for (const auto &device : devices)
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << "capture device, name:" << device.name << ", id:" << device.id;
   if (devices.empty())

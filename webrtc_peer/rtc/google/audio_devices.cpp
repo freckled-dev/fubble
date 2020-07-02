@@ -1,12 +1,48 @@
 #include "audio_devices.hpp"
 #include <audio_device/include/audio_device.h>
+#include <audio_device/include/audio_device_data_observer.h>
 #include <rtc_base/thread.h>
 
 using namespace rtc::google;
 
+#if 0
+namespace {
+struct observer : webrtc::AudioDeviceDataObserver {
+  void OnCaptureData(const void *audio_samples, const size_t num_samples,
+                     const size_t bytes_per_sample, const size_t num_channels,
+                     const uint32_t samples_per_sec) override {
+    BOOST_LOG_SEV(logger, logging::severity::debug) << "OnCaptureData";
+  }
+
+  virtual void OnRenderData(const void *audio_samples, const size_t num_samples,
+                            const size_t bytes_per_sample,
+                            const size_t num_channels,
+                            const uint32_t samples_per_sec) override {
+    BOOST_LOG_SEV(logger, logging::severity::debug) << "OnRenderData";
+  }
+
+  rtc::logger logger{"observer"};
+};
+} // namespace
+#endif
+
 audio_devices::audio_devices(rtc::Thread &thread,
                              webrtc::AudioDeviceModule &audio_device_module)
-    : thread(thread), audio_device_module(audio_device_module) {}
+    : thread(thread), audio_device_module(audio_device_module) {
+#if 0 // does not work, needs correct thread. u know the drill
+  static rtc::scoped_refptr<webrtc::AudioDeviceModule> result;
+  BOOST_ASSERT(!result);
+  result = CreateAudioDeviceWithDataObserver(&audio_device_module,
+                                             std::make_unique<observer>());
+  int return_result{};
+  return_result = result->Init();
+  BOOST_ASSERT(return_result == 0);
+  return_result = result->InitRecording();
+  BOOST_ASSERT(return_result == 0);
+  return_result = result->StartRecording();
+  BOOST_ASSERT(return_result == 0);
+#endif
+}
 
 void audio_devices::enumerate() {
   BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
