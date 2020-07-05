@@ -14,7 +14,7 @@ webrtc_google_peer = library('webrtc_google_peer',
     'audio_track_source.cpp', 'audio_track_sink.cpp',
     'video_track_source.cpp', 'video_track_sink.cpp', 'video_source.cpp',
     'asio_signalling_thread.cpp', 'log_webrtc_to_logging.cpp',
-    'audio_devices.cpp', 'audio_track.cpp',
+    'audio_devices.cpp', 'audio_track.cpp', 'track.cpp'
     ],
   cpp_pch: '../../../pch/precompiled.hpp',
   override_options: ['cpp_std=c++14'],

@@ -12,14 +12,11 @@ public:
       const rtc::scoped_refptr<webrtc::AudioTrackInterface> &track);
   ~audio_track_sink();
 
-  rtc::scoped_refptr<webrtc::MediaStreamTrackInterface>
-  native_track() const override;
   webrtc::AudioTrackInterface &get_native_audio_track() override;
   audio_source &get_source() override;
-  void set_enabled(bool);
 
 protected:
-  const rtc::scoped_refptr<webrtc::AudioTrackInterface> track;
+  const rtc::scoped_refptr<webrtc::AudioTrackInterface> native_track_;
   std::unique_ptr<audio_source> source;
 };
 } // namespace google

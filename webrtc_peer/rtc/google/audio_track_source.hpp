@@ -11,8 +11,6 @@ public:
   audio_track_source(rtc::scoped_refptr<webrtc::AudioTrackInterface>,
                      audio_source &source);
 
-  rtc::scoped_refptr<webrtc::MediaStreamTrackInterface>
-  native_track() const override;
   webrtc::AudioTrackInterface &get_native_audio_track() override;
   audio_source &get_source() override;
 
