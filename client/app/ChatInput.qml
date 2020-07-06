@@ -17,6 +17,7 @@ Rectangle {
 
     TextArea {
         id: inputText
+        persistentSelection: true
         anchors.left: parent.left
         anchors.right: smileyButton.left
         background: null
@@ -34,6 +35,11 @@ Rectangle {
 
         Keys.onReturnPressed: {
             onInputFinished(event)
+        }
+
+        FubbleContextMenu {
+            textInput: inputText
+            anchors.fill: parent
         }
     }
 
