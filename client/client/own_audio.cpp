@@ -16,9 +16,10 @@ void connect_ice_signal(rtc::google::connection &from,
 }
 } // namespace
 
-own_audio::own_audio(rtc::google::factory &rtc_factory,
-                     rtc::google::audio_source &audio_source)
-    : rtc_factory(rtc_factory) {
+own_audio::own_audio(rtc::google::factory &rtc_factory)
+    : rtc_factory(rtc_factory) {}
+
+void own_audio::start(rtc::google::audio_source &audio_source) {
   rtc_connection_offering = rtc_factory.create_connection();
   rtc_connection_answering = rtc_factory.create_connection();
   connect_ice_signal(*rtc_connection_offering, *rtc_connection_answering);
@@ -58,19 +59,13 @@ void own_audio::negotiation_needed() {
                       got_answer);
                 })
           .unwrap();
-  negotiated.then(executor, [this](auto result) {
-    try {
-      result.get();
-      BOOST_LOG_SEV(logger, logging::severity::debug) << "negotiated";
-    } catch (...) {
-      BOOST_LOG_SEV(logger, logging::severity::error) << "negotiation, failed";
-    }
-  });
+  negotiated.then(executor,
+                  [this](auto result) { on_created_connection(result); });
 }
 
 own_audio::~own_audio() = default;
 
-void own_audio::enable_audio_loopback(const bool enable) {
+void own_audio::enable_loopback(const bool enable) {
   if (enable_audio_loopback_ == enable)
     return;
   BOOST_LOG_SEV(logger, logging::severity::debug)
@@ -80,15 +75,25 @@ void own_audio::enable_audio_loopback(const bool enable) {
     return;
   audio_track->set_enabled(false);
 }
-bool own_audio::get_enable_audio_loopback(const bool enable) const {
+bool own_audio::get_enable_loopback(const bool enable) const {
   return enable_audio_loopback_;
 }
+
+rtc::google::audio_track *own_audio::get_track() { return audio_track.get(); }
 
 void own_audio::on_audio_track(rtc::track_ptr track) {
   BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
   track->set_enabled(enable_audio_loopback_);
   BOOST_ASSERT(!audio_track);
   audio_track = std::dynamic_pointer_cast<rtc::google::audio_track_sink>(track);
-  audio_level_calculator_ =
-      std::make_unique<audio_level_calculator>(audio_track->get_source());
+  on_track(*audio_track);
+}
+
+void own_audio::on_created_connection(boost::future<void> &result) {
+  try {
+    result.get();
+    BOOST_LOG_SEV(logger, logging::severity::debug) << "negotiated";
+  } catch (...) {
+    BOOST_LOG_SEV(logger, logging::severity::error) << "negotiation, failed";
+  }
 }

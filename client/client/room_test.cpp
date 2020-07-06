@@ -9,6 +9,7 @@
 #include "matrix/client_factory.hpp"
 #include "matrix/factory.hpp"
 #include "matrix/testing.hpp"
+#include "own_audio.hpp"
 #include "own_media.hpp"
 #include "own_participant.hpp"
 #include "participant_creator_creator.hpp"
@@ -92,7 +93,8 @@ struct test_client {
   // client
   client::rooms rooms;
   client::tracks_adder tracks_adder;
-  client::own_media own_media;
+  client::own_audio own_audio_{rtc_connection_creator};
+  client::own_media own_media{own_audio_};
   client::factory client_factory{context};
   client::participant_creator_creator participant_creator_creator{
       client_factory, peer_creator, tracks_adder, own_media};

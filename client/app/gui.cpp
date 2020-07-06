@@ -142,7 +142,8 @@ int main(int argc, char *argv[]) {
                                     rtc_connection_creator};
   client::tracks_adder tracks_adder;
 
-  client::own_media own_media;
+  client::own_audio own_audio{rtc_connection_creator};
+  client::own_media own_media{own_audio};
 
 #if 1
   // audio
@@ -161,9 +162,9 @@ int main(int argc, char *argv[]) {
     audio_track_adder = std::make_unique<client::add_audio_to_connection>(
         rtc_connection_creator, *audio_device);
     tracks_adder.add(*audio_track_adder);
-    own_media.set_audio(*audio_device);
+    own_audio.start(*audio_device);
   }
-  client::own_audio own_audio{rtc_connection_creator, *audio_device};
+
   auto &rtc_audio_devices = rtc_connection_creator.get_audio_devices();
 #endif
   client::rooms rooms;
