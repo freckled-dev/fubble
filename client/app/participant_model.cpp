@@ -83,7 +83,9 @@ void participant_model::on_deafed_changed(bool deafed_) {
 }
 
 void participant_model::on_sound_level(double level) {
+#if 0
   BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
+#endif
   audio_level = std::min(127, static_cast<int>(level * 127.0));
   audio_level_changed(audio_level);
 }

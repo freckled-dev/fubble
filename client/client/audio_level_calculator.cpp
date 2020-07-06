@@ -52,13 +52,14 @@ void audio_level_calculator::on_data(rtc::google::audio_data &data) {
 #endif
   on_sound_level(averaged);
   calculate_30times_a_second(averaged);
+  calculate_voice_detection(averaged);
 }
 
 void audio_level_calculator::calculate_30times_a_second(double new_level) {
   ++audio_level_counter;
   if (audio_level_counter > audio_level_values_to_collect) {
     audio_level_cache = std::min(1.0, audio_level_cache);
-#if 1
+#if 0
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << "on_sound_level_30times_a_second, level:" << audio_level_cache;
 #endif
@@ -75,7 +76,7 @@ void audio_level_calculator::calculate_voice_detection(double new_level) {
   if (voice_detected_counter > voice_audio_level_values_to_collect) {
     const bool voice_detected_current =
         voice_detected_audio_level_cache > voice_detected_threshold;
-#if 1
+#if 0
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << "voice_detected, voice_detected_current:" << voice_detected_current
         << ", voice_detected_audio_level_cache:"
