@@ -23,22 +23,15 @@ own_audio::own_audio(rtc::google::factory &rtc_factory,
   rtc_connection_answering = rtc_factory.create_connection();
   connect_ice_signal(*rtc_connection_offering, *rtc_connection_answering);
   connect_ice_signal(*rtc_connection_answering, *rtc_connection_offering);
-  std::shared_ptr<rtc::google::audio_track> audio_track =
+  std::shared_ptr<rtc::google::audio_track> sending_audio_track =
       rtc_factory.create_audio_track(audio_source);
+  BOOST_ASSERT(sending_audio_track);
   rtc_connection_offering->on_negotiation_needed.connect(
       [this] { negotiation_needed(); });
   rtc_connection_answering->on_audio_track.connect(
-      [this](rtc::track_ptr track) {
-        auto audio_track =
-            std::dynamic_pointer_cast<rtc::google::audio_track_sink>(track);
-        audio_track->set_enabled(false);
-        audio_level_calculator_ =
-            std::make_unique<audio_level_calculator>(audio_track->get_source());
-      });
-  rtc_connection_offering->add_track(audio_track);
+      [this](rtc::track_ptr track) { on_audio_track(track); });
+  rtc_connection_offering->add_track(sending_audio_track);
 }
-
-void own_audio::enable_audio_loopback() {}
 
 void own_audio::negotiation_needed() {
   auto negotiated =
@@ -76,3 +69,26 @@ void own_audio::negotiation_needed() {
 }
 
 own_audio::~own_audio() = default;
+
+void own_audio::enable_audio_loopback(const bool enable) {
+  if (enable_audio_loopback_ == enable)
+    return;
+  BOOST_LOG_SEV(logger, logging::severity::debug)
+      << __FUNCTION__ << ", enable:" << enable;
+  enable_audio_loopback_ = enable;
+  if (!audio_track)
+    return;
+  audio_track->set_enabled(false);
+}
+bool own_audio::get_enable_audio_loopback(const bool enable) const {
+  return enable_audio_loopback_;
+}
+
+void own_audio::on_audio_track(rtc::track_ptr track) {
+  BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
+  track->set_enabled(enable_audio_loopback_);
+  BOOST_ASSERT(!audio_track);
+  audio_track = std::dynamic_pointer_cast<rtc::google::audio_track_sink>(track);
+  audio_level_calculator_ =
+      std::make_unique<audio_level_calculator>(audio_track->get_source());
+}
