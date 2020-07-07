@@ -1,15 +1,19 @@
 #include "participant_model.hpp"
-#include "client/audio_level_calculator.hpp"
 #include "client/audio_settings.hpp"
+#include "client/own_audio_information.hpp"
+#include "client/own_participant.hpp"
 #include "client/participant.hpp"
 
 using namespace client;
 
 participant_model::participant_model(participant &participant_,
                                      audio_settings &audio_settings_,
+                                     own_audio_information &audio_information_,
                                      QObject *parent)
     : QObject(parent), participant_(participant_),
-      audio_settings_(audio_settings_), id(participant_.get_id()) {
+      audio_settings_(audio_settings_), audio_information_(audio_information_),
+      id(participant_.get_id()) {
+  own = dynamic_cast<own_participant *>(&participant_) != nullptr;
   set_name();
   participant_.on_name_changed.connect([this](auto) { set_name(); });
   // TODO support video removal
@@ -22,14 +26,21 @@ participant_model::participant_model(participant &participant_,
     BOOST_ASSERT(video);
     video_added(*video);
   }
-  participant_.on_audio_added.connect(
-      [this](auto &source) { audio_added(source); });
-  auto audios = participant_.get_audios();
-  for (auto audio : audios) {
-    BOOST_ASSERT(audio);
-    audio_added(*audio);
+  if (own) {
+    audio_information_.on_sound_level_30times_a_second.connect(
+        [this](auto level) { on_sound_level(level); });
+    audio_information_.on_voice_detected.connect(
+        [this](auto detected) { on_voice_detected(detected); });
+  } else {
+    // TODO support audio removal!
+    participant_.on_audio_added.connect(
+        [this](auto &source) { audio_added(source); });
+    auto audios = participant_.get_audios();
+    for (auto audio : audios) {
+      BOOST_ASSERT(audio);
+      audio_added(*audio);
+    }
   }
-  // TODO support audio removal!
   connect(this, &participant_model::muted_changed, this,
           &participant_model::on_muted_changed);
   connect(this, &participant_model::deafed_changed, this,

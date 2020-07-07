@@ -11,7 +11,9 @@ namespace client {
 class participant;
 class audio_settings;
 class audio_level_calculator;
+class own_audio_information;
 
+// TODO derive class to `own_participant_model` and `remote_participant_model`
 class participant_model : public QObject {
   Q_OBJECT
   Q_PROPERTY(QString name MEMBER name NOTIFY name_changed)
@@ -38,7 +40,7 @@ class participant_model : public QObject {
 
 public:
   participant_model(participant &participant_, audio_settings &audio_settings_,
-                    QObject *parent);
+                    own_audio_information &audio_information_, QObject *parent);
   ~participant_model();
 
   std::string get_id() const;
@@ -69,6 +71,7 @@ protected:
   mutable client::logger logger{"participant_model"};
   participant &participant_;
   audio_settings &audio_settings_;
+  own_audio_information &audio_information_;
   std::unique_ptr<audio_level_calculator> audio_level_calculator_;
   const std::string id;
   QString name;
