@@ -18,7 +18,7 @@ class participant_model : public QObject {
   Q_OBJECT
   Q_PROPERTY(QString identifier MEMBER identifier CONSTANT);
   Q_PROPERTY(QString name MEMBER name NOTIFY name_changed)
-  Q_PROPERTY(bool own MEMBER own NOTIFY own_changed)
+  Q_PROPERTY(bool own MEMBER own CONSTANT)
   // self muted
   Q_PROPERTY(bool muted MEMBER muted NOTIFY muted_changed)
   // all others muted
@@ -75,9 +75,9 @@ protected:
   own_audio_information &audio_information_;
   std::unique_ptr<audio_level_calculator> audio_level_calculator_;
   const std::string id;
-  const QString identifier;
+  const QString identifier{QString::fromStdString(id)};
   QString name;
-  bool own{};
+  const bool own{};
   bool muted{};
   bool deafed{};
   bool silenced{};
