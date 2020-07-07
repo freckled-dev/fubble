@@ -1,4 +1,5 @@
 #include "participant_model.hpp"
+#include "client/audio_level_calculator.hpp"
 #include "client/audio_settings.hpp"
 #include "client/own_audio_information.hpp"
 #include "client/own_participant.hpp"
