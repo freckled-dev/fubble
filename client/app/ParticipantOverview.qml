@@ -101,6 +101,7 @@ Item {
                 anchors.left: parent.left
                 anchors.right: parent.right
                 height: 70
+                visible: !model.participant.own
 
                 Label {
                     id: volumeHeader
