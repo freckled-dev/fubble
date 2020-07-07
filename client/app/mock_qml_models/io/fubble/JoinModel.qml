@@ -4,15 +4,13 @@ import QtMultimedia 5.0
 QtObject {
     id: container
 
-    property MediaPlayer video
-
-    /*: MediaPlayer {
+    property MediaPlayer video: MediaPlayer {
         source: "/home/tamrielle/Downloads/Sintel_webm_extract.webm"
         autoPlay: true
-    }*/
+    }
     property bool videoAvailable: video != null
 
-    signal joined(RoomModel room)
+    signal joined(QtObject room)
     signal join_failed
 
     function join(roomName, nickName) {

@@ -3,12 +3,14 @@ import Qt.labs.settings 1.0
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 import QtMultimedia 5.0
+import "scripts/utils.js" as Utils
 
 Item {
     id: element
 
     property alias settings: settings
     property bool isActive: false
+    property bool demoMode: Utils.isDemoMode()
 
     Settings {
         id: settings
@@ -122,6 +124,10 @@ Item {
                 anchors.fill: parent
 
                 sourceComponent: {
+                    if (demoMode) {
+                        return demoPreviewComponent
+                    }
+
                     if (audioVideoModel.videoPreview) {
                         return videoPreviewComponent
                     }
@@ -144,9 +150,17 @@ Item {
                 VideoOutput {
                     id: videoPreview
                     anchors.fill: parent
-                    visible: audioVideoModel.videoPreview !== null
                     source: audioVideoModel.videoPreview
                     fillMode: VideoOutput.PreserveAspectCrop
+                }
+            }
+
+            Component {
+                id: demoPreviewComponent
+
+                Image {
+                    source: Style.current.demoImagesPath + "Sarah.jpg"
+                    fillMode: Image.PreserveAspectCrop
                 }
             }
         }

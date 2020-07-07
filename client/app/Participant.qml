@@ -6,9 +6,12 @@ import io.fubble 1.0
 import QtQuick.Controls.Material 2.0
 import QtGraphicalEffects 1.0
 import "."
+import "scripts/utils.js" as Utils
 
 Rectangle {
     property ParticipantModel participant
+    property bool demoMode: false
+
     property double aspect: {
         var width = video.sourceRect.width
         var height = video.sourceRect.height
@@ -20,56 +23,42 @@ Rectangle {
         id: video
         anchors.fill: parent
         source: participant.video
-        visible: participant.video !== null
+        visible: participant.video !== null && !demoMode
         fillMode: VideoOutput.Stretch
 
         MouseArea {
             anchors.fill: parent
             hoverEnabled: true
-            onEntered: {
-                participant.highlighted = Qt.binding(function () {
-                    return true
-                })
-            }
-            onExited: {
-                participant.highlighted = Qt.binding(function () {
-                    return false
-                })
-            }
+            onEntered: highlightParticipant(true)
+            onExited: highlightParticipant(false)
         }
 
-        Rectangle {
-            id: overlay
-            color: Style.current.gray300Transparent
-            anchors.left: parent.left
-            anchors.right: parent.right
-            visible: participant.highlighted
-            implicitHeight: nameLabel.height
-            anchors.bottom: video.bottom
-
-            Label {
-                id: nameLabel
-                text: participant.name
-                padding: 10
-                anchors.horizontalCenter: parent.horizontalCenter
-            }
-        }
-
-        Rectangle {
-            id: overlayBorder
-            border.color: model.participant.voiceDetected ? Style.current.primary : Style.current.foreground
-            color: Style.current.transparent
-            radius: 2
-            border.width: 1
-            anchors.fill: parent
-            visible: participant.highlighted || model.participant.voiceDetected
+        ParticipantOverlay {
+            overlayParticipant: participant
         }
     }
-}
 
-/*##^##
-Designer {
-    D{i:0;autoSize:true;height:480;width:640}
-}
-##^##*/
+    Image {
+        visible: demoMode
+        anchors.fill: parent
+        source: Style.current.demoImagesPath + participant.name + ".jpg"
+        fillMode: Image.PreserveAspectCrop
 
+        MouseArea {
+            anchors.fill: parent
+            hoverEnabled: true
+            onEntered: highlightParticipant(true)
+            onExited: highlightParticipant(false)
+        }
+
+        ParticipantOverlay {
+            overlayParticipant: participant
+        }
+    }
+
+    function highlightParticipant(highlight) {
+        participant.highlighted = Qt.binding(function () {
+            return highlight
+        })
+    }
+}

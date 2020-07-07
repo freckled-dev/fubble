@@ -90,6 +90,7 @@ Item {
             border.color: model.participant.highlighted
                           || maHeader.containsMouse ? Style.current.gray300 : Style.current.gray100
             Layout.fillWidth: true
+            color: Style.current.transparent
             visible: false
             radius: 5
             implicitHeight: audioChart.height + moreDetails.height

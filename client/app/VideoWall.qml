@@ -6,12 +6,14 @@ import QtQuick.Window 2.0
 import io.fubble 1.0
 import QtQuick.Controls.Material 2.0
 import "."
+import "scripts/utils.js" as Utils
 
 Rectangle {
     id: videoWallContainer
     property RoomModel roomModel
     color: Style.current.background
     visible: roomModel.videosAvailable
+    property bool demoMode: Utils.isDemoMode()
 
     VideoLayout {
         id: participantGrid
@@ -30,6 +32,7 @@ Rectangle {
                 Layout.fillHeight: true
                 Layout.fillWidth: true
                 participant: model.participant
+                demoMode: videoWallContainer.demoMode
             }
         }
     }

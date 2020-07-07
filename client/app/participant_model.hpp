@@ -16,6 +16,7 @@ class own_audio_information;
 // TODO derive class to `own_participant_model` and `remote_participant_model`
 class participant_model : public QObject {
   Q_OBJECT
+  Q_PROPERTY(QString identifier MEMBER identifier CONSTANT);
   Q_PROPERTY(QString name MEMBER name NOTIFY name_changed)
   Q_PROPERTY(bool own MEMBER own NOTIFY own_changed)
   // self muted
@@ -74,6 +75,7 @@ protected:
   own_audio_information &audio_information_;
   std::unique_ptr<audio_level_calculator> audio_level_calculator_;
   const std::string id;
+  const QString identifier;
   QString name;
   bool own{};
   bool muted{};

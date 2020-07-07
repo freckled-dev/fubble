@@ -9,55 +9,80 @@ QtObject {
         console.log("resetNewMessages")
     }
 
+    // message, join, leave, kick
     property var messages: ListModel {
         ListElement {
-            name: "Tamrielle"
+            participantId: "1"
             own: true
-            timestamp: 1588754962085
-            message: "Hello World! How are you?"
-
-            // message, join, leave, kick
-            type: "message"
-        }
-        ListElement {
-            name: "Horst"
-            timestamp: 1588754962085
-            message: "Very good, thank you. And yourself?"
-
-            // message, join, leave, kick
-            type: "message"
-        }
-        ListElement {
-            name: "Horst"
-            timestamp: 1588754962085
-            message: "https://www.google.at/"
-
-            // message, join, leave, kick
-            type: "message"
-        }
-        ListElement {
-            name: "Tamrielle"
-            own: true
-            timestamp: 1588754962085
-            message: "Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. "
-
-            // message, join, leave, kick
-            type: "message"
-        }
-        ListElement {
-            name: "Tamrielle"
-            timestamp: 1588754962085
-
-            // message, join, leave, kick
-            type: "leave"
-        }
-
-        ListElement {
-            name: "Hugo"
-            timestamp: 1588754962085
-
-            // message, join, leave, kick
+            name: "Sarah"
             type: "join"
+        }
+        ListElement {
+            participantId: "2"
+            name: "Toni"
+            type: "join"
+        }
+        ListElement {
+            participantId: "1"
+            name: "Sarah"
+            own: true
+            timestamp: 1592567700000
+            message: "Hello Guys! How are you today?"
+            type: "message"
+        }
+        ListElement {
+            participantId: "2"
+            name: "Toni"
+            timestamp: 1592567780000
+            message: "Hi Sarah, doing great today, thanks 😃 And yourself?"
+            type: "message"
+        }
+        ListElement {
+            participantId: "1"
+            name: "Sarah"
+            timestamp: 1592567935000
+            own: true
+            message: "Had a lovely morning. I treated myself to cinnamon rolls and a matcha latte 🍵"
+            type: "message"
+        }
+        ListElement {
+            participantId: "2"
+            name: "Toni"
+            timestamp: 1592568005000
+            message: "Oh wow, that sounds delicious!"
+            type: "message"
+        }
+        ListElement {
+            participantId: "3"
+            name: "Christine"
+            type: "join"
+        }
+        ListElement {
+            participantId: "3"
+            name: "Christine"
+            timestamp: 1592568030000
+            type: "message"
+            message: "Hi everyone"
+        }
+        ListElement {
+            participantId: "1"
+            name: "Sarah"
+            timestamp: 1592568030000
+            own: true
+            type: "message"
+            message: "Hey Chrissie!"
+        }
+        ListElement {
+            participantId: "4"
+            name: "Konrad"
+            type: "join"
+        }
+        ListElement {
+            participantId: "4"
+            name: "Konrad"
+            timestamp: 1592568450000
+            type: "message"
+            message: "Hi all! Sorry for being late 😊"
         }
     }
 
