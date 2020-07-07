@@ -174,7 +174,7 @@ int main(int argc, char *argv[]) {
   // video
   BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up video device";
   rtc::google::capture::video::enumerator enumerator;
-  auto devices = enumerator();
+  auto devices = enumerator.enumerate();
   for (const auto &device : devices)
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << "capture device, name:" << device.name << ", id:" << device.id;
@@ -187,7 +187,7 @@ int main(int argc, char *argv[]) {
   for (const auto &current_device : devices) {
     try {
       std::shared_ptr<rtc::google::capture::video::device>
-          capture_device_check = device_creator(current_device.id);
+          capture_device_check = device_creator.create(current_device.id);
       capture_device_check->start();
       capture_device = capture_device_check;
       break;
@@ -314,7 +314,8 @@ int main(int argc, char *argv[]) {
   client::share_desktop_model share_desktop_model{};
   client::leave_model leave_model{leaver};
   client::own_media_model own_media_model{own_media, own_audio_information_};
-  client::audio_video_settings_model audio_video_settings_model{};
+  client::audio_video_settings_model audio_video_settings_model{
+      rtc_audio_devices, enumerator};
   //  works from 5.14 onwards
   // engine.setInitialProperties(...)
   //  setContextProperty sets it globaly not as property of the window

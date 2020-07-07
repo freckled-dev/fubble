@@ -9,11 +9,12 @@ namespace google {
 namespace capture {
 namespace video {
 
+// TODO refactor to devices and add signal for device_added/removed
 class enumerator {
 public:
   enumerator();
 
-  std::vector<information> operator()();
+  std::vector<information> enumerate();
 
 private:
   class logger logger {

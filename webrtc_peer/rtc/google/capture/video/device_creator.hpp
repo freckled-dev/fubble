@@ -13,7 +13,7 @@ class device_creator {
 public:
   device_creator();
 
-  std::unique_ptr<device> operator()(const std::string &id);
+  std::unique_ptr<device> create(const std::string &id);
 };
 } // namespace video
 } // namespace capture

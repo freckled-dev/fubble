@@ -18,6 +18,8 @@ public:
   audio_devices(rtc::Thread &thread,
                 webrtc::AudioDeviceModule &audio_device_module);
 
+  // enumerate will not work unless the AudioDeviceModule got initialsed before
+  // so do a track with yourself before enumerating
   void enumerate();
   struct device {
     int index{};

@@ -5,7 +5,7 @@ using namespace rtc::google::capture::video;
 
 enumerator::enumerator() = default;
 
-std::vector<information> enumerator::operator()() {
+std::vector<information> enumerator::enumerate() {
   std::vector<information> result;
   std::unique_ptr<webrtc::VideoCaptureModule::DeviceInfo> info(
       webrtc::VideoCaptureFactory::CreateDeviceInfo());

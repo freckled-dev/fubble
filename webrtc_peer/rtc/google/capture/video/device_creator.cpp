@@ -14,7 +14,7 @@ using device_id_info = boost::error_info<struct device_id_tag, std::string>;
 
 device_creator::device_creator() = default;
 
-std::unique_ptr<device> device_creator::operator()(const std::string &id) {
+std::unique_ptr<device> device_creator::create(const std::string &id) {
   auto native_device = webrtc::VideoCaptureFactory::Create(id.c_str());
   if (!native_device)
     BOOST_THROW_EXCEPTION(could_not_instance_device() << device_id_info(id));
