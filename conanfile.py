@@ -70,7 +70,7 @@ class FubbleConan(ConanFile):
         build_type = self.settings.get_safe("build_type", default="Release")
         if build_type == 'Debug' and self.settings.os == 'Linux':
             # meson_options['b_sanitize'] = 'address,undefined'
-            pass
+            meson_options['b_lto'] = 'false'
         meson_options['b_pch'] = 'false'
         # meson_options['b_vscrt'] = 'mtd'
 

@@ -10,12 +10,10 @@ class video_track : public track {
 public:
   video_track(const rtc::scoped_refptr<webrtc::VideoTrackInterface> &track);
   ~video_track();
+  webrtc::AudioTrackInterface &get_native_audio_track();
 
 protected:
-  rtc::scoped_refptr<webrtc::MediaStreamTrackInterface>
-  native_track() const override;
-
-  const rtc::scoped_refptr<webrtc::VideoTrackInterface> track;
+  const rtc::scoped_refptr<webrtc::VideoTrackInterface> native_track_;
 };
 } // namespace google
 } // namespace rtc

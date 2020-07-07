@@ -4,12 +4,7 @@
 using namespace rtc::google;
 
 video_track::video_track(
-    const rtc::scoped_refptr<webrtc::VideoTrackInterface> &track)
-    : track(track) {}
+    const rtc::scoped_refptr<webrtc::VideoTrackInterface> &track_)
+    : track(track_), native_track_(track_) {}
 
 video_track::~video_track() {}
-
-rtc::scoped_refptr<webrtc::MediaStreamTrackInterface>
-video_track::native_track() const {
-  return track;
-}

@@ -2,6 +2,7 @@
 #define UUID_912B7A62_19DE_45A9_B92E_0FC0046CE8C5
 
 #include "client/logger.hpp"
+#include "rtc/google/audio_source_ptr.hpp"
 #include "rtc/google/video_source_ptr.hpp"
 #include "ui/frame_provider_google_video_frame.hpp"
 #include <QObject>
@@ -9,12 +10,15 @@
 namespace client {
 class participant;
 class audio_settings;
+class audio_level_calculator;
+class own_audio_information;
 
+// TODO derive class to `own_participant_model` and `remote_participant_model`
 class participant_model : public QObject {
   Q_OBJECT
   Q_PROPERTY(QString identifier MEMBER identifier CONSTANT);
   Q_PROPERTY(QString name MEMBER name NOTIFY name_changed)
-  Q_PROPERTY(bool own MEMBER own NOTIFY own_changed)
+  Q_PROPERTY(bool own MEMBER own CONSTANT)
   // self muted
   Q_PROPERTY(bool muted MEMBER muted NOTIFY muted_changed)
   // all others muted
@@ -37,7 +41,8 @@ class participant_model : public QObject {
 
 public:
   participant_model(participant &participant_, audio_settings &audio_settings_,
-                    QObject *parent);
+                    own_audio_information &audio_information_, QObject *parent);
+  ~participant_model();
 
   std::string get_id() const;
   ui::frame_provider_google_video_source *get_video() const;
@@ -58,17 +63,21 @@ signals:
 protected:
   void set_name();
   void video_added(rtc::google::video_source &);
+  void audio_added(rtc::google::audio_source &);
   void on_muted_changed(bool muted_);
   void on_deafed_changed(bool muted_);
   void on_sound_level(double level);
+  void on_voice_detected(bool detected);
 
   mutable client::logger logger{"participant_model"};
   participant &participant_;
   audio_settings &audio_settings_;
+  own_audio_information &audio_information_;
+  std::unique_ptr<audio_level_calculator> audio_level_calculator_;
   const std::string id;
-  const QString identifier;
+  const QString identifier{QString::fromStdString(id)};
   QString name;
-  bool own{};
+  const bool own{};
   bool muted{};
   bool deafed{};
   bool silenced{};
@@ -78,15 +87,6 @@ protected:
   ui::frame_provider_google_video_source *video{};
   bool voice_detected{};
   int audio_level{};
-
-  static constexpr int audio_level_values_to_collect{100 / 30};
-  double audio_level_cache{};
-  int audio_level_counter{};
-
-  static constexpr int voice_audio_level_values_to_collect{100 / 30};
-  static constexpr double voice_detected_threshold{0.1};
-  double voice_detected_audio_level_cache{};
-  int voice_detected_counter{};
 };
 
 } // namespace client

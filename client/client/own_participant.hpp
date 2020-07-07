@@ -13,6 +13,7 @@ public:
 
 protected:
   videos_type get_videos() const override;
+  audios_type get_audios() const override;
 
   own_media &own_media_;
 };

@@ -5,6 +5,7 @@ namespace rtc {
 class track {
 public:
   virtual ~track() = default;
+  virtual void set_enabled(bool) = 0;
 };
 } // namespace rtc
 

@@ -6,8 +6,10 @@
 
 using namespace client;
 
-model_creator::model_creator(audio_settings &audio_settings_)
-    : audio_settings_(audio_settings_) {}
+model_creator::model_creator(audio_settings &audio_settings_,
+                             own_audio_information &audio_information_)
+    : audio_settings_(audio_settings_), audio_information_(audio_information_) {
+}
 
 room_model *model_creator::create_room_model(const std::shared_ptr<room> &room_,
                                              QObject *parent) {
@@ -22,5 +24,6 @@ participants_model *model_creator::create_participants_model(room &room_,
 participant_model *
 model_creator::create_participant_model(participant &participant_,
                                         QObject *parent) {
-  return new participant_model(participant_, audio_settings_, parent);
+  return new participant_model(participant_, audio_settings_,
+                               audio_information_, parent);
 }

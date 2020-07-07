@@ -7,7 +7,6 @@
 
 namespace rtc::google {
 class audio_track_sink;
-class audio_source_stats_collector;
 } // namespace rtc::google
 
 namespace client {
@@ -25,16 +24,17 @@ public:
 
 protected:
   videos_type get_videos() const override;
+  audios_type get_audios() const override;
   void on_track(rtc::track_ptr track);
+  void on_video_track(rtc::google::video_source_ptr video_track);
   void
   on_audio_track(std::shared_ptr<rtc::google::audio_track_sink> audio_track);
-  void on_video_track(rtc::google::video_source_ptr video_track);
 
   client::logger logger{"remote_participant"};
   factory &factory_;
-  std::unique_ptr<rtc::google::audio_source_stats_collector> audio_information;
   std::unique_ptr<peer> peer_;
   videos_type videos;
+  audios_type audios;
 };
 } // namespace client
 

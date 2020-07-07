@@ -1,5 +1,6 @@
 #include "audio_devices.hpp"
 #include <audio_device/include/audio_device.h>
+#include <audio_device/include/audio_device_data_observer.h>
 #include <rtc_base/thread.h>
 
 using namespace rtc::google;

@@ -13,6 +13,7 @@ namespace google {
 class audio_source;
 class audio_track : public track {
 public:
+  audio_track(const rtc::scoped_refptr<webrtc::AudioTrackInterface> &track);
   virtual webrtc::AudioTrackInterface &get_native_audio_track() = 0;
   virtual audio_source &get_source() = 0;
 

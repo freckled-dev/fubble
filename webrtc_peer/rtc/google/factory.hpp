@@ -11,13 +11,13 @@
 #endif
 
 namespace rtc {
-class connection;
 namespace google {
 class video_source;
 class video_track;
 class audio_source;
 class audio_track;
 class audio_devices;
+class connection;
 struct settings {
   bool use_ip_v6{true};
 #if BOOST_OS_WINDOWS

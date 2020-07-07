@@ -4,7 +4,6 @@ project('fubble', 'cpp',
   default_options : ['cpp_std=c++17'])
 # there is a bug in meson 0.52.0. cant use boost with meson
 # https://github.com/mesonbuild/meson/issues/6003
-# TODO currently in >=0.54 boost doesn't work either
 
 disabled = disabler()
 if get_option('with_servers')

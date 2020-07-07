@@ -38,7 +38,7 @@ factory::~factory() {
                               [this] { audio_device_module = nullptr; });
 }
 
-std::unique_ptr<rtc::connection> factory::create_connection() {
+std::unique_ptr<connection> factory::create_connection() {
   webrtc::PeerConnectionInterface::RTCConfiguration configuration;
   configuration.sdp_semantics = webrtc::SdpSemantics::kUnifiedPlan;
   if (!settings_.use_ip_v6) {
@@ -82,7 +82,8 @@ std::unique_ptr<audio_track> factory::create_audio_track(audio_source &source) {
   webrtc::AudioSourceInterface &native_source = source.get_native();
   rtc::scoped_refptr<webrtc::AudioTrackInterface> native =
       factory_->CreateAudioTrack(label, &native_source);
-  return std::make_unique<audio_track_source>(native);
+  BOOST_ASSERT(native->GetSource() == &native_source);
+  return std::make_unique<audio_track_source>(native, source);
 }
 
 rtc::Thread &factory::get_signaling_thread() const { return *signaling_thread; }

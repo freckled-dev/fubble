@@ -8,9 +8,15 @@ namespace rtc {
 namespace google {
 class track : public rtc::track {
 public:
+  track(rtc::scoped_refptr<webrtc::MediaStreamTrackInterface> native_track);
+
   // TODO remove scoped_refptr?
-  virtual rtc::scoped_refptr<webrtc::MediaStreamTrackInterface>
-  native_track() const = 0;
+  rtc::scoped_refptr<webrtc::MediaStreamTrackInterface> native_track() const;
+
+  void set_enabled(bool) override;
+
+protected:
+  rtc::scoped_refptr<webrtc::MediaStreamTrackInterface> native_track_;
 };
 } // namespace google
 } // namespace rtc
