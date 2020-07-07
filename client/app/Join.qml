@@ -243,35 +243,6 @@ FocusScope {
         }
     }
 
-    Image {
-        id: questionImage
-        sourceSize.height: 35
-        sourceSize.width: 40
-        height: 35
-        anchors.rightMargin: 10
-        anchors.topMargin: 10
-        anchors.top: parent.top
-        anchors.right: historyUi.visible ? historyUi.left : parent.right
-        source: Style.current.questionImage
-
-        FubbleToolTip {
-            visible: maQuestions.containsMouse
-            width: 250
-            text: qsTr("Feedback? Questions? Problems?\nFeel free to contact us anytime!")
-        }
-
-        MouseArea {
-            id: maQuestions
-            hoverEnabled: true
-            anchors.fill: parent
-            onClicked: openFeedbackForm()
-        }
-    }
-
-    function openFeedbackForm() {
-        Qt.openUrlExternally("https://freckled.dev/contact/")
-    }
-
     CustomRectangle {
         id: historyUi
         anchors.right: parent.right
