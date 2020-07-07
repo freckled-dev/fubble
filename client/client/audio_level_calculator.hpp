@@ -26,6 +26,7 @@ protected:
   void calculate_voice_detection(double new_level);
 
   client::logger logger{"audio_level_calculator"};
+  boost::signals2::scoped_connection on_data_connection;
 
   static constexpr int audio_level_values_to_collect{100 / 10};
   double audio_level_cache{};

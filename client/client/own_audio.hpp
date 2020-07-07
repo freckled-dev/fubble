@@ -13,13 +13,9 @@ class connection;
 class audio_source;
 class audio_track;
 class audio_track_sink;
-namespace capture::audio {
-class device;
-}
 } // namespace rtc::google
 
 namespace client {
-class audio_level_calculator;
 class own_audio {
 public:
   own_audio(rtc::google::factory &rtc_factory);

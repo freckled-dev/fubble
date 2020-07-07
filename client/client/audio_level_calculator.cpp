@@ -20,7 +20,8 @@ double average(const number_type *data, std::size_t count) {
 
 audio_level_calculator::audio_level_calculator(
     rtc::google::audio_source &audio_source) {
-  audio_source.on_data.connect([this](auto data) { on_data(data); });
+  on_data_connection =
+      audio_source.on_data.connect([this](auto data) { on_data(data); });
 }
 
 void audio_level_calculator::on_data(rtc::google::audio_data &data) {

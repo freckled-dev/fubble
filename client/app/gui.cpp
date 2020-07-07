@@ -7,6 +7,7 @@
 #include "client/joiner.hpp"
 #include "client/leaver.hpp"
 #include "client/own_audio.hpp"
+#include "client/own_audio_information.hpp"
 #include "client/own_media.hpp"
 #include "client/participant_creator_creator.hpp"
 #include "client/peer_creator.hpp"
@@ -144,6 +145,7 @@ int main(int argc, char *argv[]) {
 
   client::own_audio own_audio{rtc_connection_creator};
   client::own_media own_media{own_audio};
+  client::own_audio_information own_audio_information_{own_audio};
 
 #if 1
   // audio
@@ -305,13 +307,13 @@ int main(int argc, char *argv[]) {
 
   QQmlApplicationEngine engine;
   client::audio_settings audio_settings{rtc_audio_devices};
-  client::model_creator model_creator{audio_settings};
+  client::model_creator model_creator{audio_settings, own_audio_information_};
   client::error_model error_model;
   client::utils_model utils_model;
   client::join_model join_model{model_creator, error_model, joiner, own_media};
   client::share_desktop_model share_desktop_model{};
   client::leave_model leave_model{leaver};
-  client::own_media_model own_media_model{};
+  client::own_media_model own_media_model{own_media, own_audio_information_};
   client::audio_video_settings_model audio_video_settings_model{};
   //  works from 5.14 onwards
   // engine.setInitialProperties(...)
