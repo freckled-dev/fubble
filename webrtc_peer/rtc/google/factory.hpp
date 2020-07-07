@@ -10,7 +10,8 @@
 #include <modules/audio_device/win/core_audio_utility_win.h>
 #endif
 
-namespace rtc::google {
+namespace rtc {
+namespace google {
 class video_source;
 class video_track;
 class audio_source;
@@ -71,6 +72,7 @@ private:
   rtc::scoped_refptr<webrtc::PeerConnectionFactoryInterface> factory_;
   std::unique_ptr<audio_devices> audio_devices_;
 };
-} // namespace rtc::google
+} // namespace google
+} // namespace rtc
 
 #endif
