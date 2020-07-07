@@ -33,7 +33,7 @@ build ubuntu_18.04 release:
 appimage:
   image: registry.gitlab.com/acof/fubble/ci/build_ubuntu_1804:v0
   stage: package
-  dependencies:
+  needs:
     - build ubuntu_18.04 release
   variables:
     FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install
@@ -65,7 +65,7 @@ innosetup:
   stage: package
   tags:
     - windows
-  dependencies:
+  needs:
     - build windows updater release
   script:
     - choco install -y --no-progress python innosetup
@@ -113,7 +113,7 @@ deploy services:
   variables:
     ANSIBLE_HOST_KEY_CHECKING: "False"
   when: manual
-  dependencies:
+  needs:
     - build ubuntu_18.04 release
     - appimage
     - build windows release
