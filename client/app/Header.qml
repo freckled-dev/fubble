@@ -241,6 +241,12 @@ ToolBar {
         }
     }
 
+    Feedback {
+        visible: !header.isRoomView()
+        anchors.right: moreButton.left
+        anchors.verticalCenter: parent.verticalCenter
+    }
+
     ToolButton {
         id: moreButton
         anchors.right: parent.right

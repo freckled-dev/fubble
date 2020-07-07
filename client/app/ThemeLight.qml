@@ -43,7 +43,7 @@ Theme {
     property var shareDesktopImage: "images/overlay_share_desktop.svg"
 
     property var settingsImage: "images/overlay_settings.svg"
-    property var questionImage: "images/questions.svg"
+    property var feedbackImage: "images/feedback.svg"
 
     // Chat Images
     property var chatImage: "images/chat.svg"

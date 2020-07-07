@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="Capa_1"
+   enable-background="new 0 0 512 512"
+   height="512"
+   viewBox="0 0 512 512"
+   width="512"
+   version="1.1"
+   sodipodi:docname="feedback_dark.svg"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)">
+  <metadata
+     id="metadata15">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs13" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1140"
+     id="namedview11"
+     showgrid="false"
+     inkscape:zoom="0.4609375"
+     inkscape:cx="-378.57627"
+     inkscape:cy="256"
+     inkscape:window-x="1920"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g8" />
+  <g
+     id="g8">
+    <path
+       d="m467 80h-44.992v-49.996c0-16.571-13.433-30.004-30.004-30.004-16.571 0-30.004 13.433-30.004 30.004v28.067c0 15.461-9.929 28.905-24.707 33.452l-25.293 7.783v155.694c0 .397-.02.789-.03 1.183 8.847 8.847 20.846 13.817 33.357 13.817h121.673c24.853 0 45-20.147 45-45v-100c0-24.853-20.147-45-45-45z"
+       id="path2"
+       style="fill:#0b0b0b;fill-opacity:1" />
+    <path
+       d="m267 270h-30c-8.284 0-15-6.716-15-15v-160c0-8.284 6.716-15 15-15h30c8.284 0 15 6.716 15 15v160c0 8.284-6.716 15-15 15z"
+       id="path4"
+       style="fill:#0b0b0b;fill-opacity:1" />
+    <path
+       d="m345.327 300c-16.453 0-32.112-5.128-45.178-14.605-8.232 8.97-20.043 14.605-33.149 14.605h-30c-24.853 0-45-20.147-45-45v-78h-177c-8.284 0-15 6.716-15 15v304.533c0 5.277 2.536 10.346 7.002 13.157 2.455 1.546 5.23 2.31 7.997 2.31 2.91 0 5.812-.846 8.321-2.519l56.222-37.481h315.458c8.284 0 15-6.716 15-15v-157zm-270.327-48h85c8.284 0 15 6.716 15 15s-6.716 15-15 15h-85c-8.284 0-15-6.716-15-15s6.716-15 15-15zm260 165h-260c-8.284 0-15-6.716-15-15s6.716-15 15-15h260c8.284 0 15 6.716 15 15s-6.716 15-15 15zm0-67.5h-260c-8.284 0-15-6.716-15-15s6.716-15 15-15h260c8.284 0 15 6.716 15 15s-6.716 15-15 15z"
+       id="path6"
+       style="fill:#0b0b0b;fill-opacity:1" />
+  </g>
+</svg>
