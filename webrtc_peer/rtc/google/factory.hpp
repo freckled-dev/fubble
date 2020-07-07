@@ -10,14 +10,13 @@
 #include <modules/audio_device/win/core_audio_utility_win.h>
 #endif
 
-namespace rtc {
-class connection;
-namespace google {
+namespace rtc::google {
 class video_source;
 class video_track;
 class audio_source;
 class audio_track;
 class audio_devices;
+class connection;
 struct settings {
   bool use_ip_v6{true};
 #if BOOST_OS_WINDOWS
@@ -72,7 +71,6 @@ private:
   rtc::scoped_refptr<webrtc::PeerConnectionFactoryInterface> factory_;
   std::unique_ptr<audio_devices> audio_devices_;
 };
-} // namespace google
-} // namespace rtc
+} // namespace rtc::google
 
 #endif

@@ -27,8 +27,6 @@ public:
   // seems like data channels can't be removed!
   rtc::data_channel_ptr create_data_channel() override;
   void close() override;
-  boost::signals2::signal<void(track_ptr)> on_video_track;
-  boost::signals2::signal<void(track_ptr)> on_audio_track;
 
 protected:
   void OnConnectionChange(

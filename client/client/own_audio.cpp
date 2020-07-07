@@ -8,8 +8,7 @@
 using namespace client;
 
 namespace {
-void connect_ice_signal(rtc::google::connection &from,
-                        rtc::google::connection &to) {
+void connect_ice_signal(rtc::connection &from, rtc::connection &to) {
   from.on_ice_candidate.connect(
       [&to](auto candidate) { to.add_ice_candidate(candidate); });
 }

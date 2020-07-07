@@ -7,13 +7,15 @@
 #include <boost/thread/executors/inline_executor.hpp>
 #include <boost/thread/future.hpp>
 
-namespace rtc::google {
-class factory;
+namespace rtc {
 class connection;
+namespace google {
+class factory;
 class audio_source;
 class audio_track;
 class audio_track_sink;
-} // namespace rtc::google
+} // namespace google
+} // namespace rtc
 
 namespace client {
 class own_audio {
@@ -36,8 +38,8 @@ protected:
   client::logger logger{"own_audio"};
   boost::inline_executor executor;
   rtc::google::factory &rtc_factory;
-  std::unique_ptr<rtc::google::connection> rtc_connection_offering;
-  std::unique_ptr<rtc::google::connection> rtc_connection_answering;
+  std::unique_ptr<rtc::connection> rtc_connection_offering;
+  std::unique_ptr<rtc::connection> rtc_connection_answering;
   std::shared_ptr<rtc::google::audio_track_sink> audio_track;
   bool enable_audio_loopback_{};
 };

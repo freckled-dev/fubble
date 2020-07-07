@@ -1,5 +1,6 @@
 #include "peer_creator.hpp"
 #include "peer.hpp"
+#include "rtc/google/connection.hpp"
 #include "rtc/google/factory.hpp"
 #include "signalling/client/client_creator.hpp"
 

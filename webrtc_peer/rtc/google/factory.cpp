@@ -38,7 +38,7 @@ factory::~factory() {
                               [this] { audio_device_module = nullptr; });
 }
 
-std::unique_ptr<rtc::connection> factory::create_connection() {
+std::unique_ptr<connection> factory::create_connection() {
   webrtc::PeerConnectionInterface::RTCConfiguration configuration;
   configuration.sdp_semantics = webrtc::SdpSemantics::kUnifiedPlan;
   if (!settings_.use_ip_v6) {
