@@ -29,10 +29,13 @@ public:
   devices get_playout_devices() const;
   devices get_recording_devices() const;
 
-  void set_recording_device(int id);
+#if 0
+  // there is no getter in googles webrtc
   int get_recording_device() const;
-  void set_output_device(int id);
   int get_playout_device() const;
+#endif
+  void set_recording_device(int id);
+  void set_output_device(int id);
 
   void mute_speaker(const bool mute);
   bool is_speaker_muted();
@@ -45,6 +48,8 @@ public:
 
 protected:
   void enumerate_on_thread();
+  void set_recording_device_on_thread(int id);
+  void set_output_device_on_thread(int id);
 
   rtc::logger logger{"audio_devices"};
   rtc::Thread &thread;

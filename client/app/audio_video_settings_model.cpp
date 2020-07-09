@@ -1,4 +1,5 @@
 #include "audio_video_settings_model.hpp"
+#include "client/audio_settings.hpp"
 #include "rtc/google/audio_devices.hpp"
 #include "rtc/google/capture/video/enumerator.hpp"
 
@@ -69,7 +70,7 @@ protected:
 class output_audio_devices_model : public audio_devices_model {
 public:
   output_audio_devices_model(rtc::google::audio_devices &audio_devices,
-                             QObject *parent)
+                             client::audio_settings &settings, QObject *parent)
       : audio_devices_model(audio_devices, parent) {
     refresh();
   }
@@ -92,18 +93,36 @@ QHash<int, QByteArray> devices_model::roleNames() const {
 audio_video_settings_model::audio_video_settings_model(
     rtc::google::audio_devices &audio_devices,
     rtc::google::capture::video::enumerator &video_device_enumerator,
-    QObject *parent)
-    : QObject(parent) {
-  // audio_devices.enumerate();
-  audio_devices.set_output_device(1);
-  audio_devices.set_recording_device(0);
+    client::audio_settings &audio_settings, QObject *parent)
+    : QObject(parent), audio_settings(audio_settings) {
   audio_devices.enumerate();
-  input_devices = new output_audio_devices_model(audio_devices, this);
-  output_devices = new recording_audio_devices_model(audio_devices, this);
+  output_devices =
+      new output_audio_devices_model(audio_devices, audio_settings, this);
+  input_devices = new recording_audio_devices_model(audio_devices, this);
   video_devices = new video_devices_model(video_device_enumerator, this);
+  audio_output_device_index = audio_settings.get_playout_device();
+  audio_input_device_index = audio_settings.get_recording_device();
   // TODO select the correct one!
   // TODO handle change
   // TODO show video preview
 }
 
 audio_video_settings_model::~audio_video_settings_model() = default;
+
+void audio_video_settings_model::onAudioInputDeviceActivated(int index) {
+  BOOST_LOG_SEV(logger, logging::severity::debug)
+      << __FUNCTION__ << ", index:" << index;
+  audio_settings.set_recording_device(index);
+}
+
+void audio_video_settings_model::onAudioOutputDeviceActivated(int index) {
+  BOOST_LOG_SEV(logger, logging::severity::debug)
+      << __FUNCTION__ << ", index:" << index;
+  audio_settings.set_output_device(index);
+}
+
+void audio_video_settings_model::onVideoDeviceActivated(int index) {
+  BOOST_LOG_SEV(logger, logging::severity::debug)
+      << __FUNCTION__ << ", index:" << index;
+  // TODO
+}

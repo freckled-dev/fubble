@@ -22,6 +22,8 @@ public:
 
 protected:
   rtc::google::audio_devices &rtc_audio_devices;
+  int current_output_device{};
+  int current_recording_device{};
 };
 } // namespace client
 

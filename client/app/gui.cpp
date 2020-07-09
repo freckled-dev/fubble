@@ -315,7 +315,7 @@ int main(int argc, char *argv[]) {
   client::leave_model leave_model{leaver};
   client::own_media_model own_media_model{own_media, own_audio_information_};
   client::audio_video_settings_model audio_video_settings_model{
-      rtc_audio_devices, enumerator};
+      rtc_audio_devices, enumerator, audio_settings};
   //  works from 5.14 onwards
   // engine.setInitialProperties(...)
   //  setContextProperty sets it globaly not as property of the window

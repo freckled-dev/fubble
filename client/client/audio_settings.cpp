@@ -7,20 +7,20 @@ audio_settings::audio_settings(rtc::google::audio_devices &rtc_audio_devices)
     : rtc_audio_devices(rtc_audio_devices) {}
 
 void audio_settings::set_recording_device(int id) {
+  current_recording_device = id;
   rtc_audio_devices.set_recording_device(id);
 }
 
 int audio_settings::get_recording_device() const {
-  return rtc_audio_devices.get_recording_device();
+  return current_recording_device;
 }
 
 void audio_settings::set_output_device(int id) {
+  current_output_device = id;
   rtc_audio_devices.set_output_device(id);
 }
 
-int audio_settings::get_playout_device() const {
-  return rtc_audio_devices.get_playout_device();
-}
+int audio_settings::get_playout_device() const { return current_output_device; }
 
 void audio_settings::mute_speaker(const bool mute) {
   rtc_audio_devices.mute_speaker(mute);

@@ -49,6 +49,7 @@ Item {
                 }
                 return audioVideoModel.inputDevices
             }
+            onActivated: audioVideoModel.onAudioInputDeviceActivated(index)
         }
 
         Label {
@@ -70,6 +71,7 @@ Item {
 
                 return audioVideoModel.outputDevices
             }
+            onActivated: audioVideoModel.onAudioOutputDeviceActivated(index)
         }
     }
 
@@ -109,6 +111,7 @@ Item {
 
                 return audioVideoModel.videoDevices
             }
+            onActivated: audioVideoModel.onVideoDeviceActivated(index)
         }
 
         Label {
