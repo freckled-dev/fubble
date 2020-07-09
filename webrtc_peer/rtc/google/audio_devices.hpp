@@ -29,6 +29,11 @@ public:
   devices get_playout_devices() const;
   devices get_recording_devices() const;
 
+  void set_recording_device(int id);
+  int get_recording_device() const;
+  void set_output_device(int id);
+  int get_playout_device() const;
+
   void mute_speaker(const bool mute);
   bool is_speaker_muted();
   void mute_microphone(const bool mute);

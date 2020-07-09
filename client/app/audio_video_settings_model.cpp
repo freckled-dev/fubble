@@ -15,16 +15,11 @@ public:
 
   void refresh() { devices = enumerator.enumerate(); }
   int rowCount(const QModelIndex &parent = QModelIndex()) const override {
-    return devices.size() + 1; // +1 for "none"
+    return devices.size();
   }
   QVariant data(const QModelIndex &index, int role) const override {
     const int row = index.row();
-    if (row == 0) {
-      if (role == id_role)
-        return QVariant{};
-      return tr("None");
-    }
-    const std::size_t device_index = static_cast<std::size_t>(row - 1);
+    const std::size_t device_index = static_cast<std::size_t>(row);
     BOOST_ASSERT(device_index < devices.size());
     auto &device = devices[device_index];
     if (role == id_role)
@@ -99,6 +94,9 @@ audio_video_settings_model::audio_video_settings_model(
     rtc::google::capture::video::enumerator &video_device_enumerator,
     QObject *parent)
     : QObject(parent) {
+  // audio_devices.enumerate();
+  audio_devices.set_output_device(1);
+  audio_devices.set_recording_device(0);
   audio_devices.enumerate();
   input_devices = new output_audio_devices_model(audio_devices, this);
   output_devices = new recording_audio_devices_model(audio_devices, this);

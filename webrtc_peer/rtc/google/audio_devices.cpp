@@ -22,6 +22,34 @@ audio_devices::devices audio_devices::get_recording_devices() const {
   return recording_devices;
 }
 
+void audio_devices::set_recording_device(int id) {
+  thread.Invoke<void>(RTC_FROM_HERE, [this, id]() {
+    auto result = audio_device_module.SetRecordingDevice(id);
+    BOOST_ASSERT(result == 0);
+    if (result == 0)
+      return;
+    BOOST_LOG_SEV(this->logger, logging::severity::warning)
+        << "could not set_recording_device, id:" << id;
+  });
+}
+
+int audio_devices::get_recording_device() const {
+  // return audio_device_module.Rec
+}
+
+void audio_devices::set_output_device(int id) {
+  thread.Invoke<void>(RTC_FROM_HERE, [this, id]() {
+    auto result = audio_device_module.SetPlayoutDevice(id);
+    BOOST_ASSERT(result == 0);
+    if (result == 0)
+      return;
+    BOOST_LOG_SEV(this->logger, logging::severity::warning)
+        << "could not set_output_device, id:" << id;
+  });
+}
+
+int audio_devices::get_playout_device() const {}
+
 void audio_devices::mute_speaker(const bool mute) {
   thread.Invoke<void>(RTC_FROM_HERE, [this, mute]() {
 #ifndef NDEBUG

@@ -5,7 +5,7 @@ all: build
 
 .PHONY: build
 build:
-	${BUILD}
+	cd ../fubble_build/meson; meson compile
 
 .PHONY: clean
 clean:
@@ -16,6 +16,6 @@ install:
 	${BUILD} install
 
 .PHONY: test
-test: build
-	cd ../fubble_build/meson; meson test --test-args='--gtest_shuffle'
+test:
+	cd ../fubble_build/meson; meson test "webrtc_google_peer test"
 	# ../fubble_build/meson/client/app/fubble
