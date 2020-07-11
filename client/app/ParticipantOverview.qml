@@ -100,7 +100,7 @@ Item {
 
                 anchors.left: parent.left
                 anchors.right: parent.right
-                height: 70
+                height: model.participant.own ? 0 : 70
                 visible: !model.participant.own
 
                 Label {
