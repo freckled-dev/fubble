@@ -37,7 +37,6 @@ class participant_model : public QObject {
                  get_video NOTIFY video_changed)
   Q_PROPERTY(
       bool voiceDetected MEMBER voice_detected NOTIFY voice_detected_changed)
-  Q_PROPERTY(int audioLevel MEMBER audio_level NOTIFY audio_level_changed)
 
 public:
   participant_model(participant &participant_, audio_settings &audio_settings_,
@@ -58,7 +57,7 @@ signals:
   void highlighted_changed(bool);
   void video_changed(ui::frame_provider_google_video_source *);
   void voice_detected_changed(bool);
-  void audio_level_changed(int);
+  void newAudioLevel(int level);
 
 protected:
   void set_name();
