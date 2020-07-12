@@ -21,9 +21,6 @@ QtObject {
     // indicator if the participant is speaking
     property bool voiceDetected
 
-    // indicates the volume of the audio stream
-    property int audioLevel
-
     property bool videoDisabled
 
     // just used in the GUI
@@ -33,4 +30,7 @@ QtObject {
         source: video_source
         autoPlay: true
     }
+
+    // signal with new audio level value
+    signal newAudioLevel(int level)
 }

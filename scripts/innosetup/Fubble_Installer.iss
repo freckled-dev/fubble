@@ -4,15 +4,20 @@
 [Setup]
 AppName={#AppName}
 AppPublisher=Fubble OG
-AppVersion=1
-WizardStyle=modernDirExistsWarning=no
+AppVersion=
+AppVerName={#AppName}
+WizardStyle=modern
 OutputBaseFilename={#AppName}Setup
 DefaultDirName={userpf}\Fubble
-DisableProgramGroupPage=yesDisableReadyPage=yes
 DefaultGroupName=Fubble
 UninstallDisplayIcon={app}\Fubble.exe
 Compression=lzma2
 SolidCompression=yes
+
+; Disable all user prompts
+DisableProgramGroupPage=yes
+DisableReadyPage=yes
+DirExistsWarning=no
 
 [Files]
 Source: "Updater.exe"; DestDir: "{app}"
