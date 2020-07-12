@@ -25,10 +25,10 @@ Item {
             Rectangle {
                 id: participantBorder
                 anchors.fill: parent
-                color: model.participant.highlighted
+                color: participant.highlighted
                        || maHeader.containsMouse ? Style.current.gray300 : Style.current.gray100
                 radius: 5
-                border.color: model.participant.voiceDetected ? Style.current.primary : Style.current.transparent
+                border.color: participant.voiceDetected ? Style.current.primary : Style.current.transparent
                 visible: true
             }
 
@@ -37,7 +37,7 @@ Item {
                 anchors.left: parent.left
                 anchors.leftMargin: 10
                 color: Style.current.foreground
-                text: model.participant.name
+                text: participant.name
                 anchors.verticalCenter: parent.verticalCenter
             }
 
@@ -48,7 +48,7 @@ Item {
                 sourceSize.height: 20
                 sourceSize.width: 20
                 source: Style.current.videoDisabledImage
-                visible: model.participant.videoDisabled
+                visible: participant.videoDisabled
             }
 
             MouseArea {
@@ -67,13 +67,13 @@ Item {
                 anchors.right: parent.right
                 sourceSize.height: 20
                 sourceSize.width: 20
-                source: model.participant.silenced ? Style.current.silencedImage : Style.current.mutedImage
-                visible: model.participant.muted || model.participant.silenced
+                source: participant.silenced ? Style.current.silencedImage : Style.current.mutedImage
+                visible: participant.muted || participant.silenced
 
                 FubbleToolTip {
                     id: ttMuted
-                    text: model.participant.silenced ? qsTr("Muted by you") : qsTr(
-                                                           "Muted")
+                    text: participant.silenced ? qsTr("Muted by you") : qsTr(
+                                                     "Muted")
                     visible: maMuted.containsMouse
                 }
 
@@ -87,7 +87,7 @@ Item {
 
         Rectangle {
             id: details
-            border.color: model.participant.highlighted
+            border.color: participant.highlighted
                           || maHeader.containsMouse ? Style.current.gray300 : Style.current.gray100
             Layout.fillWidth: true
             color: Style.current.transparent
@@ -100,8 +100,8 @@ Item {
 
                 anchors.left: parent.left
                 anchors.right: parent.right
-                height: model.participant.own ? 0 : 70
-                visible: !model.participant.own
+                height: participant.own ? 0 : 70
+                visible: !participant.own
 
                 Label {
                     id: volumeHeader
@@ -115,7 +115,7 @@ Item {
                 VolumeSlider {
                     id: volumeSlider
                     sliderColor: volumeSlider.enabled ? Style.current.primary : Style.current.gray300
-                    value: model.participant.volume
+                    value: participant.volume
                     anchors.top: volumeHeader.bottom
                     anchors.left: parent.left
                     anchors.right: muteImage.left
@@ -128,7 +128,7 @@ Item {
                     sourceSize.height: 20
                     sourceSize.width: 20
                     anchors.right: parent.right
-                    source: model.participant.muted ? Style.current.mutedImage : Style.current.mutedOffImage
+                    source: participant.muted ? Style.current.mutedImage : Style.current.mutedOffImage
 
                     MouseArea {
                         id: maMute
@@ -141,10 +141,16 @@ Item {
                 }
             }
 
+            Connections {
+                target: participant
+                onNewAudioLevel: {
+                    audioChart.addNewAudioLevel(level)
+                }
+            }
+
             AudioChart {
                 id: audioChart
                 anchors.top: moreDetails.bottom
-                audioLevel: participant.audioLevel
                 anchors.left: parent.left
                 anchors.right: parent.right
                 visible: talking

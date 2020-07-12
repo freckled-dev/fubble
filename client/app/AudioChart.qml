@@ -8,7 +8,6 @@ import "scripts/utils.js" as Utils
 
 Rectangle {
     clip: true
-    property int audioLevel
     property int maxValues: 50
     property bool talking: audioLevels.length > 0
     property int countSilence: 0
@@ -17,13 +16,12 @@ Rectangle {
 
     property var audioLevels: []
 
-    onAudioLevelChanged: {
-        console.log("level: " + audioLevel)
+    function addNewAudioLevel(level) {
         if (audioLevels.length >= maxValues) {
             audioLevels.splice(0, 1)
         }
 
-        if (audioLevel === 0) {
+        if (level === 0) {
             countSilence++
         } else {
             countSilence = 0
@@ -36,7 +34,7 @@ Rectangle {
             talking = true
         }
 
-        audioLevels.push(audioLevel)
+        audioLevels.push(level)
         insertAudioLevels()
     }
 

@@ -26,6 +26,13 @@ Rectangle {
         id: fubbleSettings
     }
 
+    Connections {
+        target: ownMediaModel
+        onNewAudioLevel: {
+            audioChart.addNewAudioLevel(level)
+        }
+    }
+
     AudioChart {
         id: audioChart
         anchors.left: settingsButton.right
@@ -34,7 +41,6 @@ Rectangle {
         anchors.bottom: parent.bottom
         anchors.rightMargin: 20
         anchors.leftMargin: 20
-        audioLevel: ownMediaModel.audioLevel
 
         chart.height: audioChart.height + 25
         chart.width: audioChart.width + 80
