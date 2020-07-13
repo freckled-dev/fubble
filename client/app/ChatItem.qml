@@ -40,17 +40,32 @@ Rectangle {
                 text: name + " - " + new Date(timestamp).toTimeString()
             }
 
-            Label {
+            TextEdit {
+                id: chatMessage
                 width: headerLabel.width
                 Layout.bottomMargin: 10
                 Layout.leftMargin: 10
                 Layout.maximumWidth: chatContainer.width - 40
                 Layout.rightMargin: 10
+                readOnly: true
                 text: modifyMessage(message)
+                selectByMouse: true
+                font.family: verdanaFont.name + ", " + emojiOneFont.name
+                selectionColor: Style.current.accent
 
                 textFormat: Text.RichText
                 wrapMode: Text.WrapAtWordBoundaryOrAnywhere
                 onLinkActivated: Qt.openUrlExternally(link)
+
+                FubbleContextMenu {
+                    textEdit: chatMessage
+                    anchors.fill: parent
+                    canCut: false
+                    canPaste: false
+                    canDelete: false
+                    canUndo: false
+                    canRedo: false
+                }
             }
 
             function modifyMessage(message) {
