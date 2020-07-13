@@ -2,7 +2,6 @@ import QtQuick 2.0
 
 Image {
     id: questionImage
-    fillMode: Image.PreserveAspectFit
     source: Style.current.feedbackImage
     sourceSize.width: 25
     sourceSize.height: 25

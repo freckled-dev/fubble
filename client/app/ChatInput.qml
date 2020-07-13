@@ -38,7 +38,7 @@ Rectangle {
         }
 
         FubbleContextMenu {
-            textInput: inputText
+            textEdit: inputText
             anchors.fill: parent
         }
     }
