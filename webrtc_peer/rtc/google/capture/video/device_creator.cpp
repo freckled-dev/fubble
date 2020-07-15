@@ -18,5 +18,5 @@ std::unique_ptr<device> device_creator::create(const std::string &id) {
   auto native_device = webrtc::VideoCaptureFactory::Create(id.c_str());
   if (!native_device)
     BOOST_THROW_EXCEPTION(could_not_instance_device() << device_id_info(id));
-  return std::make_unique<device>(native_device);
+  return std::make_unique<device>(native_device, id);
 }

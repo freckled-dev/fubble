@@ -21,6 +21,7 @@ public:
   // TODO take it in constructor?! reinstance
   // `frame_provider_google_video_source` every video change
   void set_source(rtc::google::video_source *source);
+  rtc::google::video_source *get_source() const;
   void set_surface(QAbstractVideoSurface *surface);
   QAbstractVideoSurface *get_surface() const;
 

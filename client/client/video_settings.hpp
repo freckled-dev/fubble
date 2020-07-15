@@ -2,6 +2,7 @@
 #define UUID_DE3E4714_AD73_44A4_9ED2_AA1F55903106
 
 #include "client/logger.hpp"
+#include <boost/signals2/signal.hpp>
 #include <memory>
 
 namespace rtc::google {
@@ -27,7 +28,11 @@ public:
       add_video_to_connection_factory &add_video_to_connection_factory_);
   ~video_settings();
 
+  void disable_video();
+  void change_to_device(const std::string &id);
+
   rtc::google::video_source *get_video_source() const;
+  boost::signals2::signal<void()> on_video_source_changed;
 
 protected:
   client::logger logger{"video_settings"};

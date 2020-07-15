@@ -27,10 +27,7 @@ video_settings::video_settings(
 
   for (const auto &current_device : devices) {
     try {
-      std::shared_ptr<rtc::google::capture::video::device>
-          capture_device_check = device_creator.create(current_device.id);
-      capture_device_check->start();
-      capture_device = capture_device_check;
+      change_to_device(current_device.id);
       break;
     } catch (const std::exception &error) {
       BOOST_LOG_SEV(logger, logging::severity::warning) << fmt::format(
@@ -42,13 +39,38 @@ video_settings::video_settings(
     BOOST_LOG_SEV(logger, logging::severity::warning)
         << "no capture device could be initialsed";
   } else {
-    video_track_adder = add_video_to_connection_factory_.create(capture_device);
-    tracks_adder_.add(*video_track_adder);
-    own_media_.add_video(*capture_device);
   }
 }
 
 video_settings::~video_settings() = default;
+
+void video_settings::disable_video() {
+  capture_device.reset();
+  on_video_source_changed();
+}
+
+void video_settings::change_to_device(const std::string &id) {
+  BOOST_LOG_SEV(logger, logging::severity::debug)
+      << __FUNCTION__ << ", id:" << id;
+  if (capture_device) {
+    if (capture_device->get_id() == id) {
+      BOOST_LOG_SEV(logger, logging::severity::debug)
+          << "skipping switch because same id";
+      return;
+    }
+    own_media_.remove_video(*capture_device);
+    capture_device->stop();
+    capture_device.reset();
+  }
+  std::shared_ptr<rtc::google::capture::video::device> capture_device_check =
+      device_creator.create(id);
+  capture_device_check->start();
+  capture_device = capture_device_check;
+  video_track_adder = add_video_to_connection_factory_.create(capture_device);
+  tracks_adder_.add(*video_track_adder);
+  own_media_.add_video(*capture_device);
+  on_video_source_changed();
+}
 
 rtc::google::video_source *video_settings::get_video_source() const {
   return capture_device.get();

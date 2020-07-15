@@ -96,6 +96,11 @@ void frame_provider_google_video_source::set_source(
       source->on_frame.connect([this](const auto &frame) { on_frame(frame); });
 }
 
+rtc::google::video_source *
+frame_provider_google_video_source::get_source() const {
+  return source;
+}
+
 void frame_provider_google_video_source::set_surface(
     QAbstractVideoSurface *surface_) {
   BOOST_LOG_SEV(logger, logging::severity::debug)

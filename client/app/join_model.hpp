@@ -39,6 +39,7 @@ signals:
 
 protected:
   void on_joined(boost::future<std::shared_ptr<room>> room_);
+  void update_video_preview();
 
   client::logger logger{"join_model"};
   model_creator &model_factory;

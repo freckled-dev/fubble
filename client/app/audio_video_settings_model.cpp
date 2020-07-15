@@ -33,6 +33,12 @@ public:
     return QString::fromStdString(device.name);
   }
 
+  std::string get_id_by_index(int index) {
+    BOOST_ASSERT(index >= 0);
+    BOOST_ASSERT(index < static_cast<int>(devices.size()));
+    return devices[index].id;
+  }
+
   rtc::google::capture::video::enumerator &enumerator;
   std::vector<rtc::google::capture::video::information> devices;
 };
@@ -109,6 +115,8 @@ audio_video_settings_model::audio_video_settings_model(
   audio_output_device_index = audio_settings.get_playout_device();
   audio_input_device_index = audio_settings.get_recording_device();
   update_video_preview();
+  video_settings_.on_video_source_changed.connect(
+      [this] { update_video_preview(); });
 }
 
 audio_video_settings_model::~audio_video_settings_model() = default;
@@ -128,7 +136,15 @@ void audio_video_settings_model::onAudioOutputDeviceActivated(int index) {
 void audio_video_settings_model::onVideoDeviceActivated(int index) {
   BOOST_LOG_SEV(logger, logging::severity::debug)
       << __FUNCTION__ << ", index:" << index;
-  // TODO
+  const auto id =
+      static_cast<video_devices_model *>(video_devices)->get_id_by_index(index);
+  try {
+    video_settings_.change_to_device(id);
+  } catch (const boost::exception &error) {
+    BOOST_LOG_SEV(logger, logging::severity::warning)
+        << "could not change video device";
+    BOOST_ASSERT(false); // TODO implement
+  }
 }
 
 void audio_video_settings_model::update_video_preview() {
@@ -141,4 +157,5 @@ void audio_video_settings_model::update_video_preview() {
     return;
   video_preview = new ui::frame_provider_google_video_source(this);
   video_preview->set_source(source);
+  video_preview_changed(video_preview);
 }
