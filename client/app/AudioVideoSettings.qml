@@ -41,14 +41,8 @@ Item {
             Layout.fillWidth: true
             currentIndex: audioVideoModel.userAudioInputDeviceIndex
             textRole: "name"
-            model: {
-                if (audioVideoModel.inputDevices.count === 0) {
-                    return [{
-                                "name": "No input device found"
-                            }]
-                }
-                return audioVideoModel.inputDevices
-            }
+            enabled: audioVideoModel.recordingDevicesAvailable
+            model: audioVideoModel.inputDevices
         }
 
         Label {
@@ -61,15 +55,8 @@ Item {
             Layout.fillWidth: true
             currentIndex: audioVideoModel.userAudioOutputDeviceIndex
             textRole: "name"
-            model: {
-                if (audioVideoModel.outputDevices.count === 0) {
-                    return [{
-                                "name": "No output device found"
-                            }]
-                }
-
-                return audioVideoModel.outputDevices
-            }
+            enabled: audioVideoModel.outputDevicesAvailable
+            model: audioVideoModel.outputDevices
         }
     }
 
@@ -100,15 +87,8 @@ Item {
             Layout.fillWidth: true
             currentIndex: audioVideoModel.userVideoDeviceIndex
             textRole: "name"
-            model: {
-                if (audioVideoModel.videoDevices.count === 0) {
-                    return [{
-                                "name": "No video device found"
-                            }]
-                }
-
-                return audioVideoModel.videoDevices
-            }
+            enabled: audioVideoModel.videoDevicesAvailable
+            model: audioVideoModel.videoDevices
         }
 
         Label {
