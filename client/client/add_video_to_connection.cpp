@@ -16,3 +16,13 @@ void add_video_to_connection::add_to_connection(rtc::connection &connection) {
       rtc_factory.create_video_track(source);
   connection.add_track(video_track);
 }
+
+add_video_to_connection_factory::add_video_to_connection_factory(
+    rtc::google::factory &rtc_factory)
+    : rtc_factory(rtc_factory) {}
+
+std::unique_ptr<add_video_to_connection>
+add_video_to_connection_factory::create(
+    const std::shared_ptr<rtc::google::video_source> &source) {
+  return std::make_unique<client::add_video_to_connection>(rtc_factory, source);
+}

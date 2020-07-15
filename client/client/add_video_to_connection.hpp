@@ -19,6 +19,15 @@ protected:
   rtc::google::factory &rtc_factory;
   const std::shared_ptr<rtc::google::video_source> source;
 };
+class add_video_to_connection_factory {
+public:
+  add_video_to_connection_factory(rtc::google::factory &rtc_factory);
+
+  std::unique_ptr<add_video_to_connection>
+  create(const std::shared_ptr<rtc::google::video_source> &source);
+
+  rtc::google::factory &rtc_factory;
+};
 } // namespace client
 
 #endif

@@ -32,7 +32,7 @@ class FubbleConan(ConanFile):
         #     # will not compile with less than visual studio 2019
         #     self.build_requires("qt/5.15.0@bincrafters/stable")
         if not tools.which('meson'):
-            self.build_requires("meson/0.54.0")
+            self.build_requires("meson/0.55.0")
         self.build_requires("nlohmann_json/3.7.0")
         self.build_requires("boost/1.73.0")
         self.build_requires("gtest/1.10.0")

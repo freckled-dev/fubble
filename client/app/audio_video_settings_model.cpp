@@ -1,5 +1,7 @@
 #include "audio_video_settings_model.hpp"
 #include "client/audio_settings.hpp"
+#include "client/ui/frame_provider_google_video_frame.hpp"
+#include "client/video_settings.hpp"
 #include "rtc/google/audio_devices.hpp"
 #include "rtc/google/capture/video/enumerator.hpp"
 
@@ -15,9 +17,11 @@ public:
   }
 
   void refresh() { devices = enumerator.enumerate(); }
+
   int rowCount(const QModelIndex &parent = QModelIndex()) const override {
     return devices.size();
   }
+
   QVariant data(const QModelIndex &index, int role) const override {
     const int row = index.row();
     const std::size_t device_index = static_cast<std::size_t>(row);
@@ -93,8 +97,10 @@ QHash<int, QByteArray> devices_model::roleNames() const {
 audio_video_settings_model::audio_video_settings_model(
     rtc::google::audio_devices &audio_devices,
     rtc::google::capture::video::enumerator &video_device_enumerator,
-    client::audio_settings &audio_settings, QObject *parent)
-    : QObject(parent), audio_settings(audio_settings) {
+    client::audio_settings &audio_settings, video_settings &video_settings_,
+    QObject *parent)
+    : QObject(parent), audio_settings(audio_settings),
+      video_settings_(video_settings_) {
   audio_devices.enumerate();
   output_devices =
       new output_audio_devices_model(audio_devices, audio_settings, this);
@@ -102,9 +108,7 @@ audio_video_settings_model::audio_video_settings_model(
   video_devices = new video_devices_model(video_device_enumerator, this);
   audio_output_device_index = audio_settings.get_playout_device();
   audio_input_device_index = audio_settings.get_recording_device();
-  // TODO select the correct one!
-  // TODO handle change
-  // TODO show video preview
+  update_video_preview();
 }
 
 audio_video_settings_model::~audio_video_settings_model() = default;
@@ -125,4 +129,16 @@ void audio_video_settings_model::onVideoDeviceActivated(int index) {
   BOOST_LOG_SEV(logger, logging::severity::debug)
       << __FUNCTION__ << ", index:" << index;
   // TODO
+}
+
+void audio_video_settings_model::update_video_preview() {
+  if (video_preview) {
+    video_preview->deleteLater();
+    video_preview = nullptr;
+  }
+  auto source = video_settings_.get_video_source();
+  if (source == nullptr)
+    return;
+  video_preview = new ui::frame_provider_google_video_source(this);
+  video_preview->set_source(source);
 }

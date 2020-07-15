@@ -16,6 +16,7 @@
 #include "client/rooms.hpp"
 #include "client/tracks_adder.hpp"
 #include "client/video_layout/video_layout.hpp"
+#include "client/video_settings.hpp"
 #include "error_model.hpp"
 #include "executor_asio.hpp"
 #include "gui_options.hpp"
@@ -153,6 +154,7 @@ int main(int argc, char *argv[]) {
   rtc::google::capture::audio::device_creator audio_device_creator{
       rtc_connection_creator};
   std::unique_ptr<rtc::google::capture::audio::device> audio_device;
+  // TODO move logic to audio_settings
   try {
     audio_device = audio_device_creator.create();
   } catch (const std::runtime_error &error) {
@@ -173,41 +175,15 @@ int main(int argc, char *argv[]) {
 
   // video
   BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up video device";
-  rtc::google::capture::video::enumerator enumerator;
-  auto devices = enumerator.enumerate();
-  for (const auto &device : devices)
-    BOOST_LOG_SEV(logger, logging::severity::debug)
-        << "capture device, name:" << device.name << ", id:" << device.id;
-  if (devices.empty())
-    BOOST_LOG_SEV(logger, logging::severity::warning)
-        << "there are no capture devices";
-  // TODO move the camera init logic to its own class
-  rtc::google::capture::video::device_creator device_creator;
-  std::shared_ptr<rtc::google::capture::video::device> capture_device;
-  for (const auto &current_device : devices) {
-    try {
-      std::shared_ptr<rtc::google::capture::video::device>
-          capture_device_check = device_creator.create(current_device.id);
-      capture_device_check->start();
-      capture_device = capture_device_check;
-      break;
-    } catch (const std::exception &error) {
-      BOOST_LOG_SEV(logger, logging::severity::warning) << fmt::format(
-          "could not start capturing from device, id:'{}' error:{}",
-          current_device.id, error.what());
-    }
-  }
-  std::unique_ptr<client::add_video_to_connection> video_track_adder;
-  if (!capture_device) {
-    BOOST_LOG_SEV(logger, logging::severity::warning)
-        << "no capture device could be initialsed";
-  } else {
-    video_track_adder = std::make_unique<client::add_video_to_connection>(
-        rtc_connection_creator, capture_device);
-    tracks_adder.add(*video_track_adder);
-    own_media.add_video(*capture_device);
-  }
+  rtc::google::capture::video::enumerator video_enumerator;
+  rtc::google::capture::video::device_creator video_device_creator;
+  client::add_video_to_connection_factory add_video_to_connection_factory_{
+      rtc_connection_creator};
+  client::video_settings video_settings{video_enumerator, video_device_creator,
+                                        own_media, tracks_adder,
+                                        add_video_to_connection_factory_};
 
+  // client
   BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up client";
   client::factory client_factory{context};
   client::participant_creator_creator participant_creator_creator{
@@ -315,7 +291,7 @@ int main(int argc, char *argv[]) {
   client::leave_model leave_model{leaver};
   client::own_media_model own_media_model{own_media, own_audio_information_};
   client::audio_video_settings_model audio_video_settings_model{
-      rtc_audio_devices, enumerator, audio_settings};
+      rtc_audio_devices, video_enumerator, audio_settings, video_settings};
   //  works from 5.14 onwards
   // engine.setInitialProperties(...)
   //  setContextProperty sets it globaly not as property of the window

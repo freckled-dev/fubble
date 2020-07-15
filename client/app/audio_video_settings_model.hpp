@@ -12,6 +12,7 @@ class audio_devices;
 }
 namespace client {
 class audio_settings;
+class video_settings;
 namespace ui {
 class frame_provider_google_video_source;
 }
@@ -45,7 +46,8 @@ public:
   audio_video_settings_model(
       rtc::google::audio_devices &audio_devices,
       rtc::google::capture::video::enumerator &video_device_enumerator,
-      client::audio_settings &audio_settings, QObject *parent = nullptr);
+      audio_settings &audio_settings_, video_settings &video_settings_,
+      QObject *parent = nullptr);
   ~audio_video_settings_model();
 
   Q_INVOKABLE void onAudioInputDeviceActivated(int index);
@@ -62,8 +64,11 @@ signals:
   void video_devices_changed(client::devices_model *);
 
 protected:
+  void update_video_preview();
+
   client::logger logger{"audio_video_settings_model"};
   client::audio_settings &audio_settings;
+  video_settings &video_settings_;
   ui::frame_provider_google_video_source *video_preview{};
   int audio_input_device_index{};
   int audio_output_device_index{};
