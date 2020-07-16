@@ -196,7 +196,7 @@ void connection::add_ice_candidate(const rtc::ice_candidate &candidate) {
 }
 
 void connection::add_track(rtc::track_ptr track_) {
-  BOOST_ASSERT(find_track(track_) == tracks.cend());
+  BOOST_ASSERT(find_sending_track(track_) == sending_tracks.cend());
   auto track_casted = std::dynamic_pointer_cast<track>(track_);
   BOOST_ASSERT(track_casted);
   auto native_track = track_casted->native_track();
@@ -208,23 +208,23 @@ void connection::add_track(rtc::track_ptr track_) {
     BOOST_ASSERT(false);
     return;
   }
-  track_container add;
+  sending_track add;
   add.track_ = track_;
-  add.rtp_sender = result.value();
-  tracks.push_back(std::move(add));
+  add.rtp = result.value();
+  sending_tracks.push_back(std::move(add));
 }
 
 void connection::remove_track(rtc::track_ptr track_) {
-  auto found = find_track(track_);
-  BOOST_ASSERT(found != tracks.cend());
+  auto found = find_sending_track(track_);
+  BOOST_ASSERT(found != sending_tracks.cend());
   auto track_casted = std::dynamic_pointer_cast<track>(track_);
   BOOST_ASSERT(track_casted);
   auto native_track = track_casted->native_track();
   BOOST_ASSERT(native_track);
-  bool result = native->RemoveTrack(found->rtp_sender);
+  bool result = native->RemoveTrack(found->rtp);
   (void)result;
   BOOST_ASSERT(result);
-  tracks.erase(found);
+  sending_tracks.erase(found);
 }
 
 rtc::data_channel_ptr connection::create_data_channel() {
@@ -278,12 +278,23 @@ void connection::OnAddTrack(
     BOOST_ASSERT_MSG(false, "implement");
     return;
   }
-  // save result, aka receiving track?
-  on_track(result);
+  receiving_track add;
+  add.rtp = receiver;
+  add.track_ = result;
+  receiving_tracks.push_back(std::move(add));
+  on_track_added(result);
   if (is_video)
-    on_video_track(result);
+    on_video_track_added(result);
   else
-    on_audio_track(result);
+    on_audio_track_added(result);
+}
+
+void connection::OnRemoveTrack(
+    rtc::scoped_refptr<webrtc::RtpReceiverInterface> receiver) {
+  auto found = find_receiving_track(receiver);
+  BOOST_ASSERT(found != receiving_tracks.cend());
+  on_track_removed(found->track_);
+  receiving_tracks.erase(found);
 }
 
 ::rtc::track_ptr connection::check_handle_video_track(
@@ -303,11 +314,18 @@ void connection::OnAddTrack(
   return std::make_shared<audio_track_sink>(track_casted);
 }
 
-std::vector<connection::track_container>::iterator
-connection::find_track(const track_ptr &track_) {
-  return std::find_if(tracks.begin(), tracks.end(), [&](const auto &check) {
-    return track_ == check.track_;
-  });
+std::vector<connection::sending_track>::iterator
+connection::find_sending_track(const track_ptr &track_) {
+  return std::find_if(
+      sending_tracks.begin(), sending_tracks.end(),
+      [&](const auto &check) { return track_ == check.track_; });
+}
+
+std::vector<connection::receiving_track>::iterator
+connection::find_receiving_track(
+    const rtc::scoped_refptr<webrtc::RtpReceiverInterface> &search) {
+  return std::find_if(receiving_tracks.begin(), receiving_tracks.end(),
+                      [&](const auto &check) { return search == check.rtp; });
 }
 
 void connection::OnDataChannel(

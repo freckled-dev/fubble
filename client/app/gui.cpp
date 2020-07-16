@@ -175,11 +175,17 @@ int main(int argc, char *argv[]) {
 
   // video
   BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up video device";
-  rtc::google::capture::video::enumerator video_enumerator;
+  std::unique_ptr<rtc::google::capture::video::enumerator> video_enumerator;
+  if (config.general_.video_support)
+    video_enumerator =
+        std::make_unique<rtc::google::capture::video::enumerator>();
+  else
+    video_enumerator =
+        std::make_unique<rtc::google::capture::video::enumerator_noop>();
   rtc::google::capture::video::device_creator video_device_creator;
   client::add_video_to_connection_factory add_video_to_connection_factory_{
       rtc_connection_creator};
-  client::video_settings video_settings{video_enumerator, video_device_creator,
+  client::video_settings video_settings{*video_enumerator, video_device_creator,
                                         own_media, tracks_adder,
                                         add_video_to_connection_factory_};
 
@@ -291,7 +297,7 @@ int main(int argc, char *argv[]) {
   client::leave_model leave_model{leaver};
   client::own_media_model own_media_model{own_media, own_audio_information_};
   client::audio_video_settings_model audio_video_settings_model{
-      rtc_audio_devices, video_enumerator, audio_settings, video_settings};
+      rtc_audio_devices, *video_enumerator, audio_settings, video_settings};
   //  works from 5.14 onwards
   // engine.setInitialProperties(...)
   //  setContextProperty sets it globaly not as property of the window

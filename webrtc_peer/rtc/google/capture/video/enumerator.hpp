@@ -13,13 +13,15 @@ namespace video {
 class enumerator {
 public:
   enumerator();
+  virtual ~enumerator() = default;
 
-  std::vector<information> enumerate();
+  virtual std::vector<information> enumerate();
 
 private:
-  class logger logger {
-    "enumerator"
-  };
+  rtc::logger logger{"enumerator"};
+};
+class enumerator_noop : public enumerator {
+  std::vector<information> enumerate() override { return {}; }
 };
 
 } // namespace video

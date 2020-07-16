@@ -24,6 +24,7 @@ void tracks_adder::add_connection(rtc::connection &connection) {
       << "adding " << adders.size()
       << " tracks to the connection:" << &connection;
   BOOST_ASSERT(find_connection(connection) == connections_.cend());
+  connections_.push_back(&connection);
   for (auto &adder : adders)
     adder->add_to_connection(connection);
 }

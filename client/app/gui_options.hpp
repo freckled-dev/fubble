@@ -12,6 +12,7 @@ struct gui_config {
     bool use_ipv6{false};
     bool use_ssl{true};
     logging::severity log_severity{logging::severity::debug};
+    bool video_support{true};
   };
   general general_;
 };

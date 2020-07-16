@@ -40,6 +40,8 @@ protected:
   OnAddTrack(rtc::scoped_refptr<webrtc::RtpReceiverInterface> receiver,
              const std::vector<rtc::scoped_refptr<webrtc::MediaStreamInterface>>
                  &streams) override;
+  void OnRemoveTrack(
+      rtc::scoped_refptr<webrtc::RtpReceiverInterface> receiver) override;
   void OnDataChannel(::rtc::scoped_refptr<::webrtc::DataChannelInterface>
                          data_channel) override;
   void OnRenegotiationNeeded() override;
@@ -67,11 +69,17 @@ protected:
     void OnSuccess() override;
     void OnFailure(webrtc::RTCError error) override;
   };
-  struct track_container {
+  struct sending_track {
     track_ptr track_;
-    rtc::scoped_refptr<webrtc::RtpSenderInterface> rtp_sender;
+    rtc::scoped_refptr<webrtc::RtpSenderInterface> rtp;
   };
-  std::vector<track_container>::iterator find_track(const track_ptr &);
+  std::vector<sending_track>::iterator find_sending_track(const track_ptr &);
+  struct receiving_track {
+    track_ptr track_;
+    rtc::scoped_refptr<webrtc::RtpReceiverInterface> rtp;
+  };
+  std::vector<receiving_track>::iterator find_receiving_track(
+      const rtc::scoped_refptr<webrtc::RtpReceiverInterface> &);
 
   rtc::logger logger{"connection"};
   rtc::scoped_refptr<::webrtc::PeerConnectionInterface> native;
@@ -79,8 +87,8 @@ protected:
   // Because of pure virtual DataChannel.
   // It does not help, if we close the data_channel inside its constructor
   std::vector<data_channel_ptr> data_channels;
-  // TODO rename to receiving_tracks
-  std::vector<track_container> tracks;
+  std::vector<sending_track> sending_tracks;
+  std::vector<receiving_track> receiving_tracks;
 };
 } // namespace google
 } // namespace rtc

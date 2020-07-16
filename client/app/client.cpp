@@ -154,7 +154,7 @@ int main(int argc, char *argv[]) {
     rtc_connection->add_track(video_track);
     capture_device->start();
   }
-  rtc_connection->on_track.connect([&](auto track) {
+  rtc_connection->on_track_added.connect([&](auto track) {
     std::shared_ptr<rtc::google::video_track_sink> track_casted =
         std::dynamic_pointer_cast<rtc::google::video_track_sink>(track);
     track_casted->on_frame.connect([&](const auto & /*frame*/) {

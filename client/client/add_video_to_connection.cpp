@@ -14,11 +14,13 @@ add_video_to_connection::add_video_to_connection(
 add_video_to_connection::~add_video_to_connection() = default;
 
 void add_video_to_connection::add_to_connection(rtc::connection &connection) {
+  BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
   connection.add_track(video_track);
 }
 
 void add_video_to_connection::remove_from_connection(
     rtc::connection &connection) {
+  BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
   connection.remove_track(video_track);
 }
 

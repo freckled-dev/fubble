@@ -14,9 +14,10 @@ remote_participant::remote_participant(factory &factory_,
     : participant(matrix_participant), factory_(factory_),
       tracks_adder_(tracks_adder_), peer_(std::move(peer_moved)) {
   tracks_adder_.add_connection(peer_->rtc_connection());
-  peer_->rtc_connection().on_track.connect(
-      [this](auto track) { on_track(track); });
-  // TODO track removal!
+  peer_->rtc_connection().on_track_added.connect(
+      [this](auto track) { on_track_added(track); });
+  peer_->rtc_connection().on_track_removed.connect(
+      [this](auto track) { on_track_removed(track); });
 }
 
 remote_participant::~remote_participant() {
@@ -33,7 +34,7 @@ remote_participant::audios_type remote_participant::get_audios() const {
   return audios;
 }
 
-void remote_participant::on_track(rtc::track_ptr track) {
+void remote_participant::on_track_added(rtc::track_ptr track) {
   BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
   auto video_track =
       std::dynamic_pointer_cast<rtc::google::video_source>(track);
@@ -43,6 +44,16 @@ void remote_participant::on_track(rtc::track_ptr track) {
       std::dynamic_pointer_cast<rtc::google::audio_track_sink>(track);
   if (audio_track)
     return on_audio_track(audio_track);
+  BOOST_LOG_SEV(logger, logging::severity::warning) << "unhandled track";
+  BOOST_ASSERT(false);
+}
+
+void remote_participant::on_track_removed(rtc::track_ptr track) {
+  BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
+  auto video_track =
+      std::dynamic_pointer_cast<rtc::google::video_source>(track);
+  if (video_track)
+    return on_video_track_removed(video_track);
   BOOST_LOG_SEV(logger, logging::severity::warning) << "unhandled track";
   BOOST_ASSERT(false);
 }
@@ -63,3 +74,12 @@ void remote_participant::on_video_track(
   on_video_added(*video_track);
 }
 
+void remote_participant::on_video_track_removed(
+    rtc::google::video_source_ptr video_track) {
+  BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
+  auto found = std::find_if(videos.cbegin(), videos.cend(), [&](auto check) {
+    return check == video_track.get();
+  });
+  videos.erase(found);
+  on_video_removed(*video_track);
+}

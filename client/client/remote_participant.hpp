@@ -27,8 +27,10 @@ public:
 protected:
   videos_type get_videos() const override;
   audios_type get_audios() const override;
-  void on_track(rtc::track_ptr track);
+  void on_track_added(rtc::track_ptr track);
+  void on_track_removed(rtc::track_ptr track);
   void on_video_track(rtc::google::video_source_ptr video_track);
+  void on_video_track_removed(rtc::google::video_source_ptr video_track);
   void
   on_audio_track(std::shared_ptr<rtc::google::audio_track_sink> audio_track);
 
