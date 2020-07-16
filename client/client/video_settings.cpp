@@ -58,6 +58,8 @@ void video_settings::change_to_device(const std::string &id) {
           << "skipping switch because same id";
       return;
     }
+    tracks_adder_.remove(*video_track_adder);
+    video_track_adder.reset();
     own_media_.remove_video(*capture_device);
     capture_device->stop();
     capture_device.reset();

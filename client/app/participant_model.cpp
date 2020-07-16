@@ -17,11 +17,10 @@ participant_model::participant_model(participant &participant_,
                                          &participant_) != nullptr} {
   set_name();
   participant_.on_name_changed.connect([this](auto) { set_name(); });
-  // TODO support video removal
-  participant_.on_video_added.connect([this](auto added) {
-    BOOST_ASSERT(added);
-    video_added(*added);
-  });
+  participant_.on_video_added.connect(
+      [this](auto &added) { video_added(added); });
+  participant_.on_video_removed.connect(
+      [this](auto &removed) { video_removed(removed); });
   auto videos = participant_.get_videos();
   for (auto video : videos) {
     BOOST_ASSERT(video);
@@ -67,6 +66,13 @@ void participant_model::video_added(rtc::google::video_source &added) {
   BOOST_ASSERT(!video); // TODO support more than one video per client
   video = new ui::frame_provider_google_video_source(this);
   video->set_source(&added);
+  video_changed(video);
+}
+
+void participant_model::video_removed(rtc::google::video_source &removed) {
+  BOOST_ASSERT(video);
+  video->deleteLater();
+  video = nullptr;
   video_changed(video);
 }
 

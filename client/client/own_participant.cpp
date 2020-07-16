@@ -5,7 +5,13 @@ using namespace client;
 
 own_participant::own_participant(matrix::user &matrix_participant,
                                  own_media &own_media_)
-    : participant(matrix_participant), own_media_(own_media_) {}
+    : participant(matrix_participant), own_media_(own_media_) {
+  own_media_.on_video_added.connect(
+      [this](auto &source) { on_video_added(source); });
+  own_media_.on_video_removed.connect(
+      [this](auto &source) { on_video_removed(source); });
+  // TODO add and removal of audio!
+}
 
 own_participant::~own_participant() = default;
 

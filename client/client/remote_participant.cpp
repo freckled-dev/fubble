@@ -60,6 +60,6 @@ void remote_participant::on_video_track(
     rtc::google::video_source_ptr video_track) {
   BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
   videos.emplace_back(video_track.get());
-  on_video_added(video_track);
+  on_video_added(*video_track);
 }
 
