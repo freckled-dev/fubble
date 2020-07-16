@@ -13,11 +13,13 @@ public:
                           rtc::google::audio_source &source);
   ~add_audio_to_connection();
   void add_to_connection(rtc::connection &connection) override;
+  void remove_from_connection(rtc::connection &connection) override;
 
 protected:
   client::logger logger{"add_audio_to_connection"};
   rtc::google::factory &rtc_factory;
   rtc::google::audio_source &source;
+  std::shared_ptr<rtc::google::audio_track> audio_track;
 };
 } // namespace client
 

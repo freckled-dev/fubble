@@ -1,9 +1,18 @@
 #include "audio_devices.hpp"
 #include <audio_device/include/audio_device.h>
 #include <audio_device/include/audio_device_data_observer.h>
+#include <fmt/format.h>
 #include <rtc_base/thread.h>
 
 using namespace rtc::google;
+
+namespace {
+void check_result(const std::string method, int result) {
+  if (result == 0)
+    return;
+  throw std::runtime_error(fmt::format("'{}' failed", method));
+}
+} // namespace
 
 audio_devices::audio_devices(rtc::Thread &thread,
                              webrtc::AudioDeviceModule &audio_device_module)
@@ -20,6 +29,57 @@ audio_devices::devices audio_devices::get_playout_devices() const {
 
 audio_devices::devices audio_devices::get_recording_devices() const {
   return recording_devices;
+}
+
+void audio_devices::set_recording_device(int id) {
+  thread.Invoke<void>(RTC_FROM_HERE, [this, id]() {
+    try {
+      set_recording_device_on_thread(id);
+    } catch (const std::runtime_error &error) {
+      BOOST_LOG_SEV(this->logger, logging::severity::error)
+          << "could not set_recording_device, id:" << id
+          << ", error:" << error.what();
+      BOOST_ASSERT(false);
+    }
+  });
+}
+
+void audio_devices::set_recording_device_on_thread(int id) {
+  const bool was_initialized = audio_device_module.RecordingIsInitialized();
+  if (was_initialized) {
+    check_result("StopRecording", audio_device_module.StopRecording());
+  }
+  check_result("SetRecordingDevice",
+               audio_device_module.SetRecordingDevice(id));
+  if (!was_initialized)
+    return;
+  check_result("InitRecording", audio_device_module.InitRecording());
+  check_result("StartRecording", audio_device_module.StartRecording());
+}
+
+void audio_devices::set_output_device(int id) {
+  thread.Invoke<void>(RTC_FROM_HERE, [this, id]() {
+    try {
+      set_output_device_on_thread(id);
+    } catch (const std::runtime_error &error) {
+      BOOST_LOG_SEV(this->logger, logging::severity::error)
+          << "could not set_output_device, id:" << id
+          << ", error:" << error.what();
+      BOOST_ASSERT(false);
+    }
+  });
+}
+
+void audio_devices::set_output_device_on_thread(int id) {
+  const bool was_initialized = audio_device_module.PlayoutIsInitialized();
+  if (was_initialized) {
+    check_result("StopPlayout", audio_device_module.StopPlayout());
+  }
+  check_result("SetPlayoutDevice", audio_device_module.SetPlayoutDevice(id));
+  if (!was_initialized)
+    return;
+  check_result("InitPlayout", audio_device_module.InitPlayout());
+  check_result("StartPlayout", audio_device_module.StartPlayout());
 }
 
 void audio_devices::mute_speaker(const bool mute) {
@@ -102,6 +162,7 @@ void audio_devices::enumerate_on_thread() {
 
   for (int index{}; index < playout_count; ++index) {
     std::array<char, webrtc::kAdmMaxDeviceNameSize> name;
+    // guid not used, because not set on linux
     std::array<char, webrtc::kAdmMaxGuidSize> guid;
     auto result =
         audio_device_module.PlayoutDeviceName(index, name.data(), guid.data());

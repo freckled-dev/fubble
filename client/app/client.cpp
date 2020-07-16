@@ -140,7 +140,7 @@ int main(int argc, char *argv[]) {
 
   if (config_.video_.send) {
     rtc::google::capture::video::enumerator enumerator;
-    auto devices = enumerator();
+    auto devices = enumerator.enumerate();
     for (const auto device : devices)
       BOOST_LOG_SEV(logger, logging::severity::debug)
           << "capture device:" << device.name;
@@ -148,13 +148,13 @@ int main(int argc, char *argv[]) {
       throw std::runtime_error("no video capture devices available");
     rtc::google::capture::video::device_creator device_creator;
     std::shared_ptr<rtc::google::capture::video::device> capture_device =
-        device_creator(devices.front().id);
+        device_creator.create(devices.front().id);
     std::shared_ptr<rtc::google::video_track> video_track =
         rtc_connection_creator.create_video_track(capture_device);
     rtc_connection->add_track(video_track);
     capture_device->start();
   }
-  rtc_connection->on_track.connect([&](auto track) {
+  rtc_connection->on_track_added.connect([&](auto track) {
     std::shared_ptr<rtc::google::video_track_sink> track_casted =
         std::dynamic_pointer_cast<rtc::google::video_track_sink>(track);
     track_casted->on_frame.connect([&](const auto & /*frame*/) {

@@ -41,6 +41,7 @@ Item {
             Layout.fillWidth: true
             currentIndex: audioVideoModel.userAudioInputDeviceIndex
             textRole: "name"
+            onActivated: audioVideoModel.onAudioInputDeviceActivated(index)
             enabled: audioVideoModel.recordingDevicesAvailable
             model: audioVideoModel.inputDevices
         }
@@ -55,6 +56,7 @@ Item {
             Layout.fillWidth: true
             currentIndex: audioVideoModel.userAudioOutputDeviceIndex
             textRole: "name"
+            onActivated: audioVideoModel.onAudioOutputDeviceActivated(index)
             enabled: audioVideoModel.outputDevicesAvailable
             model: audioVideoModel.outputDevices
         }
@@ -87,6 +89,7 @@ Item {
             Layout.fillWidth: true
             currentIndex: audioVideoModel.userVideoDeviceIndex
             textRole: "name"
+            onActivated: audioVideoModel.onVideoDeviceActivated(index)
             enabled: audioVideoModel.videoDevicesAvailable
             model: audioVideoModel.videoDevices
         }

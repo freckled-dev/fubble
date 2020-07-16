@@ -24,6 +24,7 @@ public:
   set_remote_description(const session_description &) override;
   void add_ice_candidate(const ice_candidate &candidate) override;
   void add_track(rtc::track_ptr) override;
+  void remove_track(rtc::track_ptr) override;
   // seems like data channels can't be removed!
   rtc::data_channel_ptr create_data_channel() override;
   void close() override;
@@ -39,6 +40,8 @@ protected:
   OnAddTrack(rtc::scoped_refptr<webrtc::RtpReceiverInterface> receiver,
              const std::vector<rtc::scoped_refptr<webrtc::MediaStreamInterface>>
                  &streams) override;
+  void OnRemoveTrack(
+      rtc::scoped_refptr<webrtc::RtpReceiverInterface> receiver) override;
   void OnDataChannel(::rtc::scoped_refptr<::webrtc::DataChannelInterface>
                          data_channel) override;
   void OnRenegotiationNeeded() override;
@@ -66,6 +69,17 @@ protected:
     void OnSuccess() override;
     void OnFailure(webrtc::RTCError error) override;
   };
+  struct sending_track {
+    track_ptr track_;
+    rtc::scoped_refptr<webrtc::RtpSenderInterface> rtp;
+  };
+  std::vector<sending_track>::iterator find_sending_track(const track_ptr &);
+  struct receiving_track {
+    track_ptr track_;
+    rtc::scoped_refptr<webrtc::RtpReceiverInterface> rtp;
+  };
+  std::vector<receiving_track>::iterator find_receiving_track(
+      const rtc::scoped_refptr<webrtc::RtpReceiverInterface> &);
 
   rtc::logger logger{"connection"};
   rtc::scoped_refptr<::webrtc::PeerConnectionInterface> native;
@@ -73,7 +87,8 @@ protected:
   // Because of pure virtual DataChannel.
   // It does not help, if we close the data_channel inside its constructor
   std::vector<data_channel_ptr> data_channels;
-  std::vector<track_ptr> tracks;
+  std::vector<sending_track> sending_tracks;
+  std::vector<receiving_track> receiving_tracks;
 };
 } // namespace google
 } // namespace rtc

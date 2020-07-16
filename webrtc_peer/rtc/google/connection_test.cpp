@@ -175,7 +175,7 @@ TEST_F(GoogleConnection, OnVideoTrack) {
   std::shared_ptr<rtc::track> track = creator.create_video_track(source);
   connection_.offering.instance->add_track(track);
   wait_for_event waiter;
-  connection_.answering.instance->on_video_track.connect(
+  connection_.answering.instance->on_video_track_added.connect(
       [&](const auto &track) {
         EXPECT_TRUE(track);
         waiter.event();

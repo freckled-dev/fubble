@@ -4,7 +4,15 @@
 #include "client/logger.hpp"
 #include <QAbstractItemModel>
 
+namespace rtc::google::capture::video {
+class enumerator;
+}
+namespace rtc::google {
+class audio_devices;
+}
 namespace client {
+class audio_settings;
+class video_settings;
 namespace ui {
 class frame_provider_google_video_source;
 }
@@ -13,9 +21,6 @@ class devices_model : public QAbstractListModel {
 public:
   enum roles { id_role = Qt::UserRole + 1, name_role };
   devices_model(QObject *parent);
-
-  int rowCount(const QModelIndex &parent = QModelIndex()) const override;
-  QVariant data(const QModelIndex &index, int role) const override;
 
 protected:
   QHash<int, QByteArray> roleNames() const override;
@@ -38,8 +43,16 @@ class audio_video_settings_model : public QObject {
                  video_devices_changed)
 
 public:
-  audio_video_settings_model(QObject *parent = nullptr);
+  audio_video_settings_model(
+      rtc::google::audio_devices &audio_devices,
+      rtc::google::capture::video::enumerator &video_device_enumerator,
+      audio_settings &audio_settings_, video_settings &video_settings_,
+      QObject *parent = nullptr);
   ~audio_video_settings_model();
+
+  Q_INVOKABLE void onAudioInputDeviceActivated(int index);
+  Q_INVOKABLE void onAudioOutputDeviceActivated(int index);
+  Q_INVOKABLE void onVideoDeviceActivated(int index);
 
 signals:
   void video_preview_changed(ui::frame_provider_google_video_source *);
@@ -51,7 +64,11 @@ signals:
   void video_devices_changed(client::devices_model *);
 
 protected:
+  void update_video_preview();
+
   client::logger logger{"audio_video_settings_model"};
+  client::audio_settings &audio_settings;
+  video_settings &video_settings_;
   ui::frame_provider_google_video_source *video_preview{};
   int audio_input_device_index{};
   int audio_output_device_index{};

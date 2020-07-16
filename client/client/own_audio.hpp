@@ -41,7 +41,7 @@ protected:
   std::unique_ptr<rtc::connection> rtc_connection_offering;
   std::unique_ptr<rtc::connection> rtc_connection_answering;
   std::shared_ptr<rtc::google::audio_track_sink> audio_track;
-  bool enable_audio_loopback_{};
+  bool enable_audio_loopback_{false};
 };
 } // namespace client
 

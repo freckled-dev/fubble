@@ -15,11 +15,14 @@ namespace video {
 class device : public rtc::VideoSinkInterface<webrtc::VideoFrame>,
                public video_source {
 public:
-  device(const rtc::scoped_refptr<webrtc::VideoCaptureModule> &native_device);
+  device(const rtc::scoped_refptr<webrtc::VideoCaptureModule> &native_device,
+         const std::string &id);
   ~device();
 
   void start();
   void stop();
+
+  std::string get_id() const { return id; }
 
 protected:
   void OnFrame(const webrtc::VideoFrame &frame) override;
@@ -28,6 +31,7 @@ protected:
   class logger logger {
     "video::device"
   };
+  const std::string id;
   const rtc::scoped_refptr<webrtc::VideoCaptureModule> device_;
 };
 } // namespace video

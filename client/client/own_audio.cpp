@@ -27,7 +27,7 @@ void own_audio::start(rtc::google::audio_source &audio_source) {
   BOOST_ASSERT(sending_audio_track);
   rtc_connection_offering->on_negotiation_needed.connect(
       [this] { negotiation_needed(); });
-  rtc_connection_answering->on_audio_track.connect(
+  rtc_connection_answering->on_audio_track_added.connect(
       [this](rtc::track_ptr track) { on_audio_track(track); });
   rtc_connection_offering->add_track(sending_audio_track);
 }

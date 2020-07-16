@@ -13,17 +13,10 @@ join_model::join_model(model_creator &model_factory, error_model &error_model_,
                        joiner &joiner_, own_media &own_media_)
     : model_factory(model_factory), error_model_(error_model_),
       joiner_(joiner_), own_media_(own_media_) {
-  auto own_videos = own_media_.get_videos();
-  if (own_videos.empty()) {
-    video_available = false;
-    return;
-  }
-
-  video_available = true;
-  BOOST_ASSERT(own_videos.size() == 1);
-  auto own_video = own_videos.front();
-  video = new ui::frame_provider_google_video_source(this);
-  video->set_source(own_video);
+  update_video_preview();
+  own_media_.on_video_added.connect([this](auto &) { update_video_preview(); });
+  own_media_.on_video_removed.connect(
+      [this](auto &) { update_video_preview(); });
 }
 
 join_model::~join_model() = default;
@@ -54,4 +47,27 @@ void join_model::on_joined(boost::future<std::shared_ptr<class room>> room_) {
                            error.what());
     join_failed();
   }
+}
+
+void join_model::update_video_preview() {
+  if (video != nullptr) {
+    video->deleteLater();
+    video = nullptr;
+    video_changed(video);
+  }
+
+  auto own_videos = own_media_.get_videos();
+  if (own_videos.empty()) {
+    video_available = false;
+    video_available_changed(video_available);
+    return;
+  }
+
+  video_available = true;
+  video_available_changed(video_available);
+  BOOST_ASSERT(own_videos.size() == 1);
+  auto own_video = own_videos.front();
+  video = new ui::frame_provider_google_video_source(this);
+  video->set_source(own_video);
+  video_changed(video);
 }

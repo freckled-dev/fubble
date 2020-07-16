@@ -9,22 +9,21 @@
 namespace client {
 class tracks_adder {
 public:
-  // TODO tracks shall be able to change. eg add and remove. do signals
+  void add(track_adder &adder);
+  void remove(track_adder &adder);
 
-  void add(track_adder &adder) { adders.emplace_back(&adder); }
-
-  void add_to_connection(rtc::connection &connection) {
-    BOOST_LOG_SEV(logger, logging::severity::info)
-        << "adding " << adders.size()
-        << " tracks to the connection:" << &connection;
-    for (auto &adder : adders)
-      adder->add_to_connection(connection);
-  }
+  void add_connection(rtc::connection &connection);
+  void remove_connection(rtc::connection &connection);
 
 protected:
+  using connections = std::vector<rtc::connection *>;
+  connections::iterator find_connection(rtc::connection &connection);
+  using tracks = std::vector<track_adder *>;
+  tracks::iterator find_adder(const track_adder &adder);
+
   client::logger logger{"tracks_adder"};
-  using track_adder_ptr = track_adder *;
-  std::vector<track_adder_ptr> adders;
+  tracks adders;
+  connections connections_;
 };
 } // namespace client
 

@@ -10,6 +10,7 @@ class add_data_channel : public track_adder {
 public:
   ~add_data_channel();
   void add_to_connection(rtc::connection &connection) override;
+  void remove_from_connection(rtc::connection &connection) override;
   boost::signals2::signal<void(rtc::data_channel_ptr)> on_added;
 };
 } // namespace client
