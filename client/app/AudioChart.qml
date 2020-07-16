@@ -8,34 +8,33 @@ import "scripts/utils.js" as Utils
 
 Rectangle {
     clip: true
-    property int audioLevel
     property int maxValues: 50
     property bool talking: audioLevels.length > 0
-    property int countLowDezibel: 0
+    property int countSilence: 0
     color: Style.current.transparent
     property alias chart: audioChart
 
     property var audioLevels: []
 
-    onAudioLevelChanged: {
+    function addNewAudioLevel(level) {
         if (audioLevels.length >= maxValues) {
             audioLevels.splice(0, 1)
         }
 
-        if (audioLevel < 5) {
-            countLowDezibel++
+        if (level === 0) {
+            countSilence++
         } else {
-            countLowDezibel = 0
+            countSilence = 0
         }
 
-        if (countLowDezibel >= 50) {
+        if (countSilence >= 50) {
             talking = false
             audioLevels = []
         } else {
             talking = true
         }
 
-        audioLevels.push(audioLevel)
+        audioLevels.push(level)
         insertAudioLevels()
     }
 

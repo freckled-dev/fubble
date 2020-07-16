@@ -36,21 +36,37 @@ Rectangle {
                 Layout.leftMargin: 10
                 Layout.rightMargin: 10
                 Layout.topMargin: 10
+                Layout.alignment: own ? Qt.AlignRight : Qt.AlignLeft
                 color: own ? Style.current.accent : participantColor
                 text: name + " - " + new Date(timestamp).toTimeString()
             }
 
-            Label {
+            TextEdit {
+                id: chatMessage
                 width: headerLabel.width
                 Layout.bottomMargin: 10
                 Layout.leftMargin: 10
                 Layout.maximumWidth: chatContainer.width - 40
                 Layout.rightMargin: 10
+                readOnly: true
                 text: modifyMessage(message)
+                selectByMouse: true
+                font.family: verdanaFont.name + ", " + emojiOneFont.name
+                selectionColor: Style.current.accent
 
                 textFormat: Text.RichText
                 wrapMode: Text.WrapAtWordBoundaryOrAnywhere
                 onLinkActivated: Qt.openUrlExternally(link)
+
+                FubbleContextMenu {
+                    textEdit: chatMessage
+                    anchors.fill: parent
+                    canCut: false
+                    canPaste: false
+                    canDelete: false
+                    canUndo: false
+                    canRedo: false
+                }
             }
 
             function modifyMessage(message) {
@@ -80,12 +96,12 @@ Rectangle {
             function handleEmojis(message) {
                 var emojiRanges = ['(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])']
                 var emojiRegex = new RegExp(emojiRanges, 'gi')
-                var removeEmoji = message.replace(emojiRegex,
-                                                  "").replace(/ /g, "")
+                var removeEmoji = message.replace(emojiRegex, "")
                 var isOnlyEmojiMessage = removeEmoji.length === 0
+                var emojiCount = (message.match(emojiRegex) || []).length
 
                 // enlarge more if it is an emoji only message
-                if (isOnlyEmojiMessage) {
+                if (isOnlyEmojiMessage && emojiCount <= 3) {
                     message = message.replace(
                                 emojiRegex,
                                 '<span style="font-size:25pt">$1</span>')
