@@ -221,9 +221,15 @@ void connection::remove_track(rtc::track_ptr track_) {
   BOOST_ASSERT(track_casted);
   auto native_track = track_casted->native_track();
   BOOST_ASSERT(native_track);
-  bool result = native->RemoveTrack(found->rtp);
-  (void)result;
-  BOOST_ASSERT(result);
+  if (native->peer_connection_state() !=
+      webrtc::PeerConnectionInterface::PeerConnectionState::kClosed) {
+    bool result = native->RemoveTrack(found->rtp);
+    BOOST_ASSERT(result);
+    if (!result) {
+      BOOST_LOG_SEV(logger, logging::severity::warning)
+          << "could not remove track";
+    }
+  }
   sending_tracks.erase(found);
 }
 
