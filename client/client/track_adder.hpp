@@ -8,6 +8,7 @@ class track_adder {
 public:
   virtual ~track_adder() = default;
   virtual void add_to_connection(rtc::connection &connection) = 0;
+  virtual void remove_from_connection(rtc::connection &connection) = 0;
 };
 } // namespace client
 

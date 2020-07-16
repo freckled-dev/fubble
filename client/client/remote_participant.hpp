@@ -10,14 +10,16 @@ class audio_track_sink;
 } // namespace rtc::google
 
 namespace client {
+class audio_track_information_listener;
+class factory;
 class peer;
 class peer_creator;
-class factory;
-class audio_track_information_listener;
+class tracks_adder;
 class remote_participant : public participant {
 public:
   remote_participant(factory &factory_, std::unique_ptr<peer> peer_,
-                     matrix::user &matrix_participant);
+                     matrix::user &matrix_participant,
+                     tracks_adder &tracks_adder_);
   ~remote_participant();
 
   boost::future<void> close() override;
@@ -32,6 +34,7 @@ protected:
 
   client::logger logger{"remote_participant"};
   factory &factory_;
+  tracks_adder &tracks_adder_;
   std::unique_ptr<peer> peer_;
   videos_type videos;
   audios_type audios;

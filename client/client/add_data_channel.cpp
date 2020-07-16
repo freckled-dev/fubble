@@ -10,3 +10,9 @@ void add_data_channel::add_to_connection(rtc::connection &connection) {
   BOOST_ASSERT(channel);
   on_added(channel);
 }
+
+void add_data_channel::remove_from_connection([
+    [maybe_unused]] rtc::connection &connection) {
+  BOOST_ASSERT(false && "implement");
+  // TODO save channel per connection and remove it here
+}

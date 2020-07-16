@@ -14,10 +14,12 @@ public:
       const std::shared_ptr<rtc::google::video_source> &source);
   ~add_video_to_connection();
   void add_to_connection(rtc::connection &connection) override;
+  void remove_from_connection(rtc::connection &connection) override;
 
 protected:
   rtc::google::factory &rtc_factory;
   const std::shared_ptr<rtc::google::video_source> source;
+  std::shared_ptr<rtc::google::video_track> video_track;
 };
 class add_video_to_connection_factory {
 public:

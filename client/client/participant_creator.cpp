@@ -24,15 +24,14 @@ participant_creator::create(matrix::user &session_information) {
     return std::make_unique<bot_participant>(session_information);
   auto peer = peer_creator_.create();
   auto peer_pointer = peer.get();
-  auto result = std::make_unique<remote_participant>(factory_, std::move(peer),
-                                                     session_information);
+  auto result = std::make_unique<remote_participant>(
+      factory_, std::move(peer), session_information, tracks_adder_);
   auto other_id = session_information.get_id();
   const std::string peer_id = [&] {
     if (own_id < other_id)
       return own_id + '_' + other_id;
     return other_id + '_' + own_id;
   }();
-  tracks_adder_.add_to_connection(peer_pointer->rtc_connection());
   peer_pointer->connect(peer_id);
   return result;
 }

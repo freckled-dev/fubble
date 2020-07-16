@@ -20,6 +20,7 @@ public:
   set_remote_description(const session_description &) = 0;
   virtual void add_ice_candidate(const ice_candidate &candidate) = 0;
   virtual void add_track(track_ptr) = 0;
+  virtual void remove_track(track_ptr) = 0;
   virtual rtc::data_channel_ptr create_data_channel() = 0;
   virtual void close() = 0;
   boost::signals2::signal<void()> on_negotiation_needed;

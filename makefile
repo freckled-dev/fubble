@@ -17,5 +17,5 @@ install:
 
 .PHONY: test
 test:
-	cd ../fubble_build/meson; meson test "webrtc_google_peer test"
+	cd ../fubble_build/meson; meson test # "webrtc_google_peer test"
 	# ../fubble_build/meson/client/app/fubble

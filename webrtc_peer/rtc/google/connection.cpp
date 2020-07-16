@@ -196,14 +196,35 @@ void connection::add_ice_candidate(const rtc::ice_candidate &candidate) {
 }
 
 void connection::add_track(rtc::track_ptr track_) {
+  BOOST_ASSERT(find_track(track_) == tracks.cend());
   auto track_casted = std::dynamic_pointer_cast<track>(track_);
   BOOST_ASSERT(track_casted);
   auto native_track = track_casted->native_track();
   BOOST_ASSERT(native_track);
-  auto result = native->AddTrack(native_track, {});
+  webrtc::RTCErrorOr<rtc::scoped_refptr<webrtc::RtpSenderInterface>> result =
+      native->AddTrack(native_track, {});
+  if (!result.ok()) {
+    BOOST_LOG_SEV(logger, logging::severity::error) << "could not add track!";
+    BOOST_ASSERT(false);
+    return;
+  }
+  track_container add;
+  add.track_ = track_;
+  add.rtp_sender = result.value();
+  tracks.push_back(std::move(add));
+}
+
+void connection::remove_track(rtc::track_ptr track_) {
+  auto found = find_track(track_);
+  BOOST_ASSERT(found != tracks.cend());
+  auto track_casted = std::dynamic_pointer_cast<track>(track_);
+  BOOST_ASSERT(track_casted);
+  auto native_track = track_casted->native_track();
+  BOOST_ASSERT(native_track);
+  bool result = native->RemoveTrack(found->rtp_sender);
   (void)result;
-  BOOST_ASSERT(result.ok());
-  tracks.push_back(track_);
+  BOOST_ASSERT(result);
+  tracks.erase(found);
 }
 
 rtc::data_channel_ptr connection::create_data_channel() {
@@ -257,7 +278,7 @@ void connection::OnAddTrack(
     BOOST_ASSERT_MSG(false, "implement");
     return;
   }
-  tracks.push_back(result);
+  // save result, aka receiving track?
   on_track(result);
   if (is_video)
     on_video_track(result);
@@ -280,6 +301,13 @@ void connection::OnAddTrack(
   rtc::scoped_refptr<webrtc::AudioTrackInterface> track_casted =
       static_cast<webrtc::AudioTrackInterface *>(&interface_);
   return std::make_shared<audio_track_sink>(track_casted);
+}
+
+std::vector<connection::track_container>::iterator
+connection::find_track(const track_ptr &track_) {
+  return std::find_if(tracks.begin(), tracks.end(), [&](const auto &check) {
+    return track_ == check.track_;
+  });
 }
 
 void connection::OnDataChannel(

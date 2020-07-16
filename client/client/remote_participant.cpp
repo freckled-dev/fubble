@@ -1,6 +1,7 @@
 #include "remote_participant.hpp"
 #include "client/factory.hpp"
 #include "client/peer.hpp"
+#include "client/tracks_adder.hpp"
 #include "rtc/google/audio_track_sink.hpp"
 #include "rtc/google/video_track_sink.hpp"
 
@@ -8,15 +9,19 @@ using namespace client;
 
 remote_participant::remote_participant(factory &factory_,
                                        std::unique_ptr<peer> peer_moved,
-                                       matrix::user &matrix_participant)
+                                       matrix::user &matrix_participant,
+                                       tracks_adder &tracks_adder_)
     : participant(matrix_participant), factory_(factory_),
-      peer_(std::move(peer_moved)) {
+      tracks_adder_(tracks_adder_), peer_(std::move(peer_moved)) {
+  tracks_adder_.add_connection(peer_->rtc_connection());
   peer_->rtc_connection().on_track.connect(
       [this](auto track) { on_track(track); });
   // TODO track removal!
 }
 
-remote_participant::~remote_participant() = default;
+remote_participant::~remote_participant() {
+  tracks_adder_.remove_connection(peer_->rtc_connection());
+}
 
 boost::future<void> remote_participant::close() { return peer_->close(); }
 
