@@ -16,13 +16,18 @@ public:
     refresh();
   }
 
-  void refresh() { devices = enumerator.enumerate(); }
+  void refresh() {
+    devices = enumerator.enumerate();
+    update_available(!devices.empty());
+  }
 
   int rowCount(const QModelIndex &parent = QModelIndex()) const override {
-    return devices.size();
+    return std::max<int>(devices.size(), 1);
   }
 
   QVariant data(const QModelIndex &index, int role) const override {
+    if (!available)
+      return tr("There are no video devices available");
     const int row = index.row();
     const std::size_t device_index = static_cast<std::size_t>(row);
     BOOST_ASSERT(device_index < devices.size());
@@ -49,9 +54,11 @@ public:
       : devices_model(parent), audio_devices(audio_devices) {}
 
   int rowCount(const QModelIndex &parent = QModelIndex()) const override {
-    return devices.size();
+    return std::max<int>(devices.size(), 1);
   }
   QVariant data(const QModelIndex &index, int role) const override {
+    if (!available)
+      return tr("There are no audio devices available");
     const int row = index.row();
     const std::size_t device_index = static_cast<std::size_t>(row);
     BOOST_ASSERT(device_index < devices.size());
@@ -73,7 +80,10 @@ public:
     refresh();
   }
 
-  void refresh() { devices = audio_devices.get_recording_devices(); }
+  void refresh() {
+    devices = audio_devices.get_recording_devices();
+    update_available(!devices.empty());
+  }
 
 protected:
 };
@@ -85,13 +95,23 @@ public:
     refresh();
   }
 
-  void refresh() { devices = audio_devices.get_playout_devices(); }
+  void refresh() {
+    devices = audio_devices.get_playout_devices();
+    update_available(!devices.empty());
+  }
 
 protected:
 };
 } // namespace
 
 devices_model::devices_model(QObject *parent) : QAbstractListModel(parent) {}
+
+void devices_model::update_available(const bool new_available) {
+  if (new_available == available)
+    return;
+  available = new_available;
+  available_changed(available);
+}
 
 QHash<int, QByteArray> devices_model::roleNames() const {
   QHash<int, QByteArray> roles;

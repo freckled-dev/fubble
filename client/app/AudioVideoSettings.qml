@@ -42,7 +42,7 @@ Item {
             currentIndex: audioVideoModel.userAudioInputDeviceIndex
             textRole: "name"
             onActivated: audioVideoModel.onAudioInputDeviceActivated(index)
-            enabled: audioVideoModel.recordingDevicesAvailable
+            enabled: audioVideoModel.inputDevices.available
             model: audioVideoModel.inputDevices
         }
 
@@ -57,7 +57,7 @@ Item {
             currentIndex: audioVideoModel.userAudioOutputDeviceIndex
             textRole: "name"
             onActivated: audioVideoModel.onAudioOutputDeviceActivated(index)
-            enabled: audioVideoModel.outputDevicesAvailable
+            enabled: audioVideoModel.outputDevices.available
             model: audioVideoModel.outputDevices
         }
     }
@@ -90,7 +90,7 @@ Item {
             currentIndex: audioVideoModel.userVideoDeviceIndex
             textRole: "name"
             onActivated: audioVideoModel.onVideoDeviceActivated(index)
-            enabled: audioVideoModel.videoDevicesAvailable
+            enabled: audioVideoModel.videoDevices.available
             model: audioVideoModel.videoDevices
         }
 
