@@ -28,6 +28,7 @@ public:
   videos_type get_videos() const { return videos; }
 
   rtc::google::audio_source *get_audio() const;
+  client::own_audio &get_own_audio() const;
 
 protected:
   videos_type videos;
