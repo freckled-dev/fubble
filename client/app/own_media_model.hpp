@@ -22,6 +22,8 @@ signals:
   void newAudioLevel(int level);
 
 protected:
+  void on_sound_level(const double);
+
   own_media &own_media_;
   own_audio_information &audio_information_;
   bool video_disabled{true};
