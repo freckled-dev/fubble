@@ -7,12 +7,10 @@ QtObject {
     property int userAudioOutputDeviceIndex
     property int userVideoDeviceIndex
 
-    property bool recordingDevicesAvailable
-    property bool outputDevicesAvailable
-    property bool videoDevicesAvailable
-
     // Audio
-    property var inputDevices: ListModel {//        ListElement {
+    property var inputDevices: ListModel {
+                  property bool available: false
+        //        ListElement {
         //            inputId: "1"
         //            name: "Headset"
         //        }
@@ -22,7 +20,9 @@ QtObject {
         //        }
     }
 
-    property var outputDevices: ListModel {//        ListElement {
+    property var outputDevices: ListModel {
+                  property bool available: false
+        //        ListElement {
         //            inputId: "1"
         //            name: "Headset"
         //        }
@@ -33,7 +33,9 @@ QtObject {
     }
 
     // Video
-    property var videoDevices: ListModel {//        ListElement {
+    property var videoDevices: ListModel {
+                  property bool available: false
+        //        ListElement {
         //            inputId: "2"
         //            name: "Webcam"
         //        }

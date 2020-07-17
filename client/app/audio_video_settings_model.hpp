@@ -18,12 +18,19 @@ class frame_provider_google_video_source;
 }
 class devices_model : public QAbstractListModel {
   Q_OBJECT
+  Q_PROPERTY(bool available MEMBER available NOTIFY available_changed)
 public:
   enum roles { id_role = Qt::UserRole + 1, name_role };
   devices_model(QObject *parent);
 
+signals:
+  void available_changed(bool);
+
 protected:
+  void update_available(const bool available_);
+
   QHash<int, QByteArray> roleNames() const override;
+  bool available;
 };
 class audio_video_settings_model : public QObject {
   Q_OBJECT
