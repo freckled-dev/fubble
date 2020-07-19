@@ -57,7 +57,10 @@ FocusScope {
             Layout.maximumWidth: 600
             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
             Layout.fillWidth: false
-            visible: !joinModel.videoAvailable && !demoMode
+            visible: (!joinModel.videoAvailable || ownMediaModel.videoDisabled)
+                     && !demoMode
+            headerLabelText: getHeaderText()
+            infoLabelText: getInfoText()
 
             AudioVideoOverlay {
                 visible: maNoVideo.containsMouse
@@ -65,7 +68,7 @@ FocusScope {
                 anchors.right: parent.right
                 anchors.bottom: parent.bottom
                 height: 60
-                videoOffButtonVisible: false
+                videoOffButtonVisible: ownMediaModel.videoDisabled ? true : false
             }
 
             MouseArea {
@@ -73,6 +76,34 @@ FocusScope {
                 anchors.fill: parent
                 hoverEnabled: true
                 propagateComposedEvents: true
+            }
+
+            function getInfoText() {
+                if (ownMediaModel.videoDisabled) {
+                    var placeholderDevices = "camera"
+                    var placeholderReference = "it"
+                    if (ownMediaModel.muted) {
+                        placeholderDevices = "camera and microphone"
+                        placeholderReference = "them"
+                    }
+
+                    return qsTr("You have disabled your %1. After joining a room, you can re-enable %2 at any time using your action buttons at the lower left corner.").arg(
+                                placeholderDevices).arg(placeholderReference)
+                }
+
+                return qsTr("Please check your video camera and settings and restart the app or continue without video...")
+            }
+
+            function getHeaderText() {
+                if (ownMediaModel.videoDisabled) {
+                    if (ownMediaModel.muted) {
+                        return qsTr("Camera and microphone disabled")
+                    }
+
+                    return qsTr("Camera disabled")
+                }
+
+                return qsTr("No video camera found.")
             }
         }
 
@@ -95,6 +126,7 @@ FocusScope {
             Layout.fillWidth: false
             source: joinModel.video
             visible: joinModel.videoAvailable && !demoMode
+                     && !ownMediaModel.videoDisabled
 
             function getAspectRatio() {
                 return videoOutput.sourceRect.width / videoOutput.sourceRect.height
@@ -231,7 +263,7 @@ FocusScope {
             Button {
                 id: joinButton
                 width: 300
-                text: qsTr("Join")
+                text: getJoinButtonText()
                 Layout.fillHeight: false
                 Material.background: Style.current.primary
                 Material.foreground: Style.current.buttonTextColor
@@ -239,6 +271,21 @@ FocusScope {
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 Layout.fillWidth: false
                 onClicked: joinRoomContainer.joinRoom()
+
+                function getJoinButtonText() {
+                    if (!joinModel.videoAvailable
+                            || ownMediaModel.videoDisabled) {
+                        if (ownMediaModel.muted) {
+                            return qsTr("Join without video and audio")
+                        }
+
+                        return qsTr("Join without video")
+                    } else if (ownMediaModel.muted) {
+                        return qsTr("Join without audio")
+                    }
+
+                    return qsTr("Join")
+                }
             }
         }
     }
