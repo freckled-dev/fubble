@@ -224,7 +224,8 @@ FocusScope {
                     selectByMouse: true
                     placeholderText: qsTr("Your name *")
                     Layout.fillWidth: true
-                    onAccepted: passwordTextField.focus = true
+                    //onAccepted: passwordTextField.focus = true
+                    onAccepted: joinRoomContainer.joinRoom()
 
                     onTextChanged: {
                         validName.visible = false
@@ -240,33 +241,32 @@ FocusScope {
                 }
             }
 
-            Item {
-                implicitHeight: passwordTextField.height + 20
-                Layout.fillWidth: true
+            //            Item {
+            //                implicitHeight: passwordTextField.height + 20
+            //                Layout.fillWidth: true
 
-                TextField {
-                    id: passwordTextField
-                    anchors.right: parent.right
-                    anchors.left: parent.left
-                    selectByMouse: true
-                    placeholderText: qsTr("Password (optional)")
-                    Layout.fillWidth: true
-                    onAccepted: joinRoomContainer.joinRoom()
+            //                TextField {
+            //                    id: passwordTextField
+            //                    anchors.right: parent.right
+            //                    anchors.left: parent.left
+            //                    selectByMouse: true
+            //                    placeholderText: qsTr("Password (optional)")
+            //                    Layout.fillWidth: true
+            //                    onAccepted: joinRoomContainer.joinRoom()
 
-                    onTextChanged: {
-                        validPassword.visible = false
-                    }
-                }
+            //                    onTextChanged: {
+            //                        validPassword.visible = false
+            //                    }
+            //                }
 
-                Label {
-                    id: validPassword
-                    color: Style.current.accent
-                    font.pointSize: Style.current.subTextPointSize
-                    visible: false
-                    anchors.top: passwordTextField.bottom
-                }
-            }
-
+            //                Label {
+            //                    id: validPassword
+            //                    color: Style.current.accent
+            //                    font.pointSize: Style.current.subTextPointSize
+            //                    visible: false
+            //                    anchors.top: passwordTextField.bottom
+            //                }
+            //            }
             Button {
                 id: joinButton
                 width: 300
@@ -362,12 +362,13 @@ FocusScope {
 
         joinPopup.open()
 
-        if (passwordTextField.text) {
-            joinModel.joinWithPassword(roomTextField.text, nameTextField.text,
-                                       passwordTextField.text)
-        } else {
-            joinModel.join(roomTextField.text, nameTextField.text)
-        }
+        //        if (passwordTextField.text) {
+        //            joinModel.joinWithPassword(roomTextField.text, nameTextField.text,
+        //                                       passwordTextField.text)
+        //        } else {
+
+        //        }
+        joinModel.join(roomTextField.text, nameTextField.text)
 
         guiEnabled = false
     }
