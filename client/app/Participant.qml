@@ -38,21 +38,29 @@ Rectangle {
         }
     }
 
-    Image {
+    Loader {
+        sourceComponent: demoMode ? demoImageComponent : null
         visible: demoMode
         anchors.fill: parent
-        source: Style.current.demoImagesPath + participant.name + ".jpg"
-        fillMode: Image.PreserveAspectCrop
+    }
 
-        MouseArea {
-            anchors.fill: parent
-            hoverEnabled: true
-            onEntered: highlightParticipant(true)
-            onExited: highlightParticipant(false)
-        }
+    Component {
+        id: demoImageComponent
 
-        ParticipantOverlay {
-            overlayParticipant: participant
+        Image {
+            source: Style.current.demoImagesPath + participant.name + ".jpg"
+            fillMode: Image.PreserveAspectCrop
+
+            MouseArea {
+                anchors.fill: parent
+                hoverEnabled: true
+                onEntered: highlightParticipant(true)
+                onExited: highlightParticipant(false)
+            }
+
+            ParticipantOverlay {
+                overlayParticipant: participant
+            }
         }
     }
 
