@@ -107,17 +107,24 @@ FocusScope {
             }
         }
 
-        Image {
+        Loader {
+            Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+            Layout.fillWidth: false
+            sourceComponent: demoMode ? demoImageComponent : null
             Layout.minimumHeight: 0.4 * container.height
             Layout.minimumWidth: 0.5 * container.width
             Layout.maximumWidth: 600
             Layout.maximumHeight: 400
-            Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-            Layout.fillWidth: false
-
-            source: Style.current.demoImagesPath + "Sarah.jpg"
-            fillMode: Image.PreserveAspectCrop
             visible: demoMode
+        }
+
+        Component {
+            id: demoImageComponent
+
+            Image {
+                source: Style.current.demoImagesPath + "Sarah.jpg"
+                fillMode: Image.PreserveAspectCrop
+            }
         }
 
         VideoOutput {
