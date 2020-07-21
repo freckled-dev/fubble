@@ -28,6 +28,8 @@ protected:
   void change_video_diabled(bool);
 
   client::logger logger{"own_media_model"};
+  void on_sound_level(const double);
+
   own_media &own_media_;
   own_audio_information &audio_information_;
   video_settings &video_settings_;

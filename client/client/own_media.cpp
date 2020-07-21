@@ -6,13 +6,6 @@ using namespace client;
 
 own_media::own_media(loopback_audio &own_audio_) : own_audio_(own_audio_) {}
 
-rtc::google::audio_source *own_media::get_audio() const {
-  auto track = own_audio_.get_track();
-  if (!track)
-    return nullptr;
-  return &track->get_source();
-}
-
 void own_media::add_video(rtc::google::video_source &video) {
   BOOST_ASSERT(std::find_if(videos.cbegin(), videos.cend(), [&](auto check) {
                  return check == &video;
@@ -31,3 +24,11 @@ void own_media::remove_video(rtc::google::video_source &video) {
   videos.erase(found);
   on_video_removed(video);
 }
+rtc::google::audio_source *own_media::get_audio() const {
+  auto track = own_audio_.get_track();
+  if (!track)
+    return nullptr;
+  return &track->get_source();
+}
+
+client::loopback_audio &own_media::get_own_audio() const { return own_audio_; }

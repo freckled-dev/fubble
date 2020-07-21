@@ -86,6 +86,7 @@ void participant_model::video_removed(rtc::google::video_source &removed) {
 }
 
 void participant_model::audio_added(rtc::google::audio_source &source) {
+  // only gets called if !own
   BOOST_ASSERT(
       !audio_level_calculator_); // TODO support more than one audio source per
                                  // client. although, does it make sense?!

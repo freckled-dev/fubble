@@ -59,5 +59,5 @@ Theme {
     property var chatColors: ["#2eb82e", "#bc69aa", "#990033", "#577590", "#e6b800", "#a64dff", "#b6465f", "#034078", "#a5668b", "#415971", "#c9671d", "#a06cd5", "#57241d", "#00802b", "#694873", "#f94144"]
 
     // DemoMode
-    property var demoImagesPath: "images/demomode/"
+    property var demoImagesPath: "demo_images/"
 }
