@@ -111,7 +111,7 @@ Item {
                         return demoPreviewComponent
                     }
 
-                    if (audioVideoModel.videoPreview) {
+                    if (ownMediaModel.videoAvailable) {
                         return videoPreviewComponent
                     }
 
@@ -131,9 +131,8 @@ Item {
                 id: videoPreviewComponent
 
                 VideoOutput {
-                    id: videoPreview
                     anchors.fill: parent
-                    source: audioVideoModel.videoPreview
+                    source: ownMediaModel.video
                     fillMode: VideoOutput.PreserveAspectCrop
                 }
             }
@@ -150,8 +149,8 @@ Item {
     }
 
     onIsActiveChanged: {
-        if (isActive && audioVideoModel.videoPreview) {
-            audioVideoModel.videoPreview.play()
+        if (isActive && ownMediaModel.videoAvailable) {
+            ownMediaModel.video.play()
         }
     }
 }

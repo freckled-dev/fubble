@@ -29,6 +29,7 @@ RowLayout {
         toolTipText: ownMediaModel.videoDisabled ? qsTr("Enable your video") : qsTr(
                                                        "Disable your video")
         onActionClick: ownMediaModel.videoDisabled = !ownMediaModel.videoDisabled
+        visible: ownMediaModel.videoAvailable
     }
 
     FubbleActionButton {

@@ -56,6 +56,7 @@ Rectangle {
         source: ownMediaModel.videoDisabled ? Style.current.overlayVideoOffImage : Style.current.overlayVideoImage
         toolTipText: qsTr("Disable your video")
         onActionClick: ownMediaModel.videoDisabled = !ownMediaModel.videoDisabled
+        visible: ownMediaModel.videoAvailable
     }
 
     FubbleActionButton {
