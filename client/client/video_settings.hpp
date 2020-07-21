@@ -32,6 +32,7 @@ public:
   void pause(bool paused);
   bool get_paused() const;
   void change_to_device(const std::string &id);
+  bool is_a_video_available() const;
 
   rtc::google::video_source *get_video_source() const;
   boost::signals2::signal<void()> on_video_source_changed;

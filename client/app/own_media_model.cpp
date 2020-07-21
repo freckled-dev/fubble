@@ -34,6 +34,10 @@ void own_media_model::change_video_diabled(bool disabled) {
   video_settings_.pause(disabled);
 }
 
+bool own_media_model::get_video_available() const {
+  return video_settings_.is_a_video_available();
+}
+
 void own_media_model::on_sound_level(const double level) {
   int audio_level = std::min(127, static_cast<int>(level * 127.0));
   newAudioLevel(audio_level);
