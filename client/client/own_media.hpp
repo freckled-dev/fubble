@@ -12,10 +12,10 @@ class audio_source;
 }
 
 namespace client {
-class own_audio;
+class loopback_audio;
 class own_media {
 public:
-  own_media(own_audio &own_audio_);
+  own_media(loopback_audio &own_audio_);
 
   // TODO create and move to own_video
   void add_video(rtc::google::video_source &video);
@@ -31,7 +31,7 @@ public:
 
 protected:
   videos_type videos;
-  own_audio &own_audio_;
+  loopback_audio &own_audio_;
 };
 } // namespace client
 

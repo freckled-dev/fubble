@@ -14,10 +14,10 @@ void connect_ice_signal(rtc::connection &from, rtc::connection &to) {
 }
 } // namespace
 
-own_audio::own_audio(rtc::google::factory &rtc_factory)
+loopback_audio::loopback_audio(rtc::google::factory &rtc_factory)
     : rtc_factory(rtc_factory) {}
 
-void own_audio::start(rtc::google::audio_source &audio_source) {
+void loopback_audio::start(rtc::google::audio_source &audio_source) {
   rtc_connection_offering = rtc_factory.create_connection();
   rtc_connection_answering = rtc_factory.create_connection();
   connect_ice_signal(*rtc_connection_offering, *rtc_connection_answering);
@@ -32,7 +32,7 @@ void own_audio::start(rtc::google::audio_source &audio_source) {
   rtc_connection_offering->add_track(sending_audio_track);
 }
 
-void own_audio::negotiation_needed() {
+void loopback_audio::negotiation_needed() {
   auto negotiated =
       rtc_connection_offering->create_offer()
           .then(executor,
@@ -61,9 +61,9 @@ void own_audio::negotiation_needed() {
                   [this](auto result) { on_created_connection(result); });
 }
 
-own_audio::~own_audio() = default;
+loopback_audio::~loopback_audio() = default;
 
-void own_audio::enable_loopback(const bool enable) {
+void loopback_audio::enable_loopback(const bool enable) {
   if (enable_audio_loopback_ == enable)
     return;
   BOOST_LOG_SEV(logger, logging::severity::debug)
@@ -73,13 +73,15 @@ void own_audio::enable_loopback(const bool enable) {
     return;
   audio_track->set_enabled(false);
 }
-bool own_audio::get_enable_loopback(const bool enable) const {
+bool loopback_audio::get_enable_loopback(const bool enable) const {
   return enable_audio_loopback_;
 }
 
-rtc::google::audio_track *own_audio::get_track() { return audio_track.get(); }
+rtc::google::audio_track *loopback_audio::get_track() {
+  return audio_track.get();
+}
 
-void own_audio::on_audio_track(rtc::track_ptr track) {
+void loopback_audio::on_audio_track(rtc::track_ptr track) {
   BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
   track->set_enabled(enable_audio_loopback_);
   BOOST_ASSERT(!audio_track);
@@ -87,7 +89,7 @@ void own_audio::on_audio_track(rtc::track_ptr track) {
   on_track(*audio_track);
 }
 
-void own_audio::on_created_connection(boost::future<void> &result) {
+void loopback_audio::on_created_connection(boost::future<void> &result) {
   try {
     result.get();
     BOOST_LOG_SEV(logger, logging::severity::debug) << "negotiated";

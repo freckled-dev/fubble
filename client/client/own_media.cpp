@@ -4,7 +4,7 @@
 
 using namespace client;
 
-own_media::own_media(own_audio &own_audio_) : own_audio_(own_audio_) {}
+own_media::own_media(loopback_audio &own_audio_) : own_audio_(own_audio_) {}
 
 rtc::google::audio_source *own_media::get_audio() const {
   auto track = own_audio_.get_track();

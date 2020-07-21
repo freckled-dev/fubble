@@ -28,13 +28,15 @@ public:
       add_video_to_connection_factory &add_video_to_connection_factory_);
   ~video_settings();
 
-  void disable_video();
+  void pause(bool paused);
   void change_to_device(const std::string &id);
 
   rtc::google::video_source *get_video_source() const;
   boost::signals2::signal<void()> on_video_source_changed;
 
 protected:
+  void reset_current_video();
+
   client::logger logger{"video_settings"};
   rtc::google::capture::video::enumerator &enumerator;
   rtc::google::capture::video::device_creator &device_creator;
@@ -44,6 +46,7 @@ protected:
 
   std::shared_ptr<rtc::google::capture::video::device> capture_device;
   std::unique_ptr<add_video_to_connection> video_track_adder;
+  std::optional<std::string> device_id;
 };
 } // namespace client
 

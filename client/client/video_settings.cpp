@@ -44,9 +44,19 @@ video_settings::video_settings(
 
 video_settings::~video_settings() = default;
 
-void video_settings::disable_video() {
-  capture_device.reset();
-  on_video_source_changed();
+void video_settings::pause(bool paused) {
+  if (!paused) {
+    reset_current_video();
+    on_video_source_changed();
+  } else {
+    if (!device_id) {
+      BOOST_LOG_SEV(logger, logging::severity::error)
+          << "cannot unpause a video without a device_id set!";
+      BOOST_ASSERT(false);
+      return;
+    }
+    change_to_device(device_id.value());
+  }
 }
 
 void video_settings::change_to_device(const std::string &id) {
@@ -58,12 +68,9 @@ void video_settings::change_to_device(const std::string &id) {
           << "skipping switch because same id";
       return;
     }
-    tracks_adder_.remove(*video_track_adder);
-    video_track_adder.reset();
-    own_media_.remove_video(*capture_device);
-    capture_device->stop();
-    capture_device.reset();
+    reset_current_video();
   }
+  device_id = id;
   std::shared_ptr<rtc::google::capture::video::device> capture_device_check =
       device_creator.create(id);
   capture_device_check->start();
@@ -72,6 +79,16 @@ void video_settings::change_to_device(const std::string &id) {
   tracks_adder_.add(*video_track_adder);
   own_media_.add_video(*capture_device);
   on_video_source_changed();
+}
+
+void video_settings::reset_current_video() {
+  if (!capture_device)
+    return;
+  tracks_adder_.remove(*video_track_adder);
+  video_track_adder.reset();
+  own_media_.remove_video(*capture_device);
+  capture_device->stop();
+  capture_device.reset();
 }
 
 rtc::google::video_source *video_settings::get_video_source() const {
