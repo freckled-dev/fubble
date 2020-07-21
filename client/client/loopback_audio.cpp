@@ -73,7 +73,7 @@ void loopback_audio::enable_loopback(const bool enable) {
     return;
   audio_track->set_enabled(false);
 }
-bool loopback_audio::get_enable_loopback(const bool enable) const {
+bool loopback_audio::get_enable_loopback() const {
   return enable_audio_loopback_;
 }
 
