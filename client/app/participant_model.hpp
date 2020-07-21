@@ -66,11 +66,8 @@ protected:
   void video_added(rtc::google::video_source &);
   void video_removed(rtc::google::video_source &);
   void audio_added(rtc::google::audio_source &);
-  void on_muted_changed(bool muted_);
-  void on_deafed_changed(bool muted_);
   void on_sound_level(double level);
   void on_voice_detected(bool detected);
-  void on_video_disabled_changed(bool disabled);
 
   mutable client::logger logger{"participant_model"};
   participant &participant_;

@@ -22,6 +22,10 @@ own_media_model::~own_media_model() = default;
 void own_media_model::change_muted(bool muted_) {
   BOOST_LOG_SEV(logger, logging::severity::debug)
       << __FUNCTION__ << ", muted:" << muted_;
+  // TODO
+  // audio_settings_.mute_microphone(muted || deafed);
+  // audio_settings_.mute_microphone(muted || deafed);
+  // audio_settings_.mute_speaker(deafed);
 }
 
 void own_media_model::change_video_diabled(bool disabled) {

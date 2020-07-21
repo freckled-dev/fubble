@@ -13,6 +13,7 @@ class own_media_model : public QObject {
   Q_PROPERTY(
       bool videoDisabled MEMBER video_disabled NOTIFY video_disabled_changed)
   Q_PROPERTY(bool muted MEMBER muted NOTIFY muted_changed)
+  Q_PROPERTY(bool deafed MEMBER deafed NOTIFY deafed_changed)
 public:
   own_media_model(video_settings &video_settings_, own_media &own_media_,
                   own_audio_information &audio_information_);
@@ -22,6 +23,7 @@ signals:
   void video_disabled_changed(bool);
   void muted_changed(bool);
   void newAudioLevel(int level);
+  void deafed_changed(bool);
 
 protected:
   void change_muted(bool);
@@ -35,7 +37,8 @@ protected:
   video_settings &video_settings_;
   bool video_disabled{};
   int audio_level{};
-  bool muted{false};
+  bool muted{};
+  bool deafed{};
 };
 } // namespace client
 

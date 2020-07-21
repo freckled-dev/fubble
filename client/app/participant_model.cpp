@@ -35,12 +35,6 @@ participant_model::participant_model(participant &participant_,
         [this](auto level) { on_sound_level(level); });
     audio_information_.on_voice_detected.connect(
         [this](auto detected) { on_voice_detected(detected); });
-    connect(this, &participant_model::muted_changed, this,
-            &participant_model::on_muted_changed);
-    connect(this, &participant_model::deafed_changed, this,
-            &participant_model::on_deafed_changed);
-    connect(this, &participant_model::video_disabled_changed, this,
-            &participant_model::on_video_disabled_changed);
   } else {
     // TODO support audio removal!
     participant_.on_audio_added.connect(
@@ -103,21 +97,6 @@ void participant_model::audio_added(rtc::google::audio_source &source) {
       [this](auto detected) { on_voice_detected(detected); });
 }
 
-void participant_model::on_muted_changed(bool muted_) {
-  BOOST_LOG_SEV(logger, logging::severity::debug)
-      << "muted_changed, muted_:" << muted_;
-  BOOST_ASSERT(own);
-  audio_settings_.mute_microphone(muted || deafed);
-}
-
-void participant_model::on_deafed_changed(bool deafed_) {
-  BOOST_LOG_SEV(logger, logging::severity::debug)
-      << "deafed_changed, deafed_:" << deafed_;
-  BOOST_ASSERT(own);
-  audio_settings_.mute_microphone(muted || deafed);
-  audio_settings_.mute_speaker(deafed);
-}
-
 void participant_model::on_sound_level(double level) {
 #if 0
   BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
@@ -129,10 +108,4 @@ void participant_model::on_sound_level(double level) {
 void participant_model::on_voice_detected(bool detected) {
   voice_detected = detected;
   voice_detected_changed(voice_detected);
-}
-
-void participant_model::on_video_disabled_changed(bool disabled) {
-  BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
-  BOOST_ASSERT(own);
-  video_settings_.pause(disabled);
 }
