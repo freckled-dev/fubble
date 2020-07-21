@@ -6,7 +6,7 @@
 #include "client/factory.hpp"
 #include "client/joiner.hpp"
 #include "client/leaver.hpp"
-#include "client/own_audio.hpp"
+#include "client/loopback_audio.hpp"
 #include "client/own_audio_information.hpp"
 #include "client/own_media.hpp"
 #include "client/participant_creator_creator.hpp"
