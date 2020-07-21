@@ -6,7 +6,7 @@
 #include "client/factory.hpp"
 #include "client/joiner.hpp"
 #include "client/leaver.hpp"
-#include "client/own_audio.hpp"
+#include "client/loopback_audio.hpp"
 #include "client/own_audio_information.hpp"
 #include "client/own_media.hpp"
 #include "client/participant_creator_creator.hpp"
@@ -144,7 +144,7 @@ int main(int argc, char *argv[]) {
                                     rtc_connection_creator};
   client::tracks_adder tracks_adder;
 
-  client::own_audio own_audio{rtc_connection_creator};
+  client::loopback_audio own_audio{rtc_connection_creator};
   client::own_media own_media{own_audio};
   client::own_audio_information own_audio_information_{own_audio};
 
@@ -289,13 +289,15 @@ int main(int argc, char *argv[]) {
 
   QQmlApplicationEngine engine;
   client::audio_settings audio_settings{rtc_audio_devices};
-  client::model_creator model_creator{audio_settings, own_audio_information_};
+  client::model_creator model_creator{audio_settings, video_settings,
+                                      own_audio_information_};
   client::error_model error_model;
   client::utils_model utils_model;
   client::join_model join_model{model_creator, error_model, joiner, own_media};
   client::share_desktop_model share_desktop_model{};
   client::leave_model leave_model{leaver};
-  client::own_media_model own_media_model{own_media, own_audio_information_};
+  client::own_media_model own_media_model{video_settings, own_media,
+                                          own_audio_information_};
   client::audio_video_settings_model audio_video_settings_model{
       rtc_audio_devices, *video_enumerator, audio_settings, video_settings};
   //  works from 5.14 onwards

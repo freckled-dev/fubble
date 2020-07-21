@@ -50,6 +50,7 @@ void join_model::on_joined(boost::future<std::shared_ptr<class room>> room_) {
 }
 
 void join_model::update_video_preview() {
+  BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
   if (video != nullptr) {
     video->deleteLater();
     video = nullptr;

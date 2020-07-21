@@ -1,10 +1,10 @@
 #include "own_media.hpp"
-#include "own_audio.hpp"
+#include "loopback_audio.hpp"
 #include "rtc/google/audio_track.hpp"
 
 using namespace client;
 
-own_media::own_media(own_audio &own_audio_) : own_audio_(own_audio_) {}
+own_media::own_media(loopback_audio &own_audio_) : own_audio_(own_audio_) {}
 
 void own_media::add_video(rtc::google::video_source &video) {
   BOOST_ASSERT(std::find_if(videos.cbegin(), videos.cend(), [&](auto check) {
@@ -31,4 +31,6 @@ rtc::google::audio_source *own_media::get_audio() const {
   return &track->get_source();
 }
 
-client::own_audio &own_media::get_own_audio() const { return own_audio_; }
+client::loopback_audio &own_media::get_loopback_audio() const {
+  return own_audio_;
+}
