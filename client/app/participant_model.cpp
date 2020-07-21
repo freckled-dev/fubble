@@ -4,15 +4,18 @@
 #include "client/own_audio_information.hpp"
 #include "client/own_participant.hpp"
 #include "client/participant.hpp"
+#include "client/video_settings.hpp"
 
 using namespace client;
 
 participant_model::participant_model(participant &participant_,
                                      audio_settings &audio_settings_,
+                                     video_settings &video_settings_,
                                      own_audio_information &audio_information_,
                                      QObject *parent)
     : QObject(parent), participant_(participant_),
-      audio_settings_(audio_settings_), audio_information_(audio_information_),
+      audio_settings_(audio_settings_), video_settings_(video_settings_),
+      audio_information_(audio_information_),
       id(participant_.get_id()), own{dynamic_cast<own_participant *>(
                                          &participant_) != nullptr} {
   set_name();
@@ -27,10 +30,17 @@ participant_model::participant_model(participant &participant_,
     video_added(*video);
   }
   if (own) {
+    video_disabled = video_settings_.get_paused();
     audio_information_.on_sound_level_30times_a_second.connect(
         [this](auto level) { on_sound_level(level); });
     audio_information_.on_voice_detected.connect(
         [this](auto detected) { on_voice_detected(detected); });
+    connect(this, &participant_model::muted_changed, this,
+            &participant_model::on_muted_changed);
+    connect(this, &participant_model::deafed_changed, this,
+            &participant_model::on_deafed_changed);
+    connect(this, &participant_model::video_disabled_changed, this,
+            &participant_model::on_video_disabled_changed);
   } else {
     // TODO support audio removal!
     participant_.on_audio_added.connect(
@@ -41,10 +51,6 @@ participant_model::participant_model(participant &participant_,
       audio_added(*audio);
     }
   }
-  connect(this, &participant_model::muted_changed, this,
-          &participant_model::on_muted_changed);
-  connect(this, &participant_model::deafed_changed, this,
-          &participant_model::on_deafed_changed);
 }
 
 participant_model::~participant_model() = default;
@@ -100,12 +106,14 @@ void participant_model::audio_added(rtc::google::audio_source &source) {
 void participant_model::on_muted_changed(bool muted_) {
   BOOST_LOG_SEV(logger, logging::severity::debug)
       << "muted_changed, muted_:" << muted_;
+  BOOST_ASSERT(own);
   audio_settings_.mute_microphone(muted || deafed);
 }
 
 void participant_model::on_deafed_changed(bool deafed_) {
   BOOST_LOG_SEV(logger, logging::severity::debug)
       << "deafed_changed, deafed_:" << deafed_;
+  BOOST_ASSERT(own);
   audio_settings_.mute_microphone(muted || deafed);
   audio_settings_.mute_speaker(deafed);
 }
@@ -121,4 +129,10 @@ void participant_model::on_sound_level(double level) {
 void participant_model::on_voice_detected(bool detected) {
   voice_detected = detected;
   voice_detected_changed(voice_detected);
+}
+
+void participant_model::on_video_disabled_changed(bool disabled) {
+  BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
+  BOOST_ASSERT(own);
+  video_settings_.pause(disabled);
 }

@@ -12,6 +12,7 @@ class participant;
 class audio_settings;
 class audio_level_calculator;
 class own_audio_information;
+class video_settings;
 
 // TODO derive class to `own_participant_model` and `remote_participant_model`
 class participant_model : public QObject {
@@ -40,6 +41,7 @@ class participant_model : public QObject {
 
 public:
   participant_model(participant &participant_, audio_settings &audio_settings_,
+                    video_settings &video_settings_,
                     own_audio_information &audio_information_, QObject *parent);
   ~participant_model();
 
@@ -68,10 +70,12 @@ protected:
   void on_deafed_changed(bool muted_);
   void on_sound_level(double level);
   void on_voice_detected(bool detected);
+  void on_video_disabled_changed(bool disabled);
 
   mutable client::logger logger{"participant_model"};
   participant &participant_;
   audio_settings &audio_settings_;
+  video_settings &video_settings_;
   own_audio_information &audio_information_;
   std::unique_ptr<audio_level_calculator> audio_level_calculator_;
   const std::string id;

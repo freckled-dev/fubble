@@ -289,7 +289,8 @@ int main(int argc, char *argv[]) {
 
   QQmlApplicationEngine engine;
   client::audio_settings audio_settings{rtc_audio_devices};
-  client::model_creator model_creator{audio_settings, own_audio_information_};
+  client::model_creator model_creator{audio_settings, video_settings,
+                                      own_audio_information_};
   client::error_model error_model;
   client::utils_model utils_model;
   client::join_model join_model{model_creator, error_model, joiner, own_media};

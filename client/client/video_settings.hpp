@@ -4,6 +4,7 @@
 #include "client/logger.hpp"
 #include <boost/signals2/signal.hpp>
 #include <memory>
+#include <optional>
 
 namespace rtc::google {
 class video_source;
@@ -29,6 +30,7 @@ public:
   ~video_settings();
 
   void pause(bool paused);
+  bool get_paused() const;
   void change_to_device(const std::string &id);
 
   rtc::google::video_source *get_video_source() const;
@@ -46,7 +48,8 @@ protected:
 
   std::shared_ptr<rtc::google::capture::video::device> capture_device;
   std::unique_ptr<add_video_to_connection> video_track_adder;
-  std::optional<std::string> device_id;
+  bool paused{};
+  std::optional<std::string> last_device_id;
 };
 } // namespace client
 
