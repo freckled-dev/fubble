@@ -32,6 +32,21 @@ Item {
         columns: 2
 
         Label {
+            text: qsTr("Output Device")
+            font.pointSize: Style.current.textPointSize
+        }
+
+        ComboBox {
+            id: outputCombo
+            Layout.fillWidth: true
+            currentIndex: audioVideoModel.userAudioOutputDeviceIndex
+            textRole: "name"
+            onActivated: audioVideoModel.onAudioOutputDeviceActivated(index)
+            enabled: audioVideoModel.outputDevices.available
+            model: audioVideoModel.outputDevices
+        }
+
+        Label {
             text: qsTr("Input Device")
             font.pointSize: Style.current.textPointSize
         }
@@ -46,19 +61,18 @@ Item {
             model: audioVideoModel.inputDevices
         }
 
-        Label {
-            text: qsTr("Output Device")
-            font.pointSize: Style.current.textPointSize
+        Button {
+            text: qsTr("Test microphone")
+            onClicked: ownMediaModel.loopbackOwnVoice = !ownMediaModel.loopbackOwnVoice
         }
 
-        ComboBox {
-            id: outputCombo
+        AudioChart {
+            id: audioChart
+            Layout.bottomMargin: 2
+            Layout.topMargin: 2
             Layout.fillWidth: true
-            currentIndex: audioVideoModel.userAudioOutputDeviceIndex
-            textRole: "name"
-            onActivated: audioVideoModel.onAudioOutputDeviceActivated(index)
-            enabled: audioVideoModel.outputDevices.available
-            model: audioVideoModel.outputDevices
+            Layout.fillHeight: true
+            visible: ownMediaModel.loopbackOwnVoice
         }
     }
 
@@ -66,7 +80,7 @@ Item {
         id: videoSettings
         anchors.top: audioGrid.bottom
         text: qsTr("Video")
-        anchors.topMargin: 20
+        anchors.topMargin: 30
         font.pointSize: Style.current.largeTextPointSize
     }
 
@@ -104,6 +118,7 @@ Item {
             Layout.fillWidth: true
 
             Loader {
+                id: previewLoader
                 anchors.fill: parent
 
                 sourceComponent: {

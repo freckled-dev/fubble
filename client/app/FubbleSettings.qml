@@ -16,7 +16,7 @@ Popup {
 
     Material.foreground: Style.current.foreground
     padding: 0
-    height: 600
+    height: 650
     width: 500
 
     property alias bar: bar
