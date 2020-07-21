@@ -132,7 +132,7 @@ Item {
 
                 VideoOutput {
                     anchors.fill: parent
-                    source: ownMediaModel.video
+                    source: ownMediaModel.videoPreview
                     fillMode: VideoOutput.PreserveAspectCrop
                 }
             }

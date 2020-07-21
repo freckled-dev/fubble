@@ -135,8 +135,6 @@ FocusScope {
             visible: ownMediaModel.videoAvailable && !demoMode
                      && !ownMediaModel.videoDisabled
 
-            onStateChanged: console.log(state)
-
             function getAspectRatio() {
                 return videoOutput.sourceRect.width / videoOutput.sourceRect.height
             }
