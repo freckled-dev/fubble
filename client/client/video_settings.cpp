@@ -45,7 +45,7 @@ video_settings::video_settings(
 video_settings::~video_settings() = default;
 
 void video_settings::pause(bool paused) {
-  if (!paused) {
+  if (paused) {
     reset_current_video();
     on_video_source_changed();
   } else {

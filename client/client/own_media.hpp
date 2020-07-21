@@ -29,7 +29,7 @@ public:
 
   rtc::google::audio_source *get_audio() const;
   // TODO rename
-  client::loopback_audio &get_own_audio() const;
+  client::loopback_audio &get_loopback_audio() const;
 
 protected:
   videos_type videos;

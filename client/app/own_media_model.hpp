@@ -33,7 +33,7 @@ protected:
   own_media &own_media_;
   own_audio_information &audio_information_;
   video_settings &video_settings_;
-  bool video_disabled{true};
+  bool video_disabled{};
   int audio_level{};
   bool muted{false};
 };

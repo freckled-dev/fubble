@@ -31,4 +31,6 @@ rtc::google::audio_source *own_media::get_audio() const {
   return &track->get_source();
 }
 
-client::loopback_audio &own_media::get_own_audio() const { return own_audio_; }
+client::loopback_audio &own_media::get_loopback_audio() const {
+  return own_audio_;
+}
