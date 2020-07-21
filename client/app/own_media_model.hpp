@@ -16,6 +16,8 @@ class own_media_model : public QObject {
   Q_OBJECT
   Q_PROPERTY(client::ui::frame_provider_google_video_source *video MEMBER video
                  NOTIFY video_changed)
+  Q_PROPERTY(client::ui::frame_provider_google_video_source *videoPreview MEMBER
+                 video_preview NOTIFY video_preview_changed)
   Q_PROPERTY(bool videoDisabled MEMBER video_disabled WRITE set_video_disabled
                  NOTIFY video_disabled_changed)
   Q_PROPERTY(bool videoAvailable READ get_video_available NOTIFY
@@ -37,6 +39,7 @@ signals:
   void deafed_changed(bool);
   void video_available_changed(bool);
   void video_changed(ui::frame_provider_google_video_source *);
+  void video_preview_changed(ui::frame_provider_google_video_source *);
 
 protected:
   void set_muted(bool);
@@ -56,6 +59,7 @@ protected:
   bool muted{};
   bool deafed{};
   ui::frame_provider_google_video_source *video{};
+  ui::frame_provider_google_video_source *video_preview{};
 };
 } // namespace client
 

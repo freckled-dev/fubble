@@ -56,9 +56,13 @@ void own_media_model::on_sound_level(const double level) {
 void own_media_model::update_video() {
   BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
   if (video != nullptr) {
+    BOOST_ASSERT(video_preview != nullptr);
     video->deleteLater();
     video = nullptr;
     video_changed(video);
+    video_preview->deleteLater();
+    video_preview = nullptr;
+    video_changed(video_preview);
   }
 
   auto own_videos = own_media_.get_videos();
@@ -71,4 +75,7 @@ void own_media_model::update_video() {
   video = new ui::frame_provider_google_video_source(this);
   video->set_source(own_video);
   video_changed(video);
+  video_preview = new ui::frame_provider_google_video_source(this);
+  video_preview->set_source(own_video);
+  video_changed(video_preview);
 }
