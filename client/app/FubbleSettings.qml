@@ -71,6 +71,8 @@ Popup {
             onCurrentIndexChanged: audioVideo.isActive = currentIndex === 1
         }
     }
+
+    onClosed: ownMediaModel.loopbackOwnVoice = false
 }
 
 /*##^##
