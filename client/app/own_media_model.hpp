@@ -14,8 +14,10 @@ class own_media;
 class video_settings;
 class own_media_model : public QObject {
   Q_OBJECT
+  // for join screen
   Q_PROPERTY(client::ui::frame_provider_google_video_source *video MEMBER video
                  NOTIFY video_changed)
+  // for settings
   Q_PROPERTY(client::ui::frame_provider_google_video_source *videoPreview MEMBER
                  video_preview NOTIFY video_preview_changed)
   Q_PROPERTY(bool videoDisabled MEMBER video_disabled WRITE set_video_disabled

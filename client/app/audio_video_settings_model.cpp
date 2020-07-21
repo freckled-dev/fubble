@@ -1,6 +1,5 @@
 #include "audio_video_settings_model.hpp"
 #include "client/audio_settings.hpp"
-#include "client/ui/frame_provider_google_video_frame.hpp"
 #include "client/video_settings.hpp"
 #include "rtc/google/audio_devices.hpp"
 #include "rtc/google/capture/video/enumerator.hpp"
@@ -134,9 +133,6 @@ audio_video_settings_model::audio_video_settings_model(
   video_devices = new video_devices_model(video_device_enumerator, this);
   audio_output_device_index = audio_settings.get_playout_device();
   audio_input_device_index = audio_settings.get_recording_device();
-  update_video_preview();
-  video_settings_.on_video_source_changed.connect(
-      [this] { update_video_preview(); });
 }
 
 audio_video_settings_model::~audio_video_settings_model() = default;
@@ -165,17 +161,4 @@ void audio_video_settings_model::onVideoDeviceActivated(int index) {
         << "could not change video device";
     BOOST_ASSERT(false); // TODO implement
   }
-}
-
-void audio_video_settings_model::update_video_preview() {
-  if (video_preview) {
-    video_preview->deleteLater();
-    video_preview = nullptr;
-  }
-  auto source = video_settings_.get_video_source();
-  if (source == nullptr)
-    return;
-  video_preview = new ui::frame_provider_google_video_source(this);
-  video_preview->set_source(source);
-  video_preview_changed(video_preview);
 }

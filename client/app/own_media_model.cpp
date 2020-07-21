@@ -16,6 +16,7 @@ own_media_model::own_media_model(audio_settings &audio_settings_,
   audio_information_.on_sound_level_30times_a_second.connect(
       [this](auto level) { on_sound_level(level); });
   update_video();
+  // video_settings_.on_video_source_changed; // cleaner?
   own_media_.on_video_added.connect([this](auto &) { update_video(); });
   own_media_.on_video_removed.connect([this](auto &) { update_video(); });
 }
