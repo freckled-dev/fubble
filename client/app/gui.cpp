@@ -293,11 +293,11 @@ int main(int argc, char *argv[]) {
                                       own_audio_information_};
   client::error_model error_model;
   client::utils_model utils_model;
-  client::join_model join_model{model_creator, error_model, joiner, own_media};
+  client::join_model join_model{model_creator, error_model, joiner};
   client::share_desktop_model share_desktop_model{};
   client::leave_model leave_model{leaver};
   client::own_media_model own_media_model{audio_settings, video_settings,
-                                          own_audio_information_};
+                                          own_audio_information_, own_media};
   client::audio_video_settings_model audio_video_settings_model{
       rtc_audio_devices, *video_enumerator, audio_settings, video_settings};
   //  works from 5.14 onwards
