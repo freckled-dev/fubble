@@ -63,7 +63,23 @@ Item {
 
         Button {
             text: qsTr("Test microphone")
-            onClicked: ownMediaModel.loopbackOwnVoice = !ownMediaModel.loopbackOwnVoice
+            onClicked: {
+                ownMediaModel.loopbackOwnVoice = !ownMediaModel.loopbackOwnVoice
+                if (ownMediaModel.loopbackOwnVoice) {
+                    text = qsTr("Stop test")
+                } else {
+                    text = qsTr("Test microphone")
+                }
+            }
+        }
+
+        Connections {
+            target: ownMediaModel
+            onNewAudioLevel: {
+                if (ownMediaModel.loopbackOwnVoice) {
+                    audioChart.addNewAudioLevel(level)
+                }
+            }
         }
 
         AudioChart {
@@ -72,7 +88,10 @@ Item {
             Layout.topMargin: 2
             Layout.fillWidth: true
             Layout.fillHeight: true
-            visible: ownMediaModel.loopbackOwnVoice
+            //            visible: {
+            //                console.log(ownMediaModel.loopbackOwnVoice)
+            //                return ownMediaModel.loopbackOwnVoice
+            //            }
         }
     }
 
