@@ -26,7 +26,7 @@ public:
   void start(rtc::google::audio_source &audio_source);
 
   void enable_loopback(const bool enable);
-  bool get_enable_loopback(const bool enable) const;
+  bool get_enable_loopback() const;
   boost::signals2::signal<void(rtc::google::audio_track &)> on_track;
   rtc::google::audio_track *get_track();
 

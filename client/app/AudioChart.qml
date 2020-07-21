@@ -1,5 +1,5 @@
 import QtQuick 2.0
-import QtCharts 2.2
+import QtCharts 2.3
 import QtQuick.Layouts 1.0
 import QtQuick.Controls 2.2
 import "."
@@ -43,7 +43,9 @@ Rectangle {
         antialiasing: true
         clip: true
         legend.visible: false
+        anchors.fill: parent
         backgroundColor: Style.current.transparent
+        plotArea: Qt.rect(0, 0, width, height)
 
         margins {
             top: 0
@@ -55,7 +57,7 @@ Rectangle {
         ValueAxis {
             id: axisX
             min: 0
-            max: maxValues + 5
+            max: maxValues
             labelsVisible: false
             gridVisible: false
             lineVisible: false
@@ -64,8 +66,8 @@ Rectangle {
 
         ValueAxis {
             id: axisY
-            min: -5
-            max: 127 + 5
+            min: 0
+            max: 127
             labelsVisible: false
             gridVisible: false
             lineVisible: false
@@ -87,9 +89,8 @@ Rectangle {
 
     Component.onCompleted: {
         if (Utils.isDemoMode()) {
-            audioLevels = [40, 60, 80, 85, 80, 75, 75, 68, 72, 59, 80, 99, 117, 44, 36, 116, 48, 70, 77, 78, 112, 112, 108, 80, 59, 67, 45, 6, 4, 3, 0, 0, 0, 0, 10, 15, 18, 21, 30, 83, 60, 91, 17, 43, 125, 53, 50, 14, 94, 22]
+            audioLevels = [40, 60, 80, 85, 80, 75, 75, 68, 72, 59, 80, 99, 117, 44, 36, 116, 48, 70, 77, 78, 112, 112, 127, 127, 59, 67, 45, 6, 4, 3, 1, 1, 0, 0, 0, 1, 5, 21, 30, 83, 60, 91, 17, 43, 125, 53, 50, 14, 94, 22]
         }
-
         insertAudioLevels()
     }
 

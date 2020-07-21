@@ -93,7 +93,7 @@ Item {
             color: Style.current.transparent
             visible: false
             radius: 5
-            implicitHeight: audioChart.height + moreDetails.height
+            implicitHeight: audioChart.height + 10 + moreDetails.height
 
             Item {
                 id: moreDetails
@@ -153,13 +153,9 @@ Item {
                 anchors.top: moreDetails.bottom
                 anchors.left: parent.left
                 anchors.right: parent.right
+                anchors.margins: 5
                 visible: talking
                 height: talking ? 60 : 0
-
-                chart.height: audioChart.height + 50
-                chart.width: audioChart.width + 90
-                chart.x: -45
-                chart.y: -30
             }
         }
     }
