@@ -63,7 +63,7 @@ void own_media_model::update_video() {
     video_changed(video);
     video_preview->deleteLater();
     video_preview = nullptr;
-    video_changed(video_preview);
+    video_preview_changed(video_preview);
   }
 
   auto own_videos = own_media_.get_videos();
@@ -78,5 +78,5 @@ void own_media_model::update_video() {
   video_changed(video);
   video_preview = new ui::frame_provider_google_video_source(this);
   video_preview->set_source(own_video);
-  video_changed(video_preview);
+  video_preview_changed(video_preview);
 }
