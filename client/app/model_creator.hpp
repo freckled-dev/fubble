@@ -12,9 +12,11 @@ class participant_model;
 class participants_model;
 class room;
 class room_model;
+class video_settings;
 class model_creator {
 public:
   model_creator(audio_settings &audio_settings_,
+                video_settings &video_settings_,
                 own_audio_information &audio_information_);
   room_model *create_room_model(const std::shared_ptr<room> &room_,
                                 QObject *parent);
@@ -24,6 +26,7 @@ public:
 
 protected:
   audio_settings &audio_settings_;
+  video_settings &video_settings_;
   own_audio_information &audio_information_;
 };
 } // namespace client

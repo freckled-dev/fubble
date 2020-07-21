@@ -18,10 +18,10 @@ class audio_track_sink;
 } // namespace rtc
 
 namespace client {
-class own_audio {
+class loopback_audio {
 public:
-  own_audio(rtc::google::factory &rtc_factory);
-  ~own_audio();
+  loopback_audio(rtc::google::factory &rtc_factory);
+  ~loopback_audio();
 
   void start(rtc::google::audio_source &audio_source);
 
@@ -41,7 +41,7 @@ protected:
   std::unique_ptr<rtc::connection> rtc_connection_offering;
   std::unique_ptr<rtc::connection> rtc_connection_answering;
   std::shared_ptr<rtc::google::audio_track_sink> audio_track;
-  bool enable_audio_loopback_{false};
+  bool enable_audio_loopback_{false}; // set to true to default hear yourself
 };
 } // namespace client
 

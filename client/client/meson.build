@@ -8,7 +8,7 @@ client = library('client',
     'own_participant.cpp', 'bot_participant.cpp', 'participant.cpp',
     'participants.cpp', 'users.cpp', 'audio_settings.cpp',
     'add_data_channel.cpp', 'factory.cpp', 'audio_level_calculator.cpp',
-    'own_audio.cpp', 'own_media.cpp', 'own_audio_information.cpp',
+    'loopback_audio.cpp', 'own_media.cpp', 'own_audio_information.cpp',
     'video_settings.cpp', 'tracks_adder.cpp'
     ],
   cpp_pch: '../../pch/precompiled.hpp',
