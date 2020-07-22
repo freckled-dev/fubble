@@ -41,11 +41,8 @@ Rectangle {
         anchors.bottom: parent.bottom
         anchors.rightMargin: 20
         anchors.leftMargin: 20
-
-        chart.height: audioChart.height + 25
-        chart.width: audioChart.width + 80
-        chart.x: -30
-        chart.y: -5
+        anchors.topMargin: 5
+        anchors.bottomMargin: 5
     }
 
     FubbleActionButton {

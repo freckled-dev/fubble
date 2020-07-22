@@ -6,6 +6,7 @@ QtObject {
     property bool videoDisabled
     property bool deafed
     property bool videoAvailable: true
+    property bool loopbackOwnVoice
     signal newAudioLevel(int level)
 
     property MediaPlayer video: MediaPlayer {

@@ -5,15 +5,20 @@
 #include <QObject>
 
 namespace client {
+<<<<<<< HEAD
 namespace ui {
 class frame_provider_google_video_source;
 }
 class audio_settings;
+=======
+class loopback_audio;
+>>>>>>> origin/master
 class own_audio_information;
 class own_media;
 class video_settings;
 class own_media_model : public QObject {
   Q_OBJECT
+<<<<<<< HEAD
   // for join screen
   Q_PROPERTY(client::ui::frame_provider_google_video_source *video MEMBER video
                  NOTIFY video_changed)
@@ -32,6 +37,18 @@ public:
                   video_settings &video_settings_,
                   own_audio_information &audio_information_,
                   own_media &own_media_);
+=======
+  Q_PROPERTY(
+      bool videoDisabled MEMBER video_disabled NOTIFY video_disabled_changed)
+  Q_PROPERTY(bool muted MEMBER muted NOTIFY muted_changed)
+  Q_PROPERTY(bool deafed MEMBER deafed NOTIFY deafed_changed)
+  Q_PROPERTY(bool loopbackOwnVoice READ get_loopback_audio WRITE
+                 set_loopback_audio NOTIFY loopback_audio_changed)
+public:
+  own_media_model(video_settings &video_settings_, own_media &own_media_,
+                  loopback_audio &loopback_audio_,
+                  own_audio_information &audio_information_);
+>>>>>>> origin/master
   ~own_media_model();
 
 signals:
@@ -39,6 +56,7 @@ signals:
   void muted_changed(bool);
   void newAudioLevel(int level);
   void deafed_changed(bool);
+<<<<<<< HEAD
   void video_available_changed(bool);
   void video_changed(ui::frame_provider_google_video_source *);
   void video_preview_changed(ui::frame_provider_google_video_source *);
@@ -56,6 +74,22 @@ protected:
   video_settings &video_settings_;
   audio_settings &audio_settings_;
   own_media &own_media_;
+=======
+  void loopback_audio_changed(bool);
+
+protected:
+  void change_muted(bool);
+  void change_video_diabled(bool);
+  void on_sound_level(const double);
+  void set_loopback_audio(bool);
+  bool get_loopback_audio() const;
+
+  mutable client::logger logger{"own_media_model"};
+  video_settings &video_settings_;
+  own_media &own_media_;
+  loopback_audio &loopback_audio_;
+  own_audio_information &audio_information_;
+>>>>>>> origin/master
   bool video_disabled{};
   int audio_level{};
   bool muted{};
