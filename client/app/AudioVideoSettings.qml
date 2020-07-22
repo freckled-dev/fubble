@@ -180,11 +180,11 @@ Item {
 
     onTabIsActiveChanged: {
         if (tabIsActive && ownMediaModel.videoAvailable) {
-            ownMediaModel.video.play()
+            audioVideoModel.videoPreview.play()
         }
 
         if (!tabIsActive) {
-            ownMediaModel.video.stop()
+            audioVideoModel.videoPreview.stop()
         }
     }
 }

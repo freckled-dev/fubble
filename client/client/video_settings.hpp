@@ -10,7 +10,7 @@ namespace rtc::google {
 class video_source;
 namespace capture::video {
 class enumerator;
-class device_creator;
+class device_factory;
 class device;
 } // namespace capture::video
 } // namespace rtc::google
@@ -24,7 +24,7 @@ class video_settings {
 public:
   video_settings(
       rtc::google::capture::video::enumerator &enumerator,
-      rtc::google::capture::video::device_creator &device_creator,
+      rtc::google::capture::video::device_factory &device_creator,
       own_media &own_media_, tracks_adder &tracks_adder_,
       add_video_to_connection_factory &add_video_to_connection_factory_);
   ~video_settings();
@@ -42,7 +42,7 @@ protected:
 
   client::logger logger{"video_settings"};
   rtc::google::capture::video::enumerator &enumerator;
-  rtc::google::capture::video::device_creator &device_creator;
+  rtc::google::capture::video::device_factory &device_creator;
   own_media &own_media_;
   tracks_adder &tracks_adder_;
   add_video_to_connection_factory &add_video_to_connection_factory_;

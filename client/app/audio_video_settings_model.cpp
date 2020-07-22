@@ -1,7 +1,9 @@
 #include "audio_video_settings_model.hpp"
 #include "client/audio_settings.hpp"
+#include "client/ui/frame_provider_google_video_device.hpp"
 #include "client/video_settings.hpp"
 #include "rtc/google/audio_devices.hpp"
+#include "rtc/google/capture/video/device.hpp"
 #include "rtc/google/capture/video/enumerator.hpp"
 
 using namespace client;
@@ -122,10 +124,12 @@ QHash<int, QByteArray> devices_model::roleNames() const {
 audio_video_settings_model::audio_video_settings_model(
     rtc::google::audio_devices &audio_devices,
     rtc::google::capture::video::enumerator &video_device_enumerator,
+    rtc::google::capture::video::device_factory &video_device_factory,
     client::audio_settings &audio_settings, video_settings &video_settings_,
     QObject *parent)
     : QObject(parent), audio_settings(audio_settings),
-      video_settings_(video_settings_) {
+      video_settings_(video_settings_),
+      video_device_factory(video_device_factory) {
   audio_devices.enumerate();
   output_devices =
       new output_audio_devices_model(audio_devices, audio_settings, this);
@@ -133,6 +137,10 @@ audio_video_settings_model::audio_video_settings_model(
   video_devices = new video_devices_model(video_device_enumerator, this);
   audio_output_device_index = audio_settings.get_playout_device();
   audio_input_device_index = audio_settings.get_recording_device();
+  // TODO
+  video_device =
+      video_device_factory.create(video_device_enumerator.enumerate()[0].id);
+  video = new ui::frame_provider_google_video_device(*video_device, this);
 }
 
 audio_video_settings_model::~audio_video_settings_model() = default;

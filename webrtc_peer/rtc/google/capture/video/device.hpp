@@ -3,36 +3,26 @@
 
 #include "rtc/google/video_source.hpp"
 #include "rtc/logger.hpp"
-#include <api/video/video_sink_interface.h>
-#include <boost/signals2/signal.hpp>
-#include <modules/video_capture/video_capture.h>
 
 namespace rtc {
 namespace google {
 namespace capture {
 namespace video {
-// TODO move `VideoSinkInterface` into `video_source`
-class device : public rtc::VideoSinkInterface<webrtc::VideoFrame>,
-               public video_source {
+class device : public video_source {
 public:
-  device(const rtc::scoped_refptr<webrtc::VideoCaptureModule> &native_device,
-         const std::string &id);
-  ~device();
+  device() = default;
+  virtual ~device() = default;
 
-  void start();
-  void stop();
+  virtual void start() = 0;
+  virtual void stop() = 0;
 
-  std::string get_id() const { return id; }
+  virtual std::string get_id() const = 0;
+};
+class device_factory {
+public:
+  device_factory();
 
-protected:
-  void OnFrame(const webrtc::VideoFrame &frame) override;
-  void OnDiscardedFrame() override;
-
-  class logger logger {
-    "video::device"
-  };
-  const std::string id;
-  const rtc::scoped_refptr<webrtc::VideoCaptureModule> device_;
+  std::unique_ptr<device> create(const std::string &id);
 };
 } // namespace video
 } // namespace capture
