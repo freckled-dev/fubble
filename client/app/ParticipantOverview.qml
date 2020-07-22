@@ -119,25 +119,18 @@ Item {
                     anchors.top: volumeHeader.bottom
                     anchors.left: parent.left
                     anchors.right: muteImage.left
+                    anchors.rightMargin: 5
                     enabled: !participant.muted
                 }
 
-                Image {
+                FubbleActionButton {
                     id: muteImage
                     anchors.verticalCenter: volumeSlider.verticalCenter
-                    sourceSize.height: 20
-                    sourceSize.width: 20
                     anchors.right: parent.right
-                    source: participant.muted ? Style.current.mutedImage : Style.current.mutedOffImage
-
-                    MouseArea {
-                        id: maMute
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        onClicked: {
-                            participant.silenced = !participant.silenced
-                        }
-                    }
+                    anchors.rightMargin: 10
+                    showToolTip: false
+                    icon.source: participant.muted ? Style.current.mutedImage : Style.current.mutedOffImage
+                    onActionClick: participant.silenced = !participant.silenced
                 }
             }
 

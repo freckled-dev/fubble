@@ -1,28 +1,23 @@
 import QtQuick 2.12
+import QtQuick.Controls 2.12
 
-Image {
+Button {
 
-    id: actionImage
-    property int imageSize: 40
+    id: actionButton
     property var actionFunction
     property alias toolTipText: actionToolTip.text
     property bool showToolTip: true
     signal actionClick
-
-    sourceSize.height: imageSize
-    sourceSize.width: imageSize
+    icon.color: Style.current.transparent
+    width: 40
+    implicitWidth: 40
 
     FubbleToolTip {
         id: actionToolTip
-        visible: maAction.containsMouse && showToolTip
+        visible: actionButton.hovered && showToolTip
     }
 
-    MouseArea {
-        id: maAction
-        anchors.fill: parent
-        hoverEnabled: true
-        onClicked: actionClick()
-    }
+    onClicked: actionClick()
 }
 
 /*##^##

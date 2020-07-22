@@ -16,7 +16,7 @@
    viewBox="0 0 260096 260096"
    xml:space="preserve"
    sodipodi:docname="overlay_mute.svg"
-   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"
    width="512"
    height="512"
    inkscape:export-filename="/home/tamrielle/Workspace/fubble/fubble/client/app/pics/overlay_mute.svg.png"
@@ -52,7 +52,7 @@
    id="namedview61"
    showgrid="false"
    inkscape:zoom="0.92913386"
-   inkscape:cx="106.00845"
+   inkscape:cx="82.566864"
    inkscape:cy="243.54237"
    inkscape:window-x="1920"
    inkscape:window-y="0"
@@ -60,26 +60,21 @@
    inkscape:current-layer="Layer_1"
    units="px" />
 
-<path
-   inkscape:connector-curvature="0"
-   style="fill:#cecece;fill-opacity:1;stroke:#000000;stroke-width:508;stroke-opacity:1"
-   d="M 220626.98,261112 H 41810.984 c -22408.9,0 -40640.0004,-18231.1 -40640.0004,-40640 V 41656 c 0,-22408.896 18231.1004,-40639.9997 40640.0004,-40639.9997 H 220626.98 c 22408.9,0 40640,18231.1037 40640,40639.9997 v 178816 c 0,22408.9 -18231.1,40640 -40640,40640 z"
-   id="path13"
-   sodipodi:nodetypes="sssssssss" /><rect
-   x="120578.27"
-   y="183103.42"
-   style="fill:#3a3d51;fill-opacity:1;stroke-width:511.02679443"
-   width="13402.182"
-   height="34581.332"
+<rect
+   x="119093.44"
+   y="198653.7"
+   style="fill:#3a3d51;fill-opacity:1;stroke-width:739.7487793"
+   width="21279.924"
+   height="45638.18"
    id="rect4" />
 <path
-   style="fill:#65687f;fill-opacity:1;stroke:none;stroke-width:553.65386963;stroke-opacity:1"
-   d="m 127165.78,40418.55 v 0 c -18172.45,0 -32937.57,14034.166 -32937.57,31306.988 v 64988.992 c 0,17272.82 14765.12,31306.98 32937.57,31306.98 v 0 c 18172.45,0 32937.56,-14034.16 32937.56,-31306.98 V 71509.625 c 0,-17272.818 -14765.11,-31091.075 -32937.56,-31091.075 z"
+   style="fill:#65687f;fill-opacity:1;stroke:none;stroke-width:801.45465088;stroke-opacity:1"
+   d="m 129553.05,10347.533 v 0 c -28854.14,0 -52298.134,18521.374 -52298.134,41316.914 v 85768.223 c 0,22795.54 23443.994,41316.9 52298.134,41316.9 v 0 c 28854.13,0 52298.11,-18521.36 52298.11,-41316.9 V 51379.499 c 0,-22795.535 -23443.98,-41031.966 -52298.11,-41031.966 z"
    id="path6"
    inkscape:connector-curvature="0" />
 <g
    id="g22"
-   transform="matrix(567.88903,0,0,531.25836,-17078.035,2268.9022)"
+   transform="matrix(901.6917,0,0,701.12001,-99476.65,-39999.876)"
    style="fill:#3a3d51;fill-opacity:1">
 	<path
    style="fill:#3a3d51;fill-opacity:1"
@@ -131,7 +126,7 @@
 </g>
 <g
    id="g28"
-   transform="matrix(567.88903,0,0,459.85817,-17078.035,24545.763)"
+   transform="matrix(901.6917,0,0,606.89072,-99476.65,-10600.332)"
    style="fill:#3a3d51;fill-opacity:1">
 	<path
    style="fill:#3a3d51;fill-opacity:1"
@@ -146,62 +141,62 @@
 </g>
 <g
    id="g30"
-   transform="matrix(605.29795,0,0,479.09607,-22456.863,16774.039)">
+   transform="matrix(961.08943,0,0,632.27963,-108017.13,-20856.945)">
 </g>
 <g
    id="g32"
-   transform="matrix(605.29795,0,0,479.09607,-22456.863,16774.039)">
+   transform="matrix(961.08943,0,0,632.27963,-108017.13,-20856.945)">
 </g>
 <g
    id="g34"
-   transform="matrix(605.29795,0,0,479.09607,-22456.863,16774.039)">
+   transform="matrix(961.08943,0,0,632.27963,-108017.13,-20856.945)">
 </g>
 <g
    id="g36"
-   transform="matrix(605.29795,0,0,479.09607,-22456.863,16774.039)">
+   transform="matrix(961.08943,0,0,632.27963,-108017.13,-20856.945)">
 </g>
 <g
    id="g38"
-   transform="matrix(605.29795,0,0,479.09607,-22456.863,16774.039)">
+   transform="matrix(961.08943,0,0,632.27963,-108017.13,-20856.945)">
 </g>
 <g
    id="g40"
-   transform="matrix(605.29795,0,0,479.09607,-22456.863,16774.039)">
+   transform="matrix(961.08943,0,0,632.27963,-108017.13,-20856.945)">
 </g>
 <g
    id="g42"
-   transform="matrix(605.29795,0,0,479.09607,-22456.863,16774.039)">
+   transform="matrix(961.08943,0,0,632.27963,-108017.13,-20856.945)">
 </g>
 <g
    id="g44"
-   transform="matrix(605.29795,0,0,479.09607,-22456.863,16774.039)">
+   transform="matrix(961.08943,0,0,632.27963,-108017.13,-20856.945)">
 </g>
 <g
    id="g46"
-   transform="matrix(605.29795,0,0,479.09607,-22456.863,16774.039)">
+   transform="matrix(961.08943,0,0,632.27963,-108017.13,-20856.945)">
 </g>
 <g
    id="g48"
-   transform="matrix(605.29795,0,0,479.09607,-22456.863,16774.039)">
+   transform="matrix(961.08943,0,0,632.27963,-108017.13,-20856.945)">
 </g>
 <g
    id="g50"
-   transform="matrix(605.29795,0,0,479.09607,-22456.863,16774.039)">
+   transform="matrix(961.08943,0,0,632.27963,-108017.13,-20856.945)">
 </g>
 <g
    id="g52"
-   transform="matrix(605.29795,0,0,479.09607,-22456.863,16774.039)">
+   transform="matrix(961.08943,0,0,632.27963,-108017.13,-20856.945)">
 </g>
 <g
    id="g54"
-   transform="matrix(605.29795,0,0,479.09607,-22456.863,16774.039)">
+   transform="matrix(961.08943,0,0,632.27963,-108017.13,-20856.945)">
 </g>
 <g
    id="g56"
-   transform="matrix(605.29795,0,0,479.09607,-22456.863,16774.039)">
+   transform="matrix(961.08943,0,0,632.27963,-108017.13,-20856.945)">
 </g>
 <g
    id="g58"
-   transform="matrix(605.29795,0,0,479.09607,-22456.863,16774.039)">
+   transform="matrix(961.08943,0,0,632.27963,-108017.13,-20856.945)">
 </g>
 </svg>

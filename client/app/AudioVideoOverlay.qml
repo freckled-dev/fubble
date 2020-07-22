@@ -12,7 +12,7 @@ Rectangle {
         anchors.leftMargin: 10
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: parent.left
-        source: Style.current.settingsImage
+        icon.source: Style.current.settingsImage
         onActionClick: openSettings()
         showToolTip: false
     }
@@ -50,7 +50,7 @@ Rectangle {
         anchors.rightMargin: 10
         anchors.verticalCenter: parent.verticalCenter
         anchors.right: muteButton.left
-        source: ownMediaModel.videoDisabled ? Style.current.overlayVideoOffImage : Style.current.overlayVideoImage
+        icon.source: ownMediaModel.videoDisabled ? Style.current.overlayVideoOffImage : Style.current.overlayVideoImage
         toolTipText: qsTr("Disable your video")
         onActionClick: ownMediaModel.videoDisabled = !ownMediaModel.videoDisabled
         visible: ownMediaModel.videoAvailable
@@ -60,7 +60,7 @@ Rectangle {
         id: muteButton
         anchors.rightMargin: 10
         anchors.verticalCenter: parent.verticalCenter
-        source: ownMediaModel.muted ? Style.current.overlayMuteOffImage : Style.current.overlayMuteImage
+        icon.source: ownMediaModel.muted ? Style.current.overlayMuteOffImage : Style.current.overlayMuteImage
         anchors.right: parent.right
         toolTipText: qsTr("Mute yourself")
         onActionClick: ownMediaModel.muted = !ownMediaModel.muted

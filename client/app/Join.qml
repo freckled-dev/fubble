@@ -63,19 +63,11 @@ FocusScope {
             infoLabelText: getInfoText()
 
             AudioVideoOverlay {
-                visible: maNoVideo.containsMouse
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.bottom: parent.bottom
                 height: 60
                 videoOffButtonVisible: ownMediaModel.videoDisabled ? true : false
-            }
-
-            MouseArea {
-                id: maNoVideo
-                anchors.fill: parent
-                hoverEnabled: true
-                propagateComposedEvents: true
             }
 
             function getInfoText() {
@@ -125,15 +117,7 @@ FocusScope {
                 source: Style.current.demoImagesPath + "Sarah.jpg"
                 fillMode: Image.PreserveAspectCrop
 
-                MouseArea {
-                    id: maVideo
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    propagateComposedEvents: true
-                }
-
                 AudioVideoOverlay {
-                    visible: maVideo.containsMouse
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.bottom: parent.bottom
@@ -170,19 +154,11 @@ FocusScope {
             }
 
             AudioVideoOverlay {
-                visible: maVideo.containsMouse && joinModel.video !== null
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.bottom: parent.bottom
                 height: 60
                 videoOffButtonVisible: true
-            }
-
-            MouseArea {
-                id: maVideo
-                anchors.fill: parent
-                hoverEnabled: true
-                propagateComposedEvents: true
             }
         }
 
