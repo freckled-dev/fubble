@@ -11,6 +11,8 @@ source ../environment
 #    qml-module-qtquick-\* qml-module-qt-labs-\* \
 #    qml-module-qtcharts qml-module-qtmultimedia qtdeclarative5-dev-tools
 
+export LD_LIBRARY_PATH=$(realpath $(dirname $(which qmake))/../lib)
+
 cd "$current_dir"
 curl -LO https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
 curl -LO https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
