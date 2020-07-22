@@ -296,13 +296,9 @@ int main(int argc, char *argv[]) {
   client::join_model join_model{model_creator, error_model, joiner};
   client::share_desktop_model share_desktop_model{};
   client::leave_model leave_model{leaver};
-<<<<<<< HEAD
   client::own_media_model own_media_model{audio_settings, video_settings,
-                                          own_audio_information_, own_media};
-=======
-  client::own_media_model own_media_model{video_settings, own_media, own_audio,
-                                          own_audio_information_};
->>>>>>> origin/master
+                                          own_audio, own_audio_information_,
+                                          own_media};
   client::audio_video_settings_model audio_video_settings_model{
       rtc_audio_devices, *video_enumerator, audio_settings, video_settings};
   //  works from 5.14 onwards
