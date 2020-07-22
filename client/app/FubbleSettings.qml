@@ -75,6 +75,7 @@ Popup {
     onClosed: {
         ownMediaModel.loopbackOwnVoice = false
         audioVideo.tabIsActive = false
+        bar.currentIndex = 0
     }
 }
 
