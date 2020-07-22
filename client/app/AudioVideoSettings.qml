@@ -9,7 +9,7 @@ Item {
     id: element
 
     property alias settings: settings
-    property bool isActive: false
+    property bool tabIsActive: false
     property bool demoMode: Utils.isDemoMode()
 
     Settings {
@@ -132,7 +132,7 @@ Item {
 
                 VideoOutput {
                     anchors.fill: parent
-                    source: ownMediaModel.videoPreview
+                    source: audioVideoModel.videoPreview
                     fillMode: VideoOutput.PreserveAspectCrop
                 }
             }
@@ -148,8 +148,9 @@ Item {
         }
     }
 
-    onIsActiveChanged: {
-        if (isActive && ownMediaModel.videoAvailable) {
+    onTabIsActiveChanged: {
+        console.log("is active: " + tabIsActive)
+        if (tabIsActive && ownMediaModel.videoAvailable) {
             ownMediaModel.video.play()
         }
     }

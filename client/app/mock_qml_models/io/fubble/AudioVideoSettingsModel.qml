@@ -1,4 +1,5 @@
 import QtQuick 2.0
+import QtMultimedia 5.0
 
 QtObject {
 
@@ -42,5 +43,10 @@ QtObject {
         //            inputId: "2"
         //            name: "Internal Video"
         //        }
+    }
+
+    property MediaPlayer videoPreview: MediaPlayer {
+        source: "/home/tamrielle/Downloads/Sintel_webm_extract.webm"
+        autoPlay: true
     }
 }

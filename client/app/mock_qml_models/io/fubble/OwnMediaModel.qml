@@ -12,8 +12,4 @@ QtObject {
         source: "/home/tamrielle/Downloads/Sintel_webm_extract.webm"
         autoPlay: true
     }
-    property MediaPlayer videoPreview: MediaPlayer {
-        source: "/home/tamrielle/Downloads/Sintel_webm_extract.webm"
-        autoPlay: true
-    }
 }
