@@ -78,6 +78,8 @@ public:
   }
   ~device_wrapper() { stop(); }
   void start() override {
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << __FUNCTION__ << ", started:" << started;
     if (started)
       return;
     started = true;
@@ -87,6 +89,8 @@ public:
       delegate->start();
   }
   void stop() override {
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << __FUNCTION__ << ", started:" << started;
     if (!started)
       return;
     started = false;
@@ -99,6 +103,7 @@ public:
   std::string get_id() const override { return delegate->get_id(); }
 
 protected:
+  rtc::logger logger{"device_wrapper"};
   std::shared_ptr<device> delegate;
   std::shared_ptr<int> start_stop_counter;
   bool started{};
