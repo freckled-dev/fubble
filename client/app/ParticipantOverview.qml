@@ -1,6 +1,6 @@
-import QtQuick 2.0
-import QtQuick.Layouts 1.0
-import QtQuick.Controls 2.2
+import QtQuick 2.12
+import QtQuick.Layouts 1.12
+import QtQuick.Controls 2.12
 import io.fubble 1.0
 import "."
 
@@ -119,25 +119,18 @@ Item {
                     anchors.top: volumeHeader.bottom
                     anchors.left: parent.left
                     anchors.right: muteImage.left
+                    anchors.rightMargin: 5
                     enabled: !participant.muted
                 }
 
-                Image {
+                FubbleActionButton {
                     id: muteImage
                     anchors.verticalCenter: volumeSlider.verticalCenter
-                    sourceSize.height: 20
-                    sourceSize.width: 20
                     anchors.right: parent.right
-                    source: participant.muted ? Style.current.mutedImage : Style.current.mutedOffImage
-
-                    MouseArea {
-                        id: maMute
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        onClicked: {
-                            participant.silenced = !participant.silenced
-                        }
-                    }
+                    anchors.rightMargin: 10
+                    showToolTip: false
+                    icon.source: participant.muted ? Style.current.mutedImage : Style.current.mutedOffImage
+                    onActionClick: participant.silenced = !participant.silenced
                 }
             }
 

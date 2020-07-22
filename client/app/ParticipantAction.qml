@@ -1,10 +1,9 @@
-import QtMultimedia 5.0
-import QtQuick 2.0
-import QtQuick.Controls 2.2
-import QtQuick.Layouts 1.0
-import QtQuick.Window 2.0
+import QtMultimedia 5.12
+import QtQuick 2.12
+import QtQuick.Controls 2.12
+import QtQuick.Layouts 1.12
 import io.fubble 1.0
-import QtQuick.Controls.Material 2.0
+import QtQuick.Controls.Material 2.12
 import "."
 
 RowLayout {
@@ -15,7 +14,7 @@ RowLayout {
     anchors.bottom: parent.bottom
 
     FubbleActionButton {
-        source: Style.current.shareDesktopImage
+        icon.source: Style.current.shareDesktopImage
         toolTipText: qsTr("Share your screen")
         onActionClick: shareDesktopPopup.open()
     }
@@ -25,7 +24,7 @@ RowLayout {
     }
 
     FubbleActionButton {
-        source: ownMediaModel.videoDisabled ? Style.current.overlayVideoOffImage : Style.current.overlayVideoImage
+        icon.source: ownMediaModel.videoDisabled ? Style.current.overlayVideoOffImage : Style.current.overlayVideoImage
         toolTipText: ownMediaModel.videoDisabled ? qsTr("Enable your video") : qsTr(
                                                        "Disable your video")
         onActionClick: ownMediaModel.videoDisabled = !ownMediaModel.videoDisabled
@@ -33,14 +32,14 @@ RowLayout {
     }
 
     FubbleActionButton {
-        source: ownMediaModel.muted ? Style.current.overlayMuteOffImage : Style.current.overlayMuteImage
+        icon.source: ownMediaModel.muted ? Style.current.overlayMuteOffImage : Style.current.overlayMuteImage
         toolTipText: ownMediaModel.muted ? qsTr("Unmute yourself") : qsTr(
                                                "Mute yourself")
         onActionClick: ownMediaModel.muted = !ownMediaModel.muted
     }
 
     FubbleActionButton {
-        source: ownMediaModel.deafed ? Style.current.overlaySilenceOffImage : Style.current.overlaySilenceImage
+        icon.source: ownMediaModel.deafed ? Style.current.overlaySilenceOffImage : Style.current.overlaySilenceImage
         toolTipText: ownMediaModel.deafed ? qsTr("Hear everyone") : qsTr(
                                                 "Silence everyone")
         onActionClick: ownMediaModel.deafed = !ownMediaModel.deafed

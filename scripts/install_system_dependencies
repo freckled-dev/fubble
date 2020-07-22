@@ -54,10 +54,10 @@ if grep -i ubuntu /etc/os-release
     qt5-default qttools5-dev-tools qtquickcontrols2-5-dev qtmultimedia5-dev \
     qtdeclarative5-dev libqt5charts5-dev libqt5svg5-dev \
     qml-module-qtmultimedia qml-module-qtcharts \
-    pkg-config git cmake \
+    pkg-config git cmake fuse \
     rsync rclone curl \
     pulseaudio docker.io
-  and sudo -H pip3 install conan meson==0.53.0 docker-compose
+  and sudo -H pip3 install conan meson docker-compose aqtinstall
   conan profile new default --detect
   conan profile update settings.compiler.libcxx=libstdc++11 default
 else

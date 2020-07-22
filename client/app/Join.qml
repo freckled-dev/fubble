@@ -1,10 +1,10 @@
-import QtQuick 2.0
-import QtQuick.Controls 2.2
-import QtQuick.Layouts 1.0
-import QtMultimedia 5.0
+import QtQuick 2.12
+import QtQuick.Controls 2.12
+import QtQuick.Layouts 1.12
+import QtMultimedia 5.12
 import io.fubble 1.0
 import Qt.labs.settings 1.0
-import QtQuick.Controls.Material 2.0
+import QtQuick.Controls.Material 2.12
 import "."
 import "scripts/utils.js" as Utils
 
@@ -63,19 +63,11 @@ FocusScope {
             infoLabelText: getInfoText()
 
             AudioVideoOverlay {
-                visible: maNoVideo.containsMouse
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.bottom: parent.bottom
                 height: 60
                 videoOffButtonVisible: ownMediaModel.videoDisabled ? true : false
-            }
-
-            MouseArea {
-                id: maNoVideo
-                anchors.fill: parent
-                hoverEnabled: true
-                propagateComposedEvents: true
             }
 
             function getInfoText() {
@@ -125,15 +117,7 @@ FocusScope {
                 source: Style.current.demoImagesPath + "Sarah.jpg"
                 fillMode: Image.PreserveAspectCrop
 
-                MouseArea {
-                    id: maVideo
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    propagateComposedEvents: true
-                }
-
                 AudioVideoOverlay {
-                    visible: maVideo.containsMouse
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.bottom: parent.bottom
@@ -170,19 +154,11 @@ FocusScope {
             }
 
             AudioVideoOverlay {
-                visible: maVideo.containsMouse && joinModel.video !== null
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.bottom: parent.bottom
                 height: 60
                 videoOffButtonVisible: true
-            }
-
-            MouseArea {
-                id: maVideo
-                anchors.fill: parent
-                hoverEnabled: true
-                propagateComposedEvents: true
             }
         }
 

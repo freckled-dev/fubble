@@ -14,7 +14,7 @@
    width="512"
    version="1.1"
    sodipodi:docname="overlay_silence_off.svg"
-   inkscape:version="0.92.3 (2405546, 2018-03-11)">
+   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)">
   <metadata
      id="metadata31">
     <rdf:RDF>
@@ -76,23 +76,17 @@
      id="namedview27"
      showgrid="false"
      inkscape:zoom="0.921875"
-     inkscape:cx="245.90207"
-     inkscape:cy="219.95795"
+     inkscape:cx="115.01997"
+     inkscape:cy="220.76529"
      inkscape:window-x="1920"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
      inkscape:current-layer="Layer_1" />
-  <path
-     inkscape:connector-curvature="0"
-     style="fill:#cecece;fill-opacity:1;stroke:#000000;stroke-width:0.97607499;stroke-opacity:1"
-     d="M 427.7892,508.04469 H 84.210805 c -43.056628,0 -78.0859993,-35.02937 -78.0859993,-78.086 V 86.380292 c 0,-43.056619 35.0293713,-78.0859989 78.0859993,-78.0859989 H 427.7892 c 43.05663,0 78.086,35.0293799 78.086,78.0859989 V 429.95869 c 0,43.05663 -35.02937,78.086 -78.086,78.086 z"
-     id="path13"
-     sodipodi:nodetypes="sssssssss" />
   <g
-     id="g24"
-     transform="matrix(0.77542373,0,0,0.75080614,56.40678,60.539391)" />
+     id="g24-98"
+     transform="matrix(0.91482591,0,0,0.92357359,-7.0756785,-26.613539)" />
   <g
-     transform="matrix(0.76170461,0,0,0.76295765,67.787467,56.894918)"
+     transform="matrix(0.99516896,0,0,1.0433718,6.4465755,-31.692339)"
      id="g24-9">
     <g
        id="g16"
@@ -123,8 +117,11 @@
       </g>
     </g>
   </g>
+  <g
+     id="g24"
+     transform="matrix(0.77542373,0,0,0.75080614,56.40678,60.539391)" />
   <path
-     style="fill:#f9a3a3;fill-opacity:1;stroke:#dc9e9e;stroke-width:51.82687759;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     style="fill:#f9a3a3;fill-opacity:1;stroke:#dc9e9e;stroke-width:80;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
      d="M 28.50608,29.956751 486.74816,477.70426"
      id="path833"
      inkscape:connector-curvature="0" />

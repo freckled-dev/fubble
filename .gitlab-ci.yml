@@ -7,7 +7,7 @@ include:
   - local: '/web/landing/.gitlab-ci.yml'
 
 build ubuntu_18.04 release:
-  image: registry.gitlab.com/acof/fubble/ci/build_ubuntu_1804:v0
+  image: registry.gitlab.com/acof/fubble/ci/build_ubuntu_1804:v1
   tags:
     - linux
     - dedicated
@@ -31,7 +31,7 @@ build ubuntu_18.04 release:
     when: always
 
 appimage:
-  image: registry.gitlab.com/acof/fubble/ci/build_ubuntu_1804:v0
+  image: registry.gitlab.com/acof/fubble/ci/build_ubuntu_1804:v1
   stage: package
   needs:
     - build ubuntu_18.04 release

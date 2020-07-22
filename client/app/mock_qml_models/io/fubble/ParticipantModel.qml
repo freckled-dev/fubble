@@ -1,5 +1,5 @@
 import QtQml 2.0
-import QtMultimedia 5.0
+import QtMultimedia 5.12
 
 QtObject {
     property string name
