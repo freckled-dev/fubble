@@ -6,11 +6,6 @@ current_dir="$PWD"
 cd "$(dirname "$0")"
 source ../environment
 
-# apt-get update
-# apt-get install -y fuse \
-#    qml-module-qtquick-\* qml-module-qt-labs-\* \
-#    qml-module-qtcharts qml-module-qtmultimedia qtdeclarative5-dev-tools
-
 export LD_LIBRARY_PATH=$(realpath $(dirname $(which qmake))/../lib)
 
 cd "$current_dir"
