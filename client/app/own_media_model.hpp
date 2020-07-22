@@ -18,9 +18,6 @@ class own_media_model : public QObject {
   // for join screen
   Q_PROPERTY(client::ui::frame_provider_google_video_source *video MEMBER video
                  NOTIFY video_changed)
-  // for settings
-  Q_PROPERTY(client::ui::frame_provider_google_video_source *videoPreview MEMBER
-                 video_preview NOTIFY video_preview_changed)
   Q_PROPERTY(bool videoDisabled MEMBER video_disabled WRITE set_video_disabled
                  NOTIFY video_disabled_changed)
   Q_PROPERTY(bool videoAvailable READ get_video_available NOTIFY
@@ -45,7 +42,6 @@ signals:
   void deafed_changed(bool);
   void video_available_changed(bool);
   void video_changed(ui::frame_provider_google_video_source *);
-  void video_preview_changed(ui::frame_provider_google_video_source *);
   void loopback_audio_changed(bool);
 
 protected:
@@ -59,17 +55,16 @@ protected:
   bool get_loopback_audio() const;
 
   client::logger logger{"own_media_model"};
-  own_audio_information &audio_information_;
-  video_settings &video_settings_;
   audio_settings &audio_settings_;
+  video_settings &video_settings_;
   loopback_audio &loopback_audio_;
+  own_audio_information &audio_information_;
   own_media &own_media_;
   bool video_disabled{};
   int audio_level{};
   bool muted{};
   bool deafed{};
   ui::frame_provider_google_video_source *video{};
-  ui::frame_provider_google_video_source *video_preview{};
 };
 } // namespace client
 
