@@ -5,8 +5,6 @@ QtObject {
     property var chat: ChatModel {}
     property bool videosAvailable: true
 
-    property var ownParticipant: participants[0].participant
-
     property int newParticipants
 
     function resetNewParticipants() {

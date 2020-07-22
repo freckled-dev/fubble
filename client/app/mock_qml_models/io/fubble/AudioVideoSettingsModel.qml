@@ -9,7 +9,7 @@ QtObject {
 
     // Audio
     property var inputDevices: ListModel {
-                  property bool available: false
+        property bool available: false
         //        ListElement {
         //            inputId: "1"
         //            name: "Headset"
@@ -21,7 +21,7 @@ QtObject {
     }
 
     property var outputDevices: ListModel {
-                  property bool available: false
+        property bool available: false
         //        ListElement {
         //            inputId: "1"
         //            name: "Headset"
@@ -34,7 +34,7 @@ QtObject {
 
     // Video
     property var videoDevices: ListModel {
-                  property bool available: false
+        property bool available: false
         //        ListElement {
         //            inputId: "2"
         //            name: "Webcam"
@@ -45,11 +45,8 @@ QtObject {
         //        }
     }
 
-    property var videoPreview
-
-
-    /*: MediaPlayer {
+    property MediaPlayer videoPreview: MediaPlayer {
         source: "/home/tamrielle/Downloads/Sintel_webm_extract.webm"
-        autoLoad: false
-    }*/
+        autoPlay: true
+    }
 }

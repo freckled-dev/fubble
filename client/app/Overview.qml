@@ -34,7 +34,7 @@ Item {
         ScrollView {
             anchors.top: participantLabel.bottom
             anchors.right: parent.right
-            anchors.bottom: actionLoader.top
+            anchors.bottom: selfAction.top
             anchors.left: parent.left
             anchors.topMargin: 30
             ScrollBar.vertical.policy: ScrollBar.AlwaysOff
@@ -60,21 +60,11 @@ Item {
             }
         }
 
-        Loader {
-            id: actionLoader
+        ParticipantAction {
+            id: selfAction
             anchors.horizontalCenter: parent.horizontalCenter
-            sourceComponent: roomModel.ownParticipant ? actionComponent : undefined
             visible: overviewVisible || overviewAnimation.running
             anchors.bottom: parent.bottom
-        }
-
-        Component {
-            id: actionComponent
-
-            ParticipantAction {
-                id: selfAction
-                participant: roomModel.ownParticipant
-            }
         }
     }
 }

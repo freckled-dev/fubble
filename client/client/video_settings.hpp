@@ -10,7 +10,7 @@ namespace rtc::google {
 class video_source;
 namespace capture::video {
 class enumerator;
-class device_creator;
+class device_factory;
 class device;
 } // namespace capture::video
 } // namespace rtc::google
@@ -24,7 +24,7 @@ class video_settings {
 public:
   video_settings(
       rtc::google::capture::video::enumerator &enumerator,
-      rtc::google::capture::video::device_creator &device_creator,
+      rtc::google::capture::video::device_factory &device_creator,
       own_media &own_media_, tracks_adder &tracks_adder_,
       add_video_to_connection_factory &add_video_to_connection_factory_);
   ~video_settings();
@@ -32,6 +32,7 @@ public:
   void pause(bool paused);
   bool get_paused() const;
   void change_to_device(const std::string &id);
+  bool is_a_video_available() const;
 
   rtc::google::video_source *get_video_source() const;
   boost::signals2::signal<void()> on_video_source_changed;
@@ -41,7 +42,7 @@ protected:
 
   client::logger logger{"video_settings"};
   rtc::google::capture::video::enumerator &enumerator;
-  rtc::google::capture::video::device_creator &device_creator;
+  rtc::google::capture::video::device_factory &device_creator;
   own_media &own_media_;
   tracks_adder &tracks_adder_;
   add_video_to_connection_factory &add_video_to_connection_factory_;

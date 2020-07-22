@@ -68,11 +68,15 @@ Popup {
                 id: audioVideo
             }
 
-            onCurrentIndexChanged: audioVideo.isActive = currentIndex === 1
+            onCurrentIndexChanged: audioVideo.tabIsActive = currentIndex === 1
         }
     }
 
-    onClosed: ownMediaModel.loopbackOwnVoice = false
+    onClosed: {
+        ownMediaModel.loopbackOwnVoice = false
+        audioVideo.tabIsActive = false
+        bar.currentIndex = 0
+    }
 }
 
 /*##^##

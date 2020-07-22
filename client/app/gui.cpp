@@ -42,7 +42,6 @@
 #include "rtc/google/capture/audio/device.hpp"
 #include "rtc/google/capture/audio/device_creator.hpp"
 #include "rtc/google/capture/video/device.hpp"
-#include "rtc/google/capture/video/device_creator.hpp"
 #include "rtc/google/capture/video/enumerator.hpp"
 #include "rtc/google/factory.hpp"
 #include "rtc/google/log_webrtc_to_logging.hpp"
@@ -52,6 +51,7 @@
 #include "signalling/json_message.hpp"
 #include "temporary_room/net/client.hpp"
 #include "ui/add_version_to_qml_context.hpp"
+#include "ui/frame_provider_google_video_device.hpp"
 #include "ui/frame_provider_google_video_frame.hpp"
 #include "ui/log_qt_to_logging.hpp"
 #include "utils/version.hpp"
@@ -182,7 +182,7 @@ int main(int argc, char *argv[]) {
   else
     video_enumerator =
         std::make_unique<rtc::google::capture::video::enumerator_noop>();
-  rtc::google::capture::video::device_creator video_device_creator;
+  rtc::google::capture::video::device_factory video_device_creator;
   client::add_video_to_connection_factory add_video_to_connection_factory_{
       rtc_connection_creator};
   client::video_settings video_settings{*video_enumerator, video_device_creator,
@@ -241,6 +241,7 @@ int main(int argc, char *argv[]) {
   // we are regestering with full namespace. so use full namespace in signals
   // and properties
   qRegisterMetaType<client::ui::frame_provider_google_video_source *>();
+  qRegisterMetaType<client::ui::frame_provider_google_video_device *>();
   qRegisterMetaType<client::room_model *>();
   qRegisterMetaType<client::participant_model *>();
   qRegisterMetaType<client::participants_model *>();
@@ -293,13 +294,15 @@ int main(int argc, char *argv[]) {
                                       own_audio_information_};
   client::error_model error_model;
   client::utils_model utils_model;
-  client::join_model join_model{model_creator, error_model, joiner, own_media};
+  client::join_model join_model{model_creator, error_model, joiner};
   client::share_desktop_model share_desktop_model{};
   client::leave_model leave_model{leaver};
-  client::own_media_model own_media_model{video_settings, own_media, own_audio,
-                                          own_audio_information_};
+  client::own_media_model own_media_model{audio_settings, video_settings,
+                                          own_audio, own_audio_information_,
+                                          own_media};
   client::audio_video_settings_model audio_video_settings_model{
-      rtc_audio_devices, *video_enumerator, audio_settings, video_settings};
+      rtc_audio_devices, *video_enumerator, video_device_creator,
+      audio_settings, video_settings};
   //  works from 5.14 onwards
   // engine.setInitialProperties(...)
   //  setContextProperty sets it globaly not as property of the window

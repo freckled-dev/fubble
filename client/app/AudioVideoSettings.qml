@@ -9,7 +9,7 @@ Item {
     id: element
 
     property alias settings: settings
-    property bool isActive: false
+    property bool tabIsActive: false
     property bool demoMode: Utils.isDemoMode()
 
     Settings {
@@ -88,10 +88,6 @@ Item {
             Layout.topMargin: 2
             Layout.fillWidth: true
             Layout.fillHeight: true
-            //            visible: {
-            //                console.log(ownMediaModel.loopbackOwnVoice)
-            //                return ownMediaModel.loopbackOwnVoice
-            //            }
         }
     }
 
@@ -145,7 +141,7 @@ Item {
                         return demoPreviewComponent
                     }
 
-                    if (audioVideoModel.videoPreview) {
+                    if (ownMediaModel.videoAvailable) {
                         return videoPreviewComponent
                     }
 
@@ -165,7 +161,6 @@ Item {
                 id: videoPreviewComponent
 
                 VideoOutput {
-                    id: videoPreview
                     anchors.fill: parent
                     source: audioVideoModel.videoPreview
                     fillMode: VideoOutput.PreserveAspectCrop
@@ -183,9 +178,13 @@ Item {
         }
     }
 
-    onIsActiveChanged: {
-        if (isActive && audioVideoModel.videoPreview) {
+    onTabIsActiveChanged: {
+        if (tabIsActive && ownMediaModel.videoAvailable) {
             audioVideoModel.videoPreview.play()
+        }
+
+        if (!tabIsActive) {
+            audioVideoModel.videoPreview.stop()
         }
     }
 }

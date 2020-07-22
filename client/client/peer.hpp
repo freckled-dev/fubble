@@ -7,7 +7,6 @@
 #include <memory>
 
 // TODO move to p2p
-// TODO rtc stuff gets called from a different thread!
 namespace client {
 class peer {
 public:

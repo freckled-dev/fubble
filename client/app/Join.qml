@@ -57,8 +57,8 @@ FocusScope {
             Layout.maximumWidth: 600
             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
             Layout.fillWidth: false
-            visible: (!joinModel.videoAvailable || ownMediaModel.videoDisabled)
-                     && !demoMode
+            visible: (!ownMediaModel.videoAvailable
+                      || ownMediaModel.videoDisabled) && !demoMode
             headerLabelText: getHeaderText()
             infoLabelText: getInfoText()
 
@@ -147,8 +147,8 @@ FocusScope {
             id: videoOutput
             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
             Layout.fillWidth: false
-            source: joinModel.video
-            visible: joinModel.videoAvailable && !demoMode
+            source: ownMediaModel.video
+            visible: ownMediaModel.videoAvailable && !demoMode
                      && !ownMediaModel.videoDisabled
 
             function getAspectRatio() {
@@ -170,7 +170,7 @@ FocusScope {
             }
 
             AudioVideoOverlay {
-                visible: maVideo.containsMouse
+                visible: maVideo.containsMouse && joinModel.video !== null
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.bottom: parent.bottom
@@ -296,7 +296,7 @@ FocusScope {
                 onClicked: joinRoomContainer.joinRoom()
 
                 function getJoinButtonText() {
-                    if (!joinModel.videoAvailable
+                    if (!ownMediaModel.videoAvailable
                             || ownMediaModel.videoDisabled) {
                         if (ownMediaModel.muted) {
                             return qsTr("Join without video and audio")

@@ -1,7 +1,9 @@
 ui_sources = ['frame_provider_google_video_frame.cpp', 'executor_qt.cpp',
-  'log_qt_to_logging.cpp', 'add_version_to_qml_context.cpp']
+  'log_qt_to_logging.cpp', 'add_version_to_qml_context.cpp',
+  'frame_provider_google_video_device.cpp']
 ui_sources += qt5.preprocess(
-  moc_headers: ['frame_provider_google_video_frame.hpp']
+  moc_headers: ['frame_provider_google_video_frame.hpp',
+    'frame_provider_google_video_device.hpp']
   )
 ui = library('ui', ui_sources,
   cpp_pch: '../../pch/precompiled.hpp',

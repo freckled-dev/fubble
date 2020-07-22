@@ -9,7 +9,6 @@
 #include "rtc/connection.hpp"
 #include "rtc/data_channel.hpp"
 #include "rtc/google/capture/video/device.hpp"
-#include "rtc/google/capture/video/device_creator.hpp"
 #include "rtc/google/capture/video/enumerator.hpp"
 #include "rtc/google/connection.hpp"
 #include "rtc/google/factory.hpp"
@@ -146,7 +145,7 @@ int main(int argc, char *argv[]) {
           << "capture device:" << device.name;
     if (devices.empty())
       throw std::runtime_error("no video capture devices available");
-    rtc::google::capture::video::device_creator device_creator;
+    rtc::google::capture::video::device_factory device_creator;
     std::shared_ptr<rtc::google::capture::video::device> capture_device =
         device_creator.create(devices.front().id);
     std::shared_ptr<rtc::google::video_track> video_track =

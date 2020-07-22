@@ -9,7 +9,6 @@ import "."
 
 RowLayout {
     id: actionOverlay
-    property ParticipantModel participant
 
     spacing: 10
     anchors.horizontalCenter: parent.horizontalCenter
@@ -26,23 +25,24 @@ RowLayout {
     }
 
     FubbleActionButton {
-        source: participant.videoDisabled ? Style.current.overlayVideoOffImage : Style.current.overlayVideoImage
-        toolTipText: participant.videoDisabled ? qsTr("Enable your video") : qsTr(
-                                                     "Disable your video")
-        onActionClick: participant.videoDisabled = !participant.videoDisabled
+        source: ownMediaModel.videoDisabled ? Style.current.overlayVideoOffImage : Style.current.overlayVideoImage
+        toolTipText: ownMediaModel.videoDisabled ? qsTr("Enable your video") : qsTr(
+                                                       "Disable your video")
+        onActionClick: ownMediaModel.videoDisabled = !ownMediaModel.videoDisabled
+        visible: ownMediaModel.videoAvailable
     }
 
     FubbleActionButton {
-        source: participant.muted ? Style.current.overlayMuteOffImage : Style.current.overlayMuteImage
-        toolTipText: participant.muted ? qsTr("Unmute yourself") : qsTr(
-                                             "Mute yourself")
-        onActionClick: participant.muted = !participant.muted
+        source: ownMediaModel.muted ? Style.current.overlayMuteOffImage : Style.current.overlayMuteImage
+        toolTipText: ownMediaModel.muted ? qsTr("Unmute yourself") : qsTr(
+                                               "Mute yourself")
+        onActionClick: ownMediaModel.muted = !ownMediaModel.muted
     }
 
     FubbleActionButton {
-        source: participant.deafed ? Style.current.overlaySilenceOffImage : Style.current.overlaySilenceImage
-        toolTipText: participant.deafed ? qsTr("Hear everyone") : qsTr(
-                                              "Silence everyone")
-        onActionClick: participant.deafed = !participant.deafed
+        source: ownMediaModel.deafed ? Style.current.overlaySilenceOffImage : Style.current.overlaySilenceImage
+        toolTipText: ownMediaModel.deafed ? qsTr("Hear everyone") : qsTr(
+                                                "Silence everyone")
+        onActionClick: ownMediaModel.deafed = !ownMediaModel.deafed
     }
 }
