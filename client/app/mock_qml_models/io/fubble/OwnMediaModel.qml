@@ -1,5 +1,5 @@
-import QtQuick 2.0
-import QtMultimedia 5.0
+import QtQuick 2.12
+import QtMultimedia 5.12
 
 QtObject {
     property bool muted

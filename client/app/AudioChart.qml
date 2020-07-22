@@ -1,7 +1,7 @@
-import QtQuick 2.0
+import QtQuick 2.12
 import QtCharts 2.3
-import QtQuick.Layouts 1.0
-import QtQuick.Controls 2.2
+import QtQuick.Layouts 1.12
+import QtQuick.Controls 2.12
 import "."
 import io.fubble 1.0
 import "scripts/utils.js" as Utils

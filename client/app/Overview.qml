@@ -1,8 +1,7 @@
-import QtMultimedia 5.0
-import QtQuick 2.0
-import QtQuick.Controls 2.2
-import QtQuick.Layouts 1.0
-import QtQuick.Window 2.0
+import QtMultimedia 5.12
+import QtQuick 2.12
+import QtQuick.Controls 2.12
+import QtQuick.Layouts 1.12
 import io.fubble 1.0
 import "."
 
