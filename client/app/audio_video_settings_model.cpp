@@ -137,10 +137,8 @@ audio_video_settings_model::audio_video_settings_model(
   video_devices = new video_devices_model(video_device_enumerator, this);
   audio_output_device_index = audio_settings.get_playout_device();
   audio_input_device_index = audio_settings.get_recording_device();
-  // TODO
-  video_device =
-      video_device_factory.create(video_device_enumerator.enumerate()[0].id);
-  video = new ui::frame_provider_google_video_device(*video_device, this);
+  if (video_devices->rowCount() > 0)
+    onVideoDeviceActivated(video_device_index);
 }
 
 audio_video_settings_model::~audio_video_settings_model() = default;
@@ -160,10 +158,21 @@ void audio_video_settings_model::onAudioOutputDeviceActivated(int index) {
 void audio_video_settings_model::onVideoDeviceActivated(int index) {
   BOOST_LOG_SEV(logger, logging::severity::debug)
       << __FUNCTION__ << ", index:" << index;
+  if (index >= video_devices->rowCount()) {
+    BOOST_LOG_SEV(logger, logging::severity::error) << "index >= rowCount()";
+    BOOST_ASSERT(false);
+    return;
+  }
   const auto id =
       static_cast<video_devices_model *>(video_devices)->get_id_by_index(index);
   try {
     video_settings_.change_to_device(id);
+    video_device = video_device_factory.create(id);
+    if (video)
+      delete video;
+    video = new ui::frame_provider_google_video_device(*video_device, this);
+    video->play();
+    video_changed(video);
   } catch (const boost::exception &error) {
     BOOST_LOG_SEV(logger, logging::severity::warning)
         << "could not change video device";

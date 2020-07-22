@@ -66,13 +66,67 @@ protected:
   const std::string id;
   const rtc::scoped_refptr<webrtc::VideoCaptureModule> device_;
 };
+
+// a device shall only be instanced by one!
+class device_wrapper : public device {
+public:
+  device_wrapper(std::shared_ptr<device> delegate,
+                 std::shared_ptr<int> start_stop_counter)
+      : delegate{delegate}, start_stop_counter{start_stop_counter} {
+    on_frame_connection = delegate->on_frame.connect(
+        [this](const auto &frame) { on_frame(frame); });
+  }
+  ~device_wrapper() { stop(); }
+  void start() override {
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << __FUNCTION__ << ", started:" << started;
+    if (started)
+      return;
+    started = true;
+    int &counter = *start_stop_counter;
+    ++counter;
+    if (counter == 1)
+      delegate->start();
+  }
+  void stop() override {
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << __FUNCTION__ << ", started:" << started;
+    if (!started)
+      return;
+    started = false;
+    int &counter = *start_stop_counter;
+    --counter;
+    BOOST_ASSERT(counter >= 0);
+    if (counter == 0)
+      delegate->stop();
+  }
+  std::string get_id() const override { return delegate->get_id(); }
+
+protected:
+  rtc::logger logger{"device_wrapper"};
+  std::shared_ptr<device> delegate;
+  std::shared_ptr<int> start_stop_counter;
+  bool started{};
+  boost::signals2::scoped_connection on_frame_connection;
+};
 } // namespace
 
 device_factory::device_factory() = default;
 
 std::unique_ptr<device> device_factory::create(const std::string &id) {
-  auto native_device = webrtc::VideoCaptureFactory::Create(id.c_str());
-  if (!native_device)
-    BOOST_THROW_EXCEPTION(could_not_instance_device() << device_id_info(id));
-  return std::make_unique<device_impl>(native_device, id);
+  auto found =
+      std::find_if(devices.begin(), devices.end(), [&](const auto &check) {
+        return check.device_->get_id() == id;
+      });
+  if (found == devices.end()) {
+    auto native_device = webrtc::VideoCaptureFactory::Create(id.c_str());
+    if (!native_device)
+      BOOST_THROW_EXCEPTION(could_not_instance_device() << device_id_info(id));
+    device_with_start_stop_counter add;
+    add.device_ = std::make_shared<device_impl>(native_device, id);
+    add.counter = std::make_shared<int>();
+    devices.push_back(add);
+    found = std::prev(devices.end());
+  }
+  return std::make_unique<device_wrapper>(found->device_, found->counter);
 }

@@ -23,6 +23,13 @@ public:
   device_factory();
 
   std::unique_ptr<device> create(const std::string &id);
+
+protected:
+  struct device_with_start_stop_counter {
+    std::shared_ptr<device> device_;
+    std::shared_ptr<int> counter;
+  };
+  std::vector<device_with_start_stop_counter> devices;
 };
 } // namespace video
 } // namespace capture
