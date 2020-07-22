@@ -76,6 +76,12 @@ void video_settings::change_to_device(const std::string &id) {
     }
     reset_current_video();
   }
+  last_device_id = id;
+  if (paused) {
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << "cancelling device change due to paused";
+    return;
+  }
   std::shared_ptr<rtc::google::capture::video::device> capture_device_check =
       device_creator.create(id);
   capture_device_check->start();
@@ -83,7 +89,6 @@ void video_settings::change_to_device(const std::string &id) {
   video_track_adder = add_video_to_connection_factory_.create(capture_device);
   tracks_adder_.add(*video_track_adder);
   own_media_.add_video(*capture_device);
-  last_device_id = id;
   on_video_source_changed();
 }
 
