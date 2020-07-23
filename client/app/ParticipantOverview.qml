@@ -147,8 +147,7 @@ Item {
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.margins: 5
-                visible: talking
-                height: talking ? 60 : 0
+                height: 60
             }
         }
     }
