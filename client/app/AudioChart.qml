@@ -9,7 +9,6 @@ import "scripts/utils.js" as Utils
 Rectangle {
     clip: true
     property int maxValues: 50
-    property bool talking: audioLevels.length > 0
     property int countSilence: 0
     color: Style.current.transparent
     property alias chart: audioChart
@@ -27,15 +26,10 @@ Rectangle {
             countSilence = 0
         }
 
-        if (countSilence >= 50) {
-            talking = false
-            audioLevels = []
-        } else {
-            talking = true
+        if (countSilence < 50) {
+            audioLevels.push(level)
+            insertAudioLevels()
         }
-
-        audioLevels.push(level)
-        insertAudioLevels()
     }
 
     ChartView {
@@ -66,7 +60,7 @@ Rectangle {
 
         ValueAxis {
             id: axisY
-            min: 0
+            min: -5
             max: 127
             labelsVisible: false
             gridVisible: false
