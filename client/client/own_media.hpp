@@ -8,7 +8,7 @@
 #include <vector>
 
 namespace rtc::google {
-class audio_source;
+class audio_track;
 }
 
 namespace client {
@@ -27,7 +27,7 @@ public:
   using videos_type = std::vector<rtc::google::video_source *>;
   videos_type get_videos() const { return videos; }
 
-  rtc::google::audio_source *get_audio() const;
+  rtc::google::audio_track *get_audio() const;
   // TODO rename
   client::loopback_audio &get_loopback_audio() const;
 

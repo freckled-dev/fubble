@@ -5,6 +5,7 @@
 #include "client/own_participant.hpp"
 #include "client/participant.hpp"
 #include "client/video_settings.hpp"
+#include "rtc/google/audio_track.hpp"
 
 using namespace client;
 
@@ -38,11 +39,11 @@ participant_model::participant_model(participant &participant_,
   } else {
     // TODO support audio removal!
     participant_.on_audio_added.connect(
-        [this](auto &source) { audio_added(source); });
+        [this](auto &source) { audio_added(source.get_source()); });
     auto audios = participant_.get_audios();
     for (auto audio : audios) {
       BOOST_ASSERT(audio);
-      audio_added(*audio);
+      audio_added(audio->get_source());
     }
   }
 }

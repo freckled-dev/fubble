@@ -13,6 +13,7 @@ class loopback_audio;
 class own_audio_information;
 class own_media;
 class video_settings;
+class audio_tracks_volume;
 class own_media_model : public QObject {
   Q_OBJECT
   // for join screen
@@ -31,6 +32,7 @@ public:
   own_media_model(audio_settings &audio_settings_,
                   video_settings &video_settings_,
                   loopback_audio &loopback_audio_,
+                  audio_tracks_volume &audio_tracks_volume_,
                   own_audio_information &audio_information_,
                   own_media &own_media_);
   ~own_media_model();
@@ -58,6 +60,7 @@ protected:
   audio_settings &audio_settings_;
   video_settings &video_settings_;
   loopback_audio &loopback_audio_;
+  audio_tracks_volume &audio_tracks_volume_;
   own_audio_information &audio_information_;
   own_media &own_media_;
   bool video_disabled{};

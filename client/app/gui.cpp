@@ -3,6 +3,7 @@
 #include "client/add_audio_to_connection.hpp"
 #include "client/add_video_to_connection.hpp"
 #include "client/audio_settings.hpp"
+#include "client/audio_tracks_volume.hpp"
 #include "client/factory.hpp"
 #include "client/joiner.hpp"
 #include "client/leaver.hpp"
@@ -172,6 +173,7 @@ int main(int argc, char *argv[]) {
   auto &rtc_audio_devices = rtc_connection_creator.get_audio_devices();
 #endif
   client::rooms rooms;
+  auto audio_tracks_volume = client::audio_tracks_volume::create(rooms);
 
   // video
   BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up video device";
@@ -297,9 +299,9 @@ int main(int argc, char *argv[]) {
   client::join_model join_model{model_creator, error_model, joiner};
   client::share_desktop_model share_desktop_model{};
   client::leave_model leave_model{leaver};
-  client::own_media_model own_media_model{audio_settings, video_settings,
-                                          own_audio, own_audio_information_,
-                                          own_media};
+  client::own_media_model own_media_model{
+      audio_settings,       video_settings,         own_audio,
+      *audio_tracks_volume, own_audio_information_, own_media};
   client::audio_video_settings_model audio_video_settings_model{
       rtc_audio_devices, *video_enumerator, video_device_creator,
       audio_settings, video_settings};

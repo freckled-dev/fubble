@@ -65,6 +65,7 @@ protected:
   void set_name();
   void video_added(rtc::google::video_source &);
   void video_removed(rtc::google::video_source &);
+  // TODO refactor to track
   void audio_added(rtc::google::audio_source &);
   void on_sound_level(double level);
   void on_voice_detected(bool detected);

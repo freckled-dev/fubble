@@ -62,9 +62,8 @@ void remote_participant::on_audio_track(
     std::shared_ptr<rtc::google::audio_track_sink> audio_track) {
   BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
 
-  rtc::google::audio_source &source = audio_track->get_source();
-  audios.emplace_back(&source);
-  on_audio_added(source);
+  audios.emplace_back(audio_track.get());
+  on_audio_added(*audio_track);
 }
 
 void remote_participant::on_video_track(
