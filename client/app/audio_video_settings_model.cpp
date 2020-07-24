@@ -130,17 +130,20 @@ audio_video_settings_model::audio_video_settings_model(
     rtc::google::capture::video::device_factory &video_device_factory,
     client::audio_device_settings &audio_settings,
     video_settings &video_settings_, QObject *parent)
-    : QObject(parent), audio_settings(audio_settings),
-      video_settings_(video_settings_),
+    : QObject(parent), video_device_enumerator(video_device_enumerator),
+      audio_settings(audio_settings), video_settings_(video_settings_),
       video_device_factory(video_device_factory) {
   audio_devices.enumerate();
   output_devices =
       new output_audio_devices_model(audio_devices, audio_settings, this);
   input_devices = new recording_audio_devices_model(audio_devices, this);
-  video_devices = new video_devices_model(video_device_enumerator, this);
+  auto video_devices_uncasted =
+      new video_devices_model(video_device_enumerator, this);
+  video_devices = video_devices_uncasted;
   audio_output_device_index = audio_settings.get_playout_device();
   audio_input_device_index = audio_settings.get_recording_device();
-  if (video_devices->rowCount() > 0)
+  update_video_device_index();
+  if (video_devices_uncasted->has_devices())
     onVideoDeviceActivated(video_device_index);
 }
 
@@ -184,4 +187,18 @@ void audio_video_settings_model::onVideoDeviceActivated(int index) {
         << "could not change video device";
     BOOST_ASSERT(false); // TODO implement
   }
+}
+
+void audio_video_settings_model::update_video_device_index() {
+  auto id_optional = video_settings_.get_device_id();
+  if (!id_optional) {
+    return;
+  }
+  auto id = id_optional.value();
+  auto devices = video_device_enumerator.enumerate();
+  auto found = std::find_if(devices.cbegin(), devices.cend(),
+                            [&](const auto &check) { return check.id == id; });
+  if (found == devices.cend())
+    return;
+  video_device_index = std::distance(devices.cbegin(), found);
 }

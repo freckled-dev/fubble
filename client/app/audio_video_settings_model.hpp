@@ -74,7 +74,10 @@ signals:
   void video_changed(ui::frame_provider_google_video_device *);
 
 protected:
+  void update_video_device_index();
+
   client::logger logger{"audio_video_settings_model"};
+  rtc::google::capture::video::enumerator &video_device_enumerator;
   client::audio_device_settings &audio_settings;
   video_settings &video_settings_;
   rtc::google::capture::video::device_factory &video_device_factory;

@@ -109,3 +109,7 @@ rtc::google::video_source *video_settings::get_video_source() const {
 bool video_settings::is_a_video_available() const {
   return last_device_id.has_value();
 }
+
+std::optional<std::string> video_settings::get_device_id() const {
+  return last_device_id;
+}
