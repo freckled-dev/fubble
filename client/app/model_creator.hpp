@@ -5,7 +5,7 @@
 #include <memory>
 
 namespace client {
-class audio_settings;
+class audio_device_settings;
 class own_audio_information;
 class participant;
 class participant_model;
@@ -15,7 +15,7 @@ class room_model;
 class video_settings;
 class model_creator {
 public:
-  model_creator(audio_settings &audio_settings_,
+  model_creator(audio_device_settings &audio_settings_,
                 video_settings &video_settings_,
                 own_audio_information &audio_information_);
   room_model *create_room_model(const std::shared_ptr<room> &room_,
@@ -25,7 +25,7 @@ public:
                                               QObject *parent);
 
 protected:
-  audio_settings &audio_settings_;
+  audio_device_settings &audio_settings_;
   video_settings &video_settings_;
   own_audio_information &audio_information_;
 };

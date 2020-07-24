@@ -39,6 +39,8 @@ public:
     return QString::fromStdString(device.name);
   }
 
+  bool has_devices() { return !devices.empty(); }
+
   std::string get_id_by_index(int index) {
     BOOST_ASSERT(index >= 0);
     BOOST_ASSERT(index < static_cast<int>(devices.size()));
@@ -91,7 +93,8 @@ protected:
 class output_audio_devices_model : public audio_devices_model {
 public:
   output_audio_devices_model(rtc::google::audio_devices &audio_devices,
-                             client::audio_settings &settings, QObject *parent)
+                             client::audio_device_settings &settings,
+                             QObject *parent)
       : audio_devices_model(audio_devices, parent) {
     refresh();
   }
@@ -125,8 +128,8 @@ audio_video_settings_model::audio_video_settings_model(
     rtc::google::audio_devices &audio_devices,
     rtc::google::capture::video::enumerator &video_device_enumerator,
     rtc::google::capture::video::device_factory &video_device_factory,
-    client::audio_settings &audio_settings, video_settings &video_settings_,
-    QObject *parent)
+    client::audio_device_settings &audio_settings,
+    video_settings &video_settings_, QObject *parent)
     : QObject(parent), audio_settings(audio_settings),
       video_settings_(video_settings_),
       video_device_factory(video_device_factory) {
@@ -156,15 +159,18 @@ void audio_video_settings_model::onAudioOutputDeviceActivated(int index) {
 }
 
 void audio_video_settings_model::onVideoDeviceActivated(int index) {
+  auto video_devices_casted = static_cast<video_devices_model *>(video_devices);
   BOOST_LOG_SEV(logger, logging::severity::debug)
       << __FUNCTION__ << ", index:" << index;
-  if (index >= video_devices->rowCount()) {
+  if (!video_devices_casted->has_devices())
+    return;
+  auto rowCount = video_devices->rowCount();
+  if (index >= rowCount) {
     BOOST_LOG_SEV(logger, logging::severity::error) << "index >= rowCount()";
     BOOST_ASSERT(false);
     return;
   }
-  const auto id =
-      static_cast<video_devices_model *>(video_devices)->get_id_by_index(index);
+  const auto id = video_devices_casted->get_id_by_index(index);
   try {
     video_settings_.change_to_device(id);
     video_device = video_device_factory.create(id);

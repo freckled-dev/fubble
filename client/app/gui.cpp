@@ -3,6 +3,7 @@
 #include "client/add_audio_to_connection.hpp"
 #include "client/add_video_to_connection.hpp"
 #include "client/audio_settings.hpp"
+#include "client/audio_tracks_volume.hpp"
 #include "client/factory.hpp"
 #include "client/joiner.hpp"
 #include "client/leaver.hpp"
@@ -144,11 +145,10 @@ int main(int argc, char *argv[]) {
                                     rtc_connection_creator};
   client::tracks_adder tracks_adder;
 
-  client::loopback_audio own_audio{rtc_connection_creator};
-  client::own_media own_media{own_audio};
-  client::own_audio_information own_audio_information_{own_audio};
+  client::loopback_audio loopback_audio{rtc_connection_creator};
+  client::own_media own_media{loopback_audio};
+  client::own_audio_information own_audio_information_{loopback_audio};
 
-#if 1
   // audio
   BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up audio device";
   rtc::google::capture::audio::device_creator audio_device_creator{
@@ -165,13 +165,12 @@ int main(int argc, char *argv[]) {
   if (audio_device) {
     audio_track_adder = std::make_unique<client::add_audio_to_connection>(
         rtc_connection_creator, *audio_device);
-    tracks_adder.add(*audio_track_adder);
-    own_audio.start(*audio_device);
+    loopback_audio.start(*audio_device);
   }
-
   auto &rtc_audio_devices = rtc_connection_creator.get_audio_devices();
-#endif
   client::rooms rooms;
+  auto audio_tracks_volume = client::audio_tracks_volume::create(
+      rooms, tracks_adder, *audio_track_adder);
 
   // video
   BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up video device";
@@ -289,7 +288,7 @@ int main(int argc, char *argv[]) {
   qmlRegisterType<video_layout>("io.fubble", 1, 0, "VideoLayout");
 
   QQmlApplicationEngine engine;
-  client::audio_settings audio_settings{rtc_audio_devices};
+  client::audio_device_settings audio_settings{rtc_audio_devices};
   client::model_creator model_creator{audio_settings, video_settings,
                                       own_audio_information_};
   client::error_model error_model;
@@ -297,9 +296,9 @@ int main(int argc, char *argv[]) {
   client::join_model join_model{model_creator, error_model, joiner};
   client::share_desktop_model share_desktop_model{};
   client::leave_model leave_model{leaver};
-  client::own_media_model own_media_model{audio_settings, video_settings,
-                                          own_audio, own_audio_information_,
-                                          own_media};
+  client::own_media_model own_media_model{
+      audio_settings,       video_settings,         loopback_audio,
+      *audio_tracks_volume, own_audio_information_, own_media};
   client::audio_video_settings_model audio_video_settings_model{
       rtc_audio_devices, *video_enumerator, video_device_creator,
       audio_settings, video_settings};

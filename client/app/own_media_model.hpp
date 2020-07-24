@@ -8,11 +8,12 @@ namespace client {
 namespace ui {
 class frame_provider_google_video_source;
 }
-class audio_settings;
+class audio_device_settings;
 class loopback_audio;
 class own_audio_information;
 class own_media;
 class video_settings;
+class audio_tracks_volume;
 class own_media_model : public QObject {
   Q_OBJECT
   // for join screen
@@ -28,9 +29,10 @@ class own_media_model : public QObject {
                  set_loopback_audio NOTIFY loopback_audio_changed)
 
 public:
-  own_media_model(audio_settings &audio_settings_,
+  own_media_model(audio_device_settings &audio_settings_,
                   video_settings &video_settings_,
                   loopback_audio &loopback_audio_,
+                  audio_tracks_volume &audio_tracks_volume_,
                   own_audio_information &audio_information_,
                   own_media &own_media_);
   ~own_media_model();
@@ -55,9 +57,10 @@ protected:
   bool get_loopback_audio() const;
 
   client::logger logger{"own_media_model"};
-  audio_settings &audio_settings_;
+  audio_device_settings &audio_settings_;
   video_settings &video_settings_;
   loopback_audio &loopback_audio_;
+  audio_tracks_volume &audio_tracks_volume_;
   own_audio_information &audio_information_;
   own_media &own_media_;
   bool video_disabled{};

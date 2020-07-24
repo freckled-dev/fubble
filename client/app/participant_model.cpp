@@ -5,11 +5,12 @@
 #include "client/own_participant.hpp"
 #include "client/participant.hpp"
 #include "client/video_settings.hpp"
+#include "rtc/google/audio_track.hpp"
 
 using namespace client;
 
 participant_model::participant_model(participant &participant_,
-                                     audio_settings &audio_settings_,
+                                     audio_device_settings &audio_settings_,
                                      video_settings &video_settings_,
                                      own_audio_information &audio_information_,
                                      QObject *parent)
@@ -36,13 +37,14 @@ participant_model::participant_model(participant &participant_,
     audio_information_.on_voice_detected.connect(
         [this](auto detected) { on_voice_detected(detected); });
   } else {
-    // TODO support audio removal!
     participant_.on_audio_added.connect(
-        [this](auto &source) { audio_added(source); });
+        [this](auto &source) { audio_added(source.get_source()); });
+    participant_.on_audio_removed.connect(
+        [this](auto &source) { audio_removed(source.get_source()); });
     auto audios = participant_.get_audios();
     for (auto audio : audios) {
       BOOST_ASSERT(audio);
-      audio_added(*audio);
+      audio_added(audio->get_source());
     }
   }
 }
@@ -95,6 +97,12 @@ void participant_model::audio_added(rtc::google::audio_source &source) {
       [this](auto level) { on_sound_level(level); });
   audio_level_calculator_->on_voice_detected.connect(
       [this](auto detected) { on_voice_detected(detected); });
+}
+
+void participant_model::audio_removed(rtc::google::audio_source &remove) {
+  if (&audio_level_calculator_->get_source() != &remove)
+    return;
+  return audio_level_calculator_.reset();
 }
 
 void participant_model::on_sound_level(double level) {

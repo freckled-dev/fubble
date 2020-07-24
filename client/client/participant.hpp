@@ -1,12 +1,14 @@
 #ifndef UUID_709FB41B_8B14_446F_B83F_E736A4371022
 #define UUID_709FB41B_8B14_446F_B83F_E736A4371022
 
-#include "rtc/google/audio_source_ptr.hpp"
 #include "rtc/google/video_source_ptr.hpp"
 #include <boost/signals2/signal.hpp>
 #include <boost/thread/future.hpp>
 #include <memory>
 
+namespace rtc::google {
+class audio_track;
+}
 namespace matrix {
 class user;
 }
@@ -27,9 +29,10 @@ public:
   boost::signals2::signal<void(rtc::google::video_source &)> on_video_added;
   boost::signals2::signal<void(rtc::google::video_source &)> on_video_removed;
 
-  using audios_type = std::vector<rtc::google::audio_source *>;
+  using audios_type = std::vector<rtc::google::audio_track *>;
   virtual audios_type get_audios() const = 0;
-  boost::signals2::signal<void(rtc::google::audio_source &)> on_audio_added;
+  boost::signals2::signal<void(rtc::google::audio_track &)> on_audio_added;
+  boost::signals2::signal<void(rtc::google::audio_track &)> on_audio_removed;
 
 protected:
   void update();

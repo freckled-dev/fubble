@@ -18,6 +18,8 @@ class audio_track_sink;
 } // namespace rtc
 
 namespace client {
+// TODO check if loopback is neccessary - MAYBE just an enabled audio_track does
+// the trick!
 class loopback_audio {
 public:
   loopback_audio(rtc::google::factory &rtc_factory);

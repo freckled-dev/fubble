@@ -1,5 +1,6 @@
 #include "own_media_model.hpp"
 #include "client/audio_settings.hpp"
+#include "client/audio_tracks_volume.hpp"
 #include "client/loopback_audio.hpp"
 #include "client/own_audio_information.hpp"
 #include "client/own_media.hpp"
@@ -8,14 +9,18 @@
 
 using namespace client;
 
-own_media_model::own_media_model(audio_settings &audio_settings_,
+own_media_model::own_media_model(audio_device_settings &audio_settings_,
                                  video_settings &video_settings_,
                                  loopback_audio &loopback_audio_,
+                                 audio_tracks_volume &audio_tracks_volume_,
                                  own_audio_information &audio_information_,
                                  own_media &own_media_)
     : audio_settings_(audio_settings_), video_settings_(video_settings_),
-      loopback_audio_(loopback_audio_), audio_information_(audio_information_),
-      own_media_(own_media_) {
+      loopback_audio_(loopback_audio_),
+      audio_tracks_volume_(audio_tracks_volume_),
+      audio_information_(audio_information_), own_media_(own_media_) {
+  muted = audio_tracks_volume_.get_self_muted();
+  deafed = audio_tracks_volume_.get_deafen();
   audio_information_.on_sound_level_30times_a_second.connect(
       [this](auto level) { on_sound_level(level); });
   update_video();
@@ -30,15 +35,15 @@ void own_media_model::set_muted(bool muted_) {
   BOOST_LOG_SEV(logger, logging::severity::debug)
       << __FUNCTION__ << ", muted:" << muted_;
   muted = muted_;
-  audio_settings_.mute_microphone(muted || deafed);
+  audio_tracks_volume_.mute_self(muted);
+  muted_changed(muted);
 }
 
 void own_media_model::set_deafed(bool deafed_) {
   BOOST_LOG_SEV(logger, logging::severity::debug)
       << __FUNCTION__ << ", deafed:" << deafed_;
   deafed = deafed_;
-  audio_settings_.mute_microphone(muted || deafed);
-  audio_settings_.mute_speaker(deafed);
+  audio_tracks_volume_.deafen(deafed);
   deafed_changed(deafed_);
 }
 

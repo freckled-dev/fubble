@@ -33,6 +33,8 @@ protected:
   void on_video_track_removed(rtc::google::video_source_ptr video_track);
   void
   on_audio_track(std::shared_ptr<rtc::google::audio_track_sink> audio_track);
+  void on_audio_track_removed(
+      std::shared_ptr<rtc::google::audio_track_sink> video_track);
 
   client::logger logger{"remote_participant"};
   factory &factory_;

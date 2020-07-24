@@ -9,7 +9,7 @@
 
 namespace client {
 class participant;
-class audio_settings;
+class audio_device_settings;
 class audio_level_calculator;
 class own_audio_information;
 class video_settings;
@@ -40,7 +40,8 @@ class participant_model : public QObject {
       bool voiceDetected MEMBER voice_detected NOTIFY voice_detected_changed)
 
 public:
-  participant_model(participant &participant_, audio_settings &audio_settings_,
+  participant_model(participant &participant_,
+                    audio_device_settings &audio_settings_,
                     video_settings &video_settings_,
                     own_audio_information &audio_information_, QObject *parent);
   ~participant_model();
@@ -65,13 +66,15 @@ protected:
   void set_name();
   void video_added(rtc::google::video_source &);
   void video_removed(rtc::google::video_source &);
+  // TODO refactor to track
   void audio_added(rtc::google::audio_source &);
+  void audio_removed(rtc::google::audio_source &);
   void on_sound_level(double level);
   void on_voice_detected(bool detected);
 
   mutable client::logger logger{"participant_model"};
   participant &participant_;
-  audio_settings &audio_settings_;
+  audio_device_settings &audio_settings_;
   video_settings &video_settings_;
   own_audio_information &audio_information_;
   std::unique_ptr<audio_level_calculator> audio_level_calculator_;

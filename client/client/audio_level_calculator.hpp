@@ -14,6 +14,8 @@ class audio_level_calculator {
 public:
   audio_level_calculator(rtc::google::audio_source &audio_source_);
 
+  const rtc::google::audio_source &get_source() const;
+
   // gets called 100 times a second
   boost::signals2::signal<void(double)> on_sound_level;
   // TODO refactor to 10
@@ -26,6 +28,7 @@ protected:
   void calculate_voice_detection(double new_level);
 
   client::logger logger{"audio_level_calculator"};
+  rtc::google::audio_source &audio_source;
   boost::signals2::scoped_connection on_data_connection;
 
   static constexpr int audio_level_values_to_collect{100 / 10};
