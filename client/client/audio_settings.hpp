@@ -6,7 +6,6 @@ class audio_devices;
 }
 
 namespace client {
-// TODO rename to audio_device_settings
 class audio_device_settings {
 public:
   audio_device_settings(rtc::google::audio_devices &rtc_audio_devices);

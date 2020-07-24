@@ -32,6 +32,7 @@ public:
   using audios_type = std::vector<rtc::google::audio_track *>;
   virtual audios_type get_audios() const = 0;
   boost::signals2::signal<void(rtc::google::audio_track &)> on_audio_added;
+  boost::signals2::signal<void(rtc::google::audio_track &)> on_audio_removed;
 
 protected:
   void update();

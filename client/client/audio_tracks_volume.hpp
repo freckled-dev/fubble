@@ -4,10 +4,14 @@
 #include "client/logger.hpp"
 
 namespace client {
+class add_audio_to_connection;
 class rooms;
+class tracks_adder;
 class audio_tracks_volume {
 public:
-  static std::unique_ptr<audio_tracks_volume> create(rooms &rooms_);
+  static std::unique_ptr<audio_tracks_volume>
+  create(rooms &rooms_, tracks_adder &tracks_adder_,
+         add_audio_to_connection &audio_track_adder);
 
   audio_tracks_volume() = default;
   virtual ~audio_tracks_volume() = default;

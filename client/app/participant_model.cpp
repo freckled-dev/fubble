@@ -37,9 +37,10 @@ participant_model::participant_model(participant &participant_,
     audio_information_.on_voice_detected.connect(
         [this](auto detected) { on_voice_detected(detected); });
   } else {
-    // TODO support audio removal!
     participant_.on_audio_added.connect(
         [this](auto &source) { audio_added(source.get_source()); });
+    participant_.on_audio_removed.connect(
+        [this](auto &source) { audio_removed(source.get_source()); });
     auto audios = participant_.get_audios();
     for (auto audio : audios) {
       BOOST_ASSERT(audio);
@@ -96,6 +97,12 @@ void participant_model::audio_added(rtc::google::audio_source &source) {
       [this](auto level) { on_sound_level(level); });
   audio_level_calculator_->on_voice_detected.connect(
       [this](auto detected) { on_voice_detected(detected); });
+}
+
+void participant_model::audio_removed(rtc::google::audio_source &remove) {
+  if (&audio_level_calculator_->get_source() != &remove)
+    return;
+  return audio_level_calculator_.reset();
 }
 
 void participant_model::on_sound_level(double level) {

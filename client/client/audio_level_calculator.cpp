@@ -19,9 +19,14 @@ double average(const number_type *data, std::size_t count) {
 } // namespace
 
 audio_level_calculator::audio_level_calculator(
-    rtc::google::audio_source &audio_source) {
+    rtc::google::audio_source &audio_source)
+    : audio_source(audio_source) {
   on_data_connection =
       audio_source.on_data.connect([this](auto data) { on_data(data); });
+}
+
+const rtc::google::audio_source &audio_level_calculator::get_source() const {
+  return audio_source;
 }
 
 void audio_level_calculator::on_data(rtc::google::audio_data &data) {

@@ -54,6 +54,10 @@ void remote_participant::on_track_removed(rtc::track_ptr track) {
       std::dynamic_pointer_cast<rtc::google::video_source>(track);
   if (video_track)
     return on_video_track_removed(video_track);
+  auto audio_track =
+      std::dynamic_pointer_cast<rtc::google::audio_track_sink>(track);
+  if (audio_track)
+    return on_audio_track_removed(audio_track);
   BOOST_LOG_SEV(logger, logging::severity::warning) << "unhandled track";
   BOOST_ASSERT(false);
 }
@@ -64,6 +68,16 @@ void remote_participant::on_audio_track(
 
   audios.emplace_back(audio_track.get());
   on_audio_added(*audio_track);
+}
+
+void remote_participant::on_audio_track_removed(
+    std::shared_ptr<rtc::google::audio_track_sink> audio_track) {
+  BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
+  auto found = std::find_if(audios.cbegin(), audios.cend(), [&](auto check) {
+    return check == audio_track.get();
+  });
+  audios.erase(found);
+  on_audio_removed(*audio_track);
 }
 
 void remote_participant::on_video_track(
