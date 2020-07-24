@@ -6,7 +6,7 @@
 
 using namespace client;
 
-model_creator::model_creator(audio_settings &audio_settings_,
+model_creator::model_creator(audio_device_settings &audio_settings_,
                              video_settings &video_settings_,
                              own_audio_information &audio_information_)
     : audio_settings_(audio_settings_), video_settings_(video_settings_),

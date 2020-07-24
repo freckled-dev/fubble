@@ -91,7 +91,8 @@ protected:
 class output_audio_devices_model : public audio_devices_model {
 public:
   output_audio_devices_model(rtc::google::audio_devices &audio_devices,
-                             client::audio_settings &settings, QObject *parent)
+                             client::audio_device_settings &settings,
+                             QObject *parent)
       : audio_devices_model(audio_devices, parent) {
     refresh();
   }
@@ -125,8 +126,8 @@ audio_video_settings_model::audio_video_settings_model(
     rtc::google::audio_devices &audio_devices,
     rtc::google::capture::video::enumerator &video_device_enumerator,
     rtc::google::capture::video::device_factory &video_device_factory,
-    client::audio_settings &audio_settings, video_settings &video_settings_,
-    QObject *parent)
+    client::audio_device_settings &audio_settings,
+    video_settings &video_settings_, QObject *parent)
     : QObject(parent), audio_settings(audio_settings),
       video_settings_(video_settings_),
       video_device_factory(video_device_factory) {

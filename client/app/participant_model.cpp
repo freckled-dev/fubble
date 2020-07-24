@@ -10,7 +10,7 @@
 using namespace client;
 
 participant_model::participant_model(participant &participant_,
-                                     audio_settings &audio_settings_,
+                                     audio_device_settings &audio_settings_,
                                      video_settings &video_settings_,
                                      own_audio_information &audio_information_,
                                      QObject *parent)

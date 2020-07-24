@@ -9,7 +9,7 @@
 
 using namespace client;
 
-own_media_model::own_media_model(audio_settings &audio_settings_,
+own_media_model::own_media_model(audio_device_settings &audio_settings_,
                                  video_settings &video_settings_,
                                  loopback_audio &loopback_audio_,
                                  audio_tracks_volume &audio_tracks_volume_,

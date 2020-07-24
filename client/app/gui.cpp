@@ -291,7 +291,7 @@ int main(int argc, char *argv[]) {
   qmlRegisterType<video_layout>("io.fubble", 1, 0, "VideoLayout");
 
   QQmlApplicationEngine engine;
-  client::audio_settings audio_settings{rtc_audio_devices};
+  client::audio_device_settings audio_settings{rtc_audio_devices};
   client::model_creator model_creator{audio_settings, video_settings,
                                       own_audio_information_};
   client::error_model error_model;
