@@ -9,37 +9,51 @@
 
 namespace rtc {
 class connection;
-namespace google {
-class factory;
-class audio_source;
+}
+namespace rtc::google {
 class audio_track;
 class audio_track_sink;
-} // namespace google
-} // namespace rtc
+class factory;
+} // namespace rtc::google
 
 namespace client {
-// TODO check if loopback is neccessary - MAYBE just an enabled audio_track does
-// the trick!
+class add_audio_to_connection;
 class loopback_audio {
 public:
-  loopback_audio(rtc::google::factory &rtc_factory);
-  ~loopback_audio();
+  virtual ~loopback_audio() = default;
 
-  void start(rtc::google::audio_source &audio_source);
+  virtual void enable_loopback(const bool enable) = 0;
+  virtual bool get_enable_loopback() const = 0;
+  virtual rtc::google::audio_track &get_track() = 0;
 
-  void enable_loopback(const bool enable);
-  bool get_enable_loopback() const;
   boost::signals2::signal<void(rtc::google::audio_track &)> on_track;
-  rtc::google::audio_track *get_track();
+};
+
+class loopback_audio_noop : public loopback_audio {
+  void enable_loopback(const bool enable) override {}
+  bool get_enable_loopback() const override { return false; }
+  rtc::google::audio_track &get_track() override { BOOST_ASSERT(false); }
+};
+
+class loopback_audio_impl : public loopback_audio {
+public:
+  loopback_audio_impl(rtc::google::factory &rtc_factory,
+                      add_audio_to_connection &audio);
+  ~loopback_audio_impl();
+
+  void enable_loopback(const bool enable) override;
+  bool get_enable_loopback() const override;
+  rtc::google::audio_track &get_track() override;
 
 protected:
   void negotiation_needed();
   void on_audio_track(rtc::track_ptr track);
   void on_created_connection(boost::future<void> &result);
 
-  client::logger logger{"own_audio"};
+  client::logger logger{"loopback_audio"};
   boost::inline_executor executor;
   rtc::google::factory &rtc_factory;
+  add_audio_to_connection &audio;
   std::unique_ptr<rtc::connection> rtc_connection_offering;
   std::unique_ptr<rtc::connection> rtc_connection_answering;
   std::shared_ptr<rtc::google::audio_track_sink> audio_track;

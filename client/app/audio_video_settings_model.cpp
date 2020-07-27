@@ -1,5 +1,5 @@
 #include "audio_video_settings_model.hpp"
-#include "client/audio_settings.hpp"
+#include "client/audio_device_settings.hpp"
 #include "client/ui/frame_provider_google_video_device.hpp"
 #include "client/video_settings.hpp"
 #include "error_model.hpp"

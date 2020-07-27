@@ -6,7 +6,7 @@ client = library('client',
     'room_creator.cpp', 'participant.cpp', 'participant_creator.cpp',
     'participant_creator_creator.cpp', 'remote_participant.cpp',
     'own_participant.cpp', 'bot_participant.cpp', 'participant.cpp',
-    'participants.cpp', 'users.cpp', 'audio_settings.cpp',
+    'participants.cpp', 'users.cpp', 'audio_device_settings.cpp',
     'add_data_channel.cpp', 'factory.cpp', 'audio_level_calculator.cpp',
     'loopback_audio.cpp', 'own_media.cpp', 'own_audio_information.cpp',
     'video_settings.cpp', 'tracks_adder.cpp', 'audio_tracks_volume.cpp'

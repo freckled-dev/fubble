@@ -1,5 +1,5 @@
 #include "own_media_model.hpp"
-#include "client/audio_settings.hpp"
+#include "client/audio_device_settings.hpp"
 #include "client/audio_tracks_volume.hpp"
 #include "client/loopback_audio.hpp"
 #include "client/own_audio_information.hpp"
