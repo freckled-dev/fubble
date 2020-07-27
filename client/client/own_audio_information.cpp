@@ -7,6 +7,7 @@ using namespace client;
 
 own_audio_information::own_audio_information(loopback_audio &own_audio_) {
   own_audio_.on_track.connect([this](auto &track) { on_track(track); });
+  // on_track(own_audio_.get_track());
 }
 
 own_audio_information::~own_audio_information() = default;

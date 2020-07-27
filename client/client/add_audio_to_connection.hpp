@@ -7,6 +7,7 @@
 #include "rtc/google/factory.hpp"
 
 namespace client {
+// TODO create `own_audio` class. let it create the track. remove `get_track`
 class add_audio_to_connection : public track_adder {
 public:
   add_audio_to_connection(rtc::google::factory &rtc_factory,
@@ -14,6 +15,8 @@ public:
   ~add_audio_to_connection();
   void add_to_connection(rtc::connection &connection) override;
   void remove_from_connection(rtc::connection &connection) override;
+
+  std::shared_ptr<rtc::google::audio_track> get_track();
 
 protected:
   client::logger logger{"add_audio_to_connection"};

@@ -25,10 +25,8 @@ void own_media::remove_video(rtc::google::video_source &video) {
   on_video_removed(video);
 }
 rtc::google::audio_track *own_media::get_audio() const {
-  auto track = own_audio_.get_track();
-  if (!track)
-    return nullptr;
-  return track;
+  auto &track = own_audio_.get_track();
+  return &track;
 }
 
 client::loopback_audio &own_media::get_loopback_audio() const {

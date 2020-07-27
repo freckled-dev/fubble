@@ -2,7 +2,7 @@
 #include "chat_model.hpp"
 #include "client/add_audio_to_connection.hpp"
 #include "client/add_video_to_connection.hpp"
-#include "client/audio_settings.hpp"
+#include "client/audio_device_settings.hpp"
 #include "client/audio_tracks_volume.hpp"
 #include "client/factory.hpp"
 #include "client/joiner.hpp"
@@ -145,32 +145,23 @@ int main(int argc, char *argv[]) {
                                     rtc_connection_creator};
   client::tracks_adder tracks_adder;
 
-  client::loopback_audio loopback_audio{rtc_connection_creator};
-  client::own_media own_media{loopback_audio};
-  client::own_audio_information own_audio_information_{loopback_audio};
-
   // audio
   BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up audio device";
   rtc::google::capture::audio::device_creator audio_device_creator{
       rtc_connection_creator};
-  std::unique_ptr<rtc::google::capture::audio::device> audio_device;
-  // TODO move logic to audio_settings
-  try {
-    audio_device = audio_device_creator.create();
-  } catch (const std::runtime_error &error) {
-    BOOST_LOG_SEV(logger, logging::severity::error)
-        << "could not initialise a audio_track_adder, error:" << error.what();
-  }
+  std::unique_ptr<rtc::google::capture::audio::device> audio_device =
+      audio_device_creator.create();
   std::unique_ptr<client::add_audio_to_connection> audio_track_adder;
-  if (audio_device) {
-    audio_track_adder = std::make_unique<client::add_audio_to_connection>(
-        rtc_connection_creator, *audio_device);
-    loopback_audio.start(*audio_device);
-  }
+  audio_track_adder = std::make_unique<client::add_audio_to_connection>(
+      rtc_connection_creator, *audio_device);
   auto &rtc_audio_devices = rtc_connection_creator.get_audio_devices();
   client::rooms rooms;
   auto audio_tracks_volume = client::audio_tracks_volume::create(
       rooms, tracks_adder, *audio_track_adder);
+  client::loopback_audio_impl loopback_audio{rtc_connection_creator,
+                                             *audio_track_adder};
+  client::own_media own_media{loopback_audio};
+  client::own_audio_information own_audio_information_{loopback_audio};
 
   // video
   BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up video device";

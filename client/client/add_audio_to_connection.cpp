@@ -22,3 +22,7 @@ void add_audio_to_connection::remove_from_connection(
   BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
   connection.remove_track(audio_track);
 }
+
+std::shared_ptr<rtc::google::audio_track> add_audio_to_connection::get_track() {
+  return audio_track;
+}

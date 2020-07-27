@@ -93,7 +93,7 @@ struct test_client {
   // client
   client::rooms rooms;
   client::tracks_adder tracks_adder;
-  client::loopback_audio own_audio_{rtc_connection_creator};
+  client::loopback_audio_noop own_audio_;
   client::own_media own_media{own_audio_};
   client::factory client_factory{context};
   client::participant_creator_creator participant_creator_creator{
