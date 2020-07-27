@@ -16,6 +16,7 @@ namespace client {
 namespace ui {
 class frame_provider_google_video_device;
 }
+class error_model;
 class audio_device_settings;
 class video_settings;
 class devices_model : public QAbstractListModel {
@@ -57,7 +58,7 @@ public:
       rtc::google::capture::video::enumerator &video_device_enumerator,
       rtc::google::capture::video::device_factory &video_device_factory,
       audio_device_settings &audio_settings_, video_settings &video_settings_,
-      QObject *parent = nullptr);
+      error_model &error_model_, QObject *parent = nullptr);
   ~audio_video_settings_model();
 
   Q_INVOKABLE void onAudioInputDeviceActivated(int index);
@@ -82,6 +83,7 @@ protected:
   client::audio_device_settings &audio_settings;
   video_settings &video_settings_;
   rtc::google::capture::video::device_factory &video_device_factory;
+  error_model &error_model_;
   int audio_input_device_index{};
   int audio_output_device_index{};
   int video_device_index{};

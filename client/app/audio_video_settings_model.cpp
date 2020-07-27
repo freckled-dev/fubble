@@ -2,6 +2,7 @@
 #include "client/audio_settings.hpp"
 #include "client/ui/frame_provider_google_video_device.hpp"
 #include "client/video_settings.hpp"
+#include "error_model.hpp"
 #include "rtc/google/audio_devices.hpp"
 #include "rtc/google/capture/video/device.hpp"
 #include "rtc/google/capture/video/enumerator.hpp"
@@ -129,10 +130,10 @@ audio_video_settings_model::audio_video_settings_model(
     rtc::google::capture::video::enumerator &video_device_enumerator,
     rtc::google::capture::video::device_factory &video_device_factory,
     client::audio_device_settings &audio_settings,
-    video_settings &video_settings_, QObject *parent)
+    video_settings &video_settings_, error_model &error_model_, QObject *parent)
     : QObject(parent), video_device_enumerator(video_device_enumerator),
       audio_settings(audio_settings), video_settings_(video_settings_),
-      video_device_factory(video_device_factory) {
+      video_device_factory(video_device_factory), error_model_(error_model_) {
   audio_devices.enumerate();
   output_devices =
       new output_audio_devices_model(audio_devices, audio_settings, this);
@@ -187,7 +188,7 @@ void audio_video_settings_model::onVideoDeviceActivated(int index) {
         << "could not change video device";
     video_device.reset();
     video.reset();
-    // BOOST_ASSERT(false); // TODO implement
+    error_model_.set_error(error_model::type::failed_to_start_camera, error);
   }
   video_changed(video.get());
 }
