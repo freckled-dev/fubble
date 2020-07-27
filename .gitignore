@@ -1,6 +1,7 @@
 CMakeLists.txt.user
 .vscode/
 .ccls-cache/
+.gdb_history
 bin
 .vs
 obj

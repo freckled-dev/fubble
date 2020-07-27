@@ -4,6 +4,9 @@
 #include "client/logger.hpp"
 #include <QObject>
 
+namespace boost {
+class exception;
+}
 namespace client {
 class error_model : public QObject {
   Q_OBJECT
@@ -11,8 +14,9 @@ class error_model : public QObject {
   Q_PROPERTY(QString technical MEMBER technical NOTIFY technical_changed)
 public:
   error_model(QObject *parent = nullptr);
-  enum class type { could_not_connect_to_backend };
+  enum class type { could_not_connect_to_backend, failed_to_start_camera };
   void set_error(const type type_, const std::string technical_);
+  void set_error(const type type_, const boost::exception &error);
 
 signals:
   void error();
@@ -20,6 +24,7 @@ signals:
   void technical_changed();
 
 protected:
+  client::logger logger{"error_model"};
   QString type_to_string(const type type_) const;
   QString text;
   QString technical;

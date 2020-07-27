@@ -33,6 +33,7 @@ public:
   bool get_paused() const;
   void change_to_device(const std::string &id);
   bool is_a_video_available() const;
+  std::optional<std::string> get_device_id() const;
 
   rtc::google::video_source *get_video_source() const;
   boost::signals2::signal<void()> on_video_source_changed;
@@ -50,6 +51,7 @@ protected:
   std::shared_ptr<rtc::google::capture::video::device> capture_device;
   std::unique_ptr<add_video_to_connection> video_track_adder;
   bool paused{};
+  bool error{};
   std::optional<std::string> last_device_id;
 };
 } // namespace client

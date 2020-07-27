@@ -16,6 +16,7 @@ namespace client {
 namespace ui {
 class frame_provider_google_video_device;
 }
+class error_model;
 class audio_device_settings;
 class video_settings;
 class devices_model : public QAbstractListModel {
@@ -36,8 +37,8 @@ protected:
 };
 class audio_video_settings_model : public QObject {
   Q_OBJECT
-  Q_PROPERTY(client::ui::frame_provider_google_video_device *videoPreview MEMBER
-                 video NOTIFY video_changed)
+  Q_PROPERTY(client::ui::frame_provider_google_video_device *videoPreview READ
+                 get_video NOTIFY video_changed)
   Q_PROPERTY(int userAudioInputDeviceIndex MEMBER audio_input_device_index
                  NOTIFY audio_input_device_index_changed)
   Q_PROPERTY(int userAudioOutputDeviceIndex MEMBER audio_output_device_index
@@ -57,7 +58,7 @@ public:
       rtc::google::capture::video::enumerator &video_device_enumerator,
       rtc::google::capture::video::device_factory &video_device_factory,
       audio_device_settings &audio_settings_, video_settings &video_settings_,
-      QObject *parent = nullptr);
+      error_model &error_model_, QObject *parent = nullptr);
   ~audio_video_settings_model();
 
   Q_INVOKABLE void onAudioInputDeviceActivated(int index);
@@ -74,10 +75,15 @@ signals:
   void video_changed(ui::frame_provider_google_video_device *);
 
 protected:
+  void update_video_device_index();
+  ui::frame_provider_google_video_device *get_video();
+
   client::logger logger{"audio_video_settings_model"};
+  rtc::google::capture::video::enumerator &video_device_enumerator;
   client::audio_device_settings &audio_settings;
   video_settings &video_settings_;
   rtc::google::capture::video::device_factory &video_device_factory;
+  error_model &error_model_;
   int audio_input_device_index{};
   int audio_output_device_index{};
   int video_device_index{};
@@ -85,7 +91,7 @@ protected:
   client::devices_model *output_devices{};
   client::devices_model *video_devices{};
   std::unique_ptr<rtc::google::capture::video::device> video_device;
-  ui::frame_provider_google_video_device *video{};
+  std::unique_ptr<ui::frame_provider_google_video_device> video;
 };
 } // namespace client
 

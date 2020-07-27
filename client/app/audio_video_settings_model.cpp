@@ -2,6 +2,7 @@
 #include "client/audio_settings.hpp"
 #include "client/ui/frame_provider_google_video_device.hpp"
 #include "client/video_settings.hpp"
+#include "error_model.hpp"
 #include "rtc/google/audio_devices.hpp"
 #include "rtc/google/capture/video/device.hpp"
 #include "rtc/google/capture/video/enumerator.hpp"
@@ -129,18 +130,21 @@ audio_video_settings_model::audio_video_settings_model(
     rtc::google::capture::video::enumerator &video_device_enumerator,
     rtc::google::capture::video::device_factory &video_device_factory,
     client::audio_device_settings &audio_settings,
-    video_settings &video_settings_, QObject *parent)
-    : QObject(parent), audio_settings(audio_settings),
-      video_settings_(video_settings_),
-      video_device_factory(video_device_factory) {
+    video_settings &video_settings_, error_model &error_model_, QObject *parent)
+    : QObject(parent), video_device_enumerator(video_device_enumerator),
+      audio_settings(audio_settings), video_settings_(video_settings_),
+      video_device_factory(video_device_factory), error_model_(error_model_) {
   audio_devices.enumerate();
   output_devices =
       new output_audio_devices_model(audio_devices, audio_settings, this);
   input_devices = new recording_audio_devices_model(audio_devices, this);
-  video_devices = new video_devices_model(video_device_enumerator, this);
+  auto video_devices_uncasted =
+      new video_devices_model(video_device_enumerator, this);
+  video_devices = video_devices_uncasted;
   audio_output_device_index = audio_settings.get_playout_device();
   audio_input_device_index = audio_settings.get_recording_device();
-  if (video_devices->rowCount() > 0)
+  update_video_device_index();
+  if (video_devices_uncasted->has_devices())
     onVideoDeviceActivated(video_device_index);
 }
 
@@ -170,18 +174,40 @@ void audio_video_settings_model::onVideoDeviceActivated(int index) {
     BOOST_ASSERT(false);
     return;
   }
+  if (video)
+    video.reset();
   const auto id = video_devices_casted->get_id_by_index(index);
   try {
     video_settings_.change_to_device(id);
     video_device = video_device_factory.create(id);
-    if (video)
-      delete video;
-    video = new ui::frame_provider_google_video_device(*video_device, this);
+    video = std::make_unique<ui::frame_provider_google_video_device>(
+        *video_device, nullptr);
     video->play();
-    video_changed(video);
   } catch (const boost::exception &error) {
     BOOST_LOG_SEV(logger, logging::severity::warning)
         << "could not change video device";
-    BOOST_ASSERT(false); // TODO implement
+    video_device.reset();
+    video.reset();
+    error_model_.set_error(error_model::type::failed_to_start_camera, error);
   }
+  video_changed(video.get());
+}
+
+void audio_video_settings_model::update_video_device_index() {
+  auto id_optional = video_settings_.get_device_id();
+  if (!id_optional) {
+    return;
+  }
+  auto id = id_optional.value();
+  auto devices = video_device_enumerator.enumerate();
+  auto found = std::find_if(devices.cbegin(), devices.cend(),
+                            [&](const auto &check) { return check.id == id; });
+  if (found == devices.cend())
+    return;
+  video_device_index = std::distance(devices.cbegin(), found);
+}
+
+ui::frame_provider_google_video_device *
+audio_video_settings_model::get_video() {
+  return video.get();
 }
