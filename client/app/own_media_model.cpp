@@ -24,9 +24,7 @@ own_media_model::own_media_model(audio_device_settings &audio_settings_,
   audio_information_.on_sound_level_30times_a_second.connect(
       [this](auto level) { on_sound_level(level); });
   update_video();
-  // video_settings_.on_video_source_changed; // cleaner?
-  own_media_.on_video_added.connect([this](auto &) { update_video(); });
-  own_media_.on_video_removed.connect([this](auto &) { update_video(); });
+  video_settings_.on_video_source_changed.connect([this]() { update_video(); });
 }
 
 own_media_model::~own_media_model() = default;
@@ -75,6 +73,7 @@ void own_media_model::update_video() {
 
   auto own_videos = own_media_.get_videos();
   if (own_videos.empty()) {
+    video_available_changed(get_video_available());
     return;
   }
 
@@ -83,6 +82,7 @@ void own_media_model::update_video() {
   video = new ui::frame_provider_google_video_source(this);
   video->set_source(own_video);
   video_changed(video);
+  video_available_changed(get_video_available());
 }
 
 void own_media_model::set_loopback_audio(bool change) {

@@ -36,8 +36,8 @@ protected:
 };
 class audio_video_settings_model : public QObject {
   Q_OBJECT
-  Q_PROPERTY(client::ui::frame_provider_google_video_device *videoPreview MEMBER
-                 video NOTIFY video_changed)
+  Q_PROPERTY(client::ui::frame_provider_google_video_device *videoPreview READ
+                 get_video NOTIFY video_changed)
   Q_PROPERTY(int userAudioInputDeviceIndex MEMBER audio_input_device_index
                  NOTIFY audio_input_device_index_changed)
   Q_PROPERTY(int userAudioOutputDeviceIndex MEMBER audio_output_device_index
@@ -75,6 +75,7 @@ signals:
 
 protected:
   void update_video_device_index();
+  ui::frame_provider_google_video_device *get_video();
 
   client::logger logger{"audio_video_settings_model"};
   rtc::google::capture::video::enumerator &video_device_enumerator;
@@ -88,7 +89,7 @@ protected:
   client::devices_model *output_devices{};
   client::devices_model *video_devices{};
   std::unique_ptr<rtc::google::capture::video::device> video_device;
-  ui::frame_provider_google_video_device *video{};
+  std::unique_ptr<ui::frame_provider_google_video_device> video;
 };
 } // namespace client
 

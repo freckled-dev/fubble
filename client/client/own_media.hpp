@@ -13,6 +13,8 @@ class audio_track;
 
 namespace client {
 class loopback_audio;
+// TODO `video_settings` and `own_media` are doing stuff that belongs to a new
+// class, eg `own_videos`. `video_setting` is doing device and tracks handling
 class own_media {
 public:
   own_media(loopback_audio &own_audio_);

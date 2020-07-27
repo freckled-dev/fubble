@@ -51,6 +51,7 @@ protected:
   std::shared_ptr<rtc::google::capture::video::device> capture_device;
   std::unique_ptr<add_video_to_connection> video_track_adder;
   bool paused{};
+  bool error{};
   std::optional<std::string> last_device_id;
 };
 } // namespace client

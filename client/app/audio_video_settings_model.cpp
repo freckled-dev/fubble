@@ -173,20 +173,23 @@ void audio_video_settings_model::onVideoDeviceActivated(int index) {
     BOOST_ASSERT(false);
     return;
   }
+  if (video)
+    video.reset();
   const auto id = video_devices_casted->get_id_by_index(index);
   try {
     video_settings_.change_to_device(id);
     video_device = video_device_factory.create(id);
-    if (video)
-      delete video;
-    video = new ui::frame_provider_google_video_device(*video_device, this);
+    video = std::make_unique<ui::frame_provider_google_video_device>(
+        *video_device, nullptr);
     video->play();
-    video_changed(video);
   } catch (const boost::exception &error) {
     BOOST_LOG_SEV(logger, logging::severity::warning)
         << "could not change video device";
-    BOOST_ASSERT(false); // TODO implement
+    video_device.reset();
+    video.reset();
+    // BOOST_ASSERT(false); // TODO implement
   }
+  video_changed(video.get());
 }
 
 void audio_video_settings_model::update_video_device_index() {
@@ -201,4 +204,9 @@ void audio_video_settings_model::update_video_device_index() {
   if (found == devices.cend())
     return;
   video_device_index = std::distance(devices.cbegin(), found);
+}
+
+ui::frame_provider_google_video_device *
+audio_video_settings_model::get_video() {
+  return video.get();
 }

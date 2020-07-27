@@ -10,6 +10,7 @@ using namespace rtc::google::capture::video;
 
 namespace {
 struct could_not_instance_device : utils::exception {};
+struct could_not_start_device : utils::exception {};
 using device_id_info = boost::error_info<struct device_id_tag, std::string>;
 
 // TODO move `VideoSinkInterface` into `video_source`
@@ -40,7 +41,7 @@ public:
     auto result = device_->StartCapture(capabilities);
     if (result == 0)
       return;
-    throw std::runtime_error("could not start recording");
+    BOOST_THROW_EXCEPTION(could_not_start_device() << device_id_info(id));
   }
 
   void stop() override {
@@ -76,7 +77,12 @@ public:
     on_frame_connection = delegate->on_frame.connect(
         [this](const auto &frame) { on_frame(frame); });
   }
-  ~device_wrapper() { stop(); }
+  ~device_wrapper() {
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << __FUNCTION__
+        << ", start_stop_counter.use_count:" << start_stop_counter.use_count();
+    stop();
+  }
   void start() override {
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << ", started:" << started;
