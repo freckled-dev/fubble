@@ -39,6 +39,7 @@ class FubbleConan(ConanFile):
         self.build_requires("fmt/6.2.0")
         self.build_requires("google-webrtc/84")
         self.build_requires("RectangleBinPack/1.0.2")
+        self.build_requires("fruit/3.6.0")
 
     def build(self):
         # https://docs.conan.io/en/latest/reference/build_helpers/meson.html

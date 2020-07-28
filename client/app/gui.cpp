@@ -4,6 +4,7 @@
 #include "client/add_video_to_connection.hpp"
 #include "client/audio_device_settings.hpp"
 #include "client/audio_tracks_volume.hpp"
+#include "client/crash_catcher.hpp"
 #include "client/factory.hpp"
 #include "client/joiner.hpp"
 #include "client/leaver.hpp"
@@ -68,7 +69,15 @@
 #include <boost/asio/executor_work_guard.hpp>
 #include <boost/asio/io_context.hpp>
 #include <fmt/format.h>
+#include <fruit/fruit.h>
 #include <thread>
+
+fruit::Component<client::crash_catcher>
+create_crash_catcher_component(boost::asio::io_context *context) {
+  return fruit::createComponent()
+      .install(client::crash_catcher::create)
+      .bindInstance(*context);
+};
 
 int main(int argc, char *argv[]) {
   gui_options options_parser;
@@ -91,6 +100,13 @@ int main(int argc, char *argv[]) {
   boost::asio::executor executor{context.get_executor()};
   boost::executor_adaptor<executor_asio> boost_executor{context};
   rtc::google::asio_signalling_thread asio_signalling_thread{context};
+
+#if 1
+  fruit::Injector<client::crash_catcher> injector{
+      create_crash_catcher_component, &context};
+  injector.get<const client::crash_catcher &>();
+  boost::asio::post(context, [] { BOOST_ASSERT(false); });
+#endif
 
   http::connection_creator connection_creator_{context};
   websocket::connection_creator websocket_connection_creator{context};

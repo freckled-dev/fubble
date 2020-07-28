@@ -26,7 +26,7 @@ if host_machine.system() == 'windows'
 endif
 
 boost_dep_pkg = dependency('boost', modules : [
-    'thread', 'program_options', 'regex', 'log', 'log_setup', 'filesystem'
+    'thread', 'program_options', 'regex', 'log', 'log_setup', 'filesystem',
     ], static: true, include_type : 'system'
 )
 boost_dep_link_with = []
@@ -48,6 +48,7 @@ else
   gtest_dep = disabled
 endif
 fmt_dep = dependency('fmt', include_type: 'system')
+fruit_dep = dependency('fruit', include_type: 'system')
 json_dep = dependency('nlohmann_json')
 gstreamer_webrtc_dep_pkg = dependency('gstreamer-webrtc-1.0',
   required : false, disabler : true)
