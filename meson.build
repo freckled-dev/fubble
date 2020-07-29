@@ -25,34 +25,40 @@ if host_machine.system() == 'windows'
   endif
 endif
 
-boost_dep_pkg = dependency('boost', modules : [
-    'thread', 'program_options', 'regex', 'log', 'log_setup', 'filesystem',
-    # 'stacktrace_backtrace',
-    'stacktrace_addr2line',
-    # 'stacktrace_basic',
-    ], static: true, include_type : 'system'
-)
+boost_stacktrace_modules = []
 boost_dep_link_with = []
+boost_compile_args = ['-DBOOST_THREAD_VERSION=5',
+    '-DBOOST_ASIO_SEPARATE_COMPILATION',
+    '-DBOOST_BEAST_SEPARATE_COMPILATION',
+    ]
 if host_machine.system() == 'windows'
   boost_dep_link_with += ['bcrypt.lib']
 else
+  boost_stacktrace_modules += [
+    # 'stacktrace_backtrace',
+    'stacktrace_addr2line',
+    # 'stacktrace_basic',
+    ]
   boost_dep_link_with += [
     # '-lbacktrace',
     '-rdynamic',
     '-no-pie'
     ]
+  boost_compile_args += [
+    '-DBOOST_STACKTRACE_LINK',
+    '-rdynamic',
+    # if "-no-pie" is not set, stacktrace cant load crash on restart.
+    # because of "address space randomization".
+    # https://stackoverflow.com/questions/47778099/what-is-no-pie-used-for
+    '-no-pie'
+    ]
 endif
+boost_dep_pkg = dependency('boost', modules : [
+    'thread', 'program_options', 'regex', 'log', 'log_setup', 'filesystem',
+    ] + boost_stacktrace_modules, static: true, include_type : 'system'
+  )
 boost_dep = declare_dependency(
-    compile_args : ['-DBOOST_THREAD_VERSION=5',
-      '-DBOOST_ASIO_SEPARATE_COMPILATION',
-      '-DBOOST_BEAST_SEPARATE_COMPILATION',
-      '-DBOOST_STACKTRACE_LINK',
-      '-rdynamic',
-      # if "-no-pie" is not set, stacktrace cant load crash on restart.
-      # because of "address space randomization".
-      # https://stackoverflow.com/questions/47778099/what-is-no-pie-used-for
-      '-no-pie'
-      ],
+    compile_args : boost_compile_args,
     dependencies : [boost_dep_pkg],
     link_args: boost_dep_link_with
     )
