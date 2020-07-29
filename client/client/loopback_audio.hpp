@@ -12,6 +12,7 @@ class connection;
 }
 namespace rtc::google {
 class audio_track;
+class audio_source;
 class audio_track_sink;
 class factory;
 } // namespace rtc::google
@@ -38,7 +39,8 @@ class loopback_audio_noop : public loopback_audio {
 class loopback_audio_impl : public loopback_audio {
 public:
   loopback_audio_impl(rtc::google::factory &rtc_factory,
-                      add_audio_to_connection &audio);
+                      add_audio_to_connection &audio,
+                      rtc::google::audio_source &audio_source);
   ~loopback_audio_impl();
 
   void enable_loopback(const bool enable) override;

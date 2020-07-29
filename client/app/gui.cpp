@@ -9,6 +9,7 @@
 #include "client/leaver.hpp"
 #include "client/loopback_audio.hpp"
 #include "client/own_audio_information.hpp"
+#include "client/own_audio_track.hpp"
 #include "client/own_media.hpp"
 #include "client/participant_creator_creator.hpp"
 #include "client/peer_creator.hpp"
@@ -139,28 +140,29 @@ int main(int argc, char *argv[]) {
   BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up webrtc";
   rtc::google::settings rtc_settings;
   rtc_settings.use_ip_v6 = config.general_.use_ipv6;
-  rtc::google::factory rtc_connection_creator{
-      rtc_settings, asio_signalling_thread.get_native()};
+  rtc::google::factory rtc_factory{rtc_settings,
+                                   asio_signalling_thread.get_native()};
   client::peer_creator peer_creator{boost_executor, client_creator,
-                                    rtc_connection_creator};
+                                    rtc_factory};
   client::tracks_adder tracks_adder;
 
   // audio
   BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up audio device";
-  rtc::google::capture::audio::device_creator audio_device_creator{
-      rtc_connection_creator};
+  rtc::google::capture::audio::device_creator audio_device_creator{rtc_factory};
   std::unique_ptr<rtc::google::capture::audio::device> audio_device =
       audio_device_creator.create();
   std::unique_ptr<client::add_audio_to_connection> audio_track_adder;
   audio_track_adder = std::make_unique<client::add_audio_to_connection>(
-      rtc_connection_creator, *audio_device);
-  auto &rtc_audio_devices = rtc_connection_creator.get_audio_devices();
+      rtc_factory, *audio_device);
+  auto &rtc_audio_devices = rtc_factory.get_audio_devices();
   client::rooms rooms;
+  auto own_audio_track =
+      client::own_audio_track::create(rtc_factory, *audio_device);
   auto audio_tracks_volume = client::audio_tracks_volume::create(
       rooms, tracks_adder, *audio_track_adder);
-  client::loopback_audio_impl loopback_audio{rtc_connection_creator,
-                                             *audio_track_adder};
-  client::own_media own_media{loopback_audio};
+  client::loopback_audio_impl loopback_audio{rtc_factory, *audio_track_adder,
+                                             *audio_device};
+  client::own_media own_media{loopback_audio, *own_audio_track};
   client::own_audio_information own_audio_information_{loopback_audio};
 
   // video
@@ -174,7 +176,7 @@ int main(int argc, char *argv[]) {
         std::make_unique<rtc::google::capture::video::enumerator_noop>();
   rtc::google::capture::video::device_factory video_device_creator;
   client::add_video_to_connection_factory add_video_to_connection_factory_{
-      rtc_connection_creator};
+      rtc_factory};
   client::video_settings video_settings{*video_enumerator, video_device_creator,
                                         own_media, tracks_adder,
                                         add_video_to_connection_factory_};

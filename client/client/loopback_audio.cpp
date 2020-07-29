@@ -15,15 +15,16 @@ void connect_ice_signal(rtc::connection &from, rtc::connection &to) {
 }
 } // namespace
 
-loopback_audio_impl::loopback_audio_impl(rtc::google::factory &rtc_factory,
-                                         add_audio_to_connection &audio)
+loopback_audio_impl::loopback_audio_impl(
+    rtc::google::factory &rtc_factory, add_audio_to_connection &audio,
+    rtc::google::audio_source &audio_source)
     : rtc_factory(rtc_factory), audio(audio) {
   rtc_connection_offering = rtc_factory.create_connection();
   rtc_connection_answering = rtc_factory.create_connection();
   connect_ice_signal(*rtc_connection_offering, *rtc_connection_answering);
   connect_ice_signal(*rtc_connection_answering, *rtc_connection_offering);
   std::shared_ptr<rtc::google::audio_track> sending_audio_track =
-      audio.get_track();
+      rtc_factory.create_audio_track(audio_source);
   BOOST_ASSERT(sending_audio_track);
 #if 1
   rtc_connection_offering->on_negotiation_needed.connect(

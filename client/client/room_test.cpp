@@ -10,6 +10,7 @@
 #include "matrix/client_factory.hpp"
 #include "matrix/factory.hpp"
 #include "matrix/testing.hpp"
+#include "own_audio_track.hpp"
 #include "own_media.hpp"
 #include "own_participant.hpp"
 #include "participant_creator_creator.hpp"
@@ -94,7 +95,9 @@ struct test_client {
   client::rooms rooms;
   client::tracks_adder tracks_adder;
   client::loopback_audio_noop own_audio_;
-  client::own_media own_media{own_audio_};
+  std::unique_ptr<client::own_audio_track> own_audio_track =
+      client::own_audio_track::create_noop();
+  client::own_media own_media{own_audio_, *own_audio_track};
   client::factory client_factory{context};
   client::participant_creator_creator participant_creator_creator{
       client_factory, peer_creator, tracks_adder, own_media};
