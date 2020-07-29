@@ -73,17 +73,8 @@
 #include <fruit/fruit.h>
 #include <thread>
 
-void some_fun_stacktrace(logging::logger &logger) {
-  BOOST_LOG_SEV(logger, logging::severity::info)
-      << __FUNCTION__ << ", fun stacktrace:" << boost::stacktrace::stacktrace();
-  std::abort();
-}
-
-fruit::Component<client::crash_catcher>
-create_crash_catcher_component(boost::asio::io_context *context) {
-  return fruit::createComponent()
-      .install(client::crash_catcher::create)
-      .bindInstance(*context);
+fruit::Component<client::crash_catcher> create_crash_catcher_component() {
+  return fruit::createComponent().install(client::crash_catcher::create);
 };
 
 int main(int argc, char *argv[]) {
@@ -103,22 +94,14 @@ int main(int argc, char *argv[]) {
   BOOST_LOG_SEV(logger, logging::severity::info)
       << "starting up, version:" << utils::version();
 
+  fruit::Injector<client::crash_catcher> injector{
+      create_crash_catcher_component};
+  injector.get<const client::crash_catcher &>();
+
   boost::asio::io_context context;
   boost::asio::executor executor{context.get_executor()};
   boost::executor_adaptor<executor_asio> boost_executor{context};
   rtc::google::asio_signalling_thread asio_signalling_thread{context};
-
-#if 1
-  fruit::Injector<client::crash_catcher> injector{
-      create_crash_catcher_component, &context};
-  injector.get<const client::crash_catcher &>();
-  boost::asio::post(context, [] {
-    BOOST_ASSERT(false);
-    std::abort();
-  });
-  // std::abort();
-#endif
-  some_fun_stacktrace(logger);
 
   http::connection_creator connection_creator_{context};
   websocket::connection_creator websocket_connection_creator{context};

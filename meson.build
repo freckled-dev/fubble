@@ -28,8 +28,8 @@ endif
 boost_dep_pkg = dependency('boost', modules : [
     'thread', 'program_options', 'regex', 'log', 'log_setup', 'filesystem',
     # 'stacktrace_backtrace',
-    'stacktrace_addr2line',
-    # 'stacktrace_basic',
+    # 'stacktrace_addr2line',
+    'stacktrace_basic',
     ], static: true, include_type : 'system'
 )
 boost_dep_link_with = []
@@ -37,22 +37,17 @@ if host_machine.system() == 'windows'
   boost_dep_link_with += ['bcrypt.lib']
 else
   boost_dep_link_with += [
-    # '-lbacktrace',
-    # '-no-pie',
-    '-export-dynamic',
     '-rdynamic',
+    '-no-pie'
     ]
 endif
 boost_dep = declare_dependency(
     compile_args : ['-DBOOST_THREAD_VERSION=5',
       '-DBOOST_ASIO_SEPARATE_COMPILATION',
       '-DBOOST_BEAST_SEPARATE_COMPILATION',
-      # '-DBOOST_LOG_DYN_LINK',
-      # '-DBOOST_STACKTRACE_USE_BACKTRACE', # cant be installed on opensuse
-      '-rdynamic',
       '-DBOOST_STACKTRACE_LINK',
-      # '-DBOOST_STACKTRACE_USE_ADDR2LINE', # no need due to linking
-      # '-no-pie', '-fno-pie',
+      '-rdynamic',
+      '-no-pie'
       ],
     dependencies : [boost_dep_pkg],
     link_args: boost_dep_link_with
