@@ -32,9 +32,12 @@ void safe_dump() {
 void on_signal(int signal_) {
   ::signal(signal_, SIG_DFL);
   safe_dump();
+#if 0 // not safe,
+      // https://www.boost.org/doc/libs/1_73_0/doc/html/stacktrace/getting_started.html#stacktrace.getting_started.handle_terminates_aborts_and_seg
   BOOST_LOG_SEV(get_logger(), logging::severity::error)
       << __FUNCTION__ << "SIGABRT or SIGSEGV occured, stacktrace:\n"
       << boost::stacktrace::stacktrace();
+#endif
   ::raise(SIGABRT);
 }
 struct crash_catcher_impl : crash_catcher {

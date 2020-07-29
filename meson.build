@@ -28,8 +28,8 @@ endif
 boost_dep_pkg = dependency('boost', modules : [
     'thread', 'program_options', 'regex', 'log', 'log_setup', 'filesystem',
     # 'stacktrace_backtrace',
-    # 'stacktrace_addr2line',
-    'stacktrace_basic',
+    'stacktrace_addr2line',
+    # 'stacktrace_basic',
     ], static: true, include_type : 'system'
 )
 boost_dep_link_with = []
@@ -37,6 +37,7 @@ if host_machine.system() == 'windows'
   boost_dep_link_with += ['bcrypt.lib']
 else
   boost_dep_link_with += [
+    # '-lbacktrace',
     '-rdynamic',
     '-no-pie'
     ]
@@ -47,6 +48,9 @@ boost_dep = declare_dependency(
       '-DBOOST_BEAST_SEPARATE_COMPILATION',
       '-DBOOST_STACKTRACE_LINK',
       '-rdynamic',
+      # if "-no-pie" is not set, stacktrace cant load crash on restart.
+      # because of "address space randomization".
+      # https://stackoverflow.com/questions/47778099/what-is-no-pie-used-for
       '-no-pie'
       ],
     dependencies : [boost_dep_pkg],
