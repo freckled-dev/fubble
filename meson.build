@@ -35,7 +35,7 @@ boost_compile_args = ['-DBOOST_THREAD_VERSION=5',
 if host_machine.system() == 'windows'
   boost_dep_link_with += ['bcrypt.lib']
   boost_dep_modules += [
-    'boost_stacktrace_windbg',
+    'stacktrace_windbg',
     ]
   boost_compile_args += [
     '-DBOOST_STACKTRACE_LINK',
