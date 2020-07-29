@@ -24,5 +24,9 @@ cp -rv "${prefix_dir}/share" appdir/usr
     --appdir appdir \
     --plugin qt \
     --output appimage
+# additional executables are possible, eg:
+#     --executable "/usr/bin/addr2line"
+# it seems like the first --executable is the entrypoint
+
 ln -s Fubble*-x86_64.AppImage Fubble-latest-x86_64.AppImage
 

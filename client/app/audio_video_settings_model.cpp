@@ -158,7 +158,8 @@ void audio_video_settings_model::onAudioInputDeviceActivated(int index) {
 
 void audio_video_settings_model::onAudioOutputDeviceActivated(int index) {
   BOOST_LOG_SEV(logger, logging::severity::debug)
-      << __FUNCTION__ << ", index:" << index;
+      << __FUNCTION__ << ", index:" << index
+      << ", count:" << output_devices->rowCount();
   audio_settings.set_output_device(index);
 }
 
