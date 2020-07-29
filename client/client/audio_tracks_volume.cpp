@@ -18,7 +18,8 @@ public:
         audio_track_adder(audio_track_adder) {
     on_room(rooms_.get());
     rooms_.on_set.connect([this, &rooms_] { on_room(rooms_.get()); });
-    update_audio_added();
+    update_self_muted();
+    tracks_adder_.add(audio_track_adder);
   }
 
   ~audio_tracks_volume_impl() {}
@@ -43,7 +44,7 @@ public:
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << ", muted_self:" << muted_self;
     update_all_participants();
-    update_audio_added();
+    update_self_muted();
   }
 
   bool get_self_muted() override { return muted_self; }
@@ -55,7 +56,7 @@ public:
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << ", deafned:" << deafned;
     update_all_participants();
-    update_audio_added();
+    update_self_muted();
   }
 
   bool get_deafen() override { return deafned; }
@@ -106,16 +107,19 @@ protected:
     audio.set_enabled(enabled);
   }
 
-  void update_audio_added() {
+  void update_self_muted() {
     const bool audio_track_added_target = !(muted_self || deafned);
     if (audio_track_added == audio_track_added_target)
       return;
     audio_track_added = audio_track_added_target;
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << ", audio_track_added:" << audio_track_added;
+    audio_track_adder.get_track()->set_enabled(audio_track_added);
+#if 0
     if (audio_track_added)
       return tracks_adder_.add(audio_track_adder);
     tracks_adder_.remove(audio_track_adder);
+#endif
   }
 
 #if 0 // TODO
@@ -145,4 +149,3 @@ audio_tracks_volume::create(rooms &rooms_, tracks_adder &tracks_adder_,
   return std::make_unique<audio_tracks_volume_impl>(rooms_, tracks_adder_,
                                                     audio_track_adder);
 }
-
