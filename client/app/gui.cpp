@@ -68,9 +68,16 @@
 #include <QResource>
 #include <boost/asio/executor_work_guard.hpp>
 #include <boost/asio/io_context.hpp>
+#include <boost/stacktrace.hpp>
 #include <fmt/format.h>
 #include <fruit/fruit.h>
 #include <thread>
+
+void some_fun_stacktrace(logging::logger &logger) {
+  BOOST_LOG_SEV(logger, logging::severity::info)
+      << __FUNCTION__ << ", fun stacktrace:" << boost::stacktrace::stacktrace();
+  std::abort();
+}
 
 fruit::Component<client::crash_catcher>
 create_crash_catcher_component(boost::asio::io_context *context) {
@@ -105,8 +112,13 @@ int main(int argc, char *argv[]) {
   fruit::Injector<client::crash_catcher> injector{
       create_crash_catcher_component, &context};
   injector.get<const client::crash_catcher &>();
-  boost::asio::post(context, [] { BOOST_ASSERT(false); });
+  boost::asio::post(context, [] {
+    BOOST_ASSERT(false);
+    std::abort();
+  });
+  // std::abort();
 #endif
+  some_fun_stacktrace(logger);
 
   http::connection_creator connection_creator_{context};
   websocket::connection_creator websocket_connection_creator{context};
