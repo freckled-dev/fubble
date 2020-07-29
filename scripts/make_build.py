@@ -43,7 +43,7 @@ if not args.skip_install:
         '--install-folder', paths.dependencies_dir,
         '--profile', args.profile,
         paths.source_dir
-        ], check=True)
+        ], check=False) # may fail, due to instability of bintray
 
 werror = 'true'
 werror_environment = os.environ.get('FUBBLE_TREAT_WARNING_AS_ERROR')

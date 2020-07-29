@@ -92,6 +92,8 @@ innosetup:
     - pip install conan aqtinstall
     - python scripts/install_qt.py
     - conan --version
+  after_script:
+    - mv -v ../fubble_build/meson/meson-logs .
   artifacts:
     untracked: true
     expire_in: 1 week
