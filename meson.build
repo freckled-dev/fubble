@@ -25,16 +25,27 @@ if host_machine.system() == 'windows'
   endif
 endif
 
-boost_stacktrace_modules = []
+boost_dep_modules = ['thread', 'program_options', 'regex', 'log', 'log_setup',
+  'filesystem']
 boost_dep_link_with = []
 boost_compile_args = ['-DBOOST_THREAD_VERSION=5',
-    '-DBOOST_ASIO_SEPARATE_COMPILATION',
-    '-DBOOST_BEAST_SEPARATE_COMPILATION',
-    ]
+  '-DBOOST_ASIO_SEPARATE_COMPILATION',
+  '-DBOOST_BEAST_SEPARATE_COMPILATION',
+  ]
 if host_machine.system() == 'windows'
   boost_dep_link_with += ['bcrypt.lib']
+  boost_dep_modules += [
+    'boost_stacktrace_windbg',
+    ]
+  boost_compile_args += [
+    '-DBOOST_STACKTRACE_LINK',
+    ]
+  boost_dep_link_with += [
+    'ole32.lib',
+    'dbgeng.lib',
+    ]
 else
-  boost_stacktrace_modules += [
+  boost_dep_modules += [
     # 'stacktrace_backtrace',
     'stacktrace_addr2line',
     # 'stacktrace_basic',
@@ -53,9 +64,8 @@ else
     '-no-pie'
     ]
 endif
-boost_dep_pkg = dependency('boost', modules : [
-    'thread', 'program_options', 'regex', 'log', 'log_setup', 'filesystem',
-    ] + boost_stacktrace_modules, static: true, include_type : 'system'
+boost_dep_pkg = dependency('boost', modules : boost_dep_modules, static: true,
+  include_type : 'system'
   )
 boost_dep = declare_dependency(
     compile_args : boost_compile_args,
