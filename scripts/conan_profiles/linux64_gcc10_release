@@ -6,7 +6,7 @@ arch_build=x86_64
 compiler=gcc
 compiler.version=10
 compiler.libcxx=libstdc++11
-build_type=RelWithDebInfo
+build_type=Release
 [options]
 [build_requires]
 [env]

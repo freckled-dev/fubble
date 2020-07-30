@@ -45,13 +45,23 @@ if host_machine.system() == 'windows'
     'dbgeng.lib',
     ]
 else
-  boost_dep_modules += [
-    # 'stacktrace_backtrace',
-    'stacktrace_addr2line',
-    # 'stacktrace_basic',
-    ]
+  cxx = meson.get_compiler('cpp')
+  if cxx.has_header('backtrace.h')
+    message('using boost_stacktrace_backtrace')
+    boost_dep_modules += [
+      'stacktrace_backtrace',
+      ]
+    boost_dep_link_with += [
+      '-lbacktrace',
+      ]
+  else
+    message('using boost_stacktrace_basic')
+    boost_dep_modules += [
+      # 'stacktrace_addr2line',
+      'stacktrace_basic',
+      ]
+  endif
   boost_dep_link_with += [
-    # '-lbacktrace',
     '-rdynamic',
     '-no-pie'
     ]
@@ -61,6 +71,7 @@ else
     # if "-no-pie" is not set, stacktrace cant load crash on restart.
     # because of "address space randomization".
     # https://stackoverflow.com/questions/47778099/what-is-no-pie-used-for
+    # when product is major enough, remove it
     '-no-pie'
     ]
 endif
