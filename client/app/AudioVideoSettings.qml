@@ -69,7 +69,7 @@ Item {
 
         Connections {
             target: ownMediaModel
-            onNewAudioLevel: {
+            onNewAudioTestLevel: {
                 if (ownMediaModel.loopbackOwnVoice) {
                     audioChart.addNewAudioLevel(level)
                 }

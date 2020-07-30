@@ -14,6 +14,7 @@ own_media_model::own_media_model(audio_device_settings &audio_settings_,
                                  own_microphone_tester &audio_tester,
                                  audio_tracks_volume &audio_tracks_volume_,
                                  own_audio_information &audio_information_,
+                                 own_audio_information &audio_test_information_,
                                  own_media &own_media_)
     : audio_settings_(audio_settings_), video_settings_(video_settings_),
       audio_tester(audio_tester), audio_tracks_volume_(audio_tracks_volume_),
@@ -22,6 +23,8 @@ own_media_model::own_media_model(audio_device_settings &audio_settings_,
   deafed = audio_tracks_volume_.get_deafen();
   audio_information_.on_sound_level_30times_a_second.connect(
       [this](auto level) { on_sound_level(level); });
+  audio_test_information_.on_sound_level_30times_a_second.connect(
+      [this](auto level) { on_sound_test_level(level); });
   update_video();
   video_settings_.on_video_source_changed.connect([this]() { update_video(); });
 }
@@ -60,6 +63,11 @@ bool own_media_model::get_video_available() const {
 void own_media_model::on_sound_level(const double level) {
   int audio_level = std::min(127, static_cast<int>(level * 127.0));
   newAudioLevel(audio_level);
+}
+
+void own_media_model::on_sound_test_level(const double level) {
+  int audio_level = std::min(127, static_cast<int>(level * 127.0));
+  newAudioTestLevel(audio_level);
 }
 
 void own_media_model::update_video() {

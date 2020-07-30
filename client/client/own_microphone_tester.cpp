@@ -6,40 +6,21 @@ using namespace client;
 namespace {
 class own_microphone_tester_impl : public own_microphone_tester {
 public:
-  own_microphone_tester_impl(loopback_audio_factory &loopback_audio_factory_)
-      : loopback_audio_factory_(loopback_audio_factory_) {}
+  own_microphone_tester_impl(loopback_audio &audio) : audio(audio) {}
 
-  void start() override {
-    if (loopback) {
-      BOOST_LOG_SEV(logger, logging::severity::warning)
-          << __FUNCTION__ << ", already started";
-      BOOST_ASSERT(false);
-      return;
-    }
-    loopback = loopback_audio_factory_.create();
-    loopback->enable_loopback(true);
-  }
+  void start() override { audio.enable_loopback(true); }
 
-  void stop() override {
-    if (!loopback) {
-      BOOST_LOG_SEV(logger, logging::severity::warning)
-          << __FUNCTION__ << ", not started";
-      BOOST_ASSERT(false);
-      return;
-    }
-    loopback.reset();
-  }
+  void stop() override { audio.enable_loopback(false); }
 
-  bool get_started() const override { return loopback != nullptr; }
+  bool get_started() const override { return audio.get_enable_loopback(); }
 
 protected:
   client::logger logger{"own_microphone_tester_impl"};
-  loopback_audio_factory &loopback_audio_factory_;
-  std::unique_ptr<loopback_audio> loopback;
+  loopback_audio &audio;
 };
 } // namespace
 
 std::unique_ptr<own_microphone_tester>
-own_microphone_tester::create(loopback_audio_factory &loopback_audio_factory_) {
-  return std::make_unique<own_microphone_tester_impl>(loopback_audio_factory_);
+own_microphone_tester::create(loopback_audio &audio) {
+  return std::make_unique<own_microphone_tester_impl>(audio);
 }

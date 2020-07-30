@@ -23,7 +23,7 @@ public:
 
   virtual void enable_loopback(const bool enable) = 0;
   virtual bool get_enable_loopback() const = 0;
-  virtual rtc::google::audio_track &get_track() = 0;
+  virtual std::shared_ptr<rtc::google::audio_track> get_track() = 0;
 
   boost::signals2::signal<void(rtc::google::audio_track &)> on_track;
 };
@@ -31,7 +31,10 @@ public:
 class loopback_audio_noop : public loopback_audio {
   void enable_loopback(const bool enable) override {}
   bool get_enable_loopback() const override { return false; }
-  rtc::google::audio_track &get_track() override { BOOST_ASSERT(false); }
+  std::shared_ptr<rtc::google::audio_track> get_track() override {
+    BOOST_ASSERT(false);
+    return {};
+  }
 };
 
 class loopback_audio_impl : public loopback_audio {
@@ -42,7 +45,8 @@ public:
 
   void enable_loopback(const bool enable) override;
   bool get_enable_loopback() const override;
-  rtc::google::audio_track &get_track() override;
+
+  std::shared_ptr<rtc::google::audio_track> get_track() override;
 
 protected:
   void negotiation_needed();
@@ -76,6 +80,21 @@ protected:
 class loopback_audio_noop_factory : public loopback_audio_factory {
 public:
   std::unique_ptr<loopback_audio> create() override;
+};
+class loopback_audio_noop_if_disabled : public loopback_audio {
+public:
+  loopback_audio_noop_if_disabled(loopback_audio_factory &factory);
+  ~loopback_audio_noop_if_disabled();
+
+  void enable_loopback(const bool enable) override;
+  bool get_enable_loopback() const override;
+
+  std::shared_ptr<rtc::google::audio_track> get_track() override;
+
+protected:
+  client::logger logger{"loopback_audio_noop_if_disabled"};
+  loopback_audio_factory &factory;
+  std::unique_ptr<loopback_audio> delegate;
 };
 } // namespace client
 

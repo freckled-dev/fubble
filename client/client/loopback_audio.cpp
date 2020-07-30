@@ -86,8 +86,8 @@ bool loopback_audio_impl::get_enable_loopback() const {
   return enable_audio_loopback_;
 }
 
-rtc::google::audio_track &loopback_audio_impl::get_track() {
-  return *audio_track;
+std::shared_ptr<rtc::google::audio_track> loopback_audio_impl::get_track() {
+  return audio_track;
 }
 
 void loopback_audio_impl::on_audio_track(rtc::track_ptr track) {
@@ -118,4 +118,37 @@ std::unique_ptr<loopback_audio> loopback_audio_impl_factory::create() {
 
 std::unique_ptr<loopback_audio> loopback_audio_noop_factory::create() {
   return std::make_unique<loopback_audio_noop>();
+}
+
+loopback_audio_noop_if_disabled::loopback_audio_noop_if_disabled(
+    loopback_audio_factory &factory)
+    : factory(factory) {}
+
+loopback_audio_noop_if_disabled::~loopback_audio_noop_if_disabled() = default;
+
+void loopback_audio_noop_if_disabled::enable_loopback(const bool enable) {
+  if (get_enable_loopback() == enable) {
+    BOOST_LOG_SEV(logger, logging::severity::warning)
+        << __FUNCTION__ << ", already enabled/disabled, enable:" << enable;
+    return;
+  }
+  if (!enable) {
+    BOOST_ASSERT(delegate);
+    delegate.reset();
+    return;
+  }
+  BOOST_ASSERT(!delegate);
+  delegate = factory.create();
+  delegate->on_track.connect([this](auto &track) { on_track(track); });
+}
+
+bool loopback_audio_noop_if_disabled::get_enable_loopback() const {
+  return delegate != nullptr;
+}
+
+std::shared_ptr<rtc::google::audio_track>
+loopback_audio_noop_if_disabled::get_track() {
+  if (!delegate)
+    return nullptr;
+  return delegate->get_track();
 }

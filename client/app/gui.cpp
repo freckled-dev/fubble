@@ -164,14 +164,18 @@ int main(int argc, char *argv[]) {
       rooms, tracks_adder, *audio_track_adder, *own_audio_track);
   std::shared_ptr<rtc::google::audio_track> settings_audio_track =
       rtc_factory.create_audio_track(*audio_device);
-  client::loopback_audio_impl_factory loopback_audio_factory{
+  client::loopback_audio_impl_factory loopback_audio_test_factory{
       rtc_factory, settings_audio_track};
   client::loopback_audio_impl loopback_audio{rtc_factory,
                                              own_audio_track->get_track()};
   client::own_media own_media{*own_audio_track};
   client::own_audio_information own_audio_information_{loopback_audio};
+  client::loopback_audio_noop_if_disabled loopback_audio_test{
+      loopback_audio_test_factory};
   auto own_microphone_tester =
-      client::own_microphone_tester::create(loopback_audio_factory);
+      client::own_microphone_tester::create(loopback_audio_test);
+  client::own_audio_information own_audio_test_information_{
+      loopback_audio_test};
 
   // video
   BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up video device";
@@ -297,9 +301,13 @@ int main(int argc, char *argv[]) {
   client::join_model join_model{model_creator, error_model, joiner};
   client::share_desktop_model share_desktop_model{};
   client::leave_model leave_model{leaver};
-  client::own_media_model own_media_model{
-      audio_settings,       video_settings,         *own_microphone_tester,
-      *audio_tracks_volume, own_audio_information_, own_media};
+  client::own_media_model own_media_model{audio_settings,
+                                          video_settings,
+                                          *own_microphone_tester,
+                                          *audio_tracks_volume,
+                                          own_audio_information_,
+                                          own_audio_test_information_,
+                                          own_media};
   client::audio_video_settings_model audio_video_settings_model{
       rtc_audio_devices, *video_enumerator, video_device_creator,
       audio_settings,    video_settings,    error_model};
