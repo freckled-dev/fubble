@@ -13,7 +13,7 @@ namespace client {
 class own_audio_track {
 public:
   virtual ~own_audio_track() = default;
-  virtual rtc::google::audio_track &get_track() = 0;
+  virtual std::shared_ptr<rtc::google::audio_track> get_track() = 0;
 
   static std::unique_ptr<own_audio_track>
   create(rtc::google::factory &rtc_factory,

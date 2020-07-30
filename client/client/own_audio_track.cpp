@@ -11,14 +11,18 @@ struct own_audio_track_impl : own_audio_track {
     audio_track = rtc_factory.create_audio_track(audio_source);
   }
 
-  rtc::google::audio_track &get_track() { return *audio_track; }
+  std::shared_ptr<rtc::google::audio_track> get_track() { return audio_track; }
 
-  std::unique_ptr<rtc::google::audio_track> audio_track;
+protected:
+  std::shared_ptr<rtc::google::audio_track> audio_track;
 };
 struct own_audio_track_noop : own_audio_track {
   own_audio_track_noop() {}
 
-  rtc::google::audio_track &get_track() { std::abort(); }
+  std::shared_ptr<rtc::google::audio_track> get_track() {
+    std::abort();
+    return nullptr;
+  }
 };
 } // namespace
 

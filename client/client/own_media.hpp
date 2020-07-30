@@ -13,13 +13,12 @@ class audio_track;
 
 namespace client {
 class own_audio_track;
-class loopback_audio;
 // TODO `video_settings` and `own_media` are doing stuff that belongs to a new
 // class, eg `own_videos`. `video_setting` is doing device and tracks handling
 // currently this class is getting used for own_participant videos list.
 class own_media {
 public:
-  own_media(loopback_audio &own_audio_, own_audio_track &own_audio_track_);
+  own_media(own_audio_track &own_audio_track_);
 
   // TODO create and move to own_video
   void add_video(rtc::google::video_source &video);
@@ -32,14 +31,9 @@ public:
   videos_type get_videos() const { return videos; }
 
   rtc::google::audio_track *get_audio() const;
-#if 0
-  // TODO remove
-  client::loopback_audio &get_loopback_audio() const;
-#endif
 
 protected:
   videos_type videos;
-  loopback_audio &own_audio_;
   own_audio_track &own_audio_track_;
 };
 } // namespace client
