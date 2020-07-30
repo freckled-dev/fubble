@@ -25,20 +25,61 @@ if host_machine.system() == 'windows'
   endif
 endif
 
-boost_dep_pkg = dependency('boost', modules : [
-    'thread', 'program_options', 'regex', 'log', 'log_setup', 'filesystem'
-    ], static: true, include_type : 'system'
-)
+boost_dep_modules = ['thread', 'program_options', 'regex', 'log', 'log_setup',
+  'filesystem']
 boost_dep_link_with = []
+boost_compile_args = ['-DBOOST_THREAD_VERSION=5',
+  '-DBOOST_ASIO_SEPARATE_COMPILATION',
+  '-DBOOST_BEAST_SEPARATE_COMPILATION',
+  ]
 if host_machine.system() == 'windows'
-  boost_dep_link_with = ['bcrypt.lib']
+  boost_dep_link_with += ['bcrypt.lib']
+  boost_dep_modules += [
+    'stacktrace_windbg',
+    ]
+  boost_compile_args += [
+    '-DBOOST_STACKTRACE_LINK',
+    ]
+  boost_dep_link_with += [
+    'ole32.lib',
+    'dbgeng.lib',
+    ]
+else
+  cxx = meson.get_compiler('cpp')
+  if cxx.has_header('backtrace.h')
+    message('using boost_stacktrace_backtrace')
+    boost_dep_modules += [
+      'stacktrace_backtrace',
+      ]
+    boost_dep_link_with += [
+      '-lbacktrace',
+      ]
+  else
+    message('using boost_stacktrace_basic')
+    boost_dep_modules += [
+      # 'stacktrace_addr2line',
+      'stacktrace_basic',
+      ]
+  endif
+  boost_dep_link_with += [
+    '-rdynamic',
+    '-no-pie'
+    ]
+  boost_compile_args += [
+    '-DBOOST_STACKTRACE_LINK',
+    '-rdynamic',
+    # if "-no-pie" is not set, stacktrace cant load crash on restart.
+    # because of "address space randomization".
+    # https://stackoverflow.com/questions/47778099/what-is-no-pie-used-for
+    # when product is major enough, remove it
+    '-no-pie'
+    ]
 endif
+boost_dep_pkg = dependency('boost', modules : boost_dep_modules, static: true,
+  include_type : 'system'
+  )
 boost_dep = declare_dependency(
-    compile_args : ['-DBOOST_THREAD_VERSION=5',
-      '-DBOOST_ASIO_SEPARATE_COMPILATION',
-      '-DBOOST_BEAST_SEPARATE_COMPILATION',
-      # '-DBOOST_LOG_DYN_LINK'
-      ],
+    compile_args : boost_compile_args,
     dependencies : [boost_dep_pkg],
     link_args: boost_dep_link_with
     )
@@ -48,6 +89,7 @@ else
   gtest_dep = disabled
 endif
 fmt_dep = dependency('fmt', include_type: 'system')
+fruit_dep = dependency('fruit', include_type: 'system')
 json_dep = dependency('nlohmann_json')
 gstreamer_webrtc_dep_pkg = dependency('gstreamer-webrtc-1.0',
   required : false, disabler : true)

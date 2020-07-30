@@ -4,6 +4,7 @@
 #include "client/add_video_to_connection.hpp"
 #include "client/audio_device_settings.hpp"
 #include "client/audio_tracks_volume.hpp"
+#include "client/crash_catcher.hpp"
 #include "client/factory.hpp"
 #include "client/joiner.hpp"
 #include "client/leaver.hpp"
@@ -70,8 +71,14 @@
 #include <QResource>
 #include <boost/asio/executor_work_guard.hpp>
 #include <boost/asio/io_context.hpp>
+#include <boost/stacktrace.hpp>
 #include <fmt/format.h>
+#include <fruit/fruit.h>
 #include <thread>
+
+fruit::Component<client::crash_catcher> create_crash_catcher_component() {
+  return fruit::createComponent().install(client::crash_catcher::create);
+};
 
 int main(int argc, char *argv[]) {
   gui_options options_parser;
@@ -89,6 +96,10 @@ int main(int argc, char *argv[]) {
 
   BOOST_LOG_SEV(logger, logging::severity::info)
       << "starting up, version:" << utils::version();
+
+  fruit::Injector<client::crash_catcher> injector{
+      create_crash_catcher_component};
+  injector.get<const client::crash_catcher &>();
 
   boost::asio::io_context context;
   boost::asio::executor executor{context.get_executor()};

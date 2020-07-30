@@ -10,18 +10,19 @@ client = library('client',
     'add_data_channel.cpp', 'factory.cpp', 'audio_level_calculator.cpp',
     'loopback_audio.cpp', 'own_media.cpp', 'own_audio_information.cpp',
     'video_settings.cpp', 'tracks_adder.cpp', 'audio_tracks_volume.cpp',
+    'crash_catcher.cpp',
     'own_audio_track.cpp', 'own_microphone_tester.cpp',
     ],
   cpp_pch: '../../pch/precompiled.hpp',
   dependencies: [boost_dep, utils_dep, signalling_client_dep,
-    webrtc_google_peer_dep, matrix_dep],
+    webrtc_google_peer_dep, matrix_dep, fruit_dep],
   include_directories: ['..'],
   install: true
   )
 client_dep = declare_dependency(
   link_with: [client],
   dependencies: [boost_dep, utils_dep, signalling_client_dep,
-    webrtc_google_peer_dep],
+    webrtc_google_peer_dep, fruit_dep],
   include_directories: ['..']
   )
 
