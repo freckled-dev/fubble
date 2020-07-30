@@ -9,11 +9,11 @@ namespace ui {
 class frame_provider_google_video_source;
 }
 class audio_device_settings;
-class loopback_audio;
+class audio_tracks_volume;
 class own_audio_information;
 class own_media;
+class own_microphone_tester;
 class video_settings;
-class audio_tracks_volume;
 class own_media_model : public QObject {
   Q_OBJECT
   // for join screen
@@ -31,9 +31,10 @@ class own_media_model : public QObject {
 public:
   own_media_model(audio_device_settings &audio_settings_,
                   video_settings &video_settings_,
-                  loopback_audio &loopback_audio_,
+                  own_microphone_tester &audio_tester,
                   audio_tracks_volume &audio_tracks_volume_,
                   own_audio_information &audio_information_,
+                  own_audio_information &audio_test_information_,
                   own_media &own_media_);
   ~own_media_model();
 
@@ -41,6 +42,7 @@ signals:
   void video_disabled_changed(bool);
   void muted_changed(bool);
   void newAudioLevel(int level);
+  void newAudioTestLevel(int level);
   void deafed_changed(bool);
   void video_available_changed(bool);
   void video_changed(ui::frame_provider_google_video_source *);
@@ -52,6 +54,7 @@ protected:
   void set_video_disabled(bool);
   bool get_video_available() const;
   void on_sound_level(const double);
+  void on_sound_test_level(const double);
   void update_video();
   void set_loopback_audio(bool);
   bool get_loopback_audio() const;
@@ -59,7 +62,7 @@ protected:
   client::logger logger{"own_media_model"};
   audio_device_settings &audio_settings_;
   video_settings &video_settings_;
-  loopback_audio &loopback_audio_;
+  own_microphone_tester &audio_tester;
   audio_tracks_volume &audio_tracks_volume_;
   own_audio_information &audio_information_;
   own_media &own_media_;

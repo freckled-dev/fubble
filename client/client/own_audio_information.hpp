@@ -20,9 +20,11 @@ public:
   boost::signals2::signal<void(bool)> on_voice_detected;
 
 protected:
+  void set_loopback_audio(loopback_audio &audio);
   void on_track(rtc::google::audio_track &);
 
   std::unique_ptr<audio_level_calculator> audio_level_calculator_;
+  std::vector<boost::signals2::scoped_connection> connections;
 };
 } // namespace client
 
