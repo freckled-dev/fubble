@@ -59,7 +59,7 @@ Popup {
             horizontalAlignment: Text.AlignHCenter
         }
 
-        Label {
+        SelectableLabel {
             text: appVersion
             anchors.top: appNameLabel.bottom
             anchors.horizontalCenter: parent.horizontalCenter
