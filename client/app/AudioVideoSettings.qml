@@ -62,20 +62,14 @@ Item {
         }
 
         Button {
-            text: qsTr("Test microphone")
-            onClicked: {
-                ownMediaModel.loopbackOwnVoice = !ownMediaModel.loopbackOwnVoice
-                if (ownMediaModel.loopbackOwnVoice) {
-                    text = qsTr("Stop test")
-                } else {
-                    text = qsTr("Test microphone")
-                }
-            }
+            text: ownMediaModel.loopbackOwnVoice ? qsTr("Stop test") : qsTr(
+                                                       "Test microphone")
+            onClicked: ownMediaModel.loopbackOwnVoice = !ownMediaModel.loopbackOwnVoice
         }
 
         Connections {
             target: ownMediaModel
-            onNewAudioLevel: {
+            onNewAudioTestLevel: {
                 if (ownMediaModel.loopbackOwnVoice) {
                     audioChart.addNewAudioLevel(level)
                 }

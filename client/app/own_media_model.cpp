@@ -1,9 +1,9 @@
 #include "own_media_model.hpp"
 #include "client/audio_device_settings.hpp"
 #include "client/audio_tracks_volume.hpp"
-#include "client/loopback_audio.hpp"
 #include "client/own_audio_information.hpp"
 #include "client/own_media.hpp"
+#include "client/own_microphone_tester.hpp"
 #include "client/ui/frame_provider_google_video_frame.hpp"
 #include "client/video_settings.hpp"
 
@@ -11,18 +11,20 @@ using namespace client;
 
 own_media_model::own_media_model(audio_device_settings &audio_settings_,
                                  video_settings &video_settings_,
-                                 loopback_audio &loopback_audio_,
+                                 own_microphone_tester &audio_tester,
                                  audio_tracks_volume &audio_tracks_volume_,
                                  own_audio_information &audio_information_,
+                                 own_audio_information &audio_test_information_,
                                  own_media &own_media_)
     : audio_settings_(audio_settings_), video_settings_(video_settings_),
-      loopback_audio_(loopback_audio_),
-      audio_tracks_volume_(audio_tracks_volume_),
+      audio_tester(audio_tester), audio_tracks_volume_(audio_tracks_volume_),
       audio_information_(audio_information_), own_media_(own_media_) {
   muted = audio_tracks_volume_.get_self_muted();
   deafed = audio_tracks_volume_.get_deafen();
   audio_information_.on_sound_level_30times_a_second.connect(
       [this](auto level) { on_sound_level(level); });
+  audio_test_information_.on_sound_level_30times_a_second.connect(
+      [this](auto level) { on_sound_test_level(level); });
   update_video();
   video_settings_.on_video_source_changed.connect([this]() { update_video(); });
 }
@@ -63,6 +65,11 @@ void own_media_model::on_sound_level(const double level) {
   newAudioLevel(audio_level);
 }
 
+void own_media_model::on_sound_test_level(const double level) {
+  int audio_level = std::min(127, static_cast<int>(level * 127.0));
+  newAudioTestLevel(audio_level);
+}
+
 void own_media_model::update_video() {
   BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
   if (video != nullptr) {
@@ -86,11 +93,16 @@ void own_media_model::update_video() {
 }
 
 void own_media_model::set_loopback_audio(bool change) {
-  loopback_audio_.enable_loopback(change);
+  if (change == audio_tester.get_started())
+    return;
+  if (change)
+    audio_tester.start();
+  else
+    audio_tester.stop();
   loopback_audio_changed(change);
 }
 
 bool own_media_model::get_loopback_audio() const {
-  bool result = loopback_audio_.get_enable_loopback();
+  bool result = audio_tester.get_started();
   return result;
 }

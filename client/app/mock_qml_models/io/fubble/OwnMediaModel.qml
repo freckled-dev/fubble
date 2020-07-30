@@ -8,6 +8,7 @@ QtObject {
     property bool videoAvailable: true
     property bool loopbackOwnVoice
     signal newAudioLevel(int level)
+    signal newAudioTestLevel(int level)
 
     property MediaPlayer video: MediaPlayer {
         source: "/home/tamrielle/Downloads/Sintel_webm_extract.webm"

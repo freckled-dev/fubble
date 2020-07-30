@@ -10,7 +10,9 @@
 #include "client/leaver.hpp"
 #include "client/loopback_audio.hpp"
 #include "client/own_audio_information.hpp"
+#include "client/own_audio_track.hpp"
 #include "client/own_media.hpp"
+#include "client/own_microphone_tester.hpp"
 #include "client/participant_creator_creator.hpp"
 #include "client/peer_creator.hpp"
 #include "client/peers.hpp"
@@ -41,6 +43,7 @@
 #include "poll_asio_by_qt.hpp"
 #include "room_model.hpp"
 #include "rtc/google/asio_signalling_thread.hpp"
+#include "rtc/google/audio_track.hpp"
 #include "rtc/google/capture/audio/device.hpp"
 #include "rtc/google/capture/audio/device_creator.hpp"
 #include "rtc/google/capture/video/device.hpp"
@@ -150,29 +153,40 @@ int main(int argc, char *argv[]) {
   BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up webrtc";
   rtc::google::settings rtc_settings;
   rtc_settings.use_ip_v6 = config.general_.use_ipv6;
-  rtc::google::factory rtc_connection_creator{
-      rtc_settings, asio_signalling_thread.get_native()};
+  rtc::google::factory rtc_factory{rtc_settings,
+                                   asio_signalling_thread.get_native()};
   client::peer_creator peer_creator{boost_executor, client_creator,
-                                    rtc_connection_creator};
+                                    rtc_factory};
   client::tracks_adder tracks_adder;
 
   // audio
   BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up audio device";
-  rtc::google::capture::audio::device_creator audio_device_creator{
-      rtc_connection_creator};
+  rtc::google::capture::audio::device_creator audio_device_creator{rtc_factory};
   std::unique_ptr<rtc::google::capture::audio::device> audio_device =
       audio_device_creator.create();
   std::unique_ptr<client::add_audio_to_connection> audio_track_adder;
   audio_track_adder = std::make_unique<client::add_audio_to_connection>(
-      rtc_connection_creator, *audio_device);
-  auto &rtc_audio_devices = rtc_connection_creator.get_audio_devices();
+      rtc_factory, *audio_device);
+  auto &rtc_audio_devices = rtc_factory.get_audio_devices();
   client::rooms rooms;
+  auto own_audio_track =
+      client::own_audio_track::create(rtc_factory, *audio_device);
   auto audio_tracks_volume = client::audio_tracks_volume::create(
-      rooms, tracks_adder, *audio_track_adder);
-  client::loopback_audio_impl loopback_audio{rtc_connection_creator,
-                                             *audio_track_adder};
-  client::own_media own_media{loopback_audio};
+      rooms, tracks_adder, *audio_track_adder, *own_audio_track);
+  std::shared_ptr<rtc::google::audio_track> settings_audio_track =
+      rtc_factory.create_audio_track(*audio_device);
+  client::loopback_audio_impl_factory loopback_audio_test_factory{
+      rtc_factory, settings_audio_track};
+  client::loopback_audio_impl loopback_audio{rtc_factory,
+                                             own_audio_track->get_track()};
+  client::own_media own_media{*own_audio_track};
   client::own_audio_information own_audio_information_{loopback_audio};
+  client::loopback_audio_noop_if_disabled loopback_audio_test{
+      loopback_audio_test_factory};
+  auto own_microphone_tester =
+      client::own_microphone_tester::create(loopback_audio_test);
+  client::own_audio_information own_audio_test_information_{
+      loopback_audio_test};
 
   // video
   BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up video device";
@@ -185,7 +199,7 @@ int main(int argc, char *argv[]) {
         std::make_unique<rtc::google::capture::video::enumerator_noop>();
   rtc::google::capture::video::device_factory video_device_creator;
   client::add_video_to_connection_factory add_video_to_connection_factory_{
-      rtc_connection_creator};
+      rtc_factory};
   client::video_settings video_settings{*video_enumerator, video_device_creator,
                                         own_media, tracks_adder,
                                         add_video_to_connection_factory_};
@@ -298,9 +312,13 @@ int main(int argc, char *argv[]) {
   client::join_model join_model{model_creator, error_model, joiner};
   client::share_desktop_model share_desktop_model{};
   client::leave_model leave_model{leaver};
-  client::own_media_model own_media_model{
-      audio_settings,       video_settings,         loopback_audio,
-      *audio_tracks_volume, own_audio_information_, own_media};
+  client::own_media_model own_media_model{audio_settings,
+                                          video_settings,
+                                          *own_microphone_tester,
+                                          *audio_tracks_volume,
+                                          own_audio_information_,
+                                          own_audio_test_information_,
+                                          own_media};
   client::audio_video_settings_model audio_video_settings_model{
       rtc_audio_devices, *video_enumerator, video_device_creator,
       audio_settings,    video_settings,    error_model};
