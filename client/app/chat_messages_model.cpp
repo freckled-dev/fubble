@@ -1,4 +1,5 @@
 #include "chat_messages_model.hpp"
+#include "client/bot_participant.hpp"
 #include "client/chat.hpp"
 #include "client/participant.hpp"
 #include "client/participants.hpp"
@@ -51,6 +52,8 @@ void chat_messages_model::on_participants_added(
     return;
   beginInsertRows(QModelIndex(), rowCount(), rowCount());
   for (auto add : added) {
+    if (dynamic_cast<bot_participant *>(add))
+      continue;
     chat_message casted;
     casted.type = "join";
     casted.participant_id = QString::fromStdString(add->get_id());
@@ -72,6 +75,7 @@ void chat_messages_model::on_participants_removed(
     casted.type = "leave";
     casted.participant_id = QString::fromStdString(remove);
     const auto &user = users_.get_by_id(remove);
+    casted.name = QString::fromStdString(user.name);
     messages.push_back(std::move(casted));
   }
   endInsertRows();
