@@ -37,10 +37,6 @@ public:
   boost::future<void> leave();
 
 protected:
-  void on_session_participant_joins(
-      const std::vector<matrix::room_participant *> &joins);
-  void on_session_participant_leaves(const std::vector<std::string> &leaves);
-
   client::logger logger;
   std::unique_ptr<participant_creator> participant_creator_;
   boost::inline_executor executor;
