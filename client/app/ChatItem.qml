@@ -112,10 +112,8 @@ Rectangle {
                 text: {
                     switch (type) {
                     case "leave":
-                        playLeaveSound()
                         return qsTr(name + " has left the room...")
                     case "join":
-                        playJoinSound()
                         return qsTr(name + " has joined the room...")
                     default:
                         return qsTr("")
