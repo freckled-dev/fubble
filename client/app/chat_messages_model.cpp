@@ -1,6 +1,10 @@
 #include "chat_messages_model.hpp"
+#include "client/bot_participant.hpp"
 #include "client/chat.hpp"
+#include "client/participant.hpp"
+#include "client/participants.hpp"
 #include "client/room.hpp"
+#include "client/users.hpp"
 
 using namespace client;
 
@@ -19,7 +23,8 @@ cast_client_message(const chat::message &to_cast) {
 } // namespace
 
 chat_messages_model::chat_messages_model(room &room_, QObject *parent)
-    : QAbstractListModel(parent), chat_(room_.get_chat()) {
+    : QAbstractListModel(parent), chat_(room_.get_chat()),
+      participants_(room_.get_participants()), users_(room_.get_users()) {
   auto messages_to_cast = chat_.get_messages();
   std::transform(messages_to_cast.cbegin(), messages_to_cast.cend(),
                  std::back_inserter(messages), cast_client_message);
@@ -27,11 +32,52 @@ chat_messages_model::chat_messages_model(room &room_, QObject *parent)
     auto casted = cast_client_message(new_);
     add_message(casted);
   });
+  participants_.on_added.connect(
+      [this](const auto &added) { on_participants_added(added); });
+  participants_.on_removed.connect(
+      [this](const auto &removed) { on_participants_removed(removed); });
 }
 
 void chat_messages_model::add_message(const chat_message &add) {
   beginInsertRows(QModelIndex(), rowCount(), rowCount());
   messages.push_back(add);
+  endInsertRows();
+}
+
+void chat_messages_model::on_participants_added(
+    const std::vector<participant *> &added) {
+  BOOST_LOG_SEV(logger, logging::severity::debug)
+      << __FUNCTION__ << ", added.size():" << added.size();
+  if (added.empty())
+    return;
+  beginInsertRows(QModelIndex(), rowCount(), rowCount());
+  for (auto add : added) {
+    if (dynamic_cast<bot_participant *>(add))
+      continue;
+    chat_message casted;
+    casted.type = "join";
+    casted.participant_id = QString::fromStdString(add->get_id());
+    casted.name = QString::fromStdString(add->get_name());
+    messages.push_back(std::move(casted));
+  }
+  endInsertRows();
+}
+
+void chat_messages_model::on_participants_removed(
+    const std::vector<std::string> &removed) {
+  BOOST_LOG_SEV(logger, logging::severity::debug)
+      << __FUNCTION__ << ", removed.size():" << removed.size();
+  if (removed.empty())
+    return;
+  beginInsertRows(QModelIndex(), rowCount(), rowCount());
+  for (const auto &remove : removed) {
+    chat_message casted;
+    casted.type = "leave";
+    casted.participant_id = QString::fromStdString(remove);
+    const auto &user = users_.get_by_id(remove);
+    casted.name = QString::fromStdString(user.name);
+    messages.push_back(std::move(casted));
+  }
   endInsertRows();
 }
 

@@ -76,8 +76,6 @@ ApplicationWindow {
                        })
             fubbleState = "Room"
 
-            playJoinSound()
-
             currentRoomInfo = {
                 "roomName": join.roomName,
                 "enterTime": new Date().getTime()
@@ -107,7 +105,6 @@ ApplicationWindow {
         isLeavePopup: true
 
         onLeft: {
-            playLeaveSound()
             stack.pop()
             stack.currentItem.setGuiEnabled(true)
             if (shutdown) {

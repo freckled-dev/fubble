@@ -4,6 +4,7 @@ import QtQuick.Controls 2.12
 import QtQuick.Controls.Material 2.12
 import Qt.labs.settings 1.0
 import QtQuick.Layouts 1.12
+import QtQml.Models 2.12
 import io.fubble 1.0
 import "scripts/utils.js" as Utils
 
@@ -50,9 +51,8 @@ Item {
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.top: parent.top
-            delegate: chatDelegate
 
-            model: chatModel.messages
+            model: delegateModel
             snapMode: ListView.SnapToItem
             spacing: 10
 
@@ -67,6 +67,25 @@ Item {
             onHeightChanged: {
                 if (initialized) {
                     scrollToBottom()
+                }
+            }
+        }
+
+        DelegateModel {
+            id: delegateModel
+            model: chatModel.messages
+            delegate: chatDelegate
+            items.onChanged: {
+                var insertedItem = delegateModel.items.get(
+                            inserted[0].index).model
+
+                switch (insertedItem.type) {
+                case "leave":
+                    playLeaveSound()
+                    break
+                case "join":
+                    playJoinSound()
+                    break
                 }
             }
         }

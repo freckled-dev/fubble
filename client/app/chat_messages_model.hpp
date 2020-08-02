@@ -8,8 +8,11 @@
 #include <deque>
 
 namespace client {
-class room;
 class chat;
+class participant;
+class participants;
+class room;
+class users;
 class chat_messages_model : public QAbstractListModel {
   Q_OBJECT
 public:
@@ -31,11 +34,13 @@ public:
     bool own;
     QDateTime timestamp;
     QString message;
-    QString type{"message"};
+    QString type{"message"}; // "join", "leave"
   };
 
 protected:
   void add_message(const chat_message &add);
+  void on_participants_added(const std::vector<participant *> &added);
+  void on_participants_removed(const std::vector<std::string> &removed);
 
   int rowCount(const QModelIndex &parent = QModelIndex()) const override;
   QVariant data(const QModelIndex &index, int role) const override;
@@ -43,6 +48,8 @@ protected:
 
   client::logger logger{"chat_messages_model"};
   chat &chat_;
+  participants &participants_;
+  users &users_;
   std::deque<chat_message> messages;
   boost::signals2::scoped_connection on_message_connection;
 };
