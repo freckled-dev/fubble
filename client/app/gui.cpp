@@ -164,17 +164,16 @@ int main(int argc, char *argv[]) {
   rtc::google::capture::audio::device_creator audio_device_creator{rtc_factory};
   std::unique_ptr<rtc::google::capture::audio::device> audio_device =
       audio_device_creator.create();
-  std::unique_ptr<client::add_audio_to_connection> audio_track_adder;
-  audio_track_adder = std::make_unique<client::add_audio_to_connection>(
-      rtc_factory, *audio_device);
   auto &rtc_audio_devices = rtc_factory.get_audio_devices();
   client::rooms rooms;
   auto own_audio_track =
-      client::own_audio_track::create(rtc_factory, *audio_device);
+      client::own_audio_track::create(rtc_factory, audio_device->get_source());
+  auto audio_track_adder = std::make_unique<client::add_audio_to_connection>(
+      own_audio_track->get_track());
   auto audio_tracks_volume = client::audio_tracks_volume::create(
       rooms, tracks_adder, *audio_track_adder, *own_audio_track);
   std::shared_ptr<rtc::google::audio_track> settings_audio_track =
-      rtc_factory.create_audio_track(*audio_device);
+      rtc_factory.create_audio_track(audio_device->get_source());
   client::loopback_audio_impl_factory loopback_audio_test_factory{
       rtc_factory, settings_audio_track};
   client::loopback_audio_impl loopback_audio{rtc_factory,
