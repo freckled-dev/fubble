@@ -6,13 +6,18 @@
 
 namespace rtc::google {
 class audio_source;
+class voice_detection;
 struct audio_data;
 } // namespace rtc::google
 
+namespace webrtc {
+class VoiceDetection;
+}
 namespace client {
 class audio_level_calculator {
 public:
   audio_level_calculator(rtc::google::audio_source &audio_source_);
+  ~audio_level_calculator();
 
   const rtc::google::audio_source &get_source() const;
 
@@ -23,23 +28,20 @@ public:
   boost::signals2::signal<void(bool)> on_voice_detected;
 
 protected:
-  void on_data(rtc::google::audio_data &data);
+  void on_data(const rtc::google::audio_data &data);
   void calculate_30times_a_second(double new_level);
-  void calculate_voice_detection(double new_level);
+  void calculate_voice_detection(const rtc::google::audio_data &data);
 
   client::logger logger{"audio_level_calculator"};
   rtc::google::audio_source &audio_source;
+  std::unique_ptr<rtc::google::voice_detection> voice_detection_;
   boost::signals2::scoped_connection on_data_connection;
 
   static constexpr int audio_level_values_to_collect{100 / 10};
   double audio_level_cache{};
   int audio_level_counter{};
 
-  static constexpr int voice_audio_level_values_to_collect{100 / 30};
-  static constexpr double voice_detected_threshold{0.1};
   bool voice_detected{};
-  double voice_detected_audio_level_cache{};
-  int voice_detected_counter{};
 };
 } // namespace client
 
