@@ -34,7 +34,7 @@ class FubbleConan(ConanFile):
             del self.options.sanatize
 
     def configure(self):
-        if self._get_build_type() == "Release":
+        if self._get_build_type() == "Release" and 'sanatize' in self.options:
             if self.options.sanatize:
                 raise ConanInvalidConfiguration("can't enable sanatize without debug information")
 
