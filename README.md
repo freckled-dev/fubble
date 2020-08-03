@@ -60,6 +60,14 @@ make test
 ../fubble_build/meson/client/app/fubble
 ```
 
+## speed up compilation
+
+open `~/.conan/profiles/default` and add the line
+```
+fubble:LDFLAGS='-Wl,-fuse-ld=lld'
+```
+to the `[env]` section. now an incremental build shall not take more than 10 seconds.
+
 ## markus notes - ignore
 
 if using fish add the python3 bin path to PATH
