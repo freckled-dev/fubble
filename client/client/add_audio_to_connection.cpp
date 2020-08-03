@@ -5,10 +5,8 @@
 using namespace client;
 
 add_audio_to_connection::add_audio_to_connection(
-    rtc::google::factory &rtc_factory, rtc::google::audio_source &source)
-    : rtc_factory(rtc_factory), source(source) {
-  audio_track = rtc_factory.create_audio_track(source);
-}
+    std::shared_ptr<rtc::google::audio_track> source)
+    : audio_track(source) {}
 
 add_audio_to_connection::~add_audio_to_connection() = default;
 

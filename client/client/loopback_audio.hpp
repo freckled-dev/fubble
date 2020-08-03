@@ -29,7 +29,7 @@ public:
 };
 
 class loopback_audio_noop : public loopback_audio {
-  void enable_loopback(const bool enable) override {}
+  void enable_loopback(const bool) override {}
   bool get_enable_loopback() const override { return false; }
   std::shared_ptr<rtc::google::audio_track> get_track() override {
     BOOST_ASSERT(false);

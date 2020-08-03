@@ -7,11 +7,9 @@
 #include "rtc/google/factory.hpp"
 
 namespace client {
-// TODO create `own_audio` class. let it create the track. remove `get_track`
 class add_audio_to_connection : public track_adder {
 public:
-  add_audio_to_connection(rtc::google::factory &rtc_factory,
-                          rtc::google::audio_source &source);
+  add_audio_to_connection(std::shared_ptr<rtc::google::audio_track> source);
   ~add_audio_to_connection();
   void add_to_connection(rtc::connection &connection) override;
   void remove_from_connection(rtc::connection &connection) override;
@@ -20,8 +18,6 @@ public:
 
 protected:
   client::logger logger{"add_audio_to_connection"};
-  rtc::google::factory &rtc_factory;
-  rtc::google::audio_source &source;
   std::shared_ptr<rtc::google::audio_track> audio_track;
 };
 } // namespace client

@@ -33,7 +33,7 @@ protected:
   void update_available(const bool available_);
 
   QHash<int, QByteArray> roleNames() const override;
-  bool available;
+  bool available{};
 };
 class audio_video_settings_model : public QObject {
   Q_OBJECT

@@ -7,7 +7,7 @@ using namespace client::ui;
 
 frame_provider_google_video_device::frame_provider_google_video_device(
     rtc::google::capture::video::device &device, QObject *parent)
-    : device(device) {
+    : QObject(parent), device(device) {
   delegate = new ui::frame_provider_google_video_source(this);
   delegate->set_source(&device);
 }

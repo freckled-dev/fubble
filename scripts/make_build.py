@@ -11,11 +11,15 @@ parser.add_argument('--skip_remove', help='don\'t remove the build directory',
         action="store_true")
 parser.add_argument('--skip_install', help='don\'t run conan install',
         action="store_true")
+parser.add_argument('--skip_install_update', help='don\'t run conan install --update',
+        action="store_true")
 parser.add_argument('--skip_build', help='don\'t run conan build',
         action="store_true")
 parser.add_argument('--skip_package', help='don\'t run conan package',
         action="store_true")
 parser.add_argument('--profile', help='the conan profile to use', default='default')
+parser.add_argument('--use_asan', help='use address sanitizer \'memory,undefined\'', action="store_true")
+parser.add_argument('--treat_warnings_as_errors', help='warnings shall get handled as errors', action="store_true")
 args = parser.parse_args()
 
 paths = Paths()
@@ -37,22 +41,22 @@ if not args.skip_install:
         subprocess.run(['conan', 'remote', 'add', '-f', remote_name, remote_url],
                 check=True)
 
-    subprocess.run(['conan', 'install',
-        '--update', # Check updates exist from upstream remotes
+    install_args = ['conan', 'install',
         '--build', 'missing',
         '--install-folder', paths.dependencies_dir,
-        '--profile', args.profile,
-        paths.source_dir
-        ], check=False) # may fail, due to instability of bintray
-
-werror = 'true'
-werror_environment = os.environ.get('FUBBLE_TREAT_WARNING_AS_ERROR')
-if werror_environment == '0':
-    werror = 'false'
+        '--profile', args.profile]
+    if not args.skip_install_update:
+        install_args += ['--update'] # Check updates exist from upstream remotes
+    if args.treat_warnings_as_errors:
+        install_args += ['-o', 'fubble:treat_warnings_as_errors=True']
+    if args.use_asan:
+        install_args += ['-o', 'fubble:sanatize=True']
+    subprocess.run(install_args + [paths.source_dir],
+        check=False) # may fail, due to instability of bintray
 
 if not args.skip_build:
     subprocess.run(['conan', 'build',
-        paths.source_dir,
+       paths.source_dir,
         # '--build', 'missing',
         '--build-folder', paths.build_dir,
         '--install-folder', paths.dependencies_dir,

@@ -21,12 +21,15 @@ own_media_model::own_media_model(audio_device_settings &audio_settings_,
       audio_information_(audio_information_), own_media_(own_media_) {
   muted = audio_tracks_volume_.get_self_muted();
   deafed = audio_tracks_volume_.get_deafen();
-  audio_information_.on_sound_level_30times_a_second.connect(
-      [this](auto level) { on_sound_level(level); });
-  audio_test_information_.on_sound_level_30times_a_second.connect(
-      [this](auto level) { on_sound_test_level(level); });
+  signal_connections.push_back(
+      audio_information_.on_sound_level_30times_a_second.connect(
+          [this](auto level) { on_sound_level(level); }));
+  signal_connections.push_back(
+      audio_test_information_.on_sound_level_30times_a_second.connect(
+          [this](auto level) { on_sound_test_level(level); }));
   update_video();
-  video_settings_.on_video_source_changed.connect([this]() { update_video(); });
+  signal_connections.push_back(video_settings_.on_video_source_changed.connect(
+      [this]() { update_video(); }));
 }
 
 own_media_model::~own_media_model() = default;
