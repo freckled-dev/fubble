@@ -1,5 +1,6 @@
 #include "audio_level_calculator.hpp"
 #include "rtc/google/audio_source.hpp"
+#include "rtc/google/voice_detection.hpp"
 #include <numeric>
 
 using namespace client;
@@ -23,13 +24,16 @@ audio_level_calculator::audio_level_calculator(
     : audio_source(audio_source) {
   on_data_connection =
       audio_source.on_data.connect([this](auto data) { on_data(data); });
+  voice_detection_ = rtc::google::voice_detection::create();
 }
+
+audio_level_calculator::~audio_level_calculator() = default;
 
 const rtc::google::audio_source &audio_level_calculator::get_source() const {
   return audio_source;
 }
 
-void audio_level_calculator::on_data(rtc::google::audio_data &data) {
+void audio_level_calculator::on_data(const rtc::google::audio_data &data) {
   auto bits_per_sample = data.bits_per_sample;
   auto audio_data = data.audio_data;
   auto number_of_frames = data.number_of_frames;
@@ -58,7 +62,7 @@ void audio_level_calculator::on_data(rtc::google::audio_data &data) {
 #endif
   on_sound_level(averaged);
   calculate_30times_a_second(averaged);
-  calculate_voice_detection(averaged);
+  calculate_voice_detection(data);
 }
 
 void audio_level_calculator::calculate_30times_a_second(double new_level) {
@@ -77,24 +81,11 @@ void audio_level_calculator::calculate_30times_a_second(double new_level) {
       new_level / static_cast<double>(audio_level_values_to_collect);
 }
 
-void audio_level_calculator::calculate_voice_detection(double new_level) {
-  ++voice_detected_counter;
-  if (voice_detected_counter > voice_audio_level_values_to_collect) {
-    const bool voice_detected_current =
-        voice_detected_audio_level_cache > voice_detected_threshold;
-#if 0
-    BOOST_LOG_SEV(logger, logging::severity::debug)
-        << "voice_detected, voice_detected_current:" << voice_detected_current
-        << ", voice_detected_audio_level_cache:"
-        << voice_detected_audio_level_cache;
-#endif
-    if (voice_detected_current != voice_detected) {
-      voice_detected = voice_detected_current;
-      on_voice_detected(voice_detected);
-    }
-    voice_detected_audio_level_cache = 0.;
-    voice_detected_counter = 0;
-  }
-  voice_detected_audio_level_cache +=
-      new_level / static_cast<double>(voice_audio_level_values_to_collect);
+void audio_level_calculator::calculate_voice_detection(
+    const rtc::google::audio_data &data) {
+  bool check = voice_detection_->detect(data);
+  if (check == voice_detected)
+    return;
+  voice_detected = check;
+  on_voice_detected(voice_detected);
 }
