@@ -3,7 +3,8 @@
 
 #include <memory>
 
-namespace rtc::google {
+namespace rtc {
+namespace google {
 class audio_data;
 class voice_detection {
 public:
@@ -13,6 +14,7 @@ public:
 
   static std::unique_ptr<voice_detection> create();
 };
-} // namespace rtc::google
+} // namespace google
+} // namespace rtc
 
 #endif
