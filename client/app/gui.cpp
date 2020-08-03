@@ -183,8 +183,8 @@ int main(int argc, char *argv[]) {
   client::own_audio_information own_audio_information_{loopback_audio};
   client::loopback_audio_noop_if_disabled loopback_audio_test{
       loopback_audio_test_factory};
-  auto own_microphone_tester =
-      client::own_microphone_tester::create(loopback_audio_test);
+  auto own_microphone_tester = client::own_microphone_tester::create(
+      loopback_audio_test, *audio_tracks_volume);
   client::own_audio_information own_audio_test_information_{
       loopback_audio_test};
 

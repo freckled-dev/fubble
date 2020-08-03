@@ -139,6 +139,7 @@ void loopback_audio_noop_if_disabled::enable_loopback(const bool enable) {
   }
   BOOST_ASSERT(!delegate);
   delegate = factory.create();
+  delegate->enable_loopback(enable);
   delegate->on_track.connect([this](auto &track) { on_track(track); });
 }
 
