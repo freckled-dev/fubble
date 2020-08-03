@@ -8,6 +8,8 @@ class add_audio_to_connection;
 class rooms;
 class tracks_adder;
 class own_audio_track;
+// TODO rename interface to audio_volume. rename implementation to
+// audio_tracks_volume
 class audio_tracks_volume {
 public:
   static std::unique_ptr<audio_tracks_volume>
