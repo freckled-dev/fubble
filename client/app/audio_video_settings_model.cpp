@@ -23,7 +23,8 @@ public:
     update_available(!devices.empty());
   }
 
-  int rowCount(const QModelIndex &parent = QModelIndex()) const override {
+  int rowCount([[maybe_unused]] const QModelIndex &parent =
+                   QModelIndex()) const override {
     return std::max<int>(devices.size(), 1);
   }
 
@@ -57,7 +58,8 @@ public:
                       QObject *parent)
       : devices_model(parent), audio_devices(audio_devices) {}
 
-  int rowCount(const QModelIndex &parent = QModelIndex()) const override {
+  int rowCount([[maybe_unused]] const QModelIndex &parent =
+                   QModelIndex()) const override {
     return std::max<int>(devices.size(), 1);
   }
   QVariant data(const QModelIndex &index, int role) const override {
@@ -94,8 +96,7 @@ protected:
 class output_audio_devices_model : public audio_devices_model {
 public:
   output_audio_devices_model(rtc::google::audio_devices &audio_devices,
-                             client::audio_device_settings &settings,
-                             QObject *parent)
+                             client::audio_device_settings &, QObject *parent)
       : audio_devices_model(audio_devices, parent) {
     refresh();
   }

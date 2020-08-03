@@ -11,9 +11,11 @@ class FubbleConan(ConanFile):
     description = "Conferencing that works"
     topics = ("conference", "fubble", "video", "audio", "webrtc")
     settings = "os", "compiler", "build_type", "arch"
-    options = {"shared": [False, True]}
+    options = {"shared": [False, True], "treat_warnings_as_errors": [True, False],
+            "sanatize": [True, False]}
     # https://docs.conan.io/en/latest/reference/conanfile/attributes.html#default-options
-    default_options = {"shared": False, "nlohmann_json:multiple_headers": True}
+    default_options = {"shared": False, "nlohmann_json:multiple_headers": True,
+            "treat_warnings_as_errors": False, "sanatize": False}
     generators = "pkg_config"
     exports_sources = "*"
     # no_copy_source = True
@@ -23,6 +25,18 @@ class FubbleConan(ConanFile):
             return []
         return ['C:\\Qt\\5.15.0\\msvc2019_64\\bin']
         # return self.deps_cpp_info["qt"].bin_paths
+
+    def _get_build_type(self):
+        return self.settings.get_safe("build_type", default="Release")
+
+    def config_options(self):
+        if self.settings.os == "Windows":
+            del self.options.sanatize
+
+    def configure(self):
+        if self._get_build_type() == "Release":
+            if self.options.sanatize:
+                raise ConanInvalidConfiguration("can't enable sanatize without debug information")
 
     def imports(self):
         self.copy("*.dll", dst="bin", keep_path=False)
@@ -66,12 +80,14 @@ class FubbleConan(ConanFile):
         # https://mesonbuild.com/Builtin-options.html#base-options
         meson_options = {'cpp_std': 'c++17', 'b_ndebug': 'if-release',
                         'with_servers': with_servers, 'with_tests': with_tests}
-        # meson_options['warning_level'] = '3'
-        # meson_options['werror'] = 'true'
-        build_type = self.settings.get_safe("build_type", default="Release")
+        meson_options['warning_level'] = '3'
+        if self.options.treat_warnings_as_errors:
+            meson_options['werror'] = 'true'
+        build_type = self._get_build_type()
         if build_type == 'Debug' and self.settings.os == 'Linux':
-            # meson_options['b_sanitize'] = 'address,undefined'
             meson_options['b_lto'] = 'false'
+        if self.options.sanatize:
+            meson_options['b_sanitize'] = 'address,undefined'
         meson_options['b_pch'] = 'false'
         # meson_options['b_vscrt'] = 'mtd'
 

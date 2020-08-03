@@ -17,7 +17,6 @@ build ubuntu_18.04 release:
   variables:
     # DOCKER_HOST: "tcp://docker:2375"
     # DOCKER_DRIVER: "overlay2"
-    FUBBLE_TREAT_WARNING_AS_ERROR: 0
     FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install
   script:
     - ccache -s
@@ -81,7 +80,6 @@ innosetup:
     - windows
     - dedicated
   variables:
-    FUBBLE_TREAT_WARNING_AS_ERROR: 0
     FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install_windows
     # FUBBLE_BUILD_NINJA_JOBS: '1'
   before_script:

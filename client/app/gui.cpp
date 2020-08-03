@@ -78,7 +78,7 @@
 
 fruit::Component<client::crash_catcher> create_crash_catcher_component() {
   return fruit::createComponent().install(client::crash_catcher::create);
-};
+}
 
 int main(int argc, char *argv[]) {
   gui_options options_parser;

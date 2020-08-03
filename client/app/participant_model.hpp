@@ -17,7 +17,7 @@ class video_settings;
 // TODO derive class to `own_participant_model` and `remote_participant_model`
 class participant_model : public QObject {
   Q_OBJECT
-  Q_PROPERTY(QString identifier MEMBER identifier CONSTANT);
+  Q_PROPERTY(QString identifier MEMBER identifier CONSTANT)
   Q_PROPERTY(QString name MEMBER name NOTIFY name_changed)
   Q_PROPERTY(bool own MEMBER own CONSTANT)
   // self muted

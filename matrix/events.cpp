@@ -79,6 +79,7 @@ public:
       : source(events_), room_id{room_id} {}
 
   bool handle_event(const std::shared_ptr<event::event> &handle) override {
+    (void)handle;
     return false;
   }
 
