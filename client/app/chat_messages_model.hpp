@@ -31,7 +31,7 @@ public:
   struct chat_message {
     QString participant_id;
     QString name;
-    bool own;
+    bool own{};
     QDateTime timestamp;
     QString message;
     QString type{"message"}; // "join", "leave"

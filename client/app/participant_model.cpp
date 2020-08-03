@@ -20,11 +20,12 @@ participant_model::participant_model(participant &participant_,
       id(participant_.get_id()), own{dynamic_cast<own_participant *>(
                                          &participant_) != nullptr} {
   set_name();
-  participant_.on_name_changed.connect([this](auto) { set_name(); });
-  participant_.on_video_added.connect(
-      [this](auto &added) { video_added(added); });
-  participant_.on_video_removed.connect(
-      [this](auto &removed) { video_removed(removed); });
+  signal_connections.push_back(
+      participant_.on_name_changed.connect([this](auto) { set_name(); }));
+  signal_connections.push_back(participant_.on_video_added.connect(
+      [this](auto &added) { video_added(added); }));
+  signal_connections.push_back(participant_.on_video_removed.connect(
+      [this](auto &removed) { video_removed(removed); }));
   auto videos = participant_.get_videos();
   for (auto video : videos) {
     BOOST_ASSERT(video);
@@ -32,15 +33,16 @@ participant_model::participant_model(participant &participant_,
   }
   if (own) {
     video_disabled = video_settings_.get_paused();
-    audio_information_.on_sound_level_30times_a_second.connect(
-        [this](auto level) { on_sound_level(level); });
-    audio_information_.on_voice_detected.connect(
-        [this](auto detected) { on_voice_detected(detected); });
+    signal_connections.push_back(
+        audio_information_.on_sound_level_30times_a_second.connect(
+            [this](auto level) { on_sound_level(level); }));
+    signal_connections.push_back(audio_information_.on_voice_detected.connect(
+        [this](auto detected) { on_voice_detected(detected); }));
   } else {
-    participant_.on_audio_added.connect(
-        [this](auto &source) { audio_added(source.get_source()); });
-    participant_.on_audio_removed.connect(
-        [this](auto &source) { audio_removed(source.get_source()); });
+    signal_connections.push_back(participant_.on_audio_added.connect(
+        [this](auto &source) { audio_added(source.get_source()); }));
+    signal_connections.push_back(participant_.on_audio_removed.connect(
+        [this](auto &source) { audio_removed(source.get_source()); }));
     auto audios = participant_.get_audios();
     for (auto audio : audios) {
       BOOST_ASSERT(audio);

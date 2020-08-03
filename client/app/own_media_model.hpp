@@ -3,6 +3,8 @@
 
 #include "client/logger.hpp"
 #include <QObject>
+#include <boost/signals2/connection.hpp>
+#include <vector>
 
 namespace client {
 namespace ui {
@@ -71,6 +73,7 @@ protected:
   bool muted{};
   bool deafed{};
   ui::frame_provider_google_video_source *video{};
+  std::vector<boost::signals2::scoped_connection> signal_connections;
 };
 } // namespace client
 
