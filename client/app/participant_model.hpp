@@ -26,10 +26,11 @@ class participant_model : public QObject {
   // all others muted
   Q_PROPERTY(bool deafed MEMBER deafed NOTIFY deafed_changed)
   // specific participant muted
-  Q_PROPERTY(bool silenced MEMBER silenced NOTIFY silenced_changed)
+  Q_PROPERTY(bool silenced READ get_silenced WRITE set_silenced NOTIFY
+                 silenced_changed)
   // volume setting from 0 to 1
   Q_PROPERTY(
-      double volume READ get_volume WRITE set_volume NOTIFY volume_changed)
+      qreal volume READ get_volume WRITE set_volume NOTIFY volume_changed)
   // own video disabled
   Q_PROPERTY(
       bool videoDisabled MEMBER video_disabled NOTIFY video_disabled_changed)
@@ -74,8 +75,10 @@ protected:
   void audio_removed(rtc::google::audio_source &);
   void on_sound_level(double level);
   void on_voice_detected(bool detected);
-  double get_volume() const;
-  void set_volume(double);
+  qreal get_volume() const;
+  void set_volume(qreal);
+  bool get_silenced() const;
+  void set_silenced(bool);
 
   mutable client::logger logger{"participant_model"};
   participant &participant_;

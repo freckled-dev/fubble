@@ -23,7 +23,10 @@ public:
   virtual bool get_deafen() = 0;
 
   virtual void set_volume(std::string id, double volume) = 0;
+  virtual double get_volume(std::string id) const = 0;
+
   virtual void mute(std::string id, bool muted) = 0;
+  virtual bool get_muted(std::string id) const = 0;
 };
 class audio_tracks_volume : public audio_volume {
 public:

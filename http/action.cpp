@@ -4,6 +4,7 @@
 #include "connector.hpp"
 #include "http_connection.hpp"
 #include "https_connection.hpp"
+#include <boost/exception/enable_current_exception.hpp>
 #include <fmt/format.h>
 #include <fmt/ostream.h>
 #include <nlohmann/json.hpp>
@@ -153,10 +154,12 @@ void action::on_response_read(const boost::system::error_code &error) {
   nlohmann::json json_body;
   try {
     json_body = nlohmann::json::parse(body);
-  } catch (...) {
+  } catch (const nlohmann::json::exception &error) {
     BOOST_LOG_SEV(logger, logging::severity::error)
         << "could not json-parse the following body:" << body;
-    std::rethrow_exception(std::current_exception());
+    // promise_copy->set_exception(error);
+    promise_copy->set_exception(boost::current_exception());
+    return;
   }
   promise_copy->set_value(std::make_pair(http_code, json_body));
 }

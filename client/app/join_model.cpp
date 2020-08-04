@@ -36,5 +36,9 @@ void join_model::on_joined(boost::future<std::shared_ptr<class room>> room_) {
     error_model_.set_error(error_model::type::could_not_connect_to_backend,
                            error.what());
     join_failed();
+  } catch (...) {
+    BOOST_LOG_SEV(logger, logging::severity::error)
+        << __FUNCTION__ << ", catch(...)";
+    BOOST_ASSERT(false);
   }
 }

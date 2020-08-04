@@ -50,6 +50,8 @@ participant_model::participant_model(participant &participant_,
       BOOST_ASSERT(audio);
       audio_added(audio->get_source());
     }
+    volume = audio_volume_.get_volume(id);
+    muted = audio_volume_.get_muted(id);
   }
 }
 
@@ -122,10 +124,26 @@ void participant_model::on_voice_detected(bool detected) {
   voice_detected_changed(voice_detected);
 }
 
-double participant_model::get_volume() const { return volume; }
+qreal participant_model::get_volume() const {
+  BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
+  return volume;
+}
 
-void participant_model::set_volume(double volume_) {
+void participant_model::set_volume(qreal volume_) {
+  BOOST_LOG_SEV(logger, logging::severity::debug)
+      << __FUNCTION__ << ", volume:" << volume;
   audio_volume_.set_volume(id, volume_);
   volume = volume_;
   volume_changed(volume_);
+}
+
+bool participant_model::get_silenced() const { return silenced; }
+
+void participant_model::set_silenced(bool change) {
+  BOOST_LOG_SEV(logger, logging::severity::debug)
+      << __FUNCTION__ << ", change:" << change;
+  if (change == silenced)
+    return;
+  silenced = change;
+  silenced_changed(silenced);
 }

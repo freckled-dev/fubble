@@ -5,6 +5,7 @@ import io.fubble 1.0
 import "."
 
 Item {
+    required property ParticipantModel participant
     id: participantContainer
     Layout.fillWidth: true
     implicitHeight: participantColumn.height
@@ -116,6 +117,7 @@ Item {
                     id: volumeSlider
                     sliderColor: volumeSlider.enabled ? Style.current.primary : Style.current.gray300
                     value: participant.volume
+                    onValueChanged: participant.volume = value
                     anchors.top: volumeHeader.bottom
                     anchors.left: parent.left
                     anchors.right: muteImage.left

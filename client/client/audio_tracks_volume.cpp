@@ -66,16 +66,60 @@ public:
   void set_volume(std::string id, double volume) override {
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << ", id:" << id << ", volume:" << volume;
-    (void)id;
-    (void)volume;
+    auto &set = get_or_add_setting(id);
+    set.volume = volume;
+    // TODO
+  }
+
+  double get_volume(std::string id) const override {
+    auto found = find_setting(id);
+    if (found == settings.cend())
+      return 1.0;
+    return found->volume;
   }
 
   void mute(std::string id, bool muted) override {
-    (void)id;
-    (void)muted;
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << __FUNCTION__ << ", id:" << id << ", muted:" << muted;
+    auto &set = get_or_add_setting(id);
+    set.muted = muted;
+    // TODO
+  }
+
+  bool get_muted(std::string id) const override {
+    auto found = find_setting(id);
+    if (found == settings.cend())
+      return false;
+    return found->muted;
   }
 
 protected:
+  struct audio_setting {
+    std::string participant_id;
+    bool muted{};
+    double volume{1.0};
+  };
+
+  std::vector<audio_setting>::iterator find_setting(const std::string &id) {
+    return std::find_if(
+        settings.begin(), settings.end(),
+        [&](const auto &check) { return check.participant_id == id; });
+  }
+
+  std::vector<audio_setting>::const_iterator
+  find_setting(const std::string &id) const {
+    return std::find_if(
+        settings.cbegin(), settings.cend(),
+        [&](const auto &check) { return check.participant_id == id; });
+  }
+
+  audio_setting &get_or_add_setting(const std::string &id) {
+    auto found = find_setting(id);
+    if (found != settings.end())
+      return *found;
+    return settings.emplace_back();
+  }
+
   void on_room(const std::shared_ptr<room> &room_parameter) {
     if (room_ == room_parameter)
       return;
@@ -131,14 +175,6 @@ protected:
     own_audio_track_.get_track()->set_enabled(!actually_muted);
   }
 
-#if 0 // TODO
-  struct audio_setting {
-    std::string participant_id;
-    bool muted;
-    double volume;
-  };
-#endif
-
   client::logger logger{"audio_tracks_volume_impl"};
   rooms &rooms_;
   tracks_adder &tracks_adder_;
@@ -150,6 +186,7 @@ protected:
   bool muted_self{};
   bool deafned{};
   bool actually_muted{};
+  std::vector<audio_setting> settings;
 };
 } // namespace
 
