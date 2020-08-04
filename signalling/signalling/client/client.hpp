@@ -47,6 +47,9 @@ public:
   static std::unique_ptr<client>
   create(websocket::connector_creator &connector_creator,
          connection_creator &connection_creator_);
+  static std::unique_ptr<client>
+  create_reconnecting(websocket::connector_creator &connector_creator,
+                      connection_creator &connection_creator_);
 };
 } // namespace signalling::client
 

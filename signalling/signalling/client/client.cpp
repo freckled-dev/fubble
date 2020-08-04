@@ -134,10 +134,21 @@ public:
   std::unique_ptr<websocket::connector> connector;
   connection_ptr connection_;
 };
+
+class reconnecting_client : public client {
+public:
+};
+
 } // namespace
 
 std::unique_ptr<client>
 client::create(websocket::connector_creator &connector_creator,
                connection_creator &connection_creator_) {
+  return std::make_unique<client_impl>(connector_creator, connection_creator_);
+}
+
+std::unique_ptr<client>
+client::create_reconnecting(websocket::connector_creator &connector_creator,
+                            connection_creator &connection_creator_) {
   return std::make_unique<client_impl>(connector_creator, connection_creator_);
 }
