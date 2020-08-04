@@ -68,7 +68,7 @@ public:
         << __FUNCTION__ << ", id:" << id << ", volume:" << volume;
     auto &set = get_or_add_setting(id);
     set.volume = volume;
-    // TODO
+    update_participant(id);
   }
 
   double get_volume(std::string id) const override {
@@ -169,6 +169,7 @@ protected:
     if (id == room_->get_own_id())
       return; // enabling own audio would result in loopback audio!
     const bool participant_muted = get_muted(id);
+    const double volume = get_volume(id);
     const bool enabled =
         !(muted_all_except_self || deafned || participant_muted);
     BOOST_LOG_SEV(logger, logging::severity::debug)
@@ -176,8 +177,11 @@ protected:
         << ", muted_self:" << muted_self
         << ", muted_all_except_self:" << muted_all_except_self
         << ", deafned:" << deafned
-        << ", participant_muted:" << participant_muted;
+        << ", participant_muted:" << participant_muted << ", volume:" << volume;
     audio.set_enabled(enabled);
+    if (!enabled)
+      return;
+    audio.set_volume(volume);
   }
 
   void update_self_muted() {

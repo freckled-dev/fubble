@@ -6,13 +6,16 @@
 namespace rtc {
 namespace google {
 // audio track on sending side
+// TODO implementation looks quite like audio_track_sink. unify
 class audio_track_source : public audio_track {
 public:
   audio_track_source(rtc::scoped_refptr<webrtc::AudioTrackInterface>,
                      audio_source &source);
+  ~audio_track_source();
 
   webrtc::AudioTrackInterface &get_native_audio_track() override;
   audio_source &get_source() override;
+  void set_volume(double) override;
 
 protected:
   rtc::scoped_refptr<webrtc::AudioTrackInterface> native_track_;

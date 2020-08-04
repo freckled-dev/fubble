@@ -16,3 +16,8 @@ webrtc::AudioTrackInterface &audio_track_sink::get_native_audio_track() {
 }
 
 audio_source &audio_track_sink::get_source() { return *source; }
+
+void audio_track_sink::set_volume(double volume) {
+  BOOST_ASSERT(native_track_->GetSource());
+  native_track_->GetSource()->SetVolume(volume);
+}
