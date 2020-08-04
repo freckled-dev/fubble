@@ -63,6 +63,18 @@ public:
 
   bool get_deafen() override { return deafned; }
 
+  void set_volume(std::string id, double volume) override {
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << __FUNCTION__ << ", id:" << id << ", volume:" << volume;
+    (void)id;
+    (void)volume;
+  }
+
+  void mute(std::string id, bool muted) override {
+    (void)id;
+    (void)muted;
+  }
+
 protected:
   void on_room(const std::shared_ptr<room> &room_parameter) {
     if (room_ == room_parameter)
