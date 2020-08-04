@@ -83,7 +83,7 @@ public:
         << __FUNCTION__ << ", id:" << id << ", muted:" << muted;
     auto &set = get_or_add_setting(id);
     set.muted = muted;
-    // TODO
+    update_participant(id);
   }
 
   bool get_muted(std::string id) const override {
@@ -117,7 +117,9 @@ protected:
     auto found = find_setting(id);
     if (found != settings.end())
       return *found;
-    return settings.emplace_back();
+    auto &result = settings.emplace_back();
+    result.participant_id = id;
+    return result;
   }
 
   void on_room(const std::shared_ptr<room> &room_parameter) {
@@ -151,17 +153,30 @@ protected:
     }
   }
 
+  void update_participant(const std::string &id) {
+    auto got = participants_->get(id);
+    if (!got) {
+      BOOST_ASSERT(false);
+      return;
+    }
+    for (auto &audio : got->get_audios())
+      update_audio(id, *audio);
+  }
+
   void update_audio(const std::string &id, rtc::google::audio_track &audio) {
     if (!room_)
       return;
     if (id == room_->get_own_id())
       return; // enabling own audio would result in loopback audio!
-    const bool enabled = !(muted_all_except_self || deafned);
+    const bool participant_muted = get_muted(id);
+    const bool enabled =
+        !(muted_all_except_self || deafned || participant_muted);
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << ", id:" << id << ", enabled:" << enabled
         << ", muted_self:" << muted_self
         << ", muted_all_except_self:" << muted_all_except_self
-        << ", deafned:" << deafned;
+        << ", deafned:" << deafned
+        << ", participant_muted:" << participant_muted;
     audio.set_enabled(enabled);
   }
 

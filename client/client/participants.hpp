@@ -22,6 +22,7 @@ public:
   ~participants();
 
   std::vector<participant *> get_all() const;
+  participant *get(const std::string &id) const;
   boost::future<void> close();
 
   boost::signals2::signal<void(const std::vector<participant *> &)> on_added;
@@ -35,6 +36,7 @@ protected:
   void add(matrix::room_participant &add_);
   using participants_container = std::vector<std::unique_ptr<participant>>;
   participants_container::iterator find(const std::string &id);
+  participants_container::const_iterator find(const std::string &id) const;
 
   boost::inline_executor executor;
   std::unique_ptr<participant_creator> participant_creator_;

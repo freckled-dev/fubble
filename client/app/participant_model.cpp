@@ -145,5 +145,6 @@ void participant_model::set_silenced(bool change) {
   if (change == silenced)
     return;
   silenced = change;
+  audio_volume_.mute(id, silenced);
   silenced_changed(silenced);
 }
