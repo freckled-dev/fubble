@@ -70,6 +70,13 @@ std::vector<participant *> participants::get_all() const {
   return result;
 }
 
+participant *participants::get(const std::string &id) const {
+  auto found = find(id);
+  if (found == participants_.cend())
+    return nullptr;
+  return found->get();
+}
+
 boost::future<void> participants::close() {
   auto leaver_ = std::make_shared<leaver>();
   std::transform(participants_.begin(), participants_.end(),
@@ -118,5 +125,11 @@ void participants::add(matrix::room_participant &add_) {
 participants::participants_container::iterator
 participants::find(const std::string &id) {
   return std::find_if(participants_.begin(), participants_.end(),
+                      [&](const auto &check) { return id == check->get_id(); });
+}
+
+participants::participants_container::const_iterator
+participants::find(const std::string &id) const {
+  return std::find_if(participants_.cbegin(), participants_.cend(),
                       [&](const auto &check) { return id == check->get_id(); });
 }

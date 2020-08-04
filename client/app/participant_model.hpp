@@ -12,6 +12,7 @@ class participant;
 class audio_device_settings;
 class audio_level_calculator;
 class own_audio_information;
+class audio_volume;
 class video_settings;
 
 // TODO derive class to `own_participant_model` and `remote_participant_model`
@@ -25,9 +26,11 @@ class participant_model : public QObject {
   // all others muted
   Q_PROPERTY(bool deafed MEMBER deafed NOTIFY deafed_changed)
   // specific participant muted
-  Q_PROPERTY(bool silenced MEMBER silenced NOTIFY silenced_changed)
+  Q_PROPERTY(bool silenced READ get_silenced WRITE set_silenced NOTIFY
+                 silenced_changed)
   // volume setting from 0 to 1
-  Q_PROPERTY(double volume MEMBER volume NOTIFY volume_changed)
+  Q_PROPERTY(
+      qreal volume READ get_volume WRITE set_volume NOTIFY volume_changed)
   // own video disabled
   Q_PROPERTY(
       bool videoDisabled MEMBER video_disabled NOTIFY video_disabled_changed)
@@ -43,7 +46,8 @@ public:
   participant_model(participant &participant_,
                     audio_device_settings &audio_settings_,
                     video_settings &video_settings_,
-                    own_audio_information &audio_information_, QObject *parent);
+                    own_audio_information &audio_information_,
+                    audio_volume &audio_volume_, QObject *parent);
   ~participant_model();
 
   std::string get_id() const;
@@ -71,12 +75,17 @@ protected:
   void audio_removed(rtc::google::audio_source &);
   void on_sound_level(double level);
   void on_voice_detected(bool detected);
+  qreal get_volume() const;
+  void set_volume(qreal);
+  bool get_silenced() const;
+  void set_silenced(bool);
 
   mutable client::logger logger{"participant_model"};
   participant &participant_;
   audio_device_settings &audio_settings_;
   video_settings &video_settings_;
   own_audio_information &audio_information_;
+  audio_volume &audio_volume_;
   std::unique_ptr<audio_level_calculator> audio_level_calculator_;
   const std::string id;
   const QString identifier{QString::fromStdString(id)};

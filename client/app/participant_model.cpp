@@ -1,6 +1,7 @@
 #include "participant_model.hpp"
 #include "client/audio_device_settings.hpp"
 #include "client/audio_level_calculator.hpp"
+#include "client/audio_tracks_volume.hpp"
 #include "client/own_audio_information.hpp"
 #include "client/own_participant.hpp"
 #include "client/participant.hpp"
@@ -13,10 +14,11 @@ participant_model::participant_model(participant &participant_,
                                      audio_device_settings &audio_settings_,
                                      video_settings &video_settings_,
                                      own_audio_information &audio_information_,
+                                     audio_volume &audio_volume_,
                                      QObject *parent)
     : QObject(parent), participant_(participant_),
       audio_settings_(audio_settings_), video_settings_(video_settings_),
-      audio_information_(audio_information_),
+      audio_information_(audio_information_), audio_volume_(audio_volume_),
       id(participant_.get_id()), own{dynamic_cast<own_participant *>(
                                          &participant_) != nullptr} {
   set_name();
@@ -48,6 +50,8 @@ participant_model::participant_model(participant &participant_,
       BOOST_ASSERT(audio);
       audio_added(audio->get_source());
     }
+    volume = audio_volume_.get_volume(id);
+    muted = audio_volume_.get_muted(id);
   }
 }
 
@@ -118,4 +122,29 @@ void participant_model::on_sound_level(double level) {
 void participant_model::on_voice_detected(bool detected) {
   voice_detected = detected;
   voice_detected_changed(voice_detected);
+}
+
+qreal participant_model::get_volume() const {
+  BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
+  return volume;
+}
+
+void participant_model::set_volume(qreal volume_) {
+  BOOST_LOG_SEV(logger, logging::severity::debug)
+      << __FUNCTION__ << ", volume:" << volume;
+  audio_volume_.set_volume(id, volume_);
+  volume = volume_;
+  volume_changed(volume_);
+}
+
+bool participant_model::get_silenced() const { return silenced; }
+
+void participant_model::set_silenced(bool change) {
+  BOOST_LOG_SEV(logger, logging::severity::debug)
+      << __FUNCTION__ << ", change:" << change;
+  if (change == silenced)
+    return;
+  silenced = change;
+  audio_volume_.mute(id, silenced);
+  silenced_changed(silenced);
 }

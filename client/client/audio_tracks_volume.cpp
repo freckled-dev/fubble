@@ -63,7 +63,65 @@ public:
 
   bool get_deafen() override { return deafned; }
 
+  void set_volume(std::string id, double volume) override {
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << __FUNCTION__ << ", id:" << id << ", volume:" << volume;
+    auto &set = get_or_add_setting(id);
+    set.volume = volume;
+    update_participant(id);
+  }
+
+  double get_volume(std::string id) const override {
+    auto found = find_setting(id);
+    if (found == settings.cend())
+      return 1.0;
+    return found->volume;
+  }
+
+  void mute(std::string id, bool muted) override {
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << __FUNCTION__ << ", id:" << id << ", muted:" << muted;
+    auto &set = get_or_add_setting(id);
+    set.muted = muted;
+    update_participant(id);
+  }
+
+  bool get_muted(std::string id) const override {
+    auto found = find_setting(id);
+    if (found == settings.cend())
+      return false;
+    return found->muted;
+  }
+
 protected:
+  struct audio_setting {
+    std::string participant_id;
+    bool muted{};
+    double volume{1.0};
+  };
+
+  std::vector<audio_setting>::iterator find_setting(const std::string &id) {
+    return std::find_if(
+        settings.begin(), settings.end(),
+        [&](const auto &check) { return check.participant_id == id; });
+  }
+
+  std::vector<audio_setting>::const_iterator
+  find_setting(const std::string &id) const {
+    return std::find_if(
+        settings.cbegin(), settings.cend(),
+        [&](const auto &check) { return check.participant_id == id; });
+  }
+
+  audio_setting &get_or_add_setting(const std::string &id) {
+    auto found = find_setting(id);
+    if (found != settings.end())
+      return *found;
+    auto &result = settings.emplace_back();
+    result.participant_id = id;
+    return result;
+  }
+
   void on_room(const std::shared_ptr<room> &room_parameter) {
     if (room_ == room_parameter)
       return;
@@ -95,18 +153,35 @@ protected:
     }
   }
 
+  void update_participant(const std::string &id) {
+    auto got = participants_->get(id);
+    if (!got) {
+      BOOST_ASSERT(false);
+      return;
+    }
+    for (auto &audio : got->get_audios())
+      update_audio(id, *audio);
+  }
+
   void update_audio(const std::string &id, rtc::google::audio_track &audio) {
     if (!room_)
       return;
     if (id == room_->get_own_id())
       return; // enabling own audio would result in loopback audio!
-    const bool enabled = !(muted_all_except_self || deafned);
+    const bool participant_muted = get_muted(id);
+    const double volume = get_volume(id);
+    const bool enabled =
+        !(muted_all_except_self || deafned || participant_muted);
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << ", id:" << id << ", enabled:" << enabled
         << ", muted_self:" << muted_self
         << ", muted_all_except_self:" << muted_all_except_self
-        << ", deafned:" << deafned;
+        << ", deafned:" << deafned
+        << ", participant_muted:" << participant_muted << ", volume:" << volume;
     audio.set_enabled(enabled);
+    if (!enabled)
+      return;
+    audio.set_volume(volume);
   }
 
   void update_self_muted() {
@@ -119,14 +194,6 @@ protected:
     own_audio_track_.get_track()->set_enabled(!actually_muted);
   }
 
-#if 0 // TODO
-  struct audio_setting {
-    std::string participant_id;
-    bool muted;
-    double volume;
-  };
-#endif
-
   client::logger logger{"audio_tracks_volume_impl"};
   rooms &rooms_;
   tracks_adder &tracks_adder_;
@@ -138,6 +205,7 @@ protected:
   bool muted_self{};
   bool deafned{};
   bool actually_muted{};
+  std::vector<audio_setting> settings;
 };
 } // namespace
 
