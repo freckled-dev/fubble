@@ -17,6 +17,7 @@
 #include "signalling/client/connection_creator.hpp"
 #include "signalling/json_message.hpp"
 #include "websocket/connection_creator.hpp"
+#include "websocket/connector.hpp"
 #include <boost/asio/io_context.hpp>
 #include <boost/asio/posix/stream_descriptor.hpp>
 #include <boost/asio/read_until.hpp>
@@ -118,22 +119,23 @@ int main(int argc, char *argv[]) {
   signalling::json_message signalling_json;
   signalling::client::connection_creator signalling_connection_creator{
       context, boost_executor, signalling_json};
-  signalling::client::client signalling_client{websocket_connector,
-                                               signalling_connection_creator};
+  auto signalling_client = signalling::client::client::create(
+      websocket_connector, signalling_connection_creator);
   signalling::client::client::connect_information connect_information{
       false, config_.signalling_.host, config_.signalling_.service,
       "/api/signalling/v0/"};
-  signalling_client.set_connect_information(connect_information);
-  signalling_client.on_error.connect([&](auto /*error*/) { signals_.close(); });
+  signalling_client->set_connect_information(connect_information);
+  signalling_client->on_error.connect(
+      [&](auto /*error*/) { signals_.close(); });
 
   rtc::google::factory rtc_connection_creator;
   std::unique_ptr<rtc::connection> rtc_connection =
       rtc_connection_creator.create_connection();
 
   client::p2p::negotiation::ice_candidates ice_candidate_handler_{
-      signalling_client, *rtc_connection};
+      *signalling_client, *rtc_connection};
   client::p2p::negotiation::offer_answer offer_answer_handler_{
-      boost_executor, signalling_client, *rtc_connection};
+      boost_executor, *signalling_client, *rtc_connection};
   data_channel_handler data_channel_handler_{*rtc_connection};
   message_writer message_writer_{executor, data_channel_handler_};
 
@@ -161,20 +163,20 @@ int main(int argc, char *argv[]) {
     });
   });
 
-  signalling_client.on_create_offer.connect(
+  signalling_client->on_create_offer.connect(
       [&] { data_channel_handler_.add(); });
-  signalling_client.on_closed.connect([&] {
+  signalling_client->on_closed.connect([&] {
     message_writer_.close();
     rtc_connection->close();
   });
-  signalling_client.connect(config_.signalling_.id);
+  signalling_client->connect(config_.signalling_.id);
 
   signals_.async_wait([&](auto &error) {
     if (error)
       return;
     message_writer_.close();
     rtc_connection->close();
-    signalling_client.close();
+    signalling_client->close();
   });
 
   context.run();

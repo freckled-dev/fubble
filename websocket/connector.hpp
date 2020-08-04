@@ -47,7 +47,6 @@ private:
   bool done{};
 };
 
-// TODO move to own file
 class connector_creator {
 public:
   connector_creator(boost::asio::io_context &context,

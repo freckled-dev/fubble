@@ -38,9 +38,14 @@ struct Server : testing::Test {
       context, websocket_connection_creator};
   signalling::client::connection_creator connection_creator{context, executor,
                                                             signalling_json};
-  signalling::client::client client_{websocket_connector, connection_creator};
-  signalling::client::client client_answering{websocket_connector,
-                                              connection_creator};
+  std::unique_ptr<signalling::client::client> client_instance =
+      signalling::client::client::create(websocket_connector,
+                                         connection_creator);
+  signalling::client::client &client_{*client_instance};
+  std::unique_ptr<signalling::client::client> client_answering_instance =
+      signalling::client::client::create(websocket_connector,
+                                         connection_creator);
+  signalling::client::client &client_answering{*client_answering_instance};
 
   void connect(signalling::client::client &client) const {
     auto service = std::to_string(acceptor.get_port());
@@ -70,7 +75,6 @@ TEST_F(Server, SetUp) {
 TEST_F(Server, SingleConnect) {
   bool connected{};
   client_.on_registered.connect([&] {
-    [[maybe_unused]] auto &connection = client_.get_connection();
     EXPECT_FALSE(connected);
     connected = true;
     close();

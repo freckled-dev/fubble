@@ -55,10 +55,11 @@ else
       '-lbacktrace',
       ]
   else
-    message('using boost_stacktrace_basic')
+    # message('using boost_stacktrace_basic')
+    message('using boost_stacktrace_addr2line')
     boost_dep_modules += [
-      # 'stacktrace_addr2line',
-      'stacktrace_basic',
+      # 'stacktrace_basic',
+      'stacktrace_addr2line',
       ]
   endif
   boost_dep_link_with += [
