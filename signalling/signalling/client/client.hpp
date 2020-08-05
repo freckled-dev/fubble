@@ -10,6 +10,9 @@
 #include <boost/signals2/signal.hpp>
 #include <boost/thread/future.hpp>
 
+namespace utils {
+class one_shot_timer;
+}
 namespace websocket {
 class connector;
 class connector_creator;
@@ -48,7 +51,8 @@ public:
   static std::unique_ptr<client>
   create(websocket::connector_creator &connector_creator,
          connection_creator &connection_creator_);
-  static std::unique_ptr<client> create_reconnecting(client_factory &factory);
+  static std::unique_ptr<client>
+  create_reconnecting(client_factory &factory, utils::one_shot_timer &timer);
 };
 
 // TODO rename to factory?
@@ -60,12 +64,14 @@ public:
 
 class client_factory_reconnecting : public client_factory {
 public:
-  client_factory_reconnecting(client_factory &factory);
+  client_factory_reconnecting(client_factory &factory,
+                              utils::one_shot_timer &timer);
 
   std::unique_ptr<client> create() override;
 
 protected:
   client_factory &factory;
+  utils::one_shot_timer &timer;
 };
 
 class client_factory_impl : public client_factory {

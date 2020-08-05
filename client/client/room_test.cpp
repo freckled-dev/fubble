@@ -85,7 +85,7 @@ struct test_client {
                                                http_client_factory};
   matrix::authentification matrix_authentification{http_client_factory,
                                                    matrix_client_factory};
-  //
+
   // rtc
   rtc::google::factory rtc_connection_creator;
   client::peer_creator peer_creator{boost_executor, client_creator,

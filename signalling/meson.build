@@ -44,10 +44,18 @@ signalling_client_dep = declare_dependency(
   dependencies: [fmt_dep, websocket_dep, signalling_dep, boost_dep],
   link_with: [signalling_client]
   )
+client_test = executable('signalling_client_test',
+  ['signalling/client/client_test.cpp'],
+  cpp_pch: '../pch/precompiled.hpp',
+  dependencies: [boost_dep, gtest_dep, fmt_dep, signalling_client_dep],
+  link_with: [test_main]
+  )
+test('signalling client test', client_test, timeout: 8)
 
 server = library('signalling_server',
   ['signalling/server/server.cpp', 'signalling/server/connection.cpp',
-    'signalling/server/connection_creator.cpp'],
+    'signalling/server/connection_creator.cpp',
+    'signalling/server/application.cpp'],
   cpp_pch: '../pch/precompiled.hpp',
   dependencies: [boost_dep, fmt_dep, utils_dep, signalling_dep, enable_servers],
   install: true

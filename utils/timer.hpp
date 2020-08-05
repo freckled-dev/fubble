@@ -5,6 +5,23 @@
 #include <boost/asio/steady_timer.hpp>
 
 namespace utils {
+class one_shot_timer {
+public:
+  one_shot_timer(boost::asio::io_context &context,
+                 std::chrono::steady_clock::duration timeout);
+  using callack_type = std::function<void()>;
+  void start(const callack_type &callback);
+  void stop();
+
+protected:
+  void on_timeout(boost::system::error_code error);
+
+  boost::asio::io_context &context;
+  std::chrono::steady_clock::duration timeout;
+  boost::asio::steady_timer timer{context};
+  callack_type callback;
+};
+
 class interval_timer {
 public:
   interval_timer(boost::asio::io_context &context,

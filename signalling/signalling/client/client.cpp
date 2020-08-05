@@ -1,6 +1,7 @@
 #include "client.hpp"
 #include "connection.hpp"
 #include "connection_creator.hpp"
+#include "utils/timer.hpp"
 #include "websocket/connection.hpp"
 #include "websocket/connector.hpp"
 #include <boost/thread/executors/inline_executor.hpp>
@@ -138,7 +139,9 @@ public:
 
 class reconnecting_client : public client {
 public:
-  reconnecting_client(client_factory &factory) : factory(factory) {}
+  reconnecting_client(client_factory &factory, utils::one_shot_timer &timer)
+      : factory(factory), timer(timer) {}
+  ~reconnecting_client() { timer.stop(); }
 
   void set_connect_information(const connect_information &set) override {
     information = set;
@@ -151,8 +154,7 @@ public:
     BOOST_ASSERT(!delegate);
     BOOST_ASSERT(key.empty());
     key = key_;
-    delegate = factory.create();
-    delegate->connect(key);
+    reconnect();
   }
 
   boost::future<void> close() override {
@@ -193,8 +195,45 @@ public:
 protected:
   bool is_connected() const { return delegate != nullptr; }
 
+  void got_registered() {
+    // TODO save some kind of token
+    // connected
+  }
+
+  void reconnect() {
+    BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
+    delegate = factory.create();
+    BOOST_ASSERT(signal_connections.empty());
+    signal_connections.push_back(delegate->on_answer.connect(
+        [this](const auto &answer_) { on_answer(answer_); }));
+    signal_connections.push_back(delegate->on_offer.connect(
+        [this](const auto &offer_) { on_offer(offer_); }));
+    signal_connections.push_back(
+        delegate->on_ice_candidate.connect([this](const auto &ice_candidate_) {
+          on_ice_candidate(ice_candidate_);
+        }));
+    signal_connections.push_back(delegate->on_error.connect(
+        [this](const auto &error_) { got_error(error_); }));
+    signal_connections.push_back(
+        delegate->on_create_offer.connect([this] { on_create_offer(); }));
+    signal_connections.push_back(
+        delegate->on_registered.connect([this] { got_registered(); }));
+    // TODO on_closed
+    delegate->connect(key);
+  }
+
+  void got_error(const boost::system::system_error &error) {
+    delegate.reset();
+    BOOST_LOG_SEV(logger, logging::severity::warning)
+        << __FUNCTION__ << ", error:" << error.what();
+    // TODO reconnect
+    timer.start([this] { reconnect(); });
+  }
+
   signalling::logger logger{"reconnecting_client"};
+  std::vector<boost::signals2::scoped_connection> signal_connections;
   client_factory &factory;
+  utils::one_shot_timer &timer;
   std::unique_ptr<client> delegate;
   connect_information information;
   std::string key;
@@ -203,6 +242,9 @@ protected:
   std::queue<signalling::answer> answer_cache;
   std::queue<signalling::ice_candidate> candidate_cache;
   bool want_to_negotiate{};
+
+  static constexpr std::chrono::steady_clock::duration reconnect_timeout =
+      std::chrono::seconds(1);
 };
 
 } // namespace
@@ -213,16 +255,18 @@ client::create(websocket::connector_creator &connector_creator,
   return std::make_unique<client_impl>(connector_creator, connection_creator_);
 }
 
-std::unique_ptr<client> client::create_reconnecting(client_factory &factory) {
-  return std::make_unique<reconnecting_client>(factory);
+std::unique_ptr<client>
+client::create_reconnecting(client_factory &factory,
+                            utils::one_shot_timer &timer) {
+  return std::make_unique<reconnecting_client>(factory, timer);
 }
 
 client_factory_reconnecting::client_factory_reconnecting(
-    client_factory &factory)
-    : factory(factory) {}
+    client_factory &factory, utils::one_shot_timer &timer)
+    : factory(factory), timer(timer) {}
 
 std::unique_ptr<client> client_factory_reconnecting::create() {
-  return client::create_reconnecting(factory);
+  return client::create_reconnecting(factory, timer);
 }
 
 client_factory_impl::client_factory_impl(

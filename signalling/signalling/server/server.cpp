@@ -37,4 +37,4 @@ void clazz::close() {
   acceptor.close();
 }
 
-int clazz ::port() { return acceptor.get_port(); }
+int clazz::get_port() const { return acceptor.get_port(); }
