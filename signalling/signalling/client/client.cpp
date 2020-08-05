@@ -22,42 +22,42 @@ public:
 
   ~client_impl() = default;
 
-  void set_connect_information(const connect_information &set) {
+  void set_connect_information(const connect_information &set) override {
     connect_information_ = set;
   }
 
-  boost::future<void> close() {
+  boost::future<void> close() override {
     if (!connection_)
       return boost::make_exceptional(
           boost::system::system_error(boost::asio::error::not_connected));
     return connection_->close();
   }
 
-  void send_offer(const signalling::offer &offer_) {
+  void send_offer(const signalling::offer &offer_) override {
     BOOST_ASSERT(connection_);
     BOOST_LOG_SEV(logger, logging::severity::debug) << "send_offer";
     connection_->send_offer(offer_);
   }
 
-  void send_answer(const signalling::answer &answer_) {
+  void send_answer(const signalling::answer &answer_) override {
     BOOST_ASSERT(connection_);
     BOOST_LOG_SEV(logger, logging::severity::debug) << "send_answer";
     connection_->send_answer(answer_);
   }
 
-  void send_ice_candidate(const signalling::ice_candidate &candidate) {
+  void send_ice_candidate(const signalling::ice_candidate &candidate) override {
     BOOST_ASSERT(connection_);
     BOOST_LOG_SEV(logger, logging::severity::debug) << "send_ice_candidate";
     connection_->send_ice_candidate(candidate);
   }
 
-  void send_want_to_negotiate() {
+  void send_want_to_negotiate() override {
     BOOST_ASSERT(connection_);
     BOOST_LOG_SEV(logger, logging::severity::debug) << "send_want_to_negotiate";
     connection_->send_want_to_negotiate();
   }
 
-  void connect(const std::string &key) {
+  void connect(const std::string &key) override {
     BOOST_ASSERT(!connection_);
     websocket::connector::config connector_config;
     connector_config.ssl = connect_information_.secure;
@@ -70,6 +70,11 @@ public:
         executor, [this, key](auto result) { connected(result, key); });
   }
 
+  std::optional<std::string> get_registration_token() const override {
+    return token;
+  }
+
+protected:
   void connected(boost::future<websocket::connection_ptr> &result,
                  const std::string &key) {
     BOOST_LOG_SEV(logger, logging::severity::info) << "client connected";
@@ -79,6 +84,7 @@ public:
       connection_ = connection_creator_.create(std::move(websocket_connection));
       connect_signals(connection_);
       connection_->send_registration(signalling::registration{key});
+      // TODO call on message!
       on_registered();
       connection_->run().then(
           executor, [this](boost::future<void> result) { run_done(result); });
@@ -137,6 +143,7 @@ public:
   connect_information connect_information_;
   std::unique_ptr<websocket::connector> connector;
   connection_ptr connection_;
+  std::optional<std::string> token; // TODO set!
 };
 
 class reconnecting_client : public client {
@@ -194,12 +201,28 @@ public:
     want_to_negotiate = true;
   }
 
+  std::optional<std::string> get_registration_token() const override {
+    return token;
+  }
+
 protected:
   bool is_connected() const { return delegate != nullptr; }
 
   void got_registered() {
-    // TODO save some kind of token
+    BOOST_ASSERT(delegate);
+    auto delegate_token = delegate->get_registration_token();
+    BOOST_ASSERT(delegate_token);
+    if (token && token != delegate_token) {
+      BOOST_LOG_SEV(logger, logging::severity::error)
+          << __FUNCTION__ << "after a reconnect the token have to be the same";
+      BOOST_ASSERT(false);
+    }
+    bool first_registration = !token.has_value();
+    token = delegate_token;
     // connected
+    if (!first_registration)
+      return;
+    on_registered();
   }
 
   void reconnect() {
@@ -239,6 +262,7 @@ protected:
   std::unique_ptr<client> delegate;
   connect_information information;
   std::string key;
+  std::optional<std::string> token;
 
   std::queue<signalling::offer> offer_cache;
   std::queue<signalling::answer> answer_cache;

@@ -60,7 +60,10 @@ TEST_F(Client, Instance) {}
 
 TEST_F(Client, Connect) {
   client->on_error.connect(no_error);
-  client->on_registered.connect([&] { client->close(); });
+  client->on_registered.connect([&] {
+    EXPECT_TRUE(client->get_registration_token());
+    client->close();
+  });
   client->on_closed.connect([&] { server->close(); });
   client->connect(key);
   context.run();
