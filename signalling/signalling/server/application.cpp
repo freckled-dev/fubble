@@ -10,7 +10,7 @@
 #include <boost/asio/io_context.hpp>
 #include <boost/thread/executors/executor_adaptor.hpp>
 
-using namespace signalling ::server;
+using namespace signalling::server;
 
 namespace {
 class application_impl : public application {
@@ -18,9 +18,15 @@ public:
   application_impl(boost::asio::io_context &context, int port)
       : context(context), acceptor_config{static_cast<std::uint16_t>(port)} {}
 
-  int get_port() const override { return server.get_port(); }
+  int get_port() const override { return server_.get_port(); }
 
-  void close() override { server.close(); }
+  void close() override { server_.close(); }
+
+  signalling::server::server &get_server() override { return server_; }
+
+  signalling::registration_handler &get_registrations() override {
+    return registration_handler;
+  }
 
 protected:
   boost::asio::io_context &context;
@@ -35,9 +41,9 @@ protected:
       asio_executor, signalling_json};
   signalling::device::creator device_creator_{asio_executor};
   signalling::registration_handler registration_handler{device_creator_};
-  signalling::server::server server{asio_executor, websocket_acceptor,
-                                    server_connection_creator,
-                                    registration_handler};
+  signalling::server::server server_{asio_executor, websocket_acceptor,
+                                     server_connection_creator,
+                                     registration_handler};
 };
 } // namespace
 
