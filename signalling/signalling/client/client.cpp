@@ -6,6 +6,7 @@
 #include <boost/thread/executors/inline_executor.hpp>
 #include <fmt/format.h>
 #include <iostream>
+#include <queue>
 
 using namespace signalling::client;
 
@@ -137,6 +138,71 @@ public:
 
 class reconnecting_client : public client {
 public:
+  reconnecting_client(client_factory &factory) : factory(factory) {}
+
+  void set_connect_information(const connect_information &set) override {
+    information = set;
+    if (!delegate)
+      return;
+    delegate->set_connect_information(set);
+  }
+
+  void connect(const std::string &key_) override {
+    BOOST_ASSERT(!delegate);
+    BOOST_ASSERT(key.empty());
+    key = key_;
+    delegate = factory.create();
+    delegate->connect(key);
+  }
+
+  boost::future<void> close() override {
+    if (!delegate) {
+      BOOST_LOG_SEV(logger, logging::severity::warning)
+          << __FUNCTION__ << ", no delegate!";
+      BOOST_ASSERT(false);
+      return boost::make_ready_future();
+    }
+    return delegate->close();
+  }
+
+  void send_offer(const signalling::offer &offer_) override {
+    if (is_connected())
+      return delegate->send_offer(offer_);
+    offer_cache.push(offer_);
+  }
+
+  void send_answer(const signalling::answer &answer_) override {
+    if (is_connected())
+      return delegate->send_answer(answer_);
+    answer_cache.push(answer_);
+  }
+
+  void
+  send_ice_candidate(const signalling::ice_candidate &candidate_) override {
+    if (is_connected())
+      return delegate->send_ice_candidate(candidate_);
+    candidate_cache.push(candidate_);
+  }
+
+  void send_want_to_negotiate() override {
+    if (is_connected())
+      return delegate->send_want_to_negotiate();
+    want_to_negotiate = true;
+  }
+
+protected:
+  bool is_connected() const { return delegate != nullptr; }
+
+  signalling::logger logger{"reconnecting_client"};
+  client_factory &factory;
+  std::unique_ptr<client> delegate;
+  connect_information information;
+  std::string key;
+
+  std::queue<signalling::offer> offer_cache;
+  std::queue<signalling::answer> answer_cache;
+  std::queue<signalling::ice_candidate> candidate_cache;
+  bool want_to_negotiate{};
 };
 
 } // namespace
@@ -147,10 +213,16 @@ client::create(websocket::connector_creator &connector_creator,
   return std::make_unique<client_impl>(connector_creator, connection_creator_);
 }
 
-std::unique_ptr<client>
-client::create_reconnecting(websocket::connector_creator &connector_creator,
-                            connection_creator &connection_creator_) {
-  return std::make_unique<client_impl>(connector_creator, connection_creator_);
+std::unique_ptr<client> client::create_reconnecting(client_factory &factory) {
+  return std::make_unique<reconnecting_client>(factory);
+}
+
+client_factory_reconnecting::client_factory_reconnecting(
+    client_factory &factory)
+    : factory(factory) {}
+
+std::unique_ptr<client> client_factory_reconnecting::create() {
+  return client::create_reconnecting(factory);
 }
 
 client_factory_impl::client_factory_impl(

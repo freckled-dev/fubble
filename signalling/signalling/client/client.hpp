@@ -15,6 +15,7 @@ class connector;
 class connector_creator;
 } // namespace websocket
 namespace signalling::client {
+class client_factory;
 class client {
 public:
   struct connect_information {
@@ -47,9 +48,7 @@ public:
   static std::unique_ptr<client>
   create(websocket::connector_creator &connector_creator,
          connection_creator &connection_creator_);
-  static std::unique_ptr<client>
-  create_reconnecting(websocket::connector_creator &connector_creator,
-                      connection_creator &connection_creator_);
+  static std::unique_ptr<client> create_reconnecting(client_factory &factory);
 };
 
 // TODO rename to factory?
@@ -64,6 +63,9 @@ public:
   client_factory_reconnecting(client_factory &factory);
 
   std::unique_ptr<client> create() override;
+
+protected:
+  client_factory &factory;
 };
 
 class client_factory_impl : public client_factory {
