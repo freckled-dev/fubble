@@ -51,7 +51,7 @@
 #include "rtc/google/factory.hpp"
 #include "rtc/google/log_webrtc_to_logging.hpp"
 #include "share_desktop_model.hpp"
-#include "signalling/client/client_creator.hpp"
+#include "signalling/client/client.hpp"
 #include "signalling/client/connection_creator.hpp"
 #include "signalling/json_message.hpp"
 #include "temporary_room/net/client.hpp"
@@ -119,7 +119,7 @@ int main(int argc, char *argv[]) {
   signalling::client::client::connect_information connect_information{
       config.general_.use_ssl, config.general_.host, config.general_.service,
       "/api/signalling/v0/"};
-  signalling::client::client_creator client_creator{
+  signalling::client::client_factory_impl client_creator{
       websocket_connector, signalling_connection_creator, connect_information};
 
   // session, matrix and temporary_room

@@ -5,7 +5,7 @@ import io.fubble 1.0
 import "."
 
 Item {
-    required property ParticipantModel participant
+    property ParticipantModel participant
     id: participantContainer
     Layout.fillWidth: true
     implicitHeight: participantColumn.height

@@ -51,6 +51,33 @@ public:
   create_reconnecting(websocket::connector_creator &connector_creator,
                       connection_creator &connection_creator_);
 };
+
+// TODO rename to factory?
+class client_factory {
+public:
+  virtual ~client_factory() = default;
+  virtual std::unique_ptr<client> create() = 0;
+};
+
+class client_factory_reconnecting : public client_factory {
+public:
+  client_factory_reconnecting(client_factory &factory);
+
+  std::unique_ptr<client> create() override;
+};
+
+class client_factory_impl : public client_factory {
+public:
+  client_factory_impl(websocket::connector_creator &connector_creator,
+                      connection_creator &connection_creator_,
+                      const client::connect_information &connect_information_);
+  std::unique_ptr<client> create() override;
+
+protected:
+  websocket::connector_creator &connector_creator;
+  connection_creator &connection_creator_;
+  const client::connect_information connect_information_;
+};
 } // namespace signalling::client
 
 #endif

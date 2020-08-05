@@ -11,7 +11,7 @@ using namespace signalling::client;
 
 namespace {
 
-class client_impl : public client::client {
+class client_impl : public client {
 public:
   client_impl(websocket::connector_creator &connector_,
               connection_creator &connection_creator_parameter)
@@ -151,4 +151,18 @@ std::unique_ptr<client>
 client::create_reconnecting(websocket::connector_creator &connector_creator,
                             connection_creator &connection_creator_) {
   return std::make_unique<client_impl>(connector_creator, connection_creator_);
+}
+
+client_factory_impl::client_factory_impl(
+    websocket::connector_creator &connector_creator,
+    connection_creator &connection_creator_,
+    const client::connect_information &connect_information_)
+    : connector_creator(connector_creator),
+      connection_creator_(connection_creator_),
+      connect_information_(connect_information_) {}
+
+std::unique_ptr<client> client_factory_impl::create() {
+  auto result = client::create(connector_creator, connection_creator_);
+  result->set_connect_information(connect_information_);
+  return result;
 }
