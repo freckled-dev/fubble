@@ -115,10 +115,12 @@ public:
     } catch (const boost::system::system_error &error) {
       BOOST_LOG_SEV(logger, logging::severity::info)
           << "connection stopped running with error:" << error.what();
-      on_error(error);
+      if (error.code() != boost::asio::error::operation_aborted)
+        on_error(error);
     } catch (const boost::broken_promise &error) {
       BOOST_LOG_SEV(logger, logging::severity::error)
           << "a broken_promise should not happen error occured";
+      BOOST_ASSERT(false);
     } catch (...) {
       BOOST_LOG_SEV(logger, logging::severity::error)
           << "run_done, an unknown error occured";
