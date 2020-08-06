@@ -37,7 +37,8 @@ void registration_handler::on_register(const connection_ptr &connection_,
 void registration_handler::register_(const connection_ptr &connection_,
                                      const registration &registration_) {
   BOOST_LOG_SEV(logger, logging::severity::info) << fmt::format(
-      "a device wants to register itself, key:'{}'", registration_.key);
+      "a device wants to register itself, key:'{}', reconnect_token:'{}'",
+      registration_.key, registration_.reconnect_token);
   auto found = find(registration_.key);
   if (found == devices.cend()) {
     register_as_first(connection_, registration_.key);

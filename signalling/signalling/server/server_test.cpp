@@ -8,6 +8,7 @@
 #include "signalling/device/creator.hpp"
 #include "signalling/json_message.hpp"
 #include "signalling/registration_handler.hpp"
+#include "utils/uuid.hpp"
 #include "websocket/acceptor.hpp"
 #include "websocket/connection_creator.hpp"
 #include "websocket/connector.hpp"
@@ -49,7 +50,8 @@ struct Server : testing::Test {
 
   void connect(signalling::client::client &client) const {
     auto service = std::to_string(acceptor.get_port());
-    client.set_connect_information({false, "localhost", service, "/", {}});
+    auto token = uuid::generate();
+    client.set_connect_information({false, "localhost", service, "/", token});
     client.connect(session_key);
   }
   static void shall_want_to_negotiate(signalling::client::client &client) {

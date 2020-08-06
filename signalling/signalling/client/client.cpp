@@ -70,10 +70,6 @@ public:
         executor, [this, key](auto result) { connected(result, key); });
   }
 
-  std::optional<std::string> get_registration_token() const override {
-    return connect_information_.token;
-  }
-
 protected:
   void connected(boost::future<websocket::connection_ptr> &result,
                  const std::string &key) {
@@ -85,7 +81,6 @@ protected:
       connect_signals(connection_);
       connection_->send_registration(
           signalling::registration{key, connect_information_.token});
-      // TODO call on message!
       on_registered();
       connection_->run().then(
           executor, [this](boost::future<void> result) { run_done(result); });
@@ -201,28 +196,14 @@ public:
     want_to_negotiate = true;
   }
 
-  std::optional<std::string> get_registration_token() const override {
-    return information.token;
-  }
-
 protected:
   bool is_connected() const { return delegate != nullptr; }
 
   void got_registered() {
-    BOOST_ASSERT(delegate);
-    auto delegate_token = delegate->get_registration_token();
-    BOOST_ASSERT(delegate_token);
-    auto &token = information.token;
-    if (token && token != delegate_token) {
-      BOOST_LOG_SEV(logger, logging::severity::error)
-          << __FUNCTION__ << "after a reconnect the token have to be the same";
-      BOOST_ASSERT(false);
-    }
-    bool first_registration = !token.has_value();
-    token = delegate_token;
     // connected
-    if (!first_registration)
+    if (is_registered)
       return;
+    is_registered = true;
     on_registered();
   }
 
@@ -263,6 +244,7 @@ protected:
   std::unique_ptr<client> delegate;
   connect_information information;
   std::string key;
+  bool is_registered{};
 
   std::queue<signalling::offer> offer_cache;
   std::queue<signalling::answer> answer_cache;

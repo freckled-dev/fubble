@@ -26,9 +26,7 @@ public:
     std::string host;
     std::string service;
     std::string target;
-    // TODO rename to reconnect_token
-    // TODO remove from this struct
-    std::optional<std::string> token;
+    std::string token;
   };
   virtual ~client() = default;
 
@@ -41,7 +39,6 @@ public:
   virtual void
   send_ice_candidate(const signalling::ice_candidate &candidate) = 0;
   virtual void send_want_to_negotiate() = 0;
-  virtual std::optional<std::string> get_registration_token() const = 0;
 
   boost::signals2::signal<void()> on_closed;
   boost::signals2::signal<void()> on_registered;

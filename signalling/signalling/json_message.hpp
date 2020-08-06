@@ -21,9 +21,8 @@ public:
     invalid_type(const std::string &type);
   };
 
-  using messages_type =
-      std::variant<offer, answer, ice_candidate, create_offer, registration,
-                   want_to_negotiate, registration_token>;
+  using messages_type = std::variant<offer, answer, ice_candidate, create_offer,
+                                     registration, want_to_negotiate>;
   messages_type parse(const std::string &message) const;
 
   std::string serialize(const offer &offer_) const;
@@ -32,7 +31,6 @@ public:
   std::string serialize(const create_offer &offering) const;
   std::string serialize(const registration &registration_) const;
   std::string serialize(const want_to_negotiate &negotiate) const;
-  std::string serialize(const registration_token &token) const;
 
 private:
   mutable class logger logger { "json_message" };

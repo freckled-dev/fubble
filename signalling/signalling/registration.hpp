@@ -7,14 +7,11 @@
 namespace signalling {
 struct registration {
   std::string key;
-  std::optional<std::string> token;
+  std::string reconnect_token;
 };
-struct registration_token {
-  std::string token;
-};
-inline bool operator==(const registration_token &first,
-                       const registration_token &second) {
-  return first.token == second.token;
+inline bool operator==(const registration &first, const registration &second) {
+  return first.key == second.key &&
+         first.reconnect_token == second.reconnect_token;
 }
 } // namespace signalling
 

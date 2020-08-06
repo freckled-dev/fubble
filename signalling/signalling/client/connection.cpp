@@ -45,11 +45,6 @@ void connection::send_answer(const signalling::answer &answer_) {
   auto serialized = message_parser.serialize(answer_);
   send(serialized);
 }
-void connection::send_registration_token(
-    const signalling::registration_token &token) {
-  auto serialized = message_parser.serialize(token);
-  send(serialized);
-}
 boost::future<void> connection::run() {
   running = true;
   read_next();
@@ -102,9 +97,6 @@ struct message_visitor {
   }
   void operator()(const signalling::create_offer &) {
     connection_.on_create_offer();
-  }
-  void operator()(const signalling::registration_token &token) {
-    connection_.on_registration_token(token);
   }
   void operator()(const signalling::want_to_negotiate &) {
     BOOST_ASSERT_MSG(false,
