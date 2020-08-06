@@ -11,7 +11,8 @@ public:
   // TODO remove executor. it's unused
   creator(boost::executor &executor);
   virtual ~creator() = default;
-  virtual device_ptr create(connection_ptr connection_);
+  virtual device_ptr create(connection_ptr connection_,
+                            const std::string &token);
 
 protected:
   boost::executor &executor;

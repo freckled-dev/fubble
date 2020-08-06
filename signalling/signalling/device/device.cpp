@@ -3,7 +3,8 @@
 
 using namespace signalling::device;
 
-device::device(signalling::connection_ptr connection_) : connection_(connection_) {
+device::device(signalling::connection_ptr connection_, const std::string &token)
+    : connection_(connection_), token{token} {
   callback_connections.emplace_back(connection_->on_offer.connect(
       [this](const auto &offer) { on_offer(offer); }));
   callback_connections.emplace_back(connection_->on_ice_candidate.connect(
@@ -17,15 +18,18 @@ device::device(signalling::connection_ptr connection_) : connection_(connection_
 device::~device() = default;
 
 void device::set_partner(const device_wptr &partner_) {
-  auto strong_partner = partner_.lock();
-  BOOST_ASSERT(strong_partner);
+  BOOST_ASSERT(partner_.lock());
   partner = partner_;
   negotiate();
 }
 
+void device::reset_partner() { partner.reset(); }
+
 void device::close() { connection_->close(); }
 
-void device::send_offer(const signalling::offer &offer) { connection_->send_offer(offer); }
+void device::send_offer(const signalling::offer &offer) {
+  connection_->send_offer(offer);
+}
 
 void device::send_answer(const signalling::answer &answer) {
   connection_->send_answer(answer);
@@ -63,6 +67,8 @@ void device::negotiate() {
   wants_to_negotiate = false;
   connection_->send_do_offer();
 }
+
+std::string device::get_token() const { return token; }
 
 void device::on_want_to_negotiate(const signalling::want_to_negotiate &) {
   wants_to_negotiate = true;

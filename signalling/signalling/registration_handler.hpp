@@ -31,10 +31,14 @@ public:
 private:
   void on_register(const connection_ptr &connection_, const registration &);
   void register_(const connection_ptr &connection_, const registration &);
+  bool replace_connection_if_exists(const connection_ptr &connection_,
+                                    const devices_type::iterator &found,
+                                    const registration &);
   void register_as_first(const connection_ptr &connection_,
-                         const std::string &key);
+                         const registration &);
   void register_as_second(const connection_ptr &connection_,
-                          const devices_type::iterator &offering);
+                          const devices_type::iterator &offering,
+                          const registration &);
   void on_first_device_closed(const std::string &key);
   void on_second_device_closed(const std::string &key);
   void on_device_closed(const std::string &key);
