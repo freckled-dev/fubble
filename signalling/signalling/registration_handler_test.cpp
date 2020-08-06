@@ -27,6 +27,12 @@ struct mock_connection final : signalling::connection {
   }
   bool state_offering_called{};
   void send_do_offer() final { state_offering_called = true; }
+  std::optional<signalling::registration_token> registration_token;
+  void
+  send_registration_token(const signalling::registration_token &token) final {
+    EXPECT_FALSE(registration_token);
+    registration_token = token;
+  }
   bool close_called{};
   void close() final {
     EXPECT_FALSE(close_called);
@@ -39,7 +45,7 @@ std::shared_ptr<mock_connection>
 add_connection(signalling::registration_handler &handler) {
   auto connection = std::make_shared<mock_connection>();
   handler.add(connection);
-  signalling::registration registration{"key"};
+  signalling::registration registration{"key", {}};
   connection->on_registration(registration);
   return connection;
 }
@@ -57,7 +63,9 @@ TEST_F(RegistrationHandler, Setup) {
 }
 
 TEST_F(RegistrationHandler, AddOffering) {
-  add_connection(handler);
+  auto first = add_connection(handler);
+  EXPECT_TRUE(first->registration_token);
+  EXPECT_FALSE(first->registration_token.value().token.empty());
   EXPECT_EQ(handler.get_registered().size(), std::size_t{1});
 }
 

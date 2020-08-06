@@ -71,7 +71,7 @@ public:
   }
 
   std::optional<std::string> get_registration_token() const override {
-    return token;
+    return connect_information_.token;
   }
 
 protected:
@@ -83,7 +83,8 @@ protected:
       BOOST_ASSERT(!connection_);
       connection_ = connection_creator_.create(std::move(websocket_connection));
       connect_signals(connection_);
-      connection_->send_registration(signalling::registration{key});
+      connection_->send_registration(
+          signalling::registration{key, connect_information_.token});
       // TODO call on message!
       on_registered();
       connection_->run().then(
@@ -143,7 +144,6 @@ protected:
   connect_information connect_information_;
   std::unique_ptr<websocket::connector> connector;
   connection_ptr connection_;
-  std::optional<std::string> token; // TODO set!
 };
 
 class reconnecting_client : public client {
@@ -202,7 +202,7 @@ public:
   }
 
   std::optional<std::string> get_registration_token() const override {
-    return token;
+    return information.token;
   }
 
 protected:
@@ -212,6 +212,7 @@ protected:
     BOOST_ASSERT(delegate);
     auto delegate_token = delegate->get_registration_token();
     BOOST_ASSERT(delegate_token);
+    auto &token = information.token;
     if (token && token != delegate_token) {
       BOOST_LOG_SEV(logger, logging::severity::error)
           << __FUNCTION__ << "after a reconnect the token have to be the same";
@@ -262,7 +263,6 @@ protected:
   std::unique_ptr<client> delegate;
   connect_information information;
   std::string key;
-  std::optional<std::string> token;
 
   std::queue<signalling::offer> offer_cache;
   std::queue<signalling::answer> answer_cache;

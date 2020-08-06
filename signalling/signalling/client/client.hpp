@@ -26,6 +26,9 @@ public:
     std::string host;
     std::string service;
     std::string target;
+    // TODO rename to reconnect_token
+    // TODO remove from this struct
+    std::optional<std::string> token;
   };
   virtual ~client() = default;
 

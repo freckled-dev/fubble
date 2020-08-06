@@ -1,6 +1,6 @@
 signalling = library('signalling',
   ['signalling/registration_handler.cpp',
-    'signalling/connection.cpp', 'signalling/device/creator.cpp',
+    'signalling/device/creator.cpp',
     'signalling/json_message.cpp', 'signalling/offer.cpp',
     'signalling/answer.cpp', 'signalling/ice_candidate.cpp',
     'signalling/device/device.cpp'],

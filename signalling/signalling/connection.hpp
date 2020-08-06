@@ -22,12 +22,16 @@ public:
   boost::signals2::signal<void(const answer &)> on_answer;
   boost::signals2::signal<void(const ice_candidate &)> on_ice_candidate;
   boost::signals2::signal<void(const want_to_negotiate &)> on_want_to_negotiate;
+  boost::signals2::signal<void(const registration_token &)>
+      on_registration_token;
 
   virtual void close() = 0;
   virtual void send_offer(const offer &send) = 0;
   virtual void send_ice_candidate(const ice_candidate &candidate) = 0;
   virtual void send_answer(const signalling::answer &answer_) = 0;
   virtual void send_do_offer() = 0;
+  virtual void
+  send_registration_token(const signalling::registration_token &) = 0;
 };
 } // namespace signalling
 

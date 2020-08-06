@@ -48,6 +48,11 @@ json_message::parse(const std::string &message) const {
     want_to_negotiate result;
     return result;
   }
+  if (type == "registration_token") {
+    registration_token result;
+    result.token = json["token"];
+    return result;
+  }
   throw invalid_type(type);
 }
 std::string json_message::serialize(const offer &offer_) const {
@@ -77,5 +82,11 @@ std::string json_message::serialize(const registration &registration_) const {
 
 std::string json_message::serialize(const want_to_negotiate &) const {
   nlohmann::json result = {{"type", "want_to_negotiate"}};
+  return result.dump();
+}
+
+std::string json_message::serialize(const registration_token &token) const {
+  nlohmann::json result = {{"type", "registration_token"},
+                           {"token", token.token}};
   return result.dump();
 }

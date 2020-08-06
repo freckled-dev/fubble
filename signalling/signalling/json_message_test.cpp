@@ -24,3 +24,7 @@ TEST_F(JsonMessage, IceCandidate) {
   signalling::ice_candidate ice_candidate{0, "mline", "sdp"};
   test_serialziation(parser, ice_candidate);
 }
+TEST_F(JsonMessage, RegistrationToken) {
+  signalling::registration_token token{"token"};
+  test_serialziation(parser, token);
+}

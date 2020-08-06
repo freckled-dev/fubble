@@ -117,8 +117,11 @@ int main(int argc, char *argv[]) {
   signalling::client::connection_creator signalling_connection_creator{
       context, boost_executor, signalling_json};
   signalling::client::client::connect_information connect_information{
-      config.general_.use_ssl, config.general_.host, config.general_.service,
-      "/api/signalling/v0/"};
+      config.general_.use_ssl,
+      config.general_.host,
+      config.general_.service,
+      "/api/signalling/v0/",
+      {}};
   signalling::client::client_factory_impl client_creator{
       websocket_connector, signalling_connection_creator, connect_information};
 
