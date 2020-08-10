@@ -84,7 +84,8 @@ void device::on_answer(const signalling::answer &answer_) {
     partner_strong->send_answer(answer_);
     return;
   }
-  BOOST_LOG_SEV(logger, logging::severity::warning) << "device got no partner!";
+  BOOST_LOG_SEV(logger, logging::severity::warning)
+      << "device got no partner! dropping answer";
   BOOST_ASSERT(false);
 }
 
@@ -94,7 +95,8 @@ void device::on_offer(const signalling::offer &work) {
     partner_strong->send_offer(work);
     return;
   }
-  BOOST_LOG_SEV(logger, logging::severity::warning) << "device got no partner!";
+  BOOST_LOG_SEV(logger, logging::severity::warning)
+      << "device got no partner! dropping offer";
   BOOST_ASSERT(false);
 }
 
@@ -104,6 +106,7 @@ void device::on_ice_candidate(const signalling::ice_candidate &candidate) {
     partner_strong->send_ice_candidate(candidate);
     return;
   }
-  BOOST_LOG_SEV(logger, logging::severity::warning) << "device got no partner!";
+  BOOST_LOG_SEV(logger, logging::severity::warning)
+      << "device got no partner! dropping ice_candidate";
   BOOST_ASSERT(false);
 }

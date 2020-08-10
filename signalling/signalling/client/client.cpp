@@ -145,7 +145,11 @@ class reconnecting_client : public client {
 public:
   reconnecting_client(client_factory &factory, utils::one_shot_timer &timer)
       : factory(factory), timer(timer) {}
-  ~reconnecting_client() { timer.stop(); }
+
+  ~reconnecting_client() {
+    signal_connections.clear();
+    timer.stop();
+  }
 
   void set_connect_information(const connect_information &set) override {
     information = set;
@@ -174,26 +178,30 @@ public:
   void send_offer(const signalling::offer &offer_) override {
     if (is_connected())
       return delegate->send_offer(offer_);
-    offer_cache.push(offer_);
+    BOOST_LOG_SEV(logger, logging::severity::warning)
+        << __FUNCTION__ << "not connected, dropping offer";
   }
 
   void send_answer(const signalling::answer &answer_) override {
     if (is_connected())
       return delegate->send_answer(answer_);
-    answer_cache.push(answer_);
+    BOOST_LOG_SEV(logger, logging::severity::warning)
+        << __FUNCTION__ << "not connected, dropping answer";
   }
 
   void
   send_ice_candidate(const signalling::ice_candidate &candidate_) override {
     if (is_connected())
       return delegate->send_ice_candidate(candidate_);
-    candidate_cache.push(candidate_);
+    BOOST_LOG_SEV(logger, logging::severity::warning)
+        << __FUNCTION__ << "not connected, dropping candidate";
   }
 
   void send_want_to_negotiate() override {
     if (is_connected())
       return delegate->send_want_to_negotiate();
-    want_to_negotiate = true;
+    BOOST_LOG_SEV(logger, logging::severity::warning)
+        << __FUNCTION__ << "not connected, dropping want_to_negotiate";
   }
 
 protected:
@@ -225,15 +233,26 @@ protected:
         delegate->on_create_offer.connect([this] { on_create_offer(); }));
     signal_connections.push_back(
         delegate->on_registered.connect([this] { got_registered(); }));
-    // TODO on_closed
+    signal_connections.push_back(
+        delegate->on_closed.connect([this] { got_closed(); }));
     delegate->connect(key);
   }
 
   void got_error(const boost::system::system_error &error) {
-    delegate.reset();
     BOOST_LOG_SEV(logger, logging::severity::warning)
         << __FUNCTION__ << ", error:" << error.what();
-    // TODO reconnect
+    reconnect_after_timeout();
+  }
+
+  void got_closed() {
+    BOOST_LOG_SEV(logger, logging::severity::warning) << __FUNCTION__;
+    reconnect_after_timeout();
+  }
+
+  void reconnect_after_timeout() {
+    BOOST_LOG_SEV(logger, logging::severity::info) << __FUNCTION__;
+    delegate.reset();
+    signal_connections.clear();
     timer.start([this] { reconnect(); });
   }
 
@@ -245,11 +264,6 @@ protected:
   connect_information information;
   std::string key;
   bool is_registered{};
-
-  std::queue<signalling::offer> offer_cache;
-  std::queue<signalling::answer> answer_cache;
-  std::queue<signalling::ice_candidate> candidate_cache;
-  bool want_to_negotiate{};
 
   static constexpr std::chrono::steady_clock::duration reconnect_timeout =
       std::chrono::seconds(1);

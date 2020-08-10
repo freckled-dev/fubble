@@ -1,6 +1,7 @@
 #include "registration_handler.hpp"
 #include "signalling/connection.hpp"
 #include "signalling/device/creator.hpp"
+#include "utils/uuid.hpp"
 #include <boost/thread/executors/inline_executor.hpp>
 #include <gtest/gtest.h>
 
@@ -36,10 +37,11 @@ struct mock_connection final : signalling::connection {
 
 namespace {
 std::shared_ptr<mock_connection>
-add_connection(signalling::registration_handler &handler) {
+add_connection(signalling::registration_handler &handler,
+               std::string token = uuid::generate()) {
   auto connection = std::make_shared<mock_connection>();
   handler.add(connection);
-  signalling::registration registration{"key", "token"};
+  signalling::registration registration{"key", token};
   connection->on_registration(registration);
   return connection;
 }
@@ -71,7 +73,22 @@ TEST_F(RegistrationHandler, AddOfferAnswer) {
   auto first = add_connection(handler);
   auto second = add_connection(handler);
   EXPECT_EQ(handler.get_registered().size(), std::size_t{1});
+}
+
+TEST_F(RegistrationHandler, OfferAnswerOneCloses) {
+  auto first = add_connection(handler);
+  auto second = add_connection(handler);
   first->on_closed();
+  EXPECT_FALSE(handler.get_registered().empty());
+  EXPECT_TRUE(first.unique());
+  EXPECT_FALSE(second.unique());
+}
+
+TEST_F(RegistrationHandler, OfferAnswerBothClose) {
+  auto first = add_connection(handler);
+  auto second = add_connection(handler);
+  first->on_closed();
+  second->on_closed();
   EXPECT_TRUE(handler.get_registered().empty());
   EXPECT_TRUE(first.unique());
   EXPECT_TRUE(second.unique());
@@ -153,5 +170,38 @@ TEST_F(RegistrationHandler, Close) {
   const auto offering = add_connection(handler);
   const auto answering = add_connection(handler);
   offering->on_closed();
-  EXPECT_TRUE(answering->close_called);
+  EXPECT_FALSE(answering->close_called);
 }
+
+TEST_F(RegistrationHandler, Reconnect) {
+  auto offering_token = uuid::generate();
+  const auto offering = add_connection(handler, offering_token);
+  const auto answering = add_connection(handler);
+  const auto replacing = add_connection(handler, offering_token);
+  EXPECT_TRUE(offering->close_called);
+  EXPECT_FALSE(answering->close_called);
+  EXPECT_FALSE(replacing->close_called);
+}
+
+TEST_F(RegistrationHandler, Reconnect2) {
+  auto offering_token = uuid::generate();
+  const auto offering = add_connection(handler, offering_token);
+  const auto answering = add_connection(handler);
+  offering->on_closed();
+  const auto replacing = add_connection(handler, offering_token);
+  EXPECT_FALSE(answering->close_called);
+  EXPECT_FALSE(replacing->close_called);
+}
+
+#if 0 // TODO shall work after #252
+TEST_F(RegistrationHandler, ReconnectResend) {
+  auto offering_token = uuid::generate();
+  const auto offering = add_connection(handler, offering_token);
+  const auto answering = add_connection(handler);
+  offering->on_closed();
+  answering->on_ice_candidate(
+      signalling::ice_candidate{0, "mline", "candidate"});
+  const auto replacing = add_connection(handler, offering_token);
+  EXPECT_FALSE(replacing->candidates.empty());
+}
+#endif

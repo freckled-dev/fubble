@@ -39,7 +39,7 @@ protected:
   signalling::logger logger{"device"};
   connection_ptr connection_;
   // TODO remove weakptr to partner. partner shall be a ref. ownership shall
-  // extrusive
+  // extrusive. or make it a shared_ptr
   device_wptr partner;
   std::vector<boost::signals2::scoped_connection> callback_connections;
   bool wants_to_negotiate{};

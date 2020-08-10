@@ -48,9 +48,17 @@ struct Server : testing::Test {
                                          connection_creator);
   signalling::client::client &client_answering{*client_answering_instance};
 
-  void connect(signalling::client::client &client) const {
+  std::unique_ptr<signalling::client::client>
+  create_client_and_connect(const std::string &token = uuid::generate()) {
+    std::unique_ptr<signalling::client::client> result =
+        signalling::client::client::create(websocket_connector,
+                                           connection_creator);
+    connect(*result, token);
+    return result;
+  }
+  void connect(signalling::client::client &client,
+               const std::string token = uuid::generate()) const {
     auto service = std::to_string(acceptor.get_port());
-    auto token = uuid::generate();
     client.set_connect_information({false, "localhost", service, "/", token});
     client.connect(session_key);
   }
@@ -196,6 +204,9 @@ TEST_F(Server, SendReceiveIceCandidate) {
   EXPECT_TRUE(called);
 }
 
+#if 0 // changed use case. when a connection ends the server does not shutdown
+      // the partner connection. not sure yet if the close logic shall happen
+      // per signaling. maybe do a shutdown message. or use websockets shutdown?
 TEST_F(Server, Close) {
   connect(client_);
   shall_want_to_negotiate(client_answering);
@@ -208,6 +219,28 @@ TEST_F(Server, Close) {
     server_.close();
   });
   client_answering.on_create_offer.connect([&] { client_answering.close(); });
+  context.run();
+  EXPECT_TRUE(called);
+}
+#endif
+
+TEST_F(Server, Reconnect) {
+  shall_want_to_negotiate(client_);
+  const std::string token = uuid::generate();
+  auto first = create_client_and_connect(token);
+  bool called{};
+  std::unique_ptr<signalling::client::client> second;
+  auto on_second_registered = [&] {
+    called = true;
+    EXPECT_FALSE(registration_handler.get_registered().empty());
+    EXPECT_TRUE(registration_handler.get_registered()[0].devices[0]);
+    second->close();
+    server_.close();
+  };
+  first->on_registered.connect([&] {
+    second = create_client_and_connect(token);
+    second->on_registered.connect(on_second_registered);
+  });
   context.run();
   EXPECT_TRUE(called);
 }

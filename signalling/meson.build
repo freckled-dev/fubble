@@ -20,7 +20,7 @@ signalling_test = executable('signalling_test',
   cpp_pch: '../pch/precompiled.hpp',
   link_with: [websocket, test_main]
   )
-test('signalling test', signalling_test)
+test('signalling test', signalling_test, protocol: 'gtest')
 
 dependencies_test = executable('dependencies_test',
   ['dependency_thread_test.cpp'],

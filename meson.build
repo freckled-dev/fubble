@@ -1,5 +1,5 @@
 project('fubble', 'cpp',
-  meson_version : '>=0.53.0',
+  meson_version : '>=0.55.0',
   license: ['proprietary'],
   default_options : ['cpp_std=c++17'])
 # there is a bug in meson 0.52.0. cant use boost with meson
