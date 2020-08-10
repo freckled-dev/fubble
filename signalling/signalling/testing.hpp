@@ -3,11 +3,13 @@
 
 #include "signalling/client/client.hpp"
 #include "utils/testing.hpp"
+#include "utils/uuid.hpp"
 
 namespace signalling::testing {
 client::client::connect_information make_connect_information() {
+  auto token = uuid::generate();
   client::client::connect_information connect_information{
-      false, utils::testing::server, "80", "/api/signalling/v0/", {}};
+      false, utils::testing::server, "80", "/api/signalling/v0/", token};
   return connect_information;
 }
 } // namespace signalling::testing
