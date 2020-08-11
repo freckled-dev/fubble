@@ -117,6 +117,7 @@ Item {
                     sliderColor: volumeSlider.enabled ? Style.current.primary : Style.current.gray300
                     // leads to warning about loop detected. else works like a charm
                     // value: participant.volume
+                    value: 1
                     onValueChanged: participant.volume = value
                     anchors.top: volumeHeader.bottom
                     anchors.left: parent.left
