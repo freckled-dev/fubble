@@ -23,7 +23,7 @@ build ubuntu_18.04 release:
     - ./scripts/ci/build_release
   after_script:
     # - rm -r ./deploy/development/install
-    - mv -v ../fubble_build/meson/meson-logs .
+    - mv -v ../fubble_build/meson/meson-logs ../fubble_build/conan_install.log .
   artifacts:
     untracked: true
     expire_in: 1 week
@@ -81,7 +81,6 @@ innosetup:
     - dedicated
   variables:
     FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install_windows
-    # FUBBLE_BUILD_NINJA_JOBS: '1'
   before_script:
     - choco install -y --no-progress python pkgconfiglite cmake --installargs 'ADD_CMAKE_TO_PATH=System'
     # - refreshenv # did not work
@@ -91,7 +90,7 @@ innosetup:
     - python scripts/install_qt.py
     - conan --version
   after_script:
-    - mv -v ../fubble_build/meson/meson-logs .
+    - mv -v ../fubble_build/meson/meson-logs ../fubble_build/conan_install.log .
   artifacts:
     untracked: true
     expire_in: 1 week
