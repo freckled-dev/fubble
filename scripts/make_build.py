@@ -4,6 +4,7 @@ import os
 import subprocess
 import shutil
 from paths import Paths
+from pathlib import Path
 import argparse
 
 parser = argparse.ArgumentParser()
@@ -27,8 +28,11 @@ paths = Paths()
 if not args.skip_remove:
     try:
         shutil.rmtree(paths.build_dir)
+        print("removing the build_dir:'%s'." % (paths.build_dir))
     except:
         print("Could not delete the build_dir:'%s'. Ignoring." % (paths.build_dir))
+
+Path(paths.build_dir).mkdir(parents=True, exist_ok=True)
 
 if not args.skip_install:
     conan_remotes = [
@@ -41,6 +45,10 @@ if not args.skip_install:
         subprocess.run(['conan', 'remote', 'add', '-f', remote_name, remote_url],
                 check=True)
 
+    # due to excessive logging of boost install, log to file
+    conan_install_log_path = os.path.join(paths.build_dir, 'conan_install.log')
+    log_file = open(conan_install_log_path, 'w')
+    print("calling `conan install` and logging it to '%s'" % conan_install_log_path)
     install_args = ['conan', 'install',
         '--build', 'missing',
         '--install-folder', paths.dependencies_dir,
@@ -52,9 +60,13 @@ if not args.skip_install:
     if args.use_asan:
         install_args += ['-o', 'fubble:sanatize=True']
     subprocess.run(install_args + [paths.source_dir],
-        check=False) # may fail, due to instability of bintray
+        check=False, # may fail, due to instability of bintray
+        stdout=log_file,
+        stderr=log_file
+        )
 
 if not args.skip_build:
+    print('calling `conan build`')
     subprocess.run(['conan', 'build',
        paths.source_dir,
         # '--build', 'missing',
