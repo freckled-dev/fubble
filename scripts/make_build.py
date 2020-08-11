@@ -61,8 +61,8 @@ if not args.skip_install:
         install_args += ['-o', 'fubble:sanatize=True']
     subprocess.run(install_args + [paths.source_dir],
         check=False, # may fail, due to instability of bintray
-        stdout=log_file,
-        stderr=log_file
+        stdout=log_file
+        # stderr=log_file
         )
 
 if not args.skip_build:
