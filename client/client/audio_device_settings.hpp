@@ -1,6 +1,8 @@
 #ifndef UUID_3F220ACF_9A73_441D_911A_A2585AD9619D
 #define UUID_3F220ACF_9A73_441D_911A_A2585AD9619D
 
+#include "client/logger.hpp"
+
 namespace rtc::google {
 class audio_devices;
 }
@@ -21,6 +23,7 @@ public:
   bool is_microphone_muted();
 
 protected:
+  client::logger logger{"audio_device_settings"};
   rtc::google::audio_devices &rtc_audio_devices;
   int current_output_device{};
   int current_recording_device{};

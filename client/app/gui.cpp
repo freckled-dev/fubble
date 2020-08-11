@@ -71,7 +71,6 @@
 #include <QResource>
 #include <boost/asio/executor_work_guard.hpp>
 #include <boost/asio/io_context.hpp>
-#include <boost/stacktrace.hpp>
 #include <fmt/format.h>
 #include <fruit/fruit.h>
 #include <thread>
@@ -99,7 +98,8 @@ int main(int argc, char *argv[]) {
 
   fruit::Injector<client::crash_catcher> injector{
       create_crash_catcher_component};
-  injector.get<const client::crash_catcher &>();
+  if (config.general_.use_crash_catcher)
+    injector.get<const client::crash_catcher &>();
 
   boost::asio::io_context context;
   boost::asio::executor executor{context.get_executor()};
