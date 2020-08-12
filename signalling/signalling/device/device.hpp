@@ -8,10 +8,10 @@
 #include "signalling/offer.hpp"
 #include "signalling/want_to_negotiate.hpp"
 #include <boost/signals2/connection.hpp>
-#include <optional>
-#include <vector>
 #include <functional>
 #include <memory>
+#include <optional>
+#include <vector>
 
 namespace signalling::device {
 class device;
