@@ -48,7 +48,7 @@ void connection::send_answer(const signalling::answer &answer_) {
 boost::future<void> connection::run() {
   running = true;
   read_next();
-  return run_promise.get_future();
+  return run_promise->get_future();
 }
 void connection::read_next() {
   BOOST_LOG_SEV(logger, logging::severity::debug) << "reading next message";
@@ -60,15 +60,16 @@ void connection::read_next() {
     } catch (const boost::system::system_error &error) {
       running = false;
       const auto error_code = error.code();
+      auto run_promise_copy = run_promise;
       // error_code == boost::asio::error::operation_aborted
       if (error_code == boost::beast::websocket::error::closed) {
         // The WebSocket stream was gracefully closed at both endpoints
-        run_promise.set_value();
+        run_promise_copy->set_value();
         return;
       }
       BOOST_LOG_SEV(this->logger, logging::severity::warning)
           << "an error occured while running, error:" << error.what();
-      run_promise.set_exception(error);
+      run_promise_copy->set_exception(error);
     } catch (...) {
       BOOST_ASSERT(false);
     }

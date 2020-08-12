@@ -35,7 +35,7 @@ struct Client : ::testing::Test {
                                          signalling_client_connection_creator);
   signalling::client::client::connect_information connect_information =
       make_connect_information(*server);
-  signalling::client::client_factory_impl client_factory{
+  signalling::client::factory_impl client_factory{
       websocket_connector_creator, signalling_client_connection_creator,
       connect_information};
   utils::one_shot_timer timer{context, std::chrono::milliseconds(10)};

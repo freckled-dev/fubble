@@ -72,11 +72,11 @@ protected:
   utils::one_shot_timer &timer;
 };
 
-class client_factory_impl : public factory {
+class factory_impl : public factory {
 public:
-  client_factory_impl(websocket::connector_creator &connector_creator,
-                      connection_creator &connection_creator_,
-                      const client::connect_information &connect_information_);
+  factory_impl(websocket::connector_creator &connector_creator,
+               connection_creator &connection_creator_,
+               const client::connect_information &connect_information_);
   std::unique_ptr<client> create() override;
 
 protected:

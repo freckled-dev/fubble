@@ -250,7 +250,7 @@ protected:
   void got_error(const boost::system::system_error &error) {
     BOOST_LOG_SEV(logger, logging::severity::warning)
         << __FUNCTION__ << ", error:" << error.what();
-    reconnect_after_timeout();
+    // no need to do anything do to the signal `on_closed` will get called
   }
 
   void got_closed() {
@@ -294,9 +294,6 @@ protected:
   std::optional<signalling::answer> answer_cache;
   std::optional<signalling::offer> offer_cache;
   std::vector<signalling::ice_candidate> candidates_cache;
-
-  static constexpr std::chrono::steady_clock::duration reconnect_timeout =
-      std::chrono::seconds(1);
 };
 
 } // namespace
@@ -320,7 +317,7 @@ std::unique_ptr<client> factory_reconnecting::create() {
   return client::create_reconnecting(factory_, timer);
 }
 
-client_factory_impl::client_factory_impl(
+factory_impl::factory_impl(
     websocket::connector_creator &connector_creator,
     connection_creator &connection_creator_,
     const client::connect_information &connect_information_)
@@ -328,7 +325,7 @@ client_factory_impl::client_factory_impl(
       connection_creator_(connection_creator_),
       connect_information_(connect_information_) {}
 
-std::unique_ptr<client> client_factory_impl::create() {
+std::unique_ptr<client> factory_impl::create() {
   auto result = client::create(connector_creator, connection_creator_);
   result->set_connect_information(connect_information_);
   return result;

@@ -37,7 +37,7 @@ private:
   std::shared_ptr<boost::beast::flat_buffer> read_buffer =
       std::make_shared<boost::beast::flat_buffer>();
 
-  boost::promise<std::string> read_promise;
+  std::shared_ptr<boost::promise<std::string>> read_promise;
   struct send_item {
     std::string message;
     boost::promise<void> completion;
