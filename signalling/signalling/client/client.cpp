@@ -180,14 +180,18 @@ public:
     if (is_connected())
       return delegate->send_offer(offer_);
     BOOST_LOG_SEV(logger, logging::severity::warning)
-        << __FUNCTION__ << "not connected, dropping offer";
+        << __FUNCTION__ << "not connected";
+    BOOST_ASSERT(!offer_cache);
+    offer_cache = offer_;
   }
 
   void send_answer(const signalling::answer &answer_) override {
     if (is_connected())
       return delegate->send_answer(answer_);
     BOOST_LOG_SEV(logger, logging::severity::warning)
-        << __FUNCTION__ << "not connected, dropping answer";
+        << __FUNCTION__ << "not connected";
+    BOOST_ASSERT(!answer_cache);
+    answer_cache = answer_;
   }
 
   void
@@ -195,14 +199,17 @@ public:
     if (is_connected())
       return delegate->send_ice_candidate(candidate_);
     BOOST_LOG_SEV(logger, logging::severity::warning)
-        << __FUNCTION__ << "not connected, dropping candidate";
+        << __FUNCTION__ << "not connected";
+    candidates_cache.push_back(candidate_);
   }
 
   void send_want_to_negotiate() override {
     if (is_connected())
       return delegate->send_want_to_negotiate();
     BOOST_LOG_SEV(logger, logging::severity::warning)
-        << __FUNCTION__ << "not connected, dropping want_to_negotiate";
+        << __FUNCTION__ << "not connected";
+    BOOST_ASSERT(!wants_to_negotiate_cache);
+    wants_to_negotiate_cache = true;
   }
 
 protected:
@@ -210,10 +217,11 @@ protected:
 
   void got_registered() {
     // connected
-    if (is_registered)
-      return;
-    is_registered = true;
-    on_registered();
+    if (!is_registered) {
+      is_registered = true;
+      on_registered();
+    }
+    send_cache();
   }
 
   void reconnect() {
@@ -257,6 +265,21 @@ protected:
     timer.start([this] { reconnect(); });
   }
 
+  void send_cache() {
+    for (const auto &candidate : candidates_cache)
+      send_ice_candidate(candidate);
+    candidates_cache.clear();
+    if (offer_cache)
+      send_offer(offer_cache.value());
+    offer_cache.reset();
+    if (answer_cache)
+      send_answer(answer_cache.value());
+    answer_cache.reset();
+    if (wants_to_negotiate_cache)
+      send_want_to_negotiate();
+    wants_to_negotiate_cache = false;
+  }
+
   signalling::logger logger{"reconnecting_client"};
   std::vector<boost::signals2::scoped_connection> signal_connections;
   factory &factory_;
@@ -266,6 +289,11 @@ protected:
   std::string token;
   std::string key;
   bool is_registered{};
+
+  bool wants_to_negotiate_cache{};
+  std::optional<signalling::answer> answer_cache;
+  std::optional<signalling::offer> offer_cache;
+  std::vector<signalling::ice_candidate> candidates_cache;
 
   static constexpr std::chrono::steady_clock::duration reconnect_timeout =
       std::chrono::seconds(1);
