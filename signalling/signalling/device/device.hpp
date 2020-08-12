@@ -35,6 +35,7 @@ protected:
   virtual void on_answer(const answer &answer_);
   virtual void on_offer(const offer &offer_);
   virtual void on_ice_candidate(const ice_candidate &candidate);
+  void send_cache();
 
   signalling::logger logger{"device"};
   connection_ptr connection_;
@@ -45,6 +46,10 @@ protected:
   bool wants_to_negotiate{};
   bool active_negotiating{};
   std::string token;
+
+  std::optional<offer> offer_cache;
+  std::optional<answer> answer_cache;
+  std::vector<ice_candidate> candidates_cache;
 };
 } // namespace signalling::device
 

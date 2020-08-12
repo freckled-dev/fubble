@@ -20,10 +20,20 @@ device::~device() = default;
 void device::set_partner(const device_wptr &partner_) {
   BOOST_ASSERT(partner_.lock());
   partner = partner_;
+  send_cache();
   negotiate();
 }
 
-void device::reset_partner() { partner.reset(); }
+void device::reset_partner() {
+  BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
+  partner.reset();
+  if (!active_negotiating)
+    return;
+  BOOST_LOG_SEV(logger, logging::severity::warning)
+      << "partner is getting reset, although `active_negotiating`!";
+  active_negotiating = false;
+  wants_to_negotiate = true;
+}
 
 void device::close() { connection_->close(); }
 
@@ -85,19 +95,21 @@ void device::on_answer(const signalling::answer &answer_) {
     return;
   }
   BOOST_LOG_SEV(logger, logging::severity::warning)
-      << "device got no partner! dropping answer";
-  BOOST_ASSERT(false);
+      << __FUNCTION__ << "device got no partner!";
+  BOOST_ASSERT(!answer_cache);
+  answer_cache = answer_;
 }
 
-void device::on_offer(const signalling::offer &work) {
+void device::on_offer(const signalling::offer &offer_) {
   auto partner_strong = partner.lock();
   if (partner_strong) {
-    partner_strong->send_offer(work);
+    partner_strong->send_offer(offer_);
     return;
   }
   BOOST_LOG_SEV(logger, logging::severity::warning)
-      << "device got no partner! dropping offer";
-  BOOST_ASSERT(false);
+      << __FUNCTION__ << "device got no partner!";
+  BOOST_ASSERT(!offer_cache);
+  offer_cache = offer_;
 }
 
 void device::on_ice_candidate(const signalling::ice_candidate &candidate) {
@@ -106,7 +118,20 @@ void device::on_ice_candidate(const signalling::ice_candidate &candidate) {
     partner_strong->send_ice_candidate(candidate);
     return;
   }
-  BOOST_LOG_SEV(logger, logging::severity::warning)
-      << "device got no partner! dropping ice_candidate";
-  BOOST_ASSERT(false);
+  BOOST_LOG_SEV(logger, logging::severity::warning) << "device got no partner!";
+  candidates_cache.push_back(candidate);
+}
+
+void device::send_cache() {
+  auto partner_strong = partner.lock();
+  BOOST_ASSERT(partner_strong);
+  for (const auto &candidate : candidates_cache)
+    partner_strong->send_ice_candidate(candidate);
+  candidates_cache.clear();
+  if (offer_cache)
+    partner_strong->send_offer(offer_cache.value());
+  offer_cache.reset();
+  if (answer_cache)
+    partner_strong->send_answer(answer_cache.value());
+  answer_cache.reset();
 }

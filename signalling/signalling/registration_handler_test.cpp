@@ -193,7 +193,6 @@ TEST_F(RegistrationHandler, Reconnect2) {
   EXPECT_FALSE(replacing->close_called);
 }
 
-#if 0 // TODO shall work after #252
 TEST_F(RegistrationHandler, ReconnectResend) {
   auto offering_token = uuid::generate();
   const auto offering = add_connection(handler, offering_token);
@@ -204,4 +203,3 @@ TEST_F(RegistrationHandler, ReconnectResend) {
   const auto replacing = add_connection(handler, offering_token);
   EXPECT_FALSE(replacing->candidates.empty());
 }
-#endif
