@@ -18,7 +18,7 @@ class connector;
 class connector_creator;
 } // namespace websocket
 namespace signalling::client {
-class client_factory;
+class factory;
 class client {
 public:
   struct connect_information {
@@ -26,13 +26,12 @@ public:
     std::string host;
     std::string service;
     std::string target;
-    std::string token;
   };
   virtual ~client() = default;
 
   // TODO remove setter, move argument to create/constructor
   virtual void set_connect_information(const connect_information &set) = 0;
-  virtual void connect(const std::string &key) = 0;
+  virtual void connect(const std::string &token, const std::string &key) = 0;
   virtual boost::future<void> close() = 0;
   virtual void send_offer(const signalling::offer &offer_) = 0;
   virtual void send_answer(const signalling::answer &answer_) = 0;
@@ -53,29 +52,27 @@ public:
   create(websocket::connector_creator &connector_creator,
          connection_creator &connection_creator_);
   static std::unique_ptr<client>
-  create_reconnecting(client_factory &factory, utils::one_shot_timer &timer);
+  create_reconnecting(factory &factory, utils::one_shot_timer &timer);
 };
 
-// TODO rename to factory?
-class client_factory {
+class factory {
 public:
-  virtual ~client_factory() = default;
+  virtual ~factory() = default;
   virtual std::unique_ptr<client> create() = 0;
 };
 
-class client_factory_reconnecting : public client_factory {
+class factory_reconnecting : public factory {
 public:
-  client_factory_reconnecting(client_factory &factory,
-                              utils::one_shot_timer &timer);
+  factory_reconnecting(factory &factory, utils::one_shot_timer &timer);
 
   std::unique_ptr<client> create() override;
 
 protected:
-  client_factory &factory;
+  factory &factory_;
   utils::one_shot_timer &timer;
 };
 
-class client_factory_impl : public client_factory {
+class client_factory_impl : public factory {
 public:
   client_factory_impl(websocket::connector_creator &connector_creator,
                       connection_creator &connection_creator_,

@@ -7,7 +7,7 @@
 using namespace client;
 
 peer_creator::peer_creator(boost::executor &executor,
-                           signalling::client::client_factory &client_creator,
+                           signalling::client::factory &client_creator,
                            rtc::google::factory &connection_creator)
     : executor(executor), client_creator(client_creator),
       connection_creator(connection_creator) {}

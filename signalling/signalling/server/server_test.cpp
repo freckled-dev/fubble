@@ -59,8 +59,8 @@ struct Server : testing::Test {
   void connect(signalling::client::client &client,
                const std::string token = uuid::generate()) const {
     auto service = std::to_string(acceptor.get_port());
-    client.set_connect_information({false, "localhost", service, "/", token});
-    client.connect(session_key);
+    client.set_connect_information({false, "localhost", service, "/"});
+    client.connect(token, session_key);
   }
   static void shall_want_to_negotiate(signalling::client::client &client) {
     client.on_registered.connect([&] { client.send_want_to_negotiate(); });
@@ -129,8 +129,8 @@ TEST_F(Server, CantConnect) {
     (void)error;
     called = true;
   });
-  client_.set_connect_information({false, "localhost", "", "/", {}});
-  client_.connect(session_key);
+  client_.set_connect_information({false, "localhost", "", "/"});
+  client_.connect("token", session_key);
   context.run();
   EXPECT_TRUE(called);
 }

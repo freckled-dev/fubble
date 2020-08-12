@@ -16,7 +16,6 @@ make_connect_information(const signalling::server::application &server) {
   result.host = "localhost";
   result.service = std::to_string(server.get_port());
   result.target = "/";
-  result.token = "token";
   return result;
 }
 struct Client : ::testing::Test {
@@ -63,6 +62,6 @@ TEST_F(Client, Connect) {
   client->on_error.connect(no_error);
   client->on_registered.connect([&] { client->close(); });
   client->on_closed.connect([&] { server->close(); });
-  client->connect(key);
+  client->connect("token", key);
   context.run();
 }

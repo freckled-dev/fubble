@@ -7,9 +7,8 @@
 
 namespace signalling::testing {
 client::client::connect_information make_connect_information() {
-  auto token = uuid::generate();
   client::client::connect_information connect_information{
-      false, utils::testing::server, "80", "/api/signalling/v0/", token};
+      false, utils::testing::server, "80", "/api/signalling/v0/"};
   return connect_information;
 }
 } // namespace signalling::testing

@@ -57,7 +57,7 @@ public:
     connection_->send_want_to_negotiate();
   }
 
-  void connect(const std::string &key) override {
+  void connect(const std::string &token, const std::string &key) override {
     BOOST_ASSERT(!connection_);
     websocket::connector::config connector_config;
     connector_config.ssl = connect_information_.secure;
@@ -66,21 +66,21 @@ public:
     connector_config.path = connect_information_.target;
     BOOST_ASSERT(!connector);
     connector = connector_creator.create(connector_config);
-    connector->connect().then(
-        executor, [this, key](auto result) { connected(result, key); });
+    connector->connect().then(executor, [this, key, token](auto result) {
+      connected(result, token, key);
+    });
   }
 
 protected:
   void connected(boost::future<websocket::connection_ptr> &result,
-                 const std::string &key) {
+                 const std::string &token, const std::string &key) {
     BOOST_LOG_SEV(logger, logging::severity::info) << "client connected";
     try {
       auto websocket_connection = result.get();
       BOOST_ASSERT(!connection_);
       connection_ = connection_creator_.create(std::move(websocket_connection));
       connect_signals(connection_);
-      connection_->send_registration(
-          signalling::registration{key, connect_information_.token});
+      connection_->send_registration(signalling::registration{key, token});
       on_registered();
       connection_->run().then(
           executor, [this](boost::future<void> result) { run_done(result); });
@@ -143,8 +143,8 @@ protected:
 
 class reconnecting_client : public client {
 public:
-  reconnecting_client(client_factory &factory, utils::one_shot_timer &timer)
-      : factory(factory), timer(timer) {}
+  reconnecting_client(factory &factory_, utils::one_shot_timer &timer)
+      : factory_(factory_), timer(timer) {}
 
   ~reconnecting_client() {
     signal_connections.clear();
@@ -158,9 +158,10 @@ public:
     delegate->set_connect_information(set);
   }
 
-  void connect(const std::string &key_) override {
+  void connect(const std::string &token_, const std::string &key_) override {
     BOOST_ASSERT(!delegate);
     BOOST_ASSERT(key.empty());
+    token = token_;
     key = key_;
     reconnect();
   }
@@ -217,7 +218,7 @@ protected:
 
   void reconnect() {
     BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
-    delegate = factory.create();
+    delegate = factory_.create();
     BOOST_ASSERT(signal_connections.empty());
     signal_connections.push_back(delegate->on_answer.connect(
         [this](const auto &answer_) { on_answer(answer_); }));
@@ -235,7 +236,7 @@ protected:
         delegate->on_registered.connect([this] { got_registered(); }));
     signal_connections.push_back(
         delegate->on_closed.connect([this] { got_closed(); }));
-    delegate->connect(key);
+    delegate->connect(token, key);
   }
 
   void got_error(const boost::system::system_error &error) {
@@ -258,10 +259,11 @@ protected:
 
   signalling::logger logger{"reconnecting_client"};
   std::vector<boost::signals2::scoped_connection> signal_connections;
-  client_factory &factory;
+  factory &factory_;
   utils::one_shot_timer &timer;
   std::unique_ptr<client> delegate;
   connect_information information;
+  std::string token;
   std::string key;
   bool is_registered{};
 
@@ -278,17 +280,16 @@ client::create(websocket::connector_creator &connector_creator,
 }
 
 std::unique_ptr<client>
-client::create_reconnecting(client_factory &factory,
-                            utils::one_shot_timer &timer) {
-  return std::make_unique<reconnecting_client>(factory, timer);
+client::create_reconnecting(factory &factory_, utils::one_shot_timer &timer) {
+  return std::make_unique<reconnecting_client>(factory_, timer);
 }
 
-client_factory_reconnecting::client_factory_reconnecting(
-    client_factory &factory, utils::one_shot_timer &timer)
-    : factory(factory), timer(timer) {}
+factory_reconnecting::factory_reconnecting(factory &factory_,
+                                           utils::one_shot_timer &timer)
+    : factory_(factory_), timer(timer) {}
 
-std::unique_ptr<client> client_factory_reconnecting::create() {
-  return client::create_reconnecting(factory, timer);
+std::unique_ptr<client> factory_reconnecting::create() {
+  return client::create_reconnecting(factory_, timer);
 }
 
 client_factory_impl::client_factory_impl(
