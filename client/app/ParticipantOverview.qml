@@ -5,7 +5,10 @@ import io.fubble 1.0
 import "."
 
 Item {
+<<<<<<< HEAD
     property ParticipantModel participant
+=======
+>>>>>>> master
     id: participantContainer
     Layout.fillWidth: true
     implicitHeight: participantColumn.height
@@ -116,7 +119,9 @@ Item {
                 VolumeSlider {
                     id: volumeSlider
                     sliderColor: volumeSlider.enabled ? Style.current.primary : Style.current.gray300
-                    value: participant.volume
+                    // leads to warning about loop detected. else works like a charm
+                    // value: participant.volume
+                    value: 1
                     onValueChanged: participant.volume = value
                     anchors.top: volumeHeader.bottom
                     anchors.left: parent.left
