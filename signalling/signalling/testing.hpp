@@ -3,6 +3,7 @@
 
 #include "signalling/client/client.hpp"
 #include "utils/testing.hpp"
+#include "utils/uuid.hpp"
 
 namespace signalling::testing {
 client::client::connect_information make_connect_information() {

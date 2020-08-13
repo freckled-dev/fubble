@@ -1,6 +1,6 @@
 signalling = library('signalling',
   ['signalling/registration_handler.cpp',
-    'signalling/connection.cpp', 'signalling/device/creator.cpp',
+    'signalling/device/creator.cpp',
     'signalling/json_message.cpp', 'signalling/offer.cpp',
     'signalling/answer.cpp', 'signalling/ice_candidate.cpp',
     'signalling/device/device.cpp'],
@@ -20,7 +20,7 @@ signalling_test = executable('signalling_test',
   cpp_pch: '../pch/precompiled.hpp',
   link_with: [websocket, test_main]
   )
-test('signalling test', signalling_test)
+test('signalling test', signalling_test, protocol: 'gtest')
 
 dependencies_test = executable('dependencies_test',
   ['dependency_thread_test.cpp'],
@@ -33,7 +33,7 @@ test('dependencies test', dependencies_test)
 signalling_client = library('signalling_client',
   ['signalling/client/client.cpp', 'signalling/client/connection.cpp',
     'signalling/client/connection_creator.cpp',
-    'signalling/client/client_creator.cpp'],
+    ],
   dependencies: [fmt_dep, websocket_dep, signalling_dep],
   cpp_pch: '../pch/precompiled.hpp',
   link_with: [],
@@ -47,7 +47,8 @@ signalling_client_dep = declare_dependency(
 
 server = library('signalling_server',
   ['signalling/server/server.cpp', 'signalling/server/connection.cpp',
-    'signalling/server/connection_creator.cpp'],
+    'signalling/server/connection_creator.cpp',
+    'signalling/server/application.cpp'],
   cpp_pch: '../pch/precompiled.hpp',
   dependencies: [boost_dep, fmt_dep, utils_dep, signalling_dep, enable_servers],
   install: true
@@ -64,6 +65,14 @@ server_test = executable('signalling_server_test',
   link_with: [signalling_client, test_main]
   )
 test('signalling server test', server_test, timeout: 8)
+
+client_test = executable('signalling_client_test',
+  ['signalling/client/client_test.cpp'],
+  cpp_pch: '../pch/precompiled.hpp',
+  dependencies: [boost_dep, gtest_dep, fmt_dep, signalling_client_dep, server_dep],
+  link_with: [test_main]
+  )
+test('signalling client test', client_test, timeout: 8)
 
 server_exec = executable('signalling_server',
   ['app/server.cpp'],

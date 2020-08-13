@@ -47,7 +47,8 @@ private:
   signalling::logger logger{"client::connection"};
   boost::executor &post_executor;
   boost::inline_executor inline_executor;
-  boost::promise<void> run_promise;
+  std::shared_ptr<boost::promise<void>> run_promise =
+      std::make_shared<boost::promise<void>>();
   websocket::connection_ptr connection_;
   signalling::json_message &message_parser;
   bool running{};

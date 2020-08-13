@@ -10,6 +10,7 @@
 #include <boost/thread/future.hpp>
 
 namespace signalling {
+// this connection is only getting used on the server side
 class connection {
 public:
   virtual ~connection() = default;
@@ -24,6 +25,7 @@ public:
   boost::signals2::signal<void(const want_to_negotiate &)> on_want_to_negotiate;
 
   virtual void close() = 0;
+  // TODO all send methods shall return a future. #263. handle the fails
   virtual void send_offer(const offer &send) = 0;
   virtual void send_ice_candidate(const ice_candidate &candidate) = 0;
   virtual void send_answer(const signalling::answer &answer_) = 0;

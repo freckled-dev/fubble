@@ -8,6 +8,7 @@
 #include "signalling/device/creator.hpp"
 #include "signalling/json_message.hpp"
 #include "signalling/registration_handler.hpp"
+#include "utils/uuid.hpp"
 #include "websocket/acceptor.hpp"
 #include "websocket/connection_creator.hpp"
 #include "websocket/connector.hpp"
@@ -38,14 +39,28 @@ struct Server : testing::Test {
       context, websocket_connection_creator};
   signalling::client::connection_creator connection_creator{context, executor,
                                                             signalling_json};
-  signalling::client::client client_{websocket_connector, connection_creator};
-  signalling::client::client client_answering{websocket_connector,
-                                              connection_creator};
+  std::unique_ptr<signalling::client::client> client_instance =
+      signalling::client::client::create(websocket_connector,
+                                         connection_creator);
+  signalling::client::client &client_{*client_instance};
+  std::unique_ptr<signalling::client::client> client_answering_instance =
+      signalling::client::client::create(websocket_connector,
+                                         connection_creator);
+  signalling::client::client &client_answering{*client_answering_instance};
 
-  void connect(signalling::client::client &client) const {
+  std::unique_ptr<signalling::client::client>
+  create_client_and_connect(const std::string &token = uuid::generate()) {
+    std::unique_ptr<signalling::client::client> result =
+        signalling::client::client::create(websocket_connector,
+                                           connection_creator);
+    connect(*result, token);
+    return result;
+  }
+  void connect(signalling::client::client &client,
+               const std::string token = uuid::generate()) const {
     auto service = std::to_string(acceptor.get_port());
     client.set_connect_information({false, "localhost", service, "/"});
-    client.connect(session_key);
+    client.connect(token, session_key);
   }
   static void shall_want_to_negotiate(signalling::client::client &client) {
     client.on_registered.connect([&] { client.send_want_to_negotiate(); });
@@ -70,7 +85,6 @@ TEST_F(Server, SetUp) {
 TEST_F(Server, SingleConnect) {
   bool connected{};
   client_.on_registered.connect([&] {
-    [[maybe_unused]] auto &connection = client_.get_connection();
     EXPECT_FALSE(connected);
     connected = true;
     close();
@@ -116,7 +130,7 @@ TEST_F(Server, CantConnect) {
     called = true;
   });
   client_.set_connect_information({false, "localhost", "", "/"});
-  client_.connect(session_key);
+  client_.connect("token", session_key);
   context.run();
   EXPECT_TRUE(called);
 }
@@ -190,6 +204,9 @@ TEST_F(Server, SendReceiveIceCandidate) {
   EXPECT_TRUE(called);
 }
 
+#if 0 // changed use case. when a connection ends the server does not shutdown
+      // the partner connection. not sure yet if the close logic shall happen
+      // per signaling. maybe do a shutdown message. or use websockets shutdown?
 TEST_F(Server, Close) {
   connect(client_);
   shall_want_to_negotiate(client_answering);
@@ -202,6 +219,28 @@ TEST_F(Server, Close) {
     server_.close();
   });
   client_answering.on_create_offer.connect([&] { client_answering.close(); });
+  context.run();
+  EXPECT_TRUE(called);
+}
+#endif
+
+TEST_F(Server, Reconnect) {
+  shall_want_to_negotiate(client_);
+  const std::string token = uuid::generate();
+  auto first = create_client_and_connect(token);
+  bool called{};
+  std::unique_ptr<signalling::client::client> second;
+  auto on_second_registered = [&] {
+    called = true;
+    EXPECT_FALSE(registration_handler.get_registered().empty());
+    EXPECT_TRUE(registration_handler.get_registered()[0].devices[0]);
+    second->close();
+    server_.close();
+  };
+  first->on_registered.connect([&] {
+    second = create_client_and_connect(token);
+    second->on_registered.connect(on_second_registered);
+  });
   context.run();
   EXPECT_TRUE(called);
 }

@@ -51,7 +51,7 @@
 #include "rtc/google/factory.hpp"
 #include "rtc/google/log_webrtc_to_logging.hpp"
 #include "share_desktop_model.hpp"
-#include "signalling/client/client_creator.hpp"
+#include "signalling/client/client.hpp"
 #include "signalling/client/connection_creator.hpp"
 #include "signalling/json_message.hpp"
 #include "temporary_room/net/client.hpp"
@@ -59,6 +59,7 @@
 #include "ui/frame_provider_google_video_device.hpp"
 #include "ui/frame_provider_google_video_frame.hpp"
 #include "ui/log_qt_to_logging.hpp"
+#include "utils/timer.hpp"
 #include "utils/version.hpp"
 #include "utils_model.hpp"
 #include "websocket/connection_creator.hpp"
@@ -119,8 +120,13 @@ int main(int argc, char *argv[]) {
   signalling::client::client::connect_information connect_information{
       config.general_.use_ssl, config.general_.host, config.general_.service,
       "/api/signalling/v0/"};
-  signalling::client::client_creator client_creator{
+  signalling::client::factory_impl signalling_client_creator{
       websocket_connector, signalling_connection_creator, connect_information};
+  utils::one_shot_timer signalling_client_creator_timer{
+      context, std::chrono::seconds(1)};
+  signalling::client::factory_reconnecting
+      signalling_client_creator_reconnecting{signalling_client_creator,
+                                             signalling_client_creator_timer};
 
   // session, matrix and temporary_room
   BOOST_LOG_SEV(logger, logging::severity::trace)
@@ -155,8 +161,8 @@ int main(int argc, char *argv[]) {
   rtc_settings.use_ip_v6 = config.general_.use_ipv6;
   rtc::google::factory rtc_factory{rtc_settings,
                                    asio_signalling_thread.get_native()};
-  client::peer_creator peer_creator{boost_executor, client_creator,
-                                    rtc_factory};
+  client::peer_creator peer_creator{
+      boost_executor, signalling_client_creator_reconnecting, rtc_factory};
   client::tracks_adder tracks_adder;
 
   // audio

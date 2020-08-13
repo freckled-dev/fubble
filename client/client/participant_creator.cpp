@@ -32,6 +32,6 @@ participant_creator::create(matrix::user &session_information) {
       return own_id + '_' + other_id;
     return other_id + '_' + own_id;
   }();
-  peer_pointer->connect(peer_id);
+  peer_pointer->connect(own_id, peer_id);
   return result;
 }

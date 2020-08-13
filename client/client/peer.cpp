@@ -10,7 +10,9 @@ peer::peer(boost::executor &executor,
       ice_candidate_handler(*signalling_client, *rtc_connection_),
       offer_answer_handler(executor, *signalling_client, *rtc_connection_) {}
 
-void peer::connect(const std::string &key) { signalling_client->connect(key); }
+void peer::connect(const std::string &token, const std::string &key) {
+  signalling_client->connect(token, key);
+}
 
 boost::future<void> peer::close() {
   rtc_connection_->close();

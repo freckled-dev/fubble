@@ -37,72 +37,85 @@ void registration_handler::on_register(const connection_ptr &connection_,
 void registration_handler::register_(const connection_ptr &connection_,
                                      const registration &registration_) {
   BOOST_LOG_SEV(logger, logging::severity::info) << fmt::format(
-      "a device wants to register itself, key:'{}'", registration_.key);
-  auto found = find(registration_.key);
-  if (found == devices.cend()) {
-    register_as_first(connection_, registration_.key);
-    return;
+      "a device wants to register itself, key:'{}', reconnect_token:'{}'",
+      registration_.key, registration_.reconnect_token);
+  registered_connection &change = find_or_create(registration_.key);
+  auto first_device = change.devices[0];
+  auto second_device = change.devices[1];
+  std::optional<std::size_t> my_device_index;
+  if (first_device)
+    if (first_device->get_token() == registration_.reconnect_token)
+      my_device_index = 0;
+  if (second_device)
+    if (second_device->get_token() == registration_.reconnect_token)
+      my_device_index = 1;
+  if (!my_device_index) {
+    BOOST_ASSERT(!first_device || !second_device);
+    my_device_index = first_device == nullptr ? 0 : 1;
   }
-  register_as_second(connection_, found);
+  BOOST_ASSERT(my_device_index);
+  auto my_device_index_value = my_device_index.value();
+  std::size_t other_device_index = my_device_index_value == 0 ? 1 : 0;
+  auto other_device = change.devices[other_device_index];
+  auto device_ =
+      device_creator_.create(connection_, registration_.reconnect_token);
+  auto connection_on_close =
+      connection_->on_closed.connect([this, registration_] {
+        on_device_closed(registration_.key, registration_.reconnect_token);
+      });
+  if (change.devices[my_device_index_value]) {
+    BOOST_LOG_SEV(logger, logging::severity::info)
+        << __FUNCTION__ << "overwriting existing connection";
+    change.devices[my_device_index_value]->close();
+  }
+  change.devices[my_device_index_value] = device_;
+  change.on_close_handles[my_device_index_value] =
+      std::move(connection_on_close);
+  if (other_device) {
+    BOOST_ASSERT(other_device->get_token() != device_->get_token());
+    device_->set_partner(other_device);
+    other_device->set_partner(device_);
+  }
 }
 
-void registration_handler::register_as_first(const connection_ptr &connection_,
-                                             const std::string &key) {
-  BOOST_LOG_SEV(logger, logging::severity::debug) << fmt::format(
-      "a device wants to register itself as first, key:'{}'", key);
-  auto first_device = device_creator_.create(connection_);
-  auto connection_on_close = connection_->on_closed.connect(
-      [this, key] { on_first_device_closed(key); });
-  registered_connection device_;
-  device_.key = key;
-  device_.devices[0] = first_device;
-  device_.on_close_handles[0] = std::move(connection_on_close);
-  devices.push_back(std::move(device_));
-}
-void registration_handler::register_as_second(
-    const connection_ptr &connection_, const devices_type::iterator &pair) {
-  BOOST_LOG_SEV(logger, logging::severity::debug) << fmt::format(
-      "a device wants to register itself as answering, key:'{}'", pair->key);
-  auto first_device = pair->devices.front();
-  auto second_device = device_creator_.create(connection_);
-  pair->devices[1] = second_device;
-  auto connection_on_close = connection_->on_closed.connect(
-      [this, key = pair->key] { on_second_device_closed(key); });
-  pair->on_close_handles[1] = std::move(connection_on_close);
-  first_device->set_partner(second_device);
-  second_device->set_partner(first_device);
-}
-void registration_handler::on_first_device_closed(const std::string &key) {
+void registration_handler::on_device_closed(
+    const std::string &key, const std::string &registration_token) {
   BOOST_LOG_SEV(logger, logging::severity::info)
       << fmt::format("an first device disconnected. key:'{}'", key);
   auto found = find(key);
   BOOST_ASSERT(found != devices.cend());
-  if (found->devices[1])
-    found->devices[1]->close();
-  on_device_closed(key);
-}
-
-void registration_handler::on_second_device_closed(const std::string &key) {
-  BOOST_LOG_SEV(logger, logging::severity::info)
-      << fmt::format("an answering device disconnected. key:'{}'", key);
-  auto found = find(key);
-  BOOST_ASSERT(found != devices.cend());
-  if (found->devices[0])
-    found->devices[0]->close();
-  on_device_closed(key);
-}
-
-void registration_handler::on_device_closed(const std::string &key) {
-  remove_by_key(key);
-}
-
-void registration_handler::remove_by_key(const std::string &key) {
-  auto found = find(key);
-  BOOST_ASSERT(found != devices.cend());
+  const std::size_t remove_index = [&] {
+    for (std::size_t index{}; index < found->devices.size(); ++index)
+      if (found->devices[index])
+        if (found->devices[index]->get_token() == registration_token)
+          return index;
+    BOOST_ASSERT(false);
+    return std::size_t{};
+  }();
+  auto &other_device = found->devices[remove_index == 0 ? 1 : 0];
+  if (other_device)
+    other_device->reset_partner();
+  found->on_close_handles[remove_index].disconnect();
+  found->devices[remove_index].reset();
+  for (auto &device_ : found->devices)
+    if (device_)
+      return;
+  // no device in pair no more - delete device
   devices.erase(found);
 }
+
 registration_handler::devices_type::iterator
 registration_handler::find(const std::string &key) {
   return std::find_if(devices.begin(), devices.end(),
                       [&](const auto &check) { return check.key == key; });
+}
+
+registration_handler::registered_connection &
+registration_handler::find_or_create(const std::string &key) {
+  auto found = find(key);
+  if (found != devices.cend())
+    return *found;
+  registered_connection result;
+  result.key = key;
+  return devices.emplace_back(std::move(result));
 }

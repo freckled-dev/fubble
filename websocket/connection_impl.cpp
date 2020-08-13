@@ -29,7 +29,7 @@ connection_impl::~connection_impl() {
     return;
   BOOST_LOG_SEV(logger, logging::severity::warning)
       << "read_promise is not fullfilled!";
-  read_promise.set_exception(
+  read_promise->set_exception(
       boost::system::system_error(boost::asio::error::operation_aborted));
 }
 
@@ -115,8 +115,9 @@ boost::future<std::string> connection_impl::read() {
   BOOST_LOG_SEV(logger, logging::severity::debug)
       << "reading websocket connection, this:" << this;
   BOOST_ASSERT(!reading);
+  BOOST_ASSERT(!read_promise);
   reading = true;
-  read_promise = boost::promise<std::string>();
+  read_promise = std::make_shared<boost::promise<std::string>>();
   std::weak_ptr<int> weak_alive_check = alive_check;
   std::visit(
       [&, this](auto &stream_) {
@@ -130,20 +131,21 @@ boost::future<std::string> connection_impl::read() {
             });
       },
       *stream);
-  return read_promise.get_future();
+  return read_promise->get_future();
 }
 
 void connection_impl::on_read(const boost::system::error_code &error,
                               std::size_t) {
   BOOST_LOG_SEV(logger, logging::severity::debug)
       << "stream.async_read, this:" << this << ", error:" << error.message();
+  auto read_promise_moved = std::move(read_promise);
   if (error) {
     reading = false;
-    read_promise.set_exception(boost::system::system_error(error));
+    read_promise_moved->set_exception(boost::system::system_error(error));
     return;
   }
   std::string result = boost::beast::buffers_to_string(read_buffer->data());
   read_buffer->consume(read_buffer->size());
-  read_promise.set_value(result);
+  read_promise_moved->set_value(result);
   reading = false;
 }

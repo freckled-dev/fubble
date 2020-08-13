@@ -50,7 +50,7 @@ class FubbleConan(ConanFile):
         self.build_requires("nlohmann_json/3.7.0")
         self.build_requires("boost/1.73.0")
         self.build_requires("gtest/1.10.0")
-        self.build_requires("fmt/6.2.0")
+        self.build_requires("fmt/7.0.3")
         self.build_requires("google-webrtc/84")
         self.build_requires("RectangleBinPack/1.0.2")
         self.build_requires("fruit/3.6.0")
@@ -80,7 +80,8 @@ class FubbleConan(ConanFile):
         # https://mesonbuild.com/Builtin-options.html#base-options
         meson_options = {'cpp_std': 'c++17', 'b_ndebug': 'if-release',
                         'with_servers': with_servers, 'with_tests': with_tests}
-        meson_options['warning_level'] = '3'
+        if self.settings.os == "Linux":
+            meson_options['warning_level'] = '3'
         if self.options.treat_warnings_as_errors:
             meson_options['werror'] = 'true'
         build_type = self._get_build_type()

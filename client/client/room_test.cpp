@@ -22,7 +22,7 @@
 #include "rtc/data_channel.hpp"
 #include "rtc/google/asio_signalling_thread.hpp"
 #include "rtc/google/factory.hpp"
-#include "signalling/client/client_creator.hpp"
+#include "signalling/client/client.hpp"
 #include "signalling/client/connection_creator.hpp"
 #include "signalling/json_message.hpp"
 #include "signalling/testing.hpp"
@@ -70,7 +70,7 @@ struct test_client {
       context, boost_executor, signalling_json};
   signalling::client::client::connect_information connect_information =
       signalling::testing::make_connect_information();
-  signalling::client::client_creator client_creator{
+  signalling::client::factory_impl client_creator{
       websocket_connector, signalling_connection_creator, connect_information};
 
   // matrix
@@ -85,7 +85,7 @@ struct test_client {
                                                http_client_factory};
   matrix::authentification matrix_authentification{http_client_factory,
                                                    matrix_client_factory};
-  //
+
   // rtc
   rtc::google::factory rtc_connection_creator;
   client::peer_creator peer_creator{boost_executor, client_creator,

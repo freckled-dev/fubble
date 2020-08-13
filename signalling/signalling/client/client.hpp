@@ -7,13 +7,18 @@
 #include "signalling/ice_candidate.hpp"
 #include "signalling/logger.hpp"
 #include "signalling/offer.hpp"
-#include "websocket/connection.hpp"
-#include "websocket/connector.hpp"
 #include <boost/signals2/signal.hpp>
-#include <boost/thread/executors/inline_executor.hpp>
 #include <boost/thread/future.hpp>
 
+namespace utils {
+class one_shot_timer;
+}
+namespace websocket {
+class connector;
+class connector_creator;
+} // namespace websocket
 namespace signalling::client {
+class factory;
 class client {
 public:
   struct connect_information {
@@ -22,13 +27,18 @@ public:
     std::string service;
     std::string target;
   };
-  client(websocket::connector_creator &connector_creator,
-         connection_creator &connection_creator_);
-  ~client();
+  virtual ~client() = default;
 
-  void set_connect_information(const connect_information &set);
-  void connect(const std::string &key);
-  boost::future<void> close();
+  // TODO remove setter, move argument to create/constructor
+  virtual void set_connect_information(const connect_information &set) = 0;
+  virtual void connect(const std::string &token, const std::string &key) = 0;
+  virtual boost::future<void> close() = 0;
+  virtual void send_offer(const signalling::offer &offer_) = 0;
+  virtual void send_answer(const signalling::answer &answer_) = 0;
+  virtual void
+  send_ice_candidate(const signalling::ice_candidate &candidate) = 0;
+  virtual void send_want_to_negotiate() = 0;
+
   boost::signals2::signal<void()> on_closed;
   boost::signals2::signal<void()> on_registered;
   boost::signals2::signal<void()> on_create_offer;
@@ -38,26 +48,41 @@ public:
       on_ice_candidate;
   boost::signals2::signal<void(const boost::system::system_error &)> on_error;
 
-  void send_offer(const signalling::offer &offer_);
-  void send_answer(const signalling::answer &answer_);
-  void send_ice_candidate(const signalling::ice_candidate &candidate);
-  void send_want_to_negotiate();
+  static std::unique_ptr<client>
+  create(websocket::connector_creator &connector_creator,
+         connection_creator &connection_creator_);
+  static std::unique_ptr<client>
+  create_reconnecting(factory &factory, utils::one_shot_timer &timer);
+};
 
-  connection &get_connection() const;
+class factory {
+public:
+  virtual ~factory() = default;
+  virtual std::unique_ptr<client> create() = 0;
+};
 
-private:
-  void connected(boost::future<websocket::connection_ptr> &result,
-                 const std::string &key);
-  void connect_signals(const connection_ptr &connection_) const;
-  void run_done(boost::future<void> &result);
+class factory_reconnecting : public factory {
+public:
+  factory_reconnecting(factory &factory, utils::one_shot_timer &timer);
 
-  signalling::logger logger{"client"};
-  boost::inline_executor executor;
+  std::unique_ptr<client> create() override;
+
+protected:
+  factory &factory_;
+  utils::one_shot_timer &timer;
+};
+
+class factory_impl : public factory {
+public:
+  factory_impl(websocket::connector_creator &connector_creator,
+               connection_creator &connection_creator_,
+               const client::connect_information &connect_information_);
+  std::unique_ptr<client> create() override;
+
+protected:
   websocket::connector_creator &connector_creator;
   connection_creator &connection_creator_;
-  connect_information connect_information_;
-  std::unique_ptr<websocket::connector> connector;
-  connection_ptr connection_;
+  const client::connect_information connect_information_;
 };
 } // namespace signalling::client
 

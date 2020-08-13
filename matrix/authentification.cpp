@@ -23,9 +23,13 @@ authentification::register_as_guest() {
         auto response = result.get();
         if (response.first != boost::beast::http::status::ok)
           error::check_matrix_response(response.first, response.second);
-        BOOST_LOG_SEV(this->logger, logging::severity::info)
-            << "successfully registered as guest";
         auto response_json = response.second;
+        BOOST_LOG_SEV(this->logger, logging::severity::info)
+            << "successfully registered as guest"
+#if 0
+            << ", response_json:" << response_json.dump(2)
+#endif
+            ;
         client::information information;
         information.access_token = response_json["access_token"];
         information.user_id = response_json["user_id"];

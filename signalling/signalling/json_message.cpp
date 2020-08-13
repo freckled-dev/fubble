@@ -42,6 +42,7 @@ json_message::parse(const std::string &message) const {
   if (type == "registration") {
     registration result;
     result.key = json["key"];
+    result.reconnect_token = json["token"];
     return result;
   }
   if (type == "want_to_negotiate") {
@@ -70,8 +71,11 @@ std::string json_message::serialize(const create_offer &) const {
   return result.dump();
 }
 std::string json_message::serialize(const registration &registration_) const {
+  BOOST_ASSERT(!registration_.key.empty());
+  BOOST_ASSERT(!registration_.reconnect_token.empty());
   nlohmann::json result = {{"type", "registration"},
-                           {"key", registration_.key}};
+                           {"key", registration_.key},
+                           {"token", registration_.reconnect_token}};
   return result.dump();
 }
 

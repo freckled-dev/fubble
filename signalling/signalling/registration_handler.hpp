@@ -31,19 +31,13 @@ public:
 private:
   void on_register(const connection_ptr &connection_, const registration &);
   void register_(const connection_ptr &connection_, const registration &);
-  void register_as_first(const connection_ptr &connection_,
-                         const std::string &key);
-  void register_as_second(const connection_ptr &connection_,
-                          const devices_type::iterator &offering);
-  void on_first_device_closed(const std::string &key);
-  void on_second_device_closed(const std::string &key);
-  void on_device_closed(const std::string &key);
+  void on_device_closed(const std::string &key,
+                        const std::string &registration_token);
   void remove_by_key(const std::string &key);
   devices_type::iterator find(const std::string &key);
+  registered_connection &find_or_create(const std::string &key);
 
-  class logger logger {
-    "registration_handler"
-  };
+  signalling::logger logger{"registration_handler"};
   device::creator &device_creator_;
   devices_type devices;
 };

@@ -2,12 +2,12 @@
 #include "peer.hpp"
 #include "rtc/google/connection.hpp"
 #include "rtc/google/factory.hpp"
-#include "signalling/client/client_creator.hpp"
+#include "signalling/client/client.hpp"
 
 using namespace client;
 
 peer_creator::peer_creator(boost::executor &executor,
-                           signalling::client::client_creator &client_creator,
+                           signalling::client::factory &client_creator,
                            rtc::google::factory &connection_creator)
     : executor(executor), client_creator(client_creator),
       connection_creator(connection_creator) {}
