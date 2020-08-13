@@ -60,6 +60,7 @@ public:
     BOOST_LOG_SEV(logger, logging::severity::debug) << "OnDiscardedFrame()";
   }
 
+  bool get_started() const override { return device_->CaptureStarted(); }
   std::string get_id() const override { return id; }
 
 protected:
@@ -106,6 +107,7 @@ public:
     if (counter == 0)
       delegate->stop();
   }
+  bool get_started() const override { return started; }
   std::string get_id() const override { return delegate->get_id(); }
 
 protected:

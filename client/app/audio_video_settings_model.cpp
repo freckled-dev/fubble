@@ -176,15 +176,19 @@ void audio_video_settings_model::onVideoDeviceActivated(int index) {
     BOOST_ASSERT(false);
     return;
   }
-  if (video)
+  bool was_playing{};
+  if (video) {
+    was_playing = video->get_playing();
     video.reset();
+  }
   const auto id = video_devices_casted->get_id_by_index(index);
   try {
     video_settings_.change_to_device(id);
     video_device = video_device_factory.create(id);
     video = std::make_unique<ui::frame_provider_google_video_device>(
         *video_device, nullptr);
-    video->play();
+    if (was_playing)
+      video->play();
   } catch (const boost::exception &error) {
     BOOST_LOG_SEV(logger, logging::severity::warning)
         << "could not change video device";

@@ -24,6 +24,7 @@ public:
 
   Q_INVOKABLE void play();
   Q_INVOKABLE void stop();
+  bool get_playing() const;
 
 protected:
   rtc::google::capture::video::device &device;

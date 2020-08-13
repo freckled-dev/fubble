@@ -27,3 +27,7 @@ QAbstractVideoSurface *frame_provider_google_video_device::get_surface() const {
 void frame_provider_google_video_device::play() { device.start(); }
 
 void frame_provider_google_video_device::stop() { device.stop(); }
+
+bool frame_provider_google_video_device::get_playing() const {
+  return device.get_started();
+}
