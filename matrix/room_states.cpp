@@ -24,9 +24,8 @@ public:
 
   std::vector<custom> get_all_custom() const override { return customs; }
 
-  bool sync_event(const nlohmann::json &event) override {
-    BOOST_ASSERT(event.contains("state_key"));
-    const std::string state_key = event["state_key"];
+  bool sync_event(const event::room_state_event &event) override {
+    const std::string &state_key = event.state_key;
     if (boost::starts_with(state_key, "m."))
       return false;
 

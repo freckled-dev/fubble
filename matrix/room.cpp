@@ -73,7 +73,6 @@ void room::sync(const nlohmann::json &content) {
   // timeline.` for the difference between state and timeline
   // https://matrix.org/docs/spec/client_server/latest#syncing
   auto timeline_events = our_room["timeline"]["events"];
-  // TODO do a `on_timeline_events` and a `on_state_events`
   on_events(timeline_events);
   auto state_events = our_room["state"]["events"];
   on_events(state_events);
@@ -82,9 +81,12 @@ void room::sync(const nlohmann::json &content) {
 void room::on_events(const nlohmann::json &events) {
   for (const auto &event : events) {
     const std::string type = event["type"];
+#if 0
+    if (event.contains("state_key"))
+      states_->sync_event(event);
+#endif
     if (chat_->sync_event(type, event))
       continue;
-    states_->sync_event(event);
     if (type == "m.room.member") {
       on_event_m_room_member(event);
       continue;
