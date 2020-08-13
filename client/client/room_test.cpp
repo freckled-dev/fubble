@@ -92,8 +92,8 @@ struct test_client {
                                     rtc_connection_creator};
 
   // client
-  client::rooms rooms;
   client::tracks_adder tracks_adder;
+  client::rooms rooms;
   std::unique_ptr<client::own_audio_track> own_audio_track =
       client::own_audio_track::create_noop();
   client::own_media own_media{*own_audio_track};
@@ -256,8 +256,8 @@ struct two_participants {
   }
 };
 struct two_participants_with_data_channel {
-  std::unique_ptr<two_participants> participants;
   client::add_data_channel data_channel;
+  std::unique_ptr<two_participants> participants;
   boost::promise<void> promise;
   boost::inline_executor executor;
 
