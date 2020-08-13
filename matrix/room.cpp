@@ -3,13 +3,15 @@
 #include "client.hpp"
 #include "error.hpp"
 #include "room_participant.hpp"
+#include "room_states.hpp"
 #include <fmt/format.h>
 #include <nlohmann/json.hpp>
 
 using namespace matrix;
 
 room::room(client &client_, const std::string &id)
-    : client_(client_), id(id), chat_{std::make_unique<chat>(client_, id)} {
+    : client_(client_), id(id), chat_{std::make_unique<chat>(client_, id)},
+      states_{room_states::create(client_, id)} {
   BOOST_ASSERT(!id.empty());
   http_client = client_.create_http_client();
 }
@@ -59,6 +61,8 @@ std::string room::get_name() const { return name; }
 
 chat &room::get_chat() const { return *chat_; }
 
+room_states &room::get_states() const { return *states_; }
+
 void room::sync(const nlohmann::json &content) {
   const auto joined_rooms = content["rooms"]["join"];
   BOOST_ASSERT(joined_rooms.contains(id));
@@ -69,6 +73,7 @@ void room::sync(const nlohmann::json &content) {
   // timeline.` for the difference between state and timeline
   // https://matrix.org/docs/spec/client_server/latest#syncing
   auto timeline_events = our_room["timeline"]["events"];
+  // TODO do a `on_timeline_events` and a `on_state_events`
   on_events(timeline_events);
   auto state_events = our_room["state"]["events"];
   on_events(state_events);
@@ -79,6 +84,7 @@ void room::on_events(const nlohmann::json &events) {
     const std::string type = event["type"];
     if (chat_->sync_event(type, event))
       continue;
+    states_->sync_event(event);
     if (type == "m.room.member") {
       on_event_m_room_member(event);
       continue;

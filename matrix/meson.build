@@ -1,6 +1,6 @@
 matrix = library('matrix',
   ['authentification.cpp', 'error.cpp', 'client.cpp', 'factory.cpp',
-    'chat.cpp', 'room_participant.cpp', 'events.cpp',
+    'chat.cpp', 'room_participant.cpp', 'events.cpp', 'room_states.cpp',
     'client_factory.cpp', 'room.cpp', 'user.cpp', 'users.cpp', 'rooms.cpp'],
   dependencies: [fmt_dep, http_dep],
   include_directories: ['..'],

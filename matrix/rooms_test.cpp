@@ -1,6 +1,7 @@
 #include "chat.hpp"
 #include "fixture.hpp"
 #include "room_participant.hpp"
+#include "room_states.hpp"
 
 using namespace matrix;
 
@@ -214,4 +215,16 @@ TEST_F(Rooms, ChatReceive) {
   EXPECT_EQ(chat_message.body, message);
   EXPECT_EQ(first->get_user_id(), chat_message.user_->get_id());
   EXPECT_LE(chat_message.timestamp, std::chrono::system_clock::now());
+}
+
+TEST_F(Rooms, CustomState) {
+  auto [first, first_room] = register_and_create_room();
+  auto &states = first_room->get_states();
+  matrix::room_states::custom set;
+  set.key = "key";
+  set.type = "io.fubble.test";
+  auto result = states.set_custom(set);
+  run_context();
+  result.get();
+  EXPECT_FALSE(states.get_all_custom().empty());
 }
