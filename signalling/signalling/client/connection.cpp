@@ -13,7 +13,13 @@ connection::connection(boost::executor &executor_,
       message_parser(message_parser) {}
 
 connection::~connection() {
-  BOOST_LOG_SEV(logger, logging::severity::debug) << "client ~connection()";
+  BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
+  if (!run_promise)
+    return;
+  BOOST_LOG_SEV(logger, logging::severity::warning)
+      << "run_promise is not fulfilled";
+  boost::system::system_error error{boost::asio::error::operation_aborted};
+  run_promise->set_exception(error);
 }
 
 boost::future<void> connection::close() {
@@ -52,32 +58,43 @@ boost::future<void> connection::run() {
 }
 void connection::read_next() {
   BOOST_LOG_SEV(logger, logging::severity::debug) << "reading next message";
-  connection_->read().then(inline_executor, [this](auto message_future) {
-    try {
-      auto message = message_future.get();
-      parse_message(message);
-      post_read_next();
-    } catch (const boost::system::system_error &error) {
-      running = false;
-      const auto error_code = error.code();
-      auto run_promise_copy = run_promise;
-      // error_code == boost::asio::error::operation_aborted
-      if (error_code == boost::beast::websocket::error::closed) {
-        // The WebSocket stream was gracefully closed at both endpoints
-        run_promise_copy->set_value();
-        return;
-      }
-      BOOST_LOG_SEV(this->logger, logging::severity::warning)
-          << "an error occured while running, error:" << error.what();
-      run_promise_copy->set_exception(error);
-    } catch (...) {
-      BOOST_ASSERT(false);
-    }
-  });
+  decltype(run_promise)::weak_type weak_run_promise = run_promise;
+  connection_->read().then(
+      inline_executor, [this, weak_run_promise = std::move(weak_run_promise)](
+                           auto message_future) {
+        if (!weak_run_promise.lock()) {
+          BOOST_ASSERT(false);
+          return;
+        }
+        did_read(message_future);
+      });
 }
 
 void connection::post_read_next() {
   post_executor.submit([this] { read_next(); });
+}
+
+void connection::did_read(boost::future<std::string> &message_future) {
+  try {
+    auto message = message_future.get();
+    parse_message(message);
+    post_read_next();
+  } catch (const boost::system::system_error &error) {
+    running = false;
+    const auto error_code = error.code();
+    auto run_promise_moved = std::move(run_promise);
+    // error_code == boost::asio::error::operation_aborted
+    if (error_code == boost::beast::websocket::error::closed) {
+      // The WebSocket stream was gracefully closed at both endpoints
+      run_promise_moved->set_value();
+      return;
+    }
+    BOOST_LOG_SEV(this->logger, logging::severity::warning)
+        << "an error occured while running, error:" << error.what();
+    run_promise_moved->set_exception(error);
+  } catch (...) {
+    BOOST_ASSERT(false);
+  }
 }
 
 void connection::send(const std::string &message) {

@@ -40,6 +40,7 @@ public:
 private:
   void read_next();
   void post_read_next();
+  void did_read(boost::future<std::string> &message_future);
 
   void send(const std::string &message);
   void parse_message(const std::string &message);
