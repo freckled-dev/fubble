@@ -5,6 +5,7 @@
 
 using namespace temporary_room::rooms;
 
+namespace {
 class mock_room_factory : public room_factory {
 public:
   MOCK_METHOD(boost::future<room_ptr>, create, (const std::string &),
@@ -15,21 +16,23 @@ class mock_room : public room {
 public:
   std::shared_ptr<int> alive_check = std::make_shared<int>(42);
   MOCK_METHOD(room_id, get_room_id, (), (const override));
+  MOCK_METHOD(room_id, get_room_name, (), (const override));
   MOCK_METHOD(boost::future<void>, invite, (const user_id &), (override));
+  MOCK_METHOD(bool, is_empty, (), (const override));
 };
 
-TEST(Rooms, Instance) {
+struct Rooms : ::testing::Test {
   mock_room_factory room_factory_;
-  rooms test{room_factory_};
-}
-
-// TODO do a fixtur efor those tests
-
-TEST(Rooms, Add) {
-  mock_room_factory room_factory_;
-  const room_id room_id_{"fun_id"};
-  const room_name room_name_{"room_name"};
+  room_id room_id_{"fun_id"};
+  room_name room_name_{"room_name"};
   const user_id user_id_{"user_id"};
+  rooms test{room_factory_};
+};
+} // namespace
+
+TEST_F(Rooms, Instance) {}
+
+TEST_F(Rooms, Add) {
   auto room_ = std::make_unique<mock_room>();
   EXPECT_CALL(*room_, get_room_id).WillRepeatedly(::testing::Return(room_id_));
   EXPECT_CALL(*room_, invite(user_id_))
@@ -39,22 +42,16 @@ TEST(Rooms, Add) {
   EXPECT_CALL(room_factory_, create(room_name_))
       .WillOnce(::testing::Return(
           ::testing::ByMove(boost::make_ready_future(std::move(room_casted)))));
-  rooms test{room_factory_};
   auto add_future = test.get_or_create_room_id(room_name_, user_id_);
   EXPECT_EQ(add_future.get(), room_id_);
   EXPECT_EQ(test.get_room_count(), 1);
 }
 
-TEST(Rooms, AddTwoParticipants) {
-  mock_room_factory room_factory_;
-  room_id room_id_{"fun_id"};
-  const room_name room_name_{"room_name"};
-  const user_id user_id_{"user_id"};
+TEST_F(Rooms, AddTwoParticipants) {
   boost::promise<room_ptr> create_promise;
   EXPECT_CALL(room_factory_, create(room_name_))
       .WillOnce(
           ::testing::Return(::testing::ByMove(create_promise.get_future())));
-  rooms test{room_factory_};
   int called{};
   for (int counter{}; counter < 2; ++counter) {
     test.get_or_create_room_id(room_name_, user_id_).then([&](auto result) {
@@ -77,27 +74,17 @@ TEST(Rooms, AddTwoParticipants) {
 
 MATCHER_P(HasCorrectError, message, "") { return arg.what() == message; }
 
-TEST(Rooms, AddFail) {
-  mock_room_factory room_factory_;
-  std::string error_message = "failed";
-  const room_name room_name_{"room_name"};
-  const user_id user_id_{"user_id"};
+TEST_F(Rooms, AddFail) {
   struct test_exception : virtual boost::exception, virtual std::exception {};
   EXPECT_CALL(room_factory_, create(room_name_))
       .WillOnce(::testing::Return(::testing::ByMove(
           boost::make_exceptional_future<room_ptr>(test_exception()))));
-  rooms test{room_factory_};
   auto result = test.get_or_create_room_id(room_name_, user_id_);
   // test_exception does not work, because `enable_current_exception` not called
   EXPECT_THROW(result.get(), std::exception);
 }
 
-struct RoomWithParticipants : testing::Test {
-  mock_room_factory room_factory_;
-  room_id room_id_{"fun_id"};
-  room_name room_name_{"room_name"};
-  const user_id user_id_{"user_id"};
-  rooms test{room_factory_};
+struct RoomWithParticipants : Rooms {
   std::vector<boost::future<room_id>> participants;
   mock_room *room_;
   std::shared_ptr<int> room_alive_check;
@@ -113,8 +100,7 @@ struct RoomWithParticipants : testing::Test {
         .WillOnce(::testing::Return(::testing::ByMove(
             boost::make_ready_future(std::move(room_casted)))));
     EXPECT_CALL(*room_, invite(::testing::_))
-        .WillRepeatedly(::testing::Invoke([](auto user_id) {
-          (void)user_id;
+        .WillRepeatedly(::testing::Invoke([]([[maybe_unused]] auto user_id) {
           return boost::make_ready_future();
         }));
   }
@@ -149,3 +135,5 @@ TEST_F(RoomWithParticipants, RemoveTwo) {
   EXPECT_TRUE(room_alive_check.unique());
   EXPECT_EQ(test.get_room_count(), 0);
 }
+
+TEST_F(RoomWithParticipants, Existing) { add_participants(1); }

@@ -1,5 +1,6 @@
 #include "matrix_rooms_factory_adapter.hpp"
 #include "matrix/room_participant.hpp"
+#include "matrix/room_states.hpp"
 #include <fmt/format.h>
 #include <fmt/ostream.h>
 
@@ -24,9 +25,19 @@ public:
   temporary_room::rooms::room_id get_room_id() const override {
     return matrix_room.get_id();
   }
+
+  std::string get_room_name() const override {
+    // TODO
+    return "";
+  }
+
   boost::future<void>
   invite(const temporary_room::rooms::user_id &user_id_) override {
     return matrix_room.invite_by_user_id(user_id_);
+  }
+  bool is_empty() const override {
+    // TODO
+    return false;
   }
 
 protected:
@@ -102,6 +113,17 @@ protected:
   std::vector<boost::signals2::scoped_connection> signals_connections;
   std::vector<std::unique_ptr<user_wrapper>> users;
 };
+
+boost::future<void> set_name_to_room(matrix::room &set,
+                                     const std::string &name) {
+  matrix::room_states &states = set.get_states();
+  matrix::room_states::custom custom;
+  custom.key = "";
+  custom.type = "io.fubble.temporary_room";
+  custom.data["name"] = name;
+  return states.set_custom(custom);
+  // set.get_st
+}
 } // namespace
 
 matrix_rooms_factory_adapter::matrix_rooms_factory_adapter(
@@ -118,9 +140,9 @@ matrix_rooms_factory_adapter::create(const std::string &room_name) {
       [this](auto result) {
         matrix::room *got = result.get();
         BOOST_ASSERT(got);
-        auto return_ = std::make_unique<rooms_room_matrix_adapter>(
+        auto return_ = std::make_shared<rooms_room_matrix_adapter>(
             matrix_client.get_user_id(), *got);
-        rooms::room_ptr return_casted = std::move(return_);
+        temporary_room::rooms::room_ptr return_casted = return_;
         return return_casted;
       });
 }
