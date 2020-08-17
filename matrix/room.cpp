@@ -2,6 +2,7 @@
 #include "chat.hpp"
 #include "client.hpp"
 #include "error.hpp"
+#include "events.hpp"
 #include "room_participant.hpp"
 #include "room_states.hpp"
 #include <fmt/format.h>
@@ -11,7 +12,8 @@ using namespace matrix;
 
 room::room(client &client_, const std::string &id)
     : client_(client_), id(id), chat_{std::make_unique<chat>(client_, id)},
-      states_{room_states::create(client_, id)} {
+      states_{room_states::create(client_, id)},
+      event_parser_{event_parser::create(client_.get_users())} {
   BOOST_ASSERT(!id.empty());
   http_client = client_.create_http_client();
 }
@@ -80,11 +82,13 @@ void room::sync(const nlohmann::json &content) {
 
 void room::on_events(const nlohmann::json &events) {
   for (const auto &event : events) {
+    auto parsed = event_parser_->parse(event);
+    if (parsed) {
+      auto state_event = dynamic_cast<event::room_state_event *>(parsed.get());
+      if (state_event)
+        states_->sync_event(*state_event);
+    }
     const std::string type = event["type"];
-#if 0
-    if (event.contains("state_key"))
-      states_->sync_event(event);
-#endif
     if (chat_->sync_event(type, event))
       continue;
     if (type == "m.room.member") {

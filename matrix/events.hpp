@@ -19,7 +19,7 @@ namespace event {
 struct event {
 public:
   virtual ~event() = default;
-  const std::string type;
+  std::string type;
 };
 using event_ptr = std::shared_ptr<event>;
 namespace room {
@@ -36,7 +36,7 @@ struct message : content {
 } // namespace room
 struct room_event : event {
   std::string event_id;
-  std::string room_id;
+  std::optional<std::string> room_id;
   std::chrono::system_clock::time_point origin_server_ts;
   user *sender{};
   std::unique_ptr<room::content> content_;

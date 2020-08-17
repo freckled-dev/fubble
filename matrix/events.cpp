@@ -1,6 +1,7 @@
 #include "events.hpp"
 #include "matrix/logger.hpp"
 #include "matrix/users.hpp"
+#include <boost/algorithm/string/predicate.hpp>
 #include <nlohmann/json.hpp>
 
 using namespace matrix;
@@ -15,6 +16,8 @@ public:
     std::string type = event_["type"];
     if (type == "m.room.message")
       return on_event_m_room_message(event_);
+    if (event_.contains("state_key"))
+      return parse_state_event(event_);
     return nullptr;
   }
 
@@ -28,8 +31,10 @@ public:
     std::string user_id = event["sender"];
     auto &user_ = users_.get_or_add_user(user_id);
     set.sender = &user_;
-    set.room_id = event["room_id"];
+    if (event.contains("room_id"))
+      set.room_id = event["room_id"];
     set.event_id = event["event_id"];
+    set.type = event["type"];
   }
 
   std::unique_ptr<event::room_event>
@@ -49,6 +54,19 @@ public:
     }
     result_content->body = content["body"];
     result->content_ = std::move(result_content);
+    return result;
+  }
+
+  std::unique_ptr<event::room_state_event>
+  parse_state_event(const nlohmann::json &event) const {
+    auto result = std::make_unique<event::room_state_event>();
+    parse_room_event(*result, event);
+    result->state_key = event["state_key"];
+    if (boost::starts_with(result->type, "m."))
+      return nullptr; // TODO
+    auto content = std::make_unique<event::room::custom_state>();
+    content->data = event["content"];
+    result->content_ = std::move(content);
     return result;
   }
 

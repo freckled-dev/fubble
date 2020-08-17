@@ -217,14 +217,63 @@ TEST_F(Rooms, ChatReceive) {
   EXPECT_LE(chat_message.timestamp, std::chrono::system_clock::now());
 }
 
-TEST_F(Rooms, DISABLED_CustomState) {
+namespace {
+matrix::room_states::custom make_custom_state() {
+  matrix::room_states::custom result;
+  result.key = "key";
+  result.type = "io.fubble.test";
+  result.data["fun_key"] = "fun_value";
+  return result;
+}
+} // namespace
+
+TEST_F(Rooms, CustomState) {
   auto [first, first_room] = register_and_create_room();
   auto &states = first_room->get_states();
-  matrix::room_states::custom set;
-  set.key = "key";
-  set.type = "io.fubble.test";
+  matrix::room_states::custom set = make_custom_state();
   auto result = states.set_custom(set);
   run_context();
   result.get();
-  // EXPECT_FALSE(states.get_all_custom().empty());
+  sync_client(*first);
+  auto all = states.get_all_custom();
+  ASSERT_EQ(all.size(), 1);
+  const std::string value = all.front().data["fun_key"];
+  EXPECT_EQ(value, "fun_value");
+}
+
+TEST_F(Rooms, TwoCustomStates) {
+  auto [first, first_room] = register_and_create_room();
+  auto &states = first_room->get_states();
+  matrix::room_states::custom set = make_custom_state();
+  auto result = states.set_custom(set);
+  set.key = "key2";
+  auto result2 = states.set_custom(set);
+  run_context();
+  result.get();
+  result2.get();
+  sync_client(*first);
+  auto all = states.get_all_custom();
+  ASSERT_EQ(all.size(), 2);
+}
+
+TEST_F(Rooms, CustomStateUpdate) {
+  auto [first, first_room] = register_and_create_room();
+  auto &states = first_room->get_states();
+  matrix::room_states::custom set = make_custom_state();
+  {
+    auto result = states.set_custom(set);
+    run_context();
+    result.get();
+  }
+  {
+    set.data["fun_key"] = "another fun value";
+    auto result = states.set_custom(set);
+    run_context();
+    result.get();
+  }
+  sync_client(*first);
+  auto all = states.get_all_custom();
+  ASSERT_EQ(all.size(), 1);
+  const std::string value = all.front().data["fun_key"];
+  EXPECT_EQ(value, "another fun value");
 }

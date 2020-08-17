@@ -12,6 +12,7 @@
 namespace matrix {
 class chat;
 class client;
+class event_parser;
 class room_participant;
 class room_states;
 class user;
@@ -50,6 +51,7 @@ protected:
   std::string name;
   const std::unique_ptr<chat> chat_;
   const std::unique_ptr<room_states> states_;
+  const std::unique_ptr<event_parser> event_parser_;
 };
 } // namespace matrix
 
