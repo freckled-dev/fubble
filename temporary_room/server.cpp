@@ -1,11 +1,5 @@
-#include "server/server.hpp"
-#include "http/action_factory.hpp"
-#include "http/connection_creator.hpp"
 #include "logging/initialser.hpp"
-#include "matrix/authentification.hpp"
-#include "matrix/client_factory.hpp"
-#include "server/matrix_rooms_factory_adapter.hpp"
-#include "server/server.hpp"
+#include "temporary_room/server/application.hpp"
 #include <boost/asio/signal_set.hpp>
 #include <boost/program_options.hpp>
 #include <iostream>
@@ -60,48 +54,22 @@ int main(int argc, char *argv[]) {
   auto options_ = options_check.value();
   set_up_logging();
   logging::logger logger{"main_logger"};
-  boost::inline_executor executor;
   boost::asio::io_context context;
-  // matrix
-  matrix::factory matrix_factory;
-  http::server http_server_matrix{options_.matrix_server, options_.matrix_port};
-  http::fields http_fields_matrix{http_server_matrix};
-  http_fields_matrix.target_prefix = options_.matrix_target_prefix;
-  http::connection_creator connection_creator_{context};
-  http::action_factory action_factory_{connection_creator_};
-  http::client_factory http_client_factory_matrix{
-      action_factory_, http_server_matrix, http_fields_matrix};
-  matrix::client_factory matrix_client_factory{matrix_factory,
-                                               http_client_factory_matrix};
-  matrix::authentification matrix_authentification{http_client_factory_matrix,
-                                                   matrix_client_factory};
-  // matrix client for temporary_room::server
-  auto matrix_client_server_future =
-      matrix_authentification.register_anonymously();
-  context.run();
-  context.reset();
-  auto matrix_client_server = matrix_client_server_future.get();
-  auto matrix_client_server_sync_result =
-      matrix_client_server->sync_till_stop();
-  matrix_client_server->set_display_name("Fubble Bot");
-  // temporary_room::server
-  net::server::acceptor::config acceptor_config;
-  acceptor_config.port = options_.port;
-  net::server::acceptor acceptor{context, acceptor_config};
-  net::server::server net_server{acceptor};
-  server::matrix_rooms_factory_adapter rooms_factory{*matrix_client_server};
-  rooms::rooms rooms{rooms_factory};
-  server::server server{net_server, rooms};
-  // lets start to accept connections
-  auto acceptor_done = acceptor.run();
+
+  server::application::options options_casted;
+  options_casted.matrix_port = options_.matrix_port;
+  options_casted.matrix_server = options_.matrix_server;
+  options_casted.matrix_target_prefix = options_.matrix_target_prefix;
+  options_casted.port = options_.port;
+  auto application = server::application::create(context, options_casted);
+  auto application_result = application->run();
+
   boost::asio::signal_set signals{context, SIGINT, SIGTERM};
-  signals.async_wait(
-      [&acceptor, &matrix_client_server](const auto &error, auto) {
-        if (error == boost::asio::error::operation_aborted)
-          return;
-        acceptor.stop();
-        matrix_client_server->stop_sync();
-      });
+  signals.async_wait([&application](const auto &error, auto) {
+    if (error == boost::asio::error::operation_aborted)
+      return;
+    application->close();
+  });
   BOOST_LOG_SEV(logger, logging::severity::debug) << "context.run()";
   context.run();
   BOOST_LOG_SEV(logger, logging::severity::debug) << "after context.run()";
@@ -114,7 +82,6 @@ int main(int argc, char *argv[]) {
       std::rethrow_exception(std::current_exception());
     }
   };
-  check_for_operation_cancelled(matrix_client_server_sync_result);
-  check_for_operation_cancelled(acceptor_done);
+  check_for_operation_cancelled(application_result);
   return 0;
 }

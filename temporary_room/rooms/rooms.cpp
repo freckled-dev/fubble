@@ -65,6 +65,7 @@ void rooms::on_created(const room_name &name, boost::future<room_ptr> &result) {
 void rooms::on_new_room(room_ptr room_) {
   const auto id = room_->get_room_id();
   const auto name = room_->get_room_name();
+  BOOST_ASSERT(!name.empty());
   BOOST_LOG_SEV(logger, logging::severity::info) << "created room, id:" << id;
   auto found = rooms_.find(name);
   if (found == rooms_.cend()) {
