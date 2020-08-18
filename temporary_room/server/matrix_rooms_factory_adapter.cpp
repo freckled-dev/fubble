@@ -21,23 +21,29 @@ public:
     signals_connections.emplace_back(
         matrix_room.on_join.connect([this](auto &join) { on_join(join); }));
   }
+
   ~rooms_room_matrix_adapter() = default;
+
   temporary_room::rooms::room_id get_room_id() const override {
     return matrix_room.get_id();
   }
 
-  std::string get_room_name() const override {
-    // TODO
-    return "";
-  }
+  std::string get_room_name() const override { return matrix_room.get_name(); }
 
   boost::future<void>
   invite(const temporary_room::rooms::user_id &user_id_) override {
     return matrix_room.invite_by_user_id(user_id_);
   }
+
   bool is_empty() const override {
-    // TODO
-    return false;
+    auto result =
+        std::count_if(users.cbegin(), users.cend(), [](const auto &check) {
+          return check->participant->get_join_state() !=
+                 matrix::join_state::leave;
+        });
+    if (result > 0)
+      return false;
+    return true;
   }
 
 protected:
@@ -100,20 +106,15 @@ protected:
   }
 
   void check_and_call_participant_count_changed() {
-    auto result =
-        std::count_if(users.cbegin(), users.cend(), [](const auto &check) {
-          return check->participant->get_join_state() !=
-                 matrix::join_state::leave;
-        });
-    if (result > 0)
-      return;
-    on_empty();
+    if (is_empty())
+      on_empty();
   }
 
   std::vector<boost::signals2::scoped_connection> signals_connections;
   std::vector<std::unique_ptr<user_wrapper>> users;
 };
 
+#if 0
 boost::future<void> set_name_to_room(matrix::room &set,
                                      const std::string &name) {
   matrix::room_states &states = set.get_states();
@@ -124,6 +125,7 @@ boost::future<void> set_name_to_room(matrix::room &set,
   return states.set_custom(custom);
   // set.get_st
 }
+#endif
 } // namespace
 
 matrix_rooms_factory_adapter::matrix_rooms_factory_adapter(
@@ -137,12 +139,17 @@ matrix_rooms_factory_adapter::create(const std::string &room_name) {
   matrix::rooms::create_room_fields fields;
   fields.name = room_name;
   return matrix_client.get_rooms().create_room(fields).then(
-      [this](auto result) {
-        matrix::room *got = result.get();
-        BOOST_ASSERT(got);
-        auto return_ = std::make_shared<rooms_room_matrix_adapter>(
-            matrix_client.get_user_id(), *got);
-        temporary_room::rooms::room_ptr return_casted = return_;
-        return return_casted;
+      [this](boost::future<matrix::room *> result) {
+        return on_created(result);
       });
+}
+
+temporary_room::rooms::room_ptr matrix_rooms_factory_adapter::on_created(
+    boost::future<matrix::room *> &result) {
+  matrix::room *got = result.get();
+  BOOST_ASSERT(got);
+  auto return_ = std::make_shared<rooms_room_matrix_adapter>(
+      matrix_client.get_user_id(), *got);
+  temporary_room::rooms::room_ptr return_casted = return_;
+  return return_casted;
 }

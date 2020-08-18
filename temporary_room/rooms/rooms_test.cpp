@@ -16,10 +16,21 @@ class mock_room : public room {
 public:
   std::shared_ptr<int> alive_check = std::make_shared<int>(42);
   MOCK_METHOD(room_id, get_room_id, (), (const override));
-  MOCK_METHOD(room_id, get_room_name, (), (const override));
+  MOCK_METHOD(room_name, get_room_name, (), (const override));
   MOCK_METHOD(boost::future<void>, invite, (const user_id &), (override));
   MOCK_METHOD(bool, is_empty, (), (const override));
 };
+
+std::unique_ptr<mock_room> make_mock_room(room_id id, room_name name) {
+  auto room_ptr_ = std::make_unique<mock_room>();
+  ON_CALL(*room_ptr_, get_room_name()).WillByDefault(::testing::Return(name));
+  EXPECT_CALL(*room_ptr_, get_room_id).WillRepeatedly(::testing::Return(id));
+  EXPECT_CALL(*room_ptr_, invite(::testing::_))
+      .WillRepeatedly(::testing::Invoke([]([[maybe_unused]] auto user_id) {
+        return boost::make_ready_future();
+      }));
+  return room_ptr_;
+}
 
 struct Rooms : ::testing::Test {
   mock_room_factory room_factory_;
@@ -34,6 +45,7 @@ TEST_F(Rooms, Instance) {}
 
 TEST_F(Rooms, Add) {
   auto room_ = std::make_unique<mock_room>();
+  ON_CALL(*room_, get_room_name()).WillByDefault(::testing::Return(room_name_));
   EXPECT_CALL(*room_, get_room_id).WillRepeatedly(::testing::Return(room_id_));
   EXPECT_CALL(*room_, invite(user_id_))
       .WillOnce(
@@ -61,6 +73,7 @@ TEST_F(Rooms, AddTwoParticipants) {
   }
   EXPECT_EQ(test.get_room_count(), 1);
   auto room_ = std::make_unique<mock_room>();
+  ON_CALL(*room_, get_room_name()).WillByDefault(::testing::Return(room_name_));
   EXPECT_CALL(*room_, get_room_id).WillRepeatedly(::testing::Return(room_id_));
   EXPECT_CALL(*room_, invite(user_id_))
       .Times(2)
@@ -84,25 +97,21 @@ TEST_F(Rooms, AddFail) {
   EXPECT_THROW(result.get(), std::exception);
 }
 
+namespace {
 struct RoomWithParticipants : Rooms {
   std::vector<boost::future<room_id>> participants;
-  mock_room *room_;
+  mock_room *room_{};
   std::shared_ptr<int> room_alive_check;
 
   RoomWithParticipants() {
-    auto room_ptr_ = std::make_unique<mock_room>();
-    room_ = room_ptr_.get();
-    room_alive_check = room_ptr_->alive_check;
-    EXPECT_CALL(*room_, get_room_id)
-        .WillRepeatedly(::testing::Return(room_id_));
-    room_ptr room_casted = std::move(room_ptr_);
     EXPECT_CALL(room_factory_, create(room_name_))
-        .WillOnce(::testing::Return(::testing::ByMove(
-            boost::make_ready_future(std::move(room_casted)))));
-    EXPECT_CALL(*room_, invite(::testing::_))
-        .WillRepeatedly(::testing::Invoke([]([[maybe_unused]] auto user_id) {
-          return boost::make_ready_future();
-        }));
+        .WillOnce([this](room_name name) {
+          auto room_ptr_ = make_mock_room(room_id_, name);
+          room_ = room_ptr_.get();
+          room_alive_check = room_ptr_->alive_check;
+          room_ptr room_casted = std::move(room_ptr_);
+          return boost::make_ready_future(std::move(room_casted));
+        });
   }
   void add_participants(int count) {
     for (int index = 0; index < count; ++index) {
@@ -112,13 +121,18 @@ struct RoomWithParticipants : Rooms {
     }
   }
 
-  void remove_all_participants() { room_->on_empty(); }
+  void remove_all_participants() {
+    participants.clear();
+    ASSERT_TRUE(room_);
+    room_->on_empty();
+  }
 
   void ensure_room_id_got_set() {
     for (auto &participant_ : participants)
       EXPECT_EQ(participant_.get(), room_id_);
   }
 };
+} // namespace
 
 TEST_F(RoomWithParticipants, Remove) {
   add_participants(1);
@@ -136,4 +150,14 @@ TEST_F(RoomWithParticipants, RemoveTwo) {
   EXPECT_EQ(test.get_room_count(), 0);
 }
 
-TEST_F(RoomWithParticipants, Existing) { add_participants(1); }
+TEST_F(RoomWithParticipants, Renewal) {
+  add_participants(1);
+  remove_all_participants();
+  EXPECT_CALL(room_factory_, create(room_name_)).WillOnce([](room_name name) {
+    room_ptr room_casted = make_mock_room("another_fun_id", name);
+    return boost::make_ready_future(std::move(room_casted));
+  });
+  add_participants(1);
+}
+
+TEST_F(RoomWithParticipants, Existing) {}

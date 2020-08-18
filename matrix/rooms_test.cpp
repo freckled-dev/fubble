@@ -114,6 +114,17 @@ TEST_F(Rooms, RoomName) {
   EXPECT_EQ(room_->get_name(), create_room_fields.name.value());
 }
 
+TEST_F(Rooms, SameRoomName) {
+  {
+    auto [client_, room_] = register_and_create_room();
+    EXPECT_EQ(room_->get_name(), create_room_fields.name.value());
+  }
+  {
+    auto [client_, room_] = register_and_create_room();
+    EXPECT_EQ(room_->get_name(), create_room_fields.name.value());
+  }
+}
+
 TEST_F(Rooms, Leave) {
   auto [client_, room_] = register_and_create_room();
   auto leave_future = client_->get_rooms().leave_room(*room_);
