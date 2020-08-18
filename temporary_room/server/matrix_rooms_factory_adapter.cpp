@@ -1,6 +1,7 @@
 #include "matrix_rooms_factory_adapter.hpp"
 #include "matrix/room_participant.hpp"
 #include "matrix/room_states.hpp"
+#include <boost/thread/future.hpp>
 #include <fmt/format.h>
 #include <fmt/ostream.h>
 
@@ -138,18 +139,27 @@ boost::future<temporary_room::rooms::room_ptr>
 matrix_rooms_factory_adapter::create(const std::string &room_name) {
   matrix::rooms::create_room_fields fields;
   fields.name = room_name;
-  return matrix_client.get_rooms().create_room(fields).then(
-      [this](boost::future<matrix::room *> result) {
+  return matrix_client.get_rooms()
+      .create_room(fields)
+      .then([this](boost::future<matrix::room *> result) {
         return on_created(result);
-      });
+      })
+      .unwrap();
 }
 
-temporary_room::rooms::room_ptr matrix_rooms_factory_adapter::on_created(
+int answer();
+
+boost::future<temporary_room::rooms::room_ptr>
+matrix_rooms_factory_adapter::on_created(
     boost::future<matrix::room *> &result) {
   matrix::room *got = result.get();
   BOOST_ASSERT(got);
   auto return_ = std::make_shared<rooms_room_matrix_adapter>(
       matrix_client.get_user_id(), *got);
-  temporary_room::rooms::room_ptr return_casted = return_;
-  return return_casted;
+  temporary_room::rooms::room_ptr casted = return_;
+  auto promise =
+      std::make_shared<boost::promise<temporary_room::rooms::room_ptr>>();
+  got->on_name_changed.connect(
+      [casted, promise](auto) { promise->set_value(casted); });
+  return promise->get_future();
 }

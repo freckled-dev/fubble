@@ -14,7 +14,8 @@ public:
   boost::future<rooms::room_ptr> create(const std::string &room_name) override;
 
 protected:
-  rooms::room_ptr on_created(boost::future<matrix::room *> &result);
+  boost::future<rooms::room_ptr>
+  on_created(boost::future<matrix::room *> &result);
 
   matrix::client &matrix_client;
   temporary_room::logger logger{"matrix_rooms_factory_adapter"};
