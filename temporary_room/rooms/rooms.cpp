@@ -68,11 +68,13 @@ void rooms::on_new_room(room_ptr room_) {
   BOOST_LOG_SEV(logger, logging::severity::info) << "created room, id:" << id;
   auto found = rooms_.find(name);
   if (found == rooms_.cend()) {
-    BOOST_LOG_SEV(logger, logging::severity::error)
+    BOOST_LOG_SEV(logger, logging::severity::debug)
         << "could not find room by name, name:" << name;
-    BOOST_ASSERT(false);
-    return;
+    room_adapter room_adapter_;
+    rooms_[name] = std::move(room_adapter_);
+    found = rooms_.find(name);
   }
+  BOOST_ASSERT(found != rooms_.cend());
   room_->on_empty = [this, name]() { on_empty(name); };
   found->second.room_ = room_;
   for (const auto &participant_ : found->second.waiting_for_room)

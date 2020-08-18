@@ -103,16 +103,23 @@ struct RoomWithParticipants : Rooms {
   mock_room *room_{};
   std::shared_ptr<int> room_alive_check;
 
-  RoomWithParticipants() {
+  void expect_room_creation() {
     EXPECT_CALL(room_factory_, create(room_name_))
         .WillOnce([this](room_name name) {
-          auto room_ptr_ = make_mock_room(room_id_, name);
-          room_ = room_ptr_.get();
-          room_alive_check = room_ptr_->alive_check;
-          room_ptr room_casted = std::move(room_ptr_);
+          room_ptr room_casted =
+              make_mock_room_and_set_to_fixture(room_id_, name);
           return boost::make_ready_future(std::move(room_casted));
         });
   }
+
+  room_ptr make_mock_room_and_set_to_fixture(room_id id, room_name name) {
+    auto room_ptr_ = make_mock_room(id, name);
+    room_ = room_ptr_.get();
+    room_alive_check = room_ptr_->alive_check;
+    room_ptr room_casted = std::move(room_ptr_);
+    return room_casted;
+  }
+
   void add_participants(int count) {
     for (int index = 0; index < count; ++index) {
       auto user_id_ = uuid::generate();
@@ -135,6 +142,7 @@ struct RoomWithParticipants : Rooms {
 } // namespace
 
 TEST_F(RoomWithParticipants, Remove) {
+  expect_room_creation();
   add_participants(1);
   ensure_room_id_got_set();
   remove_all_participants();
@@ -143,6 +151,7 @@ TEST_F(RoomWithParticipants, Remove) {
 }
 
 TEST_F(RoomWithParticipants, RemoveTwo) {
+  expect_room_creation();
   add_participants(2);
   ensure_room_id_got_set();
   remove_all_participants();
@@ -151,6 +160,7 @@ TEST_F(RoomWithParticipants, RemoveTwo) {
 }
 
 TEST_F(RoomWithParticipants, Renewal) {
+  expect_room_creation();
   add_participants(1);
   remove_all_participants();
   EXPECT_CALL(room_factory_, create(room_name_)).WillOnce([](room_name name) {
@@ -160,4 +170,16 @@ TEST_F(RoomWithParticipants, Renewal) {
   add_participants(1);
 }
 
-TEST_F(RoomWithParticipants, Existing) {}
+TEST_F(RoomWithParticipants, Existing) {
+  std::shared_ptr<room> room_ = make_mock_room(room_id_, room_name_);
+  room_factory_.on_room(room_);
+}
+
+TEST_F(RoomWithParticipants, AddExisting) {
+  room_ptr room_local = make_mock_room_and_set_to_fixture(room_id_, room_name_);
+  room_factory_.on_room(room_local);
+  add_participants(1);
+  ensure_room_id_got_set();
+  remove_all_participants();
+  EXPECT_EQ(test.get_room_count(), 0);
+}
