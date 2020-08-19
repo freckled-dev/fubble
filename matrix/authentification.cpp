@@ -40,14 +40,15 @@ authentification::register_as_guest() {
 }
 
 boost::future<authentification::client_ptr>
-authentification::register_(const std::string &username,
-                            const std::string &password) {
+authentification::register_(const user_information &information) {
   auto register_ = nlohmann::json::object();
   auto auth = nlohmann::json::object();
   auth["type"] = "m.login.dummy";
   register_["auth"] = auth;
-  register_["username"] = username;
-  register_["password"] = password;
+  register_["username"] = information.username;
+  register_["password"] = information.password;
+  if (information.device_id)
+    register_["device_id"] = information.device_id.value();
   return register_as_user(register_);
 }
 
@@ -62,7 +63,7 @@ authentification::register_anonymously() {
 }
 
 boost::future<authentification::client_ptr>
-authentification::login(const user_login_information &information) {
+authentification::login(const user_information &information) {
   auto login_ = nlohmann::json::object();
   login_["type"] = "m.login.password";
   login_["user"] = information.username;

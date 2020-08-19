@@ -13,6 +13,12 @@ public:
     std::string matrix_server{"localhost"};
     std::string matrix_port{"8008"};
     std::string matrix_target_prefix{"/_matrix/client/r0/"};
+    struct login {
+      std::string username;
+      std::string password;
+      std::optional<std::string> device_id;
+    };
+    std::optional<login> login_;
   }; // namespace
 
   virtual ~application() = default;

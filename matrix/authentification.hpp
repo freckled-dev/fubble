@@ -20,16 +20,15 @@ public:
   };
   using client_ptr = std::unique_ptr<client>;
   boost::future<client_ptr> register_as_guest();
-  boost::future<client_ptr> register_(const std::string &username,
-                                      const std::string &password);
-  boost::future<client_ptr> register_anonymously();
-  // https://matrix.org/docs/spec/client_server/latest#get-matrix-client-r0-login
-  struct user_login_information {
+  struct user_information {
     std::string username;
     std::string password;
     std::optional<std::string> device_id;
   };
-  boost::future<client_ptr> login(const user_login_information &information);
+  boost::future<client_ptr> register_(const user_information &information);
+  boost::future<client_ptr> register_anonymously();
+  // https://matrix.org/docs/spec/client_server/latest#get-matrix-client-r0-login
+  boost::future<client_ptr> login(const user_information &information);
 
 protected:
   boost::future<client_ptr> register_as_user(const nlohmann::json &content);

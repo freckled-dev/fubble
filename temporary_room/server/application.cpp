@@ -26,18 +26,40 @@ class application_impl : public application {
 public:
   application_impl(boost::asio::io_context &context, options options_)
       : context(context), options_{options_} {
-    auto matrix_client_server_future =
-        matrix_authentification.register_anonymously();
-    context.run();
-    context.reset();
-    matrix_client_server = matrix_client_server_future.get();
-    matrix_client_server->set_display_name("Fubble Bot");
+    setup_matrix_client();
     // lets start to accept connections
     rooms_factory =
         std::make_unique<temporary_room::server::matrix_rooms_factory_adapter>(
             *matrix_client_server);
     rooms = std::make_unique<temporary_room::rooms::rooms>(*rooms_factory);
     server_ = std::make_unique<server>(net_server, *rooms);
+  }
+
+  void setup_matrix_client() {
+    const std::string display_name = "Fubble Bot";
+    if (!options_.login_) {
+      auto matrix_client_server_future =
+          matrix_authentification.register_anonymously();
+      run_context();
+      matrix_client_server = matrix_client_server_future.get();
+      matrix_client_server->set_display_name(display_name);
+    } else {
+      auto login_ = options_.login_.value();
+      matrix::authentification::user_information information;
+      information.username = login_.username;
+      information.password = login_.password;
+      information.device_id = login_.device_id;
+      try {
+        auto result = matrix_authentification.login(information);
+        run_context();
+        matrix_client_server = result.get();
+      } catch (const boost::exception &error) {
+        auto result = matrix_authentification.register_(information);
+        run_context();
+        matrix_client_server = result.get();
+        matrix_client_server->set_display_name(display_name);
+      }
+    }
   }
 
   boost::future<void> run() override {
@@ -57,6 +79,11 @@ public:
   }
 
   server &get_server() override { return *server_; }
+
+  void run_context() {
+    context.run();
+    context.reset();
+  }
 
   temporary_room::logger logger{"application_impl"};
   boost::asio::io_context &context;

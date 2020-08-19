@@ -7,7 +7,10 @@ namespace {
 struct Authentifification : fixture {
   authentification::client_ptr register_(std::string username,
                                          std::string password) {
-    auto result_future = authentification_.register_(username, password);
+    authentification::user_information information;
+    information.username = username;
+    information.password = password;
+    auto result_future = authentification_.register_(information);
     run_context();
     auto result = result_future.get();
     EXPECT_TRUE(result);
@@ -15,7 +18,7 @@ struct Authentifification : fixture {
   }
   authentification::client_ptr login(std::string username,
                                      std::string password) {
-    authentification::user_login_information information;
+    authentification::user_information information;
     information.username = username;
     information.password = password;
     auto result_future = authentification_.login(information);
