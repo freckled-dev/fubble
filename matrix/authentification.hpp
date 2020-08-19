@@ -23,11 +23,20 @@ public:
   boost::future<client_ptr> register_(const std::string &username,
                                       const std::string &password);
   boost::future<client_ptr> register_anonymously();
-  boost::future<client_ptr> login(const std::string &username,
-                                  const std::string &password);
+  // https://matrix.org/docs/spec/client_server/latest#get-matrix-client-r0-login
+  struct user_login_information {
+    std::string username;
+    std::string password;
+    std::optional<std::string> device_id;
+  };
+  boost::future<client_ptr> login(const user_login_information &information);
 
 protected:
   boost::future<client_ptr> register_as_user(const nlohmann::json &content);
+  client_ptr on_registered(http::client::async_result_future &result);
+  client_ptr on_logged_in(http::client::async_result_future &result);
+  client_ptr
+  make_client_from_response(http::client::async_result_future &result);
 
   matrix::logger logger{"authentification"};
   boost::inline_executor executor;
