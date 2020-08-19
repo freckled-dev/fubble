@@ -89,3 +89,26 @@ TEST_F(Server, Join) {
   acceptor_done.get();
   join_future.get();
 }
+
+TEST_F(Server, JoinSame) {
+  auto acceptor_done = application->run();
+  auto first_client =
+      std::make_unique<test_client>(context, application->get_port());
+  auto second_client =
+      std::make_unique<test_client>(context, application->get_port());
+  std::string room_name = "fun_name";
+  auto all_joined = join(*first_client, room_name)
+                        .then(executor,
+                              [&](auto result) {
+                                result.get();
+                                return join(*second_client, room_name);
+                              })
+                        .unwrap()
+                        .then(executor, [&](auto result) {
+                          application->close();
+                          result.get();
+                        });
+  context.run();
+  acceptor_done.get();
+  all_joined.get();
+}
