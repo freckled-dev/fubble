@@ -4,6 +4,7 @@
 #include <boost/signals2/signal.hpp>
 #include <chrono>
 #include <nlohmann/json.hpp>
+#include <optional>
 #include <string>
 
 // TODO think. Is this the wrong way?
