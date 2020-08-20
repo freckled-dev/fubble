@@ -14,7 +14,7 @@ rooms::rooms(factory &factory_, client &client_)
   http_client = client_.create_http_client();
 }
 
-std::optional<room *> rooms::get_room_by_id(const std::string &id) {
+std::optional<room *> rooms::get_room_by_id(const std::string &id) const {
   auto found =
       std::find_if(rooms_.begin(), rooms_.end(),
                    [&](const auto &check) { return check->get_id() == id; });
@@ -117,6 +117,7 @@ boost::future<room *> rooms::join_room_by_id(const std::string &id) {
 void rooms::on_room_created(std::unique_ptr<room> room_) {
   BOOST_ASSERT(!get_room_by_id(room_->get_id()));
   rooms_.emplace_back(std::move(room_));
+  on_joined(*rooms_.back());
 }
 
 rooms::room_list::iterator rooms::find_room_by_id(const std::string &id) {

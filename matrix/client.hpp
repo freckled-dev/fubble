@@ -38,6 +38,7 @@ public:
       std::chrono::seconds(30);
   boost::future<void>
   sync(std::chrono::milliseconds timeout = default_sync_timeout);
+  boost::future<void> sync_till_empty_response();
   boost::future<void>
   sync_till_stop(std::chrono::milliseconds timeout = default_sync_timeout);
   void stop_sync();

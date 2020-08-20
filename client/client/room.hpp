@@ -32,7 +32,7 @@ public:
   users &get_users() const;
   boost::signals2::signal<void(const std::string &)> on_name_changed;
 
-  std::string get_name() const;
+  std::optional<std::string> get_name() const;
   std::string get_own_id() const;
   boost::future<void> leave();
 

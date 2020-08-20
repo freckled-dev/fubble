@@ -42,7 +42,9 @@ void room_model::raise_new_participants_count() {
 }
 
 void room_model::set_name() {
-  auto name_ = room_->get_name();
+  if (!room_->get_name())
+    return;
+  auto name_ = room_->get_name().value();
   name = QString::fromStdString(name_);
   name_changed(name);
 }

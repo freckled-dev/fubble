@@ -59,7 +59,7 @@ room::get_member_by_id(const std::string &id) {
   return found->get();
 }
 
-std::string room::get_name() const { return name; }
+std::optional<std::string> room::get_name() const { return name; }
 
 chat &room::get_chat() const { return *chat_; }
 
@@ -149,6 +149,6 @@ void room::on_event_m_room_name(const nlohmann::json &parse) {
   BOOST_LOG_SEV(logger, logging::severity::debug) << "on_event_m_room_name";
   name = parse["content"]["name"];
   BOOST_LOG_SEV(logger, logging::severity::info)
-      << "room_name changed to:" << name;
-  on_name_changed(name);
+      << "room_name changed to:" << name.value();
+  on_name_changed(name.value());
 }

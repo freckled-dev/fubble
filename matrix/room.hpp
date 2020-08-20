@@ -25,7 +25,7 @@ public:
   boost::future<void> kick(const std::string &user_id);
   std::vector<room_participant *> get_members() const;
   std::optional<room_participant *> get_member_by_id(const std::string &id);
-  std::string get_name() const;
+  std::optional<std::string> get_name() const;
   chat &get_chat() const;
   room_states &get_states() const;
 
@@ -48,7 +48,7 @@ protected:
   boost::signals2::scoped_connection on_sync_connection;
   using members_type = std::vector<std::unique_ptr<room_participant>>;
   members_type members;
-  std::string name;
+  std::optional<std::string> name;
   const std::unique_ptr<chat> chat_;
   const std::unique_ptr<room_states> states_;
   const std::unique_ptr<event_parser> event_parser_;

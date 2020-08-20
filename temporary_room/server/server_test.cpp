@@ -7,6 +7,7 @@
 #include "server.hpp"
 #include "temporary_room/net/client.hpp"
 #include "temporary_room/server/application.hpp"
+#include "utils/uuid.hpp"
 #include <gtest/gtest.h>
 
 namespace {
@@ -58,8 +59,12 @@ struct Server : ::testing::Test {
   boost::asio::io_context context;
   temporary_room::server::application::options application_options =
       make_application_options();
-  std::unique_ptr<temporary_room::server::application> application =
-      temporary_room::server::application::create(context, application_options);
+  std::unique_ptr<temporary_room::server::application> application;
+
+  void instance_application() {
+    application = temporary_room::server::application::create(
+        context, application_options);
+  }
 
   boost::future<void> join(test_client &client_, std::string name) {
     return client_.client.join(name, client_.matrix_client->get_user_id())
@@ -73,10 +78,22 @@ struct Server : ::testing::Test {
         .unwrap()
         .then(executor, [&](auto result) { result.get(); });
   }
+
+  void run_context() {
+    context.run();
+    context.reset();
+  }
 };
+
+void ensure_client_rooms_match(const test_client &first,
+                               const test_client &second) {
+  EXPECT_EQ(first.matrix_client->get_rooms().get_rooms().front()->get_id(),
+            second.matrix_client->get_rooms().get_rooms().front()->get_id());
+}
 } // namespace
 
 TEST_F(Server, Join) {
+  instance_application();
   auto acceptor_done = application->run();
   auto client_ =
       std::make_unique<test_client>(context, application->get_port());
@@ -91,6 +108,7 @@ TEST_F(Server, Join) {
 }
 
 TEST_F(Server, JoinSame) {
+  instance_application();
   auto acceptor_done = application->run();
   auto first_client =
       std::make_unique<test_client>(context, application->get_port());
@@ -109,6 +127,43 @@ TEST_F(Server, JoinSame) {
                           result.get();
                         });
   context.run();
+  ensure_client_rooms_match(*first_client, *second_client);
   acceptor_done.get();
   all_joined.get();
+}
+
+TEST_F(Server, Restart) {
+  {
+    temporary_room::server::application::options::login login_;
+    login_.password = uuid::generate();
+    login_.username = uuid::generate();
+    application_options.login_ = login_;
+  }
+  instance_application();
+  auto acceptor_done = application->run();
+  auto first_client =
+      std::make_unique<test_client>(context, application->get_port());
+  std::string room_name = "fun_name";
+  auto first_joined =
+      join(*first_client, room_name).then(executor, [&](auto result) {
+        application->close();
+        result.get();
+      });
+  run_context();
+  acceptor_done.get();
+  first_joined.get();
+
+  instance_application();
+  acceptor_done = application->run();
+  auto second_client =
+      std::make_unique<test_client>(context, application->get_port());
+  auto second_joined =
+      join(*second_client, room_name).then(executor, [&](auto result) {
+        application->close();
+        result.get();
+      });
+  run_context();
+  ensure_client_rooms_match(*first_client, *second_client);
+  acceptor_done.get();
+  second_joined.get();
 }

@@ -33,15 +33,21 @@ public:
             *matrix_client_server);
     rooms = std::make_unique<temporary_room::rooms::rooms>(*rooms_factory);
     server_ = std::make_unique<server>(net_server, *rooms);
+
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << __FUNCTION__ << ", sync once";
+    auto sync_once_future = matrix_client_server->sync();
+    run_context_till_future_is_ready(sync_once_future);
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << __FUNCTION__ << ", after sync once";
   }
 
   void setup_matrix_client() {
     const std::string display_name = "Fubble Bot";
     if (!options_.login_) {
-      auto matrix_client_server_future =
-          matrix_authentification.register_anonymously();
-      run_context();
-      matrix_client_server = matrix_client_server_future.get();
+      auto result = matrix_authentification.register_anonymously();
+      run_context_till_future_is_ready(result);
+      matrix_client_server = result.get();
       matrix_client_server->set_display_name(display_name);
     } else {
       auto login_ = options_.login_.value();
@@ -51,11 +57,11 @@ public:
       information.device_id = login_.device_id;
       try {
         auto result = matrix_authentification.login(information);
-        run_context();
+        run_context_till_future_is_ready(result);
         matrix_client_server = result.get();
       } catch (const boost::exception &error) {
         auto result = matrix_authentification.register_(information);
-        run_context();
+        run_context_till_future_is_ready(result);
         matrix_client_server = result.get();
         matrix_client_server->set_display_name(display_name);
       }
@@ -80,9 +86,13 @@ public:
 
   server &get_server() override { return *server_; }
 
-  void run_context() {
-    context.run();
-    context.reset();
+  template <class future_type>
+  void run_context_till_future_is_ready(future_type &check) {
+    BOOST_ASSERT(!context.stopped());
+    while (!check.is_ready()) {
+      context.run_one();
+      context.reset();
+    }
   }
 
   temporary_room::logger logger{"application_impl"};
