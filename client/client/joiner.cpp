@@ -102,6 +102,7 @@ joiner::join(const parameters &parameters_) {
 }
 
 joiner::room_ptr joiner::on_joined(boost::future<room_ptr> &from_joiner) {
+  BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
   auto got_room = from_joiner.get();
   rooms_.set(got_room);
   return got_room;
