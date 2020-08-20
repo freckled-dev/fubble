@@ -101,7 +101,8 @@ void audio_devices::mute_speaker(const bool mute) {
 bool audio_devices::is_speaker_muted() {
   return thread.Invoke<bool>(RTC_FROM_HERE, [this]() {
     bool muted{};
-    [[maybe_unused]] auto result = audio_device_module.SpeakerMute(&muted);
+    auto result = audio_device_module.SpeakerMute(&muted);
+    (void)result;
     BOOST_ASSERT(result == 0);
     if (result != 0)
       BOOST_LOG_SEV(this->logger, logging::severity::warning)
