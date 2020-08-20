@@ -12,7 +12,7 @@ class rooms_room_matrix_adapter : public temporary_room::rooms::room {
   const std::string own_user_id;
   matrix::room &matrix_room;
   temporary_room::logger logger{
-      fmt::format("rooms_room_matrix_adapter:", matrix_room.get_id())};
+      fmt::format("rooms_room_matrix_adapter:{}", matrix_room.get_id())};
 
 public:
   rooms_room_matrix_adapter(const std::string &own_user_id,
@@ -93,16 +93,17 @@ protected:
     check_and_call_participant_count_changed();
   }
 
-  void on_join_state_changed(const user_wrapper &user) {
-    (void)user;
+  void on_join_state_changed([[maybe_unused]] const user_wrapper &user) {
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << __FUNCTION__ << ", id:" << user.id;
     check_and_call_participant_count_changed();
   }
 
   void on_update(const user_wrapper &user) {
     auto presence = user.participant->get_user().get_presence();
-    BOOST_LOG_SEV(logger, logging::severity::info)
-        << fmt::format("on_update, user_id:'{}', presence:{}, join_state:{}",
-                       user.id, presence, user.participant->get_join_state());
+    BOOST_LOG_SEV(logger, logging::severity::info) << fmt::format(
+        "{}, user_id:'{}', presence:{}, join_state:{}", __FUNCTION__, user.id,
+        presence, user.participant->get_join_state());
     if (presence != matrix::presence::offline)
       return;
     BOOST_LOG_SEV(logger, logging::severity::debug) << fmt::format(
@@ -129,36 +130,10 @@ matrix_rooms_factory_adapter::matrix_rooms_factory_adapter(
 
 matrix_rooms_factory_adapter::~matrix_rooms_factory_adapter() = default;
 
-boost::future<temporary_room::rooms::room_ptr>
-matrix_rooms_factory_adapter::create(const std::string &room_name) {
+void matrix_rooms_factory_adapter::create(const std::string &room_name) {
   matrix::rooms::create_room_fields fields;
   fields.name = room_name;
-  return matrix_client.get_rooms()
-      .create_room(fields)
-      .then([this](boost::future<matrix::room *> result) {
-        return on_created(result);
-      })
-      .unwrap();
-}
-
-boost::future<temporary_room::rooms::room_ptr>
-matrix_rooms_factory_adapter::on_created(
-    boost::future<matrix::room *> &result) {
-  matrix::room *got = result.get();
-  BOOST_ASSERT(got);
-  auto return_ = std::make_shared<rooms_room_matrix_adapter>(
-      matrix_client.get_user_id(), *got);
-  temporary_room::rooms::room_ptr casted = return_;
-  auto promise =
-      std::make_shared<boost::promise<temporary_room::rooms::room_ptr>>();
-  if (got->get_name())
-    promise->set_value(casted);
-  got->on_name_changed.connect([casted, promise, this](auto name) {
-    BOOST_LOG_SEV(logger, logging::severity::debug)
-        << __FUNCTION__ << ", name:" << name;
-    promise->set_value(casted);
-  });
-  return promise->get_future();
+  matrix_client.get_rooms().create_room(fields);
 }
 
 void matrix_rooms_factory_adapter::on_room_joined(matrix::room &room) {

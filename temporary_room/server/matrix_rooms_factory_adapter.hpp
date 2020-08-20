@@ -11,11 +11,9 @@ class matrix_rooms_factory_adapter : public rooms::room_factory {
 public:
   matrix_rooms_factory_adapter(matrix::client &matrix_client);
   ~matrix_rooms_factory_adapter() override;
-  boost::future<rooms::room_ptr> create(const std::string &room_name) override;
+  void create(const std::string &room_name) override;
 
 protected:
-  boost::future<rooms::room_ptr>
-  on_created(boost::future<matrix::room *> &result);
   void on_room_joined(matrix::room &room);
 
   matrix::client &matrix_client;

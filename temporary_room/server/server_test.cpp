@@ -167,3 +167,46 @@ TEST_F(Server, Restart) {
   acceptor_done.get();
   second_joined.get();
 }
+
+#if 0
+TEST_F(Server, RoomRemoval) {
+  instance_application();
+  int called{};
+  application->get_rooms().on_room_count_changed.connect([&](auto count) {
+    if (called == 0) {
+      EXPECT_EQ(count, 1);
+    }
+    if (called == 1) {
+      EXPECT_EQ(count, 0);
+      application->close();
+    }
+    ++called;
+  });
+  auto acceptor_done = application->run();
+  auto first_client =
+      std::make_unique<test_client>(context, application->get_port());
+  std::string room_name = "fun_name";
+  auto finished = join(*first_client, room_name)
+                      .then(executor,
+                            [&](auto result) {
+                              result.get();
+                              return first_client->matrix_client->set_presence(
+                                  // TODO this is an issue. if the user never
+                                  // goes online it never will be removed
+                                  // TODO this does not work it's too fast. wont
+                                  // get synched as online-->offline
+                                  matrix::presence::online);
+                            })
+                      .then(executor,
+                            [&](auto result) {
+                              result.get();
+                              return first_client->matrix_client->set_presence(
+                                  matrix::presence::offline);
+                            })
+                      .unwrap();
+  context.run();
+  EXPECT_EQ(called, 2);
+  acceptor_done.get();
+  finished.get();
+}
+#endif

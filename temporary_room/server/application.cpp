@@ -45,12 +45,19 @@ public:
   void setup_matrix_client() {
     const std::string display_name = "Fubble Bot";
     if (!options_.login_) {
+      BOOST_LOG_SEV(logger, logging::severity::debug)
+          << __FUNCTION__
+          << ", no login information available, register_anonymously()";
       auto result = matrix_authentification.register_anonymously();
       run_context_till_future_is_ready(result);
       matrix_client_server = result.get();
       matrix_client_server->set_display_name(display_name);
     } else {
       auto login_ = options_.login_.value();
+      BOOST_LOG_SEV(logger, logging::severity::debug)
+          << __FUNCTION__
+          << ", login information is available, username:" << login_.username
+          << ", device_id:" << login_.device_id.value_or("<not set>");
       matrix::authentification::user_information information;
       information.username = login_.username;
       information.password = login_.password;
@@ -85,6 +92,8 @@ public:
   }
 
   server &get_server() override { return *server_; }
+
+  temporary_room::rooms::rooms &get_rooms() override { return *rooms; }
 
   template <class future_type>
   void run_context_till_future_is_ready(future_type &check) {

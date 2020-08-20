@@ -4,6 +4,9 @@
 #include <boost/asio/io_context.hpp>
 #include <boost/thread/future.hpp>
 
+namespace temporary_room::rooms {
+class rooms;
+}
 namespace temporary_room::server {
 class server;
 class application {
@@ -25,6 +28,7 @@ public:
   virtual int get_port() const = 0;
   virtual void close() = 0;
   virtual server &get_server() = 0;
+  virtual rooms::rooms &get_rooms() = 0;
   virtual boost::future<void> run() = 0;
 
   static std::unique_ptr<application> create(boost::asio::io_context &context,

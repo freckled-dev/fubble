@@ -1,5 +1,6 @@
 #include "authentification.hpp"
 #include "error.hpp"
+#include "utils/uuid.hpp"
 #include <nlohmann/json.hpp>
 
 using namespace matrix;
@@ -41,6 +42,7 @@ authentification::register_as_guest() {
 
 boost::future<authentification::client_ptr>
 authentification::register_(const user_information &information) {
+  BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
   auto register_ = nlohmann::json::object();
   auto auth = nlohmann::json::object();
   auth["type"] = "m.login.dummy";
@@ -54,16 +56,18 @@ authentification::register_(const user_information &information) {
 
 boost::future<authentification::client_ptr>
 authentification::register_anonymously() {
+  BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
   auto register_ = nlohmann::json::object();
   auto auth = nlohmann::json::object();
   auth["type"] = "m.login.dummy";
   register_["auth"] = auth;
-  register_["password"] = "";
+  register_["password"] = uuid::generate();
   return register_as_user(register_);
 }
 
 boost::future<authentification::client_ptr>
 authentification::login(const user_information &information) {
+  BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
   auto login_ = nlohmann::json::object();
   login_["type"] = "m.login.password";
   login_["user"] = information.username;
