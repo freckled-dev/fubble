@@ -12,14 +12,30 @@ script_dir = pathlib.Path(__file__).parent.resolve()
 deploy_dir = os.path.join(script_dir, 'deploy')
 os.chdir(script_dir)
 
-
 install_linux = os.path.join(script_dir, '..', 'install')
 install_windows = os.path.join(script_dir, '..', 'install_windows')
 
-subprocess.run(['ansible-playbook', 
+matrix_user = os.environ.get('FUBBLE_TEMPORARY_ROOM_MATRIX_USER')
+matrix_password = os.environ.get('FUBBLE_TEMPORARY_ROOM_MATRIX_PASSWORD')
+matrix_device_id = os.environ.get('FUBBLE_TEMPORARY_ROOM_MATRIX_DEVICE_ID')
+
+args = ['ansible-playbook']
+args += [
     '-i', 'deploy/inventory/production.yml',
     '-e', 'fubble_binaries_dir=%s' % (install_linux),
-    '-e', 'fubble_binaries_windows_dir="%s"' % (install_windows),
-    'deploy/site.yml'],
-        check=True)
+    '-e', 'fubble_binaries_windows_dir="%s"' % (install_windows)
+    ]
+if matrix_user:
+    print('using matrix_user:%s' % matrix_user)
+    args += [
+            '-e', 'fubble_temporary_room_matrix_user=%s' % matrix_user,
+            '-e', 'fubble_temporary_room_matrix_password=%s' % matrix_password
+            ]
+    if matrix_device_id:
+        args += [
+                '-e', 'fubble_temporary_room_matrix_device_id=%s' % matrix_device_id
+                ]
+args += ['deploy/site.yml']
+
+subprocess.run(args, check=True)
 
