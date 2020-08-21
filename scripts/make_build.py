@@ -44,11 +44,10 @@ if not args.skip_install:
     for remote_name, remote_url in conan_remotes:
         subprocess.run(['conan', 'remote', 'add', '-f', remote_name, remote_url],
                 check=True)
+    subprocess.run(['conan', 'remote', 'add', '--insert', '0', '-f',
+        'fubble_dependencies', 'https://api.bintray.com/conan/freckled/fubble_dependencies'],
+        check=True)
 
-    # due to excessive logging of boost install, log to file
-    conan_install_log_path = os.path.join(paths.build_dir, 'conan_install.log')
-    log_file = open(conan_install_log_path, 'w')
-    print("calling `conan install` and logging it to '%s'" % conan_install_log_path)
     install_args = ['conan', 'install',
         '--build', 'missing',
         '--install-folder', paths.dependencies_dir,
@@ -60,9 +59,7 @@ if not args.skip_install:
     if args.use_asan:
         install_args += ['-o', 'fubble:sanatize=True']
     subprocess.run(install_args + [paths.source_dir],
-        check=False, # may fail, due to instability of bintray
-        stdout=log_file
-        # stderr=log_file
+        check=False # may fail, due to instability of bintray
         )
 
 if not args.skip_build:
