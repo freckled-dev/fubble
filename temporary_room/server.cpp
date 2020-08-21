@@ -34,8 +34,8 @@ std::optional<options> parse_options(int argc, char *argv[]) {
   adder.add("matrix-user", result.matrix_user, "matrix user to use");
   adder.add("matrix-password", result.matrix_password,
             "matrix password to use");
-  adder.add("matrix-device_id", result.matrix_device_id,
-            "matrix device_id to use");
+  adder.add("matrix-device-id", result.matrix_device_id,
+            "matrix device-id to use");
   bpo::variables_map variables_map;
   bpo::store(bpo::parse_command_line(argc, argv, general), variables_map);
   bpo::notify(variables_map);
