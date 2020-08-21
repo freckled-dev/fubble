@@ -81,6 +81,15 @@ struct Server : ::testing::Test {
         .then(executor, [&](auto result) { result.get(); });
   }
 
+  boost::future<std::shared_ptr<test_client>>
+  make_connected_client(std::string name, int port) {
+    auto client_ = std::make_shared<test_client>(context, port);
+    return join(*client_, name).then(executor, [client_](auto result) {
+      result.get();
+      return client_;
+    });
+  }
+
   void run_context() {
     context.run();
     context.reset();
@@ -99,11 +108,11 @@ TEST_F(Server, Join) {
   auto acceptor_done = application->run();
   auto client_ =
       std::make_unique<test_client>(context, application->get_port());
-  auto join_future =
-      join(*client_, "fun_name").then(executor, [&](auto result) {
-        application->close();
-        result.get();
-      });
+  auto join_future = make_connected_client("fun_name", application->get_port())
+                         .then(executor, [&](auto result) {
+                           application->close();
+                           result.get();
+                         });
   context.run();
   acceptor_done.get();
   join_future.get();
