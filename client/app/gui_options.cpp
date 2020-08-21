@@ -1,5 +1,5 @@
 #include "gui_options.hpp"
-#include "options_adder.hpp"
+#include "utils/options_adder.hpp"
 #include <iostream>
 
 namespace bpo = boost::program_options;
@@ -10,7 +10,7 @@ std::optional<gui_config> gui_options::parse(int argc, char *argv[]) {
   general.add_options()("help", "produce help message");
 
   {
-    option_adder adder{general};
+    utils::option_adder adder{general};
     adder.add("host", result.general_.host, "hostname of the server");
     adder.add("service", result.general_.service,
               "service of the server. eg \"http\" or 80");

@@ -161,6 +161,5 @@ void matrix_rooms_factory_adapter::on_room_created(
         << "could not create room, this is an unhandeld error! TODO! "
            "information:"
         << boost::diagnostic_information(error);
-    BOOST_ASSERT(false);
   }
 }

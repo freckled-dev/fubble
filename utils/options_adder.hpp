@@ -3,7 +3,7 @@
 
 #include <boost/program_options.hpp>
 
-namespace {
+namespace utils {
 struct option_adder {
   boost::program_options::options_description &options;
   template <class value_type>
@@ -14,6 +14,6 @@ struct option_adder {
                           description.c_str());
   }
 };
-} // namespace
+} // namespace utils
 
 #endif
