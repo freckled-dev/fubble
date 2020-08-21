@@ -25,9 +25,11 @@ public:
   // TODO refactor to `join_by_id`
   boost::future<room *> join_room_by_id(const std::string &id);
   using room_list = std::deque<std::unique_ptr<room>>;
-  inline const room_list &get_rooms() { return rooms_; }
-  std::optional<room *> get_room_by_id(const std::string &id);
+  // TODO refactor to `get_all`
+  inline const room_list &get_rooms() const { return rooms_; }
+  std::optional<room *> get_room_by_id(const std::string &id) const;
 
+  boost::signals2::signal<void(room &)> on_joined;
   boost::signals2::signal<void(const std::string &)> on_leave;
 
 protected:

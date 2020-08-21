@@ -40,6 +40,9 @@ public:
 protected:
   void on_connected(boost::future<std::unique_ptr<matrix::client>> &result) {
     client_ = result.get();
+    BOOST_ASSERT(client_);
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << "connected as client with the id:" << client_->get_user_id();
     // TODO encapsue this call in something like client_runner. so that errors
     // while synching are getting caught.
     client_->sync_till_stop();
@@ -59,11 +62,18 @@ protected:
         << "join room:" << parameters_.room;
     return temporary_room_client.join(parameters_.room, client_->get_user_id())
         .then(executor,
-              [this](auto result) {
-                auto room_id = result.get();
-                return client_->get_rooms().join_room_by_id(room_id);
-              })
+              [this](auto result) { return on_temporary_room_joined(result); })
         .unwrap();
+  }
+
+  boost::future<matrix::room *>
+  on_temporary_room_joined(boost::future<std::string> &result) {
+    auto room_id = result.get();
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << __FUNCTION__
+        << "got a room_id from temporary_room_client:" << room_id
+        << ", joined the room.";
+    return client_->get_rooms().join_room_by_id(room_id);
   }
 
   joiner::room_ptr on_room_joined(boost::future<matrix::room *> &joined) {
@@ -102,6 +112,7 @@ joiner::join(const parameters &parameters_) {
 }
 
 joiner::room_ptr joiner::on_joined(boost::future<room_ptr> &from_joiner) {
+  BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
   auto got_room = from_joiner.get();
   rooms_.set(got_room);
   return got_room;

@@ -11,9 +11,12 @@ class matrix_rooms_factory_adapter : public rooms::room_factory {
 public:
   matrix_rooms_factory_adapter(matrix::client &matrix_client);
   ~matrix_rooms_factory_adapter() override;
-  boost::future<rooms::room_ptr> create(const std::string &room_name) override;
+  void create(const std::string &room_name) override;
 
 protected:
+  void on_room_joined(matrix::room &room);
+  void on_room_created(boost::future<matrix::room *> &room);
+
   matrix::client &matrix_client;
   temporary_room::logger logger{"matrix_rooms_factory_adapter"};
   std::vector<boost::signals2::scoped_connection> signals_connections;

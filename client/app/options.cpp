@@ -1,5 +1,5 @@
 #include "options.hpp"
-#include "options_adder.hpp"
+#include "utils/options_adder.hpp"
 #include <iostream>
 
 namespace bpo = boost::program_options;
@@ -7,7 +7,7 @@ namespace bpo = boost::program_options;
 namespace {
 auto video(config::video &result) {
   bpo::options_description description("video");
-  option_adder adder{description};
+  utils::option_adder adder{description};
   adder.add("video-send", result.send, "send a video");
   return description;
 }
@@ -22,7 +22,7 @@ std::optional<config> options::operator()(int argc, char *argv[]) {
   auto video_ = video(result.video_);
   bpo::options_description signalling("signalling");
   {
-    option_adder adder{signalling};
+    utils::option_adder adder{signalling};
     adder.add("signalling-host", result.signalling_.host,
               "hostname of the signalling server");
     adder.add("signalling-service", result.signalling_.service,
@@ -34,7 +34,7 @@ std::optional<config> options::operator()(int argc, char *argv[]) {
 #if 0
   bpo::options_description matrix("matrix");
   {
-    option_adder adder{matrix};
+    utils::option_adder adder{matrix};
     adder.add("matrix-host", result.matrix_.host, "hostname of the matrix server");
     adder.add("matrix-service", result.matrix_.service,
           "service of matrix server. eg \"http\" or 80");
@@ -42,7 +42,7 @@ std::optional<config> options::operator()(int argc, char *argv[]) {
 
   bpo::options_description temporary_room("temporary_room");
   {
-    option_adder adder{temporary_room};
+    utils::option_adder adder{temporary_room};
     adder.add("temporary_room-host", result.temporary_room_.host,
           "hostname of the temporary_room server");
     adder.add("temporary_room-service", result.temporary_room_.service,

@@ -9,7 +9,7 @@ namespace matrix::testing {
 namespace {
 static const std::string server = utils::testing::server;
 static const std::string port = "80";
-static const std::string host = server + ":" + port;
+static const std::string host = server + ":" + port; // kinda unused
 // mainly needed for `/client/versions`
 static const std::string target_prefix_not_client = "/api/matrix/v0/_matrix/";
 static const std::string target_prefix =

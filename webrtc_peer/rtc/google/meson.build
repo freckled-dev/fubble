@@ -43,7 +43,7 @@ test('webrtc_google_peer test',
   env: [
     'ASAN_OPTIONS=fast_unwind_on_malloc=0', suppr_option
     ],
-  timeout: 8)
+  timeout: 30)
 
 webrtc_google_asio_thread_test = executable('webrtc_google_asio_thread_test',
   ['asio_signalling_thread_test.cpp'],

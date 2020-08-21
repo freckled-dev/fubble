@@ -3,7 +3,10 @@
 
 using namespace temporary_room::rooms;
 
-rooms::rooms(room_factory &factory) : factory(factory) {}
+rooms::rooms(room_factory &factory) : factory(factory) {
+  BOOST_ASSERT(!factory.on_room);
+  factory.on_room = [this](auto room_) { on_room(room_); };
+}
 
 rooms::~rooms() = default;
 
@@ -14,9 +17,10 @@ boost::future<room_id> rooms::get_or_create_room_id(const room_name &name,
   auto found = rooms_.find(name);
   if (found == rooms_.cend()) {
     room_adapter room_;
-    room_.participants.push_back(add);
+    room_.waiting_for_room.push_back(add);
     rooms_[name] = std::move(room_);
     create(name);
+    on_room_count_changed(static_cast<int>(rooms_.size()));
     return result;
   }
   std::optional<room_id> room_id_;
@@ -24,7 +28,7 @@ boost::future<room_id> rooms::get_or_create_room_id(const room_name &name,
     const auto &room_ = found->second;
     invite(add, room_.room_);
   } else {
-    auto &participants = found->second.participants;
+    auto &participants = found->second.waiting_for_room;
     participants.push_back(add);
   }
   return result;
@@ -32,39 +36,32 @@ boost::future<room_id> rooms::get_or_create_room_id(const room_name &name,
 
 std::size_t rooms::get_room_count() { return rooms_.size(); }
 
-void rooms::create(const room_name &name) {
-  factory.create(name).then(
-      executor, [this, name](auto result) { on_created(name, result); });
+void rooms::on_room(room_ptr room_) {
+  BOOST_ASSERT(room_);
+  on_new_room(room_);
 }
 
-void rooms::on_created(const room_name &name, boost::future<room_ptr> &result) {
-  try {
-    auto got_room = result.get();
-    const auto id = got_room->get_room_id();
-    BOOST_LOG_SEV(logger, logging::severity::info) << "created room, id:" << id;
-    auto found = rooms_.find(name);
-    if (found == rooms_.cend()) {
-      BOOST_LOG_SEV(logger, logging::severity::error)
-          << "could not find room by name, name:" << name;
-      BOOST_ASSERT(false);
-      return;
-    }
-    got_room->on_empty = [this, name]() { on_empty(name); };
-    found->second.room_ = std::move(got_room);
-    for (const auto &participant_ : found->second.participants)
-      invite(participant_, found->second.room_);
-    found->second.participants.clear();
-  } catch (const std::exception &error) {
-    BOOST_LOG_SEV(logger, logging::severity::error)
-        << "failed to create room, message:" << error.what();
-    auto found = rooms_.find(name);
-    BOOST_ASSERT(found != rooms_.cend());
-    if (found == rooms_.cend())
-      return;
-    for (auto &participant_ : found->second.participants)
-      participant_->promise->set_exception(error);
-    found->second.participants.clear();
+void rooms::create(const room_name &name) { factory.create(name); }
+
+void rooms::on_new_room(room_ptr room_) {
+  const auto id = room_->get_room_id();
+  const auto name = room_->get_room_name();
+  BOOST_ASSERT(!name.empty());
+  BOOST_LOG_SEV(logger, logging::severity::info) << "created room, id:" << id;
+  auto found = rooms_.find(name);
+  if (found == rooms_.cend()) {
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << "could not find room by name, name:" << name;
+    room_adapter room_adapter_;
+    rooms_[name] = std::move(room_adapter_);
+    found = rooms_.find(name);
   }
+  BOOST_ASSERT(found != rooms_.cend());
+  room_->on_empty = [this, name]() { on_empty(name); };
+  found->second.room_ = room_;
+  for (const auto &participant_ : found->second.waiting_for_room)
+    invite(participant_, found->second.room_);
+  found->second.waiting_for_room.clear();
 }
 
 void rooms::on_empty(const room_name &name) {
@@ -77,8 +74,9 @@ void rooms::on_empty(const room_name &name) {
     BOOST_ASSERT(false);
     return;
   }
-  BOOST_ASSERT(found->second.participants.empty());
+  BOOST_ASSERT(found->second.waiting_for_room.empty());
   rooms_.erase(found);
+  on_room_count_changed(static_cast<int>(rooms_.size()));
 }
 
 void rooms::invite(const std::shared_ptr<participant> participant_,

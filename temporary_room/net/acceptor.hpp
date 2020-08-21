@@ -49,7 +49,7 @@ protected:
 class acceptor {
 public:
   struct config {
-    unsigned short port;
+    unsigned short port{};
   };
   acceptor(boost::asio::io_context &context, const config &config_);
 

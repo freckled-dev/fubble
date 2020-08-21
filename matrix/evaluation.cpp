@@ -146,7 +146,7 @@ nlohmann::json register_as_guest(test_http::client &client) {
 nlohmann::json register_as_user(test_http::client &client) {
   const std::string target = test_http::target_prefix + "register";
   auto register_ = nlohmann::json::object();
-  register_["password"] = ""; // mandatory if not guest
+  register_["password"] = "abc"; // mandatory if not guest
   register_["initial_device_display_name"] = "A fun user name";
   auto auth = nlohmann::json::object();
   auth["type"] = "m.login.dummy";
@@ -328,8 +328,7 @@ TEST(Matrix, Message) {
     auto diff = std::chrono::duration_cast<std::chrono::milliseconds>(
         std::chrono::steady_clock::now() - begin);
     const std::string log_output = fmt::format("message send needed: {}", diff);
-    BOOST_LOG_SEV(logger, logging::severity::info)
-        << log_output;
+    BOOST_LOG_SEV(logger, logging::severity::info) << log_output;
   }
 }
 

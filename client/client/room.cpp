@@ -29,7 +29,7 @@ room::~room() {
   BOOST_LOG_SEV(logger, logging::severity::debug) << "destructor";
 }
 
-std::string room::get_name() const { return room_.get_name(); }
+std::optional<std::string> room::get_name() const { return room_.get_name(); }
 
 std::string room::get_own_id() const { return client_->get_user_id(); }
 
@@ -50,4 +50,3 @@ chat &room::get_chat() const { return *chat_; }
 participants &room::get_participants() const { return *participants_; }
 
 users &room::get_users() const { return *users_; }
-

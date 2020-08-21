@@ -3,7 +3,8 @@
 
 #include <boost/signals2/signal.hpp>
 #include <chrono>
-#include <nlohmann/json_fwd.hpp>
+#include <nlohmann/json.hpp>
+#include <optional>
 #include <string>
 
 // TODO think. Is this the wrong way?
@@ -19,12 +20,15 @@ namespace event {
 struct event {
 public:
   virtual ~event() = default;
-  const std::string type;
+  std::string type;
 };
 using event_ptr = std::shared_ptr<event>;
 namespace room {
 struct content {
   virtual ~content() = default;
+};
+struct custom_state : content {
+  nlohmann::json data;
 };
 struct message : content {
   std::string type;
@@ -33,10 +37,14 @@ struct message : content {
 } // namespace room
 struct room_event : event {
   std::string event_id;
-  std::string room_id;
+  std::optional<std::string> room_id;
   std::chrono::system_clock::time_point origin_server_ts;
   user *sender{};
   std::unique_ptr<room::content> content_;
+};
+// https://matrix.org/docs/spec/client_server/r0.6.1#state-event-fields
+struct room_state_event : room_event {
+  std::string state_key;
 };
 } // namespace event
 
