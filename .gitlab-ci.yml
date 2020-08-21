@@ -23,7 +23,7 @@ build ubuntu_18.04 release:
     - ./scripts/ci/build_release
   after_script:
     # - rm -r ./deploy/development/install
-    - mv -v ../fubble_build/meson/meson-logs ../fubble_build/conan_install.log .
+    - mv -v ../fubble_build/meson/meson-logs .
   artifacts:
     untracked: true
     expire_in: 1 week
@@ -90,7 +90,7 @@ innosetup:
     - python scripts/install_qt.py
     - conan --version
   after_script:
-    - mv -v ../fubble_build/meson/meson-logs ../fubble_build/conan_install.log .
+    - mv -v ../fubble_build/meson/meson-logs .
   artifacts:
     untracked: true
     expire_in: 1 week
