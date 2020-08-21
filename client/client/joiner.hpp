@@ -6,8 +6,8 @@
 #include <boost/thread/future.hpp>
 
 namespace matrix {
-class client;
 class authentification;
+class client;
 } // namespace matrix
 namespace temporary_room::net {
 class client;

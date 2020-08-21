@@ -62,15 +62,18 @@ protected:
         << "join room:" << parameters_.room;
     return temporary_room_client.join(parameters_.room, client_->get_user_id())
         .then(executor,
-              [this](auto result) {
-                auto room_id = result.get();
-                BOOST_LOG_SEV(logger, logging::severity::debug)
-                    << __FUNCTION__
-                    << "got a room_id from temporary_room_client:" << room_id
-                    << ", joined the room.";
-                return client_->get_rooms().join_room_by_id(room_id);
-              })
+              [this](auto result) { return on_temporary_room_joined(result); })
         .unwrap();
+  }
+
+  boost::future<matrix::room *>
+  on_temporary_room_joined(boost::future<std::string> &result) {
+    auto room_id = result.get();
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << __FUNCTION__
+        << "got a room_id from temporary_room_client:" << room_id
+        << ", joined the room.";
+    return client_->get_rooms().join_room_by_id(room_id);
   }
 
   joiner::room_ptr on_room_joined(boost::future<matrix::room *> &joined) {
