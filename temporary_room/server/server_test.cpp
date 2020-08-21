@@ -7,6 +7,7 @@
 #include "server.hpp"
 #include "temporary_room/net/client.hpp"
 #include "temporary_room/server/application.hpp"
+#include "utils/executor_asio.hpp"
 #include "utils/uuid.hpp"
 #include <gtest/gtest.h>
 
@@ -57,6 +58,7 @@ struct Server : ::testing::Test {
   logging::logger logger{"Server"};
   boost::inline_executor executor;
   boost::asio::io_context context;
+  boost::executor_adaptor<executor_asio> asio_executor{context};
   temporary_room::server::application::options application_options =
       make_application_options();
   std::unique_ptr<temporary_room::server::application> application;
@@ -126,6 +128,28 @@ TEST_F(Server, JoinSame) {
                           application->close();
                           result.get();
                         });
+  context.run();
+  ensure_client_rooms_match(*first_client, *second_client);
+  acceptor_done.get();
+  all_joined.get();
+}
+
+TEST_F(Server, JoinSameParallel) {
+  instance_application();
+  auto acceptor_done = application->run();
+  auto first_client =
+      std::make_unique<test_client>(context, application->get_port());
+  auto second_client =
+      std::make_unique<test_client>(context, application->get_port());
+  std::string room_name = "fun_name";
+  auto first_joined = join(*first_client, room_name);
+  auto second_joined = join(*second_client, room_name);
+  auto all_joined =
+      boost::when_all(std::move(first_joined), std::move(second_joined))
+          .then(asio_executor, [&](auto result) {
+            application->close();
+            result.get();
+          });
   context.run();
   ensure_client_rooms_match(*first_client, *second_client);
   acceptor_done.get();

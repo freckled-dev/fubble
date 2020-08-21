@@ -1,6 +1,7 @@
 #include "matrix_rooms_factory_adapter.hpp"
 #include "matrix/room_participant.hpp"
 #include "matrix/room_states.hpp"
+#include <boost/exception/diagnostic_information.hpp>
 #include <boost/thread/future.hpp>
 #include <fmt/format.h>
 #include <fmt/ostream.h>
@@ -133,7 +134,8 @@ matrix_rooms_factory_adapter::~matrix_rooms_factory_adapter() = default;
 void matrix_rooms_factory_adapter::create(const std::string &room_name) {
   matrix::rooms::create_room_fields fields;
   fields.name = room_name;
-  matrix_client.get_rooms().create_room(fields);
+  matrix_client.get_rooms().create_room(fields).then(
+      [this](auto result) { on_room_created(result); });
 }
 
 void matrix_rooms_factory_adapter::on_room_joined(matrix::room &room) {
@@ -148,4 +150,17 @@ void matrix_rooms_factory_adapter::on_room_joined(matrix::room &room) {
   }
   BOOST_ASSERT(room.get_name());
   on_room(casted);
+}
+
+void matrix_rooms_factory_adapter::on_room_created(
+    boost::future<matrix::room *> &room) {
+  try {
+    room.get();
+  } catch (boost::exception &error) {
+    BOOST_LOG_SEV(logger, logging::severity::error)
+        << "could not create room, this is an unhandeld error! TODO! "
+           "information:"
+        << boost::diagnostic_information(error);
+    BOOST_ASSERT(false);
+  }
 }

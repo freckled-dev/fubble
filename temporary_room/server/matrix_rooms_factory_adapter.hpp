@@ -15,6 +15,7 @@ public:
 
 protected:
   void on_room_joined(matrix::room &room);
+  void on_room_created(boost::future<matrix::room *> &room);
 
   matrix::client &matrix_client;
   temporary_room::logger logger{"matrix_rooms_factory_adapter"};
