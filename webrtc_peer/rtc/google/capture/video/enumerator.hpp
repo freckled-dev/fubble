@@ -1,27 +1,28 @@
 #ifndef RTC_GOOGLE_CAPTURE_VIDEO_ENUMERATOR_HPP
 #define RTC_GOOGLE_CAPTURE_VIDEO_ENUMERATOR_HPP
 
-#include "information.hpp"
 #include "rtc/logger.hpp"
+#include "rtc/video_devices.hpp"
 
 namespace rtc {
 namespace google {
 namespace capture {
 namespace video {
 
+using information = rtc::video_devices::information;
 // TODO refactor to devices and add signal for device_added/removed
-class enumerator {
+// TODO rename to `video_devices`
+class enumerator : public rtc::video_devices {
 public:
   enumerator();
-  virtual ~enumerator() = default;
+  ~enumerator() = default;
 
-  virtual std::vector<information> enumerate();
+  bool enumerate() override;
+  std::vector<information> get_enumerated() override;
 
 private:
   rtc::logger logger{"enumerator"};
-};
-class enumerator_noop : public enumerator {
-  std::vector<information> enumerate() override { return {}; }
+  std::vector<information> enumerated;
 };
 
 } // namespace video

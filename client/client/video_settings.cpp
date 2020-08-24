@@ -3,20 +3,20 @@
 #include "client/own_media.hpp"
 #include "client/tracks_adder.hpp"
 #include "rtc/google/capture/video/device.hpp"
-#include "rtc/google/capture/video/enumerator.hpp"
 #include <fmt/format.h>
 
 using namespace client;
 
 video_settings::video_settings(
-    rtc::google::capture::video::enumerator &enumerator,
+    rtc::video_devices &enumerator,
     rtc::google::capture::video::device_factory &device_creator,
     own_media &own_media_, tracks_adder &tracks_adder_,
     add_video_to_connection_factory &add_video_to_connection_factory_)
     : enumerator(enumerator), device_creator(device_creator),
       own_media_(own_media_), tracks_adder_(tracks_adder_),
       add_video_to_connection_factory_(add_video_to_connection_factory_) {
-  auto devices = enumerator.enumerate();
+  enumerator.enumerate();
+  auto devices = enumerator.get_enumerated();
   for (const auto &device : devices)
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << "capture device, name:" << device.name << ", id:" << device.id;
