@@ -14,6 +14,7 @@ namespace google {
 class connection : public rtc::connection,
                    public ::webrtc::PeerConnectionObserver {
 public:
+  connection();
   ~connection() override;
   void initialise(rtc::scoped_refptr<::webrtc::PeerConnectionInterface> native);
   boost::future<session_description> create_offer() override;
@@ -81,7 +82,7 @@ protected:
   std::vector<receiving_track>::iterator find_receiving_track(
       const rtc::scoped_refptr<webrtc::RtpReceiverInterface> &);
 
-  rtc::logger logger{"connection"};
+  rtc::logger logger;
   rtc::scoped_refptr<::webrtc::PeerConnectionInterface> native;
   // if we don't save the data_channels, RTCConnection will crash in clode().
   // Because of pure virtual DataChannel.

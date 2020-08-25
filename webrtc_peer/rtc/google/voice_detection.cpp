@@ -61,6 +61,8 @@ public:
   void check_result(int result) {
     // on error result is always -1
     BOOST_ASSERT(result == 0);
+    if (result == 0)
+      return;
     BOOST_LOG_SEV(logger, logging::severity::error) << __FUNCTION__;
   }
 

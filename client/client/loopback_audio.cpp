@@ -40,34 +40,40 @@ loopback_audio_impl::loopback_audio_impl(
 }
 
 void loopback_audio_impl::negotiation_needed() {
-  auto negotiated =
-      rtc_connection_offering->create_offer()
-          .then(executor,
-                [this](auto offer) {
-                  auto got_offer = offer.get();
-                  rtc_connection_offering->set_local_description(got_offer);
-                  return rtc_connection_answering->set_remote_description(
-                      got_offer);
-                })
-          .unwrap()
-          .then(executor,
-                [this](auto future) {
-                  future.get();
-                  return rtc_connection_answering->create_answer();
-                })
-          .unwrap()
-          .then(executor,
-                [this](auto answer) {
-                  auto got_answer = answer.get();
-                  rtc_connection_answering->set_local_description(got_answer);
-                  return rtc_connection_offering->set_remote_description(
-                      got_answer);
-                })
-          .unwrap();
-#if 1
-  negotiated.then(executor,
-                  [this](auto result) { on_created_connection(result); });
-#endif
+  rtc_connection_offering->create_offer()
+      .then(executor,
+            [this](auto offer) {
+              auto got_offer = offer.get();
+              return rtc_connection_offering->set_local_description(got_offer)
+                  .then(
+                      executor,
+                      [got_offer, this](auto result) {
+                        result.get();
+                        return rtc_connection_answering->set_remote_description(
+                            got_offer);
+                      })
+                  .unwrap();
+            })
+      .unwrap()
+      .then(executor,
+            [this](auto future) {
+              future.get();
+              return rtc_connection_answering->create_answer();
+            })
+      .unwrap()
+      .then(executor,
+            [this](auto answer) {
+              auto got_answer = answer.get();
+              return rtc_connection_answering->set_local_description(got_answer)
+                  .then([this, got_answer](auto result) {
+                    result.get();
+                    return rtc_connection_offering->set_remote_description(
+                        got_answer);
+                  })
+                  .unwrap();
+            })
+      .unwrap()
+      .then(executor, [this](auto result) { on_created_connection(result); });
 }
 
 loopback_audio_impl::~loopback_audio_impl() = default;
