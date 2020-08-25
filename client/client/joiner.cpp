@@ -5,6 +5,7 @@
 #include "rooms.hpp"
 #include "temporary_room/net/client.hpp"
 #include <boost/asio/defer.hpp>
+#include <fmt/format.h>
 
 using namespace client;
 
@@ -39,6 +40,7 @@ public:
 
 protected:
   void on_connected(boost::future<std::unique_ptr<matrix::client>> &result) {
+    BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
     client_ = result.get();
     BOOST_ASSERT(client_);
     BOOST_LOG_SEV(logger, logging::severity::debug)
@@ -53,7 +55,7 @@ protected:
   }
 
   void on_name_set(boost::future<void> &name_set) {
-    BOOST_LOG_SEV(logger, logging::severity::debug) << "on_name_set";
+    BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
     name_set.get();
   }
 
@@ -104,6 +106,10 @@ joiner::~joiner() = default;
 
 boost::future<std::shared_ptr<room>>
 joiner::join(const parameters &parameters_) {
+  BOOST_LOG_SEV(logger, logging::severity::debug)
+      << __FUNCTION__
+      << fmt::format("parameters_.name:'{}', .room:'{}'", parameters_.name,
+                     parameters_.room);
   auto join_ = std::make_shared<class join>(
       room_creator_, matrix_authentification, temporary_room_client);
   return join_->join_(parameters_).then(executor, [join_, this](auto result) {

@@ -100,6 +100,7 @@ cast_session_description(const rtc::session_description &description) {
   auto type_casted = [&] {
     if (description.type_ == rtc::session_description::type::answer)
       return webrtc::SdpType::kAnswer;
+    BOOST_ASSERT(description.type_ == rtc::session_description::type::offer);
     return webrtc::SdpType::kOffer;
   }();
   auto casted =
@@ -112,6 +113,9 @@ cast_session_description(const rtc::session_description &description) {
   throw std::runtime_error(error_description);
 }
 } // namespace
+
+connection::connection()
+    : logger{fmt::format("connection:{}", static_cast<void *>(this))} {}
 
 connection::~connection() {
   BOOST_LOG_SEV(logger, logging::severity::debug)
@@ -166,9 +170,10 @@ connection::set_local_description(const rtc::session_description &description) {
 boost::future<void> connection::set_remote_description(
     const rtc::session_description &description) {
   BOOST_LOG_SEV(logger, logging::severity::info)
-      << "set_remote_description, description:" << description.sdp;
+      << __FUNCTION__ << ", description:" << description.sdp.size();
   try {
-    auto casted = cast_session_description(description);
+    std::unique_ptr<::webrtc::SessionDescriptionInterface> casted =
+        cast_session_description(description);
     auto observer =
         new rtc::RefCountedObject<set_session_description_observer>();
     // watchout. `SetRemoteDescription` takes ownerhip
@@ -396,5 +401,6 @@ void connection::set_session_description_observer::OnFailure(
   BOOST_LOG_SEV(logger, logging::severity::info)
       << "connection::set_session_description_observer::OnFailure, error:"
       << error.message();
+  // TODO refactor to boost::exception
   promise.set_exception(std::runtime_error(error.message()));
 }
