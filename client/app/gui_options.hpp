@@ -9,7 +9,7 @@ struct gui_config {
   struct general {
     std::string host{"fubble.io"};
     std::string service{"https"};
-    bool use_ipv6{false};
+    bool use_ipv6{true};
     bool use_ssl{true};
     logging::severity log_severity{logging::severity::debug};
     bool video_support{true};
