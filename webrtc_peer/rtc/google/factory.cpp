@@ -48,7 +48,9 @@ std::unique_ptr<connection> factory::create_connection() {
   }
 #if 1
   webrtc::PeerConnectionInterface::IceServer ice_server;
-  ice_server.uri = "stun:stun.l.google.com:19302";
+  ice_server.uri = "turn:fubble.io";
+  ice_server.username = "fubble";
+  ice_server.password = "A2xzNc5xqO8MlSpOxIXt";
   configuration.servers.push_back(ice_server);
 #endif
   auto result = std::make_unique<connection>();
