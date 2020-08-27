@@ -18,7 +18,7 @@ public:
   ~enumerator() = default;
 
   bool enumerate() override;
-  std::vector<information> get_enumerated() override;
+  std::vector<information> get_enumerated() const override;
 
 private:
   rtc::logger logger{"enumerator"};

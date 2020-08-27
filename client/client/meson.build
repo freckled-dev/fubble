@@ -26,6 +26,13 @@ client_dep = declare_dependency(
   include_directories: ['..']
   )
 
+client_video_settings_test = executable('client_video_settings_test',
+  ['video_settings_test.cpp'],
+  dependencies: [client_dep, gtest_dep],
+  link_with: [google_webrtc_test_main]
+  )
+test('client video_settings test', client_video_settings_test)
+
 client_room_test = executable('client_room_test',
   ['room_test.cpp'],
   cpp_pch: '../../pch/precompiled.hpp',

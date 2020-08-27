@@ -26,8 +26,9 @@ protected:
 class add_video_to_connection_factory {
 public:
   add_video_to_connection_factory(rtc::google::factory &rtc_factory);
+  virtual ~add_video_to_connection_factory() = default;
 
-  std::unique_ptr<add_video_to_connection>
+  virtual std::unique_ptr<add_video_to_connection>
   create(const std::shared_ptr<rtc::google::video_source> &source);
 
   rtc::google::factory &rtc_factory;

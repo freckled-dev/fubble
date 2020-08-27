@@ -32,7 +32,7 @@ public:
   }
 
   void start() override {
-    BOOST_LOG_SEV(logger, logging::severity::debug) << "start()";
+    BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
     // webrtc::VideoCaptureCapability capabilities;
     webrtc::VideoCaptureCapability capabilities;
     capabilities.width = 1280;
@@ -45,7 +45,7 @@ public:
   }
 
   void stop() override {
-    BOOST_LOG_SEV(logger, logging::severity::debug) << "stop()";
+    BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
     device_->StopCapture();
   }
 

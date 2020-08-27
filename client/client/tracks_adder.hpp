@@ -9,11 +9,12 @@
 namespace client {
 class tracks_adder {
 public:
-  void add(track_adder &adder);
-  void remove(track_adder &adder);
+  virtual ~tracks_adder() = default;
+  virtual void add(track_adder &adder);
+  virtual void remove(track_adder &adder);
 
-  void add_connection(rtc::connection &connection);
-  void remove_connection(rtc::connection &connection);
+  virtual void add_connection(rtc::connection &connection);
+  virtual void remove_connection(rtc::connection &connection);
 
 protected:
   using connections = std::vector<rtc::connection *>;

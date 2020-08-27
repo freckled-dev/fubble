@@ -32,7 +32,10 @@ bool enumerator::enumerate() {
   if (enumerated == result)
     return false;
   enumerated = result;
+  on_enumerated_changed();
   return true;
 }
 
-std::vector<information> enumerator::get_enumerated() { return enumerated; }
+std::vector<information> enumerator::get_enumerated() const {
+  return enumerated;
+}

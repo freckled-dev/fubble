@@ -1,8 +1,13 @@
 #ifndef UUID_F1B734FA_D783_43C6_9E78_FFB38C3015D5
 #define UUID_F1B734FA_D783_43C6_9E78_FFB38C3015D5
 
+#include <boost/signals2/signal.hpp>
 #include <string>
 #include <vector>
+
+namespace utils {
+class interval_timer;
+}
 
 namespace rtc {
 class video_devices {
@@ -19,11 +24,16 @@ public:
     }
   };
   virtual bool enumerate() = 0;
-  virtual std::vector<information> get_enumerated() = 0;
+  virtual std::vector<information> get_enumerated() const = 0;
+  boost::signals2::signal<void()> on_enumerated_changed;
+
+  static std::unique_ptr<video_devices>
+  create_interval_enumerating(video_devices &adopt,
+                              utils::interval_timer &timer);
 };
 class video_devices_noop : public video_devices {
   bool enumerate() override { return false; }
-  std::vector<information> get_enumerated() override { return {}; }
+  std::vector<information> get_enumerated() const override { return {}; }
 };
 } // namespace rtc
 

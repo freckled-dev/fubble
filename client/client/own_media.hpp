@@ -19,10 +19,11 @@ class own_audio_track;
 class own_media {
 public:
   own_media(own_audio_track &own_audio_track_);
+  virtual ~own_media() = default;
 
   // TODO create and move to own_video
-  void add_video(rtc::google::video_source &video);
-  void remove_video(rtc::google::video_source &video);
+  virtual void add_video(rtc::google::video_source &video);
+  virtual void remove_video(rtc::google::video_source &video);
 
   boost::signals2::signal<void(rtc::google::video_source &)> on_video_added;
   boost::signals2::signal<void(rtc::google::video_source &)> on_video_removed;

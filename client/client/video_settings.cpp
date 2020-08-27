@@ -15,6 +15,9 @@ video_settings::video_settings(
     : enumerator(enumerator), device_creator(device_creator),
       own_media_(own_media_), tracks_adder_(tracks_adder_),
       add_video_to_connection_factory_(add_video_to_connection_factory_) {
+  enumerator.on_enumerated_changed.connect([] {
+    // TODO
+  });
   enumerator.enumerate();
   auto devices = enumerator.get_enumerated();
   for (const auto &device : devices)

@@ -17,5 +17,5 @@ install:
 
 .PHONY: test
 test:
-	meson test -C ../fubble_build/meson
+	meson test -C ../fubble_build/meson 'client video_settings test'
 

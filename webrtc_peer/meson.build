@@ -1,6 +1,6 @@
 webrtc_peer = library('webrtc_peer',
   ['rtc/connection.cpp', 'rtc/ice_candidate.cpp', 'rtc/message.cpp',
-    'rtc/data_channel.cpp'
+    'rtc/data_channel.cpp', 'rtc/video_devices.cpp'
     ],
   cpp_pch: '../pch/precompiled.hpp',
   dependencies: [utils_dep, signalling_client_dep],
