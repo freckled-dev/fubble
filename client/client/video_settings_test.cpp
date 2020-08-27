@@ -14,6 +14,12 @@ struct mock_video_device_factory : rtc::google::capture::video::device_factory {
   MOCK_METHOD(std::unique_ptr<rtc::google::capture::video::device>, create,
               (const std::string &), (override));
 };
+struct mock_video_device : rtc::google::capture::video::device {
+  MOCK_METHOD(void, start, (), (override));
+  MOCK_METHOD(void, stop, (), (override));
+  MOCK_METHOD(bool, get_started, (), (const override));
+  MOCK_METHOD(std::string, get_id, (), (const override));
+};
 struct mock_own_video : client::own_video {
   MOCK_METHOD(void, add, (rtc::google::video_source &), (override));
   MOCK_METHOD(void, remove, (rtc::google::video_source &), (override));
@@ -31,10 +37,36 @@ struct VideoSettings : ::testing::Test {
   mock_own_video own_videos;
   mock_tracks_adder tracks_adder;
   mock_add_video_to_connection_factory add_video_to_connection_factory;
-  client::video_settings settings{devices, device_factory, own_videos,
-                                  tracks_adder,
-                                  add_video_to_connection_factory};
+
+  std::unique_ptr<client::video_settings> make_settings() {
+    return std::make_unique<client::video_settings>(
+        devices, device_factory, own_videos, tracks_adder,
+        add_video_to_connection_factory);
+  }
 };
 } // namespace
 
-TEST_F(VideoSettings, Instance) {}
+TEST_F(VideoSettings, Instance) {
+  auto settings = make_settings();
+  EXPECT_FALSE(settings->get_device_id());
+  EXPECT_FALSE(settings->get_paused());
+  EXPECT_FALSE(settings->is_a_video_available());
+}
+
+TEST_F(VideoSettings, OneCamera) {
+  ON_CALL(devices, get_enumerated()).WillByDefault([] {
+    std::vector<rtc::video_devices::information> result;
+    rtc::video_devices::information information;
+    information.id = "id";
+    information.name = "name";
+    result.push_back(information);
+    return result;
+  });
+  EXPECT_CALL(device_factory, create(::testing::_)).WillOnce([](auto) {
+    return std::make_unique<mock_video_device>();
+  });
+  auto settings = make_settings();
+  EXPECT_FALSE(settings->get_paused());
+  EXPECT_TRUE(settings->is_a_video_available());
+  ASSERT_EQ(settings->get_device_id().value_or("no id"), "id");
+}
