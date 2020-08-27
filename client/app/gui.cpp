@@ -201,7 +201,7 @@ int main(int argc, char *argv[]) {
   else
     video_enumerator = std::make_unique<rtc::video_devices_noop>();
   rtc::google::capture::video::device_factory video_device_creator;
-  client::add_video_to_connection_factory add_video_to_connection_factory_{
+  client::add_video_to_connection_factory_impl add_video_to_connection_factory_{
       rtc_factory};
   auto own_videos_ = client::own_video::create();
   client::video_settings video_settings{*video_enumerator, video_device_creator,
