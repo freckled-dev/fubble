@@ -10,7 +10,7 @@ using namespace client;
 video_settings::video_settings(
     rtc::video_devices &enumerator,
     rtc::google::capture::video::device_factory &device_creator,
-    own_media &own_media_, tracks_adder &tracks_adder_,
+    own_video &own_media_, tracks_adder &tracks_adder_,
     add_video_to_connection_factory &add_video_to_connection_factory_)
     : enumerator(enumerator), device_creator(device_creator),
       own_media_(own_media_), tracks_adder_(tracks_adder_),
@@ -99,7 +99,7 @@ void video_settings::change_to_device(const std::string &id) {
   }
   video_track_adder = add_video_to_connection_factory_.create(capture_device);
   tracks_adder_.add(*video_track_adder);
-  own_media_.add_video(*capture_device);
+  own_media_.add(*capture_device);
   on_video_source_changed();
 }
 
@@ -108,7 +108,7 @@ void video_settings::reset_current_video() {
     return;
   tracks_adder_.remove(*video_track_adder);
   video_track_adder.reset();
-  own_media_.remove_video(*capture_device);
+  own_media_.remove(*capture_device);
   capture_device->stop();
   capture_device.reset();
   error = false;

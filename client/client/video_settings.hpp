@@ -2,6 +2,7 @@
 #define UUID_DE3E4714_AD73_44A4_9ED2_AA1F55903106
 
 #include "client/logger.hpp"
+#include "client/own_video.hpp"
 #include "rtc/video_devices.hpp"
 #include <boost/signals2/signal.hpp>
 #include <memory>
@@ -25,7 +26,7 @@ public:
   video_settings(
       rtc::video_devices &enumerator,
       rtc::google::capture::video::device_factory &device_creator,
-      own_media &own_media_, tracks_adder &tracks_adder_,
+      own_video &own_media_, tracks_adder &tracks_adder_,
       add_video_to_connection_factory &add_video_to_connection_factory_);
   ~video_settings();
 
@@ -44,7 +45,7 @@ protected:
   client::logger logger{"video_settings"};
   rtc::video_devices &enumerator;
   rtc::google::capture::video::device_factory &device_creator;
-  own_media &own_media_;
+  own_video &own_media_;
   tracks_adder &tracks_adder_;
   add_video_to_connection_factory &add_video_to_connection_factory_;
 

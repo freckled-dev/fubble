@@ -184,7 +184,6 @@ int main(int argc, char *argv[]) {
       rtc_factory, settings_audio_track};
   client::loopback_audio_impl loopback_audio{rtc_factory,
                                              own_audio_track->get_track()};
-  client::own_media own_media{*own_audio_track};
   client::own_audio_information own_audio_information_{loopback_audio};
   client::loopback_audio_noop_if_disabled loopback_audio_test{
       loopback_audio_test_factory};
@@ -204,13 +203,15 @@ int main(int argc, char *argv[]) {
   rtc::google::capture::video::device_factory video_device_creator;
   client::add_video_to_connection_factory add_video_to_connection_factory_{
       rtc_factory};
+  auto own_videos_ = client::own_video::create();
   client::video_settings video_settings{*video_enumerator, video_device_creator,
-                                        own_media, tracks_adder,
+                                        *own_videos_, tracks_adder,
                                         add_video_to_connection_factory_};
 
   // client
   BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up client";
   client::factory client_factory{context};
+  client::own_media own_media{*own_audio_track, *own_videos_};
   client::participant_creator_creator participant_creator_creator{
       client_factory, peer_creator, tracks_adder, own_media};
   client::room_creator client_room_creator{participant_creator_creator};

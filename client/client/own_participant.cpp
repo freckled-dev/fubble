@@ -6,9 +6,9 @@ using namespace client;
 own_participant::own_participant(matrix::user &matrix_participant,
                                  own_media &own_media_)
     : participant(matrix_participant), own_media_(own_media_) {
-  own_media_.on_video_added.connect(
+  own_media_.get_videos().on_added.connect(
       [this](auto &source) { on_video_added(source); });
-  own_media_.on_video_removed.connect(
+  own_media_.get_videos().on_removed.connect(
       [this](auto &source) { on_video_removed(source); });
   // TODO add and removal of audio!
 }
@@ -20,7 +20,7 @@ boost::future<void> own_participant::close() {
 }
 
 own_participant::videos_type own_participant::get_videos() const {
-  return own_media_.get_videos();
+  return own_media_.get_videos().get_all();
 }
 
 own_participant::audios_type own_participant::get_audios() const {
