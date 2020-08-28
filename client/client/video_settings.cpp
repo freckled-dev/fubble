@@ -3,20 +3,21 @@
 #include "client/own_media.hpp"
 #include "client/tracks_adder.hpp"
 #include "rtc/google/capture/video/device.hpp"
-#include "rtc/google/capture/video/enumerator.hpp"
 #include <fmt/format.h>
 
 using namespace client;
 
 video_settings::video_settings(
-    rtc::google::capture::video::enumerator &enumerator,
+    rtc::video_devices &enumerator,
     rtc::google::capture::video::device_factory &device_creator,
-    own_media &own_media_, tracks_adder &tracks_adder_,
+    own_video &own_media_, tracks_adder &tracks_adder_,
     add_video_to_connection_factory &add_video_to_connection_factory_)
     : enumerator(enumerator), device_creator(device_creator),
       own_media_(own_media_), tracks_adder_(tracks_adder_),
       add_video_to_connection_factory_(add_video_to_connection_factory_) {
-  auto devices = enumerator.enumerate();
+  enumerator.on_enumerated_changed.connect(
+      [this] { on_video_devices_changed(); });
+  auto devices = enumerator.get_enumerated();
   for (const auto &device : devices)
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << "capture device, name:" << device.name << ", id:" << device.id;
@@ -50,7 +51,7 @@ void video_settings::pause(bool paused_) {
   }
   paused = paused_;
   if (paused) {
-    reset_current_video();
+    reset_current_video_capture();
     on_video_source_changed();
   } else {
     if (!last_device_id) {
@@ -76,7 +77,6 @@ void video_settings::change_to_device(const std::string &id) {
     }
     reset_current_video();
   }
-  error = false;
   last_device_id = id;
   if (paused) {
     BOOST_LOG_SEV(logger, logging::severity::debug)
@@ -89,27 +89,44 @@ void video_settings::change_to_device(const std::string &id) {
     capture_device_check->start();
     capture_device = capture_device_check;
   } catch (...) {
-    error = true;
     last_device_id.reset();
     on_video_source_changed();
     boost::rethrow_exception(boost::current_exception());
   }
   video_track_adder = add_video_to_connection_factory_.create(capture_device);
   tracks_adder_.add(*video_track_adder);
-  own_media_.add_video(*capture_device);
+  own_media_.add(*capture_device);
   on_video_source_changed();
 }
 
-void video_settings::reset_current_video() {
+void video_settings::reset_current_video_capture() {
   if (!capture_device)
     return;
   tracks_adder_.remove(*video_track_adder);
   video_track_adder.reset();
-  own_media_.remove_video(*capture_device);
+  own_media_.remove(*capture_device);
   capture_device->stop();
   capture_device.reset();
-  error = false;
+}
+
+void video_settings::reset_current_video() {
+  reset_current_video_capture();
+  last_device_id.reset();
   on_video_source_changed();
+}
+
+void video_settings::on_video_devices_changed() {
+  if (!is_a_video_available())
+    return;
+  auto devices = enumerator.get_enumerated();
+  auto found =
+      std::find_if(devices.cbegin(), devices.cend(), [&](const auto &check) {
+        return check.id == last_device_id.value();
+      });
+  if (found != devices.cend())
+    return;
+  // current device is no more
+  reset_current_video();
 }
 
 rtc::google::video_source *video_settings::get_video_source() const {
@@ -117,7 +134,7 @@ rtc::google::video_source *video_settings::get_video_source() const {
 }
 
 bool video_settings::is_a_video_available() const {
-  return last_device_id.has_value() && !error;
+  return last_device_id.has_value();
 }
 
 std::optional<std::string> video_settings::get_device_id() const {

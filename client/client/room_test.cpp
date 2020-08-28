@@ -96,7 +96,8 @@ struct test_client {
   client::rooms rooms;
   std::unique_ptr<client::own_audio_track> own_audio_track =
       client::own_audio_track::create_noop();
-  client::own_media own_media{*own_audio_track};
+  std::unique_ptr<client::own_video> own_videos_ = client::own_video::create();
+  client::own_media own_media{*own_audio_track, *own_videos_};
   client::factory client_factory{context};
   client::participant_creator_creator participant_creator_creator{
       client_factory, peer_creator, tracks_adder, own_media};

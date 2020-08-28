@@ -10,10 +10,14 @@
 namespace client {
 class add_video_to_connection : public track_adder {
 public:
-  add_video_to_connection(
+};
+
+class add_video_to_connection_impl : public add_video_to_connection {
+public:
+  add_video_to_connection_impl(
       rtc::google::factory &rtc_factory,
       const std::shared_ptr<rtc::google::video_source> &source);
-  ~add_video_to_connection();
+  ~add_video_to_connection_impl();
   void add_to_connection(rtc::connection &connection) override;
   void remove_from_connection(rtc::connection &connection) override;
 
@@ -23,12 +27,26 @@ protected:
   const std::shared_ptr<rtc::google::video_source> source;
   std::shared_ptr<rtc::google::video_track> video_track;
 };
+
+class add_video_to_connection_noop : public add_video_to_connection {
+public:
+  void add_to_connection(rtc::connection &) override {}
+  void remove_from_connection(rtc::connection &) override {}
+};
+
 class add_video_to_connection_factory {
 public:
-  add_video_to_connection_factory(rtc::google::factory &rtc_factory);
+  virtual ~add_video_to_connection_factory() = default;
+  virtual std::unique_ptr<add_video_to_connection>
+  create(const std::shared_ptr<rtc::google::video_source> &source) = 0;
+};
+class add_video_to_connection_factory_impl
+    : public add_video_to_connection_factory {
+public:
+  add_video_to_connection_factory_impl(rtc::google::factory &rtc_factory);
 
-  std::unique_ptr<add_video_to_connection>
-  create(const std::shared_ptr<rtc::google::video_source> &source);
+  virtual std::unique_ptr<add_video_to_connection>
+  create(const std::shared_ptr<rtc::google::video_source> &source) override;
 
   rtc::google::factory &rtc_factory;
 };

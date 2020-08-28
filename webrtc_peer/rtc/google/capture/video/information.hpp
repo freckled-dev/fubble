@@ -1,9 +1,6 @@
 #ifndef RTC_GOOGLE_CAPTURE_VIDEO_INFORMATION_HPP
 #define RTC_GOOGLE_CAPTURE_VIDEO_INFORMATION_HPP
 
-#include <string>
-#include <vector>
-
 namespace rtc {
 namespace google {
 namespace capture {

@@ -10,7 +10,7 @@ client = library('client',
     'add_data_channel.cpp', 'factory.cpp', 'audio_level_calculator.cpp',
     'loopback_audio.cpp', 'own_media.cpp', 'own_audio_information.cpp',
     'video_settings.cpp', 'tracks_adder.cpp', 'audio_tracks_volume.cpp',
-    'crash_catcher.cpp',
+    'crash_catcher.cpp', 'own_video.cpp',
     'own_audio_track.cpp', 'own_microphone_tester.cpp',
     ],
   cpp_pch: '../../pch/precompiled.hpp',
@@ -25,6 +25,13 @@ client_dep = declare_dependency(
     webrtc_google_peer_dep, fruit_dep],
   include_directories: ['..']
   )
+
+client_video_settings_test = executable('client_video_settings_test',
+  ['video_settings_test.cpp'],
+  dependencies: [client_dep, gtest_dep],
+  link_with: [google_webrtc_test_main]
+  )
+test('client video_settings test', client_video_settings_test)
 
 client_room_test = executable('client_room_test',
   ['room_test.cpp'],

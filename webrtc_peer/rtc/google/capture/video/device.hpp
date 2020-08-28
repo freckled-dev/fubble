@@ -22,8 +22,9 @@ public:
 class device_factory {
 public:
   device_factory();
+  virtual ~device_factory() = default;
 
-  std::unique_ptr<device> create(const std::string &id);
+  virtual std::unique_ptr<device> create(const std::string &id);
 
 protected:
   struct device_with_start_stop_counter {

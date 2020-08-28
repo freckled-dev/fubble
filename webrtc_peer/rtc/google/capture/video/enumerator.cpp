@@ -5,7 +5,7 @@ using namespace rtc::google::capture::video;
 
 enumerator::enumerator() = default;
 
-std::vector<information> enumerator::enumerate() {
+bool enumerator::enumerate() {
   std::vector<information> result;
   std::unique_ptr<webrtc::VideoCaptureModule::DeviceInfo> info(
       webrtc::VideoCaptureFactory::CreateDeviceInfo());
@@ -29,6 +29,15 @@ std::vector<information> enumerator::enumerate() {
         return first.id == second.id;
       });
   result.erase(erase, result.end());
-  return result;
+  if (enumerated == result)
+    return false;
+  enumerated = result;
+  BOOST_LOG_SEV(logger, logging::severity::debug)
+      << "devices changed, size:" << enumerated.size();
+  on_enumerated_changed();
+  return true;
 }
 
+std::vector<information> enumerator::get_enumerated() const {
+  return enumerated;
+}

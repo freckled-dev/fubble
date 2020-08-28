@@ -141,7 +141,8 @@ int main(int argc, char *argv[]) {
 
   if (config_.video_.send) {
     rtc::google::capture::video::enumerator enumerator;
-    auto devices = enumerator.enumerate();
+    enumerator.enumerate();
+    auto devices = enumerator.get_enumerated();
     for (const auto &device : devices)
       BOOST_LOG_SEV(logger, logging::severity::debug)
           << "capture device:" << device.name;

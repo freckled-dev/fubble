@@ -12,15 +12,20 @@ using namespace client;
 namespace {
 class video_devices_model : public devices_model {
 public:
-  video_devices_model(rtc::google::capture::video::enumerator &enumerator,
-                      QObject *parent)
+  video_devices_model(rtc::video_devices &enumerator, QObject *parent)
       : devices_model(parent), enumerator(enumerator) {
     refresh();
+    enumerator.on_enumerated_changed.connect([this] { refresh(); });
   }
 
-  void refresh() {
-    devices = enumerator.enumerate();
+  void refresh() override {
+    auto devices_cache = enumerator.get_enumerated();
+    if (devices_cache == devices)
+      return;
+    beginResetModel();
+    devices = enumerator.get_enumerated();
     update_available(!devices.empty());
+    endResetModel();
   }
 
   int rowCount([[maybe_unused]] const QModelIndex &parent =
@@ -49,7 +54,7 @@ public:
     return devices[index].id;
   }
 
-  rtc::google::capture::video::enumerator &enumerator;
+  rtc::video_devices &enumerator;
   std::vector<rtc::google::capture::video::information> devices;
 };
 class audio_devices_model : public devices_model {
@@ -86,7 +91,7 @@ public:
     refresh();
   }
 
-  void refresh() {
+  void refresh() override {
     devices = audio_devices.get_recording_devices();
     update_available(!devices.empty());
   }
@@ -101,7 +106,7 @@ public:
     refresh();
   }
 
-  void refresh() {
+  void refresh() override {
     devices = audio_devices.get_playout_devices();
     update_available(!devices.empty());
   }
@@ -128,7 +133,7 @@ QHash<int, QByteArray> devices_model::roleNames() const {
 
 audio_video_settings_model::audio_video_settings_model(
     rtc::google::audio_devices &audio_devices,
-    rtc::google::capture::video::enumerator &video_device_enumerator,
+    rtc::video_devices &video_device_enumerator,
     rtc::google::capture::video::device_factory &video_device_factory,
     client::audio_device_settings &audio_settings,
     video_settings &video_settings_, error_model &error_model_, QObject *parent)
@@ -169,7 +174,7 @@ void audio_video_settings_model::onVideoDeviceActivated(int index) {
   BOOST_LOG_SEV(logger, logging::severity::debug)
       << __FUNCTION__ << ", index:" << index;
   if (!video_devices_casted->has_devices())
-    return;
+    return reset_video();
   auto rowCount = video_devices->rowCount();
   if (index >= rowCount) {
     BOOST_LOG_SEV(logger, logging::severity::error) << "index >= rowCount()";
@@ -189,13 +194,18 @@ void audio_video_settings_model::onVideoDeviceActivated(int index) {
         *video_device, nullptr);
     if (was_playing)
       video->play();
+    video_changed(video.get());
   } catch (const boost::exception &error) {
     BOOST_LOG_SEV(logger, logging::severity::warning)
         << "could not change video device";
-    video_device.reset();
-    video.reset();
+    reset_video();
     error_model_.set_error(error_model::type::failed_to_start_camera, error);
   }
+}
+
+void audio_video_settings_model::reset_video() {
+  video_device.reset();
+  video.reset();
   video_changed(video.get());
 }
 
@@ -205,7 +215,7 @@ void audio_video_settings_model::update_video_device_index() {
     return;
   }
   auto id = id_optional.value();
-  auto devices = video_device_enumerator.enumerate();
+  auto devices = video_device_enumerator.get_enumerated();
   auto found = std::find_if(devices.cbegin(), devices.cend(),
                             [&](const auto &check) { return check.id == id; });
   if (found == devices.cend())
