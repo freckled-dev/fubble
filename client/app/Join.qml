@@ -168,7 +168,7 @@ FocusScope {
             height: 60
             Layout.minimumWidth: 400
             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-            spacing: 8
+            spacing: 15
             Layout.topMargin: 40
 
             Item {
@@ -190,10 +190,6 @@ FocusScope {
                     Settings {
                         property alias roomName: roomTextField.text
                     }
-
-                    onTextChanged: {
-                        validRoomName.visible = false
-                    }
                 }
 
                 Label {
@@ -201,7 +197,7 @@ FocusScope {
                     font.pointSize: Style.current.subTextPointSize
                     color: Style.current.accent
                     anchors.top: roomTextField.bottom
-                    visible: false
+                    text: inputLayout.getRoomNameError(roomTextField.text)
                 }
             }
 
@@ -218,18 +214,14 @@ FocusScope {
                     Layout.fillWidth: true
                     //onAccepted: passwordTextField.focus = true
                     onAccepted: joinRoomContainer.joinRoom()
-
-                    onTextChanged: {
-                        validName.visible = false
-                    }
                 }
 
                 Label {
                     id: validName
                     color: Style.current.accent
                     font.pointSize: Style.current.subTextPointSize
-                    visible: false
                     anchors.top: nameTextField.bottom
+                    text: inputLayout.getNameError(nameTextField.text)
                 }
             }
 
@@ -270,6 +262,8 @@ FocusScope {
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 Layout.fillWidth: false
                 onClicked: joinRoomContainer.joinRoom()
+                enabled: inputLayout.getRoomNameError() === ""
+                         && inputLayout.getNameError() === ""
 
                 function getJoinButtonText() {
                     if (!ownMediaModel.videoAvailable
@@ -285,6 +279,26 @@ FocusScope {
 
                     return qsTr("Join")
                 }
+            }
+
+            function getRoomNameError() {
+                if (roomTextField.text.length === 0) {
+                    return qsTr("Please enter a room name.")
+                } else if (roomTextField.text.length > 50) {
+                    return qsTr("Room name is too long (max 50 characters).")
+                }
+
+                return ""
+            }
+
+            function getNameError() {
+                if (nameTextField.text.length === 0) {
+                    return qsTr("Please enter a name.")
+                } else if (nameTextField.text.length > 50) {
+                    return qsTr("Name is too long (max 50 characters).")
+                }
+
+                return ""
             }
         }
     }
@@ -321,37 +335,6 @@ FocusScope {
     }
 
     function joinRoom() {
-        var noRoomName = isEmpty(roomTextField.text)
-        var noName = isEmpty(nameTextField.text)
-        var tooLongRoomName = isTooLong(roomTextField.text)
-        var tooLongName = isTooLong(nameTextField.text)
-
-        if (tooLongRoomName) {
-            validRoomName.text = qsTr(
-                        "Room name is too long (max 50 characters).")
-        }
-        if (tooLongName) {
-            validName.text = qsTr("Name is too long (max 50 characters).")
-        }
-        if (noRoomName) {
-            validRoomName.text = qsTr("Please enter a room name.")
-        }
-        if (noName) {
-            validName.text = qsTr("Please enter a (nick) name.")
-        }
-
-        if (noRoomName || tooLongRoomName) {
-            validRoomName.visible = true
-        }
-
-        if (noName || tooLongName) {
-            validName.visible = true
-        }
-
-        if (noRoomName || noName || tooLongName || tooLongRoomName) {
-            return
-        }
-
         joinPopup.open()
 
         //        if (passwordTextField.text) {
