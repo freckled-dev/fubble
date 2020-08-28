@@ -195,11 +195,18 @@ int main(int argc, char *argv[]) {
   // video
   BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up video device";
   std::unique_ptr<rtc::video_devices> video_enumerator;
-  if (config.general_.video_support)
-    video_enumerator =
+  std::unique_ptr<rtc::video_devices> video_enumerator_google;
+  std::unique_ptr<utils::interval_timer> video_enumerator_timer;
+  if (config.general_.video_support) {
+    video_enumerator_google =
         std::make_unique<rtc::google::capture::video::enumerator>();
-  else
+    video_enumerator_timer = std::make_unique<utils::interval_timer>(
+        context, std::chrono::seconds(1));
+    video_enumerator = rtc::video_devices::create_interval_enumerating(
+        *video_enumerator_google, *video_enumerator_timer);
+  } else {
     video_enumerator = std::make_unique<rtc::video_devices_noop>();
+  }
   rtc::google::capture::video::device_factory video_device_creator;
   client::add_video_to_connection_factory_impl add_video_to_connection_factory_{
       rtc_factory};

@@ -10,6 +10,7 @@ public:
   interval_video_devices(video_devices &adopt, utils::interval_timer &timer)
       : delegate(adopt), timer(timer) {
     timer.start([this] { on_timeout(); });
+    on_timeout();
   }
 
   ~interval_video_devices() { timer.stop(); }
