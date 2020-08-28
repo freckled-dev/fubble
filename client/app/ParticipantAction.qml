@@ -13,16 +13,15 @@ RowLayout {
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.bottom: parent.bottom
 
-    FubbleActionButton {
-        icon.source: Style.current.shareDesktopImage
-        toolTipText: qsTr("Share your screen")
-        onActionClick: shareDesktopPopup.open()
-    }
+    //    FubbleActionButton {
+    //        icon.source: Style.current.shareDesktopImage
+    //        toolTipText: qsTr("Share your screen")
+    //        onActionClick: shareDesktopPopup.open()
+    //    }
 
-    ShareDesktopSelection {
-        id: shareDesktopPopup
-    }
-
+    //    ShareDesktopSelection {
+    //        id: shareDesktopPopup
+    //    }
     FubbleActionButton {
         icon.source: ownMediaModel.videoDisabled ? Style.current.overlayVideoOffImage : Style.current.overlayVideoImage
         toolTipText: ownMediaModel.videoDisabled ? qsTr("Enable your video") : qsTr(
