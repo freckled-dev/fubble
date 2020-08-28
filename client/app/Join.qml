@@ -46,6 +46,7 @@ FocusScope {
                 joined(room)
             }
             onJoin_failed: {
+                joinPopup.close()
                 setGuiEnabled(true)
             }
         }
