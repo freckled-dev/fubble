@@ -194,9 +194,9 @@ int main(int argc, char *argv[]) {
 
   // video
   BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up video device";
-  std::unique_ptr<rtc::video_devices> video_enumerator;
-  std::unique_ptr<rtc::video_devices> video_enumerator_google;
   std::unique_ptr<utils::interval_timer> video_enumerator_timer;
+  std::unique_ptr<rtc::video_devices> video_enumerator_google;
+  std::unique_ptr<rtc::video_devices> video_enumerator;
   if (config.general_.video_support) {
     video_enumerator_google =
         std::make_unique<rtc::google::capture::video::enumerator>();

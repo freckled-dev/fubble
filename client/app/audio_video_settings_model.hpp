@@ -25,6 +25,7 @@ class devices_model : public QAbstractListModel {
 public:
   enum roles { id_role = Qt::UserRole + 1, name_role };
   devices_model(QObject *parent);
+  virtual void refresh() = 0;
 
 signals:
   void available_changed(bool);
@@ -77,6 +78,7 @@ signals:
 protected:
   void update_video_device_index();
   ui::frame_provider_google_video_device *get_video();
+  void reset_video();
 
   client::logger logger{"audio_video_settings_model"};
   rtc::video_devices &video_device_enumerator;

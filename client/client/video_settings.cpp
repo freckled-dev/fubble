@@ -51,7 +51,7 @@ void video_settings::pause(bool paused_) {
   }
   paused = paused_;
   if (paused) {
-    reset_current_video();
+    reset_current_video_capture();
     on_video_source_changed();
   } else {
     if (!last_device_id) {
@@ -77,7 +77,6 @@ void video_settings::change_to_device(const std::string &id) {
     }
     reset_current_video();
   }
-  error = false;
   last_device_id = id;
   if (paused) {
     BOOST_LOG_SEV(logger, logging::severity::debug)
@@ -90,7 +89,6 @@ void video_settings::change_to_device(const std::string &id) {
     capture_device_check->start();
     capture_device = capture_device_check;
   } catch (...) {
-    error = true;
     last_device_id.reset();
     on_video_source_changed();
     boost::rethrow_exception(boost::current_exception());
@@ -101,7 +99,7 @@ void video_settings::change_to_device(const std::string &id) {
   on_video_source_changed();
 }
 
-void video_settings::reset_current_video() {
+void video_settings::reset_current_video_capture() {
   if (!capture_device)
     return;
   tracks_adder_.remove(*video_track_adder);
@@ -109,7 +107,10 @@ void video_settings::reset_current_video() {
   own_media_.remove(*capture_device);
   capture_device->stop();
   capture_device.reset();
-  error = false;
+}
+
+void video_settings::reset_current_video() {
+  reset_current_video_capture();
   last_device_id.reset();
   on_video_source_changed();
 }
@@ -133,7 +134,7 @@ rtc::google::video_source *video_settings::get_video_source() const {
 }
 
 bool video_settings::is_a_video_available() const {
-  return last_device_id.has_value() && !error;
+  return last_device_id.has_value();
 }
 
 std::optional<std::string> video_settings::get_device_id() const {

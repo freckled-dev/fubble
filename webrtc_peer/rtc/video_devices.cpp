@@ -9,8 +9,10 @@ class interval_video_devices : public video_devices {
 public:
   interval_video_devices(video_devices &adopt, utils::interval_timer &timer)
       : delegate(adopt), timer(timer) {
-    timer.start([this] { on_timeout(); });
     on_timeout();
+    timer.start([this] { on_timeout(); });
+    enumerated_changed_connection = delegate.on_enumerated_changed.connect(
+        [this] { on_enumerated_changed(); });
   }
 
   ~interval_video_devices() { timer.stop(); }
@@ -27,6 +29,7 @@ protected:
   rtc::logger logger{"interval_video_devices"};
   video_devices &delegate;
   utils::interval_timer &timer;
+  boost::signals2::scoped_connection enumerated_changed_connection;
 };
 } // namespace
 

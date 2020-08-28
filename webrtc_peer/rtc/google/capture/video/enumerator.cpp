@@ -32,6 +32,8 @@ bool enumerator::enumerate() {
   if (enumerated == result)
     return false;
   enumerated = result;
+  BOOST_LOG_SEV(logger, logging::severity::debug)
+      << "devices changed, size:" << enumerated.size();
   on_enumerated_changed();
   return true;
 }

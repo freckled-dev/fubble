@@ -41,6 +41,7 @@ public:
   boost::signals2::signal<void()> on_video_source_changed;
 
 protected:
+  void reset_current_video_capture();
   void reset_current_video();
   void on_video_devices_changed();
 
@@ -54,7 +55,6 @@ protected:
   std::shared_ptr<rtc::google::capture::video::device> capture_device;
   std::unique_ptr<add_video_to_connection> video_track_adder;
   bool paused{};
-  bool error{};
   // TODO refactor to `current_device_id`
   std::optional<std::string> last_device_id;
 };
