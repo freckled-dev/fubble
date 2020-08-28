@@ -33,6 +33,7 @@ public:
   void pause(bool paused);
   bool get_paused() const;
   void change_to_device(const std::string &id);
+  // means a video is instanced!
   bool is_a_video_available() const;
   std::optional<std::string> get_device_id() const;
 
@@ -41,6 +42,7 @@ public:
 
 protected:
   void reset_current_video();
+  void on_video_devices_changed();
 
   client::logger logger{"video_settings"};
   rtc::video_devices &enumerator;
@@ -53,6 +55,7 @@ protected:
   std::unique_ptr<add_video_to_connection> video_track_adder;
   bool paused{};
   bool error{};
+  // TODO refactor to `current_device_id`
   std::optional<std::string> last_device_id;
 };
 } // namespace client

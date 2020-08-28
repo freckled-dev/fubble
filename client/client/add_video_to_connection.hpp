@@ -28,6 +28,12 @@ protected:
   std::shared_ptr<rtc::google::video_track> video_track;
 };
 
+class add_video_to_connection_noop : public add_video_to_connection {
+public:
+  void add_to_connection(rtc::connection &) override {}
+  void remove_from_connection(rtc::connection &) override {}
+};
+
 class add_video_to_connection_factory {
 public:
   virtual ~add_video_to_connection_factory() = default;

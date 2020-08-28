@@ -15,9 +15,8 @@ video_settings::video_settings(
     : enumerator(enumerator), device_creator(device_creator),
       own_media_(own_media_), tracks_adder_(tracks_adder_),
       add_video_to_connection_factory_(add_video_to_connection_factory_) {
-  enumerator.on_enumerated_changed.connect([] {
-    // TODO
-  });
+  enumerator.on_enumerated_changed.connect(
+      [this] { on_video_devices_changed(); });
   enumerator.enumerate();
   auto devices = enumerator.get_enumerated();
   for (const auto &device : devices)
@@ -112,7 +111,22 @@ void video_settings::reset_current_video() {
   capture_device->stop();
   capture_device.reset();
   error = false;
+  last_device_id.reset();
   on_video_source_changed();
+}
+
+void video_settings::on_video_devices_changed() {
+  if (!is_a_video_available())
+    return;
+  auto devices = enumerator.get_enumerated();
+  auto found =
+      std::find_if(devices.cbegin(), devices.cend(), [&](const auto &check) {
+        return check.id == last_device_id.value();
+      });
+  if (found != devices.cend())
+    return;
+  // current device is no more
+  reset_current_video();
 }
 
 rtc::google::video_source *video_settings::get_video_source() const {
