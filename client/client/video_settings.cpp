@@ -17,7 +17,6 @@ video_settings::video_settings(
       add_video_to_connection_factory_(add_video_to_connection_factory_) {
   enumerator.on_enumerated_changed.connect(
       [this] { on_video_devices_changed(); });
-  enumerator.enumerate();
   auto devices = enumerator.get_enumerated();
   for (const auto &device : devices)
     BOOST_LOG_SEV(logger, logging::severity::debug)
