@@ -38,6 +38,7 @@
         <file>Feedback.qml</file>
         <file>FubbleContextMenu.qml</file>
         <file>SelectableLabel.qml</file>
+        <file>SortFilterModel.qml</file>
         <file>qmldir</file>
     </qresource>
 </RCC>

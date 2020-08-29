@@ -107,10 +107,24 @@ void participants::remove_by_id(const std::string &id) {
   BOOST_ASSERT(found != participants_.cend());
   if (found == participants_.cend())
     return;
+  std::shared_ptr<participant> shared = std::move(*found);
+  shared->close().then(executor,
+                       [this, shared](auto result) { on_closed(result); });
   participants_.erase(found);
   std::vector<std::string> signal_argument;
   signal_argument.push_back(id);
   on_removed(signal_argument);
+}
+
+void participants::on_closed(boost::future<void> &result) {
+  BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
+  try {
+    result.get();
+  } catch (const boost::exception &error) {
+    BOOST_LOG_SEV(logger, logging::severity::warning)
+        << __FUNCTION__ << "could not close peer, error:"
+        << boost::diagnostic_information(error);
+  }
 }
 
 void participants::add(matrix::room_participant &add_) {

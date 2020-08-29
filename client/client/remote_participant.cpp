@@ -2,8 +2,10 @@
 #include "client/factory.hpp"
 #include "client/peer.hpp"
 #include "client/tracks_adder.hpp"
+#include "matrix/user.hpp"
 #include "rtc/google/audio_track_sink.hpp"
 #include "rtc/google/video_track_sink.hpp"
+#include <fmt/format.h>
 
 using namespace client;
 
@@ -11,8 +13,11 @@ remote_participant::remote_participant(factory &factory_,
                                        std::unique_ptr<peer> peer_moved,
                                        matrix::user &matrix_participant,
                                        tracks_adder &tracks_adder_)
-    : participant(matrix_participant), factory_(factory_),
-      tracks_adder_(tracks_adder_), peer_(std::move(peer_moved)) {
+    : participant(matrix_participant), logger{fmt::format(
+                                           "remote_participant:{}",
+                                           matrix_participant.get_id())},
+      factory_(factory_), tracks_adder_(tracks_adder_),
+      peer_(std::move(peer_moved)) {
   tracks_adder_.add_connection(peer_->rtc_connection());
   peer_->rtc_connection().on_track_added.connect(
       [this](auto track) { on_track_added(track); });
@@ -24,7 +29,10 @@ remote_participant::~remote_participant() {
   tracks_adder_.remove_connection(peer_->rtc_connection());
 }
 
-boost::future<void> remote_participant::close() { return peer_->close(); }
+boost::future<void> remote_participant::close() {
+  BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
+  return peer_->close();
+}
 
 remote_participant::videos_type remote_participant::get_videos() const {
   return videos;
