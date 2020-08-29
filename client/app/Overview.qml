@@ -48,8 +48,8 @@ Item {
             model: overviewContainer.roomModel.participants
             delegate: participantOverviewComponent
             lessThan: function (left, right) {
-                var leftParticipant = left.modelData.participant
-                var rightParticipant = right.modelData.participant
+                var leftParticipant = left.participant
+                var rightParticipant = right.participant
 
                 // own participant comes first
                 if (leftParticipant.own) {
