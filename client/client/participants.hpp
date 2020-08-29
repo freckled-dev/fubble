@@ -34,10 +34,12 @@ protected:
   void on_join_state_changed(matrix::room_participant &changed);
   void remove_by_id(const std::string &id);
   void add(matrix::room_participant &add_);
+  void on_closed(boost::future<void> &result);
   using participants_container = std::vector<std::unique_ptr<participant>>;
   participants_container::iterator find(const std::string &id);
   participants_container::const_iterator find(const std::string &id) const;
 
+  client::logger logger{"participants"};
   boost::inline_executor executor;
   std::unique_ptr<participant_creator> participant_creator_;
   participants_container participants_;

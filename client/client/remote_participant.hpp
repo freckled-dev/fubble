@@ -36,7 +36,7 @@ protected:
   void on_audio_track_removed(
       std::shared_ptr<rtc::google::audio_track_sink> video_track);
 
-  client::logger logger{"remote_participant"};
+  client::logger logger;
   factory &factory_;
   tracks_adder &tracks_adder_;
   std::unique_ptr<peer> peer_;
