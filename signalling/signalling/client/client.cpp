@@ -173,6 +173,8 @@ public:
       BOOST_ASSERT(false);
       return boost::make_ready_future();
     }
+    BOOST_ASSERT(shall_reconnect);
+    shall_reconnect = false;
     return delegate->close();
   }
 
@@ -226,6 +228,11 @@ protected:
 
   void reconnect() {
     BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
+    if (!shall_reconnect) {
+      BOOST_LOG_SEV(logger, logging::severity::info)
+          << "wont reconnect due to !shall_reconnect";
+      return;
+    }
     delegate = factory_.create();
     BOOST_ASSERT(signal_connections.empty());
     signal_connections.push_back(delegate->on_answer.connect(
@@ -259,7 +266,12 @@ protected:
   }
 
   void reconnect_after_timeout() {
-    BOOST_LOG_SEV(logger, logging::severity::info) << __FUNCTION__;
+    BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
+    if (!shall_reconnect) {
+      BOOST_LOG_SEV(logger, logging::severity::info)
+          << "wont reconnect due to !shall_reconnect";
+      return;
+    }
     delegate.reset();
     signal_connections.clear();
     timer.start([this] { reconnect(); });
@@ -289,6 +301,7 @@ protected:
   std::string token;
   std::string key;
   bool is_registered{};
+  bool shall_reconnect{true};
 
   bool wants_to_negotiate_cache{};
   std::optional<signalling::answer> answer_cache;
