@@ -101,7 +101,7 @@ boost::future<void> connection_impl::close() {
       << "closing websocket connection, this:" << this;
   boost::packaged_task<void(boost::system::error_code)> task(
       [stream = stream, this](auto result) {
-        BOOST_LOG_SEV(logger, logging::severity::debug)
+        BOOST_LOG_SEV(this->logger, logging::severity::debug)
             << "async_close handler";
         completion_error(result);
       });
