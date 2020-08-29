@@ -2,6 +2,7 @@ import QtMultimedia 5.12
 import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
+import QtQml.Models 2.12
 import io.fubble 1.0
 import "."
 
@@ -30,25 +31,36 @@ Item {
             font.pointSize: Style.current.subHeaderPointSize
         }
 
-        ScrollView {
+        ListView {
+            model: participantColumns
             anchors.top: participantLabel.bottom
             anchors.right: parent.right
             anchors.bottom: selfAction.top
             anchors.left: parent.left
             anchors.topMargin: 30
-            ScrollBar.vertical.policy: ScrollBar.AlwaysOff
             anchors.bottomMargin: 30
             clip: true
+            spacing: 5
+        }
 
-            ColumnLayout {
-                id: participantColumns
-                anchors.fill: parent
-                visible: overviewVisible || overviewAnimation.running
+        SortFilterModel {
+            id: participantColumns
+            model: overviewContainer.roomModel.participants
+            delegate: participantOverviewComponent
+            lessThan: function (left, right) {
+                var leftParticipant = left.modelData.participant
+                var rightParticipant = right.modelData.participant
 
-                Repeater {
-                    model: overviewContainer.roomModel.participants
-                    delegate: participantOverviewComponent
+                // own participant comes first
+                if (leftParticipant.own) {
+                    return true
                 }
+                if (rightParticipant.own) {
+                    return false
+                }
+
+                // sort by name
+                return leftParticipant.name < rightParticipant.name
             }
         }
 
