@@ -32,6 +32,26 @@ QtObject {
             property var participant: ParticipantModel {
                 name: qsTr("Christine")
             }
+        },
+        QtObject {
+            property var participant: ParticipantModel {
+                name: qsTr("Andreas")
+            }
+        },
+        QtObject {
+            property var participant: ParticipantModel {
+                name: qsTr("Zebra")
+            }
+        },
+        QtObject {
+            property var participant: ParticipantModel {
+                name: qsTr("Walter")
+            }
+        },
+        QtObject {
+            property var participant: ParticipantModel {
+                name: qsTr("Barbara")
+            }
         }
     ]
 
