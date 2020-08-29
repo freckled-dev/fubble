@@ -51,6 +51,7 @@ Item {
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.top: parent.top
+            cacheBuffer: 10000 // pixels to fit the delegates
 
             model: delegateModel
             snapMode: ListView.SnapToItem

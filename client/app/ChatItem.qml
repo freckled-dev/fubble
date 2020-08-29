@@ -48,6 +48,7 @@ Rectangle {
                 Layout.leftMargin: 10
                 Layout.maximumWidth: chatContainer.width - 40
                 Layout.rightMargin: 10
+                text: modifyMessage(message)
             }
 
             function modifyMessage(message) {

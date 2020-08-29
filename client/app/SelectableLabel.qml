@@ -3,7 +3,6 @@ import QtQuick 2.0
 TextEdit {
     id: chatMessage
     readOnly: true
-    text: modifyMessage(message)
     selectByMouse: true
     font.family: verdanaFont.name + ", " + emojiOneFont.name
     selectionColor: Style.current.accent
