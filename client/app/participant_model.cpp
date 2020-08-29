@@ -10,15 +10,16 @@
 
 using namespace client;
 
-participant_model::participant_model(participant &participant_,
-                                     audio_device_settings &audio_settings_,
-                                     video_settings &video_settings_,
-                                     own_audio_information &audio_information_,
-                                     audio_volume &audio_volume_,
-                                     QObject *parent)
-    : QObject(parent), participant_(participant_),
-      audio_settings_(audio_settings_), video_settings_(video_settings_),
-      audio_information_(audio_information_), audio_volume_(audio_volume_),
+participant_model::participant_model(
+    audio_level_calculator_factory &audio_level_calculator_factory_,
+    participant &participant_, audio_device_settings &audio_settings_,
+    video_settings &video_settings_, own_audio_information &audio_information_,
+    audio_volume &audio_volume_, QObject *parent)
+    : QObject(parent),
+      audio_level_calculator_factory_(audio_level_calculator_factory_),
+      participant_(participant_), audio_settings_(audio_settings_),
+      video_settings_(video_settings_), audio_information_(audio_information_),
+      audio_volume_(audio_volume_),
       id(participant_.get_id()), own{dynamic_cast<own_participant *>(
                                          &participant_) != nullptr} {
   set_name();
@@ -98,7 +99,7 @@ void participant_model::audio_added(rtc::google::audio_source &source) {
   BOOST_ASSERT(
       !audio_level_calculator_); // TODO support more than one audio source per
                                  // client. although, does it make sense?!
-  audio_level_calculator_ = std::make_unique<audio_level_calculator>(source);
+  audio_level_calculator_ = audio_level_calculator_factory_.create(source);
   audio_level_calculator_->on_sound_level_30times_a_second.connect(
       [this](auto level) { on_sound_level(level); });
   audio_level_calculator_->on_voice_detected.connect(

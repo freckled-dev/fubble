@@ -6,11 +6,12 @@
 
 using namespace client;
 
-model_creator::model_creator(audio_device_settings &audio_settings_,
-                             video_settings &video_settings_,
-                             own_audio_information &audio_information_,
-                             audio_volume &audio_volume_)
-    : audio_settings_(audio_settings_), video_settings_(video_settings_),
+model_creator::model_creator(
+    audio_level_calculator_factory &audio_level_calculator_factory_,
+    audio_device_settings &audio_settings_, video_settings &video_settings_,
+    own_audio_information &audio_information_, audio_volume &audio_volume_)
+    : audio_level_calculator_factory_(audio_level_calculator_factory_),
+      audio_settings_(audio_settings_), video_settings_(video_settings_),
       audio_information_(audio_information_), audio_volume_(audio_volume_) {}
 
 room_model *model_creator::create_room_model(const std::shared_ptr<room> &room_,
@@ -26,6 +27,7 @@ participants_model *model_creator::create_participants_model(room &room_,
 participant_model *
 model_creator::create_participant_model(participant &participant_,
                                         QObject *parent) {
-  return new participant_model(participant_, audio_settings_, video_settings_,
+  return new participant_model(audio_level_calculator_factory_, participant_,
+                               audio_settings_, video_settings_,
                                audio_information_, audio_volume_, parent);
 }

@@ -3,6 +3,7 @@
 #include "client/add_audio_to_connection.hpp"
 #include "client/add_video_to_connection.hpp"
 #include "client/audio_device_settings.hpp"
+#include "client/audio_level_calculator.hpp"
 #include "client/audio_tracks_volume.hpp"
 #include "client/crash_catcher.hpp"
 #include "client/factory.hpp"
@@ -184,13 +185,16 @@ int main(int argc, char *argv[]) {
       rtc_factory, settings_audio_track};
   client::loopback_audio_impl loopback_audio{rtc_factory,
                                              own_audio_track->get_track()};
-  client::own_audio_information own_audio_information_{loopback_audio};
+  client::audio_level_calculator_factory audio_level_calculator_factory_{
+      boost_executor};
+  client::own_audio_information own_audio_information_{
+      audio_level_calculator_factory_, loopback_audio};
   client::loopback_audio_noop_if_disabled loopback_audio_test{
       loopback_audio_test_factory};
   auto own_microphone_tester = client::own_microphone_tester::create(
       loopback_audio_test, *audio_tracks_volume);
   client::own_audio_information own_audio_test_information_{
-      loopback_audio_test};
+      audio_level_calculator_factory_, loopback_audio_test};
 
   // video
   BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up video device";
@@ -317,9 +321,9 @@ int main(int argc, char *argv[]) {
 
   QQmlApplicationEngine engine;
   client::audio_device_settings audio_settings{rtc_audio_devices};
-  client::model_creator model_creator{audio_settings, video_settings,
-                                      own_audio_information_,
-                                      *audio_tracks_volume};
+  client::model_creator model_creator{
+      audio_level_calculator_factory_, audio_settings, video_settings,
+      own_audio_information_, *audio_tracks_volume};
   client::error_model error_model;
   client::utils_model utils_model;
   client::join_model join_model{model_creator, error_model, joiner};

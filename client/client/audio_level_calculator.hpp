@@ -3,6 +3,7 @@
 
 #include "client/logger.hpp"
 #include <boost/signals2/signal.hpp>
+#include <boost/thread/executors/executor.hpp>
 
 namespace rtc::google {
 class audio_source;
@@ -16,13 +17,12 @@ class VoiceDetection;
 namespace client {
 class audio_level_calculator {
 public:
-  audio_level_calculator(rtc::google::audio_source &audio_source_);
+  audio_level_calculator(boost::executor &main_thread,
+                         rtc::google::audio_source &audio_source_);
   ~audio_level_calculator();
 
   const rtc::google::audio_source &get_source() const;
 
-  // gets called 100 times a second
-  boost::signals2::signal<void(double)> on_sound_level;
   // TODO refactor to 10
   boost::signals2::signal<void(double)> on_sound_level_30times_a_second;
   boost::signals2::signal<void(bool)> on_voice_detected;
@@ -33,6 +33,7 @@ protected:
   void calculate_voice_detection(const rtc::google::audio_data &data);
 
   client::logger logger{"audio_level_calculator"};
+  boost::executor &main_thread;
   rtc::google::audio_source &audio_source;
   std::unique_ptr<rtc::google::voice_detection> voice_detection_;
   boost::signals2::scoped_connection on_data_connection;
@@ -42,7 +43,23 @@ protected:
   int audio_level_counter{};
 
   bool voice_detected{};
+  std::shared_ptr<int> alive_check = std::make_shared<int>(42);
 };
+
+class audio_level_calculator_factory {
+public:
+  audio_level_calculator_factory(boost::executor &main_thread)
+      : main_thread(main_thread) {}
+
+  std::unique_ptr<audio_level_calculator>
+  create(rtc::google::audio_source &audio_source_) {
+    return std::make_unique<audio_level_calculator>(main_thread, audio_source_);
+  }
+
+protected:
+  boost::executor &main_thread;
+};
+
 } // namespace client
 
 #endif
