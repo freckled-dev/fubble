@@ -11,6 +11,7 @@ namespace client {
 class participant;
 class audio_device_settings;
 class audio_level_calculator;
+class audio_level_calculator_factory;
 class own_audio_information;
 class audio_volume;
 class video_settings;
@@ -43,11 +44,12 @@ class participant_model : public QObject {
       bool voiceDetected MEMBER voice_detected NOTIFY voice_detected_changed)
 
 public:
-  participant_model(participant &participant_,
-                    audio_device_settings &audio_settings_,
-                    video_settings &video_settings_,
-                    own_audio_information &audio_information_,
-                    audio_volume &audio_volume_, QObject *parent);
+  participant_model(
+      audio_level_calculator_factory &audio_level_calculator_factory_,
+      participant &participant_, audio_device_settings &audio_settings_,
+      video_settings &video_settings_,
+      own_audio_information &audio_information_, audio_volume &audio_volume_,
+      QObject *parent);
   ~participant_model();
 
   std::string get_id() const;
@@ -81,6 +83,7 @@ protected:
   void set_silenced(bool);
 
   mutable client::logger logger{"participant_model"};
+  audio_level_calculator_factory &audio_level_calculator_factory_;
   participant &participant_;
   audio_device_settings &audio_settings_;
   video_settings &video_settings_;

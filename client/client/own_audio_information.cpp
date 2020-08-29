@@ -5,7 +5,10 @@
 
 using namespace client;
 
-own_audio_information::own_audio_information(loopback_audio &own_audio_) {
+own_audio_information::own_audio_information(
+    audio_level_calculator_factory &audio_level_calculator_factory_,
+    loopback_audio &own_audio_)
+    : audio_level_calculator_factory_(audio_level_calculator_factory_) {
   set_loopback_audio(own_audio_);
 }
 
@@ -23,7 +26,7 @@ void own_audio_information::set_loopback_audio(loopback_audio &audio) {
 
 void own_audio_information::on_track(rtc::google::audio_track &track) {
   audio_level_calculator_ =
-      std::make_unique<audio_level_calculator>(track.get_source());
+      audio_level_calculator_factory_.create(track.get_source());
   connections.emplace_back(
       audio_level_calculator_->on_sound_level_30times_a_second.connect(
           [this](auto level) { on_sound_level_30times_a_second(level); }));

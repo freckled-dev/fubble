@@ -20,8 +20,8 @@ double average(const number_type *data, std::size_t count) {
 } // namespace
 
 audio_level_calculator::audio_level_calculator(
-    rtc::google::audio_source &audio_source)
-    : audio_source(audio_source) {
+    boost::executor &main_thread, rtc::google::audio_source &audio_source)
+    : main_thread(main_thread), audio_source(audio_source) {
   on_data_connection =
       audio_source.on_data.connect([this](auto data) { on_data(data); });
   voice_detection_ = rtc::google::voice_detection::create();
@@ -34,6 +34,9 @@ const rtc::google::audio_source &audio_level_calculator::get_source() const {
 }
 
 void audio_level_calculator::on_data(const rtc::google::audio_data &data) {
+#if 0
+  BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
+#endif
   auto bits_per_sample = data.bits_per_sample;
   auto audio_data = data.audio_data;
   auto number_of_frames = data.number_of_frames;
@@ -54,13 +57,6 @@ void audio_level_calculator::on_data(const rtc::google::audio_data &data) {
     BOOST_ASSERT(false);
     return 0.;
   }();
-#if 0
-    BOOST_LOG_SEV(logger, logging::severity::trace)
-        << "OnData, bits_per_sample:" << bits_per_sample
-        << ", number_of_frames:" << number_of_frames
-        << ", sample_rate:" << sample_rate << ", averaged:" << averaged;
-#endif
-  on_sound_level(averaged);
   calculate_30times_a_second(averaged);
   calculate_voice_detection(data);
 }
@@ -73,7 +69,13 @@ void audio_level_calculator::calculate_30times_a_second(double new_level) {
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << "on_sound_level_30times_a_second, level:" << audio_level_cache;
 #endif
-    on_sound_level_30times_a_second(audio_level_cache);
+    std::weak_ptr<int> weak = alive_check;
+    main_thread.submit(
+        [value = audio_level_cache, alive = std::move(weak), this] {
+          if (!alive.lock())
+            return;
+          on_sound_level_30times_a_second(value);
+        });
     audio_level_counter = 0;
     audio_level_cache = 0.;
   }
@@ -87,5 +89,10 @@ void audio_level_calculator::calculate_voice_detection(
   if (check == voice_detected)
     return;
   voice_detected = check;
-  on_voice_detected(voice_detected);
+  std::weak_ptr<int> weak = alive_check;
+  main_thread.submit([value = voice_detected, alive = std::move(weak), this] {
+    if (!alive.lock())
+      return;
+    on_voice_detected(value);
+  });
 }

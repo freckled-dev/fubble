@@ -6,6 +6,7 @@
 
 namespace client {
 class audio_device_settings;
+class audio_level_calculator_factory;
 class audio_volume;
 class own_audio_information;
 class participant;
@@ -16,7 +17,8 @@ class room_model;
 class video_settings;
 class model_creator {
 public:
-  model_creator(audio_device_settings &audio_settings_,
+  model_creator(audio_level_calculator_factory &audio_level_calculator_factory_,
+                audio_device_settings &audio_settings_,
                 video_settings &video_settings_,
                 own_audio_information &audio_information_,
                 audio_volume &audio_volume_);
@@ -27,6 +29,7 @@ public:
                                               QObject *parent);
 
 protected:
+  audio_level_calculator_factory &audio_level_calculator_factory_;
   audio_device_settings &audio_settings_;
   video_settings &video_settings_;
   own_audio_information &audio_information_;

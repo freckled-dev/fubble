@@ -11,9 +11,12 @@ class audio_track;
 namespace client {
 class loopback_audio;
 class audio_level_calculator;
+class audio_level_calculator_factory;
 class own_audio_information {
 public:
-  own_audio_information(loopback_audio &own_audio_);
+  own_audio_information(
+      audio_level_calculator_factory &audio_level_calculator_factory_,
+      loopback_audio &own_audio_);
   ~own_audio_information();
 
   boost::signals2::signal<void(double)> on_sound_level_30times_a_second;
@@ -23,6 +26,7 @@ protected:
   void set_loopback_audio(loopback_audio &audio);
   void on_track(rtc::google::audio_track &);
 
+  audio_level_calculator_factory &audio_level_calculator_factory_;
   std::unique_ptr<audio_level_calculator> audio_level_calculator_;
   std::vector<boost::signals2::scoped_connection> connections;
 };
