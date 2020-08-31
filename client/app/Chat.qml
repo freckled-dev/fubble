@@ -54,7 +54,7 @@ Item {
             cacheBuffer: 10000 // pixels to fit the delegates
 
             model: delegateModel
-            snapMode: ListView.SnapToItem
+            snapMode: ListView.NoSnap
             spacing: 10
 
             Component.onCompleted: initialized = true
