@@ -9,10 +9,9 @@ source ../environment
 export LD_LIBRARY_PATH=$(realpath $(dirname $(which qmake))/../lib)
 
 cd "$current_dir"
-# as of 5 August 2020 it does not work.
-# TODO reenable this url after https://github.com/linuxdeploy/linuxdeploy/issues/143 is fixed
-# curl -LO https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
-curl -LO https://artifacts.assassinate-you.net/artifactory/list/linuxdeploy/travis-456/linuxdeploy-x86_64.AppImage
+curl -LO https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+# if that version gets a bug, use a fixed version from their CI
+# curl -LO https://artifacts.assassinate-you.net/artifactory/list/linuxdeploy/travis-456/linuxdeploy-x86_64.AppImage
 curl -LO https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
 chmod u+x linuxdeploy-x86_64.AppImage linuxdeploy-plugin-qt-x86_64.AppImage
 
