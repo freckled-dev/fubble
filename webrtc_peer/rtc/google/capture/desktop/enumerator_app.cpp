@@ -9,11 +9,11 @@ int main(int, char *[]) {
   enumerator->enumerate();
   BOOST_LOG_SEV(logger, logging::severity::info) << "windows:";
   for (auto print : enumerator->get_windows())
-    BOOST_LOG_SEV(logger, logging::severity::debug)
+    BOOST_LOG_SEV(logger, logging::severity::info)
         << fmt::format("id:'{}', title:'{}'", print.id, print.title);
   BOOST_LOG_SEV(logger, logging::severity::info) << "screens:";
   for (auto print : enumerator->get_screens())
-    BOOST_LOG_SEV(logger, logging::severity::debug)
+    BOOST_LOG_SEV(logger, logging::severity::info)
         << fmt::format("id:'{}', title:'{}'", print.id, print.title);
   return 0;
 }

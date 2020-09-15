@@ -26,7 +26,6 @@ webrtc_google_peer = library('webrtc_google_peer',
 webrtc_google_peer_dep = declare_dependency(
   link_with: [webrtc_google_peer],
   dependencies: [boost_dep, webrtc_peer_dep, google_webrtc_dep],
-  link_args: ['-lX11']
   )
 google_webrtc_test_main = static_library('google_webrtc_test_main',
   ['test_main.cpp'],
@@ -63,12 +62,6 @@ test('asio_signalling_thread test',
 webrtc_google_capture_desktop_enumerator = executable('google_desktop_enumerator',
   ['capture/desktop/enumerator_app.cpp'],
   dependencies: [webrtc_google_peer_dep, fmt_dep],
-  link_args: ['-lXext',
-    '/usr/lib64/libXcomposite.so.1.0.0',
-    '/usr/lib64/libXfixes.so.3',
-    '/usr/lib64/libXdamage.so.1',
-    '-lXrandr'
-    ],
   install: true
   )
 
