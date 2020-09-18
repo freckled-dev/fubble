@@ -36,7 +36,7 @@ video_track_source::adapter::state() const {
 
 bool video_track_source::adapter::remote() const { return true; }
 
-bool video_track_source::adapter::is_screencast() const { return true; }
+bool video_track_source::adapter::is_screencast() const { return false; }
 
 absl::optional<bool> video_track_source::adapter::needs_denoising() const {
   return {};
