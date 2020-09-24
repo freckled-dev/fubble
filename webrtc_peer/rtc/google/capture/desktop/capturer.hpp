@@ -6,19 +6,39 @@
 #include <cstdint>
 #include <memory>
 
+namespace utils {
+class interval_timer;
+}
+
 namespace rtc {
 namespace google {
 namespace capture {
 namespace desktop {
+
 class capturer : public video_source {
 public:
   virtual ~capturer() = default;
 
   virtual boost::future<void> capture() = 0;
+  virtual std::string get_id() = 0;
+  virtual std::string get_title() = 0;
 
   static std::unique_ptr<capturer> create_screen(std::intptr_t id);
   static std::unique_ptr<capturer> create_window(std::intptr_t id);
 };
+
+class interval_capturer {
+public:
+  virtual ~interval_capturer() = default;
+  virtual boost::future<void> start() = 0;
+  virtual void stop() = 0;
+  virtual capturer &get_capturer() = 0;
+
+  static std::unique_ptr<interval_capturer>
+  create(std::unique_ptr<utils::interval_timer> timer,
+         std::unique_ptr<capturer> delegate);
+};
+
 } // namespace desktop
 } // namespace capture
 } // namespace google

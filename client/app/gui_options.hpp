@@ -13,6 +13,7 @@ struct gui_config {
     bool use_ssl{true};
     logging::severity log_severity{logging::severity::debug};
     bool video_support{true};
+    bool desktop_support{true};
     bool use_crash_catcher{true};
   };
   general general_;

@@ -1,6 +1,7 @@
 #include "capturer.hpp"
 #include "exception.hpp"
 #include "rtc/logger.hpp"
+#include "timer.hpp"
 #include <api/video/i420_buffer.h>
 #include <api/video/video_frame.h>
 #include <boost/assert.hpp>
@@ -76,6 +77,33 @@ protected:
   rtc::scoped_refptr<webrtc::I420Buffer> i420_buffer;
   std::shared_ptr<boost::promise<void>> capture_promise;
 };
+
+class interval_capturer_impl : public interval_capturer {
+public:
+  interval_capturer_impl(std::unique_ptr<utils::interval_timer> timer,
+                         std::unique_ptr<capturer> delegate_)
+      : timer{std::move(timer)}, delegate{std::move(delegate_)} {}
+
+  boost::future<void> start() override {
+    BOOST_ASSERT(!start_promise);
+    start_promise = std::make_shared<boost::promise<void>>();
+    timer->start([this] { on_timeout(); });
+    return start_promise->get_future();
+  }
+
+  void stop() override {
+    BOOST_ASSERT(start_promise);
+    timer->stop();
+    start_promise->set_value();
+  }
+
+  void on_timeout() { delegate->capture(); }
+
+protected:
+  std::unique_ptr<utils::interval_timer> timer;
+  std::unique_ptr<capturer> delegate;
+  std::shared_ptr<boost::promise<void>> start_promise;
+};
 } // namespace
 
 std::unique_ptr<capturer> capturer::create_screen(std::intptr_t id) {
@@ -91,4 +119,11 @@ std::unique_ptr<capturer> capturer::create_window(std::intptr_t id) {
       webrtc::DesktopCaptureOptions::CreateDefault();
   auto window_capturer = webrtc::DesktopCapturer::CreateWindowCapturer(options);
   return std::make_unique<capturer_impl>(std::move(window_capturer), id);
+}
+
+std::unique_ptr<interval_capturer>
+interval_capturer::create(std::unique_ptr<utils::interval_timer> timer,
+                          std::unique_ptr<capturer> delegate) {
+  return std::make_unique<interval_capturer_impl>(std::move(timer),
+                                                  std::move(delegate));
 }
