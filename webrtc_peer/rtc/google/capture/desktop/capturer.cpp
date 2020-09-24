@@ -5,6 +5,7 @@
 #include <api/video/i420_buffer.h>
 #include <api/video/video_frame.h>
 #include <boost/assert.hpp>
+#include <boost/optional.hpp>
 #include <libyuv.h>
 #include <modules/desktop_capture/desktop_capture_options.h>
 #include <modules/desktop_capture/desktop_capturer.h>
@@ -17,12 +18,12 @@ struct error_temporary : utils::exception {};
 struct error_permanent : utils::exception {};
 using desktop_id_info = boost::error_info<struct desktop_id_tag, std::intptr_t>;
 
-class capturer_impl : public capturer,
-                      public webrtc::DesktopCapturer::Callback {
+class capturer_impl final : public capturer,
+                            public webrtc::DesktopCapturer::Callback {
 public:
   capturer_impl(std::unique_ptr<webrtc::DesktopCapturer> delegate_move,
-                std::intptr_t id)
-      : delegate{std::move(delegate_move)} {
+                std::intptr_t id, std::string title)
+      : delegate{std::move(delegate_move)}, id{id}, title{title} {
     if (!delegate->SelectSource(id))
       BOOST_THROW_EXCEPTION(could_not_select_source() << desktop_id_info(id));
     delegate->Start(this);
@@ -37,6 +38,10 @@ protected:
     delegate->CaptureFrame();
     return promise_reference->get_future();
   }
+
+  std::intptr_t get_id() override { return id; }
+
+  std::string get_title() override { return title; }
 
   void OnCaptureResult(webrtc::DesktopCapturer::Result result,
                        std::unique_ptr<webrtc::DesktopFrame> frame) override {
@@ -74,11 +79,13 @@ protected:
 
   rtc::logger logger{"capturer_impl"};
   std::unique_ptr<webrtc::DesktopCapturer> delegate;
+  const std::intptr_t id;
+  const std::string title;
   rtc::scoped_refptr<webrtc::I420Buffer> i420_buffer;
   std::shared_ptr<boost::promise<void>> capture_promise;
 };
 
-class interval_capturer_impl : public interval_capturer {
+class interval_capturer_impl final : public interval_capturer {
 public:
   interval_capturer_impl(std::unique_ptr<utils::interval_timer> timer,
                          std::unique_ptr<capturer> delegate_)
@@ -99,11 +106,24 @@ public:
 
   void on_timeout() { delegate->capture(); }
 
+  capturer &get_capturer() override { return *delegate; }
+
 protected:
   std::unique_ptr<utils::interval_timer> timer;
   std::unique_ptr<capturer> delegate;
   std::shared_ptr<boost::promise<void>> start_promise;
 };
+boost::optional<std::string> get_title_by_id(webrtc::DesktopCapturer &capturer,
+                                             std::intptr_t id) {
+  webrtc::DesktopCapturer::SourceList sources;
+  if (!capturer.GetSourceList(&sources))
+    return {};
+  auto found = std::find_if(sources.cbegin(), sources.cend(),
+                            [&](auto &check) { return check.id == id; });
+  if (found == sources.cend())
+    return {};
+  return found->title;
+}
 } // namespace
 
 std::unique_ptr<capturer> capturer::create_screen(std::intptr_t id) {
@@ -111,14 +131,17 @@ std::unique_ptr<capturer> capturer::create_screen(std::intptr_t id) {
       webrtc::DesktopCaptureOptions::CreateDefault();
   auto desktop_capturer =
       webrtc::DesktopCapturer::CreateScreenCapturer(options);
-  return std::make_unique<capturer_impl>(std::move(desktop_capturer), id);
+  std::string title = get_title_by_id(*desktop_capturer, id).value();
+  return std::make_unique<capturer_impl>(std::move(desktop_capturer), id,
+                                         title);
 }
 
 std::unique_ptr<capturer> capturer::create_window(std::intptr_t id) {
   webrtc::DesktopCaptureOptions options =
       webrtc::DesktopCaptureOptions::CreateDefault();
   auto window_capturer = webrtc::DesktopCapturer::CreateWindowCapturer(options);
-  return std::make_unique<capturer_impl>(std::move(window_capturer), id);
+  std::string title = get_title_by_id(*window_capturer, id).value();
+  return std::make_unique<capturer_impl>(std::move(window_capturer), id, title);
 }
 
 std::unique_ptr<interval_capturer>

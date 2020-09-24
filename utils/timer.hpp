@@ -40,6 +40,23 @@ protected:
   boost::asio::steady_timer timer{context};
   callack_type callback;
 };
+
+class timer_factory {
+public:
+  timer_factory(boost::asio::io_context &context) : context(context) {}
+
+  std::unique_ptr<one_shot_timer>
+  create_one_shot_timer(const std::chrono::steady_clock::duration &duration) {
+    return std::make_unique<one_shot_timer>(context, duration);
+  }
+  std::unique_ptr<interval_timer>
+  create_interval_timer(const std::chrono::steady_clock::duration &duration) {
+    return std::make_unique<interval_timer>(context, duration);
+  }
+
+protected:
+  boost::asio::io_context &context;
+}; // namespace utils
 } // namespace utils
 
 #endif

@@ -6,6 +6,7 @@
 #include "client/audio_level_calculator.hpp"
 #include "client/audio_tracks_volume.hpp"
 #include "client/crash_catcher.hpp"
+#include "client/desktop_sharing.hpp"
 #include "client/factory.hpp"
 #include "client/joiner.hpp"
 #include "client/leaver.hpp"
@@ -219,6 +220,13 @@ int main(int argc, char *argv[]) {
                                         *own_videos_, tracks_adder,
                                         add_video_to_connection_factory_};
 
+  // desktop
+  BOOST_LOG_SEV(logger, logging::severity::trace)
+      << "setting up desktop sharing";
+  auto timer_factory = std::make_shared<utils::timer_factory>(context);
+  std::shared_ptr<client::desktop_sharing> desktop_sharing =
+      client::desktop_sharing::create(timer_factory);
+
   // client
   BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up client";
   client::factory client_factory{context};
@@ -327,7 +335,7 @@ int main(int argc, char *argv[]) {
   client::error_model error_model;
   client::utils_model utils_model;
   client::join_model join_model{model_creator, error_model, joiner};
-  client::share_desktop_model share_desktop_model{};
+  client::share_desktop_model share_desktop_model{desktop_sharing};
   client::leave_model leave_model{leaver};
   client::own_media_model own_media_model{audio_settings,
                                           video_settings,

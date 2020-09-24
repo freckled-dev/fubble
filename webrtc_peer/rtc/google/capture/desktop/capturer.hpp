@@ -20,7 +20,7 @@ public:
   virtual ~capturer() = default;
 
   virtual boost::future<void> capture() = 0;
-  virtual std::string get_id() = 0;
+  virtual std::intptr_t get_id() = 0;
   virtual std::string get_title() = 0;
 
   static std::unique_ptr<capturer> create_screen(std::intptr_t id);
