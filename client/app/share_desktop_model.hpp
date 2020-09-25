@@ -7,56 +7,80 @@
 #include <QAbstractItemModel>
 
 namespace client {
-class share_desktop_preview_model : public QObject {
-  Q_OBJECT
-  Q_PROPERTY(QString description MEMBER description NOTIFY description_changed)
-  Q_PROPERTY(ui::frame_provider_google_video_source *player MEMBER source NOTIFY
-                 source_changed)
-
-public:
-  share_desktop_preview_model(desktop_sharing::preview &preview,
-                              QObject *parent);
-signals:
-  void description_changed(QString);
-  void source_changed(ui::frame_provider_google_video_source *);
-
-protected:
-  QString description;
-  ui::frame_provider_google_video_source *source{};
-};
 class share_desktop_previews_model : public QAbstractListModel {
   Q_OBJECT
 public:
   share_desktop_previews_model(desktop_sharing::previews &previews,
-                               QObject *parent);
-};
-class share_desktop_category_model : public QObject {
-  Q_OBJECT
-  Q_PROPERTY(QString name MEMBER name NOTIFY name_changed)
-  Q_PROPERTY(share_desktop_previews_model *previews MEMBER previews NOTIFY
-                 previews_changed)
-public:
-  share_desktop_category_model(QString title, QObject *parent);
-
-signals:
-  void name_changed(QString);
-  void previews_changed(share_desktop_previews_model *);
+                               QObject *parent)
+      : QAbstractListModel(parent), previews(previews) {
+    std::transform(
+        previews.begin(), previews.end(), std::back_inserter(players),
+        [&](desktop_sharing::preview &preview) {
+          auto &capturer = preview.capturer->get_capturer();
+          auto result = new ui::frame_provider_google_video_source(this);
+          result->set_source(&capturer);
+          preview.capturer->start(); // TODO returns a future!
+          return result;
+        });
+  }
 
 protected:
-  QString name;
-  share_desktop_previews_model *previews{};
+  int rowCount(const QModelIndex &) const override { return previews.size(); }
+
+  QVariant data(const QModelIndex &index, int role) const override {
+    if (role == description_role) {
+      const std::string title =
+          previews[index.row()].capturer->get_capturer().get_title();
+      return QVariant::fromValue(QString::fromStdString(title));
+    }
+    return QVariant::fromValue(players[index.row()]);
+  }
+
+  enum roles { description_role = Qt::UserRole + 1, player_role };
+
+  QHash<int, QByteArray> roleNames() const override {
+    QHash<int, QByteArray> roles;
+    roles[description_role] = "description";
+    roles[player_role] = "player";
+    return roles;
+  }
+
+  desktop_sharing::previews &previews;
+  std::vector<ui::frame_provider_google_video_source *> players;
 };
 class share_desktop_categories_model : public QAbstractListModel {
   Q_OBJECT
 public:
   share_desktop_categories_model(desktop_sharing::previews &screens,
                                  desktop_sharing::previews &windows,
-                                 QObject *parent);
+                                 QObject *parent)
+      : QAbstractListModel(parent) {
+    previews[0] = new share_desktop_previews_model(screens, this);
+    previews[1] = new share_desktop_previews_model(windows, this);
+  }
 
 protected:
-  int rowCount(const QModelIndex &parent) const override;
-  QVariant data(const QModelIndex &index, int role) const override;
-  QHash<int, QByteArray> roleNames() const override;
+  int rowCount(const QModelIndex &) const override { return 2; }
+
+  QVariant data(const QModelIndex &index, int role) const override {
+    if (role == name_role) {
+      if (index.row() == 0)
+        return QVariant::fromValue(tr("Screens"));
+      return QVariant::fromValue(tr("Windows"));
+    }
+    return QVariant::fromValue(previews[index.row()]);
+  }
+
+  enum roles { name_role = Qt::UserRole + 1, previews_role };
+
+  QHash<int, QByteArray> roleNames() const override {
+    QHash<int, QByteArray> roles;
+    roles[name_role] = "name";
+    roles[previews_role] = "previews";
+    return roles;
+  }
+
+  std::array<share_desktop_previews_model *, 2> previews;
 };
 class share_desktop_model : public QObject {
   Q_OBJECT

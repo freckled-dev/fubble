@@ -17,11 +17,12 @@ public:
   }
 
   void enumerate() override {
+    screens.clear();
+    windows.clear();
     auto cast_source_to_information =
         [](const webrtc::DesktopCapturer::Source &cast) {
           return information{cast.id, cast.title};
         };
-
     {
       webrtc::DesktopCapturer::SourceList sources;
       bool result = window_capturer->GetSourceList(&sources);
