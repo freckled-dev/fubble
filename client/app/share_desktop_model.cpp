@@ -12,8 +12,15 @@ void share_desktop_model::startPreviews() {
   BOOST_LOG_SEV(logger, logging::severity::debug) << "startPreviews()";
   BOOST_ASSERT(windows.empty());
   BOOST_ASSERT(screens.empty());
+  BOOST_ASSERT(categories == nullptr);
+  if (categories != nullptr) {
+    categories->deleteLater();
+    categories = nullptr;
+  }
   screens = desktop_sharing_->get_screen_previews();
   windows = desktop_sharing_->get_window_previews();
+  categories = new share_desktop_categories_model(screens, windows, this);
+  categories_changed(categories);
 }
 
 void share_desktop_model::stopPreviews() {
