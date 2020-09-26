@@ -26,6 +26,7 @@ public:
                 std::intptr_t id, std::string title)
       : logger{fmt::format("capturer_impl:{}:{}", id, title)},
         delegate{std::move(delegate_move)}, id{id}, title{title} {
+    BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
     if (!delegate->SelectSource(id))
       BOOST_THROW_EXCEPTION(could_not_select_source() << desktop_id_info(id));
     delegate->Start(this);

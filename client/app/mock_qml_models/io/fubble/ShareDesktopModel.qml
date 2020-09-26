@@ -23,8 +23,8 @@ QtObject {
         }
     }
 
-    function shareDesktop(model) {
-        console.log("User wants to share the following screen: " + model.description)
+    function shareDesktop(id) {
+        console.log("User wants to share the following screen: " + id)
         // TODO - switch layout
     }
 
@@ -33,6 +33,7 @@ QtObject {
             property string name: qsTr("Screens")
             property list<QtObject> previews: [
                 QtObject {
+                    property int id: 1
                     property string description: "Screen 1"
                     property var player: MediaPlayer {
                         source: "/home/tamrielle/Downloads/Big_Buck_Bunny_alt.webm"
@@ -45,6 +46,7 @@ QtObject {
             property string name: qsTr("Application Windows")
             property list<QtObject> previews: [
                 QtObject {
+                    property int id: 2
                     property string description: "Firefox"
                     property var player: MediaPlayer {
                         autoLoad: false
@@ -52,6 +54,7 @@ QtObject {
                     }
                 },
                 QtObject {
+                    property int id: 3
                     property string description: "VLC"
                     property var player: MediaPlayer {
                         autoLoad: false

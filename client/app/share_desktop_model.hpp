@@ -28,18 +28,26 @@ protected:
   int rowCount(const QModelIndex &) const override { return previews.size(); }
 
   QVariant data(const QModelIndex &index, int role) const override {
-    if (role == description_role) {
-      const std::string title =
-          previews[index.row()].capturer->get_capturer().get_title();
-      return QVariant::fromValue(QString::fromStdString(title));
+    if (role == description_role || role == id_role) {
+      auto &capturer = previews[index.row()].capturer->get_capturer();
+      if (role == id_role) {
+        const auto id = capturer.get_id();
+        return QVariant::fromValue(id);
+      }
+      if (role == description_role) {
+        const std::string title = capturer.get_title();
+        return QVariant::fromValue(QString::fromStdString(title));
+      }
+      BOOST_ASSERT(false);
     }
     return QVariant::fromValue(players[index.row()]);
   }
 
-  enum roles { description_role = Qt::UserRole + 1, player_role };
+  enum roles { id_role = Qt::UserRole + 1, description_role, player_role };
 
   QHash<int, QByteArray> roleNames() const override {
     QHash<int, QByteArray> roles;
+    roles[id_role] = "id";
     roles[description_role] = "description";
     roles[player_role] = "player";
     return roles;
@@ -94,8 +102,7 @@ public:
 
   Q_INVOKABLE void startPreviews();
   Q_INVOKABLE void stopPreviews();
-  // TODO
-  // Q_INVOKABLE void shareDesktop();
+  Q_INVOKABLE void shareDesktop(qint64 id);
 
 signals:
   void categories_changed(share_desktop_categories_model *);

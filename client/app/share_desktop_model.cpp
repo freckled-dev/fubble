@@ -30,3 +30,8 @@ void share_desktop_model::stopPreviews() {
   screens.clear();
   windows.clear();
 }
+
+void share_desktop_model::shareDesktop(qint64 id) {
+  BOOST_LOG_SEV(logger, logging::severity::debug)
+      << __FUNCTION__ << ", id:" << id;
+}
