@@ -6,6 +6,7 @@
         <file>sounds/error.wav</file>
         <file>sounds/join.wav</file>
         <file>sounds/leave.wav</file>
+        <file>sounds/message.wav</file>
 
         <file>images/close_dark.svg</file>
         <file>images/close_light.svg</file>

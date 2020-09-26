@@ -16,6 +16,7 @@ Rectangle {
         id: settings
         property alias darkMode: darkModeSwitch.checked
         property alias joinSound: joinSoundSwitch.checked
+        property alias messageSound: messageSoundSwitch.checked
         property alias leaveSound: leaveSoundSwitch.checked
         property alias errorSound: errorSoundSwitch.checked
         property alias showRoomHistory: roomHistorySwitch.checked
@@ -74,21 +75,28 @@ Rectangle {
         Switch {
             id: joinSoundSwitch
             anchors.top: audioDescription.bottom
-            text: qsTr("user joins the room")
+            text: qsTr("A user joins the room")
             checked: true || settings.joinSound
         }
 
         Switch {
             id: leaveSoundSwitch
             anchors.top: joinSoundSwitch.bottom
-            text: qsTr("user leaves the room")
+            text: qsTr("A user leaves the room")
             checked: true || settings.leaveSound
         }
 
         Switch {
-            id: errorSoundSwitch
+            id: messageSoundSwitch
             anchors.top: leaveSoundSwitch.bottom
-            text: qsTr("an error occurred")
+            text: qsTr("A chat message is received")
+            checked: true || settings.messageSound
+        }
+
+        Switch {
+            id: errorSoundSwitch
+            anchors.top: messageSoundSwitch.bottom
+            text: qsTr("An error occurred")
             checked: true || settings.errorSound
         }
     }

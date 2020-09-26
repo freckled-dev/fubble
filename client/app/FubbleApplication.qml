@@ -174,20 +174,37 @@ ApplicationWindow {
         source: "sounds/error.wav"
     }
 
+    SoundEffect {
+        id: messageSound
+        source: "sounds/message.wav"
+    }
+
     function playJoinSound() {
-        if (header.fubbleSettings.generalSettings.joinSound) {
+        var isJoinSoundEnabled = header.fubbleSettings.generalSettings.joinSound
+        if (isJoinSoundEnabled) {
             joinSound.play()
         }
     }
 
+    function playMessageSound() {
+        var isMessageSoundEnabled = header.fubbleSettings.generalSettings.messageSound
+        var isApplicationFocussed = container.active
+
+        if (isMessageSoundEnabled && !isApplicationFocussed) {
+            messageSound.play()
+        }
+    }
+
     function playLeaveSound() {
-        if (header.fubbleSettings.generalSettings.leaveSound) {
+        var isLeaveSoundEnabeled = header.fubbleSettings.generalSettings.leaveSound
+        if (isLeaveSoundEnabeled) {
             leaveSound.play()
         }
     }
 
     function playErrorSound() {
-        if (header.fubbleSettings.generalSettings.errorSound) {
+        var isErrorSoundEnabled = header.fubbleSettings.generalSettings.errorSound
+        if (isErrorSoundEnabled) {
             errorSound.play()
         }
     }
