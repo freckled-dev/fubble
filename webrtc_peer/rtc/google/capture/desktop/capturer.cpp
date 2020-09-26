@@ -6,6 +6,7 @@
 #include <api/video/video_frame.h>
 #include <boost/assert.hpp>
 #include <boost/optional.hpp>
+#include <fmt/format.h>
 #include <libyuv.h>
 #include <modules/desktop_capture/desktop_capture_options.h>
 #include <modules/desktop_capture/desktop_capturer.h>
@@ -23,7 +24,8 @@ class capturer_impl final : public capturer,
 public:
   capturer_impl(std::unique_ptr<webrtc::DesktopCapturer> delegate_move,
                 std::intptr_t id, std::string title)
-      : delegate{std::move(delegate_move)}, id{id}, title{title} {
+      : logger{fmt::format("capturer_impl:{}:{}", id, title)},
+        delegate{std::move(delegate_move)}, id{id}, title{title} {
     if (!delegate->SelectSource(id))
       BOOST_THROW_EXCEPTION(could_not_select_source() << desktop_id_info(id));
     delegate->Start(this);
@@ -31,7 +33,7 @@ public:
 
 protected:
   boost::future<void> capture() override {
-    BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
+    BOOST_LOG_SEV(logger, logging::severity::trace) << __FUNCTION__;
     BOOST_ASSERT(!capture_promise);
     capture_promise = std::make_shared<boost::promise<void>>();
     auto promise_reference = capture_promise;
@@ -45,7 +47,7 @@ protected:
 
   void OnCaptureResult(webrtc::DesktopCapturer::Result result,
                        std::unique_ptr<webrtc::DesktopFrame> frame) override {
-    BOOST_LOG_SEV(logger, logging::severity::debug)
+    BOOST_LOG_SEV(logger, logging::severity::trace)
         << __FUNCTION__ << ", result:" << static_cast<int>(result);
     auto promise_reference = std::move(capture_promise);
     if (result == webrtc::DesktopCapturer::Result::ERROR_PERMANENT) {
@@ -62,8 +64,9 @@ protected:
     }
     auto width = frame->size().width();
     auto height = frame->size().height();
-    if (!i420_buffer.get() ||
-        i420_buffer->width() * i420_buffer->height() < width * height)
+    if (i420_buffer.get() == nullptr)
+      i420_buffer = webrtc::I420Buffer::Create(width, height);
+    if (i420_buffer->width() != width || i420_buffer->height() != height)
       i420_buffer = webrtc::I420Buffer::Create(width, height);
     libyuv::ConvertToI420(frame->data(), 0, i420_buffer->MutableDataY(),
                           i420_buffer->StrideY(), i420_buffer->MutableDataU(),
@@ -73,11 +76,13 @@ protected:
     webrtc::VideoFrame::Builder builder;
     builder.set_video_frame_buffer(i420_buffer);
     webrtc::VideoFrame casted_frame = builder.build();
+    BOOST_LOG_SEV(logger, logging::severity::trace)
+        << __FUNCTION__ << ", after convert to i420";
     on_frame(casted_frame);
     promise_reference->set_value();
   }
 
-  rtc::logger logger{"capturer_impl"};
+  rtc::logger logger;
   std::unique_ptr<webrtc::DesktopCapturer> delegate;
   const std::intptr_t id;
   const std::string title;
@@ -94,6 +99,7 @@ public:
   boost::future<void> start() override {
     BOOST_ASSERT(!start_promise);
     start_promise = std::make_shared<boost::promise<void>>();
+    on_timeout();
     timer->start([this] { on_timeout(); });
     return start_promise->get_future();
   }
