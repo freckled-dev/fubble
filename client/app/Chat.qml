@@ -87,6 +87,9 @@ Item {
                 case "join":
                     playJoinSound()
                     break
+                case "message":
+                    playMessageSound()
+                    break
                 }
             }
         }
