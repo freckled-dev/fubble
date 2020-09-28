@@ -5,6 +5,7 @@ import QtQuick.Controls.Material 2.12
 import Qt.labs.settings 1.0
 import QtQuick.Layouts 1.12
 import QtQml.Models 2.12
+import QtQuick.Window 2.12
 import io.fubble 1.0
 import "scripts/utils.js" as Utils
 
@@ -88,9 +89,21 @@ Item {
                     playJoinSound()
                     break
                 case "message":
-                    playMessageSound()
+                    notifyUser(insertedItem)
                     break
                 }
+            }
+
+            function notifyUser(item) {
+                var isApplicationFocussed = container.active
+                if (!isApplicationFocussed) {
+                    showNotification(item)
+                    playMessageSound()
+                }
+            }
+
+            function showNotification(item) {
+                trayIcon.showMessage(item.name, item.message, null, 5000)
             }
         }
 
