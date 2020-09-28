@@ -131,8 +131,11 @@ public:
   void stop() override {
     BOOST_ASSERT(start_promise);
     timer->stop();
-    start_promise->set_value();
+    decltype(start_promise) moved = std::move(start_promise);
+    moved->set_value();
   }
+
+  bool get_started() const override { return start_promise != nullptr; }
 
   void on_timeout() { delegate->capture(); }
 

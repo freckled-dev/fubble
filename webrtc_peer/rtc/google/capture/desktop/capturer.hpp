@@ -35,6 +35,7 @@ public:
   virtual ~interval_capturer() = default;
   virtual boost::future<void> start() = 0;
   virtual void stop() = 0;
+  virtual bool get_started() const = 0;
   virtual capturer &get_capturer() = 0;
 
   static std::unique_ptr<interval_capturer>

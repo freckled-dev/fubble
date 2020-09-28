@@ -4,6 +4,7 @@
 #include "client/tracks_adder.hpp"
 #include "rtc/google/capture/desktop/enumerator.hpp"
 #include "utils/timer.hpp"
+#include <boost/thread/executors/inline_executor.hpp>
 #include <chrono>
 
 using namespace client;
@@ -34,10 +35,37 @@ public:
     auto video_source = set_capturer->get_capturer().get_source();
     BOOST_ASSERT(video_source);
     video_adder = add_video_to_connection_factory_->create(video_source);
+    set_capturer->start().then(executor,
+                               [this](auto result) { on_stopped(result); });
     tracks_adder_->add(video_adder);
   }
 
-  void reset() {
+  void on_stopped(boost::future<void> &result) {
+    try {
+      result.get();
+    } catch (const boost::exception &error) {
+      BOOST_LOG_SEV(logger, logging::severity::warning)
+          << __FUNCTION__ << ", error:" << boost::diagnostic_information(error);
+    }
+    reset_instance();
+  }
+
+  void stop_and_reset() {
+    BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
+    BOOST_ASSERT(set_capturer);
+    if (!set_capturer)
+      return;
+    if (set_capturer->get_started())
+      set_capturer->stop();
+    reset_instance();
+  }
+
+  void reset_instance() {
+    BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
+    stop_and_reset();
+  }
+
+  void reset() override {
     BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
     BOOST_ASSERT(set_capturer);
     if (!set_capturer)
@@ -89,6 +117,7 @@ public:
 
 protected:
   client::logger logger{"desktop_sharing_impl"};
+  boost::inline_executor executor;
   std::shared_ptr<utils::timer_factory> timer_factory;
   std::unique_ptr<rtc::google::capture::desktop::enumerator> enumerator =
       rtc::google::capture::desktop::enumerator::create();
