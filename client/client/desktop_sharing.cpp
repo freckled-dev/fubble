@@ -11,8 +11,13 @@ using namespace client;
 namespace {
 class desktop_sharing_impl final : public desktop_sharing {
 public:
-  desktop_sharing_impl(std::shared_ptr<utils::timer_factory> timer_factory)
-      : timer_factory{timer_factory} {}
+  desktop_sharing_impl(
+      const std::shared_ptr<utils::timer_factory> timer_factory,
+      const std::shared_ptr<tracks_adder> tracks_adder_,
+      const std::shared_ptr<add_video_to_connection_factory>
+          add_video_to_connection_factory_)
+      : timer_factory{timer_factory}, tracks_adder_{tracks_adder_},
+        add_video_to_connection_factory_{add_video_to_connection_factory_} {}
 
   void set(std::intptr_t id) {
     BOOST_LOG_SEV(logger, logging::severity::debug)
@@ -28,8 +33,8 @@ public:
         std::move(timer), std::move(capturer));
     auto video_source = set_capturer->get_capturer().get_source();
     BOOST_ASSERT(video_source);
-    auto video_adder = add_video_to_connection_factory_->create(video_source);
-    // tracks_adder_->add(video_adder);
+    video_adder = add_video_to_connection_factory_->create(video_source);
+    tracks_adder_->add(video_adder);
   }
 
   void reset() {
@@ -37,6 +42,10 @@ public:
     BOOST_ASSERT(set_capturer);
     if (!set_capturer)
       return;
+    BOOST_ASSERT(video_adder);
+    tracks_adder_->remove(video_adder);
+    set_capturer.reset();
+    video_adder.reset();
   }
 
   std::vector<preview> get_screen_previews() {
@@ -85,13 +94,18 @@ protected:
       rtc::google::capture::desktop::enumerator::create();
   std::shared_ptr<rtc::google::capture::desktop::interval_capturer>
       set_capturer;
+  std::shared_ptr<add_video_to_connection> video_adder;
   std::shared_ptr<tracks_adder> tracks_adder_;
   std::shared_ptr<add_video_to_connection_factory>
       add_video_to_connection_factory_;
 };
 } // namespace
 
-std::unique_ptr<desktop_sharing>
-desktop_sharing::create(std::shared_ptr<utils::timer_factory> timer_factory) {
-  return std::make_unique<desktop_sharing_impl>(timer_factory);
+std::unique_ptr<desktop_sharing> desktop_sharing::create(
+    const std::shared_ptr<utils::timer_factory> timer_factory,
+    const std::shared_ptr<tracks_adder> tracks_adder_,
+    const std::shared_ptr<add_video_to_connection_factory>
+        add_video_to_connection_factory_) {
+  return std::make_unique<desktop_sharing_impl>(
+      timer_factory, tracks_adder_, add_video_to_connection_factory_);
 }

@@ -13,9 +13,10 @@ using namespace client;
 namespace {
 class audio_tracks_volume_impl : public audio_tracks_volume {
 public:
-  audio_tracks_volume_impl(rooms &rooms_, tracks_adder &tracks_adder_,
-                           add_audio_to_connection &audio_track_adder,
-                           own_audio_track &own_audio_track_)
+  audio_tracks_volume_impl(
+      rooms &rooms_, tracks_adder &tracks_adder_,
+      const std::shared_ptr<add_audio_to_connection> &audio_track_adder,
+      own_audio_track &own_audio_track_)
       : rooms_(rooms_), tracks_adder_(tracks_adder_),
         audio_track_adder(audio_track_adder),
         own_audio_track_(own_audio_track_) {
@@ -197,7 +198,7 @@ protected:
   client::logger logger{"audio_tracks_volume_impl"};
   rooms &rooms_;
   tracks_adder &tracks_adder_;
-  add_audio_to_connection &audio_track_adder;
+  const std::shared_ptr<add_audio_to_connection> audio_track_adder;
   own_audio_track &own_audio_track_;
   std::shared_ptr<room> room_;
   participants *participants_{};
@@ -209,10 +210,10 @@ protected:
 };
 } // namespace
 
-std::unique_ptr<audio_tracks_volume>
-audio_tracks_volume::create(rooms &rooms_, tracks_adder &tracks_adder_,
-                            add_audio_to_connection &audio_track_adder,
-                            own_audio_track &own_audio_track_) {
+std::unique_ptr<audio_tracks_volume> audio_tracks_volume::create(
+    rooms &rooms_, tracks_adder &tracks_adder_,
+    const std::shared_ptr<add_audio_to_connection> &audio_track_adder,
+    own_audio_track &own_audio_track_) {
   return std::make_unique<audio_tracks_volume_impl>(
       rooms_, tracks_adder_, audio_track_adder, own_audio_track_);
 }

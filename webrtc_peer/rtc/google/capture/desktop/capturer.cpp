@@ -169,7 +169,7 @@ boost::optional<type> get_type(std::intptr_t id) {
       return {};
     auto found = std::find_if(sources.cbegin(), sources.cend(),
                               [&](auto &check) { return check.id == id; });
-    if (found == sources.cend())
+    if (found != sources.cend())
       return type::screen;
   }
   {
@@ -180,7 +180,7 @@ boost::optional<type> get_type(std::intptr_t id) {
       return {};
     auto found = std::find_if(sources.cbegin(), sources.cend(),
                               [&](auto &check) { return check.id == id; });
-    if (found == sources.cend())
+    if (found != sources.cend())
       return type::window;
   }
   return {};

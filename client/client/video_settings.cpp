@@ -95,7 +95,7 @@ void video_settings::change_to_device(const std::string &id) {
   }
   video_track_adder =
       add_video_to_connection_factory_.create(capture_device->get_source());
-  tracks_adder_.add(*video_track_adder);
+  tracks_adder_.add(video_track_adder);
   own_media_.add(capture_device->get_source());
   on_video_source_changed();
 }
@@ -103,7 +103,7 @@ void video_settings::change_to_device(const std::string &id) {
 void video_settings::reset_current_video_capture() {
   if (!capture_device)
     return;
-  tracks_adder_.remove(*video_track_adder);
+  tracks_adder_.remove(video_track_adder);
   video_track_adder.reset();
   own_media_.remove(capture_device->get_source());
   capture_device->stop();

@@ -165,7 +165,7 @@ int main(int argc, char *argv[]) {
                                    asio_signalling_thread.get_native()};
   client::peer_creator peer_creator{
       boost_executor, signalling_client_creator_reconnecting, rtc_factory};
-  client::tracks_adder tracks_adder;
+  auto tracks_adder = std::make_shared<client::tracks_adder>();
 
   // audio
   BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up audio device";
@@ -176,10 +176,10 @@ int main(int argc, char *argv[]) {
   client::rooms rooms;
   auto own_audio_track =
       client::own_audio_track::create(rtc_factory, audio_device->get_source());
-  auto audio_track_adder = std::make_unique<client::add_audio_to_connection>(
+  auto audio_track_adder = std::make_shared<client::add_audio_to_connection>(
       own_audio_track->get_track());
   auto audio_tracks_volume = client::audio_tracks_volume::create(
-      rooms, tracks_adder, *audio_track_adder, *own_audio_track);
+      rooms, *tracks_adder, audio_track_adder, *own_audio_track);
   std::shared_ptr<rtc::google::audio_track> settings_audio_track =
       rtc_factory.create_audio_track(audio_device->get_source());
   client::loopback_audio_impl_factory loopback_audio_test_factory{
@@ -213,26 +213,28 @@ int main(int argc, char *argv[]) {
     video_enumerator = std::make_unique<rtc::video_devices_noop>();
   }
   rtc::google::capture::video::device_factory video_device_creator;
-  client::add_video_to_connection_factory_impl add_video_to_connection_factory_{
-      rtc_factory};
+  auto add_video_to_connection_factory_ =
+      std::make_shared<client::add_video_to_connection_factory_impl>(
+          rtc_factory);
   auto own_videos_ = client::own_video::create();
   client::video_settings video_settings{*video_enumerator, video_device_creator,
-                                        *own_videos_, tracks_adder,
-                                        add_video_to_connection_factory_};
+                                        *own_videos_, *tracks_adder,
+                                        *add_video_to_connection_factory_};
 
   // desktop
   BOOST_LOG_SEV(logger, logging::severity::trace)
       << "setting up desktop sharing";
   auto timer_factory = std::make_shared<utils::timer_factory>(context);
   std::shared_ptr<client::desktop_sharing> desktop_sharing =
-      client::desktop_sharing::create(timer_factory);
+      client::desktop_sharing::create(timer_factory, tracks_adder,
+                                      add_video_to_connection_factory_);
 
   // client
   BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up client";
   client::factory client_factory{context};
   client::own_media own_media{*own_audio_track, *own_videos_};
   client::participant_creator_creator participant_creator_creator{
-      client_factory, peer_creator, tracks_adder, own_media};
+      client_factory, peer_creator, *tracks_adder, own_media};
   client::room_creator client_room_creator{participant_creator_creator};
   client::joiner joiner{client_room_creator, rooms, matrix_authentification,
                         temporary_room_client};

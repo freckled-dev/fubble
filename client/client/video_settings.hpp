@@ -53,7 +53,7 @@ protected:
   add_video_to_connection_factory &add_video_to_connection_factory_;
 
   std::shared_ptr<rtc::google::capture::video::device> capture_device;
-  std::unique_ptr<add_video_to_connection> video_track_adder;
+  std::shared_ptr<add_video_to_connection> video_track_adder;
   bool paused{};
   // TODO refactor to `current_device_id`
   std::optional<std::string> last_device_id;

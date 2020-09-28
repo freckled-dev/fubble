@@ -257,7 +257,8 @@ struct two_participants {
   }
 };
 struct two_participants_with_data_channel {
-  client::add_data_channel data_channel;
+  std::shared_ptr<client::add_data_channel> data_channel =
+      std::make_shared<client::add_data_channel>();
   std::unique_ptr<two_participants> participants;
   boost::promise<void> promise;
   boost::inline_executor executor;
@@ -266,7 +267,7 @@ struct two_participants_with_data_channel {
     participants = std::make_unique<two_participants>(fixture, room_name);
     participants->client_first.tracks_adder.add(data_channel);
     auto channel_opened = [this]() { promise.set_value(); };
-    data_channel.on_added.connect(
+    data_channel->on_added.connect(
         [channel_opened](rtc::data_channel_ptr channel) {
           channel->on_opened.connect(channel_opened);
         });
