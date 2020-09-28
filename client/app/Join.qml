@@ -13,6 +13,7 @@ FocusScope {
     property var title: qsTr("Join a room")
     property JoinModel joinModel
     property bool guiEnabled: true
+    property FubbleSettings settingsDialog
     property alias history: history
     property alias roomName: roomTextField.text
     property bool demoMode: Utils.isDemoMode()
@@ -69,6 +70,7 @@ FocusScope {
                 anchors.bottom: parent.bottom
                 height: 60
                 videoOffButtonVisible: ownMediaModel.videoDisabled ? true : false
+                settingsDialog: joinRoomContainer.settingsDialog
             }
 
             function getInfoText() {
@@ -124,6 +126,7 @@ FocusScope {
                     anchors.bottom: parent.bottom
                     height: 60
                     videoOffButtonVisible: true
+                    settingsDialog: joinRoomContainer.settingsDialog
                 }
             }
         }
@@ -159,6 +162,7 @@ FocusScope {
                 anchors.right: parent.right
                 anchors.bottom: parent.bottom
                 height: 60
+                settingsDialog: joinRoomContainer.settingsDialog
                 videoOffButtonVisible: true
             }
         }
@@ -314,7 +318,7 @@ FocusScope {
         borderColor: Style.current.foreground
         width: 300
         visible: history.hasRoomHistory
-                 && header.fubbleSettings.generalSettings.showRoomHistory
+                 && settingsDialog.generalSettings.showRoomHistory
 
         RoomHistory {
             id: history

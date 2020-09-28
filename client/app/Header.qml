@@ -10,9 +10,10 @@ ToolBar {
     property string title
     property var stackView
     property ProgressPopup leave
+    property FubbleSettings settingsDialog
+    property About aboutDialog
     signal toggleChat
     signal toggleOverview
-    property alias fubbleSettings: settings
 
     property alias timer: roomTimer
 
@@ -260,7 +261,7 @@ ToolBar {
             transformOrigin: Menu.TopRight
             MenuItem {
                 text: qsTr("Settings")
-                onTriggered: settings.open()
+                onTriggered: settingsDialog.open()
             }
             MenuItem {
                 text: qsTr("About")
@@ -282,13 +283,5 @@ ToolBar {
     function roomHasVideos() {
         var room = stackView.currentItem.room
         return room.videosAvailable
-    }
-
-    About {
-        id: aboutDialog
-    }
-
-    FubbleSettings {
-        id: settings
     }
 }

@@ -103,7 +103,8 @@ Item {
             }
 
             function showNotification(item) {
-                trayIcon.showMessage(item.name, item.message, null, 5000)
+                // MessageIcon Enum: NoIcon, Information, Warning, Critica
+                trayIcon.showMessage(item.name, item.message, 1, 5000)
             }
         }
 
