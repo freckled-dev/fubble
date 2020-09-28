@@ -18,7 +18,9 @@ public:
         [&](desktop_sharing::preview &preview) {
           auto &capturer = preview.capturer->get_capturer();
           auto result = new ui::frame_provider_google_video_source(this);
-          result->set_source(capturer.get_source());
+          auto video_source = capturer.get_source();
+          BOOST_ASSERT(video_source);
+          result->set_source(video_source);
           preview.capturer->start(); // TODO returns a future!
           return result;
         });

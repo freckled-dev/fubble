@@ -26,8 +26,9 @@ public:
     auto timer = timer_factory->create_interval_timer(interval);
     set_capturer = rtc::google::capture::desktop::interval_capturer::create(
         std::move(timer), std::move(capturer));
-    auto video_adder = add_video_to_connection_factory_->create(
-        set_capturer->get_capturer().get_source());
+    auto video_source = set_capturer->get_capturer().get_source();
+    BOOST_ASSERT(video_source);
+    auto video_adder = add_video_to_connection_factory_->create(video_source);
     // tracks_adder_->add(video_adder);
   }
 

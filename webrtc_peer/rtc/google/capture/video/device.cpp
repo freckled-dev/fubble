@@ -36,7 +36,8 @@ public:
   device_impl(
       const rtc::scoped_refptr<webrtc::VideoCaptureModule> &native_device,
       const std::string &id)
-      : id(id), device_(native_device) {
+      : id(id), device_(native_device),
+        source_adapter{std::make_shared<device_sink_source_adapter>()} {
     BOOST_ASSERT(native_device);
     device_->RegisterCaptureDataCallback(source_adapter.get());
   }

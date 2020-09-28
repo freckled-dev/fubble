@@ -100,7 +100,7 @@ protected:
   }
 
   std::shared_ptr<rtc::google::video_source> get_source() const override {
-    return {};
+    return source_adapter;
   }
 
   std::intptr_t get_id() override { return id; }
