@@ -15,12 +15,8 @@ Rectangle {
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: parent.left
         icon.source: Style.current.settingsImage
-        onActionClick: openSettings()
+        onActionClick: settingsDialog.open()
         showToolTip: false
-    }
-
-    function openSettings() {
-        settingsDialog.open()
     }
 
     Connections {

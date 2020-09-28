@@ -9,7 +9,6 @@ Item {
     id: element
 
     property alias settings: settings
-    property bool tabIsActive: false
     property bool demoMode: Utils.isDemoMode()
 
     Settings {
@@ -169,16 +168,6 @@ Item {
                     fillMode: Image.PreserveAspectCrop
                 }
             }
-        }
-    }
-
-    onTabIsActiveChanged: {
-        if (tabIsActive && ownMediaModel.videoAvailable) {
-            audioVideoModel.videoPreview.play()
-        }
-
-        if (!tabIsActive) {
-            audioVideoModel.videoPreview.stop()
         }
     }
 }
