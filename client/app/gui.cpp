@@ -234,7 +234,7 @@ int main(int argc, char *argv[]) {
   client::factory client_factory{context};
   client::own_media own_media{*own_audio_track, *own_videos_};
   client::participant_creator_creator participant_creator_creator{
-      client_factory, peer_creator, *tracks_adder, own_media};
+      client_factory, peer_creator, *tracks_adder, own_media, desktop_sharing};
   client::room_creator client_room_creator{participant_creator_creator};
   client::joiner joiner{client_room_creator, rooms, matrix_authentification,
                         temporary_room_client};

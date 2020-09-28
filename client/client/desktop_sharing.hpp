@@ -36,6 +36,7 @@ public:
          const std::shared_ptr<tracks_adder> tracks_adder_,
          const std::shared_ptr<add_video_to_connection_factory>
              add_video_to_connection_factory_);
+  static std::unique_ptr<desktop_sharing> create_noop();
 };
 } // namespace client
 

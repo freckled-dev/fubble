@@ -128,6 +128,13 @@ protected:
   std::shared_ptr<add_video_to_connection_factory>
       add_video_to_connection_factory_;
 };
+class desktop_sharing_noop final : public desktop_sharing {
+public:
+  void set([[maybe_unused]] std::intptr_t id) {}
+  void reset() {}
+  previews get_screen_previews() { return {}; }
+  previews get_window_previews() { return {}; }
+};
 } // namespace
 
 std::unique_ptr<desktop_sharing> desktop_sharing::create(
@@ -137,4 +144,8 @@ std::unique_ptr<desktop_sharing> desktop_sharing::create(
         add_video_to_connection_factory_) {
   return std::make_unique<desktop_sharing_impl>(
       timer_factory, tracks_adder_, add_video_to_connection_factory_);
+}
+
+std::unique_ptr<desktop_sharing> desktop_sharing::create_noop() {
+  return std::make_unique<desktop_sharing_noop>();
 }
