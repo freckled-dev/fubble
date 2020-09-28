@@ -2,6 +2,7 @@ import QtMultimedia 5.12
 import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Window 2.12
+import Qt.labs.platform 1.1
 import io.fubble 1.0
 import QtQuick.Controls.Material 2.12
 import Qt.labs.settings 1.0
@@ -97,6 +98,12 @@ ApplicationWindow {
         close.accepted = true
     }
 
+    SystemTrayIcon {
+        id: trayIcon
+        visible: true
+        iconSource: Style.current.logoImage
+    }
+
     ProgressPopup {
         id: leavePopup
         leaveModel: container.leaveModel
@@ -188,9 +195,7 @@ ApplicationWindow {
 
     function playMessageSound() {
         var isMessageSoundEnabled = header.fubbleSettings.generalSettings.messageSound
-        var isApplicationFocussed = container.active
-
-        if (isMessageSoundEnabled && !isApplicationFocussed) {
+        if (isMessageSoundEnabled) {
             messageSound.play()
         }
     }
