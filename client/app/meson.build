@@ -15,6 +15,7 @@ client_gui_sources = ['gui.cpp', 'utils_model.cpp', 'join_model.cpp',
   'participant_model.cpp', 'room_model.cpp', 'model_creator.cpp',
   'audio_video_settings_model.cpp', 'own_media_model.cpp'
   ]
+qt5 = import('qt5')
 client_gui_sources += qt5.preprocess(
   qresources: 'qml.qrc',
   moc_headers: ['join_model.hpp', 'utils_model.hpp',  'room_model.hpp',
@@ -24,6 +25,7 @@ client_gui_sources += qt5.preprocess(
     'own_media_model.hpp',
     'participants_model.hpp', 'participant_model.hpp', 'poll_asio_by_qt.hpp']
   )
+# translations = qt5.compile_translations(ts_files: 'translation_de.ts', build_by_default: true)
 if host_machine.system() == 'windows'
   windows = import('windows')
   client_gui_sources += windows.compile_resources('fubble.rc')
