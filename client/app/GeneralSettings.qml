@@ -99,6 +99,23 @@ Rectangle {
             text: qsTr("An error occurred")
             checked: true || settings.errorSound
         }
+
+        Label {
+            id: languageTitle
+            text: qsTr("Language")
+            anchors.topMargin: 20
+            anchors.top: errorSoundSwitch.bottom
+            font.pointSize: Style.current.largeTextPointSize
+            width: settingsDialog.availableWidth
+        }
+
+        ComboBox {
+            id: videoCombo
+            currentIndex: languageModel.languageIndex
+            textRole: "description"
+            anchors.top: languageTitle.bottom
+            model: languageModel.languages
+        }
     }
 }
 

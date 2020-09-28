@@ -11,5 +11,6 @@ FubbleApplication {
     utilsModel: UtilsModel {}
     shareDesktopModel: ShareDesktopModel {}
     audioVideoModel: AudioVideoSettingsModel {}
+    languageModel: LanguageSettingsModel {}
     ownMediaModel: OwnMediaModel {}
 }
