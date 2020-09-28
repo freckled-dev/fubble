@@ -54,6 +54,14 @@ Popup {
                 text: qsTr("Audio / Video")
                 width: implicitWidth
             }
+
+            onCurrentIndexChanged: {
+                if (currentIndex === 0) {
+                    stopVideo()
+                } else if (currentIndex === 1) {
+                    startVideo()
+                }
+            }
         }
 
         StackLayout {
@@ -67,15 +75,28 @@ Popup {
             AudioVideoSettings {
                 id: audioVideo
             }
-
-            onCurrentIndexChanged: audioVideo.tabIsActive = currentIndex === 1
         }
     }
 
     onClosed: {
         ownMediaModel.loopbackOwnVoice = false
-        audioVideo.tabIsActive = false
-        bar.currentIndex = 0
+        stopVideo()
+    }
+
+    function stopVideo() {
+        if (audioVideoModel.videoPreview != null) {
+            audioVideoModel.videoPreview.stop()
+        }
+    }
+
+    function startVideo() {
+        if (ownMediaModel.videoAvailable && bar.currentIndex == 1) {
+            audioVideoModel.videoPreview.play()
+        }
+    }
+
+    onOpened: {
+        startVideo()
     }
 }
 

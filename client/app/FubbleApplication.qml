@@ -51,6 +51,8 @@ ApplicationWindow {
         title: stack.currentItem.title
         stackView: stack
         leave: leavePopup
+        settingsDialog: settingsDialog
+        aboutDialog: aboutDialog
     }
 
     Settings {
@@ -71,6 +73,7 @@ ApplicationWindow {
     Join {
         id: join
         joinModel: container.joinModel
+        settingsDialog: settingsDialog
         onJoined: {
             stack.push(roomComponent, {
                            "room": room
@@ -102,6 +105,44 @@ ApplicationWindow {
         id: trayIcon
         visible: true
         iconSource: Style.current.logoImage
+        menu: Menu {
+            MenuItem {
+                text: qsTr("Settings")
+                onTriggered: {
+                    aboutDialog.close()
+                    settingsDialog.open()
+                }
+            }
+
+            MenuItem {
+                text: qsTr("About")
+                onTriggered: {
+                    settingsDialog.close()
+                    aboutDialog.open()
+                }
+            }
+
+            MenuItem {
+                text: qsTr("Exit")
+                onTriggered: {
+                    container.close()
+                }
+            }
+        }
+
+        onActivated: {
+            container.show()
+            container.raise()
+            container.requestActivate()
+        }
+    }
+
+    FubbleSettings {
+        id: settingsDialog
+    }
+
+    About {
+        id: aboutDialog
     }
 
     ProgressPopup {
@@ -187,28 +228,28 @@ ApplicationWindow {
     }
 
     function playJoinSound() {
-        var isJoinSoundEnabled = header.fubbleSettings.generalSettings.joinSound
+        var isJoinSoundEnabled = settingsDialog.generalSettings.joinSound
         if (isJoinSoundEnabled) {
             joinSound.play()
         }
     }
 
     function playMessageSound() {
-        var isMessageSoundEnabled = header.fubbleSettings.generalSettings.messageSound
+        var isMessageSoundEnabled = settingsDialog.generalSettings.messageSound
         if (isMessageSoundEnabled) {
             messageSound.play()
         }
     }
 
     function playLeaveSound() {
-        var isLeaveSoundEnabeled = header.fubbleSettings.generalSettings.leaveSound
+        var isLeaveSoundEnabeled = settingsDialog.generalSettings.leaveSound
         if (isLeaveSoundEnabeled) {
             leaveSound.play()
         }
     }
 
     function playErrorSound() {
-        var isErrorSoundEnabled = header.fubbleSettings.generalSettings.errorSound
+        var isErrorSoundEnabled = settingsDialog.generalSettings.errorSound
         if (isErrorSoundEnabled) {
             errorSound.play()
         }
