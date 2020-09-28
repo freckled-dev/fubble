@@ -28,6 +28,10 @@ QtObject {
         // TODO - switch layout
     }
 
+    function stopShareDesktop() {
+        console.log("stopShareDesktop")
+    }
+
     property list<QtObject> categories: [
         QtObject {
             property string name: qsTr("Screens")

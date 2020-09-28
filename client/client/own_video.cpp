@@ -6,17 +6,17 @@ using namespace client;
 
 namespace {
 class own_video_impl : public own_video {
-  void add(rtc::google::video_source &video) override {
+  void add(std::shared_ptr<rtc::google::video_source> video) override {
     BOOST_ASSERT(std::find_if(videos.cbegin(), videos.cend(), [&](auto check) {
-                   return check == &video;
+                   return check == video;
                  }) == videos.cend());
-    videos.push_back(&video);
+    videos.push_back(video);
     on_added(video);
   }
 
-  void remove(rtc::google::video_source &video) override {
+  void remove(std::shared_ptr<rtc::google::video_source> video) override {
     auto found = std::find_if(videos.cbegin(), videos.cend(),
-                              [&](auto check) { return check == &video; });
+                              [video](auto check) { return check == video; });
     if (found == videos.cend()) {
       BOOST_ASSERT(false);
       return;

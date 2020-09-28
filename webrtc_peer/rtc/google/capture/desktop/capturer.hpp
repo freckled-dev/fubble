@@ -15,7 +15,7 @@ namespace google {
 namespace capture {
 namespace desktop {
 
-class capturer : public video_source {
+class capturer {
 public:
   virtual ~capturer() = default;
 
@@ -23,6 +23,9 @@ public:
   virtual std::intptr_t get_id() = 0;
   virtual std::string get_title() = 0;
 
+  virtual std::shared_ptr<video_source> get_source() const = 0;
+
+  static std::unique_ptr<capturer> create(std::intptr_t id);
   static std::unique_ptr<capturer> create_screen(std::intptr_t id);
   static std::unique_ptr<capturer> create_window(std::intptr_t id);
 };

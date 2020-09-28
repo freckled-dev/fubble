@@ -152,7 +152,7 @@ int main(int argc, char *argv[]) {
     std::shared_ptr<rtc::google::capture::video::device> capture_device =
         device_creator.create(devices.front().id);
     std::shared_ptr<rtc::google::video_track> video_track =
-        rtc_connection_creator.create_video_track(capture_device);
+        rtc_connection_creator.create_video_track(capture_device->get_source());
     rtc_connection->add_track(video_track);
     capture_device->start();
   }

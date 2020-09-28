@@ -26,13 +26,13 @@ participant_model::participant_model(
   signal_connections.push_back(
       participant_.on_name_changed.connect([this](auto) { set_name(); }));
   signal_connections.push_back(participant_.on_video_added.connect(
-      [this](auto &added) { video_added(added); }));
+      [this](auto added) { video_added(added); }));
   signal_connections.push_back(participant_.on_video_removed.connect(
-      [this](auto &removed) { video_removed(removed); }));
+      [this](auto removed) { video_removed(removed); }));
   auto videos = participant_.get_videos();
   for (auto video : videos) {
     BOOST_ASSERT(video);
-    video_added(*video);
+    video_added(video);
   }
   if (own) {
     video_disabled = video_settings_.get_paused();
@@ -71,20 +71,22 @@ void participant_model::set_name() {
   name_changed(name);
 }
 
-void participant_model::video_added(rtc::google::video_source &added) {
+void participant_model::video_added(
+    std::shared_ptr<rtc::google::video_source> added) {
   // TODO support more than one video per client
   if (video) {
     BOOST_LOG_SEV(logger, logging::severity::warning) << "replacing a video!";
     video->deleteLater();
   }
   video = new ui::frame_provider_google_video_source(this);
-  video->set_source(&added);
+  video->set_source(added);
   video_changed(video);
 }
 
-void participant_model::video_removed(rtc::google::video_source &removed) {
+void participant_model::video_removed(
+    std::shared_ptr<rtc::google::video_source> removed) {
   BOOST_ASSERT(video);
-  if (video->get_source() != &removed) {
+  if (video->get_source() != removed) {
     BOOST_LOG_SEV(logger, logging::severity::warning)
         << "can't remove video, because it seems like it got replaced.";
     return;

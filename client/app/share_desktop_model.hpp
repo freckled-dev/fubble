@@ -18,7 +18,7 @@ public:
         [&](desktop_sharing::preview &preview) {
           auto &capturer = preview.capturer->get_capturer();
           auto result = new ui::frame_provider_google_video_source(this);
-          result->set_source(&capturer);
+          result->set_source(capturer.get_source());
           preview.capturer->start(); // TODO returns a future!
           return result;
         });
@@ -103,6 +103,7 @@ public:
   Q_INVOKABLE void startPreviews();
   Q_INVOKABLE void stopPreviews();
   Q_INVOKABLE void shareDesktop(qint64 id);
+  Q_INVOKABLE void stopShareDesktop();
 
 signals:
   void categories_changed(share_desktop_categories_model *);

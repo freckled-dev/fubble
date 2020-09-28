@@ -8,7 +8,7 @@ namespace rtc {
 namespace google {
 namespace capture {
 namespace video {
-class device : public video_source {
+class device {
 public:
   device() = default;
   virtual ~device() = default;
@@ -18,6 +18,7 @@ public:
   virtual bool get_started() const = 0;
 
   virtual std::string get_id() const = 0;
+  virtual std::shared_ptr<video_source> get_source() const = 0;
 };
 class device_factory {
 public:

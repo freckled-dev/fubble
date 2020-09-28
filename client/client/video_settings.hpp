@@ -37,7 +37,7 @@ public:
   bool is_a_video_available() const;
   std::optional<std::string> get_device_id() const;
 
-  rtc::google::video_source *get_video_source() const;
+  std::shared_ptr<rtc::google::video_source> get_video_source() const;
   boost::signals2::signal<void()> on_video_source_changed;
 
 protected:

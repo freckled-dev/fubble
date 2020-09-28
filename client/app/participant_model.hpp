@@ -70,8 +70,8 @@ signals:
 
 protected:
   void set_name();
-  void video_added(rtc::google::video_source &);
-  void video_removed(rtc::google::video_source &);
+  void video_added(std::shared_ptr<rtc::google::video_source>);
+  void video_removed(std::shared_ptr<rtc::google::video_source>);
   // TODO refactor to track
   void audio_added(rtc::google::audio_source &);
   void audio_removed(rtc::google::audio_source &);

@@ -24,10 +24,12 @@ public:
   std::string get_name() const;
   boost::signals2::signal<void(const std::string &)> on_name_changed;
 
-  using videos_type = std::vector<rtc::google::video_source *>;
+  using videos_type = std::vector<std::shared_ptr<rtc::google::video_source>>;
   virtual videos_type get_videos() const = 0;
-  boost::signals2::signal<void(rtc::google::video_source &)> on_video_added;
-  boost::signals2::signal<void(rtc::google::video_source &)> on_video_removed;
+  boost::signals2::signal<void(std::shared_ptr<rtc::google::video_source>)>
+      on_video_added;
+  boost::signals2::signal<void(std::shared_ptr<rtc::google::video_source>)>
+      on_video_removed;
 
   using audios_type = std::vector<rtc::google::audio_track *>;
   virtual audios_type get_audios() const = 0;

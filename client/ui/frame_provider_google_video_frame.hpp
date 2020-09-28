@@ -20,8 +20,8 @@ public:
 
   // TODO take it in constructor?! reinstance
   // `frame_provider_google_video_source` every video change
-  void set_source(rtc::google::video_source *source);
-  rtc::google::video_source *get_source() const;
+  void set_source(std::shared_ptr<rtc::google::video_source> source);
+  std::shared_ptr<rtc::google::video_source> get_source() const;
   void set_surface(QAbstractVideoSurface *surface);
   QAbstractVideoSurface *get_surface() const;
 
@@ -33,7 +33,7 @@ protected:
 
   client::logger logger{"frame_provider_google_video_source"};
   QAbstractVideoSurface *surface{};
-  rtc::google::video_source *source{};
+  std::shared_ptr<rtc::google::video_source> source;
   QVideoSurfaceFormat format;
   QSize current_frame_size;
   boost::signals2::scoped_connection connection_on_frame;

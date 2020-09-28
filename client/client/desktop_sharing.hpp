@@ -19,7 +19,7 @@ class desktop_sharing {
 public:
   virtual ~desktop_sharing() = default;
   enum class type { screen, window };
-  virtual void set(std::string id, type type_) = 0;
+  virtual void set(std::intptr_t id) = 0;
   virtual void reset() = 0;
 
   struct preview {
