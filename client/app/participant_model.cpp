@@ -22,13 +22,26 @@ participant_model::participant_model(
       audio_volume_(audio_volume_),
       id(participant_.get_id()), own{dynamic_cast<own_participant *>(
                                          &participant_) != nullptr} {
-  set_name();
-  signal_connections.push_back(
-      participant_.on_name_changed.connect([this](auto) { set_name(); }));
-  signal_connections.push_back(participant_.on_video_added.connect(
-      [this](auto added) { video_added(added); }));
-  signal_connections.push_back(participant_.on_video_removed.connect(
-      [this](auto removed) { video_removed(removed); }));
+  // name
+  {
+    set_name();
+    signal_connections.push_back(
+        participant_.on_name_changed.connect([this](auto) { set_name(); }));
+  }
+  // video
+  {
+    signal_connections.push_back(participant_.on_video_added.connect(
+        [this](auto added) { video_added(added); }));
+    signal_connections.push_back(participant_.on_video_removed.connect(
+        [this](auto removed) { video_removed(removed); }));
+  }
+  // screen
+  {
+    signal_connections.push_back(participant_.on_screen_added.connect(
+        [this](auto added) { video_added(added); }));
+    signal_connections.push_back(participant_.on_screen_removed.connect(
+        [this](auto removed) { video_removed(removed); }));
+  }
   auto videos = participant_.get_videos();
   for (auto video : videos) {
     BOOST_ASSERT(video);

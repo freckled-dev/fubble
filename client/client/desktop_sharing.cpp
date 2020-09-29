@@ -38,6 +38,13 @@ public:
     set_capturer->start().then(executor,
                                [this](auto result) { on_stopped(result); });
     tracks_adder_->add(video_adder);
+    on_added(get());
+  }
+
+  std::shared_ptr<rtc::google::video_source> get() override {
+    if (!set_capturer)
+      return nullptr;
+    return set_capturer->get_capturer().get_source();
   }
 
   void on_stopped(boost::future<void> &result) {
@@ -50,30 +57,32 @@ public:
     reset_instance();
   }
 
-  void stop_and_reset() {
+  void stop_or_reset() {
     BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
     BOOST_ASSERT(set_capturer);
     if (!set_capturer)
       return;
     if (set_capturer->get_started())
       set_capturer->stop();
-    reset_instance();
+    else
+      reset_instance();
   }
 
   void reset_instance() {
-    BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
-    stop_and_reset();
-  }
-
-  void reset() override {
     BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
     BOOST_ASSERT(set_capturer);
     if (!set_capturer)
       return;
     BOOST_ASSERT(video_adder);
+    on_removed(get());
     tracks_adder_->remove(video_adder);
     set_capturer.reset();
     video_adder.reset();
+  }
+
+  void reset() override {
+    BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
+    stop_or_reset();
   }
 
   std::vector<preview> get_screen_previews() {
@@ -131,6 +140,7 @@ protected:
 class desktop_sharing_noop final : public desktop_sharing {
 public:
   void set([[maybe_unused]] std::intptr_t id) {}
+  std::shared_ptr<rtc::google::video_source> get() override { return nullptr; }
   void reset() {}
   previews get_screen_previews() { return {}; }
   previews get_window_previews() { return {}; }

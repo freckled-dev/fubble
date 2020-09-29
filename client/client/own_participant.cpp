@@ -12,6 +12,10 @@ own_participant::own_participant(
       [this](auto source) { on_video_added(source); });
   own_media_.get_videos().on_removed.connect(
       [this](auto source) { on_video_removed(source); });
+  desktop_sharing_->on_added.connect(
+      [this](auto source) { on_screen_added(source); });
+  desktop_sharing_->on_removed.connect(
+      [this](auto source) { on_screen_removed(source); });
   // TODO add and removal of audio!
 }
 
@@ -23,6 +27,14 @@ boost::future<void> own_participant::close() {
 
 own_participant::videos_type own_participant::get_videos() const {
   return own_media_.get_videos().get_all();
+}
+
+own_participant::videos_type own_participant::get_screens() const {
+  own_participant::videos_type result;
+  if (desktop_sharing_->get() == nullptr)
+    return result;
+  result.push_back(desktop_sharing_->get());
+  return result;
 }
 
 own_participant::audios_type own_participant::get_audios() const {

@@ -4,6 +4,7 @@
 #include "client/add_video_to_connection.hpp"
 #include "client/tracks_adder.hpp"
 #include "rtc/google/capture/desktop/capturer.hpp"
+#include <boost/signals2/signal.hpp>
 #include <functional>
 #include <memory>
 #include <string>
@@ -22,7 +23,12 @@ public:
   virtual ~desktop_sharing() = default;
   enum class type { screen, window };
   virtual void set(std::intptr_t id) = 0;
+  using video_ptr = std::shared_ptr<rtc::google::video_source>;
+  virtual video_ptr get() = 0;
   virtual void reset() = 0;
+
+  boost::signals2::signal<void(video_ptr)> on_added;
+  boost::signals2::signal<void(video_ptr)> on_removed;
 
   struct preview {
     std::unique_ptr<rtc::google::capture::desktop::interval_capturer> capturer;
