@@ -13,14 +13,16 @@ namespace client {
 class own_video {
 public:
   virtual ~own_video() = default;
-  virtual void add(rtc::google::video_source &video) = 0;
-  virtual void remove(rtc::google::video_source &video) = 0;
+  virtual void add(std::shared_ptr<rtc::google::video_source> video) = 0;
+  virtual void remove(std::shared_ptr<rtc::google::video_source> video) = 0;
 
-  using videos_type = std::vector<rtc::google::video_source *>;
+  using videos_type = std::vector<std::shared_ptr<rtc::google::video_source>>;
   virtual videos_type get_all() const = 0;
 
-  boost::signals2::signal<void(rtc::google::video_source &)> on_added;
-  boost::signals2::signal<void(rtc::google::video_source &)> on_removed;
+  boost::signals2::signal<void(std::shared_ptr<rtc::google::video_source>)>
+      on_added;
+  boost::signals2::signal<void(std::shared_ptr<rtc::google::video_source>)>
+      on_removed;
 
   static std::unique_ptr<own_video> create();
 };

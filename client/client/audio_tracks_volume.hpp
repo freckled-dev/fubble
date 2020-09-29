@@ -32,7 +32,7 @@ class audio_tracks_volume : public audio_volume {
 public:
   static std::unique_ptr<audio_tracks_volume>
   create(rooms &rooms_, tracks_adder &tracks_adder_,
-         add_audio_to_connection &audio_track_adder,
+         const std::shared_ptr<add_audio_to_connection> &audio_track_adder,
          own_audio_track &own_audio_track_);
 };
 } // namespace client

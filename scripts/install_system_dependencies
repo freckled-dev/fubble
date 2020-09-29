@@ -55,6 +55,7 @@ if grep -i ubuntu /etc/os-release
     qtdeclarative5-dev libqt5charts5-dev libqt5svg5-dev \
     qml-module-qtmultimedia qml-module-qtcharts \
     pkg-config git cmake fuse \
+    libxdamage-dev libxcomposite-dev libxtst-dev libxrandr-dev \
     rsync rclone curl \
     pulseaudio docker.io
   and sudo -H pip3 install conan meson docker-compose aqtinstall

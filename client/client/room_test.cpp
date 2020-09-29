@@ -99,8 +99,10 @@ struct test_client {
   std::unique_ptr<client::own_video> own_videos_ = client::own_video::create();
   client::own_media own_media{*own_audio_track, *own_videos_};
   client::factory client_factory{context};
+  std::shared_ptr<client::desktop_sharing> desktop_sharing_ =
+      client::desktop_sharing::create_noop();
   client::participant_creator_creator participant_creator_creator{
-      client_factory, peer_creator, tracks_adder, own_media};
+      client_factory, peer_creator, tracks_adder, own_media, desktop_sharing_};
   client::room_creator client_room_creator{participant_creator_creator};
   client::joiner joiner{client_room_creator, rooms, matrix_authentification,
                         temporary_room_client};
@@ -257,7 +259,8 @@ struct two_participants {
   }
 };
 struct two_participants_with_data_channel {
-  client::add_data_channel data_channel;
+  std::shared_ptr<client::add_data_channel> data_channel =
+      std::make_shared<client::add_data_channel>();
   std::unique_ptr<two_participants> participants;
   boost::promise<void> promise;
   boost::inline_executor executor;
@@ -266,7 +269,7 @@ struct two_participants_with_data_channel {
     participants = std::make_unique<two_participants>(fixture, room_name);
     participants->client_first.tracks_adder.add(data_channel);
     auto channel_opened = [this]() { promise.set_value(); };
-    data_channel.on_added.connect(
+    data_channel->on_added.connect(
         [channel_opened](rtc::data_channel_ptr channel) {
           channel->on_opened.connect(channel_opened);
         });

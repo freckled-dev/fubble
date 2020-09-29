@@ -5,7 +5,7 @@
 
 namespace rtc {
 namespace google {
-class audio_data;
+struct audio_data;
 class voice_detection {
 public:
   virtual ~voice_detection() = default;

@@ -95,8 +95,11 @@ Popup {
                                     id: maPreview
                                     hoverEnabled: true
                                     anchors.fill: parent
-                                    onClicked: shareDesktopModel.shareDesktop(
-                                                   model)
+                                    onClicked: {
+                                        shareDesktopModel.shareDesktop(model.id)
+                                        popup.close()
+                                    }
+
                                 }
                             }
                         }

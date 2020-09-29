@@ -134,12 +134,23 @@ gstreamer_webrtc_dep = declare_dependency(
   )
 if host_machine.system() == 'linux'
   x11_dep = dependency('x11')
+  xext_dep = dependency('xext')
+  xcomposite_dep = dependency('xcomposite')
+  xfixes_dep = dependency('xfixes')
+  xdamage_dep = dependency('xdamage')
+  xrandr_dep = dependency('xrandr')
+  google_webrtc_system_deps = declare_dependency(
+    dependencies: [x11_dep, xext_dep, xcomposite_dep, xfixes_dep,
+      xdamage_dep, xrandr_dep]
+    )
 else
-  x11_dep = declare_dependency()
+  google_webrtc_system_deps = declare_dependency(
+    link_args: ['d3d11.lib', 'dxgi.lib']
+  )
 endif
 google_webrtc_dep_fixme = dependency('google-webrtc', include_type : 'system')
 google_webrtc_dep = declare_dependency(
-  dependencies: [google_webrtc_dep_fixme, x11_dep]
+  dependencies: [google_webrtc_dep_fixme, google_webrtc_system_deps]
   )
 # ssl_dep = dependency('openssl', include_type: 'system', required: false)
 ssl_dep = google_webrtc_dep

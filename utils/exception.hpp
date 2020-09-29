@@ -1,4 +1,4 @@
-#include <boost/exception/exception.hpp>
+#include <boost/exception/all.hpp>
 #include <exception>
 
 namespace utils {

@@ -93,18 +93,19 @@ void video_settings::change_to_device(const std::string &id) {
     on_video_source_changed();
     boost::rethrow_exception(boost::current_exception());
   }
-  video_track_adder = add_video_to_connection_factory_.create(capture_device);
-  tracks_adder_.add(*video_track_adder);
-  own_media_.add(*capture_device);
+  video_track_adder =
+      add_video_to_connection_factory_.create(capture_device->get_source());
+  tracks_adder_.add(video_track_adder);
+  own_media_.add(capture_device->get_source());
   on_video_source_changed();
 }
 
 void video_settings::reset_current_video_capture() {
   if (!capture_device)
     return;
-  tracks_adder_.remove(*video_track_adder);
+  tracks_adder_.remove(video_track_adder);
   video_track_adder.reset();
-  own_media_.remove(*capture_device);
+  own_media_.remove(capture_device->get_source());
   capture_device->stop();
   capture_device.reset();
 }
@@ -129,8 +130,9 @@ void video_settings::on_video_devices_changed() {
   reset_current_video();
 }
 
-rtc::google::video_source *video_settings::get_video_source() const {
-  return capture_device.get();
+std::shared_ptr<rtc::google::video_source>
+video_settings::get_video_source() const {
+  return capture_device->get_source();
 }
 
 bool video_settings::is_a_video_available() const {
