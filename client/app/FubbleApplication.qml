@@ -99,6 +99,8 @@ ApplicationWindow {
         }
 
         close.accepted = true
+        // https://stackoverflow.com/questions/51810358/how-to-quit-the-c-application-in-qt-qml
+        Qt.callLater(Qt.quit)
     }
 
     SystemTrayIcon {
@@ -106,6 +108,7 @@ ApplicationWindow {
         visible: true
         iconSource: Style.current.logoImage
         menu: Menu {
+            visible: false
             MenuItem {
                 text: qsTr("Settings")
                 onTriggered: {
