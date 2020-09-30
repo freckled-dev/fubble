@@ -111,7 +111,9 @@ Rectangle {
 
         ComboBox {
             id: videoCombo
-            currentIndex: languageModel.languageIndex
+            // does not work. i guess because the property is read only
+            // currentIndex: languageModel.languageIndex
+            onCurrentIndexChanged: languageModel.languageIndex = currentIndex
             textRole: "description"
             anchors.top: languageTitle.bottom
             model: languageModel.languages

@@ -28,6 +28,7 @@
 #include "http/action_factory.hpp"
 #include "http/connection_creator.hpp"
 #include "join_model.hpp"
+#include "language_settings_model.hpp"
 #include "leave_model.hpp"
 #include "logging/initialser.hpp"
 #include "logging/logger.hpp"
@@ -317,6 +318,9 @@ int main(int argc, char *argv[]) {
   qmlRegisterUncreatableType<client::devices_model>(
       "io.fubble", 1, 0, "DevicesModel",
       "can't instance client::devices_model");
+  qmlRegisterUncreatableType<client::language_settings_model>(
+      "io.fubble", 1, 0, "LanguageSettingsModel",
+      "can't instance client::language_settings_model");
   qmlRegisterType<video_layout>("io.fubble", 1, 0, "VideoLayout");
 
   QQmlApplicationEngine engine;
@@ -339,6 +343,7 @@ int main(int argc, char *argv[]) {
   client::audio_video_settings_model audio_video_settings_model{
       rtc_audio_devices, *video_enumerator, video_device_creator,
       audio_settings,    video_settings,    error_model};
+  client::language_settings_model language_settings_model{engine};
   //  works from 5.14 onwards
   // engine.setInitialProperties(...)
   //  setContextProperty sets it globaly not as property of the window
@@ -352,6 +357,8 @@ int main(int argc, char *argv[]) {
                                   &audio_video_settings_model);
   qml_context->setContextProperty("shareDesktopModelFromCpp",
                                   &share_desktop_model);
+  qml_context->setContextProperty("languageModelFromCpp",
+                                  &language_settings_model);
   client::ui::add_version_to_qml_context version_adder{*qml_context};
   //  seems not to do it either
   // QVariant property{qMetaTypeId<client::join_model *>(), &join_model};

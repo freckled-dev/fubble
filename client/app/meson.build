@@ -13,19 +13,20 @@ client_gui_sources = ['gui.cpp', 'utils_model.cpp', 'join_model.cpp',
   'participants_with_video_model.cpp', 'chat_model.cpp',
   'chat_messages_model.cpp', 'share_desktop_model.cpp',
   'participant_model.cpp', 'room_model.cpp', 'model_creator.cpp',
-  'audio_video_settings_model.cpp', 'own_media_model.cpp'
+  'audio_video_settings_model.cpp', 'own_media_model.cpp',
+  'language_settings_model.cpp'
   ]
 qt5 = import('qt5')
 client_gui_sources += qt5.preprocess(
-  qresources: 'qml.qrc',
+  qresources: ['qml.qrc'],
   moc_headers: ['join_model.hpp', 'utils_model.hpp',  'room_model.hpp',
     'error_model.hpp', 'share_desktop_model.hpp',
     'leave_model.hpp', 'participants_with_video_model.hpp', 'chat_model.hpp',
     'chat_messages_model.hpp', 'audio_video_settings_model.hpp',
-    'own_media_model.hpp',
+    'own_media_model.hpp', 'language_settings_model.hpp',
     'participants_model.hpp', 'participant_model.hpp', 'poll_asio_by_qt.hpp']
   )
-# translations = qt5.compile_translations(ts_files: 'translation_de.ts', build_by_default: true)
+client_gui_sources += qt5.compile_translations(qresource: 'i18n.qrc', build_by_default: true)
 if host_machine.system() == 'windows'
   windows = import('windows')
   client_gui_sources += windows.compile_resources('fubble.rc')

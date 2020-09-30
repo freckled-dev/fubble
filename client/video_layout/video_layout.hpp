@@ -3,6 +3,7 @@
 
 #include <QQuickItem>
 
+// TODO `namespace client`
 class video_layout : public QQuickItem {
   Q_OBJECT
 public:
