@@ -32,6 +32,8 @@ public:
 
   void pause(bool paused);
   bool get_paused() const;
+  boost::signals2::signal<void(bool)> on_paused;
+
   void change_to_device(const std::string &id);
   // means a video is instanced!
   bool is_a_video_available() const;

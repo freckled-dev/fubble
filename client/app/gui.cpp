@@ -217,9 +217,9 @@ int main(int argc, char *argv[]) {
       std::make_shared<client::add_video_to_connection_factory_impl>(
           rtc_factory);
   auto own_videos_ = client::own_video::create();
-  client::video_settings video_settings{*video_enumerator, video_device_creator,
-                                        *own_videos_, *tracks_adder,
-                                        *add_video_to_connection_factory_};
+  auto video_settings = std::make_shared<client::video_settings>(
+      *video_enumerator, video_device_creator, *own_videos_, *tracks_adder,
+      *add_video_to_connection_factory_);
 
   // desktop
   BOOST_LOG_SEV(logger, logging::severity::trace)
@@ -227,7 +227,8 @@ int main(int argc, char *argv[]) {
   auto timer_factory = std::make_shared<utils::timer_factory>(context);
   std::shared_ptr<client::desktop_sharing> desktop_sharing =
       client::desktop_sharing::create(timer_factory, tracks_adder,
-                                      add_video_to_connection_factory_);
+                                      add_video_to_connection_factory_,
+                                      video_settings);
 
   // client
   BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up client";
@@ -332,7 +333,7 @@ int main(int argc, char *argv[]) {
   QQmlApplicationEngine engine;
   client::audio_device_settings audio_settings{rtc_audio_devices};
   client::model_creator model_creator{
-      audio_level_calculator_factory_, audio_settings, video_settings,
+      audio_level_calculator_factory_, audio_settings, *video_settings,
       own_audio_information_, *audio_tracks_volume};
   client::error_model error_model;
   client::utils_model utils_model;
@@ -340,7 +341,7 @@ int main(int argc, char *argv[]) {
   client::share_desktop_model share_desktop_model{desktop_sharing};
   client::leave_model leave_model{leaver};
   client::own_media_model own_media_model{audio_settings,
-                                          video_settings,
+                                          *video_settings,
                                           *own_microphone_tester,
                                           *audio_tracks_volume,
                                           own_audio_information_,
@@ -348,7 +349,7 @@ int main(int argc, char *argv[]) {
                                           own_media};
   client::audio_video_settings_model audio_video_settings_model{
       rtc_audio_devices, *video_enumerator, video_device_creator,
-      audio_settings,    video_settings,    error_model};
+      audio_settings,    *video_settings,   error_model};
   //  works from 5.14 onwards
   // engine.setInitialProperties(...)
   //  setContextProperty sets it globaly not as property of the window

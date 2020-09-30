@@ -3,6 +3,7 @@
 
 #include "client/add_video_to_connection.hpp"
 #include "client/tracks_adder.hpp"
+#include "client/video_settings.hpp"
 #include "rtc/google/capture/desktop/capturer.hpp"
 #include <boost/signals2/signal.hpp>
 #include <functional>
@@ -41,7 +42,8 @@ public:
   create(const std::shared_ptr<utils::timer_factory> timer_factory,
          const std::shared_ptr<tracks_adder> tracks_adder_,
          const std::shared_ptr<add_video_to_connection_factory>
-             add_video_to_connection_factory_);
+             add_video_to_connection_factory_,
+         const std::shared_ptr<video_settings> video_settings_);
   static std::unique_ptr<desktop_sharing> create_noop();
 };
 } // namespace client

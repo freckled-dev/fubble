@@ -62,6 +62,7 @@ void video_settings::pause(bool paused_) {
     }
     change_to_device(last_device_id.value());
   }
+  on_paused(paused);
 }
 
 bool video_settings::get_paused() const { return paused; }

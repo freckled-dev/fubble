@@ -30,6 +30,8 @@ own_media_model::own_media_model(audio_device_settings &audio_settings_,
   update_video();
   signal_connections.push_back(video_settings_.on_video_source_changed.connect(
       [this]() { update_video(); }));
+  signal_connections.push_back(video_settings_.on_paused.connect(
+      [this](bool paused) { set_video_disabled(!paused); }));
 }
 
 own_media_model::~own_media_model() = default;
@@ -53,6 +55,8 @@ void own_media_model::set_deafed(bool deafed_) {
 void own_media_model::set_video_disabled(bool disabled) {
   BOOST_LOG_SEV(logger, logging::severity::debug)
       << __FUNCTION__ << ", disabled:" << disabled;
+  if (video_disabled == disabled)
+    return;
   video_disabled = disabled;
   video_disabled_changed(disabled);
   video_settings_.pause(disabled);
