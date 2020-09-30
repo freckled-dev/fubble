@@ -1,4 +1,5 @@
 video_layout_sources = ['video_layout.cpp']
+qt5 = import('qt5')
 video_layout_sources += qt5.preprocess(moc_headers: ['video_layout.hpp'])
 video_layout = library('video_layout_not_plugin', video_layout_sources, install: true,
   dependencies: [qt5_dep, rectangle_bin_pack_dep])
