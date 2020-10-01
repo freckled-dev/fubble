@@ -30,6 +30,8 @@ public:
   boost::signals2::signal<void(video_ptr)> on_video_added;
   boost::signals2::signal<void(video_ptr)> on_video_removed;
 
+  // when refactoring to shared_ptr, ensure
+  // `audios.emplace_back(audio_track.get());` don't happen
   using audios_type = std::vector<rtc::google::audio_track *>;
   virtual audios_type get_audios() const = 0;
   boost::signals2::signal<void(rtc::google::audio_track &)> on_audio_added;

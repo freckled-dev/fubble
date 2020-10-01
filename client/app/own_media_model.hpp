@@ -54,6 +54,7 @@ protected:
   void set_muted(bool);
   void set_deafed(bool);
   void set_video_disabled(bool);
+  void on_paused(bool);
   bool get_video_available() const;
   void on_sound_level(const double);
   void on_sound_test_level(const double);

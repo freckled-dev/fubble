@@ -31,7 +31,7 @@ own_media_model::own_media_model(audio_device_settings &audio_settings_,
   signal_connections.push_back(video_settings_.on_video_source_changed.connect(
       [this]() { update_video(); }));
   signal_connections.push_back(video_settings_.on_paused.connect(
-      [this](bool paused) { set_video_disabled(!paused); }));
+      [this](bool paused) { on_paused(paused); }));
 }
 
 own_media_model::~own_media_model() = default;
@@ -58,9 +58,17 @@ void own_media_model::set_video_disabled(bool disabled) {
   if (video_disabled == disabled)
     return;
   video_disabled = disabled;
-  video_disabled_changed(disabled);
   video_settings_.pause(disabled);
   video_disabled_changed(disabled);
+}
+
+void own_media_model::on_paused(bool paused) {
+  BOOST_LOG_SEV(logger, logging::severity::debug)
+      << __FUNCTION__ << ", paused:" << paused;
+  if (video_disabled == paused)
+    return;
+  video_disabled = paused;
+  video_disabled_changed(video_disabled);
 }
 
 bool own_media_model::get_video_available() const {
