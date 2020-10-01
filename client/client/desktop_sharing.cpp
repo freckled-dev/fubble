@@ -16,11 +16,51 @@ public:
       const std::shared_ptr<utils::timer_factory> timer_factory,
       const std::shared_ptr<tracks_adder> tracks_adder_,
       const std::shared_ptr<add_video_to_connection_factory>
-          add_video_to_connection_factory_)
+          add_video_to_connection_factory_,
+      const std::shared_ptr<video_settings> video_settings_)
       : timer_factory{timer_factory}, tracks_adder_{tracks_adder_},
-        add_video_to_connection_factory_{add_video_to_connection_factory_} {}
+        add_video_to_connection_factory_{add_video_to_connection_factory_},
+        video_settings_{video_settings_} {
+    video_settings_->on_paused.connect(
+        [this](bool paused) { on_video_paused(paused); });
+  }
 
-  void set(std::intptr_t id) {
+  void on_video_paused(bool paused) {
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << __FUNCTION__ << ", paused:" << paused << ", did_pause:" << did_pause;
+    // we did pause it, but some one else unpaused it.
+    // by setting `did_pause = false` we ensure that we don't try to unpause it
+    // again.
+    if (did_pause && !paused)
+      did_pause = false;
+    // video got unpaused so let's stop desktop sharing
+    if (!paused && set_capturer)
+      reset();
+  }
+
+  void pause_video() {
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << __FUNCTION__ << ", did_pause:" << did_pause;
+    if (did_pause) // may happen on replace (two time `set` without `reset`)
+      return;
+    if (!video_settings_->is_a_video_available())
+      return;
+    if (video_settings_->get_paused())
+      return;
+    video_settings_->pause(true);
+    did_pause = true;
+  }
+
+  void unpause_video() {
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << __FUNCTION__ << ", did_pause:" << did_pause;
+    if (!did_pause)
+      return;
+    did_pause = false;
+    video_settings_->pause(false);
+  }
+
+  void set(std::intptr_t id) override {
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << ", id:" << id;
     if (set_capturer)
@@ -33,6 +73,7 @@ public:
     set_capturer = rtc::google::capture::desktop::interval_capturer::create(
         std::move(timer), std::move(capturer));
     auto video_source = set_capturer->get_capturer().get_source();
+    pause_video();
     BOOST_ASSERT(video_source);
     video_adder = add_video_to_connection_factory_->create(video_source);
     set_capturer->start().then(executor,
@@ -48,6 +89,7 @@ public:
   }
 
   void on_stopped(boost::future<void> &result) {
+    BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
     try {
       result.get();
     } catch (const boost::exception &error) {
@@ -83,6 +125,7 @@ public:
   void reset() override {
     BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
     stop_or_reset();
+    unpause_video();
   }
 
   std::vector<preview> get_screen_previews() {
@@ -136,14 +179,16 @@ protected:
   std::shared_ptr<tracks_adder> tracks_adder_;
   std::shared_ptr<add_video_to_connection_factory>
       add_video_to_connection_factory_;
+  std::shared_ptr<video_settings> video_settings_;
+  bool did_pause{};
 };
 class desktop_sharing_noop final : public desktop_sharing {
 public:
-  void set([[maybe_unused]] std::intptr_t id) {}
+  void set([[maybe_unused]] std::intptr_t id) override {}
   std::shared_ptr<rtc::google::video_source> get() override { return nullptr; }
-  void reset() {}
-  previews get_screen_previews() { return {}; }
-  previews get_window_previews() { return {}; }
+  void reset() override {}
+  previews get_screen_previews() override { return {}; }
+  previews get_window_previews() override { return {}; }
 };
 } // namespace
 
@@ -151,9 +196,11 @@ std::unique_ptr<desktop_sharing> desktop_sharing::create(
     const std::shared_ptr<utils::timer_factory> timer_factory,
     const std::shared_ptr<tracks_adder> tracks_adder_,
     const std::shared_ptr<add_video_to_connection_factory>
-        add_video_to_connection_factory_) {
+        add_video_to_connection_factory_,
+    const std::shared_ptr<video_settings> video_settings_) {
   return std::make_unique<desktop_sharing_impl>(
-      timer_factory, tracks_adder_, add_video_to_connection_factory_);
+      timer_factory, tracks_adder_, add_video_to_connection_factory_,
+      video_settings_);
 }
 
 std::unique_ptr<desktop_sharing> desktop_sharing::create_noop() {

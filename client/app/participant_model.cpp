@@ -86,9 +86,12 @@ void participant_model::set_name() {
 
 void participant_model::video_added(
     std::shared_ptr<rtc::google::video_source> added) {
+  BOOST_LOG_SEV(logger, logging::severity::debug)
+      << __FUNCTION__ << ", added:" << added.get();
   // TODO support more than one video per client
   if (video) {
-    BOOST_LOG_SEV(logger, logging::severity::warning) << "replacing a video!";
+    BOOST_LOG_SEV(logger, logging::severity::warning)
+        << "replacing a video! current:" << video->get_source().get();
     video->deleteLater();
   }
   video = new ui::frame_provider_google_video_source(this);
@@ -98,10 +101,13 @@ void participant_model::video_added(
 
 void participant_model::video_removed(
     std::shared_ptr<rtc::google::video_source> removed) {
+  BOOST_LOG_SEV(logger, logging::severity::debug)
+      << __FUNCTION__ << ", removed:" << removed.get();
   BOOST_ASSERT(video);
   if (video->get_source() != removed) {
     BOOST_LOG_SEV(logger, logging::severity::warning)
-        << "can't remove video, because it seems like it got replaced.";
+        << "can't remove video, because it seems like it got replaced. current:"
+        << video->get_source().get();
     return;
   }
   video->deleteLater();

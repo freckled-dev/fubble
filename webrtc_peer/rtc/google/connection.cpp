@@ -3,6 +3,7 @@
 #include "data_channel.hpp"
 #include "uuid.hpp"
 #include "video_track_sink.hpp"
+#include <boost/assert.hpp>
 #include <boost/config.hpp>
 #include <fmt/format.h>
 
@@ -201,6 +202,8 @@ void connection::add_ice_candidate(const rtc::ice_candidate &candidate) {
 }
 
 void connection::add_track(rtc::track_ptr track_) {
+  BOOST_LOG_SEV(logger, logging::severity::debug)
+      << __FUNCTION__ << ", track:" << track_.get();
   BOOST_ASSERT(find_sending_track(track_) == sending_tracks.cend());
   auto track_casted = std::dynamic_pointer_cast<track>(track_);
   BOOST_ASSERT(track_casted);
@@ -220,6 +223,8 @@ void connection::add_track(rtc::track_ptr track_) {
 }
 
 void connection::remove_track(rtc::track_ptr track_) {
+  BOOST_LOG_SEV(logger, logging::severity::debug)
+      << __FUNCTION__ << ", track:" << track_.get();
   auto found = find_sending_track(track_);
   BOOST_ASSERT(found != sending_tracks.cend());
   auto track_casted = std::dynamic_pointer_cast<track>(track_);
@@ -312,7 +317,8 @@ void connection::OnRemoveTrack(
     ::webrtc::MediaStreamTrackInterface &interface_) {
   if (interface_.kind() != ::webrtc::MediaStreamTrackInterface::kVideoKind)
     return nullptr;
-  auto track_casted = static_cast<webrtc::VideoTrackInterface *>(&interface_);
+  auto track_casted = dynamic_cast<webrtc::VideoTrackInterface *>(&interface_);
+  BOOST_ASSERT(track_casted);
   return std::make_shared<video_track_sink>(track_casted);
 }
 
