@@ -14,7 +14,9 @@ class desktop_sharing_previews_impl : public desktop_sharing_previews {
 public:
   desktop_sharing_previews_impl(
       const std::shared_ptr<utils::timer_factory> timer_factory)
-      : timer_factory{timer_factory} {}
+      : timer_factory{timer_factory}, timer{
+                                          timer_factory->create_interval_timer(
+                                              std::chrono::seconds(1))} {}
 
   void enumerate() {
     enumerator->enumerate();
@@ -32,9 +34,11 @@ public:
     for (auto &preview_ : screen_previews)
       start_preview(preview_);
     enumerate();
+    timer->start([this] { enumerate(); });
   }
 
   void stop() override {
+    timer->stop();
     for (auto &preview_ : window_previews) {
       BOOST_ASSERT(preview_.capturer->get_started());
       preview_.capturer->stop();
@@ -155,6 +159,7 @@ protected:
   std::unique_ptr<rtc::google::capture::desktop::enumerator> enumerator =
       rtc::google::capture::desktop::enumerator::create();
   const std::shared_ptr<utils::timer_factory> timer_factory;
+  const std::unique_ptr<utils::interval_timer> timer;
   previews screen_previews;
   previews window_previews;
 };
