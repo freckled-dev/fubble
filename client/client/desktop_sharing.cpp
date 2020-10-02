@@ -10,6 +10,156 @@
 using namespace client;
 
 namespace {
+class desktop_sharing_previews_impl : public desktop_sharing_previews {
+public:
+  desktop_sharing_previews_impl(
+      const std::shared_ptr<utils::timer_factory> timer_factory)
+      : timer_factory{timer_factory} {}
+
+  void enumerate() {
+    enumerator->enumerate();
+    create_previews(desktop_sharing::type::screen);
+    create_previews(desktop_sharing::type::window);
+  }
+
+  std::vector<preview> get_screens() override { return screen_previews; }
+
+  std::vector<preview> get_windows() override { return window_previews; }
+
+  void start() override {
+    for (auto &preview_ : window_previews)
+      start_preview(preview_);
+    for (auto &preview_ : screen_previews)
+      start_preview(preview_);
+    enumerate();
+  }
+
+  void stop() override {
+    for (auto &preview_ : window_previews) {
+      BOOST_ASSERT(preview_.capturer->get_started());
+      preview_.capturer->stop();
+    }
+    for (auto &preview_ : screen_previews) {
+      BOOST_ASSERT(preview_.capturer->get_started());
+      preview_.capturer->stop();
+    }
+  }
+
+  void start_preview(preview preview_) {
+    BOOST_ASSERT(!preview_.capturer->get_started());
+    preview_.capturer->start().then(executor, [this, preview_](auto result) {
+      on_capturer_stopped(preview_, result);
+    });
+  }
+
+  void on_capturer_stopped(preview preview_, boost::future<void> &result) {
+    try {
+      result.get();
+      return;
+    } catch (const boost::exception &error) {
+      BOOST_LOG_SEV(logger, logging::severity::info)
+          << "preview_ stopped, will remove. id:"
+          << preview_.capturer->get_capturer().get_id()
+          << ", error:" << boost::diagnostic_information(error);
+    }
+    auto checker = [&](const preview &check) {
+      return preview_.capturer->get_capturer().get_id() ==
+             check.capturer->get_capturer().get_id();
+    };
+    {
+      auto found = std::find_if(window_previews.cbegin(),
+                                window_previews.cend(), checker);
+      if (found != window_previews.cend()) {
+        window_previews.erase(found);
+        on_window_removed(preview_);
+        return;
+      }
+    }
+    {
+      auto found = std::find_if(screen_previews.cbegin(),
+                                screen_previews.cend(), checker);
+      if (found != screen_previews.cend()) {
+        screen_previews.erase(found);
+        on_screen_removed(preview_);
+        return;
+      }
+    }
+  }
+
+  void create_previews(desktop_sharing::type type) {
+    std::vector<preview> result;
+    auto enumerated = [&] {
+      if (type == desktop_sharing::type::screen)
+        return enumerator->get_screens();
+      return enumerator->get_windows();
+    }();
+    decltype(enumerated) enumerated_filtered;
+    previews *working_previews = [&] {
+      if (type == desktop_sharing::type::screen)
+        return &screen_previews;
+      return &window_previews;
+    }();
+    auto *on_added = [&] {
+      if (type == desktop_sharing::type::screen)
+        return &on_screen_added;
+      return &on_window_added;
+    }();
+    // TODO this is a bad algorithm. sort the lists and do adjacent list
+    std::copy_if(
+        enumerated.cbegin(), enumerated.cend(),
+        std::back_inserter(enumerated_filtered), [&](auto check) {
+          return working_previews->cend() ==
+                 std::find_if(
+                     working_previews->cbegin(), working_previews->cend(),
+                     [&](const auto &check_preview) {
+                       return check_preview.capturer->get_capturer().get_id() ==
+                              check.id;
+                     });
+        });
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << "adding:" << enumerated_filtered.size();
+    std::transform(enumerated_filtered.cbegin(), enumerated_filtered.cend(),
+                   std::back_inserter(*working_previews),
+                   [&](auto &enumerated_item) {
+                     auto preview_ = create_preview(enumerated_item, type);
+                     (*on_added)(preview_);
+                     start_preview(preview_);
+                     return preview_;
+                   });
+  }
+
+  preview create_preview(
+      rtc::google::capture::desktop::enumerator::information information,
+      desktop_sharing::type type) {
+    static const std::chrono::steady_clock::duration preview_interval =
+        std::chrono::seconds(1);
+    preview result;
+    auto capturer = [&] {
+      if (type == desktop_sharing::type::screen)
+        return rtc::google::capture::desktop::capturer::create_screen(
+            information.id);
+      return rtc::google::capture::desktop::capturer::create_window(
+          information.id);
+    }();
+    auto timer = timer_factory->create_interval_timer(preview_interval);
+    auto interval_capturer =
+        rtc::google::capture::desktop::interval_capturer::create(
+            std::move(timer), std::move(capturer));
+    result.capturer = std::move(interval_capturer);
+    return result;
+  }
+
+protected:
+  client::logger logger{"desktop_sharing_previews_impl"};
+  boost::inline_executor executor;
+  std::unique_ptr<rtc::google::capture::desktop::enumerator> enumerator =
+      rtc::google::capture::desktop::enumerator::create();
+  const std::shared_ptr<utils::timer_factory> timer_factory;
+  previews screen_previews;
+  previews window_previews;
+};
+#if 0
+#endif
 class desktop_sharing_impl final : public desktop_sharing {
 public:
   desktop_sharing_impl(
@@ -128,51 +278,10 @@ public:
     unpause_video();
   }
 
-  std::vector<preview> get_screen_previews() {
-    return create_previews(desktop_sharing::type::screen);
-  }
-
-  std::vector<preview> get_window_previews() {
-    return create_previews(desktop_sharing::type::window);
-  }
-
-  std::vector<preview> create_previews(desktop_sharing::type type) {
-    std::vector<preview> result;
-    static const std::chrono::steady_clock::duration preview_interval =
-        std::chrono::seconds(1);
-    enumerator->enumerate();
-    auto enumerated = [&] {
-      if (type == desktop_sharing::type::screen)
-        return enumerator->get_screens();
-      return enumerator->get_windows();
-    }();
-    std::transform(
-        enumerated.cbegin(), enumerated.cend(), std::back_inserter(result),
-        [&](auto &enumerated_item) {
-          preview result;
-          auto capturer = [&] {
-            if (type == desktop_sharing::type::screen)
-              return rtc::google::capture::desktop::capturer::create_screen(
-                  enumerated_item.id);
-            return rtc::google::capture::desktop::capturer::create_window(
-                enumerated_item.id);
-          }();
-          auto timer = timer_factory->create_interval_timer(preview_interval);
-          auto interval_capturer =
-              rtc::google::capture::desktop::interval_capturer::create(
-                  std::move(timer), std::move(capturer));
-          result.capturer = std::move(interval_capturer);
-          return result;
-        });
-    return result;
-  }
-
 protected:
   client::logger logger{"desktop_sharing_impl"};
   boost::inline_executor executor;
   std::shared_ptr<utils::timer_factory> timer_factory;
-  std::unique_ptr<rtc::google::capture::desktop::enumerator> enumerator =
-      rtc::google::capture::desktop::enumerator::create();
   std::shared_ptr<rtc::google::capture::desktop::interval_capturer>
       set_capturer;
   std::shared_ptr<add_video_to_connection> video_adder;
@@ -187,10 +296,13 @@ public:
   void set([[maybe_unused]] std::intptr_t id) override {}
   std::shared_ptr<rtc::google::video_source> get() override { return nullptr; }
   void reset() override {}
-  previews get_screen_previews() override { return {}; }
-  previews get_window_previews() override { return {}; }
 };
 } // namespace
+
+std::unique_ptr<desktop_sharing_previews> desktop_sharing_previews::create(
+    const std::shared_ptr<utils::timer_factory> timer_factory) {
+  return std::make_unique<desktop_sharing_previews_impl>(timer_factory);
+}
 
 std::unique_ptr<desktop_sharing> desktop_sharing::create(
     const std::shared_ptr<utils::timer_factory> timer_factory,

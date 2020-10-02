@@ -42,6 +42,7 @@ void interval_timer::start(const callack_type &callback_parameter) {
 
 void interval_timer::stop() {
   BOOST_ASSERT(started);
+  callback = {};
   timer.cancel();
   started = false;
 }
