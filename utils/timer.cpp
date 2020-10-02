@@ -1,4 +1,5 @@
 #include "timer.hpp"
+#include <fmt/format.h>
 
 using namespace utils;
 
@@ -32,24 +33,42 @@ interval_timer::interval_timer(boost::asio::io_context &context,
 
 void interval_timer::start(const callack_type &callback_parameter) {
   BOOST_ASSERT(!callback);
+  BOOST_ASSERT(!started);
   callback = callback_parameter;
   BOOST_ASSERT(callback);
+  started = true;
   start_timer();
 }
 
-void interval_timer::stop() { timer.cancel(); }
+void interval_timer::stop() {
+  BOOST_ASSERT(started);
+  timer.cancel();
+  started = false;
+}
 
 void interval_timer::start_timer() {
   timer.expires_after(interval);
-  timer.async_wait([this](auto error) { on_timeout(error); });
+  std::weak_ptr<int> weak_alive_check = alive_check;
+  timer.async_wait(
+      [this, weak_alive_check = std::move(weak_alive_check)](auto error) {
+        if (error) {
+          BOOST_ASSERT(error == boost::asio::error::operation_aborted);
+          return;
+        }
+        if (!weak_alive_check.lock())
+          return;
+        on_timeout();
+      });
 }
 
-void interval_timer::on_timeout(boost::system::error_code error) {
-  if (error) {
-    BOOST_ASSERT(error == boost::asio::error::operation_aborted);
-    return;
-  }
+void interval_timer::on_timeout() {
   BOOST_ASSERT(callback);
+  std::weak_ptr<int> weak_alive_check = alive_check;
   callback();
+  // callback might have destroyed this instance. so ensure we are still alive
+  if (!weak_alive_check.lock())
+    return;
+  if (!started)
+    return;
   start_timer();
 }

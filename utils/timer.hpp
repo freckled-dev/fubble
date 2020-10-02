@@ -4,6 +4,7 @@
 #include <boost/asio/io_context.hpp>
 #include <boost/asio/steady_timer.hpp>
 
+// TODO refactor to pimpl
 namespace utils {
 class one_shot_timer {
 public:
@@ -33,12 +34,14 @@ public:
 
 protected:
   void start_timer();
-  void on_timeout(boost::system::error_code error);
+  void on_timeout();
 
   boost::asio::io_context &context;
   std::chrono::steady_clock::duration interval;
   boost::asio::steady_timer timer{context};
   callack_type callback;
+  bool started{};
+  std::shared_ptr<int> alive_check = std::make_shared<int>(42);
 };
 
 class timer_factory {

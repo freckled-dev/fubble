@@ -6,6 +6,7 @@
 #include <api/video/video_frame.h>
 #include <boost/assert.hpp>
 #include <boost/optional.hpp>
+#include <boost/thread/executors/inline_executor.hpp>
 #include <fmt/format.h>
 #include <libyuv.h>
 #include <modules/desktop_capture/desktop_capture_options.h>
@@ -137,11 +138,28 @@ public:
 
   bool get_started() const override { return start_promise != nullptr; }
 
-  void on_timeout() { delegate->capture(); }
+  void on_timeout() {
+    delegate->capture().then(executor,
+                             [this](auto result) { on_captured(result); });
+  }
+
+  void on_captured(boost::future<void> &result) {
+    BOOST_ASSERT(start_promise);
+    try {
+      result.get();
+    } catch (const error_temporary &) {
+      // ignore
+    } catch (...) {
+      timer->stop();
+      decltype(start_promise) moved = std::move(start_promise);
+      moved->set_exception(boost::current_exception());
+    }
+  }
 
   capturer &get_capturer() override { return *delegate; }
 
 protected:
+  boost::inline_executor executor;
   std::unique_ptr<utils::interval_timer> timer;
   std::unique_ptr<capturer> delegate;
   std::shared_ptr<boost::promise<void>> start_promise;
