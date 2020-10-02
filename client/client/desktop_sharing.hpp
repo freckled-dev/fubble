@@ -19,6 +19,31 @@ class timer_factory;
 }
 
 namespace client {
+class desktop_sharing_previews {
+public:
+  virtual ~desktop_sharing_previews() = default;
+
+  struct preview {
+    std::shared_ptr<rtc::google::capture::desktop::interval_capturer> capturer;
+  };
+  using previews = std::vector<preview>;
+#if 0
+  virtual previews get_all() = 0;
+#endif
+  virtual previews get_screens() = 0;
+  boost::signals2::signal<void(preview)> on_screen_added;
+  boost::signals2::signal<void(preview)> on_screen_removed;
+  virtual previews get_windows() = 0;
+  boost::signals2::signal<void(preview)> on_window_added;
+  boost::signals2::signal<void(preview)> on_window_removed;
+
+  virtual void start() = 0;
+  virtual void stop() = 0;
+
+  static std::unique_ptr<desktop_sharing_previews>
+  create(const std::shared_ptr<utils::timer_factory> timer_factory);
+};
+
 class desktop_sharing {
 public:
   virtual ~desktop_sharing() = default;
@@ -30,13 +55,6 @@ public:
 
   boost::signals2::signal<void(video_ptr)> on_added;
   boost::signals2::signal<void(video_ptr)> on_removed;
-
-  struct preview {
-    std::unique_ptr<rtc::google::capture::desktop::interval_capturer> capturer;
-  };
-  using previews = std::vector<preview>;
-  virtual previews get_screen_previews() = 0;
-  virtual previews get_window_previews() = 0;
 
   static std::unique_ptr<desktop_sharing>
   create(const std::shared_ptr<utils::timer_factory> timer_factory,

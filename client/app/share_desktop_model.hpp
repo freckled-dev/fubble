@@ -10,28 +10,42 @@ namespace client {
 class share_desktop_previews_model : public QAbstractListModel {
   Q_OBJECT
 public:
-  share_desktop_previews_model(desktop_sharing::previews &previews,
-                               QObject *parent)
-      : QAbstractListModel(parent), previews(previews) {
-    std::transform(
-        previews.begin(), previews.end(), std::back_inserter(players),
-        [&](desktop_sharing::preview &preview) {
-          auto &capturer = preview.capturer->get_capturer();
-          auto result = new ui::frame_provider_google_video_source(this);
-          auto video_source = capturer.get_source();
-          BOOST_ASSERT(video_source);
-          result->set_source(video_source);
-          preview.capturer->start(); // TODO returns a future!
-          return result;
-        });
+  share_desktop_previews_model(QObject *parent) : QAbstractListModel(parent) {}
+
+  void add(const desktop_sharing_previews::preview &preview) {
+    auto &capturer = preview.capturer->get_capturer();
+    auto result = new ui::frame_provider_google_video_source(this);
+    auto video_source = capturer.get_source();
+    BOOST_ASSERT(video_source);
+    result->set_source(video_source);
+    beginInsertRows(QModelIndex(), rowCount(), rowCount());
+    players.push_back(result);
+    capturers.push_back(preview.capturer);
+    endInsertRows();
+  }
+
+  void remove(const desktop_sharing_previews::preview &preview) {
+    auto found =
+        std::find(capturers.cbegin(), capturers.cend(), preview.capturer);
+    BOOST_ASSERT(found != capturers.cend());
+    if (found == capturers.cend())
+      return;
+    const int index = std::distance(capturers.cbegin(), found);
+    beginRemoveRows(QModelIndex(), index, index);
+    capturers.erase(found);
+    players.erase(std::next(players.cbegin(), index));
+    endRemoveRows();
   }
 
 protected:
-  int rowCount(const QModelIndex &) const override { return previews.size(); }
+  int rowCount([[maybe_unused]] const QModelIndex &index =
+                   QModelIndex()) const override {
+    return players.size();
+  }
 
   QVariant data(const QModelIndex &index, int role) const override {
     if (role == description_role || role == id_role) {
-      auto &capturer = previews[index.row()].capturer->get_capturer();
+      auto &capturer = capturers[index.row()]->get_capturer();
       if (role == id_role) {
         const auto id = capturer.get_id();
         return QVariant::fromValue(id);
@@ -55,18 +69,27 @@ protected:
     return roles;
   }
 
-  desktop_sharing::previews &previews;
+  std::vector<std::shared_ptr<rtc::google::capture::desktop::interval_capturer>>
+      capturers;
   std::vector<ui::frame_provider_google_video_source *> players;
 };
 class share_desktop_categories_model : public QAbstractListModel {
   Q_OBJECT
 public:
-  share_desktop_categories_model(desktop_sharing::previews &screens,
-                                 desktop_sharing::previews &windows,
-                                 QObject *parent)
-      : QAbstractListModel(parent) {
-    previews[0] = new share_desktop_previews_model(screens, this);
-    previews[1] = new share_desktop_previews_model(windows, this);
+  share_desktop_categories_model(
+      const std::shared_ptr<desktop_sharing_previews> &previews_,
+      QObject *parent)
+      : QAbstractListModel(parent), desktop_previews{previews_} {
+    previews[0] = new share_desktop_previews_model(this);
+    desktop_previews->on_screen_added.connect(
+        [this](auto added) { previews[0]->add(added); });
+    desktop_previews->on_screen_removed.connect(
+        [this](auto removed) { previews[0]->remove(removed); });
+    previews[1] = new share_desktop_previews_model(this);
+    desktop_previews->on_window_added.connect(
+        [this](auto added) { previews[1]->add(added); });
+    desktop_previews->on_window_removed.connect(
+        [this](auto removed) { previews[1]->remove(removed); });
   }
 
 protected:
@@ -91,6 +114,7 @@ protected:
   }
 
   std::array<share_desktop_previews_model *, 2> previews;
+  std::shared_ptr<desktop_sharing_previews> desktop_previews;
 };
 class share_desktop_model : public QObject {
   Q_OBJECT
@@ -99,7 +123,9 @@ class share_desktop_model : public QObject {
 
 public:
   share_desktop_model(
-      const std::shared_ptr<client::desktop_sharing> &desktop_sharing_);
+      const std::shared_ptr<client::desktop_sharing> &desktop_sharing_,
+      const std::shared_ptr<client::desktop_sharing_previews>
+          desktop_sharing_previews_);
   ~share_desktop_model();
 
   Q_INVOKABLE void startPreviews();
@@ -113,9 +139,8 @@ signals:
 protected:
   client::logger logger{"share_desktop_model"};
   std::shared_ptr<desktop_sharing> desktop_sharing_;
+  std::shared_ptr<desktop_sharing_previews> desktop_sharing_previews_;
   share_desktop_categories_model *categories{};
-  desktop_sharing::previews screens;
-  desktop_sharing::previews windows;
 };
 } // namespace client
 

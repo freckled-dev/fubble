@@ -229,6 +229,8 @@ int main(int argc, char *argv[]) {
       client::desktop_sharing::create(timer_factory, tracks_adder,
                                       add_video_to_connection_factory_,
                                       video_settings);
+  std::shared_ptr<client::desktop_sharing_previews> desktop_sharing_previews =
+      client::desktop_sharing_previews::create(timer_factory);
 
   // client
   BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up client";
@@ -338,7 +340,8 @@ int main(int argc, char *argv[]) {
   client::error_model error_model;
   client::utils_model utils_model;
   client::join_model join_model{model_creator, error_model, joiner};
-  client::share_desktop_model share_desktop_model{desktop_sharing};
+  client::share_desktop_model share_desktop_model{desktop_sharing,
+                                                  desktop_sharing_previews};
   client::leave_model leave_model{leaver};
   client::own_media_model own_media_model{audio_settings,
                                           *video_settings,
