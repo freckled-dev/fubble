@@ -353,7 +353,8 @@ int main(int argc, char *argv[]) {
                                           own_media};
   client::audio_video_settings_model audio_video_settings_model{
       rtc_audio_devices, *video_enumerator, video_device_creator,
-      audio_settings,    *video_settings,   error_model};
+      audio_settings,    *video_settings,   error_model,
+      timer_factory};
   //  works from 5.14 onwards
   // engine.setInitialProperties(...)
   //  setContextProperty sets it globaly not as property of the window

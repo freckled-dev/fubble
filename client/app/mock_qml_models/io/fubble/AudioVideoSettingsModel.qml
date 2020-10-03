@@ -6,6 +6,7 @@ QtObject {
     property int userAudioInputDeviceIndex: 0
     property int userAudioOutputDeviceIndex
     property int userVideoDeviceIndex
+    property bool watchForNewAudioDevices
 
     // Audio
     property var inputDevices: ListModel {
