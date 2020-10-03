@@ -35,7 +35,9 @@ public:
                   video_settings &video_settings_,
                   own_microphone_tester &audio_tester,
                   audio_tracks_volume &audio_tracks_volume_,
+                  // for own audio information
                   own_audio_information &audio_information_,
+                  // for testing the loopack audio (settings)
                   own_audio_information &audio_test_information_,
                   own_media &own_media_);
   ~own_media_model();

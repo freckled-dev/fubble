@@ -26,6 +26,11 @@ public:
   virtual std::shared_ptr<rtc::google::audio_track> get_track() = 0;
 
   boost::signals2::signal<void(rtc::google::audio_track &)> on_track;
+
+  static std::unique_ptr<loopback_audio>
+  create(rtc::google::factory &rtc_factory,
+         std::shared_ptr<rtc::google::audio_track> audio_source,
+         std::shared_ptr<boost::executor> defering_executor);
 };
 
 class loopback_audio_noop : public loopback_audio {
@@ -37,30 +42,6 @@ class loopback_audio_noop : public loopback_audio {
   }
 };
 
-class loopback_audio_impl : public loopback_audio {
-public:
-  loopback_audio_impl(rtc::google::factory &rtc_factory,
-                      std::shared_ptr<rtc::google::audio_track> audio_source);
-  ~loopback_audio_impl();
-
-  void enable_loopback(const bool enable) override;
-  bool get_enable_loopback() const override;
-
-  std::shared_ptr<rtc::google::audio_track> get_track() override;
-
-protected:
-  void negotiation_needed();
-  void on_audio_track(rtc::track_ptr track);
-  void on_created_connection(boost::future<void> &result);
-
-  client::logger logger{"loopback_audio"};
-  boost::inline_executor executor;
-  rtc::google::factory &rtc_factory;
-  std::unique_ptr<rtc::connection> rtc_connection_offering;
-  std::unique_ptr<rtc::connection> rtc_connection_answering;
-  std::shared_ptr<rtc::google::audio_track_sink> audio_track;
-  bool enable_audio_loopback_{false}; // set to true to default hear yourself
-};
 class loopback_audio_factory {
 public:
   virtual ~loopback_audio_factory() = default;
@@ -70,12 +51,14 @@ class loopback_audio_impl_factory : public loopback_audio_factory {
 public:
   loopback_audio_impl_factory(
       rtc::google::factory &rtc_factory,
-      std::shared_ptr<rtc::google::audio_track> audio_source);
+      std::shared_ptr<rtc::google::audio_track> audio_source,
+      std::shared_ptr<boost::executor> defering_executor);
   std::unique_ptr<loopback_audio> create() override;
 
 protected:
   rtc::google::factory &rtc_factory;
   std::shared_ptr<rtc::google::audio_track> audio_source;
+  std::shared_ptr<boost::executor> defering_executor;
 };
 class loopback_audio_noop_factory : public loopback_audio_factory {
 public:
