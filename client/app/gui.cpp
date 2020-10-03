@@ -106,7 +106,8 @@ int main(int argc, char *argv[]) {
 
   boost::asio::io_context context;
   boost::asio::executor executor{context.get_executor()};
-  boost::executor_adaptor<executor_asio> boost_executor{context};
+  std::shared_ptr<boost::executor> boost_executor =
+      std::make_shared<boost::executor_adaptor<executor_asio>>(context);
   rtc::google::asio_signalling_thread asio_signalling_thread{context};
 
   http::connection_creator connection_creator_{context};
@@ -118,7 +119,7 @@ int main(int argc, char *argv[]) {
   BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up signalling";
   signalling::json_message signalling_json;
   signalling::client::connection_creator signalling_connection_creator{
-      context, boost_executor, signalling_json};
+      context, *boost_executor, signalling_json};
   signalling::client::client::connect_information connect_information{
       config.general_.use_ssl, config.general_.host, config.general_.service,
       "/api/signalling/v0/"};
@@ -164,7 +165,7 @@ int main(int argc, char *argv[]) {
   rtc::google::factory rtc_factory{rtc_settings,
                                    asio_signalling_thread.get_native()};
   client::peer_creator peer_creator{
-      boost_executor, signalling_client_creator_reconnecting, rtc_factory};
+      *boost_executor, signalling_client_creator_reconnecting, rtc_factory};
   auto tracks_adder = std::make_shared<client::tracks_adder>();
 
   // audio
@@ -183,13 +184,13 @@ int main(int argc, char *argv[]) {
   std::shared_ptr<rtc::google::audio_track> settings_audio_track =
       rtc_factory.create_audio_track(audio_device->get_source());
   client::loopback_audio_impl_factory loopback_audio_test_factory{
-      rtc_factory, settings_audio_track};
-  client::loopback_audio_impl loopback_audio{rtc_factory,
-                                             own_audio_track->get_track()};
+      rtc_factory, settings_audio_track, boost_executor};
+  auto loopback_audio = client::loopback_audio::create(
+      rtc_factory, own_audio_track->get_track(), boost_executor);
   client::audio_level_calculator_factory audio_level_calculator_factory_{
-      boost_executor};
+      *boost_executor};
   client::own_audio_information own_audio_information_{
-      audio_level_calculator_factory_, loopback_audio};
+      audio_level_calculator_factory_, *loopback_audio};
   client::loopback_audio_noop_if_disabled loopback_audio_test{
       loopback_audio_test_factory};
   auto own_microphone_tester = client::own_microphone_tester::create(
