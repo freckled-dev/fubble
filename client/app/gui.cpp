@@ -93,6 +93,7 @@ int main(int argc, char *argv[]) {
   logging::add_file_log(config.general_.log_severity);
   client::ui::log_qt_to_logging qt_logger;
   rtc::google::log_webrtc_to_logging webrtc_logger;
+  webrtc_logger.set_enabled(config.general_.log_webrtc);
 
   logging::logger logger{"main"};
 

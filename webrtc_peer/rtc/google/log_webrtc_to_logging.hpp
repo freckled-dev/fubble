@@ -8,6 +8,8 @@ public:
   log_webrtc_to_logging();
   ~log_webrtc_to_logging();
 
+  void set_enabled(bool);
+
 protected:
   class sink;
   sink *sink_{};

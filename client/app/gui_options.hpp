@@ -15,6 +15,7 @@ struct gui_config {
     bool video_support{true};
     bool desktop_support{true};
     bool use_crash_catcher{true};
+    bool log_webrtc{false};
   };
   general general_;
 };
