@@ -161,6 +161,7 @@ void audio_devices::enumerate_on_thread() {
       << "playout_count:" << playout_count
       << ", recording_count:" << recording_count;
 
+  playout_devices.clear();
   for (int index{}; index < playout_count; ++index) {
     std::array<char, webrtc::kAdmMaxDeviceNameSize> name;
     // guid not used, because not set on linux
@@ -178,6 +179,7 @@ void audio_devices::enumerate_on_thread() {
         << "playout_device name:" << name_casted;
     playout_devices.push_back({index, name_casted});
   }
+  recording_devices.clear();
   for (int index{}; index < recording_count; ++index) {
     std::array<char, webrtc::kAdmMaxDeviceNameSize> name;
     std::array<char, webrtc::kAdmMaxGuidSize> guid;

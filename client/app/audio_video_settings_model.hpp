@@ -3,6 +3,7 @@
 
 #include "client/logger.hpp"
 #include "rtc/video_devices.hpp"
+#include "utils/timer.hpp"
 #include <QAbstractItemModel>
 
 namespace rtc::google::capture::video {
@@ -52,6 +53,8 @@ class audio_video_settings_model : public QObject {
                  output_devices_changed)
   Q_PROPERTY(client::devices_model *videoDevices MEMBER video_devices NOTIFY
                  video_devices_changed)
+  Q_PROPERTY(bool watchForNewAudioDevices MEMBER enable_update_audio_devices
+                 NOTIFY update_audio_devices_changed)
 
 public:
   audio_video_settings_model(
@@ -59,7 +62,9 @@ public:
       rtc::video_devices &video_device_enumerator,
       rtc::google::capture::video::device_factory &video_device_factory,
       audio_device_settings &audio_settings_, video_settings &video_settings_,
-      error_model &error_model_, QObject *parent = nullptr);
+      error_model &error_model_,
+      std::shared_ptr<utils::timer_factory> timer_factory,
+      QObject *parent = nullptr);
   ~audio_video_settings_model();
 
   Q_INVOKABLE void onAudioInputDeviceActivated(int index);
@@ -74,18 +79,25 @@ signals:
   void output_devices_changed(client::devices_model *);
   void video_devices_changed(client::devices_model *);
   void video_changed(ui::frame_provider_google_video_device *);
+  void update_audio_devices_changed(bool);
 
 protected:
   void update_video_device_index();
   ui::frame_provider_google_video_device *get_video();
   void reset_video();
+  void update_audio_devices();
+  void on_enable_update_audio_devices(bool);
 
   client::logger logger{"audio_video_settings_model"};
+  rtc::google::audio_devices &audio_devices;
+  std::shared_ptr<utils::interval_timer> audio_devices_timer;
   rtc::video_devices &video_device_enumerator;
   client::audio_device_settings &audio_settings;
   video_settings &video_settings_;
   rtc::google::capture::video::device_factory &video_device_factory;
   error_model &error_model_;
+  std::shared_ptr<utils::timer_factory> timer_factory;
+  bool enable_update_audio_devices{};
   int audio_input_device_index{};
   int audio_output_device_index{};
   int video_device_index{};

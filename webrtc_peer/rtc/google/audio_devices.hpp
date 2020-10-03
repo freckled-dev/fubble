@@ -24,6 +24,9 @@ public:
   struct device {
     int index{};
     std::string name;
+    bool operator==(const device &other) const {
+      return other.index == index && other.name == name;
+    }
   };
   using devices = std::vector<device>;
   devices get_playout_devices() const;

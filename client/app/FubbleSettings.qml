@@ -80,6 +80,7 @@ Popup {
 
     onClosed: {
         ownMediaModel.loopbackOwnVoice = false
+        audioVideoModel.watchForNewAudioDevices = false
         stopVideo()
     }
 
@@ -96,6 +97,7 @@ Popup {
     }
 
     onOpened: {
+        audioVideoModel.watchForNewAudioDevices = true
         startVideo()
     }
 }
