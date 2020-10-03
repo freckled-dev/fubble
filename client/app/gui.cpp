@@ -92,7 +92,9 @@ int main(int argc, char *argv[]) {
   logging::add_console_log(config.general_.log_severity);
   logging::add_file_log(config.general_.log_severity);
   client::ui::log_qt_to_logging qt_logger;
-  rtc::google::log_webrtc_to_logging webrtc_logger;
+  std::unique_ptr<rtc::google::log_webrtc_to_logging> webrtc_logger;
+  if (config.general_.log_webrtc)
+    webrtc_logger = std::make_unique<rtc::google::log_webrtc_to_logging>();
 
   logging::logger logger{"main"};
 
