@@ -8,6 +8,8 @@ class log_webrtc_to_logging::sink : public rtc::LogSink {
 public:
   void OnLogMessage(const std::string &message,
                     LoggingSeverity severity_to_cast) override {
+    if (!enabled)
+      return;
     logging::severity severity{logging::severity::debug};
     switch (severity_to_cast) {
     case LoggingSeverity::LS_INFO:
@@ -32,9 +34,11 @@ public:
   void OnLogMessage(const std::string &message) override {
     BOOST_LOG_SEV(logger, logging::severity::debug) << message;
   }
+  void set_enabled(bool enabled_) { enabled = enabled_; }
 
 protected:
   logging::logger logger{"google_webrtc"};
+  bool enabled;
 };
 
 log_webrtc_to_logging::log_webrtc_to_logging() {
@@ -46,4 +50,8 @@ log_webrtc_to_logging::log_webrtc_to_logging() {
 log_webrtc_to_logging::~log_webrtc_to_logging() {
   rtc::LogMessage::RemoveLogToStream(sink_);
   delete sink_;
+}
+
+void log_webrtc_to_logging::set_enabled(bool enabled) {
+  sink_->set_enabled(enabled);
 }
