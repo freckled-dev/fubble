@@ -218,7 +218,11 @@ FocusScope {
                     placeholderText: qsTr("Your name *")
                     Layout.fillWidth: true
                     //onAccepted: passwordTextField.focus = true
-                    onAccepted: joinRoomContainer.joinRoom()
+                    onAccepted: {
+                        if (joinButton.enabled) {
+                            joinRoomContainer.joinRoom()
+                        }
+                    }
                 }
 
                 Label {
