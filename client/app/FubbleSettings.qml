@@ -21,6 +21,7 @@ Popup {
 
     property alias bar: bar
     property alias generalSettings: general.settings
+    property alias notificationSettings: notification.settings
     property alias audioVideoSettings: audioVideo.settings
 
     ColumnLayout {
@@ -51,14 +52,19 @@ Popup {
             }
 
             TabButton {
+                text: qsTr("Sounds / Notifications")
+                width: implicitWidth
+            }
+
+            TabButton {
                 text: qsTr("Audio / Video")
                 width: implicitWidth
             }
 
             onCurrentIndexChanged: {
-                if (currentIndex === 0) {
+                if (currentIndex === 0 || currentIndex === 1) {
                     stopVideo()
-                } else if (currentIndex === 1) {
+                } else if (currentIndex === 2) {
                     startVideo()
                 }
             }
@@ -71,6 +77,9 @@ Popup {
 
             GeneralSettings {
                 id: general
+            }
+            NotificationSettings {
+                id: notification
             }
             AudioVideoSettings {
                 id: audioVideo
@@ -91,7 +100,7 @@ Popup {
     }
 
     function startVideo() {
-        if (ownMediaModel.videoAvailable && bar.currentIndex == 1) {
+        if (ownMediaModel.videoAvailable && bar.currentIndex == 2) {
             audioVideoModel.videoPreview.play()
         }
     }
