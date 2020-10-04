@@ -231,28 +231,28 @@ ApplicationWindow {
     }
 
     function playJoinSound() {
-        var isJoinSoundEnabled = settingsDialog.generalSettings.joinSound
+        var isJoinSoundEnabled = settingsDialog.notificationSettings.joinSound
         if (isJoinSoundEnabled) {
             joinSound.play()
         }
     }
 
     function playMessageSound() {
-        var isMessageSoundEnabled = settingsDialog.generalSettings.messageSound
+        var isMessageSoundEnabled = settingsDialog.notificationSettings.messageSound
         if (isMessageSoundEnabled) {
             messageSound.play()
         }
     }
 
     function playLeaveSound() {
-        var isLeaveSoundEnabeled = settingsDialog.generalSettings.leaveSound
+        var isLeaveSoundEnabeled = settingsDialog.notificationSettings.leaveSound
         if (isLeaveSoundEnabeled) {
             leaveSound.play()
         }
     }
 
     function playErrorSound() {
-        var isErrorSoundEnabled = settingsDialog.generalSettings.errorSound
+        var isErrorSoundEnabled = settingsDialog.notificationSettings.errorSound
         if (isErrorSoundEnabled) {
             errorSound.play()
         }

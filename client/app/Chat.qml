@@ -103,8 +103,11 @@ Item {
             }
 
             function showNotification(item) {
-                // MessageIcon Enum: NoIcon, Information, Warning, Critica
-                trayIcon.showMessage(item.name, item.message, 1, 5000)
+                var showNotifications = settingsDialog.notificationSettings.showNotifications
+                if (showNotifications) {
+                    // MessageIcon Enum: NoIcon, Information, Warning, Critica
+                    trayIcon.showMessage(item.name, item.message, 1, 5000)
+                }
             }
         }
 
