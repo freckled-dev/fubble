@@ -20,6 +20,7 @@ public:
   std::unique_ptr<participant> create(matrix::user &session_information);
 
 protected:
+  client::logger logger{"participant_creator"};
   factory &factory_;
   peer_creator &peer_creator_;
   tracks_adder &tracks_adder_;

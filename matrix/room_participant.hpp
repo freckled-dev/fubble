@@ -8,6 +8,7 @@
 namespace matrix {
 class user;
 enum class join_state { join, leave, invite };
+std::ostream &operator<<(std::ostream &out, const join_state print);
 class room_participant {
 public:
   using timestamp_type = std::chrono::system_clock::time_point;
