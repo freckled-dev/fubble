@@ -167,7 +167,17 @@ void action::on_response_read(const boost::system::error_code &error) {
 bool action::check_and_handle_error(const boost::system::error_code &error) {
   if (!error)
     return true;
-  BOOST_LOG_SEV(logger, logging::severity::debug)
+  // some servers seem to not shut down the ssl connection correctly. so we got
+  // to ignore this error.
+  // https://github.com/boostorg/beast/issues/824#issuecomment-338412225
+  if (error == boost::asio::ssl::error::stream_truncated) {
+    BOOST_LOG_SEV(logger, logging::severity::warning)
+        << __FUNCTION__
+        << ", boost::asio::ssl::error::stream_truncated, going to ignore the "
+           "error";
+    return true;
+  }
+  BOOST_LOG_SEV(logger, logging::severity::warning)
       << "got an error, error:" << error.message();
   auto promise_copy = std::move(promise);
   promise_copy->set_exception(boost::system::system_error{error});

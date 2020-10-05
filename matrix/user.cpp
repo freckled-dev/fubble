@@ -33,3 +33,13 @@ void user::set_presence_from_string(const std::string &presence_parameter) {
     return set_presence(presence::unavailable);
   BOOST_ASSERT(false);
 }
+
+void user::set_display_name(const std::string &display_name_) {
+  if (display_name == display_name_)
+    return;
+  BOOST_LOG_SEV(logger, logging::severity::debug)
+      << __FUNCTION__ << ", current:" << display_name
+      << ", new:" << display_name_;
+  display_name = display_name_;
+  on_update();
+}

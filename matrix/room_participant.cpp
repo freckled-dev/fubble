@@ -5,6 +5,19 @@
 
 using namespace matrix;
 
+std::ostream &matrix::operator<<(std::ostream &out, const join_state print) {
+  switch (print) {
+  case join_state::invite:
+    return out << "invite";
+  case join_state::join:
+    return out << "join";
+  case join_state::leave:
+    return out << "leave";
+  }
+  BOOST_ASSERT(false);
+  return out << "undefined";
+}
+
 room_participant::room_participant(user &user_, const join_state join_state_,
                                    const timestamp_type &join_state_timestamp)
     : user_(user_), logger{fmt::format("room_participant {}", user_.get_id())},
@@ -18,6 +31,8 @@ void room_participant::set_join_state(const join_state new_,
                                       const timestamp_type &timestamp) {
   if (join_state_ == new_)
     return;
+  BOOST_LOG_SEV(logger, logging::severity::debug)
+      << __FUNCTION__ << ", current:" << join_state_ << ", new:" << new_;
   if (timestamp < join_state_timestamp) {
     BOOST_LOG_SEV(logger, logging::severity::info) << fmt::format(
         "ignoring join_state due to the timestamps: parameter:{}, member:{}",
