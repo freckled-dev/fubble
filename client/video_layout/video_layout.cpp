@@ -90,7 +90,6 @@ void set_rects_to_qml(const rects_type &rects,
     child->setY(y);
     child->setWidth(width);
     child->setHeight(height);
-    child->setVisible(true); // TODO move this line to a better place!
   }
 }
 void calculate(const QList<QQuickItem *> &items, qreal width_, qreal height_,
@@ -138,13 +137,15 @@ void video_layout::itemChange(QQuickItem::ItemChange change,
   if (change == QQuickItem::ItemChange::ItemChildAddedChange)
     return on_child_added(value);
   if (change == QQuickItem::ItemChange::ItemChildRemovedChange) {
-    if (focused == value.item) {
-      // TODO make method `clear_focused`
-      layout_ = layout::grid;
-      focused = nullptr;
-    }
+    if (focused == value.item)
+      clear_focused();
     return recalculate();
   }
+}
+
+void video_layout::clear_focused() {
+  layout_ = layout::grid;
+  focused = nullptr;
 }
 
 void video_layout::on_child_added(const QQuickItem::ItemChangeData &value) {
@@ -181,6 +182,9 @@ void video_layout::recalculate() {
       return layout::grid;
     return layout_;
   }();
+  if (actual_layout != layout::full)
+    for (auto show : children_)
+      show->setVisible(true);
   if (actual_layout == layout::grid)
     return calculate(children_, width_, height_, 0.);
   QList<QQuickItem *> without_focused;
@@ -191,10 +195,9 @@ void video_layout::recalculate() {
     assert(focused);
     children_.clear();
     children_.push_back(focused);
-    for (auto remove : without_focused) {
+    focused->setVisible(true);
+    for (auto remove : without_focused)
       remove->setVisible(false);
-      // remove->setEnabled(false);
-    }
     return calculate(children_, width_, height_, 0.);
   }
   if (actual_layout == layout::enlarged) {

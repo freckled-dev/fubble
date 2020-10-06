@@ -25,6 +25,7 @@ protected:
   QString get_layout() const;
   void set_layout(QString set);
   void on_child_added(const QQuickItem::ItemChangeData &value);
+  void clear_focused();
 
   enum class layout { grid, enlarged, full };
   layout layout_{layout::grid};
