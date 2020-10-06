@@ -10,6 +10,10 @@ share_desktop_model::share_desktop_model(
                                               desktop_sharing_previews_} {
   categories =
       new share_desktop_categories_model(desktop_sharing_previews_, this);
+  signal_connections.push_back(
+      desktop_sharing_->on_added.connect([this](auto) { update_active(); }));
+  signal_connections.push_back(
+      desktop_sharing_->on_removed.connect([this](auto) { update_active(); }));
 }
 
 share_desktop_model::~share_desktop_model() = default;
@@ -33,4 +37,12 @@ void share_desktop_model::shareDesktop(qint64 id) {
 void share_desktop_model::stopShareDesktop() {
   BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
   desktop_sharing_->reset();
+}
+
+void share_desktop_model::update_active() {
+  const bool change = desktop_sharing_->get() != nullptr;
+  if (change == active)
+    return;
+  active = change;
+  active_changed(active);
 }
