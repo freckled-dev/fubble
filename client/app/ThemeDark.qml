@@ -41,7 +41,7 @@ Theme {
     property var overlayVideoImage: "images/overlay_video.svg"
     property var overlayVideoOffImage: "images/overlay_video_off.svg"
     property var overlayShareDesktopImage: "images/overlay_share_desktop.svg"
-    property var overlayStopShareImage: "images/overlay_stop_share"
+    property var overlayStopShareImage: "images/overlay_stop_share.svg"
 
     property var settingsImage: "images/overlay_settings.svg"
     property var feedbackImage: "images/feedback_dark.svg"
