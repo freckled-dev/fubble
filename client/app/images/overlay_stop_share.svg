@@ -13,11 +13,12 @@
    id="Capa_1"
    x="0px"
    y="0px"
-   viewBox="0 0 30.05 30.05"
-   style="enable-background:new 0 0 30.05 30.05;"
+   viewBox="0 0 512.00001 512.00001"
    xml:space="preserve"
    sodipodi:docname="overlay_stop_share.svg"
-   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"><metadata
+   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"
+   width="512"
+   height="512"><metadata
    id="metadata43"><rdf:RDF><cc:Work
        rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
          rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata><defs
@@ -34,68 +35,85 @@
    inkscape:window-height="1140"
    id="namedview39"
    showgrid="false"
-   inkscape:zoom="7.8535776"
-   inkscape:cx="-6.7074424"
-   inkscape:cy="15.025"
+   inkscape:zoom="0.69416475"
+   inkscape:cx="217.54377"
+   inkscape:cy="410.91403"
    inkscape:window-x="1920"
    inkscape:window-y="0"
    inkscape:window-maximized="1"
    inkscape:current-layer="g6" />
 <g
-   id="g6">
+   id="g6"
+   transform="translate(0,481.95)">
 	<path
-   style="fill:#c45252;fill-opacity:1;stroke-width:1.22013581"
-   d="M 19.92532,9.669356 H 9.997851 c -0.2376788,0 -0.4328255,0.1773237 -0.4328255,0.40701 v 9.546896 c 0,0.224926 0.1938959,0.409391 0.4328255,0.409391 h 9.927469 c 0.237679,0 0.430324,-0.183275 0.430324,-0.409391 v -9.546896 c -0.0013,-0.2284963 -0.192645,-0.40701 -0.430324,-0.40701 z"
+   style="fill:#c45252;fill-opacity:1;stroke-width:19.2183609"
+   d="m 332.71802,-307.18256 h -159.2756 c -3.81331,0 -6.94423,2.74206 -6.94423,6.29377 v 147.62768 c 0,3.47813 3.11084,6.33059 6.94423,6.33059 h 159.2756 c 3.81333,0 6.90413,-2.83406 6.90413,-6.33059 v -147.62768 c -0.0216,-3.53333 -3.0908,-6.29377 -6.90413,-6.29377 z"
    id="path2"
    inkscape:connector-curvature="0" />
 	<path
-   style="fill:#c45252;fill-opacity:1"
-   d="M15.026,0C6.729,0,0.001,6.726,0.001,15.025S6.729,30.05,15.026,30.05   c8.298,0,15.023-6.726,15.023-15.025S23.324,0,15.026,0z M15.026,27.54c-6.912,0-12.516-5.604-12.516-12.515   c0-6.914,5.604-12.517,12.516-12.517c6.913,0,12.514,5.603,12.514,12.517C27.54,21.936,21.939,27.54,15.026,27.54z"
-   id="path4" />
+   style="fill:#c45252;fill-opacity:1;stroke-width:15.75100422"
+   d="m 254.11367,-456.70386 c -133.11649,0 -241.060063,104.00695 -241.060063,232.33789 0,128.330927 107.943573,232.337889 241.060063,232.337889 133.13258,0 241.02802,-104.006962 241.02802,-232.337889 0,-128.33094 -107.89544,-232.33789 -241.02802,-232.33789 z m 0,425.862601 c -110.89564,0 -200.805836,-86.657001 -200.805836,-193.524711 0,-106.91409 89.910196,-193.55564 200.805836,-193.55564 110.91173,0 200.77379,86.64155 200.77379,193.55564 0,106.86771 -89.86206,193.524711 -200.77379,193.524711 z"
+   id="path4"
+   inkscape:connector-curvature="0" />
 </g>
 <g
-   id="g8">
+   id="g8"
+   transform="translate(0,481.95)">
 </g>
 <g
-   id="g10">
+   id="g10"
+   transform="translate(0,481.95)">
 </g>
 <g
-   id="g12">
+   id="g12"
+   transform="translate(0,481.95)">
 </g>
 <g
-   id="g14">
+   id="g14"
+   transform="translate(0,481.95)">
 </g>
 <g
-   id="g16">
+   id="g16"
+   transform="translate(0,481.95)">
 </g>
 <g
-   id="g18">
+   id="g18"
+   transform="translate(0,481.95)">
 </g>
 <g
-   id="g20">
+   id="g20"
+   transform="translate(0,481.95)">
 </g>
 <g
-   id="g22">
+   id="g22"
+   transform="translate(0,481.95)">
 </g>
 <g
-   id="g24">
+   id="g24"
+   transform="translate(0,481.95)">
 </g>
 <g
-   id="g26">
+   id="g26"
+   transform="translate(0,481.95)">
 </g>
 <g
-   id="g28">
+   id="g28"
+   transform="translate(0,481.95)">
 </g>
 <g
-   id="g30">
+   id="g30"
+   transform="translate(0,481.95)">
 </g>
 <g
-   id="g32">
+   id="g32"
+   transform="translate(0,481.95)">
 </g>
 <g
-   id="g34">
+   id="g34"
+   transform="translate(0,481.95)">
 </g>
 <g
-   id="g36">
+   id="g36"
+   transform="translate(0,481.95)">
 </g>
 </svg>
