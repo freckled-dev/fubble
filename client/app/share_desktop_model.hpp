@@ -120,6 +120,7 @@ class share_desktop_model : public QObject {
   Q_OBJECT
   Q_PROPERTY(share_desktop_categories_model *categories MEMBER categories NOTIFY
                  categories_changed)
+  Q_PROPERTY(bool desktopSharingActive MEMBER active NOTIFY active_changed)
 
 public:
   share_desktop_model(
@@ -135,12 +136,17 @@ public:
 
 signals:
   void categories_changed(share_desktop_categories_model *);
+  void active_changed(bool);
 
 protected:
+  void update_active();
+
   client::logger logger{"share_desktop_model"};
   std::shared_ptr<desktop_sharing> desktop_sharing_;
   std::shared_ptr<desktop_sharing_previews> desktop_sharing_previews_;
   share_desktop_categories_model *categories{};
+  bool active{};
+  std::vector<boost::signals2::scoped_connection> signal_connections;
 };
 } // namespace client
 
