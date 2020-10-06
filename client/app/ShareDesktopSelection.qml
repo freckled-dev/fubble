@@ -15,6 +15,12 @@ Popup {
     focus: true
     padding: 0
 
+    property int videoWidth: 300
+    property int videoHeight: 200
+    property int videoWidthPadding: 10
+    property int paddingHorizontal: 100
+    property int paddingVertical: 200
+
     Material.foreground: Style.current.foreground
 
     Rectangle {
@@ -22,8 +28,8 @@ Popup {
         color: Style.current.transparent
         radius: 5
         anchors.fill: parent
-        implicitHeight: shareColumnLayout.height
-        implicitWidth: shareColumnLayout.width
+        implicitHeight: shareColumnLayout.implicitHeight
+        implicitWidth: shareColumnLayout.implicitWidth
         border.width: 1
         border.color: Style.current.white
 
@@ -57,50 +63,71 @@ Popup {
                 Repeater {
                     model: shareDesktopModel.categories
 
-                    GridLayout {
+                    ScrollView {
+                        id: previewScrollView
 
-                        Repeater {
-                            model: previews
+                        implicitHeight: Math.min(
+                                            previewGrid.implicitHeight,
+                                            container.height - paddingVertical)
+                        clip: true
 
-                            Rectangle {
-                                id: previewRect
-                                color: Style.current.transparent
-                                border.width: maPreview.containsMouse ? 2 : 1
-                                border.color: maPreview.containsMouse ? Style.current.accent : Style.current.foreground
+                        GridLayout {
+                            id: previewGrid
+                            columns: calculateColumns()
 
-                                implicitHeight: video.height + descriptionLabel.height + 40
-                                implicitWidth: video.width + 10
+                            Repeater {
+                                model: previews
 
-                                VideoOutput {
-                                    id: video
-                                    source: player
-                                    height: 200
-                                    anchors.horizontalCenter: parent.horizontalCenter
-                                    anchors.top: parent.top
-                                    anchors.topMargin: 10
-                                    width: 300
-                                    fillMode: VideoOutput.Stretch
-                                }
+                                Rectangle {
+                                    id: previewRect
+                                    color: Style.current.transparent
+                                    border.width: maPreview.containsMouse ? 2 : 1
+                                    border.color: maPreview.containsMouse ? Style.current.accent : Style.current.foreground
 
-                                Label {
-                                    id: descriptionLabel
-                                    text: description
-                                    anchors.horizontalCenter: parent.horizontalCenter
-                                    anchors.top: video.bottom
-                                    anchors.topMargin: 20
-                                    Layout.alignment: Qt.AlignHCenter
-                                }
+                                    implicitHeight: videoHeight + descriptionLabel.height + 40
+                                    implicitWidth: videoWidth + videoWidthPadding
 
-                                MouseArea {
-                                    id: maPreview
-                                    hoverEnabled: true
-                                    anchors.fill: parent
-                                    onClicked: {
-                                        shareDesktopModel.shareDesktop(model.id)
-                                        popup.close()
+                                    VideoOutput {
+                                        id: video
+                                        source: player
+                                        height: videoHeight
+                                        width: videoWidth
+                                        anchors.horizontalCenter: parent.horizontalCenter
+                                        anchors.top: parent.top
+                                        anchors.topMargin: 10
+                                        fillMode: VideoOutput.PreserveAspectFit
                                     }
 
+                                    Label {
+                                        id: descriptionLabel
+                                        text: description
+                                        anchors.left: parent.left
+                                        anchors.right: parent.right
+                                        anchors.top: video.bottom
+                                        anchors.rightMargin: 10
+                                        anchors.leftMargin: 10
+                                        anchors.topMargin: 20
+                                        clip: true
+                                        Layout.alignment: Qt.AlignHCenter
+                                    }
+
+                                    MouseArea {
+                                        id: maPreview
+                                        hoverEnabled: true
+                                        anchors.fill: parent
+                                        onClicked: {
+                                            shareDesktopModel.shareDesktop(
+                                                        model.id)
+                                            popup.close()
+                                        }
+                                    }
                                 }
+                            }
+
+                            function calculateColumns() {
+                                var columns = (container.width - paddingHorizontal)
+                                        / (300 + videoWidthPadding)
+                                return Math.min(4, columns)
                             }
                         }
                     }
