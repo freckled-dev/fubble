@@ -3,6 +3,8 @@ import QtMultimedia 5.12
 
 QtObject {
 
+    property bool desktopSharingActive: true
+
     function startPreviews() {
         for (var categoryIndex = 0; categoryIndex < categories.length; categoryIndex++) {
             var previews = categories[categoryIndex].previews
@@ -55,6 +57,70 @@ QtObject {
                     property var player: MediaPlayer {
                         autoLoad: false
                         source: "/home/tamrielle/Downloads/Big_Buck_Bunny_alt.webm"
+                    }
+                },
+                QtObject {
+                    property int id: 3
+                    property string description: "VLC"
+                    property var player: MediaPlayer {
+                        autoLoad: false
+                        source: "/home/tamrielle/Downloads/Sintel_webm_extract.webm"
+                    }
+                },
+                QtObject {
+                    property int id: 3
+                    property string description: "VLC"
+                    property var player: MediaPlayer {
+                        autoLoad: false
+                        source: "/home/tamrielle/Downloads/Sintel_webm_extract.webm"
+                    }
+                },
+                QtObject {
+                    property int id: 3
+                    property string description: "VLC"
+                    property var player: MediaPlayer {
+                        autoLoad: false
+                        source: "/home/tamrielle/Downloads/Sintel_webm_extract.webm"
+                    }
+                },
+                QtObject {
+                    property int id: 3
+                    property string description: "VLC"
+                    property var player: MediaPlayer {
+                        autoLoad: false
+                        source: "/home/tamrielle/Downloads/Sintel_webm_extract.webm"
+                    }
+                },
+                QtObject {
+                    property int id: 3
+                    property string description: "VLC"
+                    property var player: MediaPlayer {
+                        autoLoad: false
+                        source: "/home/tamrielle/Downloads/Sintel_webm_extract.webm"
+                    }
+                },
+                QtObject {
+                    property int id: 3
+                    property string description: "VLC"
+                    property var player: MediaPlayer {
+                        autoLoad: false
+                        source: "/home/tamrielle/Downloads/Sintel_webm_extract.webm"
+                    }
+                },
+                QtObject {
+                    property int id: 3
+                    property string description: "VLC"
+                    property var player: MediaPlayer {
+                        autoLoad: false
+                        source: "/home/tamrielle/Downloads/Sintel_webm_extract.webm"
+                    }
+                },
+                QtObject {
+                    property int id: 3
+                    property string description: "VLC"
+                    property var player: MediaPlayer {
+                        autoLoad: false
+                        source: "/home/tamrielle/Downloads/Sintel_webm_extract.webm"
                     }
                 },
                 QtObject {

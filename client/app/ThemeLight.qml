@@ -40,7 +40,8 @@ Theme {
     property var overlaySilenceOffImage: "images/overlay_silence_off.svg"
     property var overlayVideoImage: "images/overlay_video.svg"
     property var overlayVideoOffImage: "images/overlay_video_off.svg"
-    property var shareDesktopImage: "images/overlay_share_desktop.svg"
+    property var overlayShareDesktopImage: "images/overlay_share_desktop.svg"
+    property var overlayStopShareImage: "images/overlay_stop_share"
 
     property var settingsImage: "images/overlay_settings.svg"
     property var feedbackImage: "images/feedback.svg"
