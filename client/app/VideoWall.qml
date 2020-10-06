@@ -32,6 +32,8 @@ Rectangle {
                 Layout.fillWidth: true
                 participant: model.participant
                 demoMode: videoWallContainer.demoMode
+                onEnlarge: participantGrid.enlarge(this)
+                onShrink: participantGrid.shrink(this)
             }
         }
     }

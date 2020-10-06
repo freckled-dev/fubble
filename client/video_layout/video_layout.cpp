@@ -1,7 +1,9 @@
 #include "video_layout.hpp"
 #include <GuillotineBinPack.h>
 #include <QDebug>
+#include <cassert>
 #include <cmath>
+#include <iostream>
 #include <optional>
 #include <utility>
 
@@ -60,9 +62,9 @@ std::optional<rects_type> try_pack(const QList<QQuickItem *> &children_,
   }
   return results;
 }
-void set_rects_to_qml(const rects_type &rects, QList<QQuickItem *> &children,
-                      const double factor, const int packer_width,
-                      const int packer_height) {
+void set_rects_to_qml(const rects_type &rects,
+                      const QList<QQuickItem *> &children, const double factor,
+                      const int packer_width, const int packer_height) {
   assert(static_cast<std::size_t>(children.size()) == rects.size());
   const int max_x = std::accumulate(
       rects.cbegin(), rects.cend(), 0, [](int current, rbp::Rect check) {
@@ -93,8 +95,8 @@ video_layout::video_layout(QQuickItem *parent) : QQuickItem(parent) {
 #if ENABLE_LOGGING
   qDebug() << "video_layout got instanced";
 #endif
-  connect(this, &QQuickItem::heightChanged, this, [=] { recalculate(); });
-  connect(this, &QQuickItem::widthChanged, this, [=] { recalculate(); });
+  connect(this, &QQuickItem::heightChanged, this, [this] { recalculate(); });
+  connect(this, &QQuickItem::widthChanged, this, [this] { recalculate(); });
 }
 
 void video_layout::itemChange(QQuickItem::ItemChange change,
@@ -123,7 +125,7 @@ void video_layout::on_aspect_changed() {
 }
 
 void video_layout::recalculate() {
-  // TODO save width/height/count - and dont recalculate
+  // TODO save width/height/count - and don't recalculate
   auto width_ = width();
   auto height_ = height();
   auto children_all = childItems();
@@ -137,15 +139,55 @@ void video_layout::recalculate() {
   qDebug() << "recalculate, width_:" << width_ << ", height_:" << height_
            << "children_.size():" << children_.size();
 #endif
+  calculate(children_all, width_, height_);
+}
+
+void video_layout::enlarge(QQuickItem *item) {
+  qDebug() << __FUNCTION__ << item;
+}
+
+void video_layout::shrink(QQuickItem *item) {
+  qDebug() << __FUNCTION__ << item;
+}
+
+QString video_layout::get_layout() const {
+  switch (layout_) {
+  case layout::grid:
+    return "grid";
+  case layout::enlarged:
+    return "enlarged";
+  case layout::full:
+    return "full";
+  }
+  assert(false);
+}
+
+void video_layout::set_layout(QString set) {
+  const auto casted = [&] {
+    if (set == "enlarged")
+      return layout::enlarged;
+    if (set == "full")
+      return layout::full;
+    assert(set == "grid");
+    return layout::grid;
+  }();
+  if (layout_ == casted)
+    return;
+  layout_ = casted;
+  layout_changed(set);
+}
+
+void video_layout::calculate(const QList<QQuickItem *> &items, qreal width_,
+                             qreal height_) {
   const double container_aspect = width_ / height_;
-  const double first_child_aspect = get_aspect(*children_.first());
+  const double first_child_aspect = get_aspect(*items.first());
   if (container_aspect <= 0. || first_child_aspect <= 0.)
     return;
   const auto [first_child_width, first_child_height] =
       calculate_width_and_hight_by_aspect(first_child_aspect);
   auto packer_width = static_cast<int>(first_child_width);
   while (true) {
-    auto packed = try_pack(children_, container_aspect, packer_width);
+    auto packed = try_pack(items, container_aspect, packer_width);
     if (!packed) {
       auto packer_width_old = packer_width;
       packer_width += (packer_width * 5) / 100;
@@ -157,7 +199,7 @@ void video_layout::recalculate() {
         width_ / static_cast<double>(packer_width);
     const auto packer_height =
         static_cast<int>(packer_width / container_aspect);
-    set_rects_to_qml(packed.value(), children_, container_packer_factor,
+    set_rects_to_qml(packed.value(), items, container_packer_factor,
                      packer_width, packer_height);
     break;
   }

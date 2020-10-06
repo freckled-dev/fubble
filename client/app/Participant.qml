@@ -11,13 +11,14 @@ import "scripts/utils.js" as Utils
 Rectangle {
     property ParticipantModel participant
     property bool demoMode: false
-
     property double aspect: {
         var width = video.sourceRect.width
         var height = video.sourceRect.height
         var result = width / height
         return result
     }
+    signal enlarge()
+    signal shrink()
 
     VideoOutput {
         id: video
@@ -31,6 +32,14 @@ Rectangle {
             hoverEnabled: true
             onEntered: highlightParticipant(true)
             onExited: highlightParticipant(false)
+            // https://doc.qt.io/qt-5/qml-qtquick-mousearea.html#acceptedButtons-prop
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
+            onClicked: {
+                if (mouse.button == Qt.LeftButton)
+                    enlarge()
+                if (mouse.button == Qt.RightButton)
+                    shrink()
+            }
         }
 
         ParticipantOverlay {
