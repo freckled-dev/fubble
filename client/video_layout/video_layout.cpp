@@ -144,7 +144,7 @@ void video_layout::itemChange(QQuickItem::ItemChange change,
 }
 
 void video_layout::clear_focused() {
-  layout_ = layout::grid;
+  set_layout_property(layout::grid);
   focused = nullptr;
 }
 
@@ -221,20 +221,20 @@ void video_layout::enlarge(QQuickItem *item) {
     focused = item;
     switch (layout_) {
     case layout::grid:
-      layout_ = layout::enlarged;
+      set_layout_property(layout::enlarged);
       break;
     case layout::enlarged:
-      layout_ = layout::full;
+      set_layout_property(layout::full);
       break;
     case layout::full:
-      layout_ = layout::grid;
+      set_layout_property(layout::grid);
       break;
     }
   } else {
     // let's only switch enlarged target
     focused = item;
+    recalculate();
   }
-  recalculate();
 }
 
 void video_layout::shrink([[maybe_unused]] QQuickItem *item) {
@@ -246,26 +246,23 @@ void video_layout::shrink([[maybe_unused]] QQuickItem *item) {
   case layout::grid:
     return;
   case layout::enlarged:
-    layout_ = layout::grid;
+    set_layout_property(layout::grid);
     break;
   case layout::full:
-    layout_ = layout::enlarged;
+    set_layout_property(layout::full);
     break;
   }
+}
+
+void video_layout::set_layout_property(layout set) {
+  if (set == layout_)
+    return;
+  layout_ = set;
+  layout_changed(get_layout());
   recalculate();
 }
 
-QString video_layout::get_layout() const {
-  switch (layout_) {
-  case layout::grid:
-    return "grid";
-  case layout::enlarged:
-    return "enlarged";
-  case layout::full:
-    return "full";
-  }
-  assert(false);
-}
+QString video_layout::get_layout() const { return layout_to_string(layout_); }
 
 void video_layout::set_layout(QString set) {
   const auto casted = [&] {
@@ -276,8 +273,18 @@ void video_layout::set_layout(QString set) {
     assert(set == "grid");
     return layout::grid;
   }();
-  if (layout_ == casted)
-    return;
-  layout_ = casted;
-  layout_changed(set);
+  set_layout_property(casted);
+}
+
+QString video_layout::layout_to_string(layout cast) const {
+  switch (cast) {
+  case layout::grid:
+    return "grid";
+  case layout::enlarged:
+    return "enlarged";
+  case layout::full:
+    return "full";
+  }
+  assert(false);
+  return "grid";
 }

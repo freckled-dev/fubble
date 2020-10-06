@@ -24,10 +24,12 @@ protected:
   Q_INVOKABLE void shrink(QQuickItem *item);
   QString get_layout() const;
   void set_layout(QString set);
+  enum class layout { grid, enlarged, full };
+  void set_layout_property(layout set);
   void on_child_added(const QQuickItem::ItemChangeData &value);
   void clear_focused();
+  QString layout_to_string(layout cast) const;
 
-  enum class layout { grid, enlarged, full };
   layout layout_{layout::grid};
   QQuickItem *focused{};
 };
