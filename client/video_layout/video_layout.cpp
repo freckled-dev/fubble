@@ -37,7 +37,9 @@ std::optional<rects_type> try_pack(const QList<QQuickItem *> &children_,
   const auto choice = rbp::GuillotineBinPack::RectWorstShortSideFit;
   const auto split = rbp::GuillotineBinPack::SplitMinimizeArea;
   rects_type results;
+#if 0
   int fun{};
+#endif
   for (const auto &child : children_) {
     auto child_aspect = get_aspect(*child);
 #if ENABLE_LOGGING
@@ -46,8 +48,8 @@ std::optional<rects_type> try_pack(const QList<QQuickItem *> &children_,
 #if 0
     if (fun == 1)
       child_aspect = 1.0 / child_aspect;
-#endif
     ++fun;
+#endif
     auto [child_width, child_height] =
         calculate_width_and_hight_by_aspect(child_aspect);
     auto result =
@@ -64,7 +66,8 @@ std::optional<rects_type> try_pack(const QList<QQuickItem *> &children_,
 }
 void set_rects_to_qml(const rects_type &rects,
                       const QList<QQuickItem *> &children, const double factor,
-                      const int packer_width, const int packer_height) {
+                      const int packer_width, const int packer_height,
+                      const qreal offset) {
   assert(static_cast<std::size_t>(children.size()) == rects.size());
   const int max_x = std::accumulate(
       rects.cbegin(), rects.cend(), 0, [](int current, rbp::Rect check) {
@@ -75,7 +78,7 @@ void set_rects_to_qml(const rects_type &rects,
       rects.cbegin(), rects.cend(), 0, [](int current, rbp::Rect check) {
         return std::max(current, check.y + check.height);
       });
-  double offset_y = ((packer_height - max_y) * factor) / 2.0;
+  double offset_y = ((packer_height - max_y) * factor) / 2.0 + offset;
   for (int index{}; index < children.size(); ++index) {
     auto rect = rects[index];
     double x = static_cast<double>(rect.x) * factor + offset_x;
@@ -87,6 +90,34 @@ void set_rects_to_qml(const rects_type &rects,
     child->setY(y);
     child->setWidth(width);
     child->setHeight(height);
+    child->setVisible(true); // TODO move this line to a better place!
+  }
+}
+void calculate(const QList<QQuickItem *> &items, qreal width_, qreal height_,
+               qreal offset) {
+  const double container_aspect = width_ / height_;
+  const double first_child_aspect = get_aspect(*items.first());
+  if (container_aspect <= 0. || first_child_aspect <= 0.)
+    return;
+  const auto [first_child_width, first_child_height] =
+      calculate_width_and_hight_by_aspect(first_child_aspect);
+  auto packer_width = static_cast<int>(first_child_width);
+  while (true) {
+    auto packed = try_pack(items, container_aspect, packer_width);
+    if (!packed) {
+      auto packer_width_old = packer_width;
+      packer_width += (packer_width * 5) / 100;
+      if (packer_width_old >= packer_width)
+        return; // this is going nowhere. there's an invalid number involved
+      continue;
+    }
+    const double container_packer_factor =
+        width_ / static_cast<double>(packer_width);
+    const auto packer_height =
+        static_cast<int>(packer_width / container_aspect);
+    set_rects_to_qml(packed.value(), items, container_packer_factor,
+                     packer_width, packer_height, offset);
+    break;
   }
 }
 } // namespace
@@ -106,8 +137,14 @@ void video_layout::itemChange(QQuickItem::ItemChange change,
 #endif
   if (change == QQuickItem::ItemChange::ItemChildAddedChange)
     return on_child_added(value);
-  if (change == QQuickItem::ItemChange::ItemChildRemovedChange)
+  if (change == QQuickItem::ItemChange::ItemChildRemovedChange) {
+    if (focused == value.item) {
+      // TODO make method `clear_focused`
+      layout_ = layout::grid;
+      focused = nullptr;
+    }
     return recalculate();
+  }
 }
 
 void video_layout::on_child_added(const QQuickItem::ItemChangeData &value) {
@@ -139,15 +176,80 @@ void video_layout::recalculate() {
   qDebug() << "recalculate, width_:" << width_ << ", height_:" << height_
            << "children_.size():" << children_.size();
 #endif
-  calculate(children_all, width_, height_);
+  const layout actual_layout = [&] {
+    if (children_.size() == 1)
+      return layout::grid;
+    return layout_;
+  }();
+  if (actual_layout == layout::grid)
+    return calculate(children_, width_, height_, 0.);
+  QList<QQuickItem *> without_focused;
+  std::remove_copy(children_.cbegin(), children_.cend(),
+                   std::back_inserter(without_focused), focused);
+  assert(!without_focused.empty());
+  if (actual_layout == layout::full) {
+    assert(focused);
+    children_.clear();
+    children_.push_back(focused);
+    for (auto remove : without_focused) {
+      remove->setVisible(false);
+      // remove->setEnabled(false);
+    }
+    return calculate(children_, width_, height_, 0.);
+  }
+  if (actual_layout == layout::enlarged) {
+    qreal smalls_height = (height_ * 20) / 100;
+    calculate(without_focused, width_, smalls_height, 0.);
+    QList<QQuickItem *> focused_list;
+    focused_list.push_back(focused);
+    return calculate(focused_list, width_, height_ - smalls_height,
+                     smalls_height);
+  }
+  assert(false && "must not be reached");
 }
 
 void video_layout::enlarge(QQuickItem *item) {
+#if ENABLE_LOGGING
   qDebug() << __FUNCTION__ << item;
+#endif
+  assert(item != nullptr);
+  if (focused == item || layout_ == layout::grid) {
+    // lets enlarge!
+    focused = item;
+    switch (layout_) {
+    case layout::grid:
+      layout_ = layout::enlarged;
+      break;
+    case layout::enlarged:
+      layout_ = layout::full;
+      break;
+    case layout::full:
+      layout_ = layout::grid;
+      break;
+    }
+  } else {
+    // let's only switch enlarged target
+    focused = item;
+  }
+  recalculate();
 }
 
-void video_layout::shrink(QQuickItem *item) {
+void video_layout::shrink([[maybe_unused]] QQuickItem *item) {
+#if ENABLE_LOGGING
   qDebug() << __FUNCTION__ << item;
+#endif
+  assert(item != nullptr);
+  switch (layout_) {
+  case layout::grid:
+    return;
+  case layout::enlarged:
+    layout_ = layout::grid;
+    break;
+  case layout::full:
+    layout_ = layout::enlarged;
+    break;
+  }
+  recalculate();
 }
 
 QString video_layout::get_layout() const {
@@ -175,32 +277,4 @@ void video_layout::set_layout(QString set) {
     return;
   layout_ = casted;
   layout_changed(set);
-}
-
-void video_layout::calculate(const QList<QQuickItem *> &items, qreal width_,
-                             qreal height_) {
-  const double container_aspect = width_ / height_;
-  const double first_child_aspect = get_aspect(*items.first());
-  if (container_aspect <= 0. || first_child_aspect <= 0.)
-    return;
-  const auto [first_child_width, first_child_height] =
-      calculate_width_and_hight_by_aspect(first_child_aspect);
-  auto packer_width = static_cast<int>(first_child_width);
-  while (true) {
-    auto packed = try_pack(items, container_aspect, packer_width);
-    if (!packed) {
-      auto packer_width_old = packer_width;
-      packer_width += (packer_width * 5) / 100;
-      if (packer_width_old >= packer_width)
-        return; // this is going nowhere. there's an invalid number involved
-      continue;
-    }
-    const double container_packer_factor =
-        width_ / static_cast<double>(packer_width);
-    const auto packer_height =
-        static_cast<int>(packer_width / container_aspect);
-    set_rects_to_qml(packed.value(), items, container_packer_factor,
-                     packer_width, packer_height);
-    break;
-  }
 }
