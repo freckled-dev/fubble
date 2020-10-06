@@ -271,10 +271,11 @@ public:
     if (!set_capturer)
       return;
     BOOST_ASSERT(video_adder);
-    on_removed(get());
-    tracks_adder_->remove(video_adder);
-    set_capturer.reset();
-    video_adder.reset();
+    auto signal_arg = get();
+    decltype(set_capturer) moved_set_capturer = std::move(set_capturer);
+    decltype(video_adder) moved_video_adder = std::move(video_adder);
+    on_removed(signal_arg);
+    tracks_adder_->remove(moved_video_adder);
   }
 
   void reset() override {
