@@ -172,12 +172,20 @@ public:
       const std::shared_ptr<tracks_adder> tracks_adder_,
       const std::shared_ptr<add_video_to_connection_factory>
           add_video_to_connection_factory_,
-      const std::shared_ptr<video_settings> video_settings_)
+      const std::shared_ptr<video_settings> video_settings_,
+      const std::shared_ptr<leaver> leaver_)
       : timer_factory{timer_factory}, tracks_adder_{tracks_adder_},
         add_video_to_connection_factory_{add_video_to_connection_factory_},
-        video_settings_{video_settings_} {
+        video_settings_{video_settings_}, leaver_{leaver_} {
     video_settings_->on_paused.connect(
         [this](bool paused) { on_video_paused(paused); });
+    leaver_->on_about_to_leave.connect([this] { on_leave(); });
+  }
+
+  void on_leave() {
+    BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
+    if (get())
+      stop_or_reset();
   }
 
   void on_video_paused(bool paused) {
@@ -295,6 +303,7 @@ protected:
   std::shared_ptr<add_video_to_connection_factory>
       add_video_to_connection_factory_;
   std::shared_ptr<video_settings> video_settings_;
+  std::shared_ptr<leaver> leaver_;
   bool did_pause{};
 };
 class desktop_sharing_noop final : public desktop_sharing {
@@ -315,10 +324,11 @@ std::unique_ptr<desktop_sharing> desktop_sharing::create(
     const std::shared_ptr<tracks_adder> tracks_adder_,
     const std::shared_ptr<add_video_to_connection_factory>
         add_video_to_connection_factory_,
-    const std::shared_ptr<video_settings> video_settings_) {
+    const std::shared_ptr<video_settings> video_settings_,
+    const std::shared_ptr<leaver> leaver_) {
   return std::make_unique<desktop_sharing_impl>(
       timer_factory, tracks_adder_, add_video_to_connection_factory_,
-      video_settings_);
+      video_settings_, leaver_);
 }
 
 std::unique_ptr<desktop_sharing> desktop_sharing::create_noop() {

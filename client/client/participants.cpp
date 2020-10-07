@@ -7,8 +7,8 @@
 using namespace client;
 
 namespace {
-struct leaver : std::enable_shared_from_this<leaver> {
-  client::logger logger{"room::leaver"};
+struct close_waiter : std::enable_shared_from_this<close_waiter> {
+  client::logger logger{"room::close_waiter"};
   using futures_type = std::vector<boost::future<void>>;
   futures_type futures;
   futures_type::iterator current;
@@ -78,7 +78,7 @@ participant *participants::get(const std::string &id) const {
 }
 
 boost::future<void> participants::close() {
-  auto leaver_ = std::make_shared<leaver>();
+  auto leaver_ = std::make_shared<close_waiter>();
   std::transform(participants_.begin(), participants_.end(),
                  std::back_inserter(leaver_->futures),
                  [](auto &participant_) { return participant_->close(); });
