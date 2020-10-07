@@ -15,8 +15,8 @@ own_audio_information::own_audio_information(
 own_audio_information::~own_audio_information() = default;
 
 void own_audio_information::set_loopback_audio(loopback_audio &audio) {
-  connections.clear();
-  connections.emplace_back(
+  signal_connections.clear();
+  signal_connections.emplace_back(
       audio.on_track.connect([this](auto &track) { on_track(track); }));
   auto track = audio.get_track();
   if (!track)
@@ -27,9 +27,10 @@ void own_audio_information::set_loopback_audio(loopback_audio &audio) {
 void own_audio_information::on_track(rtc::google::audio_track &track) {
   audio_level_calculator_ =
       audio_level_calculator_factory_.create(track.get_source());
-  connections.emplace_back(
+  signal_connections.emplace_back(
       audio_level_calculator_->on_sound_level_30times_a_second.connect(
           [this](auto level) { on_sound_level_30times_a_second(level); }));
-  connections.emplace_back(audio_level_calculator_->on_voice_detected.connect(
-      [this](auto detected) { on_voice_detected(detected); }));
+  signal_connections.emplace_back(
+      audio_level_calculator_->on_voice_detected.connect(
+          [this](auto detected) { on_voice_detected(detected); }));
 }
