@@ -204,6 +204,7 @@ void connection::add_ice_candidate(const rtc::ice_candidate &candidate) {
 void connection::add_track(rtc::track_ptr track_) {
   BOOST_LOG_SEV(logger, logging::severity::debug)
       << __FUNCTION__ << ", track:" << track_.get();
+  BOOST_ASSERT(track_);
   BOOST_ASSERT(find_sending_track(track_) == sending_tracks.cend());
   auto track_casted = std::dynamic_pointer_cast<track>(track_);
   BOOST_ASSERT(track_casted);
@@ -212,7 +213,8 @@ void connection::add_track(rtc::track_ptr track_) {
   webrtc::RTCErrorOr<rtc::scoped_refptr<webrtc::RtpSenderInterface>> result =
       native->AddTrack(native_track, {});
   if (!result.ok()) {
-    BOOST_LOG_SEV(logger, logging::severity::error) << "could not add track!";
+    BOOST_LOG_SEV(logger, logging::severity::error)
+        << "could not add track! state:" << native->signaling_state();
     BOOST_ASSERT(false);
     return;
   }

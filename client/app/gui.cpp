@@ -223,6 +223,9 @@ int main(int argc, char *argv[]) {
       *video_enumerator, video_device_creator, *own_videos_, *tracks_adder,
       *add_video_to_connection_factory_);
 
+  // leaver
+  auto leaver = std::make_shared<client::leaver>(rooms);
+
   // desktop
   BOOST_LOG_SEV(logger, logging::severity::trace)
       << "setting up desktop sharing";
@@ -230,7 +233,7 @@ int main(int argc, char *argv[]) {
   std::shared_ptr<client::desktop_sharing> desktop_sharing =
       client::desktop_sharing::create(timer_factory, tracks_adder,
                                       add_video_to_connection_factory_,
-                                      video_settings);
+                                      video_settings, leaver);
   std::shared_ptr<client::desktop_sharing_previews> desktop_sharing_previews =
       client::desktop_sharing_previews::create(timer_factory);
 
@@ -243,7 +246,6 @@ int main(int argc, char *argv[]) {
   client::room_creator client_room_creator{participant_creator_creator};
   client::joiner joiner{client_room_creator, rooms, matrix_authentification,
                         temporary_room_client};
-  client::leaver leaver{rooms};
 
   BOOST_LOG_SEV(logger, logging::severity::debug) << "starting qt";
 
@@ -344,7 +346,7 @@ int main(int argc, char *argv[]) {
   client::join_model join_model{model_creator, error_model, joiner};
   client::share_desktop_model share_desktop_model{desktop_sharing,
                                                   desktop_sharing_previews};
-  client::leave_model leave_model{leaver};
+  client::leave_model leave_model{*leaver};
   client::own_media_model own_media_model{audio_settings,
                                           *video_settings,
                                           *own_microphone_tester,

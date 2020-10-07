@@ -2,6 +2,7 @@
 #define UUID_F7A69AED_205D_4411_BD0C_BDC8A16E3D4D
 
 #include "client/add_video_to_connection.hpp"
+#include "client/leaver.hpp"
 #include "client/tracks_adder.hpp"
 #include "client/video_settings.hpp"
 #include "rtc/google/capture/desktop/capturer.hpp"
@@ -61,7 +62,8 @@ public:
          const std::shared_ptr<tracks_adder> tracks_adder_,
          const std::shared_ptr<add_video_to_connection_factory>
              add_video_to_connection_factory_,
-         const std::shared_ptr<video_settings> video_settings_);
+         const std::shared_ptr<video_settings> video_settings_,
+         const std::shared_ptr<leaver> leaver_);
   static std::unique_ptr<desktop_sharing> create_noop();
 };
 } // namespace client
