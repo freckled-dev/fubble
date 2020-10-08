@@ -36,6 +36,8 @@ public:
   std::string get_own_id() const;
   boost::future<void> leave();
 
+  matrix::room &get_native() const;
+
 protected:
   client::logger logger;
   std::unique_ptr<participant_creator> participant_creator_;

@@ -50,3 +50,5 @@ chat &room::get_chat() const { return *chat_; }
 participants &room::get_participants() const { return *participants_; }
 
 users &room::get_users() const { return *users_; }
+
+matrix::room &room::get_native() const { return room_; }

@@ -1,118 +1,13 @@
-#include "add_data_channel.hpp"
-#include "client/factory.hpp"
-#include "executor_asio.hpp"
-#include "http/action_factory.hpp"
-#include "http/client_factory.hpp"
-#include "http/connection_creator.hpp"
-#include "joiner.hpp"
-#include "loopback_audio.hpp"
-#include "matrix/authentification.hpp"
-#include "matrix/client_factory.hpp"
-#include "matrix/factory.hpp"
-#include "matrix/testing.hpp"
-#include "own_audio_track.hpp"
-#include "own_media.hpp"
-#include "own_participant.hpp"
-#include "participant_creator_creator.hpp"
-#include "participants.hpp"
-#include "peer_creator.hpp"
-#include "room.hpp"
-#include "room_creator.hpp"
-#include "rooms.hpp"
-#include "rtc/data_channel.hpp"
-#include "rtc/google/asio_signalling_thread.hpp"
-#include "rtc/google/factory.hpp"
-#include "signalling/client/client.hpp"
-#include "signalling/client/connection_creator.hpp"
-#include "signalling/json_message.hpp"
-#include "signalling/testing.hpp"
-#include "temporary_room/net/client.hpp"
-#include "temporary_room/testing.hpp"
-#include "tracks_adder.hpp"
-#include "uuid.hpp"
-#include "wait_for_event.hpp"
-#include "websocket/connection_creator.hpp"
-#include "websocket/connector.hpp"
+#include "client/add_data_channel.hpp"
+#include "test_client.hpp"
+#include "test_executor.hpp"
+#include "utils/uuid.hpp"
+#include "utils/wait_for_event.hpp"
 #include <gtest/gtest.h>
 
 namespace {
-struct Room : testing::Test {
-  logging::logger logger{"Room"};
-  boost::asio::io_context context;
-  boost::asio::executor executor{context.get_executor()};
-  boost::executor_adaptor<executor_asio> boost_executor{
-      context}; // TODO remove!
-  boost::inline_executor inline_executor;
-  rtc::google::asio_signalling_thread rtc_signalling_thread{context};
-  std::string room_name = uuid::generate();
-};
-struct test_client {
-  // TODO remove `room_name`. it's in the fixture
-  test_client(Room &fixture, const std::string &room_name)
-      : context(fixture.context),
-        room_name(room_name), rtc_connection_creator{
-                                  rtc::google::settings{},
-                                  fixture.rtc_signalling_thread.get_native()} {}
-
-  boost::asio::io_context &context;
-  http::connection_creator connection_creator_{context};
-  std::string room_name;
-  boost::asio::executor executor{context.get_executor()};
-  boost::executor_adaptor<executor_asio> boost_executor{
-      context}; // TODO remove!
-  websocket::connection_creator websocket_connection_creator{context};
-  websocket::connector_creator websocket_connector{
-      context, websocket_connection_creator};
-
-  // signalling
-  signalling::json_message signalling_json;
-  signalling::client::connection_creator signalling_connection_creator{
-      context, boost_executor, signalling_json};
-  signalling::client::client::connect_information connect_information =
-      signalling::testing::make_connect_information();
-  signalling::client::factory_impl client_creator{
-      websocket_connector, signalling_connection_creator, connect_information};
-
-  // matrix
-  http::action_factory action_factory_{connection_creator_};
-  http::client_factory http_client_factory{
-      action_factory_, matrix::testing::make_http_server_and_fields()};
-  http::client http_client_temporary_room{
-      action_factory_, temporary_room::testing::make_http_server_and_fields()};
-  temporary_room::net::client temporary_room_client{http_client_temporary_room};
-  matrix::factory matrix_factory;
-  matrix::client_factory matrix_client_factory{matrix_factory,
-                                               http_client_factory};
-  matrix::authentification matrix_authentification{http_client_factory,
-                                                   matrix_client_factory};
-
-  // rtc
-  rtc::google::factory rtc_connection_creator;
-  client::peer_creator peer_creator{boost_executor, client_creator,
-                                    rtc_connection_creator};
-
-  // client
-  client::tracks_adder tracks_adder;
-  client::rooms rooms;
-  std::unique_ptr<client::own_audio_track> own_audio_track =
-      client::own_audio_track::create_noop();
-  std::unique_ptr<client::own_video> own_videos_ = client::own_video::create();
-  client::own_media own_media{*own_audio_track, *own_videos_};
-  client::factory client_factory{context};
-  std::shared_ptr<client::desktop_sharing> desktop_sharing_ =
-      client::desktop_sharing::create_noop();
-  client::participant_creator_creator participant_creator_creator{
-      client_factory, peer_creator, tracks_adder, own_media, desktop_sharing_};
-  client::room_creator client_room_creator{participant_creator_creator};
-  client::joiner joiner{client_room_creator, rooms, matrix_authentification,
-                        temporary_room_client};
-
-  boost::future<std::shared_ptr<client::room>> join(std::string name) {
-    client::joiner::parameters join_paramenters;
-    join_paramenters.name = name;
-    join_paramenters.room = room_name;
-    return joiner.join(join_paramenters);
-  }
+struct Room : test_executor, testing::Test {
+  const std::string room_name = uuid::generate();
 };
 struct participants_waiter {
   client::room &room;

@@ -22,7 +22,7 @@ public:
 
   boost::future<joiner::room_ptr> join_(const joiner::parameters &parameters_) {
     this->parameters_ = parameters_;
-    return matrix_authentification.register_as_guest()
+    return matrix_authentification.register_anonymously()
         .then(executor,
               [this](auto result) {
                 on_connected(result);

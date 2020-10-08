@@ -11,6 +11,8 @@ struct own_audio_track_impl : own_audio_track {
     audio_track = rtc_factory.create_audio_track(audio_source);
   }
 
+  void set_enabled(bool enabled) override { audio_track->set_enabled(enabled); }
+
   std::shared_ptr<rtc::google::audio_track> get_track() { return audio_track; }
 
 protected:
@@ -19,8 +21,10 @@ protected:
 struct own_audio_track_noop : own_audio_track {
   own_audio_track_noop() {}
 
-  std::shared_ptr<rtc::google::audio_track> get_track() {
-    std::abort();
+  void set_enabled(bool) override{};
+
+  std::shared_ptr<rtc::google::audio_track> get_track() override {
+    BOOST_ASSERT(false);
     return nullptr;
   }
 };

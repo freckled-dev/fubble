@@ -178,8 +178,8 @@ int main(int argc, char *argv[]) {
   client::rooms rooms;
   auto own_audio_track =
       client::own_audio_track::create(rtc_factory, audio_device->get_source());
-  auto audio_track_adder = std::make_shared<client::add_audio_to_connection>(
-      own_audio_track->get_track());
+  std::shared_ptr<client::add_audio_to_connection> audio_track_adder =
+      client::add_audio_to_connection::create(own_audio_track->get_track());
   auto audio_tracks_volume = client::audio_tracks_volume::create(
       rooms, *tracks_adder, audio_track_adder, *own_audio_track);
   std::shared_ptr<rtc::google::audio_track> settings_audio_track =
