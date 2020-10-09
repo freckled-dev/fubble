@@ -1,5 +1,5 @@
 #include "client/add_data_channel.hpp"
-#include "test_client.hpp"
+#include "client/test_client.hpp"
 #include "test_executor.hpp"
 #include "utils/uuid.hpp"
 #include "utils/wait_for_event.hpp"
@@ -35,7 +35,7 @@ struct participants_waiter {
 TEST_F(Room, Instance) {}
 
 TEST_F(Room, Join) {
-  test_client test{*this, room_name};
+  client::testing::test_client test{*this, room_name};
   auto joined = test.join("some name");
   auto done = joined.then(boost_executor, [&](auto room) {
     context.stop();
@@ -49,13 +49,14 @@ TEST_F(Room, Join) {
 
 namespace {
 struct join_and_wait {
-  test_client &fixture;
+  client::testing::test_client &fixture;
   std::string name;
   int wait_until;
   std::shared_ptr<client::room> room;
   std::unique_ptr<participants_waiter> waiter;
 
-  join_and_wait(test_client &fixture, std::string name, int wait_until = 2)
+  join_and_wait(client::testing::test_client &fixture, std::string name,
+                int wait_until = 2)
       : fixture(fixture), name(name), wait_until{wait_until} {}
 
   boost::future<void> join() {
@@ -73,7 +74,7 @@ struct join_and_wait {
 } // namespace
 
 TEST_F(Room, Participant) {
-  test_client test_client_{*this, room_name};
+  client::testing::test_client test_client_{*this, room_name};
   join_and_wait test{test_client_, "some_name", 1};
   auto done = test.join().then(boost_executor, [&](auto result) {
     result.get();
@@ -92,9 +93,9 @@ TEST_F(Room, Participant) {
 }
 
 TEST_F(Room, TwoParticipants) {
-  test_client client_first{*this, room_name};
+  client::testing::test_client client_first{*this, room_name};
   join_and_wait first(client_first, "first", 2);
-  test_client client_second{*this, room_name};
+  client::testing::test_client client_second{*this, room_name};
   join_and_wait second(client_second, "second", 2);
   auto done =
       boost::when_all(first.join(), second.join())
@@ -111,11 +112,11 @@ TEST_F(Room, TwoParticipants) {
 }
 
 TEST_F(Room, ThreeParticipants) {
-  test_client client_first{*this, room_name};
+  client::testing::test_client client_first{*this, room_name};
   join_and_wait first(client_first, "first", 3);
-  test_client client_second{*this, room_name};
+  client::testing::test_client client_second{*this, room_name};
   join_and_wait second(client_second, "second", 3);
-  test_client client_third{*this, room_name};
+  client::testing::test_client client_third{*this, room_name};
   join_and_wait third(client_third, "three", 3);
   auto done =
       boost::when_all(first.join(), second.join(), third.join())
@@ -136,9 +137,9 @@ TEST_F(Room, ThreeParticipants) {
 namespace {
 struct two_participants {
   boost::inline_executor executor;
-  test_client client_first;
+  client::testing::test_client client_first;
   join_and_wait first{client_first, "first", 2};
-  test_client client_second;
+  client::testing::test_client client_second;
   join_and_wait second{client_second, "second", 2};
 
   two_participants(Room &fixture, const std::string &room_name)

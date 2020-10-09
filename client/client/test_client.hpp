@@ -29,13 +29,27 @@
 #include "signalling/json_message.hpp"
 #include "signalling/testing.hpp"
 #include "temporary_room/net/client.hpp"
+#include "temporary_room/server/application.hpp"
 #include "temporary_room/testing.hpp"
 #include "test_executor.hpp"
 #include "utils/executor_asio.hpp"
 #include "websocket/connection_creator.hpp"
 #include "websocket/connector.hpp"
 
+namespace client::testing {
 struct test_client {
+  struct connect_information {
+    std::pair<http::server, http::fields> temporary_room_ =
+        temporary_room::testing::make_http_server_and_fields();
+  };
+
+  test_client(test_executor &fixture, const connect_information &information_,
+              const std::string &room_name)
+      : context(fixture.context), connect_information_{information_},
+        room_name(room_name), rtc_connection_creator{
+                                  rtc::google::settings{},
+                                  fixture.rtc_signalling_thread.get_native()} {}
+
   test_client(test_executor &fixture, const std::string &room_name)
       : context(fixture.context),
         room_name(room_name), rtc_connection_creator{
@@ -43,6 +57,7 @@ struct test_client {
                                   fixture.rtc_signalling_thread.get_native()} {}
 
   boost::asio::io_context &context;
+  const connect_information connect_information_;
   http::connection_creator connection_creator_{context};
   std::string room_name;
   boost::asio::executor executor{context.get_executor()};
@@ -56,17 +71,19 @@ struct test_client {
   signalling::json_message signalling_json;
   signalling::client::connection_creator signalling_connection_creator{
       context, boost_executor, signalling_json};
-  signalling::client::client::connect_information connect_information =
-      signalling::testing::make_connect_information();
+  signalling::client::client::connect_information
+      signalling_connect_information =
+          signalling::testing::make_connect_information();
   signalling::client::factory_impl client_creator{
-      websocket_connector, signalling_connection_creator, connect_information};
+      websocket_connector, signalling_connection_creator,
+      signalling_connect_information};
 
   // matrix
   http::action_factory action_factory_{connection_creator_};
   http::client_factory http_client_factory{
       action_factory_, matrix::testing::make_http_server_and_fields()};
-  http::client http_client_temporary_room{
-      action_factory_, temporary_room::testing::make_http_server_and_fields()};
+  http::client http_client_temporary_room{action_factory_,
+                                          connect_information_.temporary_room_};
   temporary_room::net::client temporary_room_client{http_client_temporary_room};
   matrix::factory matrix_factory;
   matrix::client_factory matrix_client_factory{matrix_factory,
@@ -102,5 +119,6 @@ struct test_client {
     return joiner.join(join_paramenters);
   }
 };
+} // namespace client::testing
 
 #endif
