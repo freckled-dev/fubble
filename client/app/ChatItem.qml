@@ -48,6 +48,17 @@ Rectangle {
                 Layout.leftMargin: 10
                 Layout.maximumWidth: chatContainer.width - 40
                 Layout.rightMargin: 10
+                font.pointSize: {
+                    if (message.length > 5)
+                        return 10
+                    var emojiRanges = ['(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])']
+                    var emojiRegex = new RegExp(emojiRanges, 'gi')
+                    var removeEmoji = message.replace(emojiRegex, "")
+                    var isOnlyEmojiMessage = removeEmoji.length === 0
+                    if (isOnlyEmojiMessage)
+                        return 25
+                    return 10
+                }
                 text: message
             }
         }
