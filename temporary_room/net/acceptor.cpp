@@ -93,6 +93,12 @@ void connection::send_response() {
 acceptor::acceptor(boost::asio::io_context &context, const config &config_)
     : context(context), config_(config_) {}
 
+acceptor::~acceptor() {
+  if (!run_promise)
+    return;
+  run_promise->set_value();
+}
+
 void acceptor::listen() {
   if (listening)
     return;
@@ -109,6 +115,7 @@ void acceptor::listen() {
 
 boost::future<void> acceptor::run() {
   listen();
+  BOOST_ASSERT(!run_promise);
   run_promise = std::make_shared<boost::promise<void>>();
   accept_next();
   return run_promise->get_future();
@@ -130,13 +137,13 @@ void acceptor::accept_next() {
     BOOST_LOG_SEV(this->logger, logging::severity::debug)
         << "accepted, error:" << error.message();
     if (error) {
-      auto promise_copy = run_promise;
+      auto moved = std::move(run_promise);
       if (error == boost::asio::error::operation_aborted) {
         BOOST_LOG_SEV(this->logger, logging::severity::debug)
             << "operation_aborted";
-        run_promise->set_value(); // stop() got called
+        moved->set_value(); // stop() got called
       } else
-        run_promise->set_exception(boost::system::system_error(error));
+        moved->set_exception(boost::system::system_error(error));
       return;
     }
     do_session();

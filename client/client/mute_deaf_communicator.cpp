@@ -18,6 +18,11 @@ public:
   }
 
 protected:
+  static std::string state_key() {
+    static const std::string result = "io.fubble.audio_state";
+    return result;
+  }
+
   void on_deafed(bool deafed) {
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << ", deafed:" << deafed;
@@ -28,7 +33,8 @@ protected:
 
     auto &states = room_->get_native().get_states();
     matrix::room_states::custom state;
-    state.key = "io.fubble.audio_state";
+    state.type = state_key();
+    state.key = room_->get_own_id();
     state.data = data;
     states.set_custom(state).then(
         executor, [this](auto result) { did_set_state(result); });
@@ -42,6 +48,16 @@ protected:
     room_ = set;
     if (!room_)
       return;
+    room_->get_native().get_states().on_custom.connect(
+        [this](const auto &custom_) { on_custom(custom_); });
+  }
+
+  void on_custom(const matrix::room_states::custom &custom_) {
+    if (custom_.type != state_key())
+      return;
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << __FUNCTION__ << ", got a " << state_key()
+        << ", data:" << custom_.data.dump(2);
   }
 
   void did_set_state(boost::future<void> &result) {

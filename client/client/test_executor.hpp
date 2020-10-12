@@ -16,6 +16,11 @@ struct test_executor {
       context}; // TODO remove!
   boost::inline_executor inline_executor;
   rtc::google::asio_signalling_thread rtc_signalling_thread{context};
+
+  void run_context() {
+    context.run();
+    context.reset();
+  }
 };
 
 #endif

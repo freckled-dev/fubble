@@ -8,7 +8,6 @@ namespace temporary_room::testing {
 struct server {
   server(boost::asio::io_context &context) {
     application = temporary_room::server::application::create(context, options);
-    application->run();
   }
 
   std::pair<http::server, http::fields> make_http_server_and_fields() {
