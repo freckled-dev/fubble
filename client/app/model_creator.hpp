@@ -15,13 +15,14 @@ class participants_model;
 class room;
 class room_model;
 class video_settings;
+class mute_deaf_communicator;
 class model_creator {
 public:
-  model_creator(audio_level_calculator_factory &audio_level_calculator_factory_,
-                audio_device_settings &audio_settings_,
-                video_settings &video_settings_,
-                own_audio_information &audio_information_,
-                audio_volume &audio_volume_);
+  model_creator(
+      audio_level_calculator_factory &audio_level_calculator_factory_,
+      audio_device_settings &audio_settings_, video_settings &video_settings_,
+      own_audio_information &audio_information_, audio_volume &audio_volume_,
+      std::shared_ptr<mute_deaf_communicator> muted_deaf_communicator_);
   room_model *create_room_model(const std::shared_ptr<room> &room_,
                                 QObject *parent);
   participants_model *create_participants_model(room &room_, QObject *parent);
@@ -34,6 +35,7 @@ protected:
   video_settings &video_settings_;
   own_audio_information &audio_information_;
   audio_volume &audio_volume_;
+  const std::shared_ptr<mute_deaf_communicator> muted_deaf_communicator_;
 };
 } // namespace client
 

@@ -15,6 +15,7 @@ class audio_level_calculator_factory;
 class own_audio_information;
 class audio_volume;
 class video_settings;
+class mute_deaf_communicator;
 
 // TODO derive class to `own_participant_model` and `remote_participant_model`
 class participant_model : public QObject {
@@ -49,6 +50,7 @@ public:
       participant &participant_, audio_device_settings &audio_settings_,
       video_settings &video_settings_,
       own_audio_information &audio_information_, audio_volume &audio_volume_,
+      std::shared_ptr<mute_deaf_communicator> muted_deaf_communicator_,
       QObject *parent);
   ~participant_model();
 
@@ -81,6 +83,8 @@ protected:
   void set_volume(qreal);
   bool get_silenced() const;
   void set_silenced(bool);
+  void on_muted(const std::string &id, const bool muted);
+  void on_deafed(const std::string &id, const bool deafed);
 
   mutable client::logger logger{"participant_model"};
   audio_level_calculator_factory &audio_level_calculator_factory_;
@@ -89,6 +93,7 @@ protected:
   video_settings &video_settings_;
   own_audio_information &audio_information_;
   audio_volume &audio_volume_;
+  std::shared_ptr<mute_deaf_communicator> muted_deaf_communicator_;
   std::unique_ptr<audio_level_calculator> audio_level_calculator_;
   const std::string id;
   const QString identifier{QString::fromStdString(id)};

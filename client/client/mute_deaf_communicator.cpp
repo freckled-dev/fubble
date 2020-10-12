@@ -18,37 +18,48 @@ public:
         [this](bool muted) { on_self_muted(muted); });
   }
 
+  bool is_deafed(const std::string &id) const override {
+    auto found = mutes_and_deafs.find(id);
+    if (found == mutes_and_deafs.cend())
+      return false;
+    return found->second.deafed;
+  }
+
+  bool is_muted(const std::string &id) const override {
+    auto found = mutes_and_deafs.find(id);
+    if (found == mutes_and_deafs.cend())
+      return false;
+    return found->second.muted;
+  }
+
 protected:
   static std::string state_key() {
     static const std::string result = "io.fubble.audio_state";
     return result;
   }
 
-  void on_self_deafed(bool deafed) {
+  void on_self_deafed(bool deafed_) {
     BOOST_LOG_SEV(logger, logging::severity::debug)
-        << __FUNCTION__ << ", deafed:" << deafed;
-    BOOST_ASSERT(room_);
+        << __FUNCTION__ << ", deafed:" << deafed_;
+    self_deafed = deafed_;
     if (!room_)
       return;
-    set_state(deafed, std::nullopt);
+    send_state();
   }
 
-  void on_self_muted(bool muted) {
+  void on_self_muted(bool muted_) {
     BOOST_LOG_SEV(logger, logging::severity::debug)
-        << __FUNCTION__ << ", muted:" << muted;
-    BOOST_ASSERT(room_);
+        << __FUNCTION__ << ", muted:" << muted_;
+    self_muted = muted_;
     if (!room_)
       return;
-    set_state(std::nullopt, muted);
+    send_state();
   }
 
-  void set_state(std::optional<bool> deafed, std::optional<bool> muted) {
-    BOOST_ASSERT(deafed || muted);
+  void send_state() {
     auto data = nlohmann::json::object();
-    if (deafed)
-      data["deafed"] = deafed.value();
-    if (muted)
-      data["muted"] = muted.value();
+    data["deafed"] = self_deafed;
+    data["muted"] = self_muted;
 
     auto &states = room_->get_native().get_states();
     matrix::room_states::custom state;
@@ -67,6 +78,7 @@ protected:
       mutes_and_deafs.clear();
       return;
     }
+    send_state();
     room_->get_native().get_states().on_custom.connect(
         [this](const auto &custom_) { on_custom(custom_); });
   }
@@ -117,6 +129,8 @@ protected:
     bool deafed{};
   };
   std::unordered_map<std::string, mute_deaf> mutes_and_deafs;
+  bool self_muted{};
+  bool self_deafed{};
 }; // namespace
 } // namespace
 

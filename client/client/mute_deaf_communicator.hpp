@@ -10,6 +10,8 @@ class mute_deaf_communicator {
 public:
   virtual ~mute_deaf_communicator() = default;
 
+  virtual bool is_deafed(const std::string &id) const = 0;
+  virtual bool is_muted(const std::string &id) const = 0;
   boost::signals2::signal<void(std::string id, bool deafed)> on_deafed;
   boost::signals2::signal<void(std::string id, bool muted)> on_muted;
 
