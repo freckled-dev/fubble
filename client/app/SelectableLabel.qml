@@ -7,7 +7,7 @@ TextEdit {
     font.family: verdanaFont.name + ", " + emojiOneFont.name
     selectionColor: Style.current.accent
 
-    textFormat: Text.RichText
+    textFormat: Text.MarkdownText
     wrapMode: Text.WrapAtWordBoundaryOrAnywhere
     onLinkActivated: Qt.openUrlExternally(link)
 
