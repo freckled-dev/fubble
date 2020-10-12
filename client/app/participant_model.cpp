@@ -2,6 +2,7 @@
 #include "client/audio_device_settings.hpp"
 #include "client/audio_level_calculator.hpp"
 #include "client/audio_tracks_volume.hpp"
+#include "client/mute_deaf_communicator.hpp"
 #include "client/own_audio_information.hpp"
 #include "client/own_participant.hpp"
 #include "client/participant.hpp"
@@ -14,12 +15,15 @@ participant_model::participant_model(
     audio_level_calculator_factory &audio_level_calculator_factory_,
     participant &participant_, audio_device_settings &audio_settings_,
     video_settings &video_settings_, own_audio_information &audio_information_,
-    audio_volume &audio_volume_, QObject *parent)
+    audio_volume &audio_volume_,
+    std::shared_ptr<mute_deaf_communicator> muted_deaf_communicator_,
+    QObject *parent)
     : QObject(parent),
       audio_level_calculator_factory_(audio_level_calculator_factory_),
       participant_(participant_), audio_settings_(audio_settings_),
       video_settings_(video_settings_), audio_information_(audio_information_),
       audio_volume_(audio_volume_),
+      muted_deaf_communicator_{muted_deaf_communicator_},
       id(participant_.get_id()), own{dynamic_cast<own_participant *>(
                                          &participant_) != nullptr} {
   // name
@@ -41,6 +45,15 @@ participant_model::participant_model(
         [this](auto added) { video_added(added); }));
     signal_connections.push_back(participant_.on_screen_removed.connect(
         [this](auto removed) { video_removed(removed); }));
+  }
+  // mute/deaf
+  {
+    muted = muted_deaf_communicator_->is_muted(id);
+    deafed = muted_deaf_communicator_->is_deafed(id);
+    signal_connections.push_back(muted_deaf_communicator_->on_muted.connect(
+        [this](auto id, auto muted) { on_muted(id, muted); }));
+    signal_connections.push_back(muted_deaf_communicator_->on_deafed.connect(
+        [this](auto id, auto deafed) { on_deafed(id, deafed); }));
   }
   auto videos = participant_.get_videos();
   for (auto video : videos) {
@@ -169,4 +182,22 @@ void participant_model::set_silenced(bool change) {
   silenced = change;
   audio_volume_.mute(id, silenced);
   silenced_changed(silenced);
+}
+
+void participant_model::on_muted(const std::string &id_, const bool muted_) {
+  BOOST_ASSERT(!id_.empty());
+  if (id_ != id)
+    return;
+  BOOST_ASSERT(muted_ != muted);
+  muted = muted_;
+  muted_changed(muted);
+}
+
+void participant_model::on_deafed(const std::string &id_, const bool deafed_) {
+  BOOST_ASSERT(!id_.empty());
+  if (id_ != id)
+    return;
+  BOOST_ASSERT(deafed_ != deafed);
+  deafed = deafed_;
+  deafed_changed(deafed);
 }

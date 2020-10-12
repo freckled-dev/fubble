@@ -48,6 +48,7 @@ public:
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << ", muted_self:" << muted_self;
     update_self_muted();
+    on_muted(muted_self);
   }
 
   bool get_self_muted() override { return muted_self; }
@@ -60,6 +61,7 @@ public:
         << __FUNCTION__ << ", deafned:" << deafned;
     update_all_participants();
     update_self_muted();
+    on_deafed(deafned);
   }
 
   bool get_deafen() override { return deafned; }
@@ -192,7 +194,7 @@ protected:
     actually_muted = actually_muted_target;
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << ", actually_muted:" << actually_muted;
-    own_audio_track_.get_track()->set_enabled(!actually_muted);
+    own_audio_track_.set_enabled(!actually_muted);
   }
 
   client::logger logger{"audio_tracks_volume_impl"};

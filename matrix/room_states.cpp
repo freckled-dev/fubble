@@ -17,6 +17,7 @@ public:
   boost::future<void> set_custom(const custom &set) override {
     auto target =
         fmt::format("rooms/{}/state/{}/{}", room_id, set.type, set.key);
+    BOOST_ASSERT(!set.type.empty());
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << "setting custom state, target:" << target
         << ", data:" << set.data.dump();
@@ -37,6 +38,7 @@ public:
         dynamic_cast<event::room::custom_state *>(event.content_.get());
     if (!custom_event_content)
       return false;
+    BOOST_LOG_SEV(logger, logging::severity::debug) << "got a custom_state";
     custom_container add_or_set;
     add_or_set.data.data = custom_event_content->data;
     add_or_set.data.key = event.state_key;
@@ -49,8 +51,14 @@ public:
         });
     if (found == customs.end()) {
       customs.push_back(add_or_set);
-    } else if (found->timestamp < event.origin_server_ts)
+      on_custom(add_or_set.data);
+    } else if (found->timestamp < event.origin_server_ts) {
       *found = add_or_set;
+      on_custom(add_or_set.data);
+    } else {
+      BOOST_LOG_SEV(logger, logging::severity::warning)
+          << "ignoring custom event, due to a newer state being available";
+    }
     return true;
   }
 

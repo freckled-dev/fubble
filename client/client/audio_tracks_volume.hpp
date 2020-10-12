@@ -2,6 +2,7 @@
 #define UUID_8BB23974_D591_472A_A225_ABDB2CC6DB2A
 
 #include "client/logger.hpp"
+#include <boost/signals2/signal.hpp>
 
 namespace client {
 class add_audio_to_connection;
@@ -27,6 +28,9 @@ public:
 
   virtual void mute(std::string id, bool muted) = 0;
   virtual bool get_muted(std::string id) const = 0;
+
+  boost::signals2::signal<void(bool)> on_muted;
+  boost::signals2::signal<void(bool)> on_deafed;
 };
 class audio_tracks_volume : public audio_volume {
 public:

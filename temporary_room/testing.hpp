@@ -7,11 +7,12 @@
 
 namespace temporary_room::testing {
 namespace {
+// TODO remove after refactoring to local server instances
 inline std::pair<http::server, http::fields> make_http_server_and_fields() {
-  http::server http_server_matrix{utils::testing::server, "80"};
-  http::fields http_fields{http_server_matrix};
+  http::server http_server{utils::testing::server, "80"};
+  http::fields http_fields{http_server};
   http_fields.target_prefix = "/api/temporary_room/v0/";
-  return std::make_pair(http_server_matrix, http_fields);
+  return std::make_pair(http_server, http_fields);
 }
 } // namespace
 } // namespace temporary_room::testing

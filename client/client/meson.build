@@ -12,6 +12,7 @@ client = library('client',
     'video_settings.cpp', 'tracks_adder.cpp', 'audio_tracks_volume.cpp',
     'crash_catcher.cpp', 'own_video.cpp', 'desktop_sharing.cpp',
     'own_audio_track.cpp', 'own_microphone_tester.cpp',
+    'mute_deaf_communicator.cpp',
     ],
   cpp_pch: '../../pch/precompiled.hpp',
   dependencies: [boost_dep, utils_dep, signalling_client_dep,
@@ -22,7 +23,7 @@ client = library('client',
 client_dep = declare_dependency(
   link_with: [client],
   dependencies: [boost_dep, utils_dep, signalling_client_dep,
-    webrtc_google_peer_dep, fruit_dep],
+    webrtc_google_peer_dep, fruit_dep, temporary_room_dep],
   include_directories: ['..']
   )
 
@@ -33,16 +34,23 @@ client_video_settings_test = executable('client_video_settings_test',
   )
 test('client video_settings test', client_video_settings_test)
 
+suppr_file = meson.source_root() / 'webrtc_peer/lsan_suppressions_google'
+suppr_option = 'LSAN_OPTIONS=suppressions=' + suppr_file
+client_test_env = [ 'ASAN_OPTIONS=fast_unwind_on_malloc=0', suppr_option ]
+
+client_muted_deaf_communicator_test = executable('client_muted_deaf_communicator_test',
+  ['mute_deaf_communicator_test.cpp'],
+  dependencies: [client_dep, gtest_dep],
+  link_with: [google_webrtc_test_main]
+  )
+test('client muted_deaf_communicator test', client_muted_deaf_communicator_test,
+  env: client_test_env, timeout: 8)
+
 client_room_test = executable('client_room_test',
   ['room_test.cpp'],
   cpp_pch: '../../pch/precompiled.hpp',
-  dependencies: [client_dep, gtest_dep, temporary_room_dep],
+  dependencies: [client_dep, gtest_dep],
   link_with: [google_webrtc_test_main]
   )
-suppr_file = meson.source_root() / 'webrtc_peer/lsan_suppressions_google'
-suppr_option = 'LSAN_OPTIONS=suppressions=' + suppr_file
-test('client room test', client_room_test,
-  env: [
-    'ASAN_OPTIONS=fast_unwind_on_malloc=0', suppr_option
-    ])
+test('client room test', client_room_test, env: client_test_env)
 

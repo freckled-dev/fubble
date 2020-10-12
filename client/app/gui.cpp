@@ -11,6 +11,7 @@
 #include "client/joiner.hpp"
 #include "client/leaver.hpp"
 #include "client/loopback_audio.hpp"
+#include "client/mute_deaf_communicator.hpp"
 #include "client/own_audio_information.hpp"
 #include "client/own_audio_track.hpp"
 #include "client/own_media.hpp"
@@ -175,13 +176,14 @@ int main(int argc, char *argv[]) {
   std::unique_ptr<rtc::google::capture::audio::device> audio_device =
       audio_device_creator.create();
   auto &rtc_audio_devices = rtc_factory.get_audio_devices();
-  client::rooms rooms;
+  std::shared_ptr<client::rooms> rooms = std::make_shared<client::rooms>();
   auto own_audio_track =
       client::own_audio_track::create(rtc_factory, audio_device->get_source());
-  auto audio_track_adder = std::make_shared<client::add_audio_to_connection>(
-      own_audio_track->get_track());
-  auto audio_tracks_volume = client::audio_tracks_volume::create(
-      rooms, *tracks_adder, audio_track_adder, *own_audio_track);
+  std::shared_ptr<client::add_audio_to_connection> audio_track_adder =
+      client::add_audio_to_connection::create(own_audio_track->get_track());
+  std::shared_ptr<client::audio_tracks_volume> audio_tracks_volume =
+      client::audio_tracks_volume::create(*rooms, *tracks_adder,
+                                          audio_track_adder, *own_audio_track);
   std::shared_ptr<rtc::google::audio_track> settings_audio_track =
       rtc_factory.create_audio_track(audio_device->get_source());
   client::loopback_audio_impl_factory loopback_audio_test_factory{
@@ -198,6 +200,8 @@ int main(int argc, char *argv[]) {
       loopback_audio_test, *audio_tracks_volume);
   client::own_audio_information own_audio_test_information_{
       audio_level_calculator_factory_, loopback_audio_test};
+  std::shared_ptr<client::mute_deaf_communicator> mute_deaf_communicator_ =
+      client::mute_deaf_communicator::create(rooms, audio_tracks_volume);
 
   // video
   BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up video device";
@@ -224,7 +228,7 @@ int main(int argc, char *argv[]) {
       *add_video_to_connection_factory_);
 
   // leaver
-  auto leaver = std::make_shared<client::leaver>(rooms);
+  auto leaver = std::make_shared<client::leaver>(*rooms);
 
   // desktop
   BOOST_LOG_SEV(logger, logging::severity::trace)
@@ -244,7 +248,7 @@ int main(int argc, char *argv[]) {
   client::participant_creator_creator participant_creator_creator{
       client_factory, peer_creator, *tracks_adder, own_media, desktop_sharing};
   client::room_creator client_room_creator{participant_creator_creator};
-  client::joiner joiner{client_room_creator, rooms, matrix_authentification,
+  client::joiner joiner{client_room_creator, *rooms, matrix_authentification,
                         temporary_room_client};
 
   BOOST_LOG_SEV(logger, logging::severity::debug) << "starting qt";
@@ -338,9 +342,12 @@ int main(int argc, char *argv[]) {
 
   QQmlApplicationEngine engine;
   client::audio_device_settings audio_settings{rtc_audio_devices};
-  client::model_creator model_creator{
-      audio_level_calculator_factory_, audio_settings, *video_settings,
-      own_audio_information_, *audio_tracks_volume};
+  client::model_creator model_creator{audio_level_calculator_factory_,
+                                      audio_settings,
+                                      *video_settings,
+                                      own_audio_information_,
+                                      *audio_tracks_volume,
+                                      mute_deaf_communicator_};
   client::error_model error_model;
   client::utils_model utils_model;
   client::join_model join_model{model_creator, error_model, joiner};
