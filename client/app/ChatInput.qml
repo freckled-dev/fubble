@@ -28,6 +28,7 @@ Rectangle {
         cursorVisible: true
         placeholderText: qsTr("Write your message here...")
         wrapMode: Text.WordWrap
+        textFormat: TextEdit.PlainText
 
         Keys.onEnterPressed: {
             onInputFinished(event)
