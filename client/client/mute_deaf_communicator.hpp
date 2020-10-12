@@ -11,6 +11,7 @@ public:
   virtual ~mute_deaf_communicator() = default;
 
   boost::signals2::signal<void(std::string id, bool deafed)> on_deafed;
+  boost::signals2::signal<void(std::string id, bool muted)> on_muted;
 
   static std::unique_ptr<mute_deaf_communicator>
   create(std::shared_ptr<rooms> rooms,

@@ -13,8 +13,9 @@ public:
       : rooms_{rooms_}, audio_volume_{audio_volume_} {
     rooms_->on_set.connect([this] { on_room_set(); });
     audio_volume_->on_deafed.connect(
-        [this](bool deafed) { on_deafed(deafed); });
-    audio_volume_->on_muted.connect([this](bool muted) { on_muted(muted); });
+        [this](bool deafed) { on_self_deafed(deafed); });
+    audio_volume_->on_muted.connect(
+        [this](bool muted) { on_self_muted(muted); });
   }
 
 protected:
@@ -23,13 +24,31 @@ protected:
     return result;
   }
 
-  void on_deafed(bool deafed) {
+  void on_self_deafed(bool deafed) {
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << ", deafed:" << deafed;
+    BOOST_ASSERT(room_);
     if (!room_)
       return;
+    set_state(deafed, std::nullopt);
+  }
+
+  void on_self_muted(bool muted) {
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << __FUNCTION__ << ", muted:" << muted;
+    BOOST_ASSERT(room_);
+    if (!room_)
+      return;
+    set_state(std::nullopt, muted);
+  }
+
+  void set_state(std::optional<bool> deafed, std::optional<bool> muted) {
+    BOOST_ASSERT(deafed || muted);
     auto data = nlohmann::json::object();
-    data["deafed"] = deafed;
+    if (deafed)
+      data["deafed"] = deafed.value();
+    if (muted)
+      data["muted"] = muted.value();
 
     auto &states = room_->get_native().get_states();
     matrix::room_states::custom state;
@@ -40,14 +59,14 @@ protected:
         executor, [this](auto result) { did_set_state(result); });
   }
 
-  void on_muted(bool) {}
-
   void on_room_set() {
     auto set = rooms_->get();
     BOOST_ASSERT(room_ != set);
     room_ = set;
-    if (!room_)
+    if (!room_) {
+      mutes_and_deafs.clear();
       return;
+    }
     room_->get_native().get_states().on_custom.connect(
         [this](const auto &custom_) { on_custom(custom_); });
   }
@@ -58,6 +77,23 @@ protected:
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << ", got a " << state_key()
         << ", data:" << custom_.data.dump(2);
+    BOOST_ASSERT(!custom_.key.empty());
+    const auto id = custom_.key;
+    mute_deaf &change = mutes_and_deafs[id];
+    if (custom_.data.contains("deafed")) {
+      const bool deafed_changed = custom_.data["deafed"];
+      if (change.deafed != deafed_changed) {
+        change.deafed = deafed_changed;
+        on_deafed(id, change.deafed);
+      }
+    }
+    if (custom_.data.contains("muted")) {
+      const bool muted_changed = custom_.data["muted"];
+      if (change.muted != muted_changed) {
+        change.muted = muted_changed;
+        on_muted(id, change.muted);
+      }
+    }
   }
 
   void did_set_state(boost::future<void> &result) {
@@ -76,7 +112,12 @@ protected:
   std::shared_ptr<rooms> rooms_;
   std::shared_ptr<audio_volume> audio_volume_;
   std::shared_ptr<room> room_;
-};
+  struct mute_deaf {
+    bool muted{};
+    bool deafed{};
+  };
+  std::unordered_map<std::string, mute_deaf> mutes_and_deafs;
+}; // namespace
 } // namespace
 
 std::unique_ptr<mute_deaf_communicator>

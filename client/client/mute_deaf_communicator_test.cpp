@@ -10,13 +10,16 @@ namespace {
 struct test_mute_deaf_client {
   test_mute_deaf_client(test_executor &executors,
                         const client::testing::test_client::connect_information
-                            &connect_information_)
-      : executors(executors), connect_information_{connect_information_} {}
+                            &connect_information_,
+                        const std::string &room_name)
+      : executors(executors),
+        connect_information_{connect_information_}, room_name{room_name} {}
 
   test_executor &executors;
   client::testing::test_client::connect_information connect_information_;
+  const std::string room_name;
   client::testing::test_client client{executors, connect_information_,
-                                      uuid::generate()};
+                                      room_name};
   std::shared_ptr<client::add_audio_to_connection> audio_track_adder =
       client::add_audio_to_connection::create_noop();
   std::shared_ptr<client::audio_tracks_volume> audio_tracks_volume =
@@ -31,10 +34,11 @@ struct MuteDeafCommunicator : testing::Test {
     temporary_room_server.application->run();
     client::testing::test_client::connect_information connect_information_{
         temporary_room_server.make_http_server_and_fields()};
-    first = std::make_unique<test_mute_deaf_client>(executors,
-                                                    connect_information_);
-    second = std::make_unique<test_mute_deaf_client>(executors,
-                                                     connect_information_);
+    const auto room_name = uuid::generate();
+    first = std::make_unique<test_mute_deaf_client>(
+        executors, connect_information_, room_name);
+    second = std::make_unique<test_mute_deaf_client>(
+        executors, connect_information_, room_name);
   }
 
   test_executor executors;
@@ -49,8 +53,7 @@ TEST_F(MuteDeafCommunicator, SetUp) {}
 #endif
 
 TEST_F(MuteDeafCommunicator, Deafen) {
-  auto room_name = uuid::generate();
-  auto first_done = first->client.join(room_name).then(
+  auto first_done = first->client.join("first").then(
       executors.inline_executor, [&](auto result) {
         result.get();
         first->audio_tracks_volume->deafen(true);
@@ -60,7 +63,7 @@ TEST_F(MuteDeafCommunicator, Deafen) {
         EXPECT_TRUE(deafed);
         executors.context.stop();
       });
-  auto second_done = second->client.join(room_name).then(
+  auto second_done = second->client.join("second").then(
       executors.inline_executor, [&](auto result) { result.get(); });
   executors.run_context();
   first_done.get();
