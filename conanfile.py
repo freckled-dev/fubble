@@ -23,7 +23,7 @@ class FubbleConan(ConanFile):
     def _get_qt_bin_paths(self):
         if self.settings.os != "Windows":
             return []
-        return ['C:\\Qt\\5.15.0\\msvc2019_64\\bin']
+        return ['C:\\Qt\\5.15.1\\msvc2019_64\\bin']
         # return self.deps_cpp_info["qt"].bin_paths
 
     def _get_build_type(self):
