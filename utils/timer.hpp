@@ -30,7 +30,10 @@ public:
 
   using callack_type = std::function<void()>;
   void start(const callack_type &callback);
+  // immediately post a timeout, and then calls again like the specified interval
+  void start_immediately(const callack_type &callback);
   void stop();
+  bool get_started() const;
 
 protected:
   void start_timer();

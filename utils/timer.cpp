@@ -1,4 +1,5 @@
 #include "timer.hpp"
+#include <boost/asio/post.hpp>
 #include <fmt/format.h>
 
 using namespace utils;
@@ -40,11 +41,30 @@ void interval_timer::start(const callack_type &callback_parameter) {
   start_timer();
 }
 
+void interval_timer::start_immediately(const callack_type &callback_parameter) {
+  BOOST_ASSERT(!callback);
+  BOOST_ASSERT(!started);
+  callback = callback_parameter;
+  BOOST_ASSERT(callback);
+  started = true;
+  std::weak_ptr<int> weak_alive_check = alive_check;
+  boost::asio::post(context,
+      [this, weak_alive_check = std::move(weak_alive_check)] {
+        if (!weak_alive_check.lock())
+          return;
+        on_timeout();
+      });
+}
+
 void interval_timer::stop() {
   BOOST_ASSERT(started);
   callback = {};
   timer.cancel();
   started = false;
+}
+
+bool interval_timer:: get_started() const {
+  return started;
 }
 
 void interval_timer::start_timer() {

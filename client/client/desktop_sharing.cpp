@@ -120,8 +120,9 @@ public:
                               check.id;
                      });
         });
-    BOOST_LOG_SEV(logger, logging::severity::debug)
-        << "adding:" << enumerated_filtered.size();
+    if (!enumerated_filtered.empty())
+      BOOST_LOG_SEV(logger, logging::severity::debug)
+          << "adding:" << enumerated_filtered.size();
     std::transform(enumerated_filtered.cbegin(), enumerated_filtered.cend(),
                    std::back_inserter(*working_previews),
                    [&](auto &enumerated_item) {

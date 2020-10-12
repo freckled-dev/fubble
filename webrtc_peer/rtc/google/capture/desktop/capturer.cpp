@@ -124,8 +124,7 @@ public:
   boost::future<void> start() override {
     BOOST_ASSERT(!start_promise);
     start_promise = std::make_shared<boost::promise<void>>();
-    on_timeout();
-    timer->start([this] { on_timeout(); });
+    timer->start_immediately([this] { on_timeout(); });
     return start_promise->get_future();
   }
 
