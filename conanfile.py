@@ -15,6 +15,7 @@ class FubbleConan(ConanFile):
             "sanatize": [True, False]}
     # https://docs.conan.io/en/latest/reference/conanfile/attributes.html#default-options
     default_options = {"shared": False, "nlohmann_json:multiple_headers": True,
+            "restinio:asio": "boost",
             "treat_warnings_as_errors": False, "sanatize": False}
     generators = "pkg_config"
     exports_sources = "*"
@@ -47,13 +48,16 @@ class FubbleConan(ConanFile):
         #     self.build_requires("qt/5.15.0@bincrafters/stable")
         if not tools.which('meson'):
             self.build_requires("meson/0.55.0")
-        self.build_requires("nlohmann_json/3.7.0")
-        self.build_requires("boost/1.73.0")
-        self.build_requires("gtest/1.10.0")
-        self.build_requires("fmt/7.0.3")
-        self.build_requires("google-webrtc/84")
-        self.build_requires("RectangleBinPack/1.0.2")
-        self.build_requires("fruit/3.6.0")
+
+    def requirements(self):
+        self.requires("nlohmann_json/3.7.0")
+        self.requires("boost/1.73.0")
+        self.requires("gtest/1.10.0")
+        self.requires("fmt/7.0.3")
+        self.requires("google-webrtc/84")
+        self.requires("RectangleBinPack/1.0.2")
+        self.requires("fruit/3.6.0")
+        self.requires("restinio/0.6.10")
 
     def build(self):
         # https://docs.conan.io/en/latest/reference/build_helpers/meson.html

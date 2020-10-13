@@ -155,6 +155,7 @@ google_webrtc_dep = declare_dependency(
 # ssl_dep = dependency('openssl', include_type: 'system', required: false)
 ssl_dep = google_webrtc_dep
 rectangle_bin_pack_dep = dependency('RectangleBinPack', include_type: 'system')
+restinio_dep = dependency('restinio', include_type: 'system')
 
 subdir('asio')
 subdir('utils')
@@ -165,4 +166,5 @@ subdir('signalling')
 subdir('webrtc_peer')
 subdir('temporary_room')
 subdir('client')
+subdir('version')
 
