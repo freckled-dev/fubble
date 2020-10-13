@@ -57,7 +57,8 @@ class FubbleConan(ConanFile):
         self.requires("google-webrtc/84")
         self.requires("RectangleBinPack/1.0.2")
         self.requires("fruit/3.6.0")
-        self.requires("restinio/0.6.10")
+        if self.settings.os == "Linux":
+            self.requires("restinio/0.6.10")
 
     def build(self):
         # https://docs.conan.io/en/latest/reference/build_helpers/meson.html
