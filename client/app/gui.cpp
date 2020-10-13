@@ -99,7 +99,8 @@ int main(int argc, char *argv[]) {
   logging::logger logger{"main"};
 
   BOOST_LOG_SEV(logger, logging::severity::info)
-      << "starting up, version:" << utils::version();
+      << "starting up, fubble_version:" << utils::version()
+      << ", qt_version:" << qVersion();
 
   fruit::Injector<client::crash_catcher> injector{
       create_crash_catcher_component};
