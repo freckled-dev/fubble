@@ -9,7 +9,7 @@ namespace version {
 class server {
 public:
   struct config {
-    std::string address{"localhost"};
+    std::string address{"0.0.0.0"};
     int port{8085};
     std::string current_version{utils::version()};
     std::string minimum_version{utils::version()};
