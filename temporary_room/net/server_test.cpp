@@ -18,8 +18,9 @@ TEST(NetServer, Join) {
   http::server server_{"localhost", std::to_string(acceptor.get_port())};
   http::fields fields_{server_};
   http::connection_creator connection_creator_{context};
-  http::action_factory action_factory_{connection_creator_};
-  http::client http_client{action_factory_, server_, fields_};
+  std::shared_ptr<http::action_factory> action_factory_ =
+      std::make_shared<http::action_factory>(connection_creator_);
+  http::client http_client{action_factory_, std::make_pair(server_, fields_)};
   temporary_room::net::client client{http_client};
   // test
   const std::string room_name = "room_name";

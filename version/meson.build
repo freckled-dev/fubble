@@ -1,13 +1,32 @@
-version = library('version',
-  ['application.cpp'],
+version_server = library('version_server',
+  ['server.cpp'],
   include_directories: '..',
-  dependencies: [fmt_dep, json_dep, utils_dep, matrix_dep, restinio_dep],
+  dependencies: [fmt_dep, json_dep, utils_dep, restinio_dep],
   link_with: [],
   install: true
   )
-version_dep = declare_dependency(
+version_server_dep = declare_dependency(
   include_directories: '..',
-  link_with: [version],
+  link_with: [version_server],
   dependencies: []
   )
+
+version_getter = library('version_getter',
+  ['getter.cpp'],
+  include_directories: '..',
+  dependencies: [fmt_dep, json_dep, utils_dep, http_dep],
+  link_with: [],
+  install: true
+  )
+version_getter_dep = declare_dependency(
+  include_directories: '..',
+  link_with: [version_getter],
+  dependencies: [http_dep]
+  )
+
+version_test = executable('version_test',
+  ['test.cpp'],
+  dependencies: [gtest_dep, version_server_dep, version_getter_dep],
+  link_with: test_main)
+test('version test', version_test)
 

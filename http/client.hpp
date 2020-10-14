@@ -13,10 +13,8 @@ class action;
 class action_factory;
 class client {
 public:
-  client(action_factory &action_factory_,
+  client(const std::shared_ptr<action_factory> &action_factory_,
          const std::pair<server, fields> &server_and_fields);
-  client(action_factory &action_factory_, const server &server_,
-         const fields &fields_);
   ~client();
 
   using async_result = std::pair<boost::beast::http::status, nlohmann::json>;
@@ -34,7 +32,7 @@ protected:
   void remove_action(const action *action_);
 
   http::logger logger{"client"};
-  action_factory &action_factory_;
+  std::shared_ptr<action_factory> action_factory_;
   boost::inline_executor executor;
   const server server_;
   const fields fields_;

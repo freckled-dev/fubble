@@ -22,9 +22,9 @@ http::fields make_matrix_http_fields(http::server http_server_matrix,
   return result;
 }
 
-class application_impl : public application {
+class server_impl : public application {
 public:
-  application_impl(boost::asio::io_context &context, options options_)
+  server_impl(boost::asio::io_context &context, options options_)
       : context(context), options_{options_} {
     setup_matrix_client();
     // lets start to accept connections
@@ -113,7 +113,8 @@ public:
   http::fields http_fields_matrix =
       make_matrix_http_fields(http_server_matrix, options_);
   http::connection_creator connection_creator_{context};
-  http::action_factory action_factory_{connection_creator_};
+  std::shared_ptr<http::action_factory> action_factory_ =
+      std::make_shared<http::action_factory>(connection_creator_);
   http::client_factory http_client_factory_matrix{
       action_factory_, http_server_matrix, http_fields_matrix};
   matrix::client_factory matrix_client_factory{matrix_factory,
@@ -135,5 +136,5 @@ public:
 
 std::unique_ptr<application>
 application::create(boost::asio::io_context &context, options options_) {
-  return std::make_unique<application_impl>(context, options_);
+  return std::make_unique<server_impl>(context, options_);
 }

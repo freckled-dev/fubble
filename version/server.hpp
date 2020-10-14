@@ -6,7 +6,7 @@
 #include <memory>
 
 namespace version {
-class application {
+class server {
 public:
   struct config {
     std::string address{"localhost"};
@@ -14,9 +14,9 @@ public:
     std::string current_version{utils::version()};
     std::string minimum_version{utils::version()};
   };
-  virtual ~application() = default;
+  virtual ~server() = default;
 
-  static std::unique_ptr<application>
+  static std::unique_ptr<server>
   create(const std::shared_ptr<boost::asio::io_context> &context,
          const config &config_);
 };

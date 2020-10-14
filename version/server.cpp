@@ -1,17 +1,17 @@
-#include "version/application.hpp"
+#include "version/server.hpp"
 #include <nlohmann/json.hpp>
 #include <restinio/all.hpp>
 
 namespace {
-class application_impl final : public version::application {
+class server_impl final : public version::server {
   std::shared_ptr<boost::asio::io_context> context;
   using server_t = restinio::http_server_t<>;
   using settings_t = restinio::server_settings_t<>;
   std::unique_ptr<server_t> server;
 
 public:
-  application_impl(std::shared_ptr<boost::asio::io_context> context,
-                   const config &config_) {
+  server_impl(std::shared_ptr<boost::asio::io_context> context,
+              const config &config_) {
     auto response_json = nlohmann::json::object();
     response_json["minimum_version"] = config_.minimum_version;
     response_json["current_version"] = config_.current_version;
@@ -36,12 +36,12 @@ public:
     server->open_sync();
   }
 
-  ~application_impl() { server->close_sync(); }
+  ~server_impl() { server->close_sync(); }
 };
 } // namespace
 
-std::unique_ptr<version::application> version::application::create(
-    const std::shared_ptr<boost::asio::io_context> &context,
-    const config &config_) {
-  return std::make_unique<application_impl>(context, config_);
+std::unique_ptr<version::server>
+version::server::create(const std::shared_ptr<boost::asio::io_context> &context,
+                        const config &config_) {
+  return std::make_unique<server_impl>(context, config_);
 }

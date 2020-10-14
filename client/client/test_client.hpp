@@ -79,7 +79,8 @@ struct test_client {
       signalling_connect_information};
 
   // matrix
-  http::action_factory action_factory_{connection_creator_};
+  std::shared_ptr<http::action_factory> action_factory_ =
+      std::make_shared<http::action_factory>(connection_creator_);
   http::client_factory http_client_factory{
       action_factory_, matrix::testing::make_http_server_and_fields()};
   http::client http_client_temporary_room{action_factory_,

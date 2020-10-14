@@ -25,8 +25,8 @@ struct test_client {
   // matrix
   matrix::factory matrix_factory;
   http::connection_creator connection_creator_{context};
-  http::action_factory action_factory_{connection_creator_};
-
+  std::shared_ptr<http::action_factory> action_factory_ =
+      std::make_shared<http::action_factory>(connection_creator_);
   http::client_factory http_client_factory_matrix{
       action_factory_, matrix::testing::make_http_server_and_fields()};
   matrix::client_factory matrix_client_factory{matrix_factory,
