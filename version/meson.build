@@ -12,7 +12,8 @@ version_server_dep = declare_dependency(
   )
 version_server_application = executable('version_server',
   ['server_application.cpp'],
-  dependencies: [version_server_dep, utils_dep]
+  dependencies: [version_server_dep, utils_dep],
+  install: true
   )
 
 version_getter = library('version_getter',
