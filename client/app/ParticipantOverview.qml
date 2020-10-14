@@ -64,9 +64,10 @@ Item {
             Image {
                 id: mutedImage
                 anchors.verticalCenter: parent.verticalCenter
-                anchors.right: parent.right
+                anchors.right: deafedImage.visible ? deafedImage.left : parent.right
                 sourceSize.height: 20
                 sourceSize.width: 20
+                anchors.rightMargin: 5
                 source: participant.silenced ? Style.current.silencedImage : Style.current.mutedImage
                 visible: participant.muted || participant.silenced
 
@@ -79,6 +80,29 @@ Item {
 
                 MouseArea {
                     id: maMuted
+                    anchors.fill: parent
+                    hoverEnabled: true
+                }
+            }
+
+            Image {
+                id: deafedImage
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.right: parent.right
+                sourceSize.height: 20
+                sourceSize.width: 20
+                anchors.rightMargin: 5
+                source: Style.current.deafedImage
+                visible: participant.deafed
+
+                FubbleToolTip {
+                    id: ttDeafed
+                    text: qsTr("User has deafed himself.")
+                    visible: maDeafed.containsMouse
+                }
+
+                MouseArea {
+                    id: maDeafed
                     anchors.fill: parent
                     hoverEnabled: true
                 }

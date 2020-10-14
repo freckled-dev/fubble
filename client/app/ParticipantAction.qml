@@ -47,8 +47,7 @@ RowLayout {
 
     FubbleActionButton {
         icon.source: ownMediaModel.deafed ? Style.current.overlaySilenceOffImage : Style.current.overlaySilenceImage
-        toolTipText: ownMediaModel.deafed ? qsTr("Hear everyone") : qsTr(
-                                                "Silence everyone")
+        toolTipText: ownMediaModel.deafed ? qsTr("Undeafen") : qsTr("Deafen")
         onActionClick: ownMediaModel.deafed = !ownMediaModel.deafed
     }
 }
