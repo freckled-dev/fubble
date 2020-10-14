@@ -1,9 +1,11 @@
 #include "version/server.hpp"
+#include "logging/logger.hpp"
 #include <nlohmann/json.hpp>
 #include <restinio/all.hpp>
 
 namespace {
 class server_impl final : public version::server {
+  logging::logger logger{"server_impl"};
   std::shared_ptr<boost::asio::io_context> context;
   using server_t = restinio::http_server_t<>;
   using settings_t = restinio::server_settings_t<>;
@@ -21,7 +23,9 @@ public:
         settings_t{}
             .port(config_.port)
             .address(config_.address)
-            .request_handler([response_string](auto request) {
+            .request_handler([response_string, this](auto request) {
+              BOOST_LOG_SEV(logger, logging::severity::debug)
+                  << "request:" << *request << ", response:" << response_string;
               // https://stiffstream.com/en/docs/restinio/0.6/responsebuilder.html
               auto response = request->create_response();
 #if 0

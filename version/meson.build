@@ -10,6 +10,10 @@ version_server_dep = declare_dependency(
   link_with: [version_server],
   dependencies: []
   )
+version_server_application = executable('version_server',
+  ['server_application.cpp'],
+  dependencies: [version_server_dep, utils_dep]
+  )
 
 version_getter = library('version_getter',
   ['getter.cpp'],
