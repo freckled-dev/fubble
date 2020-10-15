@@ -243,6 +243,9 @@ int main(int argc, char *argv[]) {
   std::shared_ptr<client::desktop_sharing_previews> desktop_sharing_previews =
       client::desktop_sharing_previews::create(timer_factory);
 
+  // version
+  std::shared_ptr<version::getter> version_getter;
+
   // client
   BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up client";
   client::factory client_factory{context};
@@ -251,7 +254,7 @@ int main(int argc, char *argv[]) {
       client_factory, peer_creator, *tracks_adder, own_media, desktop_sharing};
   client::room_creator client_room_creator{participant_creator_creator};
   client::joiner joiner{client_room_creator, *rooms, matrix_authentification,
-                        temporary_room_client};
+                        temporary_room_client, version_getter};
 
   BOOST_LOG_SEV(logger, logging::severity::debug) << "starting qt";
 

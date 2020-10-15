@@ -97,10 +97,12 @@ protected:
 
 joiner::joiner(room_creator &room_creator_, rooms &rooms_,
                matrix::authentification &matrix_authentification,
-               temporary_room::net::client &temporary_room_client)
+               temporary_room::net::client &temporary_room_client,
+               std::shared_ptr<version::getter> version_getter)
     : room_creator_(room_creator_), rooms_(rooms_),
       matrix_authentification(matrix_authentification),
-      temporary_room_client(temporary_room_client) {}
+      temporary_room_client(temporary_room_client), version_getter{
+                                                        version_getter} {}
 
 joiner::~joiner() = default;
 

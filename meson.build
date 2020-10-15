@@ -169,6 +169,6 @@ subdir('matrix')
 subdir('signalling')
 subdir('webrtc_peer')
 subdir('temporary_room')
-subdir('client')
 subdir('version')
+subdir('client')
 

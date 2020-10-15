@@ -78,6 +78,12 @@ struct test_client {
       websocket_connector, signalling_connection_creator,
       signalling_connect_information};
 
+  // version
+  std::shared_ptr<http::client>
+      version_http_client; // = std::make_shared<http::client>();
+  std::shared_ptr<version::getter> version_getter =
+      version::getter::create(version_http_client);
+
   // matrix
   std::shared_ptr<http::action_factory> action_factory_ =
       std::make_shared<http::action_factory>(connection_creator_);
@@ -111,7 +117,7 @@ struct test_client {
       client_factory, peer_creator, tracks_adder, own_media, desktop_sharing_};
   client::room_creator client_room_creator{participant_creator_creator};
   client::joiner joiner{client_room_creator, *rooms, matrix_authentification,
-                        temporary_room_client};
+                        temporary_room_client, version_getter};
 
   boost::future<std::shared_ptr<client::room>> join(std::string name) {
     client::joiner::parameters join_paramenters;
