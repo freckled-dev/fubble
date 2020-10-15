@@ -32,6 +32,8 @@ struct test_mute_deaf_client {
 struct MuteDeafCommunicator : testing::Test {
   MuteDeafCommunicator() {
     temporary_room_server.application->run();
+    std::unique_ptr<version::server> version_http_server =
+        version::server::create(executors.context);
     client::testing::test_client::connect_information connect_information_{
         temporary_room_server.make_http_server_and_fields()};
     const auto room_name = uuid::generate();

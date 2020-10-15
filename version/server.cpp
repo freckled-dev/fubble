@@ -6,20 +6,32 @@
 namespace {
 class server_impl final : public version::server {
   logging::logger logger{"server_impl"};
-  std::shared_ptr<boost::asio::io_context> context;
+  std::shared_ptr<boost::asio::io_context> context_shared;
+  boost::asio::io_context &context;
+  const config config_;
   using server_t = restinio::http_server_t<>;
   using settings_t = restinio::server_settings_t<>;
   std::unique_ptr<server_t> server;
 
 public:
   server_impl(std::shared_ptr<boost::asio::io_context> context,
-              const config &config_) {
+              const config &config_)
+      : context_shared{context}, context(*context.get()), config_{config_} {
+    start();
+  }
+
+  server_impl(boost::asio::io_context &context, const config &config_)
+      : context(context), config_{config_} {
+    start();
+  }
+
+  void start() {
     auto response_json = nlohmann::json::object();
     response_json["minimum_version"] = config_.minimum_version;
     response_json["current_version"] = config_.current_version;
     auto response_string = response_json.dump();
     server = std::make_unique<server_t>(
-        restinio::external_io_context(*context),
+        restinio::external_io_context(context),
         settings_t{}
             .port(config_.port)
             .address(config_.address)
@@ -47,5 +59,17 @@ public:
 std::unique_ptr<version::server>
 version::server::create(const std::shared_ptr<boost::asio::io_context> &context,
                         const config &config_) {
+  return std::make_unique<server_impl>(context, config_);
+}
+
+std::unique_ptr<version::server> version::server::create(
+    const std::shared_ptr<boost::asio::io_context> &context) {
+  const config config_;
+  return std::make_unique<server_impl>(context, config_);
+}
+
+std::unique_ptr<version::server>
+version::server::create(boost::asio::io_context &context) {
+  const config config_;
   return std::make_unique<server_impl>(context, config_);
 }

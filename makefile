@@ -17,5 +17,5 @@ install:
 
 .PHONY: test
 test:
-	meson test -C ../fubble_build/meson 'version test'
+	meson test -C ../fubble_build/meson 'client muted_deaf_communicator test'
 

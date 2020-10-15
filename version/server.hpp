@@ -19,6 +19,9 @@ public:
   static std::unique_ptr<server>
   create(const std::shared_ptr<boost::asio::io_context> &context,
          const config &config_);
+  static std::unique_ptr<server>
+  create(const std::shared_ptr<boost::asio::io_context> &context);
+  static std::unique_ptr<server> create(boost::asio::io_context &context);
 };
 } // namespace version
 

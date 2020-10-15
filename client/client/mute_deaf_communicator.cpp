@@ -66,8 +66,11 @@ protected:
     state.type = state_key();
     state.key = room_->get_own_id();
     state.data = data;
-    states.set_custom(state).then(
+    states.set_custom(state)
+#if 0
+      .then(
         executor, [this](auto result) { did_set_state(result); });
+#endif
   }
 
   void on_room_set() {

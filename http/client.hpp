@@ -31,9 +31,9 @@ protected:
   void add_action(const std::shared_ptr<action> &action_);
   void remove_action(const action *action_);
 
+  boost::inline_executor executor;
   http::logger logger{"client"};
   std::shared_ptr<action_factory> action_factory_;
-  boost::inline_executor executor;
   const server server_;
   const fields fields_;
   std::vector<std::shared_ptr<action>> actions;

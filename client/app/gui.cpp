@@ -244,7 +244,18 @@ int main(int argc, char *argv[]) {
       client::desktop_sharing_previews::create(timer_factory);
 
   // version
-  std::shared_ptr<version::getter> version_getter;
+  http::server http_version_client_server{config.general_.host,
+                                          config.general_.service};
+  http_version_client_server.secure = config.general_.use_ssl;
+  http::fields http_version_client_fields{http_version_client_server};
+  http_version_client_fields.target_prefix =
+      "/api/version/v0/_version/client/r0/";
+  std::shared_ptr<http::client> version_http_client =
+      std::make_shared<http::client>(
+          action_factory_, std::make_pair(http_version_client_server,
+                                          http_version_client_fields));
+  std::shared_ptr<version::getter> version_getter =
+      version::getter::create(version_http_client);
 
   // client
   BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up client";
