@@ -8,7 +8,7 @@ QtObject {
 
     property var timer: Timer {
         id: timer
-        interval: 50
+        interval: 1000
         running: false
         repeat: false
         onTriggered: left(0)

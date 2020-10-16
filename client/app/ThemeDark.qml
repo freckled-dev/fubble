@@ -62,4 +62,7 @@ Theme {
 
     // DemoMode
     property var demoImagesPath: "demo_images/"
+
+    // Animations
+    property var joinAnimation: "animations/bricks_dark.gif"
 }

@@ -44,38 +44,26 @@ Popup {
     Rectangle {
         id: rectangle
         radius: 5
-        gradient: Gradient {
-            GradientStop {
-                position: 0
-                color: Style.current.wildAppleGradientStart
-            }
-
-            GradientStop {
-                position: 1
-                color: Style.current.wildAppleGradientEnd
-            }
-        }
-
         border.width: 1
 
-        border.color: Style.current.background
+        color: Style.current.background
+        border.color: Style.current.foreground
         anchors.fill: parent
-    }
 
-    function leaveRoom() {
-        leaving()
-        leaveModel.leave()
-    }
-
-    ColumnLayout {
-        anchors.topMargin: 40
-        anchors.bottomMargin: 40
-        anchors.fill: parent
+        AnimatedImage {
+            id: animation
+            anchors.top: parent.top
+            source: Style.current.joinAnimation
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.topMargin: 10
+        }
 
         Label {
             id: progressLabel
             font.pointSize: Style.current.subHeaderPointSize
-            color: Style.current.black
+            color: Style.current.foreground
+            anchors.top: animation.bottom
+            anchors.horizontalCenter: parent.horizontalCenter
             Layout.alignment: Qt.AlignHCenter
         }
 
@@ -84,9 +72,16 @@ Popup {
             Material.background: Style.current.gray700
             Material.foreground: Style.current.buttonTextColor
             Layout.alignment: Qt.AlignHCenter
+            anchors.top: progressLabel.bottom
+            anchors.horizontalCenter: parent.horizontalCenter
             text: qsTr("Force close")
             visible: showForceButton && isLeavePopup
             onClicked: forceShutdown()
         }
+    }
+
+    function leaveRoom() {
+        leaving()
+        leaveModel.leave()
     }
 }
