@@ -8,6 +8,9 @@
         <file>sounds/leave.wav</file>
         <file>sounds/message.wav</file>
 
+        <file>animations/bricks_dark.gif</file>
+        <file>animations/bricks_light.gif</file>
+
         <file>images/close_dark.svg</file>
         <file>images/close_light.svg</file>
         <file>images/fubble.svg</file>

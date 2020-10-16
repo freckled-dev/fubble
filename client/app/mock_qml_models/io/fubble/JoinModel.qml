@@ -1,7 +1,16 @@
-import QtQuick 2.12
+import QtQuick 2.14
 
 QtObject {
     id: container
+
+    property var timer: Timer {
+        property RoomModel roomModel
+        id: timer
+        interval: 10000
+        running: false
+        repeat: false
+        onTriggered: joined(roomModel)
+    }
 
     signal joined(QtObject room)
     signal join_failed
@@ -19,6 +28,7 @@ QtObject {
         var roomModel = component.createObject(container)
         roomModel.name = roomName
 
-        joined(roomModel)
+        timer.roomModel = roomModel
+        timer.start()
     }
 }
