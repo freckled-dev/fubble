@@ -6,7 +6,9 @@
 using namespace client;
 
 namespace {
-class mute_deaf_communicator_impl final : public mute_deaf_communicator {
+class mute_deaf_communicator_impl final
+    : public mute_deaf_communicator,
+      public std::enable_shared_from_this<mute_deaf_communicator> {
 public:
   mute_deaf_communicator_impl(std::shared_ptr<rooms> rooms_,
                               std::shared_ptr<audio_volume> audio_volume_)
@@ -66,11 +68,10 @@ protected:
     state.type = state_key();
     state.key = room_->get_own_id();
     state.data = data;
-    states.set_custom(state)
-#if 0
-      .then(
-        executor, [this](auto result) { did_set_state(result); });
-#endif
+    states.set_custom(state).then(
+        executor, [thiz = shared_from_this(), this](auto result) {
+          did_set_state(result);
+        });
   }
 
   void on_room_set() {
@@ -137,8 +138,8 @@ protected:
 }; // namespace
 } // namespace
 
-std::unique_ptr<mute_deaf_communicator>
+std::shared_ptr<mute_deaf_communicator>
 mute_deaf_communicator::create(std::shared_ptr<rooms> rooms,
                                std::shared_ptr<audio_volume> audio_volume_) {
-  return std::make_unique<mute_deaf_communicator_impl>(rooms, audio_volume_);
+  return std::make_shared<mute_deaf_communicator_impl>(rooms, audio_volume_);
 }
