@@ -41,16 +41,6 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
             }
 
-            Image {
-                id: videoDisabledImage
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.right: mutedImage.left
-                sourceSize.height: 20
-                sourceSize.width: 20
-                source: Style.current.videoDisabledImage
-                visible: participant.videoDisabled
-            }
-
             MouseArea {
                 id: maHeader
                 anchors.fill: parent
