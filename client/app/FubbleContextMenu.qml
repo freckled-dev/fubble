@@ -10,6 +10,10 @@ Item {
     property bool canUndo: true
     property bool canRedo: true
 
+    property int selectStart
+    property int selectEnd
+    property int curPos
+
     MouseArea {
         anchors.fill: parent
         acceptedButtons: Qt.RightButton

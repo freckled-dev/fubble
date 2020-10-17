@@ -21,7 +21,7 @@ Popup {
 
     Material.foreground: Style.current.foreground
     width: 300
-    height: 250
+    height: 300
     modal: true
     topMargin: 1
     padding: 0
@@ -63,6 +63,7 @@ Popup {
             font.pointSize: Style.current.subHeaderPointSize
             color: Style.current.foreground
             anchors.top: animation.bottom
+            anchors.topMargin: force.visible ? 0 : 20
             anchors.horizontalCenter: parent.horizontalCenter
             Layout.alignment: Qt.AlignHCenter
         }
@@ -73,6 +74,7 @@ Popup {
             Material.foreground: Style.current.buttonTextColor
             Layout.alignment: Qt.AlignHCenter
             anchors.top: progressLabel.bottom
+            anchors.topMargin: 10
             anchors.horizontalCenter: parent.horizontalCenter
             text: qsTr("Force close")
             visible: showForceButton && isLeavePopup
