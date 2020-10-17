@@ -15,7 +15,7 @@ public:
   boost::signals2::signal<void(std::string id, bool deafed)> on_deafed;
   boost::signals2::signal<void(std::string id, bool muted)> on_muted;
 
-  static std::unique_ptr<mute_deaf_communicator>
+  static std::shared_ptr<mute_deaf_communicator>
   create(std::shared_ptr<rooms> rooms,
          std::shared_ptr<audio_volume> audio_volume_);
 };

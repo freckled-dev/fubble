@@ -64,8 +64,9 @@ public:
 
 protected:
   boost::inline_executor executor;
-  matrix::logger logger{"room_states_impl"};
   client &client_;
+  matrix::logger logger{
+      fmt::format("room_states_impl:{}", client_.get_user_id())};
   const std::string room_id;
   std::unique_ptr<http::client> http_client;
   struct custom_container {

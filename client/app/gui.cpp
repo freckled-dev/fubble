@@ -142,9 +142,11 @@ int main(int argc, char *argv[]) {
   http_matrix_client_server.secure = config.general_.use_ssl;
   http::fields http_matrix_client_fields{http_matrix_client_server};
   http_matrix_client_fields.target_prefix = "/api/matrix/v0/_matrix/client/r0/";
-  http::action_factory action_factory_{connection_creator_};
+  std::shared_ptr<http::action_factory> action_factory_ =
+      std::make_shared<http::action_factory>(connection_creator_);
   http::client_factory http_matrix_client_factory{
-      action_factory_, http_matrix_client_server, http_matrix_client_fields};
+      action_factory_,
+      std::make_pair(http_matrix_client_server, http_matrix_client_fields)};
 
   http::server http_temporary_room_client_server{config.general_.host,
                                                  config.general_.service};
@@ -152,9 +154,9 @@ int main(int argc, char *argv[]) {
   http::fields http_temporary_room_client_fields{
       http_temporary_room_client_server};
   http_temporary_room_client_fields.target_prefix = "/api/temporary_room/v0/";
-  http::client http_client_temporary_room{action_factory_,
-                                          http_temporary_room_client_server,
-                                          http_temporary_room_client_fields};
+  http::client http_client_temporary_room{
+      action_factory_, std::make_pair(http_temporary_room_client_server,
+                                      http_temporary_room_client_fields)};
   temporary_room::net::client temporary_room_client{http_client_temporary_room};
   matrix::factory matrix_factory;
   matrix::client_factory matrix_client_factory{matrix_factory,
@@ -242,6 +244,19 @@ int main(int argc, char *argv[]) {
   std::shared_ptr<client::desktop_sharing_previews> desktop_sharing_previews =
       client::desktop_sharing_previews::create(timer_factory);
 
+  // version
+  http::server http_version_client_server{config.general_.host,
+                                          config.general_.service};
+  http_version_client_server.secure = config.general_.use_ssl;
+  http::fields http_version_client_fields{http_version_client_server};
+  http_version_client_fields.target_prefix = "/api/version/v0/";
+  std::shared_ptr<http::client> version_http_client =
+      std::make_shared<http::client>(
+          action_factory_, std::make_pair(http_version_client_server,
+                                          http_version_client_fields));
+  std::shared_ptr<version::getter> version_getter =
+      version::getter::create(version_http_client);
+
   // client
   BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up client";
   client::factory client_factory{context};
@@ -250,7 +265,7 @@ int main(int argc, char *argv[]) {
       client_factory, peer_creator, *tracks_adder, own_media, desktop_sharing};
   client::room_creator client_room_creator{participant_creator_creator};
   client::joiner joiner{client_room_creator, *rooms, matrix_authentification,
-                        temporary_room_client};
+                        temporary_room_client, version_getter};
 
   BOOST_LOG_SEV(logger, logging::severity::debug) << "starting qt";
 

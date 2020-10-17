@@ -33,6 +33,8 @@
 #include "temporary_room/testing.hpp"
 #include "test_executor.hpp"
 #include "utils/executor_asio.hpp"
+#include "version/server.hpp"
+#include "version/testing.hpp"
 #include "websocket/connection_creator.hpp"
 #include "websocket/connector.hpp"
 
@@ -58,14 +60,20 @@ struct test_client {
 
   boost::asio::io_context &context;
   const connect_information connect_information_;
-  http::connection_creator connection_creator_{context};
   std::string room_name;
   boost::asio::executor executor{context.get_executor()};
   boost::executor_adaptor<executor_asio> boost_executor{
       context}; // TODO remove!
+
+  // websocket
   websocket::connection_creator websocket_connection_creator{context};
   websocket::connector_creator websocket_connector{
       context, websocket_connection_creator};
+
+  // http
+  http::connection_creator connection_creator_{context};
+  std::shared_ptr<http::action_factory> action_factory_ =
+      std::make_shared<http::action_factory>(connection_creator_);
 
   // signalling
   signalling::json_message signalling_json;
@@ -78,8 +86,14 @@ struct test_client {
       websocket_connector, signalling_connection_creator,
       signalling_connect_information};
 
+  // version
+  std::shared_ptr<http::client> version_http_client =
+      std::make_shared<http::client>(
+          action_factory_, version::testing::make_http_server_and_fields());
+  std::shared_ptr<version::getter> version_getter =
+      version::getter::create(version_http_client);
+
   // matrix
-  http::action_factory action_factory_{connection_creator_};
   http::client_factory http_client_factory{
       action_factory_, matrix::testing::make_http_server_and_fields()};
   http::client http_client_temporary_room{action_factory_,
@@ -110,7 +124,7 @@ struct test_client {
       client_factory, peer_creator, tracks_adder, own_media, desktop_sharing_};
   client::room_creator client_room_creator{participant_creator_creator};
   client::joiner joiner{client_room_creator, *rooms, matrix_authentification,
-                        temporary_room_client};
+                        temporary_room_client, version_getter};
 
   boost::future<std::shared_ptr<client::room>> join(std::string name) {
     client::joiner::parameters join_paramenters;

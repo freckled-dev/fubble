@@ -13,7 +13,8 @@ TEST(HttpClient, Instance) {
   server server_{utils::testing::server, "http"};
   fields fields{server_};
   connection_creator connection_creator_{context};
-  action_factory action_factory_{connection_creator_};
+  std::shared_ptr<action_factory> action_factory_ =
+      std::make_shared<action_factory>(connection_creator_);
   client_factory factory{action_factory_, server_, fields};
   EXPECT_TRUE(factory.create());
 }
@@ -26,7 +27,8 @@ TEST(HttpClient, Get) {
   fields fields{server_};
   fields.target_prefix = "/api/matrix/v0/_matrix/client/";
   connection_creator connection_creator_{context};
-  action_factory action_factory_{connection_creator_};
+  std::shared_ptr<action_factory> action_factory_ =
+      std::make_shared<action_factory>(connection_creator_);
   client_factory factory{action_factory_, server_, fields};
   auto client_ = factory.create();
   bool called{};

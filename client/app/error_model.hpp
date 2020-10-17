@@ -17,6 +17,7 @@ public:
   enum class type { could_not_connect_to_backend, failed_to_start_camera };
   void set_error(const type type_, const std::string technical_);
   void set_error(const type type_, const boost::exception &error);
+  void set_error(QString description, const boost::exception &error);
 
 signals:
   void error();

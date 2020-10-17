@@ -30,15 +30,28 @@ void join_model::on_joined(boost::future<std::shared_ptr<class room>> room_) {
     auto got_room = room_.get();
     auto room_model_ = model_factory.create_room_model(got_room, this);
     joined(room_model_);
+    return;
+  } catch (const joiner::update_required &error) {
+    BOOST_LOG_SEV(logger, logging::severity::warning)
+        << "update required, error:" << boost::diagnostic_information(error);
+    auto minimum_version = QString::fromStdString(
+        *boost::get_error_info<joiner::minimum_version_info>(error));
+    error_model_.set_error(
+        tr("The version you are using to connect is outdated. The minimum "
+           "required version is '%1'. Please visit <a "
+           "href=\"https://fubble.io\">https://fubble.io</a> to "
+           "get the newest version.")
+            .arg(minimum_version),
+        error);
   } catch (const std::exception &error) {
     BOOST_LOG_SEV(logger, logging::severity::warning)
         << "could not join room, what:" << error.what();
     error_model_.set_error(error_model::type::could_not_connect_to_backend,
                            error.what());
-    join_failed();
   } catch (...) {
     BOOST_LOG_SEV(logger, logging::severity::error)
         << __FUNCTION__ << ", catch(...)";
     BOOST_ASSERT(false);
   }
+  join_failed();
 }

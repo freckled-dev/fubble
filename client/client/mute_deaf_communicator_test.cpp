@@ -26,7 +26,7 @@ struct test_mute_deaf_client {
       client::audio_tracks_volume::create(*client.rooms, client.tracks_adder,
                                           audio_track_adder,
                                           *client.own_audio_track);
-  std::unique_ptr<client::mute_deaf_communicator> mute_deaf_communicator =
+  std::shared_ptr<client::mute_deaf_communicator> mute_deaf_communicator =
       client::mute_deaf_communicator::create(client.rooms, audio_tracks_volume);
 };
 struct MuteDeafCommunicator : testing::Test {
@@ -43,6 +43,8 @@ struct MuteDeafCommunicator : testing::Test {
 
   test_executor executors;
   temporary_room::testing::server temporary_room_server{executors.context};
+  std::unique_ptr<version::server> version_http_server =
+      version::server::create(executors.context);
   std::unique_ptr<test_mute_deaf_client> first;
   std::unique_ptr<test_mute_deaf_client> second;
 };
@@ -55,17 +57,26 @@ TEST_F(MuteDeafCommunicator, SetUp) {}
 TEST_F(MuteDeafCommunicator, Deafen) {
   auto first_done = first->client.join("first").then(
       executors.inline_executor, [&](auto result) {
-        result.get();
+        auto return_ = result.get();
         first->audio_tracks_volume->deafen(true);
+        executors.context.stop();
+        return return_;
       });
+  executors.run_context();
+  std::shared_ptr<client::room> first_room = first_done.get();
   second->mute_deaf_communicator->on_deafed.connect(
       [this]([[maybe_unused]] auto id, bool deafed) {
         EXPECT_TRUE(deafed);
         executors.context.stop();
       });
   auto second_done = second->client.join("second").then(
-      executors.inline_executor, [&](auto result) { result.get(); });
+      executors.inline_executor, [&](auto result) {
+        std::shared_ptr<client::room> check = result.get();
+        if (!second->mute_deaf_communicator->is_deafed(
+                first_room->get_own_id()))
+          return;
+        executors.context.stop();
+      });
   executors.run_context();
-  first_done.get();
   second_done.get();
 }

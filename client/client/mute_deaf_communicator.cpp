@@ -6,7 +6,9 @@
 using namespace client;
 
 namespace {
-class mute_deaf_communicator_impl final : public mute_deaf_communicator {
+class mute_deaf_communicator_impl final
+    : public mute_deaf_communicator,
+      public std::enable_shared_from_this<mute_deaf_communicator> {
 public:
   mute_deaf_communicator_impl(std::shared_ptr<rooms> rooms_,
                               std::shared_ptr<audio_volume> audio_volume_)
@@ -67,7 +69,9 @@ protected:
     state.key = room_->get_own_id();
     state.data = data;
     states.set_custom(state).then(
-        executor, [this](auto result) { did_set_state(result); });
+        executor, [thiz = shared_from_this(), this](auto result) {
+          did_set_state(result);
+        });
   }
 
   void on_room_set() {
@@ -78,7 +82,8 @@ protected:
       mutes_and_deafs.clear();
       return;
     }
-    send_state();
+    if (self_deafed || self_muted)
+      send_state();
     room_->get_native().get_states().on_custom.connect(
         [this](const auto &custom_) { on_custom(custom_); });
   }
@@ -87,8 +92,8 @@ protected:
     if (custom_.type != state_key())
       return;
     BOOST_LOG_SEV(logger, logging::severity::debug)
-        << __FUNCTION__ << ", got a " << state_key()
-        << ", data:" << custom_.data.dump(2);
+        << __FUNCTION__ << ", got a " << state_key() << ", key:" << custom_.key
+        << ", data:" << custom_.data.dump();
     BOOST_ASSERT(!custom_.key.empty());
     const auto id = custom_.key;
     mute_deaf &change = mutes_and_deafs[id];
@@ -134,8 +139,8 @@ protected:
 }; // namespace
 } // namespace
 
-std::unique_ptr<mute_deaf_communicator>
+std::shared_ptr<mute_deaf_communicator>
 mute_deaf_communicator::create(std::shared_ptr<rooms> rooms,
                                std::shared_ptr<audio_volume> audio_volume_) {
-  return std::make_unique<mute_deaf_communicator_impl>(rooms, audio_volume_);
+  return std::make_shared<mute_deaf_communicator_impl>(rooms, audio_volume_);
 }

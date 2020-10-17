@@ -32,7 +32,9 @@ Popup {
     Label {
         id: label
         text: errorModel.text
+        textFormat: Text.RichText
         padding: 20
+        onLinkActivated: Qt.openUrlExternally(link)
     }
 
     Image {

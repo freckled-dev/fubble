@@ -8,6 +8,8 @@
 namespace {
 struct Room : test_executor, testing::Test {
   const std::string room_name = uuid::generate();
+  std::unique_ptr<version::server> version_http_server =
+      version::server::create(context);
 };
 struct participants_waiter {
   client::room &room;
