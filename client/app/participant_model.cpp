@@ -61,7 +61,6 @@ participant_model::participant_model(
     video_added(video);
   }
   if (own) {
-    video_disabled = video_settings_.get_paused();
     signal_connections.push_back(
         audio_information_.on_sound_level_30times_a_second.connect(
             [this](auto level) { on_sound_level(level); }));
@@ -78,7 +77,7 @@ participant_model::participant_model(
       audio_added(audio->get_source());
     }
     volume = audio_volume_.get_volume(id);
-    muted = audio_volume_.get_muted(id);
+    silenced = audio_volume_.get_muted(id);
   }
 }
 

@@ -41,16 +41,6 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
             }
 
-            Image {
-                id: videoDisabledImage
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.right: mutedImage.left
-                sourceSize.height: 20
-                sourceSize.width: 20
-                source: Style.current.videoDisabledImage
-                visible: participant.videoDisabled
-            }
-
             MouseArea {
                 id: maHeader
                 anchors.fill: parent
@@ -69,7 +59,7 @@ Item {
                 sourceSize.width: 20
                 anchors.rightMargin: 5
                 source: participant.silenced ? Style.current.silencedImage : Style.current.mutedImage
-                visible: participant.muted || participant.silenced
+                visible: participant.muted || participant.silenced || participant.deafed
 
                 FubbleToolTip {
                     id: ttMuted
@@ -147,7 +137,7 @@ Item {
                     anchors.left: parent.left
                     anchors.right: muteImage.left
                     anchors.rightMargin: 5
-                    enabled: !participant.muted
+                    enabled: !participant.silenced
                 }
 
                 FubbleActionButton {
@@ -156,7 +146,7 @@ Item {
                     anchors.right: parent.right
                     anchors.rightMargin: 10
                     showToolTip: false
-                    icon.source: participant.muted ? Style.current.mutedImage : Style.current.mutedOffImage
+                    icon.source: participant.silenced ? Style.current.mutedImage : Style.current.mutedOffImage
                     onActionClick: participant.silenced = !participant.silenced
                 }
             }

@@ -33,9 +33,6 @@ class participant_model : public QObject {
   // volume setting from 0 to 1
   Q_PROPERTY(
       qreal volume READ get_volume WRITE set_volume NOTIFY volume_changed)
-  // own video disabled
-  Q_PROPERTY(
-      bool videoDisabled MEMBER video_disabled NOTIFY video_disabled_changed)
   // just used in the GUI - do not change it
   Q_PROPERTY(bool highlighted MEMBER highlighted NOTIFY highlighted_changed)
 
@@ -103,7 +100,6 @@ protected:
   bool deafed{};
   bool silenced{};
   double volume{1.};
-  bool video_disabled{};
   bool highlighted{};
   ui::frame_provider_google_video_source *video{};
   bool voice_detected{};

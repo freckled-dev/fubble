@@ -21,8 +21,6 @@ QtObject {
     // indicator if the participant is speaking
     property bool voiceDetected
 
-    property bool videoDisabled
-
     // just used in the GUI
     property bool highlighted
 
