@@ -26,6 +26,7 @@ public:
   }
 
   void start() {
+    BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
     auto response_json = nlohmann::json::object();
     response_json["minimum_version"] = config_.minimum_version;
     response_json["current_version"] = config_.current_version;
@@ -52,7 +53,10 @@ public:
     server->open_sync();
   }
 
-  ~server_impl() { server->close_sync(); }
+  ~server_impl() {
+    BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
+    server->close_sync();
+  }
 };
 } // namespace
 

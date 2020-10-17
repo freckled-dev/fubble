@@ -33,3 +33,13 @@ QString error_model::type_to_string(const type type_) const {
   }
   return "";
 }
+
+void error_model::set_error(QString description,
+                            const boost::exception &exception_) {
+  const std::string technical_ = boost::diagnostic_information(exception_);
+  technical = QString::fromStdString(technical_);
+  technical_changed();
+  text = description;
+  text_changed();
+  error();
+}

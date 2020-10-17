@@ -248,8 +248,7 @@ int main(int argc, char *argv[]) {
                                           config.general_.service};
   http_version_client_server.secure = config.general_.use_ssl;
   http::fields http_version_client_fields{http_version_client_server};
-  http_version_client_fields.target_prefix =
-      "/api/version/v0/_version/client/r0/";
+  http_version_client_fields.target_prefix = "/api/version/v0/";
   std::shared_ptr<http::client> version_http_client =
       std::make_shared<http::client>(
           action_factory_, std::make_pair(http_version_client_server,

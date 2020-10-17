@@ -8,7 +8,7 @@
 namespace version::testing {
 static const std::string server = "localhost";
 static const std::string port = "8085";
-static const std::string target_prefix = "/api/version/v0/";
+static const std::string target_prefix = "/";
 
 inline std::pair<http::server, http::fields> make_http_server_and_fields() {
   http::server http_server{server, port};
