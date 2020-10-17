@@ -13,7 +13,6 @@ Item {
     MouseArea {
         anchors.fill: parent
         acceptedButtons: Qt.RightButton
-        hoverEnabled: true
         onClicked: {
             contextMenu.x = mouse.x
             contextMenu.y = mouse.y

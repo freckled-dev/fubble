@@ -22,4 +22,10 @@ TextEdit {
         canUndo: false
         canRedo: false
     }
+
+    MouseArea {
+        anchors.fill: parent
+        acceptedButtons: Qt.NoButton
+        cursorShape: parent.hoveredLink ? Qt.PointingHandCursor : Qt.ArrowCursor
+    }
 }

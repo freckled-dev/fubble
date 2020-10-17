@@ -6,7 +6,7 @@ QtObject {
     property var timer: Timer {
         property RoomModel roomModel
         id: timer
-        interval: 10000
+        interval: 60
         running: false
         repeat: false
         onTriggered: joined(roomModel)

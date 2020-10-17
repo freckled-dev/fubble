@@ -49,7 +49,7 @@ QtObject {
             participantId: "2"
             name: "Toni"
             timestamp: 1592568005000
-            message: "Oh wow, that sounds delicious!"
+            message: "Oh wow, that sounds delicious! https://www.google.com/"
             type: "message"
         }
         ListElement {
