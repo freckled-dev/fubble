@@ -23,7 +23,6 @@ Popup {
     width: 300
     height: 300
     modal: true
-    topMargin: 1
     padding: 0
     closePolicy: Popup.NoAutoClose
 
@@ -43,7 +42,6 @@ Popup {
 
     Rectangle {
         id: rectangle
-        radius: 5
         border.width: 1
 
         color: Style.current.background

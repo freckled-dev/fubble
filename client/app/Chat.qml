@@ -83,7 +83,7 @@ Item {
 
             anchors.bottom: chatInput.top
             anchors.bottomMargin: 10
-            anchors.topMargin: 30
+            anchors.topMargin: 10
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.top: chatHeader.bottom
@@ -239,6 +239,7 @@ Item {
     onVisibleChanged: {
         if (visible) {
             chatModel.resetNewMessages()
+            chatList.width = chatContainer.width
         }
         scrollToBottom()
     }

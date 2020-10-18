@@ -6,19 +6,11 @@ import io.fubble 1.0
 import QtQuick.Controls.Material 2.14
 import "."
 
-GridLayout {
+RowLayout {
     id: actionOverlay
 
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.bottom: parent.bottom
-    rowSpacing: 0
-    columns: {
-        var numItems = actionOverlay.children.length
-        if (parent.width < 210 && numItems === 5)
-            return 3
-
-        return 5
-    }
 
     FubbleActionButton {
         icon.source: Style.current.overlayShareDesktopImage
@@ -36,7 +28,6 @@ GridLayout {
         onActionClick: shareDesktopModel.stopShareDesktop()
         visible: shareDesktopModel.desktopSharingActive
     }
-
     FubbleActionButton {
         icon.source: ownMediaModel.videoDisabled ? Style.current.overlayVideoOffImage : Style.current.overlayVideoImage
         toolTipText: ownMediaModel.videoDisabled ? qsTr("Enable your video") : qsTr(

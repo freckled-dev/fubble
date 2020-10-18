@@ -43,7 +43,9 @@ Item {
             id: overviewContainer
             roomModel: roomContainer.room
             SplitView.preferredWidth: 300
-            SplitView.minimumWidth: 200
+            SplitView.minimumWidth: 240
+            SplitView.maximumWidth: 400
+
             overviewShowIcon: overviewShowIcon
         }
 
@@ -61,9 +63,10 @@ Item {
             id: videoWall
             roomModel: roomContainer.room
             anchors.margins: 10
-            SplitView.fillWidth: true
             anchors.top: parent.top
             anchors.bottom: parent.bottom
+
+            SplitView.fillWidth: true
             SplitView.minimumWidth: 200
         }
 

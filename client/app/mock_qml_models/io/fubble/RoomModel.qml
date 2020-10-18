@@ -4,7 +4,7 @@ import QtMultimedia 5.14
 QtObject {
     property string name: "room name not set"
     property var chat: ChatModel {}
-    property bool videosAvailable: false
+    property bool videosAvailable: true
 
     property int newParticipants: 3
 

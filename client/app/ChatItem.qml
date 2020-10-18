@@ -23,7 +23,6 @@ Rectangle {
 
     Loader {
         id: messageLoader
-
         height: childrenRect.height
         sourceComponent: type === "message" ? chatComponent : infoComponent
     }
@@ -40,7 +39,6 @@ Rectangle {
                 Layout.rightMargin: 10
                 Layout.topMargin: 10
                 Layout.alignment: own ? Qt.AlignRight : Qt.AlignLeft
-
                 Layout.maximumWidth: maximumWidth
                 wrapMode: Text.WrapAtWordBoundaryOrAnywhere
                 color: own ? Style.current.accent : participantColor
@@ -72,22 +70,27 @@ Rectangle {
     Component {
         id: infoComponent
 
-        Label {
-            color: Style.current.foreground
-            font.pointSize: Style.current.textPointSize
+        ColumnLayout {
+            Label {
+                color: Style.current.foreground
+                font.pointSize: Style.current.textPointSize
+                wrapMode: Label.WrapAtWordBoundaryOrAnywhere
+                Layout.maximumWidth: maximumWidth
 
-            text: {
-                switch (type) {
-                case "leave":
-                    return qsTr(name + " has left the room...")
-                case "join":
-                    return qsTr(name + " has joined the room...")
-                default:
-                    return qsTr("")
+                text: {
+                    switch (type) {
+                    case "leave":
+                        return qsTr(name + " has left the room...")
+                    case "join":
+                        return qsTr(name + " has joined the room...")
+                    default:
+                        return qsTr("")
+                    }
                 }
+                horizontalAlignment: Text.AlignHCenter
+                bottomPadding: 5
+                topPadding: 5
             }
-            bottomPadding: 5
-            topPadding: 5
         }
     }
 }
