@@ -24,6 +24,7 @@ Rectangle {
     Loader {
         id: messageLoader
 
+        height: childrenRect.height
         sourceComponent: type === "message" ? chatComponent : infoComponent
     }
 
@@ -32,6 +33,7 @@ Rectangle {
 
         ColumnLayout {
             id: chatColumn
+
             Label {
                 id: headerLabel
                 Layout.leftMargin: 10
@@ -50,7 +52,6 @@ Rectangle {
                 Layout.bottomMargin: 10
                 Layout.leftMargin: 10
                 Layout.rightMargin: 10
-
                 Layout.maximumWidth: maximumWidth
                 font.pointSize: {
                     if (message.length > 5)
@@ -90,3 +91,10 @@ Rectangle {
         }
     }
 }
+
+/*##^##
+Designer {
+    D{i:0;autoSize:true;height:480;width:640}
+}
+##^##*/
+

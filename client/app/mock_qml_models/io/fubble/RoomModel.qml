@@ -4,9 +4,9 @@ import QtMultimedia 5.14
 QtObject {
     property string name: "room name not set"
     property var chat: ChatModel {}
-    property bool videosAvailable: true
+    property bool videosAvailable: false
 
-    property int newParticipants
+    property int newParticipants: 3
 
     function resetNewParticipants() {
         console.log("resetNewParticipants")
@@ -56,7 +56,10 @@ QtObject {
         }
     ]
 
-    property list<QtObject> participantsWithVideo: [
+    property list<QtObject> participantsWithVideo
+
+
+    /*: [
         QtObject {
             property var participant: ParticipantModel {
                 name: qsTr("Sarah")
@@ -66,5 +69,5 @@ QtObject {
                 }
             }
         }
-    ]
+    ]*/
 }

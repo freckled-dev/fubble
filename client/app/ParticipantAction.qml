@@ -6,12 +6,19 @@ import io.fubble 1.0
 import QtQuick.Controls.Material 2.14
 import "."
 
-RowLayout {
+GridLayout {
     id: actionOverlay
 
-    spacing: 10
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.bottom: parent.bottom
+    rowSpacing: 0
+    columns: {
+        var numItems = actionOverlay.children.length
+        if (parent.width < 210 && numItems === 5)
+            return 3
+
+        return 5
+    }
 
     FubbleActionButton {
         icon.source: Style.current.overlayShareDesktopImage

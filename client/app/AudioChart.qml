@@ -1,6 +1,6 @@
 import QtQuick 2.14
 import QtCharts 2.3
-import QtQuick.Layouts 1.12
+import QtQuick.Layouts 1.14
 import QtQuick.Controls 2.14
 import "."
 import io.fubble 1.0

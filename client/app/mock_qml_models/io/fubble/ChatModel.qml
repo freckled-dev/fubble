@@ -3,7 +3,7 @@ import QtQuick 2.14
 QtObject {
     id: chatContainer
 
-    property int newMessages
+    property int newMessages: 5
 
     function resetNewMessages() {
         console.log("resetNewMessages")

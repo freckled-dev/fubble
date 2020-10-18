@@ -46,6 +46,9 @@ Theme {
     property var settingsImage: "images/overlay_settings.svg"
     property var feedbackImage: "images/feedback_dark.svg"
 
+    property var collapseImageLeft: "images/left_arrow.svg"
+    property var collapseImageRight: "images/right_arrow.svg"
+
     // Chat Images
     property var chatImage: "images/chat_dark.svg"
     property var chatNewMessageImage: "images/chat_new_dark.svg"

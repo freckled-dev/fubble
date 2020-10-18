@@ -1,6 +1,6 @@
 import QtQuick 2.14
 import QtQuick.Controls 2.14
-import QtQuick.Layouts 1.12
+import QtQuick.Layouts 1.14
 import QtQuick.Controls.Material 2.14
 import io.fubble 1.0
 import "scripts/utils.js" as Utils
@@ -12,8 +12,6 @@ ToolBar {
     property ProgressPopup leave
     property FubbleSettings settingsDialog
     property About aboutDialog
-    signal toggleChat
-    signal toggleOverview
 
     property alias timer: roomTimer
 
@@ -53,7 +51,7 @@ ToolBar {
     MouseArea {
         id: maHeader
         anchors.left: backButton.right
-        anchors.right: overviewIconLoader.left
+        anchors.right: chatIconLoader.left
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         hoverEnabled: true
@@ -124,7 +122,7 @@ ToolBar {
         property int timePassed: 0
         text: Utils.toHHMMSS(timePassed)
         anchors.verticalCenter: parent.verticalCenter
-        anchors.right: overviewIconLoader.left
+        anchors.right: chatIconLoader.left
         anchors.rightMargin: 40
         font.pointSize: Style.current.textPointSize
         elide: Label.ElideRight
@@ -139,47 +137,28 @@ ToolBar {
         }
     }
 
-    Loader {
-        id: overviewIconLoader
-        sourceComponent: header.isRoomView() ? overviewIconComponent : undefined
+    //    Loader {
+    //        id: overviewIconLoader
+    //        sourceComponent: header.isRoomView() ? overviewIconComponent : undefined
 
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.right: chatIconLoader.visible ? chatIconLoader.left : moreButton.left
-        anchors.rightMargin: 10
-    }
+    //        anchors.verticalCenter: parent.verticalCenter
+    //        anchors.right: chatIconLoader.visible ? chatIconLoader.left : moreButton.left
+    //        anchors.rightMargin: 10
 
-    Component {
-        id: overviewIconComponent
+    //        visible: header.isRoomView() && room.newParticipants
+    //    }
 
-        Image {
-            id: overviewIcon
-            sourceSize.width: 30
-            sourceSize.height: 30
+    //    Component {
+    //        id: overviewIconComponent
 
-            source: room.newParticipants ? Style.current.overviewNewImage : Style.current.overviewImage
+    //        Image {
+    //            id: overviewIcon
+    //            sourceSize.width: 30
+    //            sourceSize.height: 30
 
-            MouseArea {
-                id: maOverview
-                anchors.fill: parent
-                hoverEnabled: true
-
-                onPressedChanged: {
-                    maOverview.pressed ? overviewIcon.source = Qt.binding(
-                                             function () {
-                                                 return room.newParticipants ? Style.current.overviewNewPressedImage : Style.current.overviewPressedImage
-                                             }) : overviewIcon.source = Qt.binding(
-                                             function () {
-                                                 return room.newParticipants ? Style.current.overviewNewImage : Style.current.overviewImage
-                                             })
-                }
-
-                onClicked: {
-                    toggleOverview()
-                }
-            }
-        }
-    }
-
+    //            source: Style.current.overviewNewImage
+    //        }
+    //    }
     Loader {
         id: chatIconLoader
         sourceComponent: header.isRoomView() ? chatIconComponent : undefined
@@ -188,7 +167,7 @@ ToolBar {
         anchors.right: moreButton.left
         anchors.rightMargin: 10
 
-        visible: header.isRoomView() && header.roomHasVideos()
+        visible: header.isRoomView() && chat.newMessages > 0
     }
 
     Component {
@@ -205,33 +184,11 @@ ToolBar {
                 anchors.fill: parent
                 sourceSize.width: 30
                 sourceSize.height: 30
-                source: chat.newMessages
-                        > 0 ? Style.current.chatNewMessageImage : Style.current.chatImage
-
-                MouseArea {
-                    id: maChat
-                    anchors.fill: parent
-                    hoverEnabled: true
-
-                    onPressedChanged: {
-                        maChat.pressed ? chatIcon.source = Qt.binding(
-                                             function () {
-                                                 return chat.newMessages > 0 ? Style.current.chatNewMessageImage : Style.current.chatPressedImage
-                                             }) : chatIcon.source = Qt.binding(
-                                             function () {
-                                                 return chat.newMessages > 0 ? Style.current.chatNewMessageImage : Style.current.chatImage
-                                             })
-                    }
-
-                    onClicked: {
-                        toggleChat()
-                    }
-                }
+                source: Style.current.chatNewMessageImage
             }
 
             Label {
                 id: chatNumber
-                visible: chat.newMessages > 0
                 Material.foreground: Style.current.accentLight
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter

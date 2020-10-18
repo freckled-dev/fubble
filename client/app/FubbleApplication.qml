@@ -195,17 +195,7 @@ ApplicationWindow {
 
     Component {
         id: roomComponent
-        Room {
-            //            Connections {
-            //                target: header
-            //                onToggleChat: {
-            //                    chat.chatVisible = !chat.chatVisible
-            //                }
-            //                onToggleOverview: {
-            //                    overview.overviewVisible = !overview.overviewVisible
-            //                }
-            //            }
-        }
+        Room {}
     }
 
     // audio effects
