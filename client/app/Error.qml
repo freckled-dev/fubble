@@ -29,7 +29,7 @@ Popup {
         }
     }
 
-    Label {
+    LabelWithLink {
         id: label
         text: errorModel.text
         textFormat: Text.RichText
