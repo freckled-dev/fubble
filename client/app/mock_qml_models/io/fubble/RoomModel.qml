@@ -1,4 +1,5 @@
 import QtQml 2.0
+import QtMultimedia 5.14
 
 QtObject {
     property string name: "room name not set"
@@ -59,21 +60,10 @@ QtObject {
         QtObject {
             property var participant: ParticipantModel {
                 name: qsTr("Sarah")
-            }
-        },
-        QtObject {
-            property var participant: ParticipantModel {
-                name: qsTr("Konrad")
-            }
-        },
-        QtObject {
-            property var participant: ParticipantModel {
-                name: qsTr("Toni")
-            }
-        },
-        QtObject {
-            property var participant: ParticipantModel {
-                name: qsTr("Christine")
+                video: MediaPlayer {
+                    source: "/home/tamrielle/Downloads/Sintel_webm_extract.webm"
+                    autoPlay: true
+                }
             }
         }
     ]

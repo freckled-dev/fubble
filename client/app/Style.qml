@@ -1,6 +1,6 @@
 pragma Singleton
 
-import QtQuick 2.12
+import QtQuick 2.14
 
 QtObject {
     property Theme current: themeLight

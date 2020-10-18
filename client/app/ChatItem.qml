@@ -1,23 +1,25 @@
-import QtQuick 2.12
+import QtQuick 2.14
 import io.fubble 1.0
-import QtQuick.Controls.Material 2.12
-import QtQuick.Controls 2.12
-import QtMultimedia 5.12
-import QtQuick.Layouts 1.12
+import QtQuick.Controls.Material 2.14
+import QtQuick.Controls 2.14
+import QtMultimedia 5.14
+import QtQuick.Layouts 1.14
 import "."
 
 Rectangle {
     id: rectangle
+    property string participantColor
+    property int maximumWidth
     property alias rectangleBorder: rectangle.border
+
     radius: 5
     border.color: Style.current.foreground
     border.width: 1
+
     implicitWidth: messageLoader.implicitWidth
     implicitHeight: messageLoader.implicitHeight
     Material.foreground: Style.current.foreground
     color: Style.current.background
-
-    property string participantColor
 
     Loader {
         id: messageLoader
@@ -30,24 +32,26 @@ Rectangle {
 
         ColumnLayout {
             id: chatColumn
-
             Label {
                 id: headerLabel
                 Layout.leftMargin: 10
                 Layout.rightMargin: 10
                 Layout.topMargin: 10
                 Layout.alignment: own ? Qt.AlignRight : Qt.AlignLeft
+
+                Layout.maximumWidth: maximumWidth
+                wrapMode: Text.WrapAtWordBoundaryOrAnywhere
                 color: own ? Style.current.accent : participantColor
                 text: name + " - " + new Date(timestamp).toTimeString()
             }
 
             SelectableLabel {
                 id: chatMessage
-                width: headerLabel.width
                 Layout.bottomMargin: 10
                 Layout.leftMargin: 10
-                Layout.maximumWidth: chatContainer.width - 40
                 Layout.rightMargin: 10
+
+                Layout.maximumWidth: maximumWidth
                 font.pointSize: {
                     if (message.length > 5)
                         return 10
@@ -67,24 +71,22 @@ Rectangle {
     Component {
         id: infoComponent
 
-        ColumnLayout {
-            id: infoColumn
+        Label {
+            color: Style.current.foreground
+            font.pointSize: Style.current.textPointSize
 
-            Label {
-                Layout.margins: 10
-                color: Style.current.foreground
-                font.pointSize: Style.current.textPointSize
-                text: {
-                    switch (type) {
-                    case "leave":
-                        return qsTr(name + " has left the room...")
-                    case "join":
-                        return qsTr(name + " has joined the room...")
-                    default:
-                        return qsTr("")
-                    }
+            text: {
+                switch (type) {
+                case "leave":
+                    return qsTr(name + " has left the room...")
+                case "join":
+                    return qsTr(name + " has joined the room...")
+                default:
+                    return qsTr("")
                 }
             }
+            bottomPadding: 5
+            topPadding: 5
         }
     }
 }

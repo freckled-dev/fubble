@@ -1,6 +1,6 @@
-import QtQuick 2.12
-import QtQuick.Controls.Material 2.12
-import QtQuick.Controls 2.12
+import QtQuick 2.14
+import QtQuick.Controls.Material 2.14
+import QtQuick.Controls 2.14
 import QtQuick.Layouts 1.12
 import "scripts/emoji.js" as EmojiJSON
 import "."
@@ -44,7 +44,7 @@ Popup {
         }
     }
 
-    function initFavourites() {
+    function initFavorites() {
         var emojiArray = favouriteEmojis.split(",")
         var noFavorites = emojiArray.length === 0 || emojiArray[0] === ""
         if (noFavorites) {

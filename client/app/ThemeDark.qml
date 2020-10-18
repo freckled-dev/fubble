@@ -1,4 +1,4 @@
-import QtQuick 2.12
+import QtQuick 2.14
 
 Theme {
     property color primary: '#82d5fa'

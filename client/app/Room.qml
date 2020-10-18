@@ -1,40 +1,25 @@
-import QtMultimedia 5.12
-import QtQuick 2.12
-import QtQuick.Controls 2.12
+import QtMultimedia 5.14
+import QtQuick 2.14
+import QtQuick.Controls 2.14
 import QtQuick.Layouts 1.12
-import QtQuick.Controls.Material 2.12
+import QtQuick.Controls.Material 2.14
 import io.fubble 1.0
 
-Item {
+SplitView {
 
     id: roomContainer
     property RoomModel room
     property var title: roomContainer.room.name
-    property alias chat: chat
-    property alias overview: overview
+    property alias chat: chatContainer
+    property alias overview: overviewContainer
     property bool videosAvailable: room.videosAvailable
 
-    CustomRectangle {
+    orientation: Qt.Horizontal
+
+    Overview {
         id: overviewContainer
-        rBorderwidth: 1
-        anchors.top: parent.top
-        anchors.bottom: parent.bottom
-        color: Style.current.background
-        anchors.left: parent.left
-        borderColor: Style.current.foreground
-        width: overview.overviewVisible ? overview.overviewWidth : 0
-
-        Behavior on width {
-            PropertyAnimation {
-                id: overviewAnimation
-            }
-        }
-
-        Overview {
-            id: overview
-            anchors.fill: parent
-            roomModel: roomContainer.room
-        }
+        roomModel: roomContainer.room
+        SplitView.preferredWidth: 300
     }
 
     Connections {
@@ -50,38 +35,17 @@ Item {
     VideoWall {
         id: videoWall
         roomModel: roomContainer.room
+        anchors.margins: 10
+        SplitView.fillWidth: true
         anchors.top: parent.top
         anchors.bottom: parent.bottom
-        anchors.left: videosAvailable ? overviewContainer.right : undefined
-        anchors.margins: 10
-        anchors.right: videosAvailable ? chatContainer.left : undefined
-        width: !videosAvailable ? 0 : undefined
     }
 
-    CustomRectangle {
+    Chat {
         id: chatContainer
-        lBorderwidth: videosAvailable ? 1 : 0
-        anchors.top: parent.top
-        anchors.bottom: parent.bottom
-        anchors.right: parent.right
-        color: Style.current.background
-        anchors.left: !videosAvailable ? overviewContainer.right : undefined
-
-        borderColor: Style.current.foreground
-        width: chat.chatVisible && videosAvailable ? chat.chatWidth : 0
-
-        Behavior on width {
-            PropertyAnimation {
-                id: chatAnimation
-            }
-        }
-
-        Chat {
-            id: chat
-            anchors.fill: parent
-            chatModel: room.chat
-            chatParticipants: room.participants
-        }
+        chatModel: room.chat
+        chatParticipants: room.participants
+        SplitView.preferredWidth: 500
     }
 }
 /*##^##

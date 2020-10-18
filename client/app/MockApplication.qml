@@ -1,4 +1,4 @@
-import QtQuick 2.12
+import QtQuick 2.14
 import io.fubble 1.0
 
 FubbleApplication {

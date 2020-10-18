@@ -1,4 +1,4 @@
-import QtQuick 2.12
+import QtQuick 2.14
 
 QtObject {
     id: chatContainer
@@ -47,7 +47,7 @@ QtObject {
         }
         ListElement {
             participantId: "2"
-            name: "Toni"
+            name: "Toni asdfadsf asdf asdf asdf sadf asdf sdaf adsfa"
             timestamp: 1592568005000
             message: "Oh wow, that sounds delicious! https://www.google.com/"
             type: "message"

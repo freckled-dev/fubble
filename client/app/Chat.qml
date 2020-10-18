@@ -1,7 +1,7 @@
 import "."
-import QtQuick 2.12
-import QtQuick.Controls 2.12
-import QtQuick.Controls.Material 2.12
+import QtQuick 2.14
+import QtQuick.Controls 2.14
+import QtQuick.Controls.Material 2.14
 import Qt.labs.settings 1.0
 import QtQuick.Layouts 1.12
 import QtQml.Models 2.12
@@ -13,7 +13,6 @@ Item {
     id: chatContainer
     property ChatModel chatModel
     property bool chatVisible: true
-    property int chatWidth: 400
     property var chatParticipants
 
     property string recentlyUsedEmojis
@@ -36,7 +35,15 @@ Item {
         id: chatHolder
         anchors.fill: parent
         anchors.margins: 10
-        visible: chatVisible || chatAnimation.running
+        visible: chatVisible
+
+        Label {
+            id: chatLabel
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: parent.top
+            text: qsTr("Chat")
+            font.pointSize: Style.current.subHeaderPointSize
+        }
 
         ListView {
             id: chatList
@@ -49,9 +56,10 @@ Item {
 
             anchors.bottom: chatInput.top
             anchors.bottomMargin: 10
+            anchors.topMargin: 30
             anchors.left: parent.left
             anchors.right: parent.right
-            anchors.top: parent.top
+            anchors.top: chatLabel.bottom
             cacheBuffer: 10000 // pixels to fit the delegates
 
             model: delegateModel
@@ -121,6 +129,7 @@ Item {
                 rectangleBorder.width: type === "message" ? 1 : 0
                 participantColor: own ? Style.current.accent : chatContainer.getColorForParticipant(
                                             participantId)
+                maximumWidth: chatContainer.width - 80
             }
         }
 
@@ -141,7 +150,7 @@ Item {
             favouriteEmojis: settings.recentlyUsedEmojis
 
             onOpened: {
-                emojiPopup.initFavourites()
+                emojiPopup.initFavorites()
             }
             onClosed: {
                 chatInput.textArea.forceActiveFocus()
