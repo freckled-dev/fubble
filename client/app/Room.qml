@@ -41,6 +41,9 @@ Item {
         target: room
         onVideosAvailableChanged: {
             videosAvailable = room.videosAvailable
+            if (!videosAvailable) {
+                chat.chatVisible = true
+            }
         }
     }
 
