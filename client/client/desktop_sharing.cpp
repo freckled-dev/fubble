@@ -3,6 +3,7 @@
 #include "client/logger.hpp"
 #include "client/tracks_adder.hpp"
 #include "rtc/google/capture/desktop/enumerator.hpp"
+#include "rtc/google/video_track_source.hpp"
 #include "utils/timer.hpp"
 #include <boost/thread/executors/inline_executor.hpp>
 #include <chrono>
@@ -232,7 +233,7 @@ public:
     BOOST_ASSERT(!set_capturer);
     auto capturer = rtc::google::capture::desktop::capturer::create(id);
     static const std::chrono::steady_clock::duration interval =
-        std::chrono::milliseconds(1000 / 40);
+        std::chrono::milliseconds(1000 / 10); // 10 frames per second
     auto timer = timer_factory->create_interval_timer(interval);
     set_capturer = rtc::google::capture::desktop::interval_capturer::create(
         std::move(timer), std::move(capturer));
@@ -240,6 +241,10 @@ public:
     pause_video();
     BOOST_ASSERT(video_source);
     video_adder = add_video_to_connection_factory_->create(video_source);
+    std::dynamic_pointer_cast<rtc::google::video_track_source>(
+        video_adder->get_video_track())
+        ->set_content_hint(
+            rtc::google::video_track_source::content_hint::detailed);
     set_capturer->start().then(executor,
                                [this](auto result) { on_stopped(result); });
     tracks_adder_->add(video_adder);
