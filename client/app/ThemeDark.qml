@@ -10,7 +10,6 @@ Theme {
     property color buttonTextColor: '#000000'
     property color backgroundTextInput: '#757575'
     property color placeholderTextColor: '#E0E0E0'
-    property color linkColor: '#6290f9'
 
     property color gray100: '#212121'
     property color gray200: '#424242'
