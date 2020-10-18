@@ -25,7 +25,7 @@ QString error_model::type_to_string(const type type_) const {
   switch (type_) {
   case type::could_not_connect_to_backend:
     return tr("Could not connect to backend services. Please verify that you "
-              "can access https://fubble.io");
+              "can access <a href='https://fubble.io'>https://fubble.io</a>");
   case type::failed_to_start_camera:
     return tr("Could not initialize camera.");
   default:
