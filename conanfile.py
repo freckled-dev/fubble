@@ -16,6 +16,11 @@ class FubbleConan(ConanFile):
     # https://docs.conan.io/en/latest/reference/conanfile/attributes.html#default-options
     default_options = {"shared": False, "nlohmann_json:multiple_headers": True,
             "restinio:asio": "boost",
+            # qt options
+            # "qt:openssl": False, "qt:with_mysql": False, "qt:with_pq": False, "qt:with_odbc": False, "qt:widgets": False,
+            # "qt:with_libalsa": False,
+            # qt submodules https://github.com/bincrafters/conan-qt/blob/testing/5.15.1/qtmodules.conf
+            # "qt:qtsvg": True, "qt:qtmultimedia": True, "qt:qtquickcontrols2": True, "qt:qtcharts": True,
             "treat_warnings_as_errors": False, "sanatize": False}
     generators = "pkg_config"
     exports_sources = "*"
@@ -59,6 +64,7 @@ class FubbleConan(ConanFile):
         self.requires("fruit/3.6.0")
         if self.settings.os == "Linux":
             self.requires("restinio/0.6.10")
+            # self.requires("qt/5.15.1@bincrafters/stable")
 
     def build(self):
         # https://docs.conan.io/en/latest/reference/build_helpers/meson.html
@@ -67,6 +73,8 @@ class FubbleConan(ConanFile):
             qt_path_bin = self._get_qt_bin_paths()
             self.output.info("qt_path_bin:%s" % (qt_path_bin))
             addtional_paths += qt_path_bin
+        else:
+            addtional_paths += ["/qt/5.15.1/gcc_64/bin/"]
 
         boost_path = self.deps_cpp_info["boost"].rootpath
         self.output.info("boost_path:%s" % (boost_path))
@@ -104,7 +112,10 @@ class FubbleConan(ConanFile):
                 "BOOST_ROOT": boost_path,
                 "BOOST_INCLUDEDIR": boost_include_path,
                 "BOOST_LIBRARYDIR": boost_library_path}):
-            meson.configure( build_folder="meson", defs=meson_options)
+            meson.configure( build_folder="meson", defs=meson_options,
+                    args=['--fatal-meson-warnings']
+                    , pkg_config_paths=['/qt/5.15.1/gcc_64/lib/pkgconfig/', self.install_folder]
+                    )
             build_args = []
             if ninja_jobs:
                 build_args += ['-j %s' % (ninja_jobs)]
