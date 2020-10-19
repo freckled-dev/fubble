@@ -1,4 +1,4 @@
-import QtQuick 2.12
+import QtQuick 2.14
 
 Theme {
     property color primary: '#0277BD'
@@ -45,6 +45,9 @@ Theme {
 
     property var settingsImage: "images/overlay_settings.svg"
     property var feedbackImage: "images/feedback.svg"
+
+    property var collapseImageLeft: "images/left_arrow.svg"
+    property var collapseImageRight: "images/right_arrow.svg"
 
     // Chat Images
     property var chatImage: "images/chat.svg"

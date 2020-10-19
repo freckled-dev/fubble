@@ -1,4 +1,4 @@
-import QtQuick 2.12
+import QtQuick 2.14
 import QtQml 2.0
 
 QtObject {
@@ -8,7 +8,7 @@ QtObject {
 
     property var timer: Timer {
         id: timer
-        interval: 1000
+        interval: 0
         running: false
         repeat: false
         onTriggered: left(0)

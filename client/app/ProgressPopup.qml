@@ -1,8 +1,8 @@
-import QtQuick 2.12
-import QtQuick.Controls 2.12
+import QtQuick 2.14
+import QtQuick.Controls 2.14
 import io.fubble 1.0
-import QtQuick.Controls.Material 2.12
-import QtQuick.Layouts 1.12
+import QtQuick.Controls.Material 2.14
+import QtQuick.Layouts 1.14
 import "."
 
 Popup {
@@ -23,7 +23,6 @@ Popup {
     width: 300
     height: 300
     modal: true
-    topMargin: 1
     padding: 0
     closePolicy: Popup.NoAutoClose
 
@@ -43,7 +42,6 @@ Popup {
 
     Rectangle {
         id: rectangle
-        radius: 5
         border.width: 1
 
         color: Style.current.background

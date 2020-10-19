@@ -1,15 +1,14 @@
-import QtMultimedia 5.12
-import QtQuick 2.12
-import QtQuick.Controls 2.12
+import QtMultimedia 5.14
+import QtQuick 2.14
+import QtQuick.Controls 2.14
 import QtQuick.Layouts 1.12
 import io.fubble 1.0
-import QtQuick.Controls.Material 2.12
+import QtQuick.Controls.Material 2.14
 import "."
 
 RowLayout {
     id: actionOverlay
 
-    spacing: 10
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.bottom: parent.bottom
 
@@ -29,7 +28,6 @@ RowLayout {
         onActionClick: shareDesktopModel.stopShareDesktop()
         visible: shareDesktopModel.desktopSharingActive
     }
-
     FubbleActionButton {
         icon.source: ownMediaModel.videoDisabled ? Style.current.overlayVideoOffImage : Style.current.overlayVideoImage
         toolTipText: ownMediaModel.videoDisabled ? qsTr("Enable your video") : qsTr(

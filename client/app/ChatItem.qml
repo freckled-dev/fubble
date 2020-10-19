@@ -1,27 +1,29 @@
-import QtQuick 2.12
+import QtQuick 2.14
 import io.fubble 1.0
-import QtQuick.Controls.Material 2.12
-import QtQuick.Controls 2.12
-import QtMultimedia 5.12
-import QtQuick.Layouts 1.12
+import QtQuick.Controls.Material 2.14
+import QtQuick.Controls 2.14
+import QtMultimedia 5.14
+import QtQuick.Layouts 1.14
 import "."
 
 Rectangle {
     id: rectangle
+    property string participantColor
+    property int maximumWidth
     property alias rectangleBorder: rectangle.border
+
     radius: 5
     border.color: Style.current.foreground
     border.width: 1
+
     implicitWidth: messageLoader.implicitWidth
     implicitHeight: messageLoader.implicitHeight
     Material.foreground: Style.current.foreground
     color: Style.current.background
 
-    property string participantColor
-
     Loader {
         id: messageLoader
-
+        height: childrenRect.height
         sourceComponent: type === "message" ? chatComponent : infoComponent
     }
 
@@ -37,17 +39,18 @@ Rectangle {
                 Layout.rightMargin: 10
                 Layout.topMargin: 10
                 Layout.alignment: own ? Qt.AlignRight : Qt.AlignLeft
+                Layout.maximumWidth: maximumWidth
+                wrapMode: Text.WrapAtWordBoundaryOrAnywhere
                 color: own ? Style.current.accent : participantColor
                 text: name + " - " + new Date(timestamp).toTimeString()
             }
 
             SelectableLabel {
                 id: chatMessage
-                width: headerLabel.width
                 Layout.bottomMargin: 10
                 Layout.leftMargin: 10
-                Layout.maximumWidth: chatContainer.width - 40
                 Layout.rightMargin: 10
+                Layout.maximumWidth: maximumWidth
                 font.pointSize: {
                     if (message.length > 5)
                         return 10
@@ -68,12 +71,12 @@ Rectangle {
         id: infoComponent
 
         ColumnLayout {
-            id: infoColumn
-
             Label {
-                Layout.margins: 10
                 color: Style.current.foreground
                 font.pointSize: Style.current.textPointSize
+                wrapMode: Label.WrapAtWordBoundaryOrAnywhere
+                Layout.maximumWidth: maximumWidth
+
                 text: {
                     switch (type) {
                     case "leave":
@@ -84,7 +87,17 @@ Rectangle {
                         return qsTr("")
                     }
                 }
+                horizontalAlignment: Text.AlignHCenter
+                bottomPadding: 5
+                topPadding: 5
             }
         }
     }
 }
+
+/*##^##
+Designer {
+    D{i:0;autoSize:true;height:480;width:640}
+}
+##^##*/
+

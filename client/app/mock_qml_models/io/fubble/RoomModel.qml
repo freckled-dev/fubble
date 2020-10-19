@@ -1,11 +1,12 @@
 import QtQml 2.0
+import QtMultimedia 5.14
 
 QtObject {
     property string name: "room name not set"
     property var chat: ChatModel {}
     property bool videosAvailable: true
 
-    property int newParticipants
+    property int newParticipants: 3
 
     function resetNewParticipants() {
         console.log("resetNewParticipants")
@@ -55,26 +56,18 @@ QtObject {
         }
     ]
 
-    property list<QtObject> participantsWithVideo: [
+    property list<QtObject> participantsWithVideo
+
+
+    /*: [
         QtObject {
             property var participant: ParticipantModel {
                 name: qsTr("Sarah")
-            }
-        },
-        QtObject {
-            property var participant: ParticipantModel {
-                name: qsTr("Konrad")
-            }
-        },
-        QtObject {
-            property var participant: ParticipantModel {
-                name: qsTr("Toni")
-            }
-        },
-        QtObject {
-            property var participant: ParticipantModel {
-                name: qsTr("Christine")
+                video: MediaPlayer {
+                    source: "/home/tamrielle/Downloads/Sintel_webm_extract.webm"
+                    autoPlay: true
+                }
             }
         }
-    ]
+    ]*/
 }

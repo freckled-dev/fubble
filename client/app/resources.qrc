@@ -55,6 +55,8 @@
         <file>images/close_icon_dark.svg</file>
         <file>images/feedback.svg</file>
         <file>images/feedback_dark.svg</file>
+        <file>images/right_arrow.svg</file>
+        <file>images/left_arrow.svg</file>
         
     </qresource>
 </RCC>

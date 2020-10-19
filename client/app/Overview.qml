@@ -1,7 +1,7 @@
-import QtMultimedia 5.12
-import QtQuick 2.12
-import QtQuick.Controls 2.12
-import QtQuick.Layouts 1.12
+import QtMultimedia 5.14
+import QtQuick 2.14
+import QtQuick.Controls 2.14
+import QtQuick.Layouts 1.14
 import QtQml.Models 2.12
 import io.fubble 1.0
 import "."
@@ -9,11 +9,10 @@ import "."
 Item {
     id: overviewContainer
     property RoomModel roomModel
-    property int overviewWidth: 250
-    property bool overviewVisible: true
+    property FubbleActionButton overviewShowIcon
 
-    onOverviewVisibleChanged: {
-        if (overviewVisible) {
+    onVisibleChanged: {
+        if (visible) {
             roomModel.resetNewParticipants()
         }
     }
@@ -22,22 +21,45 @@ Item {
         anchors.fill: parent
         anchors.margins: 10
 
-        Label {
-            id: participantLabel
-            anchors.horizontalCenter: parent.horizontalCenter
+        Item {
+            id: participantHeader
             anchors.top: parent.top
-            text: qsTr("Participants")
-            visible: overviewVisible || overviewAnimation.running
-            font.pointSize: Style.current.subHeaderPointSize
+            anchors.right: parent.right
+            anchors.left: parent.left
+            implicitHeight: participantLabel.implicitHeight
+
+            Label {
+                id: participantLabel
+                text: qsTr("Participants")
+                anchors.verticalCenter: parent.verticalCenter
+                horizontalAlignment: Text.AlignHCenter
+                anchors.left: parent.left
+                anchors.right: collapseButton.left
+                font.pointSize: Style.current.subHeaderPointSize
+            }
+
+            FubbleActionButton {
+                id: collapseButton
+                anchors.verticalCenter: parent.verticalCenter
+                icon.source: Style.current.collapseImageLeft
+                toolTipText: qsTr("Hide participant view")
+                anchors.right: parent.right
+                buttonWidth: 25
+                buttonHeight: 35
+                onActionClick: {
+                    overviewContainer.visible = false
+                    overviewShowIcon.visible = true
+                }
+            }
         }
 
         ListView {
             model: participantColumns
-            anchors.top: participantLabel.bottom
+            anchors.top: participantHeader.bottom
             anchors.right: parent.right
             anchors.bottom: selfAction.top
             anchors.left: parent.left
-            anchors.topMargin: 30
+            anchors.topMargin: 15
             anchors.bottomMargin: 30
             clip: true
             spacing: 5
@@ -67,14 +89,14 @@ Item {
         Component {
             id: participantOverviewComponent
             ParticipantOverview {
-                width: overviewWidth - 20
+                anchors.left: parent.left
+                anchors.right: parent.right
             }
         }
 
         ParticipantAction {
             id: selfAction
             anchors.horizontalCenter: parent.horizontalCenter
-            visible: overviewVisible || overviewAnimation.running
             anchors.bottom: parent.bottom
         }
     }

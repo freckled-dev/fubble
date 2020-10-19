@@ -1,9 +1,9 @@
 import "."
-import QtQuick 2.12
-import QtQuick.Controls 2.12
-import QtQuick.Controls.Material 2.12
+import QtQuick 2.14
+import QtQuick.Controls 2.14
+import QtQuick.Controls.Material 2.14
 import Qt.labs.settings 1.0
-import QtQuick.Layouts 1.12
+import QtQuick.Layouts 1.14
 import QtQml.Models 2.12
 import QtQuick.Window 2.12
 import io.fubble 1.0
@@ -12,16 +12,16 @@ import "scripts/utils.js" as Utils
 Item {
     id: chatContainer
     property ChatModel chatModel
-    property bool chatVisible: true
-    property int chatWidth: 400
+    property RoomModel roomModel
     property var chatParticipants
 
     property string recentlyUsedEmojis
+    property FubbleActionButton chatShowIcon
 
     Connections {
         target: chatModel
         onNewMessagesChanged: {
-            if (chatVisible && chatModel.newMessages > 0) {
+            if (visible && chatModel.newMessages > 0) {
                 chatModel.resetNewMessages()
             }
         }
@@ -36,7 +36,41 @@ Item {
         id: chatHolder
         anchors.fill: parent
         anchors.margins: 10
-        visible: chatVisible || chatAnimation.running
+
+        Item {
+            id: chatHeader
+            anchors.top: parent.top
+            anchors.right: parent.right
+            anchors.left: parent.left
+            implicitHeight: chatLabel.implicitHeight
+
+            FubbleActionButton {
+                id: collapseButton
+                anchors.verticalCenter: parent.verticalCenter
+                icon.source: Style.current.collapseImageRight
+                toolTipText: qsTr("Hide chat view")
+                anchors.left: parent.left
+                buttonWidth: 25
+                buttonHeight: 35
+                onActionClick: {
+                    chatContainer.visible = false
+                    chatShowIcon.visible = true
+                }
+
+                visible: roomModel.videosAvailable
+            }
+
+            Label {
+                id: chatLabel
+                anchors.top: parent.top
+                anchors.left: collapseButton.right
+                anchors.right: parent.right
+                anchors.verticalCenter: parent.verticalCenter
+                horizontalAlignment: Text.AlignHCenter
+                text: qsTr("Chat")
+                font.pointSize: Style.current.subHeaderPointSize
+            }
+        }
 
         ListView {
             id: chatList
@@ -49,9 +83,10 @@ Item {
 
             anchors.bottom: chatInput.top
             anchors.bottomMargin: 10
+            anchors.topMargin: 10
             anchors.left: parent.left
             anchors.right: parent.right
-            anchors.top: parent.top
+            anchors.top: chatHeader.bottom
             cacheBuffer: 10000 // pixels to fit the delegates
 
             model: delegateModel
@@ -121,6 +156,7 @@ Item {
                 rectangleBorder.width: type === "message" ? 1 : 0
                 participantColor: own ? Style.current.accent : chatContainer.getColorForParticipant(
                                             participantId)
+                maximumWidth: chatContainer.width - 80
             }
         }
 
@@ -141,7 +177,7 @@ Item {
             favouriteEmojis: settings.recentlyUsedEmojis
 
             onOpened: {
-                emojiPopup.initFavourites()
+                emojiPopup.initFavorites()
             }
             onClosed: {
                 chatInput.textArea.forceActiveFocus()
@@ -200,9 +236,10 @@ Item {
         return newColor
     }
 
-    onChatVisibleChanged: {
-        if (chatVisible) {
+    onVisibleChanged: {
+        if (visible) {
             chatModel.resetNewMessages()
+            chatList.width = chatContainer.width
         }
         scrollToBottom()
     }
