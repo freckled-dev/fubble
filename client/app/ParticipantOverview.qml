@@ -1,6 +1,6 @@
-import QtQuick 2.14
-import QtQuick.Layouts 1.14
-import QtQuick.Controls 2.14
+import QtQuick 2.15
+import QtQuick.Layouts 1.15
+import QtQuick.Controls 2.15
 import io.fubble 1.0
 import "."
 
@@ -59,7 +59,8 @@ Item {
                 sourceSize.width: 20
                 anchors.rightMargin: 5
                 source: participant.silenced ? Style.current.silencedImage : Style.current.mutedImage
-                visible: participant.muted || participant.silenced || participant.deafed
+                visible: participant.muted || participant.silenced
+                         || participant.deafed
 
                 FubbleToolTip {
                     id: ttMuted
@@ -153,7 +154,7 @@ Item {
 
             Connections {
                 target: participant
-                onNewAudioLevel: {
+                function onNewAudioLevel(level) {
                     audioChart.addNewAudioLevel(level)
                 }
             }

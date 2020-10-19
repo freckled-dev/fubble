@@ -1,10 +1,10 @@
-import QtMultimedia 5.14
-import QtQuick 2.14
-import QtQuick.Controls 2.14
-import QtQuick.Layouts 1.14
+import QtMultimedia 5.15
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
 import io.fubble 1.0
-import QtQuick.Controls.Material 2.14
-import QtGraphicalEffects 1.12
+import QtQuick.Controls.Material 2.15
+import QtGraphicalEffects 1.15
 import "."
 import "scripts/utils.js" as Utils
 
@@ -17,8 +17,8 @@ Rectangle {
         var result = width / height
         return result
     }
-    signal enlarge()
-    signal shrink()
+    signal enlarge
+    signal shrink
 
     VideoOutput {
         id: video

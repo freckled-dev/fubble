@@ -1,11 +1,11 @@
 import "."
-import QtQuick 2.14
-import QtQuick.Controls 2.14
-import QtQuick.Controls.Material 2.14
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Controls.Material 2.15
 import Qt.labs.settings 1.0
-import QtQuick.Layouts 1.14
-import QtQml.Models 2.12
-import QtQuick.Window 2.12
+import QtQuick.Layouts 1.15
+import QtQml.Models 2.15
+import QtQuick.Window 2.15
 import io.fubble 1.0
 import "scripts/utils.js" as Utils
 
@@ -20,7 +20,7 @@ Item {
 
     Connections {
         target: chatModel
-        onNewMessagesChanged: {
+        function onNewMessagesChanged() {
             if (visible && chatModel.newMessages > 0) {
                 chatModel.resetNewMessages()
             }

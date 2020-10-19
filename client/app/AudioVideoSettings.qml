@@ -1,8 +1,8 @@
-import QtQuick 2.14
+import QtQuick 2.15
 import Qt.labs.settings 1.0
-import QtQuick.Controls 2.14
-import QtQuick.Layouts 1.14
-import QtMultimedia 5.14
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
+import QtMultimedia 5.15
 import "scripts/utils.js" as Utils
 
 Item {
@@ -68,7 +68,7 @@ Item {
 
         Connections {
             target: ownMediaModel
-            onNewAudioTestLevel: {
+            function onNewAudioTestLevel(level) {
                 if (ownMediaModel.loopbackOwnVoice) {
                     audioChart.addNewAudioLevel(level)
                 }
