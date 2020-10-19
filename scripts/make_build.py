@@ -44,7 +44,7 @@ qt_target = "gcc_64"
 # qt_system = "windows"
 # qt_target = "win64_msvc2019_64"
 qt_install = os.path.join(paths.qt_dir, qt_version, qt_target)
-if not args.skip_qt:
+if not args.skip_qt and platform.system() != "Windows":
     Path(paths.qt_dir).mkdir(parents=True, exist_ok=True)
     subprocess.run(['aqt', 'install',
         '--outputdir', paths.qt_dir,
@@ -54,7 +54,7 @@ if not args.skip_qt:
     qt_pkgconfig_dir = os.path.join(qt_install, 'lib', 'pkgconfig')
     subprocess.run("sed -i 's+/home/qt/work/install+{}+g' {}/*".format(qt_install, qt_pkgconfig_dir), shell=True, check=True)
 
-if not args.skip_install and os.name != 'nt':
+if not args.skip_install:
     conan_remotes = [
             ('bincrafters', 'https://api.bintray.com/conan/bincrafters/public-conan'),
             ('inexorgame', 'https://api.bintray.com/conan/inexorgame/inexor-conan'),
@@ -72,7 +72,7 @@ if not args.skip_install and os.name != 'nt':
         '--build', 'missing',
         '--install-folder', paths.dependencies_dir,
         '--profile', args.profile]
-    if os.name != 'nt':
+    if platform.system() != "Windows":
         install_args += ['-o', 'fubble:qt_install={}'.format(qt_install)]
     if not args.skip_install_update:
         install_args += ['--update'] # Check updates exist from upstream remotes
