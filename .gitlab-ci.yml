@@ -37,7 +37,10 @@ appimage:
   variables:
     FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install
   script:
-    ./scripts/ci/package_appimage
+    # extend ./scripts/install_qt.py to do this
+    - aqt install --outputdir /qt 5.15.1 linux desktop -m qtcharts
+    - export PATH="/qt/5.15.1/gcc_64/bin:${PATH}"
+    - ./scripts/ci/package_appimage
   artifacts:
     paths:
       - ./Fubble*.AppImage*
