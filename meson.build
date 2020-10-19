@@ -12,6 +12,9 @@ else
   enable_servers = disabled
 endif
 
+# debug PATH
+# error(run_command('sh', '-c', 'echo $PATH').stdout().strip())
+
 is_debug = get_option('debug')
 
 if host_machine.system() == 'windows'

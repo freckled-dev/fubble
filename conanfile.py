@@ -12,9 +12,10 @@ class FubbleConan(ConanFile):
     topics = ("conference", "fubble", "video", "audio", "webrtc")
     settings = "os", "compiler", "build_type", "arch"
     options = {"shared": [False, True], "treat_warnings_as_errors": [True, False],
-            "sanatize": [True, False]}
+            "sanatize": [True, False], "qt_install": "ANY"}
     # https://docs.conan.io/en/latest/reference/conanfile/attributes.html#default-options
-    default_options = {"shared": False, "nlohmann_json:multiple_headers": True,
+    default_options = {"shared": False, "qt_install": None,
+            "nlohmann_json:multiple_headers": True,
             "restinio:asio": "boost",
             # qt options
             # "qt:openssl": False, "qt:with_mysql": False, "qt:with_pq": False, "qt:with_odbc": False, "qt:widgets": False,
@@ -73,8 +74,10 @@ class FubbleConan(ConanFile):
             qt_path_bin = self._get_qt_bin_paths()
             self.output.info("qt_path_bin:%s" % (qt_path_bin))
             addtional_paths += qt_path_bin
-        else:
-            addtional_paths += ["/qt/5.15.1/gcc_64/bin/"]
+        elif self.options.qt_install:
+            qt_install = str(self.options.qt_install)
+            self.output.info("qt_install:%s" % (qt_install))
+            addtional_paths += [os.path.join(qt_install, 'bin')]
 
         boost_path = self.deps_cpp_info["boost"].rootpath
         self.output.info("boost_path:%s" % (boost_path))
@@ -112,9 +115,12 @@ class FubbleConan(ConanFile):
                 "BOOST_ROOT": boost_path,
                 "BOOST_INCLUDEDIR": boost_include_path,
                 "BOOST_LIBRARYDIR": boost_library_path}):
+            pkg_config_paths = [self.install_folder]
+            if self.options.qt_install:
+                pkg_config_paths += [os.path.join(str(self.options.qt_install), 'lib/pkgconfig')]
             meson.configure( build_folder="meson", defs=meson_options,
-                    args=['--fatal-meson-warnings']
-                    , pkg_config_paths=['/qt/5.15.1/gcc_64/lib/pkgconfig/', self.install_folder]
+                    args=['--fatal-meson-warnings'],
+                    pkg_config_paths=pkg_config_paths
                     )
             build_args = []
             if ninja_jobs:

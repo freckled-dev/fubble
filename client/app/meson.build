@@ -31,6 +31,7 @@ endif
 
 rcc = find_program('rcc-qt5', 'rcc')
 qt_dir = run_command('dirname', '--', rcc.full_path()).stdout().strip() / '..'
+# error(qt_dir)
 client_gui = executable('fubble', client_gui_sources,
   dependencies: [client_dep, ui_dep, temporary_room_dep, video_layout_dep],
   cpp_pch: '../../pch/precompiled.hpp',
