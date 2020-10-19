@@ -12,6 +12,9 @@ else
   enable_servers = disabled
 endif
 
+# debug PATH
+# error(run_command('sh', '-c', 'echo $PATH').stdout().strip())
+
 is_debug = get_option('debug')
 
 if host_machine.system() == 'windows'
@@ -99,7 +102,9 @@ gstreamer_sdp_dep = dependency('gstreamer-sdp-1.0',
 qt5 = import('qt5')
 qt5_clear_dep = dependency('qt5',
   modules: ['Core', 'Gui', 'Qml', 'Quick', 'Widgets', 'Network', 'Multimedia',
-    'Svg', 'QuickControls2', 'Charts'])
+    'Svg', 'QuickControls2', 'Charts'], method: 'qmake',
+  version: '>=5.15.0')
+
 qt5_dep_dependencies = [qt5_clear_dep]
 qt5_dep_link_with = []
 if host_machine.system() == 'windows' and false
