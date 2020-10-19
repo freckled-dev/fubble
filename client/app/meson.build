@@ -28,13 +28,21 @@ if host_machine.system() == 'windows'
   windows = import('windows')
   client_gui_sources += windows.compile_resources('fubble.rc')
 endif
-client_gui = executable('fubble', client_gui_sources,
-  dependencies: [client_dep, ui_dep, temporary_room_dep, video_layout_dep],
-  cpp_pch: '../../pch/precompiled.hpp',
-  gui_app: true, install: true)
+
+rcc = find_program('rcc-qt5', 'rcc')
+client_gui_dependencies = [client_dep, ui_dep, temporary_room_dep, video_layout_dep]
+if host_machine.system() != 'windows'
+  qt_dir = run_command('dirname', '--', rcc.full_path()).stdout().strip() / '..'
+  # error(qt_dir)
+  client_gui = executable('fubble', client_gui_sources,
+    dependencies: client_gui_dependencies, gui_app: true, install: true,
+    build_rpath: qt_dir / 'lib')
+else
+  client_gui = executable('fubble', client_gui_sources,
+    dependencies: client_gui_dependencies, gui_app: true, install: true)
+endif
 
 # https://mesonbuild.com/Generating-sources.html
-rcc = find_program('rcc-qt5', 'rcc')
 resources_rcc = custom_target('generating resources.rcc',
   input: ['resources.qrc'],
   output: ['resources.rcc'],

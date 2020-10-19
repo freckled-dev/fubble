@@ -28,4 +28,5 @@ class Paths:
         self.prefix_dir = os.path.join(self.build_dir, 'install')
         self.prefix_dir = get_environment_variable_or('FUBBLE_PREFIX_DIR', self.prefix_dir)
         self.landing_dist_dir = os.path.join(self.source_dir, 'web', 'landing', 'dist');
+        self.qt_dir = os.path.join(self.build_dir, 'qt')
 
