@@ -1,7 +1,7 @@
-import QtQuick 2.14
-import QtQuick.Controls 2.14
-import QtMultimedia 5.14
-import QtQuick.Controls.Material 2.14
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtMultimedia 5.15
+import QtQuick.Controls.Material 2.15
 import io.fubble 1.0
 import "."
 
@@ -23,7 +23,7 @@ Popup {
 
     Connections {
         target: errorModel
-        onError: {
+        function onError() {
             playErrorSound()
             open()
         }

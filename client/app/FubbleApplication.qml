@@ -1,10 +1,10 @@
-import QtMultimedia 5.14
-import QtQuick 2.14
-import QtQuick.Controls 2.14
-import QtQuick.Window 2.12
+import QtMultimedia 5.15
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Window 2.15
 import Qt.labs.platform 1.1
 import io.fubble 1.0
-import QtQuick.Controls.Material 2.14
+import QtQuick.Controls.Material 2.15
 import Qt.labs.settings 1.0
 
 ApplicationWindow {
