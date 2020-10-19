@@ -35,9 +35,12 @@ Popup {
         textFormat: Text.RichText
         padding: 20
         onLinkActivated: Qt.openUrlExternally(link)
+        anchors.right: closeButton.left
+        anchors.left: parent.left
     }
 
     Image {
+        id: closeButton
         anchors.top: parent.top
         anchors.topMargin: 8
         source: Style.current.closeImage

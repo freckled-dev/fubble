@@ -154,7 +154,7 @@ Item {
 
             Connections {
                 target: participant
-                function onNewAudioLevel() {
+                function onNewAudioLevel(level) {
                     audioChart.addNewAudioLevel(level)
                 }
             }
