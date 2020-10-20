@@ -116,10 +116,18 @@ void logging::add_file_log(logging::severity severity_) {
   BOOST_ASSERT(!error);
   if (error)
     return;
-  auto log_file = temporary_dir / "fubble.log";
-  boost::log::add_file_log(log_file, boost::log::keywords::auto_flush = true,
-                           boost::log::keywords::filter =
-                               boost::log::trivial::severity >= severity_,
-                           boost::log::keywords::open_mode = std::ios_base::app)
-      ->set_formatter(&file_formatter);
+  // https://www.boost.org/doc/libs/1_74_0/libs/log/doc/html/log/detailed/sink_backends.html
+  auto logs_path = temporary_dir / "fubble_logs";
+  auto log_file = logs_path / "fubble_%Y-%m-%d_%H-%M-%S.log";
+  auto twenty_mega_bytes = 20 * 1024 * 1024;
+  auto sink = boost::log::add_file_log(
+      log_file, boost::log::keywords::auto_flush = true,
+      boost::log::keywords::filter = boost::log::trivial::severity >= severity_,
+      boost::log::keywords::open_mode = std::ios_base::app);
+  sink->locked_backend()->set_file_collector(
+      boost::log::sinks::file::make_collector(
+          boost::log::keywords::target = logs_path,
+          boost::log::keywords::max_size = twenty_mega_bytes));
+  sink->locked_backend()->scan_for_files();
+  sink->set_formatter(&file_formatter);
 }
