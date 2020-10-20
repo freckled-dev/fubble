@@ -8,3 +8,4 @@ obj
 *.exe
 *.AppImage
 __pycache__/
+aqtinstall.log
