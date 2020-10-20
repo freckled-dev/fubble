@@ -88,6 +88,7 @@ build windows updater release and innosetup:
     - $env:Path += ";C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/MSBuild/Current/Bin/"
   script:
     - 'msbuild /p:Configuration=Release Updater.sln'
+    - cd ..
     - choco install -y --no-progress python innosetup
     - $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
     - python scripts/make_innosetup.py
