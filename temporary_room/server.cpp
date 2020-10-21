@@ -18,7 +18,7 @@ struct options {
   boost::optional<std::string> matrix_device_id;
 }; // namespace
 
-std::optional<options> parse_options(int argc, char *argv[]) {
+boost::optional<options> parse_options(int argc, char *argv[]) {
   namespace bpo = boost::program_options;
   options result;
   bpo::options_description general("Allowed options");

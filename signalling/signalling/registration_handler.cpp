@@ -42,7 +42,7 @@ void registration_handler::register_(const connection_ptr &connection_,
   registered_connection &change = find_or_create(registration_.key);
   auto first_device = change.devices[0];
   auto second_device = change.devices[1];
-  std::optional<std::size_t> my_device_index;
+  boost::optional<std::size_t> my_device_index;
   if (first_device)
     if (first_device->get_token() == registration_.reconnect_token)
       my_device_index = 0;

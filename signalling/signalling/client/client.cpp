@@ -304,8 +304,8 @@ protected:
   bool shall_reconnect{true};
 
   bool wants_to_negotiate_cache{};
-  std::optional<signalling::answer> answer_cache;
-  std::optional<signalling::offer> offer_cache;
+  boost::optional<signalling::answer> answer_cache;
+  boost::optional<signalling::offer> offer_cache;
   std::vector<signalling::ice_candidate> candidates_cache;
 };
 

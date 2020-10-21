@@ -1,7 +1,7 @@
 #ifndef CLIENT_OPTIONS_HPP
 #define CLIENT_OPTIONS_HPP
 
-#include <optional>
+#include <boost/optional.hpp>
 #include <string>
 
 struct config {
@@ -31,7 +31,7 @@ struct config {
 
 class options {
 public:
-  std::optional<config> operator()(int argc, char *argv[]);
+  boost::optional<config> operator()(int argc, char *argv[]);
 };
 
 #endif

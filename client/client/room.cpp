@@ -29,7 +29,7 @@ room::~room() {
   BOOST_LOG_SEV(logger, logging::severity::debug) << "destructor";
 }
 
-std::optional<std::string> room::get_name() const { return room_.get_name(); }
+boost::optional<std::string> room::get_name() const { return room_.get_name(); }
 
 std::string room::get_own_id() const { return client_->get_user_id(); }
 

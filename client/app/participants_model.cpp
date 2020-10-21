@@ -19,13 +19,13 @@ participants_model::participants_model(model_creator &model_creator_,
       [this](auto leaves) { on_leaves(leaves); }));
 }
 
-std::optional<participant_model *> participants_model::get_own() const {
+boost::optional<participant_model *> participants_model::get_own() const {
   for (auto participant_ : participants) {
     if (participant_->get_id() != room_.get_own_id())
       continue;
     return participant_;
   }
-  return std::nullopt;
+  return {};
 }
 
 int participants_model::rowCount([

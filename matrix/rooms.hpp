@@ -15,7 +15,7 @@ public:
   rooms(factory &factory_, client &client_);
 
   struct create_room_fields {
-    std::optional<std::string> name;
+    boost::optional<std::string> name;
   };
   boost::future<room *> create_room(const create_room_fields &fields);
   // TODO refactor to `leave`
@@ -27,7 +27,7 @@ public:
   using room_list = std::deque<std::unique_ptr<room>>;
   // TODO refactor to `get_all`
   inline const room_list &get_rooms() const { return rooms_; }
-  std::optional<room *> get_room_by_id(const std::string &id) const;
+  boost::optional<room *> get_room_by_id(const std::string &id) const;
 
   boost::signals2::signal<void(room &)> on_joined;
   boost::signals2::signal<void(const std::string &)> on_leave;

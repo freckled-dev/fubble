@@ -1,7 +1,7 @@
 #ifndef SIGNALLING_REGISTRATION_HPP
 #define SIGNALLING_REGISTRATION_HPP
 
-#include <optional>
+#include <boost/optional.hpp>
 #include <string>
 
 namespace signalling {

@@ -18,7 +18,7 @@ public:
 
   enum participant_roles { participant_role = Qt::UserRole + 1 };
 
-  std::optional<participant_model *> get_own() const;
+  boost::optional<participant_model *> get_own() const;
   boost::signals2::signal<void()> on_own_changed;
 
   int rowCount(const QModelIndex &parent = QModelIndex()) const override;

@@ -49,7 +49,7 @@ std::vector<room_participant *> room::get_members() const {
   return result;
 }
 
-std::optional<room_participant *>
+boost::optional<room_participant *>
 room::get_member_by_id(const std::string &id) {
   auto found =
       std::find_if(members.begin(), members.end(),
@@ -59,7 +59,7 @@ room::get_member_by_id(const std::string &id) {
   return found->get();
 }
 
-std::optional<std::string> room::get_name() const { return name; }
+boost::optional<std::string> room::get_name() const { return name; }
 
 chat &room::get_chat() const { return *chat_; }
 
@@ -112,12 +112,12 @@ void room::on_event_m_room_member(const nlohmann::json &parse) {
   std::chrono::milliseconds origin_server_ts_casted{origin_server_ts};
   const auto content = parse["content"];
   const std::string membership = content["membership"];
-  const std::optional<std::string> display_name =
-      [&]() -> std::optional<std::string> {
+  const boost::optional<std::string> display_name =
+      [&]() -> boost::optional<std::string> {
     auto found = content.find("displayname");
     if (found != content.cend())
-      return *found;
-    return std::nullopt;
+      return std::string(*found);
+    return {};
   }();
   const join_state join_state_ = [&] {
     if (membership == "leave")

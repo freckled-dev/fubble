@@ -65,7 +65,7 @@ protected:
   std::chrono::milliseconds sync_till_stop_timeout;
   bool sync_till_stop_active{};
   const information information_;
-  std::optional<std::string> sync_next_batch;
+  boost::optional<std::string> sync_next_batch;
   std::unique_ptr<users> users_;
   std::unique_ptr<rooms> rooms_;
   int transaction_id_counter{};
