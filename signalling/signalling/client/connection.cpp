@@ -130,5 +130,5 @@ struct message_visitor {
 void connection::parse_message(const std::string &message) {
   auto parsed = message_parser.parse(message);
   message_visitor visitor{*this};
-  std::visit(visitor, parsed);
+  boost::apply_visitor(visitor, parsed);
 }
