@@ -32,7 +32,8 @@ action::action(connection_creator &creator, boost::beast::http::verb verb,
   promise = std::make_shared<async_result_promise>();
   std::string target_with_prefix = fields_.target_prefix + target;
   BOOST_LOG_SEV(logger, logging::severity::debug)
-      << "doing target_with_prefix:" << target_with_prefix;
+      << fmt::format("doing server:'{}', port:'{}', target_with_prefix:'{}'",
+                     server_.host, server_.port, target_with_prefix);
   auto &request = buffers_->request;
   request = request_type{verb, target_with_prefix, fields_.version};
   request.set(boost::beast::http::field::host, fields_.host);
@@ -64,7 +65,7 @@ action::async_result_future action::do_() {
   auto &request = buffers_->request;
   request.prepare_payload();
 #if 1
-  BOOST_LOG_SEV(logger, logging::severity::debug) << fmt::format(
+  BOOST_LOG_SEV(logger, logging::severity::trace) << fmt::format(
       "resolving, server:'{}', port:'{}'", server_.host, server_.port);
 #endif
   connection_ = connection_creator_.create(server_);
@@ -88,9 +89,8 @@ void action::cancel() {
 }
 
 void action::send_request() {
-  BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
   BOOST_LOG_SEV(logger, logging::severity::trace)
-      << "sending_request(), request:" << buffers_->request;
+      << __FUNCTION__ << ", request:" << buffers_->request;
   std::weak_ptr<int> alive = alive_check;
   auto callback = [buffers_ = buffers_, this,
                    alive = std::move(alive)](auto error, auto) {
@@ -108,14 +108,14 @@ void action::send_request() {
 }
 
 void action::on_request_send(const boost::system::error_code &error) {
-  BOOST_LOG_SEV(logger, logging::severity::debug) << "on_request_send";
+  BOOST_LOG_SEV(logger, logging::severity::trace) << __FUNCTION__;
   if (!check_and_handle_error(error))
     return;
   read_response();
 }
 
 void action::read_response() {
-  BOOST_LOG_SEV(logger, logging::severity::debug) << "read_response";
+  BOOST_LOG_SEV(logger, logging::severity::trace) << __FUNCTION__;
   std::weak_ptr<int> alive = alive_check;
   auto callback = [buffers_ = buffers_, this,
                    alive = std::move(alive)](auto error, auto) {
@@ -134,9 +134,8 @@ void action::read_response() {
 }
 
 void action::on_response_read(const boost::system::error_code &error) {
-  BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
   BOOST_LOG_SEV(logger, logging::severity::trace)
-      << "on_response_read, response:" << buffers_->response;
+      << __FUNCTION__ << ", response:" << buffers_->response;
   if (!check_and_handle_error(error))
     return;
   auto &response = buffers_->response;
