@@ -40,8 +40,14 @@ Path(paths.build_dir).mkdir(parents=True, exist_ok=True)
 # qt
 qt_version = "5.15.1"
 qt_platform = "desktop"
-qt_system = "linux"
-qt_target = "gcc_64"
+qt_system = ""
+qt_target = ""
+if platform.system() == "Darwin":
+    qt_system = "mac"
+    qt_target = "clang_64"
+if platform.system() == "Linux":
+    qt_system = "linux"
+    qt_target = "gcc_64"
 # qt_system = "windows"
 # qt_target = "win64_msvc2019_64"
 qt_install = os.path.join(paths.qt_dir, qt_version, qt_target)
@@ -53,7 +59,10 @@ if not args.skip_qt and platform.system() != "Windows":
         '-m', 'qtcharts'],
             check=True)
     qt_pkgconfig_dir = os.path.join(qt_install, 'lib', 'pkgconfig')
-    subprocess.run("sed -i 's+/home/qt/work/install+{}+g' {}/*".format(qt_install, qt_pkgconfig_dir), shell=True, check=True)
+    if platform.system() == "Linux":
+        subprocess.run("sed -i 's+/home/qt/work/install+{}+g' {}/*".format(qt_install, qt_pkgconfig_dir), shell=True, check=True)
+    if platform.system() == "Darwin":
+        subprocess.run("sed -i '' 's+/Users/qt/work/install+{}+g' {}/*".format(qt_install, qt_pkgconfig_dir), shell=True, check=True)
 
 if not args.skip_install:
     conan_remotes = [

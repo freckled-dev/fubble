@@ -5,6 +5,7 @@
 #include <boost/signals2/signal.hpp>
 #include <boost/thread/executors/inline_executor.hpp>
 #include <boost/thread/future.hpp>
+#include <unordered_map>
 
 namespace temporary_room::rooms {
 
