@@ -152,6 +152,9 @@ elif host_machine.system() == 'windows'
   google_webrtc_system_deps = declare_dependency(
     link_args: ['d3d11.lib', 'dxgi.lib']
   )
+else
+  # TODO mac
+  google_webrtc_system_deps = declare_dependency()
 endif
 google_webrtc_dep_fixme = dependency('google-webrtc', include_type : 'system')
 google_webrtc_dep = declare_dependency(
