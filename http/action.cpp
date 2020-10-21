@@ -176,6 +176,12 @@ bool action::check_and_handle_error(const boost::system::error_code &error) {
            "error";
     return true;
   }
+  if (error == boost::asio::error::eof) {
+    BOOST_LOG_SEV(logger, logging::severity::warning)
+        << __FUNCTION__
+        << ", boost::asio::error::eof, going to ignore the error";
+    return true;
+  }
   BOOST_LOG_SEV(logger, logging::severity::warning)
       << "got an error, error:" << error.message();
   auto promise_copy = std::move(promise);
