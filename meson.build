@@ -148,7 +148,7 @@ if host_machine.system() == 'linux'
     dependencies: [x11_dep, xext_dep, xcomposite_dep, xfixes_dep,
       xdamage_dep, xrandr_dep]
     )
-else
+elif host_machine.system() == 'windows'
   google_webrtc_system_deps = declare_dependency(
     link_args: ['d3d11.lib', 'dxgi.lib']
   )
