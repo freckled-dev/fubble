@@ -156,10 +156,7 @@ elif host_machine.system() == 'darwin'
   google_webrtc_system_deps = declare_dependency(
       link_args: [
       '-framework', 'Foundation',
-      '-framework', 'CoreGraphics',
-      '-framework', 'IOSurface',
-      '-framework', 'AVFoundation',
-      '-framework', 'AudioUnit',
+      '-framework', 'IOSurface', # desktop capture
       '-framework', 'CoreAudio',
       '-framework', 'AudioToolbox',
       '-framework', 'Cocoa',
