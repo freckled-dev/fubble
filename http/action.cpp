@@ -92,8 +92,8 @@ void action::send_request() {
   BOOST_LOG_SEV(logger, logging::severity::trace)
       << __FUNCTION__ << ", request:" << buffers_->request;
   std::weak_ptr<int> alive = alive_check;
-  auto callback = [buffers_ = buffers_, this,
-                   alive = std::move(alive)](auto error, auto) {
+  auto callback = [buffers_ = buffers_, this, alive = std::move(alive),
+                   connection_ = connection_](auto error, auto) {
     if (!alive.lock())
       return;
     on_request_send(error);
@@ -117,8 +117,8 @@ void action::on_request_send(const boost::system::error_code &error) {
 void action::read_response() {
   BOOST_LOG_SEV(logger, logging::severity::trace) << __FUNCTION__;
   std::weak_ptr<int> alive = alive_check;
-  auto callback = [buffers_ = buffers_, this,
-                   alive = std::move(alive)](auto error, auto) {
+  auto callback = [buffers_ = buffers_, this, alive = std::move(alive),
+                   connection_ = connection_](auto error, auto) {
     if (!alive.lock())
       return;
     on_response_read(error);
