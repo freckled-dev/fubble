@@ -55,6 +55,7 @@ Item {
                 videosAvailable = room.videosAvailable
                 if (!videosAvailable) {
                     chat.visible = true
+                    chatShowIcon.visible = false
                 }
             }
         }
