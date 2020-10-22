@@ -391,7 +391,7 @@ void connection::create_session_description_observer::OnSuccess(
 
 void connection::create_session_description_observer::OnFailure(
     webrtc::RTCError error) {
-  BOOST_LOG_SEV(logger, logging::severity::info)
+  BOOST_LOG_SEV(logger, logging::severity::warning)
       << "connection::create_session_description_observer::OnFailure, error:"
       << error.message();
   // TODO do a propper exception!
