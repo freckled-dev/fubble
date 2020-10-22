@@ -47,7 +47,7 @@ protected:
   const std::string target;
   const fields fields_;
   std::shared_ptr<async_result_promise> promise;
-  std::unique_ptr<connection> connection_;
+  std::shared_ptr<connection> connection_;
   std::unique_ptr<connector> connector_;
 
   using response_type =

@@ -24,6 +24,7 @@ protected:
   void OnDiscardedFrame() override;
 
   rtc::logger logger{"video_track_sink"};
+  rtc::scoped_refptr<webrtc::VideoTrackInterface> video_track_delegate;
 };
 } // namespace google
 } // namespace rtc

@@ -7,5 +7,7 @@ bin
 obj
 *.exe
 *.AppImage
+*.AppImage.zsync
 __pycache__/
-aqtinstall.log
+/aqtinstall.log
+
