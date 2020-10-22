@@ -152,9 +152,21 @@ elif host_machine.system() == 'windows'
   google_webrtc_system_deps = declare_dependency(
     link_args: ['d3d11.lib', 'dxgi.lib']
   )
+elif host_machine.system() == 'darwin'
+  google_webrtc_system_deps = declare_dependency(
+      link_args: [
+      '-framework', 'Foundation',
+      '-framework', 'CoreGraphics',
+      '-framework', 'IOSurface',
+      '-framework', 'AVFoundation',
+      '-framework', 'AudioUnit',
+      '-framework', 'CoreAudio',
+      '-framework', 'AudioToolbox',
+      '-framework', 'Cocoa',
+      ]
+    )
 else
-  # TODO mac
-  google_webrtc_system_deps = declare_dependency()
+  error('unsupported target')
 endif
 google_webrtc_dep_fixme = dependency('google-webrtc', include_type : 'system')
 google_webrtc_dep = declare_dependency(

@@ -11,9 +11,8 @@ registration_handler::registration_handler(device::creator &device_creator_)
 
 void registration_handler::add(connection_ptr connection_) {
   connection_->on_registration.connect(
-      [this, connection_ = std::weak_ptr(connection_)](auto result) {
-        on_register(connection_.lock(), result);
-      });
+      [this, weak_connection = std::weak_ptr<connection>(connection_)](
+          auto result) { on_register(weak_connection.lock(), result); });
 }
 
 const registration_handler::devices_type &
