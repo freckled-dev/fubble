@@ -60,11 +60,11 @@ protected:
       i420_buffer = webrtc::I420Buffer::Create(width, height);
     if (i420_buffer->width() != width || i420_buffer->height() != height)
       i420_buffer = webrtc::I420Buffer::Create(width, height);
-    libyuv::ConvertToI420(frame->data(), 0, i420_buffer->MutableDataY(),
-                          i420_buffer->StrideY(), i420_buffer->MutableDataU(),
-                          i420_buffer->StrideU(), i420_buffer->MutableDataV(),
-                          i420_buffer->StrideV(), 0, 0, width, height, width,
-                          height, libyuv::kRotate0, libyuv::FOURCC_ARGB);
+    libyuv::ARGBToI420(frame->data(), frame->stride(),
+                       i420_buffer->MutableDataY(), i420_buffer->StrideY(),
+                       i420_buffer->MutableDataU(), i420_buffer->StrideU(),
+                       i420_buffer->MutableDataV(), i420_buffer->StrideV(),
+                       width, height);
     webrtc::VideoFrame::Builder builder;
     builder.set_video_frame_buffer(i420_buffer);
     webrtc::VideoFrame casted_frame = builder.build();
