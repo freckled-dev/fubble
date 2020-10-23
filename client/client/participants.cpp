@@ -8,7 +8,7 @@ using namespace client;
 
 namespace {
 struct close_waiter : std::enable_shared_from_this<close_waiter> {
-  client::logger logger{"room::close_waiter"};
+  client::logger logger{"participants::close_waiter"};
   using futures_type = std::vector<boost::future<void>>;
   futures_type futures;
   futures_type::iterator current;
@@ -29,9 +29,17 @@ private:
     current->then(executor, [this, self](auto result) {
       try {
         result.get();
+      } catch (const boost::exception &error_) {
+        BOOST_LOG_SEV(this->logger, logging::severity::error)
+            << "could not close participant, boost::exception:"
+            << boost::diagnostic_information(error_);
       } catch (const std::exception &error_) {
         BOOST_LOG_SEV(this->logger, logging::severity::error)
-            << "could not close participant, error:" << error_.what();
+            << "could not close participant, std::exception:" << error_.what();
+      } catch (...) {
+        BOOST_LOG_SEV(this->logger, logging::severity::error)
+            << "could not close participant, unknown exception";
+        BOOST_ASSERT(false);
       }
       current = ++current;
       if (current == futures.end()) {

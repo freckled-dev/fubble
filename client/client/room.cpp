@@ -34,6 +34,7 @@ std::optional<std::string> room::get_name() const { return room_.get_name(); }
 std::string room::get_own_id() const { return client_->get_user_id(); }
 
 boost::future<void> room::leave() {
+  BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
   BOOST_ASSERT(client_);
   client_->stop_sync(); // no more updates
   return participants_->close()
