@@ -16,12 +16,12 @@ public:
   add_audio_to_connection_impl(std::shared_ptr<rtc::google::audio_track> source)
       : audio_track(source) {}
 
-  void add_to_connection(rtc::connection &connection) {
+  void add_to_connection(rtc::connection &connection) override {
     BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
     connection.add_track(audio_track);
   }
 
-  void remove_from_connection(rtc::connection &connection) {
+  void remove_from_connection(rtc::connection &connection) override {
     BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
     connection.remove_track(audio_track);
   }

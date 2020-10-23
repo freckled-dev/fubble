@@ -65,19 +65,29 @@ else
       'stacktrace_addr2line',
       ]
   endif
-  boost_dep_link_with += [
-    '-rdynamic',
-    '-no-pie'
-    ]
   boost_compile_args += [
     '-DBOOST_STACKTRACE_LINK',
-    '-rdynamic',
-    # if "-no-pie" is not set, stacktrace cant load crash on restart.
-    # because of "address space randomization".
-    # https://stackoverflow.com/questions/47778099/what-is-no-pie-used-for
-    # when product is major enough, remove it
-    '-no-pie'
     ]
+  if host_machine.system() == 'linux'
+    boost_compile_args += [
+      '-rdynamic',
+      # if "-no-pie" is not set, stacktrace cant load crash on restart.
+      # because of "address space randomization".
+      # https://stackoverflow.com/questions/47778099/what-is-no-pie-used-for
+      # when product is major enough, remove it
+      '-no-pie',
+      ]
+    boost_dep_link_with += [
+      '-rdynamic',
+      '-no-pie'
+      ]
+  endif
+  if host_machine.system() == 'darwin'
+    boost_compile_args += [
+      '-fexceptions',
+      # '-fvisibility=default',
+      ]
+  endif
 endif
 boost_dep_pkg = dependency('boost', modules : boost_dep_modules, static: true,
   include_type : 'system'
@@ -153,14 +163,15 @@ elif host_machine.system() == 'windows'
     link_args: ['d3d11.lib', 'dxgi.lib']
   )
 elif host_machine.system() == 'darwin'
+  webrtc_apple_deps = dependency('appleframeworks', modules : [
+    'foundation',
+    'iosurface',
+    'coreaudio',
+    'audiotoolbox',
+    'cocoa',
+    ])
   google_webrtc_system_deps = declare_dependency(
-      link_args: [
-      '-framework', 'Foundation',
-      '-framework', 'IOSurface', # desktop capture
-      '-framework', 'CoreAudio',
-      '-framework', 'AudioToolbox',
-      '-framework', 'Cocoa',
-      ]
+    dependencies: [webrtc_apple_deps]
     )
 else
   error('unsupported target')

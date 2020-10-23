@@ -23,7 +23,7 @@ boost::future<std::string> client::join(const std::string &name,
   content["user_id"] = user_id;
   content["room_name"] = name;
   auto target = "join";
-  return http_client.put(target, content).then(executor, [this](auto result) {
+  return http_client.put(target, content).then(executor, [](auto result) {
     auto got_result = result.get();
     if (got_result.first != boost::beast::http::status::ok)
       BOOST_THROW_EXCEPTION(error(got_result.first, got_result.second));
