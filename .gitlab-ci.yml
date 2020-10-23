@@ -129,6 +129,7 @@ build windows debug:
   <<: *build_windows
   script:
     - python scripts/make_build.py --profile scripts/conan_profiles/windows_debug
+  when: manual
 
 deploy services:
   stage: deploy
