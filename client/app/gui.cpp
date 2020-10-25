@@ -31,7 +31,7 @@
 #include "http/connection_creator.hpp"
 #include "join_model.hpp"
 #include "leave_model.hpp"
-#include "logging/initialser.hpp"
+#include "log_module.hpp"
 #include "logging/logger.hpp"
 #include "matrix/authentification.hpp"
 #include "matrix/client.hpp"
@@ -52,7 +52,6 @@
 #include "rtc/google/capture/video/device.hpp"
 #include "rtc/google/capture/video/enumerator.hpp"
 #include "rtc/google/factory.hpp"
-#include "rtc/google/log_webrtc_to_logging.hpp"
 #include "share_desktop_model.hpp"
 #include "signalling/client/client.hpp"
 #include "signalling/client/connection_creator.hpp"
@@ -61,7 +60,6 @@
 #include "ui/add_version_to_qml_context.hpp"
 #include "ui/frame_provider_google_video_device.hpp"
 #include "ui/frame_provider_google_video_frame.hpp"
-#include "ui/log_qt_to_logging.hpp"
 #include "utils/timer.hpp"
 #include "utils/version.hpp"
 #include "utils_model.hpp"
@@ -76,12 +74,7 @@
 #include <boost/asio/executor_work_guard.hpp>
 #include <boost/asio/io_context.hpp>
 #include <fmt/format.h>
-#include <fruit/fruit.h>
 #include <thread>
-
-fruit::Component<client::crash_catcher> create_crash_catcher_component() {
-  return fruit::createComponent().install(client::crash_catcher::create);
-}
 
 int main(int argc, char *argv[]) {
   gui_options options_parser;
@@ -90,22 +83,16 @@ int main(int argc, char *argv[]) {
     return 1;
   gui_config config = config_check.value();
 
-  logging::add_console_log(config.general_.log_severity);
-  logging::add_file_log(config.general_.log_severity);
-  client::ui::log_qt_to_logging qt_logger;
-  rtc::google::log_webrtc_to_logging webrtc_logger;
-  webrtc_logger.set_enabled(config.general_.log_webrtc);
-
+  client::log_module log_module_{config};
   logging::logger logger{"main"};
 
   BOOST_LOG_SEV(logger, logging::severity::info)
       << "starting up, fubble_version:" << utils::version()
       << ", qt_version:" << qVersion();
 
-  fruit::Injector<client::crash_catcher> injector{
-      create_crash_catcher_component};
+  std::unique_ptr<client::crash_catcher> crash_catcher;
   if (config.general_.use_crash_catcher)
-    injector.get<const client::crash_catcher &>();
+    crash_catcher = client::crash_catcher::create();
 
   boost::asio::io_context context;
   boost::asio::executor executor{context.get_executor()};
