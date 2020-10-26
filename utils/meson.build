@@ -3,7 +3,7 @@ test_main = static_library('test_main',
   dependencies: [gtest_dep, boost_dep])
 utils_sources = ['executor_asio.cpp', 'logging/logger.cpp',
   'logging/initialser.cpp', 'exit_signals.cpp', 'uuid.cpp',
-  'timer.cpp'
+  'timer.cpp', 'executor_module.cpp',
     ]
 # By default vcs_tag will output something using git describe such as
 # 0.33.0-22-g58359c8 which basically means 22 commits after the 0.33.0 tag,

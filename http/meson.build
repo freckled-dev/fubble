@@ -1,5 +1,6 @@
 http_sources = ['client.cpp', 'action.cpp', 'connection_creator.cpp', 
-    'action_factory.cpp', 'connection_impl.cpp', 'ssl_upgrader.cpp']
+    'action_factory.cpp', 'connection_impl.cpp', 'ssl_upgrader.cpp',
+    'client_module.cpp']
 http_dependencies = [utils_dep, fmt_dep, json_dep]
 if host_machine.system() == 'windows'
   http_sources += 'add_windows_root_certs.cpp'

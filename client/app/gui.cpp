@@ -25,9 +25,9 @@
 #include "client/video_layout/video_layout.hpp"
 #include "client/video_settings.hpp"
 #include "error_model.hpp"
-#include "executor_asio.hpp"
 #include "gui_options.hpp"
 #include "http/action_factory.hpp"
+#include "http/client_module.hpp"
 #include "http/connection_creator.hpp"
 #include "join_model.hpp"
 #include "leave_model.hpp"
@@ -60,6 +60,7 @@
 #include "ui/add_version_to_qml_context.hpp"
 #include "ui/frame_provider_google_video_device.hpp"
 #include "ui/frame_provider_google_video_frame.hpp"
+#include "utils/executor_module.hpp"
 #include "utils/timer.hpp"
 #include "utils/version.hpp"
 #include "utils_model.hpp"
@@ -71,10 +72,6 @@
 #include <QQmlContext>
 #include <QQuickStyle>
 #include <QResource>
-#include <boost/asio/executor_work_guard.hpp>
-#include <boost/asio/io_context.hpp>
-#include <fmt/format.h>
-#include <thread>
 
 int main(int argc, char *argv[]) {
   gui_options options_parser;
@@ -94,13 +91,14 @@ int main(int argc, char *argv[]) {
   if (config.general_.use_crash_catcher)
     crash_catcher = client::crash_catcher::create();
 
-  boost::asio::io_context context;
-  boost::asio::executor executor{context.get_executor()};
+  auto executor_module_ = std::make_shared<utils::executor_module>();
+  boost::asio::io_context &context(*executor_module_->get_io_context());
   std::shared_ptr<boost::executor> boost_executor =
-      std::make_shared<boost::executor_adaptor<executor_asio>>(context);
-  rtc::google::asio_signalling_thread asio_signalling_thread{context};
+      executor_module_->get_boost_executor();
 
-  http::connection_creator connection_creator_{context};
+  auto http_client_module =
+      std::make_shared<http::client_module>(executor_module_);
+
   websocket::connection_creator websocket_connection_creator{context};
   websocket::connector_creator websocket_connector{
       context, websocket_connection_creator};
@@ -129,10 +127,8 @@ int main(int argc, char *argv[]) {
   http_matrix_client_server.secure = config.general_.use_ssl;
   http::fields http_matrix_client_fields{http_matrix_client_server};
   http_matrix_client_fields.target_prefix = "/api/matrix/v0/_matrix/client/r0/";
-  std::shared_ptr<http::action_factory> action_factory_ =
-      std::make_shared<http::action_factory>(connection_creator_);
   http::client_factory http_matrix_client_factory{
-      action_factory_,
+      http_client_module->get_action_factory(),
       std::make_pair(http_matrix_client_server, http_matrix_client_fields)};
 
   http::server http_temporary_room_client_server{config.general_.host,
@@ -142,8 +138,9 @@ int main(int argc, char *argv[]) {
       http_temporary_room_client_server};
   http_temporary_room_client_fields.target_prefix = "/api/temporary_room/v0/";
   http::client http_client_temporary_room{
-      action_factory_, std::make_pair(http_temporary_room_client_server,
-                                      http_temporary_room_client_fields)};
+      http_client_module->get_action_factory(),
+      std::make_pair(http_temporary_room_client_server,
+                     http_temporary_room_client_fields)};
   temporary_room::net::client temporary_room_client{http_client_temporary_room};
   matrix::factory matrix_factory;
   matrix::client_factory matrix_client_factory{matrix_factory,
@@ -154,6 +151,7 @@ int main(int argc, char *argv[]) {
   BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up webrtc";
   rtc::google::settings rtc_settings;
   rtc_settings.use_ip_v6 = config.general_.use_ipv6;
+  rtc::google::asio_signalling_thread asio_signalling_thread{context};
   rtc::google::factory rtc_factory{rtc_settings,
                                    asio_signalling_thread.get_native()};
   client::peer_creator peer_creator{
@@ -239,8 +237,9 @@ int main(int argc, char *argv[]) {
   http_version_client_fields.target_prefix = "/api/version/v0/";
   std::shared_ptr<http::client> version_http_client =
       std::make_shared<http::client>(
-          action_factory_, std::make_pair(http_version_client_server,
-                                          http_version_client_fields));
+          http_client_module->get_action_factory(),
+          std::make_pair(http_version_client_server,
+                         http_version_client_fields));
   std::shared_ptr<version::getter> version_getter =
       version::getter::create(version_http_client);
 
