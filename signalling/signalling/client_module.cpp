@@ -9,15 +9,18 @@
 using namespace signalling;
 
 client_module::client_module(
-    std::shared_ptr<utils::executor_module> executor_module)
-    : executor_module(executor_module) {}
+    std::shared_ptr<utils::executor_module> executor_module,
+    const config &config_)
+    : executor_module(executor_module), config_{config_} {}
 
 client_module::~client_module() = default;
 
 client::connect_information client_module::get_connect_information() {
-  signalling::client::connect_information result; /*{
-      config.general_.use_ssl, config.general_.host, config.general_.service,
-      "/api/signalling/v0/"};*/
+  signalling::client::connect_information result;
+  result.host = config_.host;
+  result.secure = config_.secure;
+  result.service = config_.service;
+  result.target = config_.target;
   return result;
 }
 
@@ -70,7 +73,7 @@ std::shared_ptr<client::factory> client_module::get_client_creator() {
 
 std::shared_ptr<utils::one_shot_timer> client_module::get_reconnect_timer() {
   if (!reconnect_timer)
-    std::make_shared<utils::one_shot_timer>(*executor_module->get_io_context(),
-                                            std::chrono::seconds(1));
+    reconnect_timer = std::make_shared<utils::one_shot_timer>(
+        *executor_module->get_io_context(), config_.reconnect_timeout);
   return reconnect_timer;
 }

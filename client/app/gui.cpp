@@ -53,9 +53,7 @@
 #include "rtc/google/capture/video/enumerator.hpp"
 #include "rtc/google/factory.hpp"
 #include "share_desktop_model.hpp"
-#include "signalling/client/client.hpp"
-#include "signalling/client/connection_creator.hpp"
-#include "signalling/json_message.hpp"
+#include "signalling/client_module.hpp"
 #include "temporary_room/net/client.hpp"
 #include "ui/add_version_to_qml_context.hpp"
 #include "ui/frame_provider_google_video_device.hpp"
@@ -64,8 +62,6 @@
 #include "utils/timer.hpp"
 #include "utils/version.hpp"
 #include "utils_model.hpp"
-#include "websocket/connection_creator.hpp"
-#include "websocket/connector.hpp"
 #include <QApplication>
 #include <QIcon>
 #include <QQmlApplicationEngine>
@@ -99,25 +95,13 @@ int main(int argc, char *argv[]) {
   auto http_client_module =
       std::make_shared<http::client_module>(executor_module_);
 
-  websocket::connection_creator websocket_connection_creator{context};
-  websocket::connector_creator websocket_connector{
-      context, websocket_connection_creator};
-
   // signalling
-  BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up signalling";
-  signalling::json_message signalling_json;
-  signalling::client::connection_creator signalling_connection_creator{
-      context, *boost_executor, signalling_json};
-  signalling::client::connect_information connect_information{
-      config.general_.use_ssl, config.general_.host, config.general_.service,
-      "/api/signalling/v0/"};
-  signalling::client::factory_impl signalling_client_creator{
-      websocket_connector, signalling_connection_creator, connect_information};
-  utils::one_shot_timer signalling_client_creator_timer{
-      context, std::chrono::seconds(1)};
-  signalling::client::factory_reconnecting
-      signalling_client_creator_reconnecting{signalling_client_creator,
-                                             signalling_client_creator_timer};
+  signalling::client_module::config signalling_config;
+  signalling_config.host = config.general_.host;
+  signalling_config.secure = config.general_.use_ssl;
+  signalling_config.service = config.general_.service;
+  auto signalling_module = std::make_shared<signalling::client_module>(
+      executor_module_, signalling_config);
 
   // session, matrix and temporary_room
   BOOST_LOG_SEV(logger, logging::severity::trace)
@@ -155,7 +139,7 @@ int main(int argc, char *argv[]) {
   rtc::google::factory rtc_factory{rtc_settings,
                                    asio_signalling_thread.get_native()};
   client::peer_creator peer_creator{
-      *boost_executor, signalling_client_creator_reconnecting, rtc_factory};
+      *boost_executor, *signalling_module->get_client_creator(), rtc_factory};
   auto tracks_adder = std::make_shared<client::tracks_adder>();
 
   // audio

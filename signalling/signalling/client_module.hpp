@@ -2,6 +2,8 @@
 #define UUID_E9815691_3E6C_4F4E_B1CE_482F98FD16A2
 
 #include "utils/executor_module.hpp"
+#include <chrono>
+#include <string>
 
 namespace utils {
 class one_shot_timer;
@@ -21,10 +23,16 @@ class json_message;
 class client_module {
 public:
   struct config {
-    // TODO
+    bool secure{true};
+    std::string host = "fubble.io";
+    std::string service = "https";
+    std::string target = "/api/signalling/v0/";
+    std::chrono::steady_clock::duration reconnect_timeout =
+        std::chrono::seconds(1);
   };
 
-  client_module(std::shared_ptr<utils::executor_module> executor_module);
+  client_module(std::shared_ptr<utils::executor_module> executor_module,
+                const config &config_);
   virtual ~client_module();
   virtual client::connect_information get_connect_information();
   virtual std::shared_ptr<websocket::connector_creator>
@@ -39,6 +47,7 @@ public:
 
 protected:
   std::shared_ptr<utils::executor_module> executor_module;
+  const config config_;
   std::shared_ptr<websocket::connector_creator> websocket_connector_creator;
   std::shared_ptr<websocket::connection_creator> websocket_connection_creator;
   std::shared_ptr<json_message> json_message_;
