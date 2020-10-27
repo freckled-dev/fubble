@@ -33,11 +33,7 @@
 #include "leave_model.hpp"
 #include "log_module.hpp"
 #include "logging/logger.hpp"
-#include "matrix/authentification.hpp"
-#include "matrix/client.hpp"
-#include "matrix/client_factory.hpp"
-#include "matrix/factory.hpp"
-#include "matrix/rooms.hpp"
+#include "matrix/module.hpp"
 #include "model_creator.hpp"
 #include "own_media_model.hpp"
 #include "participant_model.hpp"
@@ -54,7 +50,7 @@
 #include "rtc/google/factory.hpp"
 #include "share_desktop_model.hpp"
 #include "signalling/client_module.hpp"
-#include "temporary_room/net/client.hpp"
+#include "temporary_room/client_module.hpp"
 #include "ui/add_version_to_qml_context.hpp"
 #include "ui/frame_provider_google_video_device.hpp"
 #include "ui/frame_provider_google_video_frame.hpp"
@@ -96,6 +92,7 @@ int main(int argc, char *argv[]) {
       std::make_shared<http::client_module>(executor_module_);
 
   // signalling
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "setting up signalling";
   signalling::client_module::config signalling_config;
   signalling_config.host = config.general_.host;
   signalling_config.secure = config.general_.use_ssl;
@@ -103,34 +100,24 @@ int main(int argc, char *argv[]) {
   auto signalling_module = std::make_shared<signalling::client_module>(
       executor_module_, signalling_config);
 
-  // session, matrix and temporary_room
-  BOOST_LOG_SEV(logger, logging::severity::trace)
-      << "setting up matrix and temporary_room";
-  http::server http_matrix_client_server{config.general_.host,
-                                         config.general_.service};
-  http_matrix_client_server.secure = config.general_.use_ssl;
-  http::fields http_matrix_client_fields{http_matrix_client_server};
-  http_matrix_client_fields.target_prefix = "/api/matrix/v0/_matrix/client/r0/";
-  http::client_factory http_matrix_client_factory{
-      http_client_module->get_action_factory(),
-      std::make_pair(http_matrix_client_server, http_matrix_client_fields)};
+  // matrix
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "setting up matrix";
+  matrix::module::config matrix_config;
+  matrix_config.host = config.general_.host;
+  matrix_config.service = config.general_.service;
+  matrix_config.use_ssl = config.general_.use_ssl;
+  matrix::module matrix_module{executor_module_, http_client_module,
+                               matrix_config};
 
-  http::server http_temporary_room_client_server{config.general_.host,
-                                                 config.general_.service};
-  http_temporary_room_client_server.secure = config.general_.use_ssl;
-  http::fields http_temporary_room_client_fields{
-      http_temporary_room_client_server};
-  http_temporary_room_client_fields.target_prefix = "/api/temporary_room/v0/";
-  http::client http_client_temporary_room{
-      http_client_module->get_action_factory(),
-      std::make_pair(http_temporary_room_client_server,
-                     http_temporary_room_client_fields)};
-  temporary_room::net::client temporary_room_client{http_client_temporary_room};
-  matrix::factory matrix_factory;
-  matrix::client_factory matrix_client_factory{matrix_factory,
-                                               http_matrix_client_factory};
-  matrix::authentification matrix_authentification{http_matrix_client_factory,
-                                                   matrix_client_factory};
+  // temporary_room
+  BOOST_LOG_SEV(logger, logging::severity::debug)
+      << "setting up temporary_room";
+  temporary_room::client_module::config temporary_room_config;
+  temporary_room_config.host = config.general_.host;
+  temporary_room_config.service = config.general_.service;
+  temporary_room_config.use_ssl = config.general_.use_ssl;
+  auto temporary_room_module = std::make_shared<temporary_room::client_module>(
+      http_client_module, temporary_room_config);
 
   BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up webrtc";
   rtc::google::settings rtc_settings;
@@ -234,8 +221,9 @@ int main(int argc, char *argv[]) {
   client::participant_creator_creator participant_creator_creator{
       client_factory, peer_creator, *tracks_adder, own_media, desktop_sharing};
   client::room_creator client_room_creator{participant_creator_creator};
-  client::joiner joiner{client_room_creator, *rooms, matrix_authentification,
-                        temporary_room_client, version_getter};
+  client::joiner joiner{client_room_creator, *rooms,
+                        *matrix_module.get_authentification(),
+                        *temporary_room_module->get_client(), version_getter};
 
   BOOST_LOG_SEV(logger, logging::severity::debug) << "starting qt";
 
