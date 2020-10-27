@@ -1,6 +1,7 @@
 #ifndef RTC_GOOGLE_FACTORY_HPP
 #define RTC_GOOGLE_FACTORY_HPP
 
+#include "rtc/google/settings.hpp"
 #include "rtc/logger.hpp"
 #include <api/create_peerconnection_factory.h>
 #include <boost/asio/io_context.hpp>
@@ -18,12 +19,6 @@ class audio_source;
 class audio_track;
 class audio_devices;
 class connection;
-struct settings {
-  bool use_ip_v6{true};
-#if BOOST_OS_WINDOWS
-  bool windows_use_core_audio2{false}; // windows core audio 2 is experimental
-#endif
-};
 class factory {
 public:
   explicit factory(const settings &settings_, rtc::Thread &signaling_thread);

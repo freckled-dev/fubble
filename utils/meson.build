@@ -19,7 +19,7 @@ utils = library('utils',
   install: true
   )
 utils_dep = declare_dependency(
-  include_directories: '.',
+  include_directories: ['.', '..'], # TODO remove `'.'`
   link_with: [utils],
   dependencies: [asio_dep]
   )

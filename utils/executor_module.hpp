@@ -3,12 +3,14 @@
 
 #include <memory>
 
-namespace boost::asio {
+namespace boost {
+namespace asio {
 class io_context;
 }
-namespace boost::executors {
+namespace executors {
 class executor;
 }
+} // namespace boost
 
 namespace utils {
 class executor_module {
