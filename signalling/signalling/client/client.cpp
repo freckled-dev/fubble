@@ -330,10 +330,9 @@ std::unique_ptr<client> factory_reconnecting::create() {
   return client::create_reconnecting(factory_, timer);
 }
 
-factory_impl::factory_impl(
-    websocket::connector_creator &connector_creator,
-    connection_creator &connection_creator_,
-    const client::connect_information &connect_information_)
+factory_impl::factory_impl(websocket::connector_creator &connector_creator,
+                           connection_creator &connection_creator_,
+                           const connect_information &connect_information_)
     : connector_creator(connector_creator),
       connection_creator_(connection_creator_),
       connect_information_(connect_information_) {}

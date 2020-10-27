@@ -79,9 +79,8 @@ struct test_client {
   signalling::json_message signalling_json;
   signalling::client::connection_creator signalling_connection_creator{
       context, boost_executor, signalling_json};
-  signalling::client::client::connect_information
-      signalling_connect_information =
-          signalling::testing::make_connect_information();
+  signalling::client::connect_information signalling_connect_information =
+      signalling::testing::make_connect_information();
   signalling::client::factory_impl client_creator{
       websocket_connector, signalling_connection_creator,
       signalling_connect_information};

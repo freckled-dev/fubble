@@ -19,14 +19,14 @@ class connector_creator;
 } // namespace websocket
 namespace signalling::client {
 class factory;
+struct connect_information {
+  bool secure{};
+  std::string host;
+  std::string service;
+  std::string target;
+};
 class client {
 public:
-  struct connect_information {
-    bool secure{};
-    std::string host;
-    std::string service;
-    std::string target;
-  };
   virtual ~client() = default;
 
   // TODO remove setter, move argument to create/constructor
@@ -76,13 +76,13 @@ class factory_impl : public factory {
 public:
   factory_impl(websocket::connector_creator &connector_creator,
                connection_creator &connection_creator_,
-               const client::connect_information &connect_information_);
+               const connect_information &connect_information_);
   std::unique_ptr<client> create() override;
 
 protected:
   websocket::connector_creator &connector_creator;
   connection_creator &connection_creator_;
-  const client::connect_information connect_information_;
+  const connect_information connect_information_;
 };
 } // namespace signalling::client
 

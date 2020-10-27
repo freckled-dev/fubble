@@ -108,7 +108,7 @@ int main(int argc, char *argv[]) {
   signalling::json_message signalling_json;
   signalling::client::connection_creator signalling_connection_creator{
       context, *boost_executor, signalling_json};
-  signalling::client::client::connect_information connect_information{
+  signalling::client::connect_information connect_information{
       config.general_.use_ssl, config.general_.host, config.general_.service,
       "/api/signalling/v0/"};
   signalling::client::factory_impl signalling_client_creator{
