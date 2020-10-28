@@ -37,7 +37,7 @@ module::get_audio_device_creator() {
 
 std::shared_ptr<capture::audio::device> module::get_audio_device() {
   if (!audio_device)
-    audio_device = audio_device_creator->create();
+    audio_device = get_audio_device_creator()->create();
   return audio_device;
 }
 

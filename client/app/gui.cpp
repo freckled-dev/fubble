@@ -41,13 +41,12 @@
 #include "participants_with_video_model.hpp"
 #include "poll_asio_by_qt.hpp"
 #include "room_model.hpp"
-#include "rtc/google/asio_signalling_thread.hpp"
 #include "rtc/google/audio_track.hpp"
 #include "rtc/google/capture/audio/device.hpp"
-#include "rtc/google/capture/audio/device_creator.hpp"
 #include "rtc/google/capture/video/device.hpp"
 #include "rtc/google/capture/video/enumerator.hpp"
 #include "rtc/google/factory.hpp"
+#include "rtc/google/module.hpp"
 #include "share_desktop_model.hpp"
 #include "signalling/client_module.hpp"
 #include "temporary_room/client_module.hpp"
@@ -122,33 +121,32 @@ int main(int argc, char *argv[]) {
   BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up webrtc";
   rtc::google::settings rtc_settings;
   rtc_settings.use_ip_v6 = config.general_.use_ipv6;
-  rtc::google::asio_signalling_thread asio_signalling_thread{context};
-  rtc::google::factory rtc_factory{rtc_settings,
-                                   asio_signalling_thread.get_native()};
-  client::peer_creator peer_creator{
-      *boost_executor, *signalling_module->get_client_creator(), rtc_factory};
+  auto rtc_module =
+      std::make_shared<rtc::google::module>(executor_module_, rtc_settings);
+
+  client::peer_creator peer_creator{*boost_executor,
+                                    *signalling_module->get_client_creator(),
+                                    *rtc_module->get_factory()};
   auto tracks_adder = std::make_shared<client::tracks_adder>();
 
   // audio
   BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up audio device";
-  rtc::google::capture::audio::device_creator audio_device_creator{rtc_factory};
-  std::unique_ptr<rtc::google::capture::audio::device> audio_device =
-      audio_device_creator.create();
-  auto &rtc_audio_devices = rtc_factory.get_audio_devices();
+  auto &rtc_audio_devices = rtc_module->get_factory()->get_audio_devices();
   std::shared_ptr<client::rooms> rooms = std::make_shared<client::rooms>();
-  auto own_audio_track =
-      client::own_audio_track::create(rtc_factory, audio_device->get_source());
+  auto own_audio_track = client::own_audio_track::create(
+      *rtc_module->get_factory(), rtc_module->get_audio_device()->get_source());
   std::shared_ptr<client::add_audio_to_connection> audio_track_adder =
       client::add_audio_to_connection::create(own_audio_track->get_track());
   std::shared_ptr<client::audio_tracks_volume> audio_tracks_volume =
       client::audio_tracks_volume::create(*rooms, *tracks_adder,
                                           audio_track_adder, *own_audio_track);
   std::shared_ptr<rtc::google::audio_track> settings_audio_track =
-      rtc_factory.create_audio_track(audio_device->get_source());
+      rtc_module->get_factory()->create_audio_track(
+          rtc_module->get_audio_device()->get_source());
   client::loopback_audio_impl_factory loopback_audio_test_factory{
-      rtc_factory, settings_audio_track, boost_executor};
+      *rtc_module->get_factory(), settings_audio_track, boost_executor};
   auto loopback_audio = client::loopback_audio::create(
-      rtc_factory, own_audio_track->get_track(), boost_executor);
+      *rtc_module->get_factory(), own_audio_track->get_track(), boost_executor);
   client::audio_level_calculator_factory audio_level_calculator_factory_{
       *boost_executor};
   client::own_audio_information own_audio_information_{
@@ -177,14 +175,13 @@ int main(int argc, char *argv[]) {
   } else {
     video_enumerator = std::make_unique<rtc::video_devices_noop>();
   }
-  rtc::google::capture::video::device_factory video_device_creator;
   auto add_video_to_connection_factory_ =
       std::make_shared<client::add_video_to_connection_factory_impl>(
-          rtc_factory);
+          *rtc_module->get_factory());
   auto own_videos_ = client::own_video::create();
   auto video_settings = std::make_shared<client::video_settings>(
-      *video_enumerator, video_device_creator, *own_videos_, *tracks_adder,
-      *add_video_to_connection_factory_);
+      *video_enumerator, *rtc_module->get_video_device_creator(), *own_videos_,
+      *tracks_adder, *add_video_to_connection_factory_);
 
   // leaver
   auto leaver = std::make_shared<client::leaver>(*rooms);
@@ -336,8 +333,12 @@ int main(int argc, char *argv[]) {
                                           own_audio_test_information_,
                                           own_media};
   client::audio_video_settings_model audio_video_settings_model{
-      rtc_audio_devices, *video_enumerator, video_device_creator,
-      audio_settings,    *video_settings,   error_model,
+      rtc_audio_devices,
+      *video_enumerator,
+      *rtc_module->get_video_device_creator(),
+      audio_settings,
+      *video_settings,
+      error_model,
       timer_factory};
   //  works from 5.14 onwards
   // engine.setInitialProperties(...)
