@@ -25,6 +25,7 @@
 #include "client/rooms.hpp"
 #include "client/tracks_adder.hpp"
 #include "client/video_layout/video_layout.hpp"
+#include "client/video_module.hpp"
 #include "client/video_settings.hpp"
 #include "error_model.hpp"
 #include "gui_options.hpp"
@@ -141,7 +142,7 @@ int main(int argc, char *argv[]) {
       std::make_shared<client::audio_module>(executor_module_, rtc_module,
                                              client_audio_config);
 
-  // audio settings
+  // audio settings // TODO merge into audio_module
   BOOST_LOG_SEV(logger, logging::severity::debug)
       << "setting up audio_settings";
   client::audio_settings_module::config client_audio_settings_config;
@@ -157,26 +158,11 @@ int main(int argc, char *argv[]) {
 
   // video
   BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up video device";
-  std::unique_ptr<utils::interval_timer> video_enumerator_timer;
-  std::unique_ptr<rtc::video_devices> video_enumerator_google;
-  std::unique_ptr<rtc::video_devices> video_enumerator;
-  if (config.general_.video_support) {
-    video_enumerator_google =
-        std::make_unique<rtc::google::capture::video::enumerator>();
-    video_enumerator_timer = std::make_unique<utils::interval_timer>(
-        context, std::chrono::seconds(1));
-    video_enumerator = rtc::video_devices::create_interval_enumerating(
-        *video_enumerator_google, *video_enumerator_timer);
-  } else {
-    video_enumerator = std::make_unique<rtc::video_devices_noop>();
-  }
-  auto add_video_to_connection_factory_ =
-      std::make_shared<client::add_video_to_connection_factory_impl>(
-          *rtc_module->get_factory());
-  auto own_videos_ = client::own_video::create();
-  auto video_settings = std::make_shared<client::video_settings>(
-      *video_enumerator, *rtc_module->get_video_device_creator(), *own_videos_,
-      *tracks_adder, *add_video_to_connection_factory_);
+  client::video_module::config client_video_config;
+  client_video_config.enabled = config.general_.video_support;
+  std::shared_ptr<client::video_module> client_video_module =
+      std::make_shared<client::video_module>(executor_module_, rtc_module,
+                                             tracks_adder, client_video_config);
 
   // leaver
   auto leaver = std::make_shared<client::leaver>(*rooms);
@@ -186,9 +172,10 @@ int main(int argc, char *argv[]) {
       << "setting up desktop sharing";
   auto timer_factory = std::make_shared<utils::timer_factory>(context);
   std::shared_ptr<client::desktop_sharing> desktop_sharing =
-      client::desktop_sharing::create(timer_factory, tracks_adder,
-                                      add_video_to_connection_factory_,
-                                      video_settings, leaver);
+      client::desktop_sharing::create(
+          timer_factory, tracks_adder,
+          client_video_module->get_add_video_to_connection_factory(),
+          client_video_module->get_video_settings(), leaver);
   std::shared_ptr<client::desktop_sharing_previews> desktop_sharing_previews =
       client::desktop_sharing_previews::create(timer_factory);
 
@@ -210,7 +197,7 @@ int main(int argc, char *argv[]) {
   BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up client";
   client::factory client_factory{context};
   client::own_media own_media{*client_audio_module->get_own_audio_track(),
-                              *own_videos_};
+                              *client_video_module->get_own_video()};
   client::participant_creator_creator participant_creator_creator{
       client_factory, peer_creator, *tracks_adder, own_media, desktop_sharing};
   client::room_creator client_room_creator{participant_creator_creator};
@@ -311,7 +298,7 @@ int main(int argc, char *argv[]) {
   client::model_creator model_creator{
       *client_audio_module->get_audio_level_calculator_factory(),
       *client_audio_settings_module->get_audio_device_settings(),
-      *video_settings,
+      *client_video_module->get_video_settings(),
       *client_audio_module->get_own_audio_information(),
       *client_audio_settings_module->get_audio_tracks_volume(),
       mute_deaf_communicator_};
@@ -323,7 +310,7 @@ int main(int argc, char *argv[]) {
   client::leave_model leave_model{*leaver};
   client::own_media_model own_media_model{
       *client_audio_settings_module->get_audio_device_settings(),
-      *video_settings,
+      *client_video_module->get_video_settings(),
       *client_audio_settings_module->get_own_microphone_tester(),
       *client_audio_settings_module->get_audio_tracks_volume(),
       *client_audio_module->get_own_audio_information(),
@@ -331,10 +318,10 @@ int main(int argc, char *argv[]) {
       own_media};
   client::audio_video_settings_model audio_video_settings_model{
       rtc_module->get_factory()->get_audio_devices(),
-      *video_enumerator,
+      *client_video_module->get_enumerator(),
       *rtc_module->get_video_device_creator(),
       *client_audio_settings_module->get_audio_device_settings(),
-      *video_settings,
+      *client_video_module->get_video_settings(),
       error_model,
       timer_factory};
   //  works from 5.14 onwards

@@ -1,0 +1,54 @@
+#ifndef UUID_56991B82_F65A_4091_B353_801DDE773A7E
+#define UUID_56991B82_F65A_4091_B353_801DDE773A7E
+
+#include "rtc/google/module.hpp"
+#include "utils/executor_module.hpp"
+#include <chrono>
+
+namespace utils {
+class interval_timer;
+}
+namespace rtc {
+class video_devices;
+}
+namespace client {
+class add_video_to_connection_factory;
+// TODO remove tracks_adder!
+class tracks_adder;
+class own_video;
+class video_settings;
+class video_module {
+public:
+  struct config {
+    bool enabled;
+    std::chrono::steady_clock::duration video_enumerator_refresh_timeout =
+        std::chrono::seconds(1);
+  };
+  video_module(std::shared_ptr<utils::executor_module> executor_module,
+               std::shared_ptr<rtc::google::module> rtc_module,
+               std::shared_ptr<tracks_adder> tracks_adder_,
+               const config &config_);
+
+  std::shared_ptr<rtc::video_devices> get_enumerator();
+  std::shared_ptr<add_video_to_connection_factory>
+  get_add_video_to_connection_factory();
+  std::shared_ptr<own_video> get_own_video();
+  std::shared_ptr<video_settings> get_video_settings();
+
+protected:
+  std::shared_ptr<utils::executor_module> executor_module;
+  std::shared_ptr<rtc::google::module> rtc_module;
+  std::shared_ptr<tracks_adder> tracks_adder_;
+  const config config_;
+
+  std::shared_ptr<utils::interval_timer> video_enumerator_timer;
+  std::shared_ptr<rtc::video_devices> video_enumerator_google;
+  std::shared_ptr<rtc::video_devices> video_enumerator;
+  std::shared_ptr<add_video_to_connection_factory>
+      add_video_to_connection_factory_;
+  std::shared_ptr<own_video> own_video_;
+  std::shared_ptr<video_settings> video_settings_;
+};
+} // namespace client
+
+#endif
