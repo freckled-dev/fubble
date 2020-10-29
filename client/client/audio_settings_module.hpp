@@ -2,6 +2,7 @@
 #define UUID_DA215727_927E_49D3_A600_CBD9C8E62A7F
 
 #include "client/audio_module.hpp"
+#include "client/session_module.hpp"
 #include "rtc/google/module.hpp"
 
 namespace rtc::google {
@@ -10,8 +11,6 @@ class audio_track;
 namespace client {
 class loopback_audio_factory;
 class audio_tracks_volume;
-class tracks_adder;
-class rooms;
 class own_microphone_tester;
 class audio_device_settings;
 class audio_settings_module {
@@ -20,8 +19,8 @@ public:
   audio_settings_module(std::shared_ptr<utils::executor_module> executor_module,
                         std::shared_ptr<rtc::google::module> rtc_module,
                         std::shared_ptr<audio_module> audio_module_,
-                        std::shared_ptr<tracks_adder> tracks_adder_,
-                        std::shared_ptr<rooms> rooms_, const config &config_);
+                        std::shared_ptr<session_module> session_module_,
+                        const config &config_);
 
   std::shared_ptr<audio_tracks_volume> get_audio_tracks_volume();
   std::shared_ptr<own_audio_information> get_own_audio_test_information();
@@ -34,8 +33,7 @@ protected:
   std::shared_ptr<utils::executor_module> executor_module;
   std::shared_ptr<rtc::google::module> rtc_module;
   std::shared_ptr<audio_module> audio_module_;
-  std::shared_ptr<tracks_adder> tracks_adder_;
-  std::shared_ptr<rooms> rooms_;
+  std::shared_ptr<session_module> session_module_;
   const config &config_;
 
   // TODO adds audio_track_adder to tracks_adder - refactor!

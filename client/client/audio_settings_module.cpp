@@ -14,17 +14,17 @@ audio_settings_module::audio_settings_module(
     std::shared_ptr<utils::executor_module> executor_module,
     std::shared_ptr<rtc::google::module> rtc_module,
     std::shared_ptr<audio_module> audio_module_,
-    std::shared_ptr<tracks_adder> tracks_adder_, std::shared_ptr<rooms> rooms_,
-    const config &config_)
+    std::shared_ptr<session_module> session_module_, const config &config_)
     : executor_module{executor_module}, rtc_module{rtc_module},
       audio_module_{audio_module_},
-      tracks_adder_{tracks_adder_}, rooms_{rooms_}, config_{config_} {}
+      session_module_{session_module_}, config_{config_} {}
 
 std::shared_ptr<audio_tracks_volume>
 audio_settings_module::get_audio_tracks_volume() {
   if (!audio_tracks_volume_)
     audio_tracks_volume_ = audio_tracks_volume::create(
-        *rooms_, *tracks_adder_, audio_module_->get_own_audio_track_adder(),
+        *session_module_->get_rooms(), *session_module_->get_tracks_adder(),
+        audio_module_->get_own_audio_track_adder(),
         *audio_module_->get_own_audio_track());
   return audio_tracks_volume_;
 }

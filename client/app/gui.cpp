@@ -23,6 +23,7 @@
 #include "client/peers.hpp"
 #include "client/room_creator.hpp"
 #include "client/rooms.hpp"
+#include "client/session_module.hpp"
 #include "client/tracks_adder.hpp"
 #include "client/video_layout/video_layout.hpp"
 #include "client/video_module.hpp"
@@ -86,11 +87,15 @@ int main(int argc, char *argv[]) {
   if (config.general_.use_crash_catcher)
     crash_catcher = client::crash_catcher::create();
 
+  // executor
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "setting up executor";
   auto executor_module_ = std::make_shared<utils::executor_module>();
   boost::asio::io_context &context(*executor_module_->get_io_context());
   std::shared_ptr<boost::executor> boost_executor =
       executor_module_->get_boost_executor();
 
+  // http
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "setting up http";
   auto http_client_module =
       std::make_shared<http::client_module>(executor_module_);
 
@@ -122,7 +127,7 @@ int main(int argc, char *argv[]) {
   auto temporary_room_module = std::make_shared<temporary_room::client_module>(
       http_client_module, temporary_room_config);
 
-  // temporary_room
+  // webrtc
   BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up webrtc";
   rtc::google::settings rtc_settings;
   rtc_settings.use_ip_v6 = config.general_.use_ipv6;
@@ -134,6 +139,8 @@ int main(int argc, char *argv[]) {
                                     *rtc_module->get_factory()};
 
   // TODO do something like a room_module. burn `rooms`?
+  std::shared_ptr<client::session_module> client_session_module =
+      std::make_shared<client::session_module>();
   auto tracks_adder = std::make_shared<client::tracks_adder>();
   std::shared_ptr<client::rooms> rooms = std::make_shared<client::rooms>();
 
@@ -150,8 +157,8 @@ int main(int argc, char *argv[]) {
   client::audio_settings_module::config client_audio_settings_config;
   std::shared_ptr<client::audio_settings_module> client_audio_settings_module =
       std::make_shared<client::audio_settings_module>(
-          executor_module_, rtc_module, client_audio_module, tracks_adder,
-          rooms, client_audio_settings_config);
+          executor_module_, rtc_module, client_audio_module,
+          client_session_module, client_audio_settings_config);
 
   // audio communicator
   std::shared_ptr<client::mute_deaf_communicator> mute_deaf_communicator_ =
