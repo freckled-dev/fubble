@@ -60,6 +60,7 @@
 #include "utils/timer.hpp"
 #include "utils/version.hpp"
 #include "utils_model.hpp"
+#include "version/client_module.hpp"
 #include <QApplication>
 #include <QIcon>
 #include <QQmlApplicationEngine>
@@ -121,6 +122,7 @@ int main(int argc, char *argv[]) {
   auto temporary_room_module = std::make_shared<temporary_room::client_module>(
       http_client_module, temporary_room_config);
 
+  // temporary_room
   BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up webrtc";
   rtc::google::settings rtc_settings;
   rtc_settings.use_ip_v6 = config.general_.use_ipv6;
@@ -180,18 +182,13 @@ int main(int argc, char *argv[]) {
       client::desktop_sharing_previews::create(timer_factory);
 
   // version
-  http::server http_version_client_server{config.general_.host,
-                                          config.general_.service};
-  http_version_client_server.secure = config.general_.use_ssl;
-  http::fields http_version_client_fields{http_version_client_server};
-  http_version_client_fields.target_prefix = "/api/version/v0/";
-  std::shared_ptr<http::client> version_http_client =
-      std::make_shared<http::client>(
-          http_client_module->get_action_factory(),
-          std::make_pair(http_version_client_server,
-                         http_version_client_fields));
-  std::shared_ptr<version::getter> version_getter =
-      version::getter::create(version_http_client);
+  version::client_module::config version_client_config;
+  version_client_config.host = config.general_.host;
+  version_client_config.service = config.general_.service;
+  version_client_config.use_ssl = config.general_.use_ssl;
+  std::shared_ptr<version::client_module> version_client_module =
+      std::make_shared<version::client_module>(http_client_module,
+                                               version_client_config);
 
   // client
   BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up client";
@@ -203,7 +200,8 @@ int main(int argc, char *argv[]) {
   client::room_creator client_room_creator{participant_creator_creator};
   client::joiner joiner{client_room_creator, *rooms,
                         *matrix_module.get_authentification(),
-                        *temporary_room_module->get_client(), version_getter};
+                        *temporary_room_module->get_client(),
+                        version_client_module->get_getter()};
 
   BOOST_LOG_SEV(logger, logging::severity::debug) << "starting qt";
 
