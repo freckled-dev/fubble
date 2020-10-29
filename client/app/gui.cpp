@@ -129,14 +129,19 @@ int main(int argc, char *argv[]) {
                                     *rtc_module->get_factory()};
   auto tracks_adder = std::make_shared<client::tracks_adder>();
 
-  // audio
-  BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up audio device";
-  auto &rtc_audio_devices = rtc_module->get_factory()->get_audio_devices();
+  // TODO
   std::shared_ptr<client::rooms> rooms = std::make_shared<client::rooms>();
+
+  // audio
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "setting up client_audio";
+  auto &rtc_audio_devices = rtc_module->get_factory()->get_audio_devices();
   auto own_audio_track = client::own_audio_track::create(
       *rtc_module->get_factory(), rtc_module->get_audio_device()->get_source());
   std::shared_ptr<client::add_audio_to_connection> audio_track_adder =
       client::add_audio_to_connection::create(own_audio_track->get_track());
+
+  // TODO audio_settings_module
+  // TODO adds audio_track_adder to tracks_adder - refactor!
   std::shared_ptr<client::audio_tracks_volume> audio_tracks_volume =
       client::audio_tracks_volume::create(*rooms, *tracks_adder,
                                           audio_track_adder, *own_audio_track);
@@ -157,8 +162,10 @@ int main(int argc, char *argv[]) {
       loopback_audio_test, *audio_tracks_volume);
   client::own_audio_information own_audio_test_information_{
       audio_level_calculator_factory_, loopback_audio_test};
+
   std::shared_ptr<client::mute_deaf_communicator> mute_deaf_communicator_ =
       client::mute_deaf_communicator::create(rooms, audio_tracks_volume);
+  client::audio_device_settings audio_settings{rtc_audio_devices};
 
   // video
   BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up video device";
@@ -312,7 +319,6 @@ int main(int argc, char *argv[]) {
   qmlRegisterType<video_layout>("io.fubble", 1, 0, "VideoLayout");
 
   QQmlApplicationEngine engine;
-  client::audio_device_settings audio_settings{rtc_audio_devices};
   client::model_creator model_creator{audio_level_calculator_factory_,
                                       audio_settings,
                                       *video_settings,
