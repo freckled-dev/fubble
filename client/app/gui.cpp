@@ -4,6 +4,7 @@
 #include "client/add_video_to_connection.hpp"
 #include "client/audio_device_settings.hpp"
 #include "client/audio_level_calculator.hpp"
+#include "client/audio_module.hpp"
 #include "client/audio_tracks_volume.hpp"
 #include "client/crash_catcher.hpp"
 #include "client/desktop_sharing.hpp"
@@ -134,34 +135,30 @@ int main(int argc, char *argv[]) {
 
   // audio
   BOOST_LOG_SEV(logger, logging::severity::debug) << "setting up client_audio";
+  client::audio_module::config client_audio_config;
+  std::shared_ptr<client::audio_module> client_audio_module =
+      std::make_shared<client::audio_module>(executor_module_, rtc_module,
+                                             client_audio_config);
   auto &rtc_audio_devices = rtc_module->get_factory()->get_audio_devices();
-  auto own_audio_track = client::own_audio_track::create(
-      *rtc_module->get_factory(), rtc_module->get_audio_device()->get_source());
-  std::shared_ptr<client::add_audio_to_connection> audio_track_adder =
-      client::add_audio_to_connection::create(own_audio_track->get_track());
-
   // TODO audio_settings_module
   // TODO adds audio_track_adder to tracks_adder - refactor!
   std::shared_ptr<client::audio_tracks_volume> audio_tracks_volume =
-      client::audio_tracks_volume::create(*rooms, *tracks_adder,
-                                          audio_track_adder, *own_audio_track);
+      client::audio_tracks_volume::create(
+          *rooms, *tracks_adder,
+          client_audio_module->get_own_audio_track_adder(),
+          *client_audio_module->get_own_audio_track());
   std::shared_ptr<rtc::google::audio_track> settings_audio_track =
       rtc_module->get_factory()->create_audio_track(
           rtc_module->get_audio_device()->get_source());
   client::loopback_audio_impl_factory loopback_audio_test_factory{
       *rtc_module->get_factory(), settings_audio_track, boost_executor};
-  auto loopback_audio = client::loopback_audio::create(
-      *rtc_module->get_factory(), own_audio_track->get_track(), boost_executor);
-  client::audio_level_calculator_factory audio_level_calculator_factory_{
-      *boost_executor};
-  client::own_audio_information own_audio_information_{
-      audio_level_calculator_factory_, *loopback_audio};
   client::loopback_audio_noop_if_disabled loopback_audio_test{
       loopback_audio_test_factory};
   auto own_microphone_tester = client::own_microphone_tester::create(
       loopback_audio_test, *audio_tracks_volume);
   client::own_audio_information own_audio_test_information_{
-      audio_level_calculator_factory_, loopback_audio_test};
+      *client_audio_module->get_audio_level_calculator_factory(),
+      loopback_audio_test};
 
   std::shared_ptr<client::mute_deaf_communicator> mute_deaf_communicator_ =
       client::mute_deaf_communicator::create(rooms, audio_tracks_volume);
@@ -221,7 +218,8 @@ int main(int argc, char *argv[]) {
   // client
   BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up client";
   client::factory client_factory{context};
-  client::own_media own_media{*own_audio_track, *own_videos_};
+  client::own_media own_media{*client_audio_module->get_own_audio_track(),
+                              *own_videos_};
   client::participant_creator_creator participant_creator_creator{
       client_factory, peer_creator, *tracks_adder, own_media, desktop_sharing};
   client::room_creator client_room_creator{participant_creator_creator};
@@ -319,25 +317,27 @@ int main(int argc, char *argv[]) {
   qmlRegisterType<video_layout>("io.fubble", 1, 0, "VideoLayout");
 
   QQmlApplicationEngine engine;
-  client::model_creator model_creator{audio_level_calculator_factory_,
-                                      audio_settings,
-                                      *video_settings,
-                                      own_audio_information_,
-                                      *audio_tracks_volume,
-                                      mute_deaf_communicator_};
+  client::model_creator model_creator{
+      *client_audio_module->get_audio_level_calculator_factory(),
+      audio_settings,
+      *video_settings,
+      *client_audio_module->get_own_audio_information(),
+      *audio_tracks_volume,
+      mute_deaf_communicator_};
   client::error_model error_model;
   client::utils_model utils_model;
   client::join_model join_model{model_creator, error_model, joiner};
   client::share_desktop_model share_desktop_model{desktop_sharing,
                                                   desktop_sharing_previews};
   client::leave_model leave_model{*leaver};
-  client::own_media_model own_media_model{audio_settings,
-                                          *video_settings,
-                                          *own_microphone_tester,
-                                          *audio_tracks_volume,
-                                          own_audio_information_,
-                                          own_audio_test_information_,
-                                          own_media};
+  client::own_media_model own_media_model{
+      audio_settings,
+      *video_settings,
+      *own_microphone_tester,
+      *audio_tracks_volume,
+      *client_audio_module->get_own_audio_information(),
+      own_audio_test_information_,
+      own_media};
   client::audio_video_settings_model audio_video_settings_model{
       rtc_audio_devices,
       *video_enumerator,
