@@ -3,6 +3,7 @@ import Qt.labs.settings 1.0
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import QtMultimedia 5.15
+import QtQuick.Controls.Material 2.15
 import "scripts/utils.js" as Utils
 
 Item {
@@ -40,6 +41,7 @@ Item {
             Layout.fillWidth: true
             currentIndex: audioVideoModel.userAudioOutputDeviceIndex
             textRole: "name"
+            Material.foreground: Style.current.foreground
             onActivated: audioVideoModel.onAudioOutputDeviceActivated(index)
             enabled: audioVideoModel.outputDevices.available
             model: audioVideoModel.outputDevices
@@ -55,6 +57,7 @@ Item {
             Layout.fillWidth: true
             currentIndex: audioVideoModel.userAudioInputDeviceIndex
             textRole: "name"
+            Material.foreground: Style.current.foreground
             onActivated: audioVideoModel.onAudioInputDeviceActivated(index)
             enabled: audioVideoModel.inputDevices.available
             model: audioVideoModel.inputDevices
@@ -63,6 +66,7 @@ Item {
         Button {
             text: ownMediaModel.loopbackOwnVoice ? qsTr("Stop test") : qsTr(
                                                        "Test microphone")
+            Material.foreground: Style.current.buttonTextColor
             onClicked: ownMediaModel.loopbackOwnVoice = !ownMediaModel.loopbackOwnVoice
         }
 
@@ -111,6 +115,8 @@ Item {
             Layout.fillWidth: true
             currentIndex: audioVideoModel.userVideoDeviceIndex
             textRole: "name"
+            Material.foreground: Style.current.foreground
+            Material.accentColor: Style.current.foreground
             onActivated: audioVideoModel.onVideoDeviceActivated(index)
             enabled: audioVideoModel.videoDevices.available
             model: audioVideoModel.videoDevices
@@ -121,7 +127,7 @@ Item {
             font.pointSize: Style.current.textPointSize
         }
 
-        Rectangle {
+        Item {
             height: 200
             Layout.fillWidth: true
 
