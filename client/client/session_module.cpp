@@ -11,6 +11,19 @@
 
 using namespace client;
 
+session_module::session_module(
+    std::shared_ptr<utils::executor_module> executor_module,
+    std::shared_ptr<matrix::module> matrix_module,
+    std::shared_ptr<rtc::google::module> rtc_module,
+    std::shared_ptr<signalling::client_module> signalling_module,
+    std::shared_ptr<temporary_room::client_module> temporary_room_module,
+    std::shared_ptr<version::client_module> version_client_module,
+    const config &config_)
+    : executor_module{executor_module}, matrix_module{matrix_module},
+      rtc_module{rtc_module}, signalling_module{signalling_module},
+      temporary_room_module{temporary_room_module},
+      version_client_module{version_client_module}, config_{config_} {}
+
 std::shared_ptr<joiner> session_module::get_joiner() {
   if (!joiner_)
     joiner_ = std::make_shared<joiner>(*get_room_creator(), *get_rooms(),

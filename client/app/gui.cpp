@@ -114,8 +114,8 @@ int main(int argc, char *argv[]) {
   matrix_config.host = config.general_.host;
   matrix_config.service = config.general_.service;
   matrix_config.use_ssl = config.general_.use_ssl;
-  matrix::module matrix_module{executor_module_, http_client_module,
-                               matrix_config};
+  auto matrix_module = std::make_shared<matrix::module>(
+      executor_module_, http_client_module, matrix_config);
 
   // temporary_room
   BOOST_LOG_SEV(logger, logging::severity::debug)
@@ -127,6 +127,16 @@ int main(int argc, char *argv[]) {
   auto temporary_room_module = std::make_shared<temporary_room::client_module>(
       http_client_module, temporary_room_config);
 
+  // version
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "setting up version";
+  version::client_module::config version_client_config;
+  version_client_config.host = config.general_.host;
+  version_client_config.service = config.general_.service;
+  version_client_config.use_ssl = config.general_.use_ssl;
+  std::shared_ptr<version::client_module> version_client_module =
+      std::make_shared<version::client_module>(http_client_module,
+                                               version_client_config);
+
   // webrtc
   BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up webrtc";
   rtc::google::settings rtc_settings;
@@ -136,8 +146,11 @@ int main(int argc, char *argv[]) {
 
   // client
   BOOST_LOG_SEV(logger, logging::severity::debug) << "setting up client";
+  client::session_module::config client_session_config;
   std::shared_ptr<client::session_module> client_session_module =
-      std::make_shared<client::session_module>();
+      std::make_shared<client::session_module>(
+          executor_module_, matrix_module, rtc_module, signalling_module,
+          temporary_room_module, version_client_module, client_session_config);
 
   // audio
   BOOST_LOG_SEV(logger, logging::severity::debug) << "setting up client_audio";
@@ -190,15 +203,6 @@ int main(int argc, char *argv[]) {
       client::desktop_sharing_previews::create(timer_factory);
   // TODO refactor #355
   client_session_module->get_own_media()->set_desktop_sharing(desktop_sharing);
-
-  // version
-  version::client_module::config version_client_config;
-  version_client_config.host = config.general_.host;
-  version_client_config.service = config.general_.service;
-  version_client_config.use_ssl = config.general_.use_ssl;
-  std::shared_ptr<version::client_module> version_client_module =
-      std::make_shared<version::client_module>(http_client_module,
-                                               version_client_config);
 
   BOOST_LOG_SEV(logger, logging::severity::debug) << "setting up qt";
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);

@@ -13,6 +13,7 @@ class executor;
 } // namespace boost
 
 namespace utils {
+class timer_factory;
 class executor_module {
 public:
   executor_module();
@@ -20,10 +21,12 @@ public:
 
   virtual std::shared_ptr<boost::asio::io_context> get_io_context();
   virtual std::shared_ptr<boost::executors::executor> get_boost_executor();
+  virtual std::shared_ptr<timer_factory> get_timer_factory();
 
 protected:
   std::shared_ptr<boost::asio::io_context> io_context;
   std::shared_ptr<boost::executors::executor> boost_executor;
+  std::shared_ptr<timer_factory> timer_factory_;
 };
 } // namespace utils
 

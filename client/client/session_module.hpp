@@ -20,9 +20,15 @@ class own_media;
 class participant_creator_creator;
 class session_module {
 public:
-  struct config {
-    // TODO
-  };
+  struct config {};
+  session_module(
+      std::shared_ptr<utils::executor_module> executor_module,
+      std::shared_ptr<matrix::module> matrix_module,
+      std::shared_ptr<rtc::google::module> rtc_module,
+      std::shared_ptr<signalling::client_module> signalling_module,
+      std::shared_ptr<temporary_room::client_module> temporary_room_module,
+      std::shared_ptr<version::client_module> version_client_module,
+      const config &config_);
 
   std::shared_ptr<joiner> get_joiner();
   std::shared_ptr<leaver> get_leaver();
@@ -37,12 +43,13 @@ protected:
   std::shared_ptr<participant_creator_creator>
   get_participant_creator_creator();
 
-  std::shared_ptr<utils::executor_module> executor_module;
-  std::shared_ptr<matrix::module> matrix_module;
-  std::shared_ptr<rtc::google::module> rtc_module;
-  std::shared_ptr<signalling::client_module> signalling_module;
-  std::shared_ptr<temporary_room::client_module> temporary_room_module;
-  std::shared_ptr<version::client_module> version_client_module;
+  const std::shared_ptr<utils::executor_module> executor_module;
+  const std::shared_ptr<matrix::module> matrix_module;
+  const std::shared_ptr<rtc::google::module> rtc_module;
+  const std::shared_ptr<signalling::client_module> signalling_module;
+  const std::shared_ptr<temporary_room::client_module> temporary_room_module;
+  const std::shared_ptr<version::client_module> version_client_module;
+  const config config_;
 
   std::shared_ptr<joiner> joiner_;
   std::shared_ptr<leaver> leaver_;
