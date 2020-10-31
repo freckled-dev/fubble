@@ -12,17 +12,26 @@ class audio_track;
 
 namespace client {
 class own_audio_track;
+class desktop_sharing;
 class own_media {
 public:
-  own_media(own_audio_track &own_audio_track_, own_video &own_video_);
-  virtual ~own_media() = default;
+  own_media();
+  virtual ~own_media();
+
+  // TODO refactor #355
+  void
+  set_own_audio_track(const std::shared_ptr<own_audio_track> &own_audio_track_);
+  void set_own_video(const std::shared_ptr<own_video> &own_video_);
+  void set_desktop_sharing(std::shared_ptr<desktop_sharing> desktop_sharing_);
 
   rtc::google::audio_track *get_audio() const;
   own_video &get_videos() const;
+  std::shared_ptr<desktop_sharing> get_desktop_sharing() const;
 
 protected:
-  own_video &videos;
-  own_audio_track &own_audio_track_;
+  std::shared_ptr<own_audio_track> own_audio_track_;
+  std::shared_ptr<own_video> own_video_;
+  std::shared_ptr<desktop_sharing> desktop_sharing_;
 };
 } // namespace client
 

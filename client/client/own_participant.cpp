@@ -3,11 +3,11 @@
 
 using namespace client;
 
-own_participant::own_participant(
-    matrix::user &matrix_participant, own_media &own_media_,
-    std::shared_ptr<desktop_sharing> desktop_sharing_)
+own_participant::own_participant(matrix::user &matrix_participant,
+                                 own_media &own_media_)
     : participant(matrix_participant),
-      own_media_(own_media_), desktop_sharing_{desktop_sharing_} {
+      own_media_(own_media_), desktop_sharing_{
+                                  own_media_.get_desktop_sharing()} {
   own_media_.get_videos().on_added.connect(
       [this](auto source) { on_video_added(source); });
   own_media_.get_videos().on_removed.connect(

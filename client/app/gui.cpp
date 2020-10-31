@@ -134,15 +134,10 @@ int main(int argc, char *argv[]) {
   auto rtc_module =
       std::make_shared<rtc::google::module>(executor_module_, rtc_settings);
 
-  client::peer_creator peer_creator{*boost_executor,
-                                    *signalling_module->get_client_creator(),
-                                    *rtc_module->get_factory()};
-
-  // TODO do something like a room_module. burn `rooms`?
+  // client
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "setting up client";
   std::shared_ptr<client::session_module> client_session_module =
       std::make_shared<client::session_module>();
-  auto tracks_adder = std::make_shared<client::tracks_adder>();
-  std::shared_ptr<client::rooms> rooms = std::make_shared<client::rooms>();
 
   // audio
   BOOST_LOG_SEV(logger, logging::severity::debug) << "setting up client_audio";
@@ -150,6 +145,9 @@ int main(int argc, char *argv[]) {
   std::shared_ptr<client::audio_module> client_audio_module =
       std::make_shared<client::audio_module>(executor_module_, rtc_module,
                                              client_audio_config);
+  // TODO refactor #355
+  client_session_module->get_own_media()->set_own_audio_track(
+      client_audio_module->get_own_audio_track());
 
   // audio settings // TODO merge into audio_module
   BOOST_LOG_SEV(logger, logging::severity::debug)
@@ -163,7 +161,8 @@ int main(int argc, char *argv[]) {
   // audio communicator
   std::shared_ptr<client::mute_deaf_communicator> mute_deaf_communicator_ =
       client::mute_deaf_communicator::create(
-          rooms, client_audio_settings_module->get_audio_tracks_volume());
+          client_session_module->get_rooms(),
+          client_audio_settings_module->get_audio_tracks_volume());
 
   // video
   BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up video device";
@@ -171,10 +170,11 @@ int main(int argc, char *argv[]) {
   client_video_config.enabled = config.general_.video_support;
   std::shared_ptr<client::video_module> client_video_module =
       std::make_shared<client::video_module>(executor_module_, rtc_module,
-                                             tracks_adder, client_video_config);
-
-  // leaver
-  auto leaver = std::make_shared<client::leaver>(*rooms);
+                                             client_session_module,
+                                             client_video_config);
+  // TODO refactor #355
+  client_session_module->get_own_media()->set_own_video(
+      client_video_module->get_own_video());
 
   // desktop
   BOOST_LOG_SEV(logger, logging::severity::trace)
@@ -182,11 +182,14 @@ int main(int argc, char *argv[]) {
   auto timer_factory = std::make_shared<utils::timer_factory>(context);
   std::shared_ptr<client::desktop_sharing> desktop_sharing =
       client::desktop_sharing::create(
-          timer_factory, tracks_adder,
+          timer_factory, client_session_module->get_tracks_adder(),
           client_video_module->get_add_video_to_connection_factory(),
-          client_video_module->get_video_settings(), leaver);
+          client_video_module->get_video_settings(),
+          client_session_module->get_leaver());
   std::shared_ptr<client::desktop_sharing_previews> desktop_sharing_previews =
       client::desktop_sharing_previews::create(timer_factory);
+  // TODO refactor #355
+  client_session_module->get_own_media()->set_desktop_sharing(desktop_sharing);
 
   // version
   version::client_module::config version_client_config;
@@ -197,21 +200,7 @@ int main(int argc, char *argv[]) {
       std::make_shared<version::client_module>(http_client_module,
                                                version_client_config);
 
-  // client
-  BOOST_LOG_SEV(logger, logging::severity::trace) << "setting up client";
-  client::factory client_factory{context};
-  client::own_media own_media{*client_audio_module->get_own_audio_track(),
-                              *client_video_module->get_own_video()};
-  client::participant_creator_creator participant_creator_creator{
-      client_factory, peer_creator, *tracks_adder, own_media, desktop_sharing};
-  client::room_creator client_room_creator{participant_creator_creator};
-  client::joiner joiner{client_room_creator, *rooms,
-                        *matrix_module.get_authentification(),
-                        *temporary_room_module->get_client(),
-                        version_client_module->get_getter()};
-
-  BOOST_LOG_SEV(logger, logging::severity::debug) << "starting qt";
-
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "setting up qt";
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
   std::vector<char *> argv_adopted{argv, argv + argc};
 #if BOOST_OS_WINDOWS
@@ -309,10 +298,11 @@ int main(int argc, char *argv[]) {
       mute_deaf_communicator_};
   client::error_model error_model;
   client::utils_model utils_model;
-  client::join_model join_model{model_creator, error_model, joiner};
+  client::join_model join_model{model_creator, error_model,
+                                *client_session_module->get_joiner()};
   client::share_desktop_model share_desktop_model{desktop_sharing,
                                                   desktop_sharing_previews};
-  client::leave_model leave_model{*leaver};
+  client::leave_model leave_model{*client_session_module->get_leaver()};
   client::own_media_model own_media_model{
       *client_audio_settings_module->get_audio_device_settings(),
       *client_video_module->get_video_settings(),
@@ -320,7 +310,7 @@ int main(int argc, char *argv[]) {
       *client_audio_settings_module->get_audio_tracks_volume(),
       *client_audio_module->get_own_audio_information(),
       *client_audio_settings_module->get_own_audio_test_information(),
-      own_media};
+      *client_session_module->get_own_media()};
   client::audio_video_settings_model audio_video_settings_model{
       rtc_module->get_factory()->get_audio_devices(),
       *client_video_module->get_enumerator(),

@@ -1,6 +1,7 @@
 #ifndef UUID_56991B82_F65A_4091_B353_801DDE773A7E
 #define UUID_56991B82_F65A_4091_B353_801DDE773A7E
 
+#include "client/session_module.hpp"
 #include "rtc/google/module.hpp"
 #include "utils/executor_module.hpp"
 #include <chrono>
@@ -26,7 +27,7 @@ public:
   };
   video_module(std::shared_ptr<utils::executor_module> executor_module,
                std::shared_ptr<rtc::google::module> rtc_module,
-               std::shared_ptr<tracks_adder> tracks_adder_,
+               std::shared_ptr<session_module> session_module_,
                const config &config_);
 
   std::shared_ptr<rtc::video_devices> get_enumerator();
@@ -38,7 +39,7 @@ public:
 protected:
   std::shared_ptr<utils::executor_module> executor_module;
   std::shared_ptr<rtc::google::module> rtc_module;
-  std::shared_ptr<tracks_adder> tracks_adder_;
+  std::shared_ptr<session_module> session_module_;
   const config config_;
 
   std::shared_ptr<utils::interval_timer> video_enumerator_timer;
