@@ -14,6 +14,7 @@ client_gui_sources = ['gui.cpp', 'utils_model.cpp', 'join_model.cpp',
   'chat_messages_model.cpp', 'share_desktop_model.cpp',
   'participant_model.cpp', 'room_model.cpp', 'model_creator.cpp',
   'audio_video_settings_model.cpp', 'own_media_model.cpp', 'log_module.cpp',
+  'ui_module.cpp',
   ]
 client_gui_sources += qt5.preprocess(
   qresources: 'qml.qrc',

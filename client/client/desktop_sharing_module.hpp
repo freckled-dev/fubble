@@ -9,6 +9,11 @@ class desktop_sharing;
 class desktop_sharing_previews;
 class desktop_sharing_module {
 public:
+  desktop_sharing_module(
+      std::shared_ptr<utils::executor_module> executor_module,
+      std::shared_ptr<session_module> session_module_,
+      std::shared_ptr<video_module> video_module_);
+
   std::shared_ptr<desktop_sharing> get_desktop_sharing();
   std::shared_ptr<desktop_sharing_previews> get_desktop_sharing_previews();
 
