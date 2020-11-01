@@ -149,12 +149,18 @@ int main(int argc, char *argv[]) {
 
   // ui
   BOOST_LOG_SEV(logger, logging::severity::debug) << "setting up qt";
-  auto client_ui_module = std::make_shared<client::ui_module>(argc, argv);
+  auto client_ui_module = std::make_shared<client::ui_module>(
+      executor_module_, rtc_module, client_audio_module,
+      client_audio_settings_module, mute_deaf_communicator_,
+      client_video_module, client_desktop_sharing_module, client_session_module,
+      argc, argv);
   client::poll_asio_by_qt asio_poller{context};
   asio_poller.run();
+  BOOST_LOG_SEV(logger, logging::severity::debug)
+      << "setting up all up is done. Executing the application";
   auto result = client_ui_module->exec();
   BOOST_LOG_SEV(logger, logging::severity::debug)
-      << "gui stopped, result:" << result;
+      << "application stopped, result:" << result;
   context.stop();
   return result;
 }

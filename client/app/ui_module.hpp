@@ -27,17 +27,22 @@ class share_desktop_model;
 class utils_model;
 class ui_module {
 public:
-  ui_module(int argc, char *argv[]);
+  ui_module(
+      std::shared_ptr<utils::executor_module> executor_module,
+      std::shared_ptr<rtc::google::module> rtc_module,
+      std::shared_ptr<audio_module> client_audio_module,
+      std::shared_ptr<audio_settings_module> client_audio_settings_module,
+      std::shared_ptr<mute_deaf_communicator> mute_deaf_communicator_,
+      std::shared_ptr<video_module> client_video_module,
+      std::shared_ptr<desktop_sharing_module> client_desktop_sharing_module,
+      std::shared_ptr<session_module> client_session_module, int argc,
+      char *argv[]);
 
   std::shared_ptr<QApplication> get_app();
   int exec();
 
 protected:
   client::logger logger{"ui_module"};
-
-  std::vector<char *> argv_adopted;
-  std::string arg_plaform = "-platform";
-  std::string arg_fontengine_freetype = "windows:fontengine=freetype";
 
   std::shared_ptr<utils::executor_module> executor_module;
   std::shared_ptr<rtc::google::module> rtc_module;
@@ -47,6 +52,10 @@ protected:
   std::shared_ptr<video_module> client_video_module;
   std::shared_ptr<desktop_sharing_module> client_desktop_sharing_module;
   std::shared_ptr<session_module> client_session_module;
+
+  std::vector<char *> argv_adopted;
+  std::string arg_plaform = "-platform";
+  std::string arg_fontengine_freetype = "windows:fontengine=freetype";
 
   std::shared_ptr<QApplication> app;
   std::shared_ptr<QQmlApplicationEngine> engine;

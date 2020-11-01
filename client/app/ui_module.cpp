@@ -26,7 +26,24 @@
 
 using namespace client;
 
-ui_module::ui_module(int argc, char *argv[]) : argv_adopted{argv, argv + argc} {
+ui_module::ui_module(
+    std::shared_ptr<utils::executor_module> executor_module,
+    std::shared_ptr<rtc::google::module> rtc_module,
+    std::shared_ptr<audio_module> client_audio_module,
+    std::shared_ptr<audio_settings_module> client_audio_settings_module,
+    std::shared_ptr<mute_deaf_communicator> mute_deaf_communicator_,
+    std::shared_ptr<video_module> client_video_module,
+    std::shared_ptr<desktop_sharing_module> client_desktop_sharing_module,
+    std::shared_ptr<session_module> client_session_module, int argc,
+    char *argv[])
+    : executor_module{executor_module}, rtc_module{rtc_module},
+      client_audio_module{client_audio_module},
+      client_audio_settings_module{client_audio_settings_module},
+      mute_deaf_communicator_{mute_deaf_communicator_},
+      client_video_module{client_video_module},
+      client_desktop_sharing_module{client_desktop_sharing_module},
+      client_session_module{client_session_module}, argv_adopted{argv,
+                                                                 argv + argc} {
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #if BOOST_OS_WINDOWS
   argv_adopted.push_back(arg_plaform.data());

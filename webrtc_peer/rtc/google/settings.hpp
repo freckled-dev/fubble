@@ -1,6 +1,8 @@
 #ifndef UUID_313BBDF4_E8A1_43F8_B822_CAB9749D6793
 #define UUID_313BBDF4_E8A1_43F8_B822_CAB9749D6793
 
+#include <boost/predef/os/windows.h>
+
 namespace rtc {
 namespace google {
 struct settings {
