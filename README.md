@@ -23,7 +23,7 @@ sudo zypper install -y \
 
 install build helpers
 ```
-pip3 install --user --upgrde conan meson aqtinstall
+pip3 install --user --upgrade conan meson aqtinstall
 ```
 
 ## build

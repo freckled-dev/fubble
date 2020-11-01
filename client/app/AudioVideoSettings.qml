@@ -116,7 +116,6 @@ Item {
             currentIndex: audioVideoModel.userVideoDeviceIndex
             textRole: "name"
             Material.foreground: Style.current.foreground
-            Material.accentColor: Style.current.foreground
             onActivated: audioVideoModel.onVideoDeviceActivated(index)
             enabled: audioVideoModel.videoDevices.available
             model: audioVideoModel.videoDevices

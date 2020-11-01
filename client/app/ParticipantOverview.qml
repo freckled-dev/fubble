@@ -146,7 +146,7 @@ Item {
                     anchors.verticalCenter: volumeSlider.verticalCenter
                     anchors.right: parent.right
                     anchors.rightMargin: 10
-                    showToolTip: false
+                    toolTipText: participant.silenced ? qsTr("Unsilence ") +  participant.name : qsTr("Silence ") +  participant.name
                     icon.source: participant.silenced ? Style.current.mutedImage : Style.current.mutedOffImage
                     onActionClick: participant.silenced = !participant.silenced
                 }
