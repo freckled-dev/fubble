@@ -28,10 +28,10 @@ Theme {
     property var copyPressedImage: "images/copy_pressed_dark.svg"
     property var exitImage: "images/exit_dark.gif"
     property var logoImage: "images/fubble.svg"
-    property var mutedImage: "images/muted_dark.svg"
+    property var mutedImage: "images/muted.svg"
     property var silencedImage: "images/silenced_dark.svg"
     property var deafedImage: "images/deafed_dark.svg"
-    property var mutedOffImage: "images/muted_off_dark.svg"
+    property var mutedOffImage: "images/muted_off.svg"
     property var videoDisabledImage: "images/video_disabled_dark.svg"
 
     property var overlayMuteImage: "images/overlay_mute.svg"
