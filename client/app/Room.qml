@@ -4,6 +4,7 @@ import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import QtQuick.Controls.Material 2.15
 import io.fubble 1.0
+import Qt.labs.settings 1.0
 
 Item {
 
@@ -13,6 +14,10 @@ Item {
     property alias chat: chatContainer
     property alias overview: overviewContainer
     property bool videosAvailable: room.videosAvailable
+
+    Settings {
+        id: settings
+    }
 
     FubbleActionButton {
         id: overviewShowIcon
@@ -36,6 +41,7 @@ Item {
     }
 
     SplitView {
+        id: splitView
         anchors.fill: parent
         orientation: Qt.Horizontal
 
@@ -102,6 +108,12 @@ Item {
             }
         }
     }
+
+    Component.onCompleted: splitView.restoreState(settings.value(
+                                                      "UserInterface/splitview"))
+
+    Component.onDestruction: settings.setValue("UserInterface/splitview",
+                                               splitView.saveState())
 }
 /*##^##
 Designer {
