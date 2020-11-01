@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/i18n">
-        <file alias="de.ts">i18n/qml_de.ts</file>
+        <file alias="de.qm">i18n/qml_de.qm</file>
     </qresource>
 </RCC>
 

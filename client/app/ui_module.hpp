@@ -19,6 +19,7 @@ class add_version_to_qml_context;
 class audio_video_settings_model;
 class error_model;
 class join_model;
+class language_settings_model;
 class leave_model;
 class model_creator;
 class mute_deaf_communicator;
@@ -58,6 +59,7 @@ protected:
   std::shared_ptr<model_creator> model_creator_;
   std::shared_ptr<utils_model> utils_model_;
   std::shared_ptr<join_model> join_model_;
+  std::shared_ptr<language_settings_model> language_settings_model_;
   std::shared_ptr<share_desktop_model> share_desktop_model_;
   std::shared_ptr<error_model> error_model_;
   std::shared_ptr<leave_model> leave_model_;

@@ -4,6 +4,7 @@
 #include "client/audio_tracks_volume.hpp"
 #include "error_model.hpp"
 #include "join_model.hpp"
+#include "language_settings_model.hpp"
 #include "leave_model.hpp"
 #include "model_creator.hpp"
 #include "own_media_model.hpp"
@@ -75,18 +76,6 @@ ui_module::ui_module(
   // and properties
   qRegisterMetaType<ui::frame_provider_google_video_source *>();
   qRegisterMetaType<ui::frame_provider_google_video_device *>();
-  qRegisterMetaType<room_model *>();
-  qRegisterMetaType<participant_model *>();
-  qRegisterMetaType<participants_model *>();
-  qRegisterMetaType<participants_with_video_model *>();
-  qRegisterMetaType<join_model *>();
-  qRegisterMetaType<own_media_model *>();
-  qRegisterMetaType<share_desktop_model *>();
-  qRegisterMetaType<error_model *>();
-  qRegisterMetaType<utils_model *>();
-  qRegisterMetaType<leave_model *>();
-  qRegisterMetaType<audio_video_settings_model *>();
-  qRegisterMetaType<devices_model *>();
 
   // https://doc.qt.io/qt-5/qtqml-cppintegration-overview.html#choosing-the-correct-integration-method-between-c-and-qml
   qmlRegisterUncreatableType<room_model>("io.fubble", 1, 0, "RoomModel",
@@ -105,6 +94,8 @@ ui_module::ui_module(
                                           "can't instance error_model");
   qmlRegisterUncreatableType<leave_model>("io.fubble", 1, 0, "LeaveModel",
                                           "can't instance leave_model");
+  qmlRegisterUncreatableType<language_settings_model>(
+      "io.fubble", 1, 0, "LanguageSettingsModel", "can't instance leave_model");
   qmlRegisterUncreatableType<chat_model>("io.fubble", 1, 0, "ChatModel",
                                          "can't instance chat_model");
   qmlRegisterUncreatableType<chat_messages_model>(
@@ -150,6 +141,8 @@ ui_module::ui_module(
       *client_audio_settings_module->get_audio_device_settings(),
       *client_video_module->get_video_settings(), *error_model_,
       executor_module->get_timer_factory());
+  language_settings_model_ = std::make_shared<language_settings_model>(*engine);
+
   //  works from 5.14 onwards
   // engine.setInitialProperties(...)
   //  setContextProperty sets it globaly not as property of the window
@@ -164,6 +157,8 @@ ui_module::ui_module(
                                   audio_video_settings_model_.get());
   qml_context->setContextProperty("shareDesktopModelFromCpp",
                                   share_desktop_model_.get());
+  qml_context->setContextProperty("languageModelFromCpp",
+                                  language_settings_model_.get());
   ui_add_version_to_qml_context =
       std::make_shared<ui::add_version_to_qml_context>(*qml_context);
   //  seems not to do it either

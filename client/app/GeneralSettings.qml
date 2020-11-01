@@ -44,6 +44,23 @@ Item {
             text: qsTr("Show the room history")
             checked: true || settings.saveRoomHistory
         }
+
+        Label {
+            id: languageTitle
+            text: qsTr("Language")
+            anchors.topMargin: 20
+            anchors.top: roomHistorySwitch.bottom
+            font.pointSize: Style.current.largeTextPointSize
+            width: settingsDialog.availableWidth
+        }
+        ComboBox {
+            // does not work. i guess because the property is read only
+            // currentIndex: languageModel.languageIndex
+            onCurrentIndexChanged: languageModel.languageIndex = currentIndex
+            textRole: "description"
+            anchors.top: languageTitle.bottom
+            model: languageModel.languages
+        }
     }
 }
 

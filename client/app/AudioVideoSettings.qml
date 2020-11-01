@@ -66,7 +66,7 @@ Item {
         Button {
             text: ownMediaModel.loopbackOwnVoice ? qsTr("Stop test") : qsTr(
                                                        "Test microphone")
-            Material.foreground: Style.current.buttonTextColor
+            Material.foreground: Style.current.black
             onClicked: ownMediaModel.loopbackOwnVoice = !ownMediaModel.loopbackOwnVoice
         }
 

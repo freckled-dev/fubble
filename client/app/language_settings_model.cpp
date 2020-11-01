@@ -31,14 +31,16 @@ void language_settings_model::set_selected(int change) {
   if (change == selected)
     return;
   selected = change;
+#if 0
   QDirIterator it(":", QDirIterator::Subdirectories);
   while (it.hasNext()) {
     qDebug() << it.next();
   }
+#endif
   remove_translator();
   if (change == 1) {
     translator = std::make_unique<QTranslator>();
-    [[maybe_unused]] bool loaded = translator->load(":/i18n/de.qm");
+    [[maybe_unused]] bool loaded = translator->load(":/i18n/de.ts");
     BOOST_ASSERT(loaded);
     [[maybe_unused]] bool installed =
         QCoreApplication::installTranslator(translator.get());

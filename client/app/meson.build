@@ -26,7 +26,9 @@ client_gui_sources += qt5.preprocess(
     'own_media_model.hpp', 'language_settings_model.hpp',
     'participants_model.hpp', 'participant_model.hpp', 'poll_asio_by_qt.hpp']
   )
-client_gui_sources += qt5.compile_translations(qresource: 'i18n.qrc', build_by_default: true)
+qt5.compile_translations(['i18n/qml_de.ts'])
+client_gui_sources += qt5.compile_translations(qresource: 'i18n.qrc',
+  build_by_default: true)
 if host_machine.system() == 'windows'
   windows = import('windows')
   client_gui_sources += windows.compile_resources('fubble.rc')
@@ -38,11 +40,11 @@ if host_machine.system() != 'windows'
   qt_dir = run_command('dirname', '--', rcc.full_path()).stdout().strip() / '..'
   # error(qt_dir)
   client_gui = executable('fubble', client_gui_sources,
-    dependencies: client_gui_dependencies, gui_app: true, install: true,
+    dependencies: client_gui_dependencies, win_subsystem: 'windows', install: true,
     build_rpath: qt_dir / 'lib')
 else
   client_gui = executable('fubble', client_gui_sources,
-    dependencies: client_gui_dependencies, gui_app: true, install: true)
+    dependencies: client_gui_dependencies, win_subsystem: 'windows', install: true)
 endif
 
 # https://mesonbuild.com/Generating-sources.html
