@@ -14,8 +14,6 @@ class video_devices;
 }
 namespace client {
 class add_video_to_connection_factory;
-// TODO remove tracks_adder!
-class tracks_adder;
 class own_video;
 class video_settings;
 class video_module {
