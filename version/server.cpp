@@ -1,11 +1,11 @@
 #include "version/server.hpp"
-#include "logging/logger.hpp"
+#include "version/logger.hpp"
 #include <nlohmann/json.hpp>
 #include <restinio/all.hpp>
 
 namespace {
 class server_impl final : public version::server {
-  logging::logger logger{"server_impl"};
+  version::logger logger{"server_impl"};
   std::shared_ptr<boost::asio::io_context> context_shared;
   boost::asio::io_context &context;
   const config config_;
@@ -36,6 +36,11 @@ public:
         settings_t{}
             .port(config_.port)
             .address(config_.address)
+            .acceptor_post_bind_hook([this](auto &acceptor) {
+              port = acceptor.local_endpoint().port();
+              BOOST_LOG_SEV(logger, logging::severity::debug)
+                  << "port got set to:" << port;
+            })
             .request_handler([response_string, this](auto request) {
               BOOST_LOG_SEV(logger, logging::severity::debug)
                   << "request:" << *request << ", response:" << response_string;
@@ -57,6 +62,14 @@ public:
     BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
     server->close_sync();
   }
+
+  int get_port() const override {
+    BOOST_ASSERT(port != 0);
+    return port;
+  }
+
+protected:
+  int port{};
 };
 } // namespace
 
