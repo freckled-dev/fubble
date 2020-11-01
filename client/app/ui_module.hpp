@@ -35,7 +35,7 @@ public:
       std::shared_ptr<mute_deaf_communicator> mute_deaf_communicator_,
       std::shared_ptr<video_module> client_video_module,
       std::shared_ptr<desktop_sharing_module> client_desktop_sharing_module,
-      std::shared_ptr<session_module> client_session_module, int argc,
+      std::shared_ptr<session_module> client_session_module, int &argc,
       char *argv[]);
 
   std::shared_ptr<QApplication> get_app();
@@ -52,10 +52,6 @@ protected:
   std::shared_ptr<video_module> client_video_module;
   std::shared_ptr<desktop_sharing_module> client_desktop_sharing_module;
   std::shared_ptr<session_module> client_session_module;
-
-  std::vector<char *> argv_adopted;
-  std::string arg_plaform = "-platform";
-  std::string arg_fontengine_freetype = "windows:fontengine=freetype";
 
   std::shared_ptr<QApplication> app;
   std::shared_ptr<QQmlApplicationEngine> engine;
