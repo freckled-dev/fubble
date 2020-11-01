@@ -2,7 +2,6 @@
 #include "client/logger.hpp"
 #include <boost/filesystem.hpp>
 #include <boost/stacktrace.hpp>
-#include <fruit/fruit.h>
 #include <fstream>
 extern "C" {
 #include <signal.h>
@@ -42,7 +41,7 @@ void on_signal(int signal_) {
   ::raise(SIGABRT);
 }
 struct crash_catcher_impl : crash_catcher {
-  INJECT(crash_catcher_impl()) {
+  crash_catcher_impl() {
     load_and_print_crash_file();
     ::signal(SIGSEGV, &on_signal);
     ::signal(SIGABRT, &on_signal);
@@ -67,6 +66,6 @@ struct crash_catcher_impl : crash_catcher {
 };
 } // namespace
 
-fruit::Component<crash_catcher> crash_catcher::create() {
-  return fruit::createComponent().bind<crash_catcher, crash_catcher_impl>();
+std::unique_ptr<crash_catcher> crash_catcher::create() {
+  return std::make_unique<crash_catcher_impl>();
 }

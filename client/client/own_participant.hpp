@@ -8,8 +8,7 @@ namespace client {
 class own_media;
 class own_participant : public participant {
 public:
-  own_participant(matrix::user &matrix_participant, own_media &own_media_,
-                  std::shared_ptr<desktop_sharing> desktop_sharing_);
+  own_participant(matrix::user &matrix_participant, own_media &own_media_);
   ~own_participant();
   boost::future<void> close() override;
 
