@@ -53,7 +53,12 @@ boost::future<room *> rooms::create_room(const create_room_fields &fields) {
   BOOST_LOG_SEV(logger, logging::severity::debug) << fmt::format(
       "create_room, fields.name:'{}'", fields.name.value_or("--"));
 
+  auto power_levels_events = nlohmann::json::object();
+  power_levels_events["io.fubble.audio_state"] = 0;
+  auto power_levels = nlohmann::json::object();
+  power_levels["events"] = power_levels_events;
   nlohmann::json content = nlohmann::json::object();
+  content["power_level_content_override"] = power_levels;
   content["preset"] = "private_chat";
   if (fields.name)
     content["name"] = fields.name.value();
@@ -74,9 +79,13 @@ boost::future<room *> rooms::create_room(const create_room_fields &fields) {
   history_visibility["content"] = history_visibility_content;
   initial_state.push_back(history_visibility);
   content["initial_state"] = initial_state;
+  BOOST_LOG_SEV(logger, logging::severity::trace)
+      << "content:" << content.dump(2);
   return http_client->post("createRoom", content)
       .then(executor, [this](auto result) {
         auto response = result.get();
+        BOOST_LOG_SEV(this->logger, logging::severity::debug)
+            << __FUNCTION__ << ", created room";
         auto response_json = response.second;
         error::check_matrix_response(response.first, response_json);
         const std::string room_id = response_json["room_id"];

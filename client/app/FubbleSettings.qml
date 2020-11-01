@@ -1,7 +1,7 @@
-import QtQuick 2.12
-import QtQuick.Controls.Material 2.12
-import QtQuick.Controls 2.12
-import QtQuick.Layouts 1.12
+import QtQuick 2.15
+import QtQuick.Controls.Material 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
 import Qt.labs.settings 1.0
 import "."
 
@@ -21,6 +21,7 @@ Popup {
 
     property alias bar: bar
     property alias generalSettings: general.settings
+    property alias notificationSettings: notification.settings
     property alias audioVideoSettings: audioVideo.settings
 
     ColumnLayout {
@@ -51,14 +52,19 @@ Popup {
             }
 
             TabButton {
+                text: qsTr("Sounds / Notifications")
+                width: implicitWidth
+            }
+
+            TabButton {
                 text: qsTr("Audio / Video")
                 width: implicitWidth
             }
 
             onCurrentIndexChanged: {
-                if (currentIndex === 0) {
+                if (currentIndex === 0 || currentIndex === 1) {
                     stopVideo()
-                } else if (currentIndex === 1) {
+                } else if (currentIndex === 2) {
                     startVideo()
                 }
             }
@@ -72,6 +78,9 @@ Popup {
             GeneralSettings {
                 id: general
             }
+            NotificationSettings {
+                id: notification
+            }
             AudioVideoSettings {
                 id: audioVideo
             }
@@ -80,6 +89,7 @@ Popup {
 
     onClosed: {
         ownMediaModel.loopbackOwnVoice = false
+        audioVideoModel.watchForNewAudioDevices = false
         stopVideo()
     }
 
@@ -90,12 +100,13 @@ Popup {
     }
 
     function startVideo() {
-        if (ownMediaModel.videoAvailable && bar.currentIndex == 1) {
+        if (ownMediaModel.videoAvailable && bar.currentIndex == 2) {
             audioVideoModel.videoPreview.play()
         }
     }
 
     onOpened: {
+        audioVideoModel.watchForNewAudioDevices = true
         startVideo()
     }
 }

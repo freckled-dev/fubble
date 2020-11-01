@@ -1,10 +1,10 @@
-import QtMultimedia 5.12
-import QtQuick 2.12
-import QtQuick.Controls 2.12
-import QtQuick.Window 2.12
+import QtMultimedia 5.15
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Window 2.15
 import Qt.labs.platform 1.1
 import io.fubble 1.0
-import QtQuick.Controls.Material 2.12
+import QtQuick.Controls.Material 2.15
 import Qt.labs.settings 1.0
 
 ApplicationWindow {
@@ -100,6 +100,8 @@ ApplicationWindow {
         }
 
         close.accepted = true
+        // https://stackoverflow.com/questions/51810358/how-to-quit-the-c-application-in-qt-qml
+        Qt.callLater(Qt.quit)
     }
 
     SystemTrayIcon {
@@ -107,6 +109,7 @@ ApplicationWindow {
         visible: true
         iconSource: Style.current.logoImage
         menu: Menu {
+            visible: false
             MenuItem {
                 text: qsTr("Settings")
                 onTriggered: {
@@ -193,18 +196,7 @@ ApplicationWindow {
 
     Component {
         id: roomComponent
-        Room {
-
-            Connections {
-                target: header
-                onToggleChat: {
-                    chat.chatVisible = !chat.chatVisible
-                }
-                onToggleOverview: {
-                    overview.overviewVisible = !overview.overviewVisible
-                }
-            }
-        }
+        Room {}
     }
 
     // audio effects
@@ -229,28 +221,28 @@ ApplicationWindow {
     }
 
     function playJoinSound() {
-        var isJoinSoundEnabled = settingsDialog.generalSettings.joinSound
+        var isJoinSoundEnabled = settingsDialog.notificationSettings.joinSound
         if (isJoinSoundEnabled) {
             joinSound.play()
         }
     }
 
     function playMessageSound() {
-        var isMessageSoundEnabled = settingsDialog.generalSettings.messageSound
+        var isMessageSoundEnabled = settingsDialog.notificationSettings.messageSound
         if (isMessageSoundEnabled) {
             messageSound.play()
         }
     }
 
     function playLeaveSound() {
-        var isLeaveSoundEnabeled = settingsDialog.generalSettings.leaveSound
+        var isLeaveSoundEnabeled = settingsDialog.notificationSettings.leaveSound
         if (isLeaveSoundEnabeled) {
             leaveSound.play()
         }
     }
 
     function playErrorSound() {
-        var isErrorSoundEnabled = settingsDialog.generalSettings.errorSound
+        var isErrorSoundEnabled = settingsDialog.notificationSettings.errorSound
         if (isErrorSoundEnabled) {
             errorSound.play()
         }

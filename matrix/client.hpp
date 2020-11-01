@@ -53,7 +53,7 @@ protected:
           &response);
   void do_sync();
 
-  matrix::logger logger{"client"};
+  matrix::logger logger;
   boost::inline_executor executor;
   factory &factory_;
   http::client_factory &http_factory;

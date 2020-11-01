@@ -1,8 +1,8 @@
 import "."
-import QtQuick 2.12
-import QtQuick.Controls 2.12
-import QtQuick.Controls.Material 2.12
-import QtQuick.Layouts 1.12
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Controls.Material 2.15
+import QtQuick.Layouts 1.15
 import io.fubble 1.0
 
 Rectangle {
@@ -28,6 +28,7 @@ Rectangle {
         cursorVisible: true
         placeholderText: qsTr("Write your message here...")
         wrapMode: Text.WordWrap
+        textFormat: TextEdit.PlainText
 
         Keys.onEnterPressed: {
             onInputFinished(event)
@@ -49,6 +50,7 @@ Rectangle {
         anchors.verticalCenter: parent.verticalCenter
         anchors.right: parent.right
         anchors.rightMargin: 10
+        visible: parent.width > 60
 
         contentItem: Text {
             font.family: emojiOneFont.name

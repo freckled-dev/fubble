@@ -10,7 +10,8 @@ using namespace matrix;
 
 client::client(factory &factory_, http::client_factory &http_factory,
                const information &information_)
-    : factory_(factory_), http_factory(http_factory),
+    : logger{fmt::format("client:{}", information_.user_id)},
+      factory_(factory_), http_factory(http_factory),
       information_(information_) {
   http_client = create_http_client();
   users_ = factory_.create_users(*this);
@@ -23,7 +24,7 @@ client::~client() {
     return;
   BOOST_LOG_SEV(logger, logging::severity::warning)
       << "sync_till_stop_promise not nullptr";
-#if 0
+#if 1
   sync_till_stop_promise->set_exception(
       boost::system::system_error(boost::asio::error::operation_aborted));
 #endif

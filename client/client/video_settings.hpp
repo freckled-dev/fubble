@@ -32,12 +32,14 @@ public:
 
   void pause(bool paused);
   bool get_paused() const;
+  boost::signals2::signal<void(bool)> on_paused;
+
   void change_to_device(const std::string &id);
   // means a video is instanced!
   bool is_a_video_available() const;
   std::optional<std::string> get_device_id() const;
 
-  rtc::google::video_source *get_video_source() const;
+  std::shared_ptr<rtc::google::video_source> get_video_source() const;
   boost::signals2::signal<void()> on_video_source_changed;
 
 protected:
@@ -53,7 +55,7 @@ protected:
   add_video_to_connection_factory &add_video_to_connection_factory_;
 
   std::shared_ptr<rtc::google::capture::video::device> capture_device;
-  std::unique_ptr<add_video_to_connection> video_track_adder;
+  std::shared_ptr<add_video_to_connection> video_track_adder;
   bool paused{};
   // TODO refactor to `current_device_id`
   std::optional<std::string> last_device_id;

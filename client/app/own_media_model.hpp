@@ -35,7 +35,9 @@ public:
                   video_settings &video_settings_,
                   own_microphone_tester &audio_tester,
                   audio_tracks_volume &audio_tracks_volume_,
+                  // for own audio information
                   own_audio_information &audio_information_,
+                  // for testing the loopack audio (settings)
                   own_audio_information &audio_test_information_,
                   own_media &own_media_);
   ~own_media_model();
@@ -54,6 +56,7 @@ protected:
   void set_muted(bool);
   void set_deafed(bool);
   void set_video_disabled(bool);
+  void on_paused(bool);
   bool get_video_available() const;
   void on_sound_level(const double);
   void on_sound_test_level(const double);

@@ -1,27 +1,33 @@
-import QtMultimedia 5.12
-import QtQuick 2.12
-import QtQuick.Controls 2.12
-import QtQuick.Layouts 1.12
+import QtMultimedia 5.15
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
 import io.fubble 1.0
-import QtQuick.Controls.Material 2.12
+import QtQuick.Controls.Material 2.15
 import "."
 
 RowLayout {
     id: actionOverlay
 
-    spacing: 10
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.bottom: parent.bottom
 
-    //    FubbleActionButton {
-    //        icon.source: Style.current.shareDesktopImage
-    //        toolTipText: qsTr("Share your screen")
-    //        onActionClick: shareDesktopPopup.open()
-    //    }
+    FubbleActionButton {
+        icon.source: Style.current.overlayShareDesktopImage
+        toolTipText: qsTr("Share your screen")
+        onActionClick: shareDesktopPopup.open()
+    }
 
-    //    ShareDesktopSelection {
-    //        id: shareDesktopPopup
-    //    }
+    ShareDesktopSelection {
+        id: shareDesktopPopup
+    }
+
+    FubbleActionButton {
+        icon.source: Style.current.overlayStopShareImage
+        toolTipText: qsTr("Stop desktop sharing")
+        onActionClick: shareDesktopModel.stopShareDesktop()
+        visible: shareDesktopModel.desktopSharingActive
+    }
     FubbleActionButton {
         icon.source: ownMediaModel.videoDisabled ? Style.current.overlayVideoOffImage : Style.current.overlayVideoImage
         toolTipText: ownMediaModel.videoDisabled ? qsTr("Enable your video") : qsTr(
@@ -39,8 +45,7 @@ RowLayout {
 
     FubbleActionButton {
         icon.source: ownMediaModel.deafed ? Style.current.overlaySilenceOffImage : Style.current.overlaySilenceImage
-        toolTipText: ownMediaModel.deafed ? qsTr("Hear everyone") : qsTr(
-                                                "Silence everyone")
+        toolTipText: ownMediaModel.deafed ? qsTr("Undeafen") : qsTr("Deafen")
         onActionClick: ownMediaModel.deafed = !ownMediaModel.deafed
     }
 }

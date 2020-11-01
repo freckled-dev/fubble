@@ -8,12 +8,10 @@ namespace rtc {
 namespace google {
 class video_track : public track {
 public:
-  video_track(const rtc::scoped_refptr<webrtc::VideoTrackInterface> &track);
+  video_track(const rtc::scoped_refptr<webrtc::VideoTrackInterface> track);
   ~video_track();
-  webrtc::AudioTrackInterface &get_native_audio_track();
 
 protected:
-  const rtc::scoped_refptr<webrtc::VideoTrackInterface> native_track_;
 };
 } // namespace google
 } // namespace rtc

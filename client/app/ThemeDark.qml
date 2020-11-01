@@ -1,4 +1,4 @@
-import QtQuick 2.12
+import QtQuick 2.15
 
 Theme {
     property color primary: '#82d5fa'
@@ -10,7 +10,6 @@ Theme {
     property color buttonTextColor: '#000000'
     property color backgroundTextInput: '#757575'
     property color placeholderTextColor: '#E0E0E0'
-    property color linkColor: '#6290f9'
 
     property color gray100: '#212121'
     property color gray200: '#424242'
@@ -29,21 +28,26 @@ Theme {
     property var copyPressedImage: "images/copy_pressed_dark.svg"
     property var exitImage: "images/exit_dark.gif"
     property var logoImage: "images/fubble.svg"
-    property var mutedImage: "images/muted_dark.svg"
+    property var mutedImage: "images/muted.svg"
     property var silencedImage: "images/silenced_dark.svg"
-    property var mutedOffImage: "images/muted_off_dark.svg"
+    property var deafedImage: "images/deafed_dark.svg"
+    property var mutedOffImage: "images/muted_off.svg"
     property var videoDisabledImage: "images/video_disabled_dark.svg"
 
     property var overlayMuteImage: "images/overlay_mute.svg"
     property var overlayMuteOffImage: "images/overlay_mute_off.svg"
     property var overlaySilenceImage: "images/overlay_silence.svg"
-    property var overlaySilenceOffImage: "imagesoverlay_silence_off.svg"
+    property var overlaySilenceOffImage: "images/overlay_silence_off.svg"
     property var overlayVideoImage: "images/overlay_video.svg"
     property var overlayVideoOffImage: "images/overlay_video_off.svg"
-    property var shareDesktopImage: "images/overlay_share_desktop.svg"
+    property var overlayShareDesktopImage: "images/overlay_share_desktop.svg"
+    property var overlayStopShareImage: "images/overlay_stop_share.svg"
 
     property var settingsImage: "images/overlay_settings.svg"
     property var feedbackImage: "images/feedback_dark.svg"
+
+    property var collapseImageLeft: "images/left_arrow.svg"
+    property var collapseImageRight: "images/right_arrow.svg"
 
     // Chat Images
     property var chatImage: "images/chat_dark.svg"
@@ -60,4 +64,7 @@ Theme {
 
     // DemoMode
     property var demoImagesPath: "demo_images/"
+
+    // Animations
+    property var joinAnimation: "animations/bricks_dark.gif"
 }

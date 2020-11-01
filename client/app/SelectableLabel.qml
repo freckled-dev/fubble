@@ -1,15 +1,21 @@
-import QtQuick 2.0
+import QtQuick 2.15
 
 TextEdit {
     id: chatMessage
+
     readOnly: true
     selectByMouse: true
     font.family: verdanaFont.name + ", " + emojiOneFont.name
     selectionColor: Style.current.accent
+    selectedTextColor: Style.current.background
 
-    textFormat: Text.RichText
+    // solution found in the qt example: editor
+    persistentSelection: true
+
+    textFormat: Text.MarkdownText
     wrapMode: Text.WrapAtWordBoundaryOrAnywhere
     onLinkActivated: Qt.openUrlExternally(link)
+    color: Style.current.foreground
 
     FubbleContextMenu {
         textEdit: chatMessage
@@ -19,5 +25,11 @@ TextEdit {
         canDelete: false
         canUndo: false
         canRedo: false
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        acceptedButtons: Qt.NoButton
+        cursorShape: parent.hoveredLink ? Qt.PointingHandCursor : Qt.ArrowCursor
     }
 }

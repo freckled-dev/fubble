@@ -1,6 +1,6 @@
-import QtQuick 2.12
-import QtQuick.Controls 2.12
-import QtQuick.Controls.Material 2.12
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Controls.Material 2.15
 import "."
 
 Popup {
@@ -76,13 +76,12 @@ Popup {
         horizontalAlignment: Text.AlignHCenter
     }
 
-    Label {
+    LabelWithLink {
         id: websiteLabel
         anchors.top: companyLabel.bottom
         text: qsTr("<a href='https://freckled.dev/contact'>Contact us...</a>")
         anchors.topMargin: 20
         anchors.horizontalCenter: parent.horizontalCenter
-        onLinkActivated: Qt.openUrlExternally(link)
     }
 }
 

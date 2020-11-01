@@ -2,6 +2,8 @@
 #define UUID_B27E182A_AF56_48E7_B9B3_428F3B393E2B
 
 #include "client/logger.hpp"
+#include "utils/exception.hpp"
+#include "version/getter.hpp"
 #include <boost/thread/executors/inline_executor.hpp>
 #include <boost/thread/future.hpp>
 
@@ -19,9 +21,18 @@ class rooms;
 class room_creator;
 class joiner {
 public:
+  struct update_required : utils::exception {};
+  using minimum_version_info =
+      boost::error_info<struct minimum_version_tag, std::string>;
+  using current_version_info =
+      boost::error_info<struct current_version_tag, std::string>;
+  using installed_version_info =
+      boost::error_info<struct installed_version_tag, std::string>;
+
   joiner(room_creator &room_creator_, rooms &rooms_,
          matrix::authentification &matrix_authentification,
-         temporary_room::net::client &temporary_room_client);
+         temporary_room::net::client &temporary_room_client,
+         std::shared_ptr<version::getter> version_getter);
   ~joiner();
 
   struct parameters {
@@ -41,6 +52,7 @@ protected:
   rooms &rooms_;
   matrix::authentification &matrix_authentification;
   temporary_room::net::client &temporary_room_client;
+  std::shared_ptr<version::getter> version_getter;
 };
 } // namespace client
 

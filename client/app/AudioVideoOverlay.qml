@@ -1,4 +1,4 @@
-import QtQuick 2.12
+import QtQuick 2.15
 import "."
 import io.fubble 1.0
 
@@ -21,7 +21,7 @@ Rectangle {
 
     Connections {
         target: ownMediaModel
-        onNewAudioLevel: {
+        function onNewAudioLevel(level) {
             audioChart.addNewAudioLevel(level)
         }
     }

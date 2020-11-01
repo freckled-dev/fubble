@@ -10,9 +10,9 @@
 #include <gtest/gtest.h>
 
 namespace {
-signalling::client::client::connect_information
+signalling::client::connect_information
 make_connect_information(const signalling::server::application &server) {
-  signalling::client::client::connect_information result;
+  signalling::client::connect_information result;
   result.host = "localhost";
   result.service = std::to_string(server.get_port());
   result.target = "/";
@@ -33,7 +33,7 @@ struct Client : ::testing::Test {
   std::unique_ptr<signalling::client::client> client =
       signalling::client::client::create(websocket_connector_creator,
                                          signalling_client_connection_creator);
-  signalling::client::client::connect_information connect_information =
+  signalling::client::connect_information connect_information =
       make_connect_information(*server);
   signalling::client::factory_impl client_factory{
       websocket_connector_creator, signalling_client_connection_creator,

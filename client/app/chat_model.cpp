@@ -1,6 +1,7 @@
 #include "chat_model.hpp"
 #include "client/chat.hpp"
 #include "client/room.hpp"
+#include <boost/algorithm/string/replace.hpp>
 
 using namespace client;
 
@@ -12,7 +13,12 @@ chat_model::chat_model(room &room_, QObject *parent)
 }
 
 void chat_model::sendMessage(const QString &message) {
-  chat_.send_message(message.toStdString());
+  auto casted = message.toStdString();
+  // markdown does not make a newline unless there is a "  " or "\" at the end
+  // of the line
+  auto with_new_lines =
+      boost::algorithm::replace_all_copy(casted, "\n", "  \n");
+  chat_.send_message(with_new_lines);
 }
 
 void chat_model::resetNewMessages() {

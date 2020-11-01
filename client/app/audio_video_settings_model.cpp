@@ -6,6 +6,7 @@
 #include "rtc/google/audio_devices.hpp"
 #include "rtc/google/capture/video/device.hpp"
 #include "rtc/google/capture/video/enumerator.hpp"
+#include "utils/timer.hpp"
 
 using namespace client;
 
@@ -65,7 +66,7 @@ public:
 
   int rowCount([[maybe_unused]] const QModelIndex &parent =
                    QModelIndex()) const override {
-    return std::max<int>(devices.size(), 1);
+    return devices.size();
   }
   QVariant data(const QModelIndex &index, int role) const override {
     if (!available)
@@ -87,13 +88,16 @@ class recording_audio_devices_model : public audio_devices_model {
 public:
   recording_audio_devices_model(rtc::google::audio_devices &audio_devices,
                                 QObject *parent)
-      : audio_devices_model(audio_devices, parent) {
-    refresh();
-  }
+      : audio_devices_model(audio_devices, parent) {}
 
   void refresh() override {
-    devices = audio_devices.get_recording_devices();
-    update_available(!devices.empty());
+    auto new_devices = audio_devices.get_recording_devices();
+    if (new_devices == devices)
+      return;
+    beginResetModel();
+    devices = new_devices;
+    endResetModel();
+    update_available(true);
   }
 
 protected:
@@ -102,13 +106,16 @@ class output_audio_devices_model : public audio_devices_model {
 public:
   output_audio_devices_model(rtc::google::audio_devices &audio_devices,
                              client::audio_device_settings &, QObject *parent)
-      : audio_devices_model(audio_devices, parent) {
-    refresh();
-  }
+      : audio_devices_model(audio_devices, parent) {}
 
   void refresh() override {
-    devices = audio_devices.get_playout_devices();
-    update_available(!devices.empty());
+    auto new_devices = audio_devices.get_playout_devices();
+    if (new_devices == devices)
+      return;
+    beginResetModel();
+    devices = new_devices;
+    endResetModel();
+    update_available(true);
   }
 
 protected:
@@ -136,19 +143,27 @@ audio_video_settings_model::audio_video_settings_model(
     rtc::video_devices &video_device_enumerator,
     rtc::google::capture::video::device_factory &video_device_factory,
     client::audio_device_settings &audio_settings,
-    video_settings &video_settings_, error_model &error_model_, QObject *parent)
-    : QObject(parent), video_device_enumerator(video_device_enumerator),
+    video_settings &video_settings_, error_model &error_model_,
+    std::shared_ptr<utils::timer_factory> timer_factory, QObject *parent)
+    : QObject(parent), audio_devices(audio_devices),
+      video_device_enumerator(video_device_enumerator),
       audio_settings(audio_settings), video_settings_(video_settings_),
-      video_device_factory(video_device_factory), error_model_(error_model_) {
-  audio_devices.enumerate();
+      video_device_factory(video_device_factory),
+      error_model_(error_model_), timer_factory{timer_factory} {
+  // audio
+  audio_devices_timer =
+      timer_factory->create_interval_timer(std::chrono::seconds(1));
   output_devices =
       new output_audio_devices_model(audio_devices, audio_settings, this);
   input_devices = new recording_audio_devices_model(audio_devices, this);
+  update_audio_devices();
+  connect(this, &audio_video_settings_model::update_audio_devices_changed, this,
+          &audio_video_settings_model::on_enable_update_audio_devices);
+
+  // video
   auto video_devices_uncasted =
       new video_devices_model(video_device_enumerator, this);
   video_devices = video_devices_uncasted;
-  audio_output_device_index = audio_settings.get_playout_device();
-  audio_input_device_index = audio_settings.get_recording_device();
   update_video_device_index();
   if (video_devices_uncasted->has_devices())
     onVideoDeviceActivated(video_device_index);
@@ -160,6 +175,30 @@ void audio_video_settings_model::onAudioInputDeviceActivated(int index) {
   BOOST_LOG_SEV(logger, logging::severity::debug)
       << __FUNCTION__ << ", index:" << index;
   audio_settings.set_recording_device(index);
+}
+
+void audio_video_settings_model::update_audio_devices() {
+  audio_devices.enumerate();
+  output_devices->refresh();
+  input_devices->refresh();
+  auto new_audio_output_device_index = audio_settings.get_playout_device();
+  if (new_audio_output_device_index != audio_output_device_index) {
+    audio_output_device_index = new_audio_output_device_index;
+    audio_output_device_index_changed(audio_output_device_index);
+  }
+  auto new_audio_input_device_index = audio_settings.get_recording_device();
+  if (new_audio_input_device_index != audio_input_device_index) {
+    audio_input_device_index = new_audio_input_device_index;
+    audio_input_device_index_changed(audio_input_device_index);
+  }
+}
+
+void audio_video_settings_model::on_enable_update_audio_devices(bool enabled) {
+  if (enabled) {
+    audio_devices_timer->start([this] { update_audio_devices(); });
+    return;
+  }
+  audio_devices_timer->stop();
 }
 
 void audio_video_settings_model::onAudioOutputDeviceActivated(int index) {

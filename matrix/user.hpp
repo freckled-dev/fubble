@@ -31,12 +31,7 @@ public:
 
   inline presence get_presence() const { return presence_; }
 
-  inline void set_display_name(const std::string &display_name_) {
-    if (display_name == display_name_)
-      return;
-    display_name = display_name_;
-    on_update();
-  }
+  void set_display_name(const std::string &display_name_);
   inline const std::string &get_display_name() const { return display_name; }
 
   // TODO optimise. on_update gets called more often than neccessary

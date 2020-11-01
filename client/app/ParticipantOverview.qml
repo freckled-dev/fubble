@@ -1,6 +1,6 @@
-import QtQuick 2.12
-import QtQuick.Layouts 1.12
-import QtQuick.Controls 2.12
+import QtQuick 2.15
+import QtQuick.Layouts 1.15
+import QtQuick.Controls 2.15
 import io.fubble 1.0
 import "."
 
@@ -41,16 +41,6 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
             }
 
-            Image {
-                id: videoDisabledImage
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.right: mutedImage.left
-                sourceSize.height: 20
-                sourceSize.width: 20
-                source: Style.current.videoDisabledImage
-                visible: participant.videoDisabled
-            }
-
             MouseArea {
                 id: maHeader
                 anchors.fill: parent
@@ -64,11 +54,13 @@ Item {
             Image {
                 id: mutedImage
                 anchors.verticalCenter: parent.verticalCenter
-                anchors.right: parent.right
+                anchors.right: deafedImage.visible ? deafedImage.left : parent.right
                 sourceSize.height: 20
                 sourceSize.width: 20
+                anchors.rightMargin: 5
                 source: participant.silenced ? Style.current.silencedImage : Style.current.mutedImage
                 visible: participant.muted || participant.silenced
+                         || participant.deafed
 
                 FubbleToolTip {
                     id: ttMuted
@@ -79,6 +71,29 @@ Item {
 
                 MouseArea {
                     id: maMuted
+                    anchors.fill: parent
+                    hoverEnabled: true
+                }
+            }
+
+            Image {
+                id: deafedImage
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.right: parent.right
+                sourceSize.height: 20
+                sourceSize.width: 20
+                anchors.rightMargin: 5
+                source: Style.current.deafedImage
+                visible: participant.deafed
+
+                FubbleToolTip {
+                    id: ttDeafed
+                    text: qsTr("User has deafed himself.")
+                    visible: maDeafed.containsMouse
+                }
+
+                MouseArea {
+                    id: maDeafed
                     anchors.fill: parent
                     hoverEnabled: true
                 }
@@ -123,7 +138,7 @@ Item {
                     anchors.left: parent.left
                     anchors.right: muteImage.left
                     anchors.rightMargin: 5
-                    enabled: !participant.muted
+                    enabled: !participant.silenced
                 }
 
                 FubbleActionButton {
@@ -131,15 +146,15 @@ Item {
                     anchors.verticalCenter: volumeSlider.verticalCenter
                     anchors.right: parent.right
                     anchors.rightMargin: 10
-                    showToolTip: false
-                    icon.source: participant.muted ? Style.current.mutedImage : Style.current.mutedOffImage
+                    toolTipText: participant.silenced ? qsTr("Unsilence ") +  participant.name : qsTr("Silence ") +  participant.name
+                    icon.source: participant.silenced ? Style.current.mutedImage : Style.current.mutedOffImage
                     onActionClick: participant.silenced = !participant.silenced
                 }
             }
 
             Connections {
                 target: participant
-                onNewAudioLevel: {
+                function onNewAudioLevel(level) {
                     audioChart.addNewAudioLevel(level)
                 }
             }

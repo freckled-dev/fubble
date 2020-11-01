@@ -1,7 +1,7 @@
-import QtQuick 2.12
-import QtQuick.Controls 2.12
-import QtMultimedia 5.12
-import QtQuick.Controls.Material 2.12
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtMultimedia 5.15
+import QtQuick.Controls.Material 2.15
 import io.fubble 1.0
 import "."
 
@@ -23,19 +23,24 @@ Popup {
 
     Connections {
         target: errorModel
-        onError: {
+        function onError() {
             playErrorSound()
             open()
         }
     }
 
-    Label {
+    LabelWithLink {
         id: label
         text: errorModel.text
+        textFormat: Text.RichText
         padding: 20
+        onLinkActivated: Qt.openUrlExternally(link)
+        anchors.right: closeButton.left
+        anchors.left: parent.left
     }
 
     Image {
+        id: closeButton
         anchors.top: parent.top
         anchors.topMargin: 8
         source: Style.current.closeImage

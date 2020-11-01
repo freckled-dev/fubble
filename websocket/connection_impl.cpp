@@ -39,7 +39,7 @@ namespace {
 void completion_error(const boost::system::error_code &error) {
   if (!error)
     return;
-  throw boost::system::system_error(error);
+  BOOST_THROW_EXCEPTION(boost::system::system_error(error));
 }
 } // namespace
 

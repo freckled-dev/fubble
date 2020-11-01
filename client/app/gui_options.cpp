@@ -20,6 +20,9 @@ std::optional<gui_config> gui_options::parse(int argc, char *argv[]) {
               "enable or disable the usage of ssl");
     adder.add("use-crash-catcher", result.general_.use_crash_catcher,
               "enable or disable the usage of the stacktrace crash catcher");
+    adder.add(
+        "log-webrtc", result.general_.log_webrtc,
+        "enable or disable the logging of webrtc, which is quite verbose");
     adder.add("video", result.general_.video_support,
               "enable or disable the usage of video-support");
     adder.add("log-severity", result.general_.log_severity,

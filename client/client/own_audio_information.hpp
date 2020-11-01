@@ -28,7 +28,7 @@ protected:
 
   audio_level_calculator_factory &audio_level_calculator_factory_;
   std::unique_ptr<audio_level_calculator> audio_level_calculator_;
-  std::vector<boost::signals2::scoped_connection> connections;
+  std::vector<boost::signals2::scoped_connection> signal_connections;
 };
 } // namespace client
 

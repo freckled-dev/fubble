@@ -1,7 +1,8 @@
 #ifndef UUID_5ACD0027_5192_4804_B778_E80244B84D45
 #define UUID_5ACD0027_5192_4804_B778_E80244B84D45
 
-#include "participant.hpp"
+#include "client/logger.hpp"
+#include "client/participant.hpp"
 
 namespace client {
 class peer_creator;
@@ -18,6 +19,7 @@ public:
   std::unique_ptr<participant> create(matrix::user &session_information);
 
 protected:
+  client::logger logger{"participant_creator"};
   factory &factory_;
   peer_creator &peer_creator_;
   tracks_adder &tracks_adder_;

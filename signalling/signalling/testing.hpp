@@ -6,9 +6,9 @@
 #include "utils/uuid.hpp"
 
 namespace signalling::testing {
-client::client::connect_information make_connect_information() {
-  client::client::connect_information connect_information{
-      false, utils::testing::server, "80", "/api/signalling/v0/"};
+client::connect_information make_connect_information() {
+  client::connect_information connect_information{false, utils::testing::server,
+                                                  "80", "/api/signalling/v0/"};
   return connect_information;
 }
 } // namespace signalling::testing

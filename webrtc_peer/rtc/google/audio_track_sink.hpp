@@ -12,7 +12,7 @@ public:
       const rtc::scoped_refptr<webrtc::AudioTrackInterface> &track);
   ~audio_track_sink();
 
-  webrtc::AudioTrackInterface &get_native_audio_track() override;
+  webrtc::AudioTrackInterface &get_native_audio_track();
   audio_source &get_source() override;
   void set_volume(double) override;
 

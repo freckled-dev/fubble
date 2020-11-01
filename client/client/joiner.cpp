@@ -4,25 +4,35 @@
 #include "room_creator.hpp"
 #include "rooms.hpp"
 #include "temporary_room/net/client.hpp"
+#include "utils/version.hpp"
 #include <boost/asio/defer.hpp>
 #include <fmt/format.h>
 
 using namespace client;
 
 namespace {
+
 class join {
 public:
   join(room_creator &room_creator_,
        matrix::authentification &matrix_authentification,
-       temporary_room::net::client &temporary_room_client)
+       temporary_room::net::client &temporary_room_client,
+       std::shared_ptr<version::getter> version_getter)
       : room_creator_(room_creator_),
         matrix_authentification(matrix_authentification),
-        temporary_room_client(temporary_room_client) {}
+        temporary_room_client(temporary_room_client), version_getter{
+                                                          version_getter} {}
   ~join() { BOOST_LOG_SEV(logger, logging::severity::debug) << "destructor"; }
 
   boost::future<joiner::room_ptr> join_(const joiner::parameters &parameters_) {
     this->parameters_ = parameters_;
-    return matrix_authentification.register_as_guest()
+    return version_getter->get()
+        .then(executor,
+              [this](auto result) {
+                on_version(result);
+                return matrix_authentification.register_anonymously();
+              })
+        .unwrap()
         .then(executor,
               [this](auto result) {
                 on_connected(result);
@@ -39,6 +49,18 @@ public:
   }
 
 protected:
+  void on_version(boost::future<version::getter::result> &result) {
+    BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
+    auto version = result.get();
+    if (version.minimum_version <= utils::version())
+      return;
+    BOOST_THROW_EXCEPTION(
+        joiner::update_required()
+        << joiner::current_version_info(utils::version())
+        << joiner::minimum_version_info(version.minimum_version)
+        << joiner::installed_version_info(version.current_version));
+  }
+
   void on_connected(boost::future<std::unique_ptr<matrix::client>> &result) {
     BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
     client_ = result.get();
@@ -89,6 +111,7 @@ protected:
   room_creator &room_creator_;
   matrix::authentification &matrix_authentification;
   temporary_room::net::client &temporary_room_client;
+  std::shared_ptr<version::getter> version_getter;
   boost::inline_executor executor;
   std::unique_ptr<matrix::client> client_;
   joiner::parameters parameters_;
@@ -97,10 +120,12 @@ protected:
 
 joiner::joiner(room_creator &room_creator_, rooms &rooms_,
                matrix::authentification &matrix_authentification,
-               temporary_room::net::client &temporary_room_client)
+               temporary_room::net::client &temporary_room_client,
+               std::shared_ptr<version::getter> version_getter)
     : room_creator_(room_creator_), rooms_(rooms_),
       matrix_authentification(matrix_authentification),
-      temporary_room_client(temporary_room_client) {}
+      temporary_room_client(temporary_room_client), version_getter{
+                                                        version_getter} {}
 
 joiner::~joiner() = default;
 
@@ -110,8 +135,9 @@ joiner::join(const parameters &parameters_) {
       << __FUNCTION__
       << fmt::format("parameters_.name:'{}', .room:'{}'", parameters_.name,
                      parameters_.room);
-  auto join_ = std::make_shared<class join>(
-      room_creator_, matrix_authentification, temporary_room_client);
+  auto join_ =
+      std::make_shared<class join>(room_creator_, matrix_authentification,
+                                   temporary_room_client, version_getter);
   return join_->join_(parameters_).then(executor, [join_, this](auto result) {
     return on_joined(result);
   });

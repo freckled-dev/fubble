@@ -10,8 +10,8 @@ namespace client {
 class tracks_adder {
 public:
   virtual ~tracks_adder() = default;
-  virtual void add(track_adder &adder);
-  virtual void remove(track_adder &adder);
+  virtual void add(std::shared_ptr<track_adder> adder);
+  virtual void remove(std::shared_ptr<track_adder> adder);
 
   virtual void add_connection(rtc::connection &connection);
   virtual void remove_connection(rtc::connection &connection);
@@ -19,8 +19,8 @@ public:
 protected:
   using connections = std::vector<rtc::connection *>;
   connections::iterator find_connection(rtc::connection &connection);
-  using tracks = std::vector<track_adder *>;
-  tracks::iterator find_adder(const track_adder &adder);
+  using tracks = std::vector<std::shared_ptr<track_adder>>;
+  tracks::iterator find_adder(const std::shared_ptr<track_adder> &adder);
 
   client::logger logger{"tracks_adder"};
   tracks adders;

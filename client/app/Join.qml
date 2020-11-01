@@ -1,10 +1,10 @@
-import QtQuick 2.12
-import QtQuick.Controls 2.12
-import QtQuick.Layouts 1.12
-import QtMultimedia 5.12
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
+import QtMultimedia 5.15
 import io.fubble 1.0
 import Qt.labs.settings 1.0
-import QtQuick.Controls.Material 2.12
+import QtQuick.Controls.Material 2.15
 import "."
 import "scripts/utils.js" as Utils
 
@@ -42,11 +42,11 @@ FocusScope {
 
         Connections {
             target: joinModel
-            onJoined: {
+            function onJoined(room) {
                 joinPopup.close()
                 joined(room)
             }
-            onJoin_failed: {
+            function onJoin_failed() {
                 joinPopup.close()
                 setGuiEnabled(true)
             }
@@ -218,7 +218,11 @@ FocusScope {
                     placeholderText: qsTr("Your name *")
                     Layout.fillWidth: true
                     //onAccepted: passwordTextField.focus = true
-                    onAccepted: joinRoomContainer.joinRoom()
+                    onAccepted: {
+                        if (joinButton.enabled) {
+                            joinRoomContainer.joinRoom()
+                        }
+                    }
                 }
 
                 Label {

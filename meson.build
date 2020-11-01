@@ -12,6 +12,9 @@ else
   enable_servers = disabled
 endif
 
+# debug PATH
+# error(run_command('sh', '-c', 'echo $PATH').stdout().strip())
+
 is_debug = get_option('debug')
 
 if host_machine.system() == 'windows'
@@ -98,7 +101,9 @@ gstreamer_sdp_dep = dependency('gstreamer-sdp-1.0',
   required : false, disabler : true)
 qt5_clear_dep = dependency('qt5',
   modules: ['Core', 'Gui', 'Qml', 'Quick', 'Widgets', 'Network', 'Multimedia',
-    'Svg', 'QuickControls2', 'Charts'])
+    'Svg', 'QuickControls2', 'Charts'], method: 'qmake',
+  version: '>=5.15.0')
+
 qt5_dep_dependencies = [qt5_clear_dep]
 qt5_dep_link_with = []
 if host_machine.system() == 'windows' and false
@@ -133,16 +138,32 @@ gstreamer_webrtc_dep = declare_dependency(
   )
 if host_machine.system() == 'linux'
   x11_dep = dependency('x11')
+  xext_dep = dependency('xext')
+  xcomposite_dep = dependency('xcomposite')
+  xfixes_dep = dependency('xfixes')
+  xdamage_dep = dependency('xdamage')
+  xrandr_dep = dependency('xrandr')
+  google_webrtc_system_deps = declare_dependency(
+    dependencies: [x11_dep, xext_dep, xcomposite_dep, xfixes_dep,
+      xdamage_dep, xrandr_dep]
+    )
 else
-  x11_dep = declare_dependency()
+  google_webrtc_system_deps = declare_dependency(
+    link_args: ['d3d11.lib', 'dxgi.lib']
+  )
 endif
 google_webrtc_dep_fixme = dependency('google-webrtc', include_type : 'system')
 google_webrtc_dep = declare_dependency(
-  dependencies: [google_webrtc_dep_fixme, x11_dep]
+  dependencies: [google_webrtc_dep_fixme, google_webrtc_system_deps]
   )
 # ssl_dep = dependency('openssl', include_type: 'system', required: false)
 ssl_dep = google_webrtc_dep
 rectangle_bin_pack_dep = dependency('RectangleBinPack', include_type: 'system')
+if host_machine.system() == 'linux'
+  restinio_dep = dependency('restinio', include_type: 'system')
+else
+  restinio_dep = disabled
+endif
 
 subdir('asio')
 subdir('utils')
@@ -152,5 +173,6 @@ subdir('matrix')
 subdir('signalling')
 subdir('webrtc_peer')
 subdir('temporary_room')
+subdir('version')
 subdir('client')
 

@@ -26,13 +26,17 @@ public:
 
   rtc::scoped_refptr<adapter> source_adapter() const;
 
+  enum class content_hint { none, fluid, detailed, text };
+  void set_content_hint(const content_hint hint);
+
 protected:
   void handle_frame(const webrtc::VideoFrame &frame);
 
   const rtc::scoped_refptr<adapter> adapter_;
   const std::shared_ptr<video_source> source;
+  const rtc::scoped_refptr<webrtc::VideoTrackInterface> video_track_;
   boost::signals2::scoped_connection on_frame_connection;
-};
+}; // namespace google
 } // namespace google
 } // namespace rtc
 

@@ -18,12 +18,17 @@ offer_answer::offer_answer(boost::executor &executor,
 
 void offer_answer::on_create_offer() {
   auto sdp = rtc_connection.create_offer();
-  sdp.then(executor, [this](auto offer_future) {
-    auto offer = offer_future.get();
-    rtc_connection.set_local_description(offer);
-    signalling::offer offer_casted{offer.sdp};
-    signalling_client.send_offer(offer_casted);
-  });
+  sdp.then(executor,
+           [this](auto offer_future) {
+             auto offer = offer_future.get();
+             return rtc_connection.set_local_description(offer).then(
+                 executor, [this, offer](auto local_description_result) {
+                   local_description_result.get();
+                   signalling::offer offer_casted{offer.sdp};
+                   return signalling_client.send_offer(offer_casted);
+                 });
+           })
+      .unwrap();
 }
 
 void offer_answer::on_negotiation_needed() {
@@ -55,11 +60,31 @@ void offer_answer::on_answer(signalling::answer sdp) {
 void offer_answer::on_offer(signalling::offer sdp) {
   rtc::session_description sdp_casted{rtc::session_description::type::offer,
                                       sdp.sdp};
-  rtc_connection.set_remote_description(sdp_casted);
+  rtc_connection.set_remote_description(sdp_casted)
+      .then(executor, [this](auto result) { on_offer_set(result); });
+}
+
+void offer_answer::on_offer_set(boost::future<void> &set_result) {
+  try {
+    set_result.get();
+  } catch (...) {
+    BOOST_LOG_SEV(logger, logging::severity::error)
+        << __FUNCTION__ << ", could not set offer as remote_description";
+    return;
+  }
   rtc_connection.create_answer().then(executor, [this](auto answer_future) {
-    auto answer = answer_future.get();
-    rtc_connection.set_local_description(answer);
-    signalling::answer answer_casted{answer.sdp};
-    signalling_client.send_answer(answer_casted);
+    try {
+      auto answer = answer_future.get();
+      rtc_connection.set_local_description(answer).then(
+          executor, [answer, this](auto local_description_result) {
+            local_description_result.get();
+            signalling::answer answer_casted{answer.sdp};
+            signalling_client.send_answer(answer_casted);
+          });
+    } catch (...) {
+      BOOST_LOG_SEV(this->logger, logging::severity::error)
+          << __FUNCTION__ << ", could not create answer";
+      return;
+    }
   });
 }

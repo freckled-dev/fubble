@@ -36,7 +36,6 @@ protected:
   boost::executor &main_thread;
   rtc::google::audio_source &audio_source;
   std::unique_ptr<rtc::google::voice_detection> voice_detection_;
-  boost::signals2::scoped_connection on_data_connection;
 
   static constexpr int audio_level_values_to_collect{100 / 10};
   double audio_level_cache{};
@@ -44,6 +43,7 @@ protected:
 
   bool voice_detected{};
   std::shared_ptr<int> alive_check = std::make_shared<int>(42);
+  boost::signals2::scoped_connection on_data_connection;
 };
 
 class audio_level_calculator_factory {

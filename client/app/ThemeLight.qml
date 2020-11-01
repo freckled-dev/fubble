@@ -1,4 +1,4 @@
-import QtQuick 2.12
+import QtQuick 2.15
 
 Theme {
     property color primary: '#0277BD'
@@ -10,7 +10,6 @@ Theme {
     property color buttonTextColor: '#ffffff'
     property color backgroundTextInput: '#E0E0E0'
     property color placeholderTextColor: '#757575'
-    property color linkColor: '#6290f9'
 
     property color gray100: '#F5F5F5'
     property color gray200: '#EEEEEE'
@@ -31,6 +30,7 @@ Theme {
     property var logoImage: "images/fubble.svg"
     property var mutedImage: "images/muted.svg"
     property var silencedImage: "images/silenced.svg"
+    property var deafedImage: "images/deafed.svg"
     property var mutedOffImage: "images/muted_off.svg"
     property var videoDisabledImage: "images/video_disabled.svg"
 
@@ -40,10 +40,14 @@ Theme {
     property var overlaySilenceOffImage: "images/overlay_silence_off.svg"
     property var overlayVideoImage: "images/overlay_video.svg"
     property var overlayVideoOffImage: "images/overlay_video_off.svg"
-    property var shareDesktopImage: "images/overlay_share_desktop.svg"
+    property var overlayShareDesktopImage: "images/overlay_share_desktop.svg"
+    property var overlayStopShareImage: "images/overlay_stop_share.svg"
 
     property var settingsImage: "images/overlay_settings.svg"
     property var feedbackImage: "images/feedback.svg"
+
+    property var collapseImageLeft: "images/left_arrow.svg"
+    property var collapseImageRight: "images/right_arrow.svg"
 
     // Chat Images
     property var chatImage: "images/chat.svg"
@@ -60,4 +64,7 @@ Theme {
 
     // DemoMode
     property var demoImagesPath: "demo_images/"
+
+    // Animations
+    property var joinAnimation: "animations/bricks_light.gif"
 }

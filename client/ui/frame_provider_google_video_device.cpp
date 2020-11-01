@@ -9,7 +9,7 @@ frame_provider_google_video_device::frame_provider_google_video_device(
     rtc::google::capture::video::device &device, QObject *parent)
     : QObject(parent), device(device) {
   delegate = new ui::frame_provider_google_video_source(this);
-  delegate->set_source(&device);
+  delegate->set_source(device.get_source());
 }
 
 frame_provider_google_video_device::~frame_provider_google_video_device() =

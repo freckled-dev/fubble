@@ -52,6 +52,7 @@ public:
     unsigned short port{};
   };
   acceptor(boost::asio::io_context &context, const config &config_);
+  ~acceptor();
 
   void listen();
   boost::future<void> run();

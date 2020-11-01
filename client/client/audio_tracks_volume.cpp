@@ -13,9 +13,10 @@ using namespace client;
 namespace {
 class audio_tracks_volume_impl : public audio_tracks_volume {
 public:
-  audio_tracks_volume_impl(rooms &rooms_, tracks_adder &tracks_adder_,
-                           add_audio_to_connection &audio_track_adder,
-                           own_audio_track &own_audio_track_)
+  audio_tracks_volume_impl(
+      rooms &rooms_, tracks_adder &tracks_adder_,
+      const std::shared_ptr<add_audio_to_connection> &audio_track_adder,
+      own_audio_track &own_audio_track_)
       : rooms_(rooms_), tracks_adder_(tracks_adder_),
         audio_track_adder(audio_track_adder),
         own_audio_track_(own_audio_track_) {
@@ -47,6 +48,7 @@ public:
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << ", muted_self:" << muted_self;
     update_self_muted();
+    on_muted(muted_self);
   }
 
   bool get_self_muted() override { return muted_self; }
@@ -59,6 +61,7 @@ public:
         << __FUNCTION__ << ", deafned:" << deafned;
     update_all_participants();
     update_self_muted();
+    on_deafed(deafned);
   }
 
   bool get_deafen() override { return deafned; }
@@ -191,13 +194,13 @@ protected:
     actually_muted = actually_muted_target;
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << ", actually_muted:" << actually_muted;
-    own_audio_track_.get_track()->set_enabled(!actually_muted);
+    own_audio_track_.set_enabled(!actually_muted);
   }
 
   client::logger logger{"audio_tracks_volume_impl"};
   rooms &rooms_;
   tracks_adder &tracks_adder_;
-  add_audio_to_connection &audio_track_adder;
+  const std::shared_ptr<add_audio_to_connection> audio_track_adder;
   own_audio_track &own_audio_track_;
   std::shared_ptr<room> room_;
   participants *participants_{};
@@ -209,10 +212,10 @@ protected:
 };
 } // namespace
 
-std::unique_ptr<audio_tracks_volume>
-audio_tracks_volume::create(rooms &rooms_, tracks_adder &tracks_adder_,
-                            add_audio_to_connection &audio_track_adder,
-                            own_audio_track &own_audio_track_) {
+std::unique_ptr<audio_tracks_volume> audio_tracks_volume::create(
+    rooms &rooms_, tracks_adder &tracks_adder_,
+    const std::shared_ptr<add_audio_to_connection> &audio_track_adder,
+    own_audio_track &own_audio_track_) {
   return std::make_unique<audio_tracks_volume_impl>(
       rooms_, tracks_adder_, audio_track_adder, own_audio_track_);
 }

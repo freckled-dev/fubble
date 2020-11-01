@@ -1,5 +1,5 @@
 import QtQml 2.0
-import QtMultimedia 5.12
+import QtMultimedia 5.15
 
 QtObject {
     property string name
@@ -20,8 +20,6 @@ QtObject {
 
     // indicator if the participant is speaking
     property bool voiceDetected
-
-    property bool videoDisabled
 
     // just used in the GUI
     property bool highlighted

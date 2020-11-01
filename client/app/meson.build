@@ -13,8 +13,8 @@ client_gui_sources = ['gui.cpp', 'utils_model.cpp', 'join_model.cpp',
   'participants_with_video_model.cpp', 'chat_model.cpp',
   'chat_messages_model.cpp', 'share_desktop_model.cpp',
   'participant_model.cpp', 'room_model.cpp', 'model_creator.cpp',
-  'audio_video_settings_model.cpp', 'own_media_model.cpp',
-  'language_settings_model.cpp'
+  'language_settings_model.cpp', 'ui_module.cpp',
+  'audio_video_settings_model.cpp', 'own_media_model.cpp', 'log_module.cpp',
   ]
 qt5 = import('qt5')
 client_gui_sources += qt5.preprocess(
@@ -31,13 +31,21 @@ if host_machine.system() == 'windows'
   windows = import('windows')
   client_gui_sources += windows.compile_resources('fubble.rc')
 endif
-client_gui = executable('fubble', client_gui_sources,
-  dependencies: [client_dep, ui_dep, temporary_room_dep, video_layout_dep],
-  cpp_pch: '../../pch/precompiled.hpp',
-  gui_app: true, install: true)
+
+rcc = find_program('rcc-qt5', 'rcc')
+client_gui_dependencies = [client_dep, ui_dep, temporary_room_dep, video_layout_dep]
+if host_machine.system() != 'windows'
+  qt_dir = run_command('dirname', '--', rcc.full_path()).stdout().strip() / '..'
+  # error(qt_dir)
+  client_gui = executable('fubble', client_gui_sources,
+    dependencies: client_gui_dependencies, gui_app: true, install: true,
+    build_rpath: qt_dir / 'lib')
+else
+  client_gui = executable('fubble', client_gui_sources,
+    dependencies: client_gui_dependencies, gui_app: true, install: true)
+endif
 
 # https://mesonbuild.com/Generating-sources.html
-rcc = find_program('rcc-qt5', 'rcc')
 resources_rcc = custom_target('generating resources.rcc',
   input: ['resources.qrc'],
   output: ['resources.rcc'],

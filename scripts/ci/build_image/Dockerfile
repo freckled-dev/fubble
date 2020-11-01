@@ -6,6 +6,4 @@ RUN apt-get update \
     fish sudo \
   && ./scripts/install_system_dependencies \
   && rm -rf /var/lib/apt/lists/*
-RUN aqt install --outputdir /qt 5.12.9 linux desktop -m qtcharts
-ENV PATH="/qt/5.12.9/gcc_64/bin:${PATH}"
 

@@ -12,8 +12,8 @@
 namespace rtc {
 namespace google {
 class video_track_sink : public rtc::VideoSinkInterface<webrtc::VideoFrame>,
-                         public video_track,
-                         public video_source {
+                         public video_source, // TODO refactor to `get_source`
+                         public video_track {
 public:
   video_track_sink(
       const rtc::scoped_refptr<webrtc::VideoTrackInterface> &track);
@@ -24,6 +24,7 @@ protected:
   void OnDiscardedFrame() override;
 
   rtc::logger logger{"video_track_sink"};
+  rtc::scoped_refptr<webrtc::VideoTrackInterface> video_track_delegate;
 };
 } // namespace google
 } // namespace rtc

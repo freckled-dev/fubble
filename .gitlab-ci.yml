@@ -7,7 +7,7 @@ include:
   - local: '/web/landing/.gitlab-ci.yml'
 
 build ubuntu_18.04 release:
-  image: registry.gitlab.com/acof/fubble/ci/build_ubuntu_1804:v1
+  image: registry.gitlab.com/acof/fubble/ci/build_ubuntu_1804:v2
   tags:
     - linux
     - dedicated
@@ -30,14 +30,17 @@ build ubuntu_18.04 release:
     when: always
 
 appimage:
-  image: registry.gitlab.com/acof/fubble/ci/build_ubuntu_1804:v1
+  image: registry.gitlab.com/acof/fubble/ci/build_ubuntu_1804:v2
   stage: package
   needs:
     - build ubuntu_18.04 release
   variables:
     FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install
   script:
-    ./scripts/ci/package_appimage
+    # extend ./scripts/install_qt.py to do this
+    - aqt install --outputdir /qt 5.15.1 linux desktop -m qtcharts
+    - export PATH="/qt/5.15.1/gcc_64/bin:${PATH}"
+    - ./scripts/ci/package_appimage
   artifacts:
     paths:
       - ./Fubble*.AppImage*
@@ -45,7 +48,7 @@ appimage:
 
 # documentation about windows runner on gitlab.com
 # https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/blob/master/cookbooks/preinstalled-software/README.md
-build windows updater release:
+.build windows updater release:
   stage: build
   tags:
     - windows
@@ -60,7 +63,7 @@ build windows updater release:
       - ./updater/bin/
     expire_in: 1 week
 
-innosetup:
+.innosetup:
   stage: package
   tags:
     - windows
@@ -73,6 +76,27 @@ innosetup:
   artifacts:
     paths:
       - ./*.exe
+
+# https://gitlab.com/acof/fubble/-/issues/341
+build windows updater release and innosetup:
+  stage: build
+  tags:
+    - windows
+  before_script:
+    - cd updater
+    - $env:Path += ";C:/Program Files (x86)/Microsoft Visual Studio/2019/BuildTools/MSBuild/Current/bin"
+    - $env:Path += ";C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/MSBuild/Current/Bin/"
+  script:
+    - 'msbuild /p:Configuration=Release Updater.sln'
+    - cd ..
+    - choco install -y --no-progress python innosetup
+    - $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+    - python scripts/make_innosetup.py
+  artifacts:
+    paths:
+      - ./updater/bin/
+      - ./*.exe
+    expire_in: 1 week
 
 .build windows: &build_windows
   stage: build
@@ -105,6 +129,7 @@ build windows debug:
   <<: *build_windows
   script:
     - python scripts/make_build.py --profile scripts/conan_profiles/windows_debug
+  when: manual
 
 deploy services:
   stage: deploy
@@ -117,7 +142,8 @@ deploy services:
     - appimage
     - build windows release
     - frontend_build_production
-    - innosetup
+    - build windows updater release and innosetup
+      # - innosetup
   before_script:
     - apt-get update && apt-get install -y openssh-client ansible git rsync
     - eval $(ssh-agent -s)

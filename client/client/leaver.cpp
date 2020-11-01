@@ -8,6 +8,7 @@ leaver::leaver(rooms &rooms_) : rooms_(rooms_) {}
 
 boost::future<void> leaver::leave() {
   BOOST_LOG_SEV(logger, logging::severity::info) << "leave";
+  on_about_to_leave();
   auto to_leave = rooms_.get();
   BOOST_ASSERT(to_leave);
   return to_leave->leave().then(executor,

@@ -13,9 +13,9 @@
 using namespace signalling::server;
 
 namespace {
-class application_impl : public application {
+class server_impl : public application {
 public:
-  application_impl(boost::asio::io_context &context, int port)
+  server_impl(boost::asio::io_context &context, int port)
       : context(context), acceptor_config{static_cast<std::uint16_t>(port)} {}
 
   int get_port() const override { return server_.get_port(); }
@@ -49,5 +49,5 @@ protected:
 
 std::unique_ptr<application>
 application::create(boost::asio::io_context &context, int port) {
-  return std::make_unique<application_impl>(context, port);
+  return std::make_unique<server_impl>(context, port);
 }

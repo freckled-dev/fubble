@@ -22,6 +22,7 @@ protected:
   void on_create_offer();
   void on_answer(signalling::answer sdp);
   void on_offer(signalling::offer sdp);
+  void on_offer_set(boost::future<void> &set_result);
 
   client::logger logger{"offer_answer"};
   boost::executor &executor;

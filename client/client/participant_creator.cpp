@@ -18,10 +18,18 @@ participant_creator::participant_creator(factory &factory_,
 
 std::unique_ptr<participant>
 participant_creator::create(matrix::user &session_information) {
-  if (session_information.get_id() == own_id)
+  if (session_information.get_id() == own_id) {
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << __FUNCTION__ << ", type: own";
     return std::make_unique<own_participant>(session_information, own_media_);
-  if (session_information.get_display_name() == "Fubble Bot")
+  }
+  if (session_information.get_display_name() == "Fubble Bot") {
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << __FUNCTION__ << ", type: bot";
     return std::make_unique<bot_participant>(session_information);
+  }
+  BOOST_LOG_SEV(logger, logging::severity::debug)
+      << __FUNCTION__ << ", type: remote_participant";
   auto peer = peer_creator_.create();
   auto peer_pointer = peer.get();
   auto result = std::make_unique<remote_participant>(

@@ -121,7 +121,7 @@ int main(int argc, char *argv[]) {
       context, boost_executor, signalling_json};
   auto signalling_client = signalling::client::client::create(
       websocket_connector, signalling_connection_creator);
-  signalling::client::client::connect_information connect_information{
+  signalling::client::connect_information connect_information{
       false, config_.signalling_.host, config_.signalling_.service,
       "/api/signalling/v0/"};
   signalling_client->set_connect_information(connect_information);
@@ -152,7 +152,7 @@ int main(int argc, char *argv[]) {
     std::shared_ptr<rtc::google::capture::video::device> capture_device =
         device_creator.create(devices.front().id);
     std::shared_ptr<rtc::google::video_track> video_track =
-        rtc_connection_creator.create_video_track(capture_device);
+        rtc_connection_creator.create_video_track(capture_device->get_source());
     rtc_connection->add_track(video_track);
     capture_device->start();
   }

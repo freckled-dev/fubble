@@ -17,7 +17,8 @@ struct fixture : ::testing::Test {
   boost::inline_executor executor;
   boost::asio::io_context context;
   http::connection_creator connection_factory_{context};
-  http::action_factory action_factory_{connection_factory_};
+  std::shared_ptr<http::action_factory> action_factory_ =
+      std::make_shared<http::action_factory>(connection_factory_);
   http::client_factory http_client_factory{
       action_factory_, matrix::testing::make_http_server_and_fields()};
   matrix::factory room_factory_;

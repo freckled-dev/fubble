@@ -10,7 +10,6 @@ class track : public rtc::track {
 public:
   track(rtc::scoped_refptr<webrtc::MediaStreamTrackInterface> native_track);
 
-  // TODO remove scoped_refptr?
   rtc::scoped_refptr<webrtc::MediaStreamTrackInterface> native_track() const;
 
   void set_enabled(bool) override;

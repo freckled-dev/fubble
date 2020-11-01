@@ -85,7 +85,7 @@ frame_provider_google_video_source::~frame_provider_google_video_source() {
 }
 
 void frame_provider_google_video_source::set_source(
-    rtc::google::video_source *source_) {
+    std::shared_ptr<rtc::google::video_source> source_) {
   BOOST_LOG_SEV(logger, logging::severity::debug)
       << "set_source, source_:" << source_;
   connection_on_frame.disconnect();
@@ -96,7 +96,7 @@ void frame_provider_google_video_source::set_source(
       source->on_frame.connect([this](const auto &frame) { on_frame(frame); });
 }
 
-rtc::google::video_source *
+std::shared_ptr<rtc::google::video_source>
 frame_provider_google_video_source::get_source() const {
   return source;
 }

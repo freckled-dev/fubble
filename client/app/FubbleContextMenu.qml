@@ -1,5 +1,5 @@
-import QtQuick 2.12
-import QtQuick.Controls 2.12
+import QtQuick 2.15
+import QtQuick.Controls 2.15
 
 Item {
     property TextEdit textEdit
@@ -10,10 +10,13 @@ Item {
     property bool canUndo: true
     property bool canRedo: true
 
+    property int selectStart
+    property int selectEnd
+    property int curPos
+
     MouseArea {
         anchors.fill: parent
         acceptedButtons: Qt.RightButton
-        hoverEnabled: true
         onClicked: {
             contextMenu.x = mouse.x
             contextMenu.y = mouse.y

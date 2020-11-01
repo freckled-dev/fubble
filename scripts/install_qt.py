@@ -15,7 +15,7 @@ class UnsupportedPlatform(Exception):
 if platform.system() != "Windows":
     raise UnsupportedPlatform()
 
-qt_version = "5.15.0"
+qt_version = "5.15.1"
 qt_prefix_dir = "C:/Qt"
 qt_platform = "desktop"
 qt_system = "windows"

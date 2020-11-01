@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+import platform
 import subprocess
 import shutil
 from paths import Paths
@@ -18,6 +19,8 @@ parser.add_argument('--skip_build', help='don\'t run conan build',
         action="store_true")
 parser.add_argument('--skip_package', help='don\'t run conan package',
         action="store_true")
+parser.add_argument('--skip_qt', help='don\'t pull qt',
+        action="store_true")
 parser.add_argument('--profile', help='the conan profile to use', default='default')
 parser.add_argument('--use_asan', help='use address sanitizer \'memory,undefined\'', action="store_true")
 parser.add_argument('--treat_warnings_as_errors', help='warnings shall get handled as errors', action="store_true")
@@ -33,6 +36,24 @@ if not args.skip_remove:
         print("Could not delete the build_dir:'%s'. Ignoring." % (paths.build_dir))
 
 Path(paths.build_dir).mkdir(parents=True, exist_ok=True)
+
+# qt
+qt_version = "5.15.1"
+qt_platform = "desktop"
+qt_system = "linux"
+qt_target = "gcc_64"
+# qt_system = "windows"
+# qt_target = "win64_msvc2019_64"
+qt_install = os.path.join(paths.qt_dir, qt_version, qt_target)
+if not args.skip_qt and platform.system() != "Windows":
+    Path(paths.qt_dir).mkdir(parents=True, exist_ok=True)
+    subprocess.run(['aqt', 'install',
+        '--outputdir', paths.qt_dir,
+        qt_version, qt_system, qt_platform, qt_target,
+        '-m', 'qtcharts'],
+            check=True)
+    qt_pkgconfig_dir = os.path.join(qt_install, 'lib', 'pkgconfig')
+    subprocess.run("sed -i 's+/home/qt/work/install+{}+g' {}/*".format(qt_install, qt_pkgconfig_dir), shell=True, check=True)
 
 if not args.skip_install:
     conan_remotes = [
@@ -52,6 +73,8 @@ if not args.skip_install:
         '--build', 'missing',
         '--install-folder', paths.dependencies_dir,
         '--profile', args.profile]
+    if platform.system() != "Windows":
+        install_args += ['-o', 'fubble:qt_install={}'.format(qt_install)]
     if not args.skip_install_update:
         install_args += ['--update'] # Check updates exist from upstream remotes
     if args.treat_warnings_as_errors:
