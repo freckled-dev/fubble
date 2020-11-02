@@ -21,6 +21,13 @@ sudo zypper install -y \
   libqt5-qtsvg-devel libQt5QuickControls2-devel
 ```
 
+# mac
+```bash
+brew install cmake ninja ccache
+```
+
+# all platforms
+
 install build helpers
 ```
 pip3 install --user --upgrade conan meson aqtinstall
