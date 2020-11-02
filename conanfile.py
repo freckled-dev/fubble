@@ -1,5 +1,6 @@
 from conans import ConanFile, Meson, tools
 from conans.errors import ConanInvalidConfiguration
+from conans.tools import os_info
 import os
 
 class FubbleConan(ConanFile):
@@ -54,6 +55,8 @@ class FubbleConan(ConanFile):
         #     self.build_requires("qt/5.15.0@bincrafters/stable")
         if not tools.which('meson'):
             self.build_requires("meson/0.55.0")
+        if os_info.is_macos: # maybe even for windows, instead of the pkgconfig-lite "hack"
+            self.build_requires("pkgconf/1.7.3")
 
     def requirements(self):
         self.requires("nlohmann_json/3.7.0")
