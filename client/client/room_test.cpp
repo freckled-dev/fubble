@@ -10,6 +10,13 @@ struct Room : test_executor, testing::Test {
   const std::string room_name = uuid::generate();
   std::unique_ptr<version::server> version_http_server =
       version::server::create(context);
+
+  client::testing::test_client::connect_information make_connect_information() {
+    client::testing::test_client::connect_information result;
+    result.version_ = version::testing::make_http_server_and_fields(
+        version_http_server->get_port());
+    return result;
+  }
 };
 struct participants_waiter {
   client::room &room;
@@ -37,7 +44,8 @@ struct participants_waiter {
 TEST_F(Room, Instance) {}
 
 TEST_F(Room, Join) {
-  client::testing::test_client test{*this, room_name};
+  client::testing::test_client test{*this, make_connect_information(),
+                                    room_name};
   auto joined = test.join("some name");
   auto done = joined.then(boost_executor, [&](auto room) {
     context.stop();
@@ -76,7 +84,8 @@ struct join_and_wait {
 } // namespace
 
 TEST_F(Room, Participant) {
-  client::testing::test_client test_client_{*this, room_name};
+  client::testing::test_client test_client_{*this, make_connect_information(),
+                                            room_name};
   join_and_wait test{test_client_, "some_name", 1};
   auto done = test.join().then(boost_executor, [&](auto result) {
     result.get();
@@ -95,9 +104,11 @@ TEST_F(Room, Participant) {
 }
 
 TEST_F(Room, TwoParticipants) {
-  client::testing::test_client client_first{*this, room_name};
+  client::testing::test_client client_first{*this, make_connect_information(),
+                                            room_name};
   join_and_wait first(client_first, "first", 2);
-  client::testing::test_client client_second{*this, room_name};
+  client::testing::test_client client_second{*this, make_connect_information(),
+                                             room_name};
   join_and_wait second(client_second, "second", 2);
   auto done =
       boost::when_all(first.join(), second.join())
@@ -114,11 +125,14 @@ TEST_F(Room, TwoParticipants) {
 }
 
 TEST_F(Room, ThreeParticipants) {
-  client::testing::test_client client_first{*this, room_name};
+  client::testing::test_client client_first{*this, make_connect_information(),
+                                            room_name};
   join_and_wait first(client_first, "first", 3);
-  client::testing::test_client client_second{*this, room_name};
+  client::testing::test_client client_second{*this, make_connect_information(),
+                                             room_name};
   join_and_wait second(client_second, "second", 3);
-  client::testing::test_client client_third{*this, room_name};
+  client::testing::test_client client_third{*this, make_connect_information(),
+                                            room_name};
   join_and_wait third(client_third, "three", 3);
   auto done =
       boost::when_all(first.join(), second.join(), third.join())
@@ -145,7 +159,8 @@ struct two_participants {
   join_and_wait second{client_second, "second", 2};
 
   two_participants(Room &fixture, const std::string &room_name)
-      : client_first{fixture, room_name}, client_second{fixture, room_name} {}
+      : client_first{fixture, fixture.make_connect_information(), room_name},
+        client_second{fixture, fixture.make_connect_information(), room_name} {}
 
   auto join() {
     return boost::when_all(first.join(), second.join())
