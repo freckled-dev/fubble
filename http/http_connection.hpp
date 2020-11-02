@@ -12,7 +12,9 @@ public:
   void cancel() override { stream.socket().close(); }
 
   void shutdown() override {
-    stream.socket().shutdown(boost::asio::socket_base::shutdown_both);
+    boost::system::error_code ignore_error;
+    stream.socket().shutdown(boost::asio::socket_base::shutdown_both,
+                             ignore_error);
   }
 
   boost::beast::tcp_stream &get_native() { return stream; }

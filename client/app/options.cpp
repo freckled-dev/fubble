@@ -13,7 +13,7 @@ auto video(config::video &result) {
 }
 } // namespace
 
-std::optional<config> options::operator()(int argc, char *argv[]) {
+boost::optional<config> options::operator()(int argc, char *argv[]) {
   config result;
 
   bpo::options_description general("general");

@@ -23,7 +23,7 @@ boost::future<room_id> rooms::get_or_create_room_id(const room_name &name,
     on_room_count_changed(static_cast<int>(rooms_.size()));
     return result;
   }
-  std::optional<room_id> room_id_;
+  boost::optional<room_id> room_id_;
   if (found->second.room_) {
     const auto &room_ = found->second;
     invite(add, room_.room_);

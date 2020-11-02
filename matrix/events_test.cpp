@@ -39,5 +39,5 @@ TEST_F(Events, MRoomMessage) {
   EXPECT_TRUE(result);
   auto room_event = dynamic_cast<matrix::event::room_event *>(result.get());
   EXPECT_TRUE(result);
-  EXPECT_EQ(room_event->room_id, "!jEsUZKDJdhlrceRyVU:example.org");
+  EXPECT_EQ(room_event->room_id.value(), "!jEsUZKDJdhlrceRyVU:example.org");
 }

@@ -65,7 +65,7 @@ void connection_impl::send_next_from_queue() {
   sending = true;
   auto &item = send_queue->front();
   std::weak_ptr<int> weak_alive_check = alive_check;
-  std::visit(
+  boost::apply_visitor(
       [&, this](auto &stream_) {
         stream_.async_write(
             boost::asio::buffer(item.message),
@@ -106,7 +106,7 @@ boost::future<void> connection_impl::close() {
         completion_error(result);
       });
   auto result = task.get_future();
-  std::visit(
+  boost::apply_visitor(
       [&](auto &stream_) {
         stream_.async_close(boost::beast::websocket::close_code::normal,
                             std::move(task));
@@ -123,7 +123,7 @@ boost::future<std::string> connection_impl::read() {
   reading = true;
   read_promise = std::make_shared<boost::promise<std::string>>();
   std::weak_ptr<int> weak_alive_check = alive_check;
-  std::visit(
+  boost::apply_visitor(
       [&, this](auto &stream_) {
         stream_.async_read(
             *read_buffer,

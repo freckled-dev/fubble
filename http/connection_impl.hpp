@@ -4,13 +4,13 @@
 #include "connection.hpp"
 #include <boost/beast/core/tcp_stream.hpp>
 #include <boost/beast/ssl.hpp>
-#include <variant>
+#include <boost/variant.hpp>
 
 namespace http {
 
 using http_type = boost::beast::tcp_stream;
 using ssl_type = boost::beast::ssl_stream<http_type &>;
-using http_or_https = std::variant<http_type *, ssl_type *>;
+using http_or_https = boost::variant<http_type *, ssl_type *>;
 
 } // namespace http
 

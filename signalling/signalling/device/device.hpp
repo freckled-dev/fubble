@@ -10,7 +10,7 @@
 #include <boost/signals2/connection.hpp>
 #include <functional>
 #include <memory>
-#include <optional>
+#include <boost/optional.hpp>
 #include <vector>
 
 namespace signalling::device {
@@ -49,8 +49,8 @@ protected:
   bool active_negotiating{};
   std::string token;
 
-  std::optional<offer> offer_cache;
-  std::optional<answer> answer_cache;
+  boost::optional<offer> offer_cache;
+  boost::optional<answer> answer_cache;
   std::vector<ice_candidate> candidates_cache;
 };
 } // namespace signalling::device

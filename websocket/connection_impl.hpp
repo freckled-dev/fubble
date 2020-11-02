@@ -6,6 +6,7 @@
 #include <boost/beast.hpp>
 #include <boost/beast/ssl.hpp>
 #include <boost/beast/websocket/ssl.hpp>
+#include <boost/variant.hpp>
 #include <queue>
 
 namespace websocket {
@@ -22,7 +23,7 @@ public:
   using ssl_stream_type =
       boost::beast::ssl_stream<boost::asio::ip::tcp::socket>;
   using https_stream_type = boost::beast::websocket::stream<ssl_stream_type>;
-  using stream_type = std::variant<http_stream_type, https_stream_type>;
+  using stream_type = boost::variant<http_stream_type, https_stream_type>;
   stream_type &get_native();
   boost::asio::ssl::context &get_ssl_context();
 

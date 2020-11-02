@@ -55,14 +55,14 @@ void connector::connect_to_endpoints(
   auto connection_impl_ = dynamic_cast<connection_impl *>(connection.get());
   BOOST_ASSERT(connection_impl_);
   auto &native = connection_impl_->get_native();
-  auto *tcp =
-      std::visit(overloaded{[&](connection_impl::http_stream_type &stream_) {
-                              return &stream_.next_layer();
-                            },
-                            [&](connection_impl::https_stream_type &stream_) {
-                              return &stream_.next_layer().next_layer();
-                            }},
-                 native);
+  auto *tcp = boost::apply_visitor(
+      overloaded{[&](connection_impl::http_stream_type &stream_) {
+                   return &stream_.next_layer();
+                 },
+                 [&](connection_impl::https_stream_type &stream_) {
+                   return &stream_.next_layer().next_layer();
+                 }},
+      native);
   boost::asio::async_connect(
       *tcp, endpoints,
       [this](const auto &error, const auto &) { on_connected(error); });
@@ -82,7 +82,7 @@ void connector::secure() {
   // TODO unify with http::connection_cretor::secure!!!
   auto connection_impl_ = dynamic_cast<connection_impl *>(connection.get());
   BOOST_ASSERT(connection_impl_);
-  auto &stream = std::get<connection_impl::https_stream_type>(
+  auto &stream = boost::get<connection_impl::https_stream_type>(
       connection_impl_->get_native());
   auto &ssl_context = connection_impl_->get_ssl_context();
   http::server server_;
@@ -108,7 +108,7 @@ void connector::handshake() {
   auto connection_impl_ = dynamic_cast<connection_impl *>(connection.get());
   BOOST_ASSERT(connection_impl_);
   auto &native = connection_impl_->get_native();
-  std::visit(
+  boost::apply_visitor(
       [&](auto &item) {
         item.async_handshake(
             config_.url, config_.path, [this](const auto &error) {

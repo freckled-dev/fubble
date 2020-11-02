@@ -3,6 +3,7 @@
 #include "signalling/server/application.hpp"
 #include <boost/asio/io_context.hpp>
 #include <boost/asio/signal_set.hpp>
+#include <boost/optional.hpp>
 #include <boost/program_options.hpp>
 #include <fmt/format.h>
 #include <iostream>
@@ -13,7 +14,7 @@ struct options {
 };
 } // namespace
 
-static std::optional<options> parse_options(int argc, char *argv[]);
+static boost::optional<options> parse_options(int argc, char *argv[]);
 static void set_up_logging();
 
 int main(int argc, char *argv[]) {
@@ -43,7 +44,7 @@ static void set_up_logging() {
   logging::add_console_log(logging::severity::debug);
 }
 
-static std::optional<options> parse_options(int argc, char *argv[]) {
+static boost::optional<options> parse_options(int argc, char *argv[]) {
   namespace bpo = boost::program_options;
   options result;
   bpo::options_description general("Allowed options");

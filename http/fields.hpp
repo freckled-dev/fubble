@@ -3,7 +3,7 @@
 
 #include "server.hpp"
 #include <boost/beast/version.hpp>
-#include <optional>
+#include <boost/optional.hpp>
 
 namespace http {
 struct fields {
@@ -14,7 +14,7 @@ struct fields {
   std::string agent = BOOST_BEAST_VERSION_STRING;
   // TODO support http 1.1
   int version = 10; // http 1.0
-  std::optional<std::string> auth_token;
+  boost::optional<std::string> auth_token;
 };
 } // namespace http
 

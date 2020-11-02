@@ -4,7 +4,7 @@
 #include <cassert>
 #include <cmath>
 #include <iostream>
-#include <optional>
+#include <boost/optional.hpp>
 #include <utility>
 
 #define ENABLE_LOGGING 0
@@ -23,7 +23,7 @@ double get_aspect(QQuickItem &item) {
   return item.property("aspect").toDouble();
 }
 using rects_type = std::vector<rbp::Rect>;
-std::optional<rects_type> try_pack(const QList<QQuickItem *> &children_,
+boost::optional<rects_type> try_pack(const QList<QQuickItem *> &children_,
                                    const double container_aspect,
                                    const int packer_width) {
   const auto packer_height = static_cast<int>(packer_width / container_aspect);
@@ -59,7 +59,7 @@ std::optional<rects_type> try_pack(const QList<QQuickItem *> &children_,
 #if ENABLE_LOGGING
       qDebug() << "has no width||height";
 #endif
-      return std::nullopt;
+      return {};
     }
   }
   return results;

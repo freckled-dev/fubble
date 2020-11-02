@@ -29,6 +29,21 @@ build ubuntu_18.04 release:
     expire_in: 1 week
     when: always
 
+build mac release:
+  tags:
+    - macos
+  stage: build
+  variables:
+    FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install
+  script:
+    - python3 scripts/make_build.py --profile scripts/conan_profiles/mac_release
+  after_script:
+    - mv -v ../fubble_build/meson/meson-logs .
+  artifacts:
+    untracked: true
+    expire_in: 1 week
+    when: always
+
 appimage:
   image: registry.gitlab.com/acof/fubble/ci/build_ubuntu_1804:v2
   stage: package

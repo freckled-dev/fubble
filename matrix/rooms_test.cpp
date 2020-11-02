@@ -158,10 +158,10 @@ TEST_F(Rooms,
   bool called{};
   auto &other_user = client_->get_users().get_by_id(invitee->get_user_id());
   EXPECT_EQ(other_user.get_presence(), presence::online);
-  other_user.on_update.connect([&] {
+  other_user.on_update.connect([&, client_ptr = client_.get()] {
     called = true;
     EXPECT_EQ(other_user.get_presence(), presence::offline);
-    client_->stop_sync();
+    client_ptr->stop_sync();
   });
 #if 0 // guests are not allowed to set themselfs offline
   auto did_presence = invitee->set_presence(presence::offline);
@@ -178,8 +178,8 @@ TEST_F(Rooms, Kick) {
   auto [inviter, room_] = register_and_create_room();
   auto [invitee, invitee_room] = create_and_invite_guest(*room_);
   bool called{};
-  invitee->get_rooms().on_leave.connect([&](auto room_id) {
-    EXPECT_EQ(room_id, room_->get_id());
+  invitee->get_rooms().on_leave.connect([&, room_ptr = room_](auto room_id) {
+    EXPECT_EQ(room_id, room_ptr->get_id());
     called = true;
   });
   EXPECT_EQ(invitee->get_rooms().get_rooms().size(), 1);

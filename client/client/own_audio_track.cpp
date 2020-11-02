@@ -13,7 +13,9 @@ struct own_audio_track_impl : own_audio_track {
 
   void set_enabled(bool enabled) override { audio_track->set_enabled(enabled); }
 
-  std::shared_ptr<rtc::google::audio_track> get_track() { return audio_track; }
+  std::shared_ptr<rtc::google::audio_track> get_track() override {
+    return audio_track;
+  }
 
 protected:
   std::shared_ptr<rtc::google::audio_track> audio_track;
