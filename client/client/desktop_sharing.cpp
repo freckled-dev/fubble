@@ -143,9 +143,9 @@ public:
     auto capturer = [&] {
       if (type == desktop_sharing::type::screen)
         return rtc::google::capture::desktop::capturer::create_screen(
-            information.id);
+            information.id, false);
       return rtc::google::capture::desktop::capturer::create_window(
-          information.id);
+          information.id, false);
     }();
     auto timer = timer_factory->create_interval_timer(preview_interval);
     auto interval_capturer =
@@ -231,7 +231,8 @@ public:
     if (set_capturer)
       reset();
     BOOST_ASSERT(!set_capturer);
-    auto capturer = rtc::google::capture::desktop::capturer::create(id);
+    auto capturer =
+        rtc::google::capture::desktop::capturer::create_with_cursor(id);
     static const std::chrono::steady_clock::duration interval =
         std::chrono::milliseconds(1000 / 10); // 10 frames per second
     auto timer = timer_factory->create_interval_timer(interval);
