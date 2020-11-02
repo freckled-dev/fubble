@@ -63,7 +63,7 @@ Item {
             Label {
                 id: chatLabel
                 anchors.top: parent.top
-                anchors.left: collapseButton.right
+                anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
                 horizontalAlignment: Text.AlignHCenter

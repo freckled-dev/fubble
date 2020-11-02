@@ -22,7 +22,7 @@ void offer_answer::on_create_offer() {
            [this](auto offer_future) {
              auto offer = offer_future.get();
              return rtc_connection.set_local_description(offer).then(
-                 [this, offer](auto local_description_result) {
+                 executor, [this, offer](auto local_description_result) {
                    local_description_result.get();
                    signalling::offer offer_casted{offer.sdp};
                    return signalling_client.send_offer(offer_casted);

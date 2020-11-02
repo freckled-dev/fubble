@@ -40,6 +40,8 @@ void connection::on_got_request(const request_type &request) {
 
   try {
     const std::string request_body = request.body();
+    if (request_body.empty())
+      throw std::runtime_error("empty request body");
     nlohmann::json content = nlohmann::json::parse(request_body);
     const auto target = request.target().to_string();
     auto response = on_request(target, content);
@@ -110,6 +112,8 @@ void acceptor::listen() {
   acceptor_.set_option(boost::asio::socket_base::reuse_address(true));
   acceptor_.bind(endpoint);
   acceptor_.listen();
+  BOOST_LOG_SEV(logger, logging::severity::debug)
+      << "listening on port:" << get_port();
   listening = true;
 }
 

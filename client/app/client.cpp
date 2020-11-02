@@ -121,7 +121,7 @@ int main(int argc, char *argv[]) {
       context, boost_executor, signalling_json};
   auto signalling_client = signalling::client::client::create(
       websocket_connector, signalling_connection_creator);
-  signalling::client::client::connect_information connect_information{
+  signalling::client::connect_information connect_information{
       false, config_.signalling_.host, config_.signalling_.service,
       "/api/signalling/v0/"};
   signalling_client->set_connect_information(connect_information);

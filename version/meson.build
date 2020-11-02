@@ -17,7 +17,7 @@ version_server_application = executable('version_server',
   )
 
 version_getter = library('version_getter',
-  ['getter.cpp'],
+  ['getter.cpp', 'client_module.cpp'],
   include_directories: '..',
   dependencies: [fmt_dep, json_dep, utils_dep, http_dep],
   link_with: [],

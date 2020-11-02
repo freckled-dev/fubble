@@ -43,6 +43,7 @@ struct test_client {
   struct connect_information {
     std::pair<http::server, http::fields> temporary_room_ =
         temporary_room::testing::make_http_server_and_fields();
+    std::pair<http::server, http::fields> version_;
   };
 
   test_client(test_executor &fixture, const connect_information &information_,
@@ -50,13 +51,23 @@ struct test_client {
       : context(fixture.context), connect_information_{information_},
         room_name(room_name), rtc_connection_creator{
                                   rtc::google::settings{},
-                                  fixture.rtc_signalling_thread.get_native()} {}
+                                  fixture.rtc_signalling_thread.get_native()} {
+    set_own_media();
+  }
 
   test_client(test_executor &fixture, const std::string &room_name)
       : context(fixture.context),
         room_name(room_name), rtc_connection_creator{
                                   rtc::google::settings{},
-                                  fixture.rtc_signalling_thread.get_native()} {}
+                                  fixture.rtc_signalling_thread.get_native()} {
+    set_own_media();
+  }
+
+  void set_own_media() {
+    own_media.set_own_audio_track(own_audio_track);
+    own_media.set_own_video(own_videos_);
+    own_media.set_desktop_sharing(desktop_sharing_);
+  }
 
   boost::asio::io_context &context;
   const connect_information connect_information_;
@@ -79,17 +90,16 @@ struct test_client {
   signalling::json_message signalling_json;
   signalling::client::connection_creator signalling_connection_creator{
       context, boost_executor, signalling_json};
-  signalling::client::client::connect_information
-      signalling_connect_information =
-          signalling::testing::make_connect_information();
+  signalling::client::connect_information signalling_connect_information =
+      signalling::testing::make_connect_information();
   signalling::client::factory_impl client_creator{
       websocket_connector, signalling_connection_creator,
       signalling_connect_information};
 
   // version
   std::shared_ptr<http::client> version_http_client =
-      std::make_shared<http::client>(
-          action_factory_, version::testing::make_http_server_and_fields());
+      std::make_shared<http::client>(action_factory_,
+                                     connect_information_.version_);
   std::shared_ptr<version::getter> version_getter =
       version::getter::create(version_http_client);
 
@@ -113,15 +123,15 @@ struct test_client {
   // client
   client::tracks_adder tracks_adder;
   std::shared_ptr<client::rooms> rooms = std::make_shared<client::rooms>();
-  std::unique_ptr<client::own_audio_track> own_audio_track =
+  std::shared_ptr<client::own_audio_track> own_audio_track =
       client::own_audio_track::create_noop();
-  std::unique_ptr<client::own_video> own_videos_ = client::own_video::create();
-  client::own_media own_media{*own_audio_track, *own_videos_};
-  client::factory client_factory{context};
+  std::shared_ptr<client::own_video> own_videos_ = client::own_video::create();
   std::shared_ptr<client::desktop_sharing> desktop_sharing_ =
       client::desktop_sharing::create_noop();
+  client::own_media own_media;
+  client::factory client_factory;
   client::participant_creator_creator participant_creator_creator{
-      client_factory, peer_creator, tracks_adder, own_media, desktop_sharing_};
+      client_factory, peer_creator, tracks_adder, own_media};
   client::room_creator client_room_creator{participant_creator_creator};
   client::joiner joiner{client_room_creator, *rooms, matrix_authentification,
                         temporary_room_client, version_getter};

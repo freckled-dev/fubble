@@ -4,13 +4,8 @@ import QtQuick.Controls 2.15
 import Qt.labs.settings 1.0
 import "."
 
-Rectangle {
-    id: rectangle
-    color: Style.current.transparent
-    radius: 5
+Item {
     property alias settings: settings
-    border.width: 1
-    border.color: Style.current.white
 
     Settings {
         id: settings

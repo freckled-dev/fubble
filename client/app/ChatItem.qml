@@ -80,9 +80,9 @@ Rectangle {
                 text: {
                     switch (type) {
                     case "leave":
-                        return qsTr(name + " has left the room...")
+                        return new Date().toTimeString() + " - " + name + qsTr(" left the room")
                     case "join":
-                        return qsTr(name + " has joined the room...")
+                        return new Date().toTimeString() + " - " + name + qsTr(" joined the room")
                     default:
                         return qsTr("")
                     }

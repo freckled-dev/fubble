@@ -20,7 +20,7 @@ int main(int, char *[]) {
   BOOST_ASSERT(!enumerator->get_screens().empty());
   std::intptr_t window_id = enumerator->get_windows().front().id;
   auto capturer =
-      rtc::google::capture::desktop::capturer::create_window(window_id);
+      rtc::google::capture::desktop::capturer::create_window(window_id, false);
   for (int counter{}; counter < 4; ++counter)
     capturer->capture().get();
   return 0;

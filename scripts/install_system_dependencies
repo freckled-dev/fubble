@@ -16,11 +16,10 @@ if grep -i ubuntu /etc/os-release
     libcap2 \
     libcups2 \
     libexpat1 \
-    libffi6 \
+    libffi7 \
     libfontconfig1 \
     libfreetype6 \
     libglib2.0-0 \
-    libgnome-keyring0 \
     libgtk-3-0 \
     libpam0g \
     libpango1.0-0 \

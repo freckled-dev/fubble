@@ -9,6 +9,7 @@ int main(int argc, char *argv[]) {
   logging::logger logger{"main_logger"};
   BOOST_LOG_SEV(logger, logging::severity::info) << "starting up";
   version::server::config config;
+  config.port = 8085;
   {
     namespace bpo = boost::program_options;
     bpo::options_description general("general");
