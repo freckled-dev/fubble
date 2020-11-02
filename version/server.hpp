@@ -10,11 +10,12 @@ class server {
 public:
   struct config {
     std::string address{"0.0.0.0"};
-    int port{8085};
+    int port{};
     std::string current_version{utils::version()};
     std::string minimum_version{utils::version()};
   };
   virtual ~server() = default;
+  virtual int get_port() const = 0;
 
   static std::unique_ptr<server>
   create(const std::shared_ptr<boost::asio::io_context> &context,
