@@ -40,6 +40,8 @@ void language_settings_model::set_selected(int change) {
   remove_translator();
   if (change == 1) {
     translator = std::make_unique<QTranslator>();
+    // this ishacky. it's not a ts file, but a qml file.
+    // https://github.com/mesonbuild/meson/issues/7925
     [[maybe_unused]] bool loaded = translator->load(":/i18n/de.ts");
     BOOST_ASSERT(loaded);
     [[maybe_unused]] bool installed =
