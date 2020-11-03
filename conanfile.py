@@ -54,7 +54,7 @@ class FubbleConan(ConanFile):
         #     # will not compile with less than visual studio 2019
         #     self.build_requires("qt/5.15.0@bincrafters/stable")
         if not tools.which('meson'):
-            self.build_requires("meson/0.55.0")
+            self.build_requires("meson/0.56.0")
         if os_info.is_macos: # maybe even for windows, instead of the pkgconfig-lite "hack"
             self.build_requires("pkgconf/1.7.3")
 
