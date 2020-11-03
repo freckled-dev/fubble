@@ -99,7 +99,7 @@ void action::send_request() {
     on_request_send(error);
   };
   auto native = get_native_from_connection(*connection_);
-  std::visit(
+  boost::apply_visitor(
       [&](auto stream) {
         return boost::beast::http::async_write(*stream, buffers_->request,
                                                std::move(callback));
@@ -124,7 +124,7 @@ void action::read_response() {
     on_response_read(error);
   };
   auto native = get_native_from_connection(*connection_);
-  std::visit(
+  boost::apply_visitor(
       [&](auto stream) {
         return boost::beast::http::async_read(
             *stream, buffers_->response_buffer, buffers_->response,

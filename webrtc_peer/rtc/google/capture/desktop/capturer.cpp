@@ -9,6 +9,7 @@
 #include <boost/thread/executors/inline_executor.hpp>
 #include <fmt/format.h>
 #include <libyuv.h>
+#include <modules/desktop_capture/desktop_and_cursor_composer.h>
 #include <modules/desktop_capture/desktop_capture_options.h>
 #include <modules/desktop_capture/desktop_capturer.h>
 
@@ -178,9 +179,12 @@ boost::optional<std::string> get_title_by_id(webrtc::DesktopCapturer &capturer,
 
 enum class type { screen, window };
 
+webrtc::DesktopCaptureOptions make_options() {
+  return webrtc::DesktopCaptureOptions::CreateDefault();
+}
+
 boost::optional<type> get_type(std::intptr_t id) {
-  webrtc::DesktopCaptureOptions options =
-      webrtc::DesktopCaptureOptions::CreateDefault();
+  webrtc::DesktopCaptureOptions options = make_options();
   {
     auto screen_capturer =
         webrtc::DesktopCapturer::CreateScreenCapturer(options);
@@ -204,31 +208,49 @@ boost::optional<type> get_type(std::intptr_t id) {
       return type::window;
   }
   return {};
+} // namespace
+std::unique_ptr<webrtc::DesktopCapturer>
+wrap_capturer_with_cursor(std::unique_ptr<webrtc::DesktopCapturer> wrap) {
+  auto options = make_options();
+  auto result = std::make_unique<webrtc::DesktopAndCursorComposer>(
+      std::move(wrap), options);
+  return result;
 }
-
 } // namespace
 
-std::unique_ptr<capturer> capturer::create(std::intptr_t id) {
+std::unique_ptr<capturer> capturer::create(std::intptr_t id, bool cursor) {
   auto type_ = get_type(id);
   if (type_ == type::screen)
-    return create_screen(id);
-  return create_window(id);
+    return create_screen(id, cursor);
+  return create_window(id, cursor);
 }
 
-std::unique_ptr<capturer> capturer::create_screen(std::intptr_t id) {
-  webrtc::DesktopCaptureOptions options =
-      webrtc::DesktopCaptureOptions::CreateDefault();
+std::unique_ptr<capturer> capturer::create_with_cursor(std::intptr_t id) {
+  return create(id, true);
+}
+
+std::unique_ptr<capturer> capturer::create_without_cursor(std::intptr_t id) {
+  return create(id, false);
+}
+
+std::unique_ptr<capturer> capturer::create_screen(std::intptr_t id,
+                                                  bool cursor) {
+  webrtc::DesktopCaptureOptions options = make_options();
   auto desktop_capturer =
       webrtc::DesktopCapturer::CreateScreenCapturer(options);
+  if (cursor)
+    desktop_capturer = wrap_capturer_with_cursor(std::move(desktop_capturer));
   std::string title = get_title_by_id(*desktop_capturer, id).value();
   return std::make_unique<capturer_impl>(std::move(desktop_capturer), id,
                                          title);
 }
 
-std::unique_ptr<capturer> capturer::create_window(std::intptr_t id) {
-  webrtc::DesktopCaptureOptions options =
-      webrtc::DesktopCaptureOptions::CreateDefault();
+std::unique_ptr<capturer> capturer::create_window(std::intptr_t id,
+                                                  bool cursor) {
+  webrtc::DesktopCaptureOptions options = make_options();
   auto window_capturer = webrtc::DesktopCapturer::CreateWindowCapturer(options);
+  if (cursor)
+    window_capturer = wrap_capturer_with_cursor(std::move(window_capturer));
   std::string title = get_title_by_id(*window_capturer, id).value();
   return std::make_unique<capturer_impl>(std::move(window_capturer), id, title);
 }

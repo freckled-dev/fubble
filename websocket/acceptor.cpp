@@ -35,7 +35,7 @@ void acceptor::run() {
   auto connection_impl_ = dynamic_cast<connection_impl *>(connection_.get());
   BOOST_ASSERT(connection_impl_);
   auto &native = connection_impl_->get_native();
-  auto &tcp = std::get<connection_impl::http_stream_type>(native).next_layer();
+  auto &tcp = boost::get<connection_impl::http_stream_type>(native).next_layer();
   acceptor_.async_accept(tcp, [this, connection_ = std::move(connection_)](
                                   const auto &error) mutable {
     if (error) {
@@ -57,7 +57,7 @@ void acceptor::successful_tcp(connection_ptr connection_parameter) {
   auto connection_impl_ =
       dynamic_cast<connection_impl *>(connection_parameter.get());
   BOOST_ASSERT(connection_impl_);
-  auto &native = std::get<connection_impl::http_stream_type>(
+  auto &native = boost::get<connection_impl::http_stream_type>(
       connection_impl_->get_native());
   native.async_accept([this, connection_ = std::move(connection_parameter)](
                           const auto &error) mutable {

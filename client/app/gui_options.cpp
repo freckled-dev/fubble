@@ -4,7 +4,7 @@
 
 namespace bpo = boost::program_options;
 
-std::optional<gui_config> gui_options::parse(int argc, char *argv[]) {
+boost::optional<gui_config> gui_options::parse(int argc, char *argv[]) {
   gui_config result;
   bpo::options_description general("general");
   general.add_options()("help", "produce help message");

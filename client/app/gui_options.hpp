@@ -2,7 +2,7 @@
 #define UUID_CD44B89A_7977_4C7E_9EB2_983FCDCA2681
 
 #include "logging/logger.hpp"
-#include <optional>
+#include <boost/optional.hpp>
 #include <string>
 
 struct gui_config {
@@ -22,7 +22,7 @@ struct gui_config {
 
 class gui_options {
 public:
-  std::optional<gui_config> parse(int argc, char *argv[]);
+  boost::optional<gui_config> parse(int argc, char *argv[]);
 };
 
 #endif

@@ -13,7 +13,7 @@ struct RegistrationHandler : testing::Test {
 
 struct mock_connection final : signalling::connection {
   ~mock_connection() final { on_closed(); }
-  std::optional<signalling::offer> offer;
+  boost::optional<signalling::offer> offer;
   void send_offer(const signalling::offer &send) final {
     EXPECT_FALSE(offer);
     offer = send;
@@ -22,7 +22,7 @@ struct mock_connection final : signalling::connection {
   void send_ice_candidate(const signalling::ice_candidate &candidate) final {
     candidates.push_back(candidate);
   }
-  std::optional<signalling::answer> answer;
+  boost::optional<signalling::answer> answer;
   void send_answer(const signalling::answer &answer_) final {
     answer = answer_;
   }

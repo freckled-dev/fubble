@@ -30,7 +30,7 @@ int version = 10; // http 1.0
 struct client {
   boost::asio::io_context &context;
   boost::beast::tcp_stream stream{context};
-  std::optional<std::string> auth_token;
+  boost::optional<std::string> auth_token;
 
   client(boost::asio::io_context &context) : context(context) {
     boost::asio::ip::tcp::resolver resolver{context};
@@ -248,7 +248,7 @@ struct sync_result {
   nlohmann::json repsonse;
   std::string next_batch;
 };
-sync_result sync(client &client_, std::optional<std::string> next_batch) {
+sync_result sync(client &client_, boost::optional<std::string> next_batch) {
   test_http::client &http_creator = client_.http_client;
   auto sync_path = test_http::target_prefix + "sync";
   int timeout_ms = 1000;

@@ -23,7 +23,7 @@ public:
   struct user_information {
     std::string username;
     std::string password;
-    std::optional<std::string> device_id;
+    boost::optional<std::string> device_id;
   };
   boost::future<client_ptr> register_(const user_information &information);
   boost::future<client_ptr> register_anonymously();

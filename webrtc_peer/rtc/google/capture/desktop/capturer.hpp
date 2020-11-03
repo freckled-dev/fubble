@@ -25,9 +25,11 @@ public:
 
   virtual std::shared_ptr<video_source> get_source() const = 0;
 
-  static std::unique_ptr<capturer> create(std::intptr_t id);
-  static std::unique_ptr<capturer> create_screen(std::intptr_t id);
-  static std::unique_ptr<capturer> create_window(std::intptr_t id);
+  static std::unique_ptr<capturer> create(std::intptr_t id, bool cursor);
+  static std::unique_ptr<capturer> create_without_cursor(std::intptr_t id);
+  static std::unique_ptr<capturer> create_with_cursor(std::intptr_t id);
+  static std::unique_ptr<capturer> create_screen(std::intptr_t id, bool cursor);
+  static std::unique_ptr<capturer> create_window(std::intptr_t id, bool cursor);
 };
 
 class interval_capturer {

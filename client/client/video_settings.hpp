@@ -6,7 +6,7 @@
 #include "rtc/video_devices.hpp"
 #include <boost/signals2/signal.hpp>
 #include <memory>
-#include <optional>
+#include <boost/optional.hpp>
 
 namespace rtc::google {
 class video_source;
@@ -37,7 +37,7 @@ public:
   void change_to_device(const std::string &id);
   // means a video is instanced!
   bool is_a_video_available() const;
-  std::optional<std::string> get_device_id() const;
+  boost::optional<std::string> get_device_id() const;
 
   std::shared_ptr<rtc::google::video_source> get_video_source() const;
   boost::signals2::signal<void()> on_video_source_changed;
@@ -58,7 +58,7 @@ protected:
   std::shared_ptr<add_video_to_connection> video_track_adder;
   bool paused{};
   // TODO refactor to `current_device_id`
-  std::optional<std::string> last_device_id;
+  boost::optional<std::string> last_device_id;
 };
 } // namespace client
 

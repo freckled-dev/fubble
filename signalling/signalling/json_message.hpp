@@ -8,8 +8,8 @@
 #include "offer.hpp"
 #include "registration.hpp"
 #include "want_to_negotiate.hpp"
+#include <boost/variant.hpp>
 #include <stdexcept>
-#include <variant>
 
 namespace signalling {
 class json_message {
@@ -21,8 +21,9 @@ public:
     invalid_type(const std::string &type);
   };
 
-  using messages_type = std::variant<offer, answer, ice_candidate, create_offer,
-                                     registration, want_to_negotiate>;
+  using messages_type =
+      boost::variant<offer, answer, ice_candidate, create_offer, registration,
+                     want_to_negotiate>;
   messages_type parse(const std::string &message) const;
 
   std::string serialize(const offer &offer_) const;

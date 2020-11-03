@@ -4,7 +4,7 @@
 #include "logger.hpp"
 #include <boost/signals2/signal.hpp>
 #include <nlohmann/json_fwd.hpp>
-#include <optional>
+#include <boost/optional.hpp>
 
 namespace matrix {
 

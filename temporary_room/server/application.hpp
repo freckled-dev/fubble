@@ -19,9 +19,9 @@ public:
     struct login {
       std::string username;
       std::string password;
-      std::optional<std::string> device_id;
+      boost::optional<std::string> device_id;
     };
-    std::optional<login> login_;
+    boost::optional<login> login_;
   }; // namespace
 
   virtual ~application() = default;

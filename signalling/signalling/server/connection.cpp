@@ -53,7 +53,7 @@ void connection::run(boost::promise<void> &&promise) {
     try {
       auto message = message_future.get();
       auto parsed = message_parser.parse(message);
-      std::visit(message_visitor{*this}, parsed);
+      boost::apply_visitor(message_visitor{*this}, parsed);
       run(std::move(promise));
     } catch (const boost::system::system_error &error) {
       on_closed();

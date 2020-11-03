@@ -14,7 +14,7 @@ rooms::rooms(factory &factory_, client &client_)
   http_client = client_.create_http_client();
 }
 
-std::optional<room *> rooms::get_room_by_id(const std::string &id) const {
+boost::optional<room *> rooms::get_room_by_id(const std::string &id) const {
   auto found =
       std::find_if(rooms_.begin(), rooms_.end(),
                    [&](const auto &check) { return check->get_id() == id; });

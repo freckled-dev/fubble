@@ -4,7 +4,7 @@
 #include <boost/signals2/signal.hpp>
 #include <chrono>
 #include <nlohmann/json.hpp>
-#include <optional>
+#include <boost/optional.hpp>
 #include <string>
 
 // TODO think. Is this the wrong way?
@@ -37,7 +37,7 @@ struct message : content {
 } // namespace room
 struct room_event : event {
   std::string event_id;
-  std::optional<std::string> room_id;
+  boost::optional<std::string> room_id;
   std::chrono::system_clock::time_point origin_server_ts;
   user *sender{};
   std::unique_ptr<room::content> content_;

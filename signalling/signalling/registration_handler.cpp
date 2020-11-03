@@ -11,9 +11,8 @@ registration_handler::registration_handler(device::creator &device_creator_)
 
 void registration_handler::add(connection_ptr connection_) {
   connection_->on_registration.connect(
-      [this, connection_ = std::weak_ptr(connection_)](auto result) {
-        on_register(connection_.lock(), result);
-      });
+      [this, weak_connection = std::weak_ptr<connection>(connection_)](
+          auto result) { on_register(weak_connection.lock(), result); });
 }
 
 const registration_handler::devices_type &
@@ -42,7 +41,7 @@ void registration_handler::register_(const connection_ptr &connection_,
   registered_connection &change = find_or_create(registration_.key);
   auto first_device = change.devices[0];
   auto second_device = change.devices[1];
-  std::optional<std::size_t> my_device_index;
+  boost::optional<std::size_t> my_device_index;
   if (first_device)
     if (first_device->get_token() == registration_.reconnect_token)
       my_device_index = 0;
