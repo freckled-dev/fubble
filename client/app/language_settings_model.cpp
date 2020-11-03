@@ -13,8 +13,9 @@ languages_model::languages_model(QObject *parent)
 int languages_model::rowCount(const QModelIndex &) const { return 2; }
 
 QVariant languages_model::data(const QModelIndex &index, int role) const {
-  std::array<QString, 2> results = {QString(tr("English")),
-                                    QString(tr("Deutsch"))};
+  std::array<QString, 2> results;
+  results[0] = tr("English");
+  results[1] = tr("Deutsch");
   BOOST_ASSERT(role == description_role);
   return results[index.row()];
 }
@@ -31,24 +32,28 @@ void language_settings_model::set_selected(int change) {
   if (change == selected)
     return;
   selected = change;
-#if 0
+#if 1
   QDirIterator it(":", QDirIterator::Subdirectories);
   while (it.hasNext()) {
     qDebug() << it.next();
   }
 #endif
+#if 1
   remove_translator();
   if (change == 1) {
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << "loading german language";
     translator = std::make_unique<QTranslator>();
-    // this ishacky. it's not a ts file, but a qml file.
+    // this is hacky. it's not a ts file, but a qml file.
     // https://github.com/mesonbuild/meson/issues/7925
-    [[maybe_unused]] bool loaded = translator->load(":/i18n/de.ts");
+    [[maybe_unused]] bool loaded = translator->load(":/i18n/de.qm");
     BOOST_ASSERT(loaded);
     [[maybe_unused]] bool installed =
         QCoreApplication::installTranslator(translator.get());
     BOOST_ASSERT(installed);
   }
   engine.retranslate();
+#endif
 }
 
 void language_settings_model::remove_translator() {
