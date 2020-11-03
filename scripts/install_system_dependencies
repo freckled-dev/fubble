@@ -16,7 +16,6 @@ if grep -i ubuntu /etc/os-release
     libcap2 \
     libcups2 \
     libexpat1 \
-    libffi7 \
     libfontconfig1 \
     libfreetype6 \
     libglib2.0-0 \
@@ -46,8 +45,7 @@ if grep -i ubuntu /etc/os-release
     libxrandr2 \
     libxrender1 \
     libxtst6 \
-    zlib1g
-  and sudo apt-get -qq -y install \
+    zlib1g \
     python3-pip python3-setuptools python3-wheel \
     ninja-build g++ libx11-dev libssl-dev ccache \
     qt5-default qttools5-dev-tools qtquickcontrols2-5-dev qtmultimedia5-dev \

@@ -2,7 +2,7 @@ FROM ubuntu:18.04
 
 COPY scripts scripts
 RUN apt-get update \
-  && apt-get install -y \
+  && apt-get install -qq -y \
     fish sudo \
   && ./scripts/install_system_dependencies \
   && rm -rf /var/lib/apt/lists/*
