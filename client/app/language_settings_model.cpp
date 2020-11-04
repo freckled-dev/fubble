@@ -4,18 +4,22 @@
 #include <QQmlEngine>
 #include <QTranslator>
 #include <boost/assert.hpp>
+extern "C" {
+#include <stdio.h>
+}
 
 using namespace client;
 
 languages_model::languages_model(QObject *parent)
     : QAbstractListModel(parent) {}
 
-int languages_model::rowCount(const QModelIndex &) const { return 2; }
+int languages_model::rowCount(const QModelIndex &) const { return 3; }
 
 QVariant languages_model::data(const QModelIndex &index, int role) const {
-  std::array<QString, 2> results;
-  results[0] = tr("English");
-  results[1] = tr("Deutsch");
+  std::array<QString, 3> results;
+  results[0] = tr("System Language");
+  results[1] = tr("English");
+  results[2] = tr("Deutsch");
   BOOST_ASSERT(role == description_role);
   return results[index.row()];
 }
@@ -23,7 +27,8 @@ QVariant languages_model::data(const QModelIndex &index, int role) const {
 language_settings_model::language_settings_model(QQmlEngine &engine,
                                                  QObject *parent)
     : QObject(parent), languages{new languages_model(this)}, engine(engine) {
-  set_selected(1);
+  BOOST_LOG_SEV(logger, logging::severity::debug)
+      << __FUNCTION__ << ", env LANG:" << getenv("LANG");
 }
 
 language_settings_model::~language_settings_model() { remove_translator(); }
@@ -32,28 +37,21 @@ void language_settings_model::set_selected(int change) {
   if (change == selected)
     return;
   selected = change;
-#if 1
+#if 0
   QDirIterator it(":", QDirIterator::Subdirectories);
   while (it.hasNext()) {
     qDebug() << it.next();
   }
 #endif
-#if 0
-  remove_translator();
-  if (change == 1) {
-    BOOST_LOG_SEV(logger, logging::severity::debug)
-        << "loading german language";
-    translator = std::make_unique<QTranslator>();
-    // this is hacky. it's not a ts file, but a qml file.
-    // https://github.com/mesonbuild/meson/issues/7925
-    [[maybe_unused]] bool loaded = translator->load(":/i18n/qml_de.qm");
-    BOOST_ASSERT(loaded);
-    [[maybe_unused]] bool installed =
-        QCoreApplication::installTranslator(translator.get());
-    BOOST_ASSERT(installed);
-  }
-  engine.retranslate();
-#endif
+  QString setting;
+  if (change == 2)
+    setting = "de";
+  if (change == 1)
+    setting = "en";
+  BOOST_LOG_SEV(logger, logging::severity::debug)
+      << __FUNCTION__ << ", uiLanguage:" << engine.uiLanguage().toStdString()
+      << ", chaning to " << setting.toStdString();
+  engine.setUiLanguage(setting);
 }
 
 void language_settings_model::remove_translator() {
