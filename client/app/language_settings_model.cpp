@@ -4,6 +4,7 @@
 #include <QQmlEngine>
 #include <QSettings>
 #include <QTranslator>
+#include <array>
 #include <boost/assert.hpp>
 
 using namespace client;
