@@ -613,9 +613,16 @@ Feel free to contact us anytime!</source>
 <context>
     <name>audio_devices_model</name>
     <message>
-        <location filename="../audio_video_settings_model.cpp" line="73"/>
         <source>There are no audio devices available</source>
-        <translation>Keine Audio Geräte verfügbar</translation>
+        <translation type="vanished">Keine Audio Geräte verfügbar</translation>
+    </message>
+</context>
+<context>
+    <name>client::audio_devices_model</name>
+    <message>
+        <location filename="../audio_video_settings_devices_model.hpp" line="89"/>
+        <source>There are no audio devices available</source>
+        <translation type="unfinished">Keine Audio Geräte verfügbar</translation>
     </message>
 </context>
 <context>
@@ -642,17 +649,17 @@ Feel free to contact us anytime!</source>
 <context>
     <name>client::languages_model</name>
     <message>
-        <location filename="../language_settings_model.cpp" line="18"/>
+        <location filename="../language_settings_model.cpp" line="19"/>
         <source>System Language</source>
         <translation>Systemsprache</translation>
     </message>
     <message>
-        <location filename="../language_settings_model.cpp" line="19"/>
+        <location filename="../language_settings_model.cpp" line="20"/>
         <source>English</source>
         <translation>English</translation>
     </message>
     <message>
-        <location filename="../language_settings_model.cpp" line="20"/>
+        <location filename="../language_settings_model.cpp" line="21"/>
         <source>Deutsch</source>
         <translation>Deutsch</translation>
     </message>
@@ -671,11 +678,18 @@ Feel free to contact us anytime!</source>
     </message>
 </context>
 <context>
+    <name>client::video_devices_model</name>
+    <message>
+        <location filename="../audio_video_settings_devices_model.hpp" line="54"/>
+        <source>There are no video devices available</source>
+        <translation type="unfinished">Es sind keine Video Geräte verfügbar</translation>
+    </message>
+</context>
+<context>
     <name>video_devices_model</name>
     <message>
-        <location filename="../audio_video_settings_model.cpp" line="39"/>
         <source>There are no video devices available</source>
-        <translation>Es sind keine Video Geräte verfügbar</translation>
+        <translation type="vanished">Es sind keine Video Geräte verfügbar</translation>
     </message>
 </context>
 </TS>

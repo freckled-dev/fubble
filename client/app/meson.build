@@ -23,6 +23,7 @@ client_gui_sources += qt5.preprocess(
     'error_model.hpp', 'share_desktop_model.hpp',
     'leave_model.hpp', 'participants_with_video_model.hpp', 'chat_model.hpp',
     'chat_messages_model.hpp', 'audio_video_settings_model.hpp',
+    'audio_video_settings_devices_model.hpp',
     'own_media_model.hpp', 'language_settings_model.hpp',
     'participants_model.hpp', 'participant_model.hpp', 'poll_asio_by_qt.hpp']
   )

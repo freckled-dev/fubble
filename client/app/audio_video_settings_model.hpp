@@ -1,6 +1,7 @@
 #ifndef UUID_C9B76A9B_14FF_41A0_A176_747182459D11
 #define UUID_C9B76A9B_14FF_41A0_A176_747182459D11
 
+#include "audio_video_settings_devices_model.hpp"
 #include "client/logger.hpp"
 #include "rtc/video_devices.hpp"
 #include "utils/timer.hpp"
@@ -18,25 +19,7 @@ namespace ui {
 class frame_provider_google_video_device;
 }
 class error_model;
-class audio_device_settings;
 class video_settings;
-class devices_model : public QAbstractListModel {
-  Q_OBJECT
-  Q_PROPERTY(bool available MEMBER available NOTIFY available_changed)
-public:
-  enum roles { id_role = Qt::UserRole + 1, name_role };
-  devices_model(QObject *parent);
-  virtual void refresh() = 0;
-
-signals:
-  void available_changed(bool);
-
-protected:
-  void update_available(const bool available_);
-
-  QHash<int, QByteArray> roleNames() const override;
-  bool available{};
-};
 class audio_video_settings_model : public QObject {
   Q_OBJECT
   Q_PROPERTY(client::ui::frame_provider_google_video_device *videoPreview READ
