@@ -11,7 +11,7 @@
 #include "matrix/module.hpp"
 #include "poll_asio_by_qt.hpp"
 #include "rtc/google/module.hpp"
-#include "signalling/client_module.hpp"
+#include "signaling/client_module.hpp"
 #include "temporary_room/client_module.hpp"
 #include "ui/add_version_to_qml_context.hpp"
 #include "ui_module.hpp"
@@ -47,14 +47,14 @@ int main(int argc, char *argv[]) {
   auto http_client_module =
       std::make_shared<http::client_module>(executor_module_);
 
-  // signalling
-  BOOST_LOG_SEV(logger, logging::severity::debug) << "setting up signalling";
-  signalling::client_module::config signalling_config;
-  signalling_config.host = config.general_.host;
-  signalling_config.secure = config.general_.use_ssl;
-  signalling_config.service = config.general_.service;
-  auto signalling_module = std::make_shared<signalling::client_module>(
-      executor_module_, signalling_config);
+  // signaling
+  BOOST_LOG_SEV(logger, logging::severity::debug) << "setting up signaling";
+  signaling::client_module::config signaling_config;
+  signaling_config.host = config.general_.host;
+  signaling_config.secure = config.general_.use_ssl;
+  signaling_config.service = config.general_.service;
+  auto signaling_module = std::make_shared<signaling::client_module>(
+      executor_module_, signaling_config);
 
   // matrix
   BOOST_LOG_SEV(logger, logging::severity::debug) << "setting up matrix";
@@ -97,7 +97,7 @@ int main(int argc, char *argv[]) {
   client::session_module::config client_session_config;
   std::shared_ptr<client::session_module> client_session_module =
       std::make_shared<client::session_module>(
-          executor_module_, matrix_module, rtc_module, signalling_module,
+          executor_module_, matrix_module, rtc_module, signaling_module,
           temporary_room_module, version_client_module, client_session_config);
 
   // audio

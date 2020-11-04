@@ -132,8 +132,8 @@ struct create_connection {
 
 TEST_F(GstreamerConnection, SetUp) {
   EXPECT_EQ(connection.get_state(), rtc::gstreamer::connection::state::new_);
-  EXPECT_EQ(connection.get_signalling_state(),
-            rtc::gstreamer::connection::signalling_state::stable);
+  EXPECT_EQ(connection.get_signaling_state(),
+            rtc::gstreamer::connection::signaling_state::stable);
 }
 
 TEST_F(GstreamerConnection, NegotiationNeeded) {
@@ -176,8 +176,8 @@ TEST_F(GstreamerConnection, SetLocalDescription) {
         .then(executor, [&](auto result) {
           EXPECT_NO_THROW(result.get());
           EXPECT_EQ(
-              connection.get_signalling_state(),
-              rtc::gstreamer::connection::signalling_state::have_local_offer);
+              connection.get_signaling_state(),
+              rtc::gstreamer::connection::signaling_state::have_local_offer);
           g_main_loop_quit(main_loop);
           called = true;
         });

@@ -7,21 +7,21 @@
 namespace rtc::google {
 class factory;
 }
-namespace signalling::client {
+namespace signaling::client {
 class factory;
 }
 namespace client {
 class peer_creator {
 public:
   peer_creator(boost::executor &executor,
-               signalling::client::factory &client_creator,
+               signaling::client::factory &client_creator,
                rtc::google::factory &connection_creator);
 
   std::unique_ptr<peer> create();
 
 protected:
   boost::executor &executor;
-  signalling::client::factory &client_creator;
+  signaling::client::factory &client_creator;
   rtc::google::factory &connection_creator;
 };
 } // namespace client

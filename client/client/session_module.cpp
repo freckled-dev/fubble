@@ -15,12 +15,12 @@ session_module::session_module(
     std::shared_ptr<utils::executor_module> executor_module,
     std::shared_ptr<matrix::module> matrix_module,
     std::shared_ptr<rtc::google::module> rtc_module,
-    std::shared_ptr<signalling::client_module> signalling_module,
+    std::shared_ptr<signaling::client_module> signaling_module,
     std::shared_ptr<temporary_room::client_module> temporary_room_module,
     std::shared_ptr<version::client_module> version_client_module,
     const config &config_)
     : executor_module{executor_module}, matrix_module{matrix_module},
-      rtc_module{rtc_module}, signalling_module{signalling_module},
+      rtc_module{rtc_module}, signaling_module{signaling_module},
       temporary_room_module{temporary_room_module},
       version_client_module{version_client_module}, config_{config_} {}
 
@@ -74,7 +74,7 @@ std::shared_ptr<peer_creator> session_module::get_peer_creator() {
   if (!peer_creator_)
     peer_creator_ = std::make_shared<peer_creator>(
         *executor_module->get_boost_executor(),
-        *signalling_module->get_client_creator(), *rtc_module->get_factory());
+        *signaling_module->get_client_creator(), *rtc_module->get_factory());
   return peer_creator_;
 }
 

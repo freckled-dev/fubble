@@ -16,7 +16,7 @@ class device_factory;
 }
 } // namespace capture
 struct settings;
-class asio_signalling_thread;
+class asio_signaling_thread;
 class factory;
 class module {
 public:
@@ -24,7 +24,7 @@ public:
          const settings rtc_settings);
   virtual ~module();
 
-  std::shared_ptr<asio_signalling_thread> get_asio_signalling_thread();
+  std::shared_ptr<asio_signaling_thread> get_asio_signaling_thread();
   std::shared_ptr<factory> get_factory();
   std::shared_ptr<capture::audio::device_creator> get_audio_device_creator();
   std::shared_ptr<capture::audio::device> get_audio_device();
@@ -33,7 +33,7 @@ public:
 protected:
   std::shared_ptr<utils::executor_module> executor_module;
   const settings rtc_settings;
-  std::shared_ptr<asio_signalling_thread> asio_signalling_thread_;
+  std::shared_ptr<asio_signaling_thread> asio_signaling_thread_;
   std::shared_ptr<factory> factory_;
   std::shared_ptr<capture::audio::device_creator> audio_device_creator;
   std::shared_ptr<capture::audio::device> audio_device;
