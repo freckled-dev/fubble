@@ -1,7 +1,7 @@
 evaluation = executable('webrtc_gstreamer_peer_evaluation',
   ['evaluation.cpp'],
   cpp_pch: '../../../pch/precompiled.hpp',
-  dependencies: [utils_dep, gstreamer_webrtc_dep, signalling_client_dep],
+  dependencies: [utils_dep, gstreamer_webrtc_dep, signaling_client_dep],
   install: true
   )
 

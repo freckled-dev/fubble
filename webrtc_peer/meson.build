@@ -3,7 +3,7 @@ webrtc_peer = library('webrtc_peer',
     'rtc/data_channel.cpp', 'rtc/video_devices.cpp'
     ],
   cpp_pch: '../pch/precompiled.hpp',
-  dependencies: [utils_dep, signalling_client_dep],
+  dependencies: [utils_dep, signaling_client_dep],
   install: true
   )
 webrtc_peer_dep = declare_dependency(

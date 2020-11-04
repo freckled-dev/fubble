@@ -38,7 +38,7 @@ public:
     closed
   };
   state get_state();
-  enum struct signalling_state {
+  enum struct signaling_state {
     stable,
     closed,
     have_local_offer,
@@ -46,7 +46,7 @@ public:
     have_local_pranswer,
     have_remote_pranswer
   };
-  signalling_state get_signalling_state();
+  signaling_state get_signaling_state();
   enum struct ice_gathering_state { new_, gathering, complete };
   ice_gathering_state get_ice_gathering_state();
   enum struct ice_connection_state {

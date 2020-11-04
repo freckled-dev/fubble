@@ -1,5 +1,5 @@
 #include "module.hpp"
-#include "rtc/google/asio_signalling_thread.hpp"
+#include "rtc/google/asio_signaling_thread.hpp"
 #include "rtc/google/capture/audio/device.hpp"
 #include "rtc/google/capture/audio/device_creator.hpp"
 #include "rtc/google/capture/video/device.hpp"
@@ -13,17 +13,17 @@ module::module(std::shared_ptr<utils::executor_module> executor_module,
 
 module::~module() = default;
 
-std::shared_ptr<asio_signalling_thread> module::get_asio_signalling_thread() {
-  if (!asio_signalling_thread_)
-    asio_signalling_thread_ = std::make_shared<asio_signalling_thread>(
+std::shared_ptr<asio_signaling_thread> module::get_asio_signaling_thread() {
+  if (!asio_signaling_thread_)
+    asio_signaling_thread_ = std::make_shared<asio_signaling_thread>(
         *executor_module->get_io_context());
-  return asio_signalling_thread_;
+  return asio_signaling_thread_;
 }
 
 std::shared_ptr<factory> module::get_factory() {
   if (!factory_)
     factory_ = std::make_shared<rtc::google::factory>(
-        rtc_settings, get_asio_signalling_thread()->get_native());
+        rtc_settings, get_asio_signaling_thread()->get_native());
   return factory_;
 }
 

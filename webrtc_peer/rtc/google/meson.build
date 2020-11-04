@@ -1,7 +1,7 @@
 evaluation = executable('webrtc_google_peer_evaluation',
   ['evaluation.cpp'],
   cpp_pch: '../../../pch/precompiled.hpp',
-  dependencies: [utils_dep, google_webrtc_dep, signalling_client_dep],
+  dependencies: [utils_dep, google_webrtc_dep, signaling_client_dep],
   override_options: ['cpp_std=c++14']
   )
 
@@ -13,7 +13,7 @@ webrtc_google_peer = library('webrtc_google_peer',
     'capture/audio/device_creator.cpp', 'capture/audio/device.cpp',
     'audio_track_source.cpp', 'audio_track_sink.cpp',
     'video_track_source.cpp', 'video_track_sink.cpp', 'video_source.cpp',
-    'asio_signalling_thread.cpp', 'log_webrtc_to_logging.cpp',
+    'asio_signaling_thread.cpp', 'log_webrtc_to_logging.cpp',
     'audio_devices.cpp', 'audio_track.cpp', 'track.cpp',
     'voice_detection.cpp', 'capture/desktop/capturer.cpp',
     'capture/desktop/enumerator.cpp', 'module.cpp',
@@ -47,12 +47,12 @@ test('webrtc_google_peer test',
   timeout: 30)
 
 webrtc_google_asio_thread_test = executable('webrtc_google_asio_thread_test',
-  ['asio_signalling_thread_test.cpp'],
+  ['asio_signaling_thread_test.cpp'],
   cpp_pch: '../../../pch/precompiled.hpp',
   dependencies: [gtest_dep, webrtc_google_peer_dep, fmt_dep],
   link_with: [google_webrtc_test_main]
   )
-test('asio_signalling_thread test',
+test('asio_signaling_thread test',
   webrtc_google_asio_thread_test,
   env: [
     'ASAN_OPTIONS=fast_unwind_on_malloc=0', suppr_option

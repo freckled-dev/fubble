@@ -1,4 +1,4 @@
-#include "signalling/client/client.hpp"
+#include "signaling/client/client.hpp"
 #include "client/p2p/negotiation/ice_candidates.hpp"
 #include "client/p2p/negotiation/offer_answer.hpp"
 #include "executor_asio.hpp"
@@ -14,8 +14,8 @@
 #include "rtc/google/factory.hpp"
 #include "rtc/google/video_track_sink.hpp"
 #include "rtc/track_ptr.hpp"
-#include "signalling/client/connection_creator.hpp"
-#include "signalling/json_message.hpp"
+#include "signaling/client/connection_creator.hpp"
+#include "signaling/json_message.hpp"
 #include "websocket/connection_creator.hpp"
 #include "websocket/connector.hpp"
 #include <boost/asio/io_context.hpp>
@@ -116,16 +116,16 @@ int main(int argc, char *argv[]) {
   websocket::connector_creator websocket_connector{
       context, websocket_connection_creator};
 
-  signalling::json_message signalling_json;
-  signalling::client::connection_creator signalling_connection_creator{
-      context, boost_executor, signalling_json};
-  auto signalling_client = signalling::client::client::create(
-      websocket_connector, signalling_connection_creator);
-  signalling::client::connect_information connect_information{
-      false, config_.signalling_.host, config_.signalling_.service,
-      "/api/signalling/v0/"};
-  signalling_client->set_connect_information(connect_information);
-  signalling_client->on_error.connect(
+  signaling::json_message signaling_json;
+  signaling::client::connection_creator signaling_connection_creator{
+      context, boost_executor, signaling_json};
+  auto signaling_client = signaling::client::client::create(
+      websocket_connector, signaling_connection_creator);
+  signaling::client::connect_information connect_information{
+      false, config_.signaling_.host, config_.signaling_.service,
+      "/api/signaling/v0/"};
+  signaling_client->set_connect_information(connect_information);
+  signaling_client->on_error.connect(
       [&](auto /*error*/) { signals_.close(); });
 
   rtc::google::factory rtc_connection_creator;
@@ -133,9 +133,9 @@ int main(int argc, char *argv[]) {
       rtc_connection_creator.create_connection();
 
   client::p2p::negotiation::ice_candidates ice_candidate_handler_{
-      *signalling_client, *rtc_connection};
+      *signaling_client, *rtc_connection};
   client::p2p::negotiation::offer_answer offer_answer_handler_{
-      boost_executor, *signalling_client, *rtc_connection};
+      boost_executor, *signaling_client, *rtc_connection};
   data_channel_handler data_channel_handler_{*rtc_connection};
   message_writer message_writer_{executor, data_channel_handler_};
 
@@ -164,21 +164,21 @@ int main(int argc, char *argv[]) {
     });
   });
 
-  signalling_client->on_create_offer.connect(
+  signaling_client->on_create_offer.connect(
       [&] { data_channel_handler_.add(); });
-  signalling_client->on_closed.connect([&] {
+  signaling_client->on_closed.connect([&] {
     message_writer_.close();
     rtc_connection->close();
   });
   // TODO set token after auth!
-  signalling_client->connect("token", config_.signalling_.id);
+  signaling_client->connect("token", config_.signaling_.id);
 
   signals_.async_wait([&](auto &error) {
     if (error)
       return;
     message_writer_.close();
     rtc_connection->close();
-    signalling_client->close();
+    signaling_client->close();
   });
 
   context.run();

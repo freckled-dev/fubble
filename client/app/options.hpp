@@ -9,12 +9,12 @@ struct config {
     bool send{false};
   };
   video video_;
-  struct signalling {
+  struct signaling {
     std::string host{"localhost"};
     std::string service{"http"};
     std::string id{"test"}; // TODO remove this flag. join a room!
   };
-  signalling signalling_;
+  signaling signaling_;
 #if 0
   struct matrix {
     std::string host{"localhost"};

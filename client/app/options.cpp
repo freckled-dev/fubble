@@ -20,14 +20,14 @@ boost::optional<config> options::operator()(int argc, char *argv[]) {
   general.add_options()("help", "produce help message");
 
   auto video_ = video(result.video_);
-  bpo::options_description signalling("signalling");
+  bpo::options_description signaling("signaling");
   {
-    utils::option_adder adder{signalling};
-    adder.add("signalling-host", result.signalling_.host,
-              "hostname of the signalling server");
-    adder.add("signalling-service", result.signalling_.service,
-              "service of signalling server. eg \"http\" or 80");
-    adder.add("signalling-id", result.signalling_.id,
+    utils::option_adder adder{signaling};
+    adder.add("signaling-host", result.signaling_.host,
+              "hostname of the signaling server");
+    adder.add("signaling-service", result.signaling_.service,
+              "service of signaling server. eg \"http\" or 80");
+    adder.add("signaling-id", result.signaling_.id,
               "the id where two peers shall meet");
   }
 
@@ -53,7 +53,7 @@ boost::optional<config> options::operator()(int argc, char *argv[]) {
   bpo::options_description options;
   options.add(general);
   options.add(video_);
-  options.add(signalling);
+  options.add(signaling);
 #if 0
   options.add(matrix);
   options.add(temporary_room);

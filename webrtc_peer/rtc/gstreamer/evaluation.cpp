@@ -110,7 +110,7 @@ static void init_peer(peer &peer_, const std::string &pattern) {
   g_signal_connect(webrtc, "on-negotiation-needed",
                    G_CALLBACK(on_negotiation_needed), &peer_);
   /* We will transmit this ICE candidate to the remote using some
-   * signalling. Incoming ICE candidates from the remote need to be
+   * signaling. Incoming ICE candidates from the remote need to be
    * added by us too. */
   g_signal_connect(webrtc, "on-ice-candidate", G_CALLBACK(on_ice_candidate),
                    &peer_);

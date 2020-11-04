@@ -22,12 +22,12 @@
 #include "matrix/factory.hpp"
 #include "matrix/testing.hpp"
 #include "rtc/data_channel.hpp"
-#include "rtc/google/asio_signalling_thread.hpp"
+#include "rtc/google/asio_signaling_thread.hpp"
 #include "rtc/google/factory.hpp"
-#include "signalling/client/client.hpp"
-#include "signalling/client/connection_creator.hpp"
-#include "signalling/json_message.hpp"
-#include "signalling/testing.hpp"
+#include "signaling/client/client.hpp"
+#include "signaling/client/connection_creator.hpp"
+#include "signaling/json_message.hpp"
+#include "signaling/testing.hpp"
 #include "temporary_room/net/client.hpp"
 #include "temporary_room/server/application.hpp"
 #include "temporary_room/testing.hpp"
@@ -51,7 +51,7 @@ struct test_client {
       : context(fixture.context), connect_information_{information_},
         room_name(room_name), rtc_connection_creator{
                                   rtc::google::settings{},
-                                  fixture.rtc_signalling_thread.get_native()} {
+                                  fixture.rtc_signaling_thread.get_native()} {
     set_own_media();
   }
 
@@ -59,7 +59,7 @@ struct test_client {
       : context(fixture.context),
         room_name(room_name), rtc_connection_creator{
                                   rtc::google::settings{},
-                                  fixture.rtc_signalling_thread.get_native()} {
+                                  fixture.rtc_signaling_thread.get_native()} {
     set_own_media();
   }
 
@@ -86,15 +86,15 @@ struct test_client {
   std::shared_ptr<http::action_factory> action_factory_ =
       std::make_shared<http::action_factory>(connection_creator_);
 
-  // signalling
-  signalling::json_message signalling_json;
-  signalling::client::connection_creator signalling_connection_creator{
-      context, boost_executor, signalling_json};
-  signalling::client::connect_information signalling_connect_information =
-      signalling::testing::make_connect_information();
-  signalling::client::factory_impl client_creator{
-      websocket_connector, signalling_connection_creator,
-      signalling_connect_information};
+  // signaling
+  signaling::json_message signaling_json;
+  signaling::client::connection_creator signaling_connection_creator{
+      context, boost_executor, signaling_json};
+  signaling::client::connect_information signaling_connect_information =
+      signaling::testing::make_connect_information();
+  signaling::client::factory_impl client_creator{
+      websocket_connector, signaling_connection_creator,
+      signaling_connect_information};
 
   // version
   std::shared_ptr<http::client> version_http_client =

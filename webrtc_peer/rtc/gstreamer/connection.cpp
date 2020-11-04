@@ -168,22 +168,22 @@ connection::state connection::get_state() {
   BOOST_ASSERT(false);
 }
 
-connection::signalling_state connection::get_signalling_state() {
+connection::signaling_state connection::get_signaling_state() {
   int cast{};
   g_object_get(webrtc, "signaling-state", &cast, nullptr);
   switch (cast) {
   case 0:
-    return signalling_state::stable;
+    return signaling_state::stable;
   case 1:
-    return signalling_state::closed;
+    return signaling_state::closed;
   case 2:
-    return signalling_state::have_local_offer;
+    return signaling_state::have_local_offer;
   case 3:
-    return signalling_state::have_remote_offer;
+    return signaling_state::have_remote_offer;
   case 4:
-    return signalling_state::have_local_pranswer;
+    return signaling_state::have_local_pranswer;
   case 5:
-    return signalling_state::have_remote_pranswer;
+    return signaling_state::have_remote_pranswer;
   }
   BOOST_ASSERT(false);
 }

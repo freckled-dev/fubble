@@ -3,7 +3,7 @@
 
 #include "matrix/module.hpp"
 #include "rtc/google/module.hpp"
-#include "signalling/client_module.hpp"
+#include "signaling/client_module.hpp"
 #include "temporary_room/client_module.hpp"
 #include "utils/executor_module.hpp"
 #include "version/client_module.hpp"
@@ -25,7 +25,7 @@ public:
       std::shared_ptr<utils::executor_module> executor_module,
       std::shared_ptr<matrix::module> matrix_module,
       std::shared_ptr<rtc::google::module> rtc_module,
-      std::shared_ptr<signalling::client_module> signalling_module,
+      std::shared_ptr<signaling::client_module> signaling_module,
       std::shared_ptr<temporary_room::client_module> temporary_room_module,
       std::shared_ptr<version::client_module> version_client_module,
       const config &config_);
@@ -46,7 +46,7 @@ protected:
   const std::shared_ptr<utils::executor_module> executor_module;
   const std::shared_ptr<matrix::module> matrix_module;
   const std::shared_ptr<rtc::google::module> rtc_module;
-  const std::shared_ptr<signalling::client_module> signalling_module;
+  const std::shared_ptr<signaling::client_module> signaling_module;
   const std::shared_ptr<temporary_room::client_module> temporary_room_module;
   const std::shared_ptr<version::client_module> version_client_module;
   const config config_;
