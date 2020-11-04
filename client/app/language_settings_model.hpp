@@ -45,7 +45,7 @@ signals:
 
 protected:
   void set_selected(int);
-  void remove_translator();
+  void set_language(QString setting);
 
   client::logger logger{"language_settings_model"};
   int selected{};

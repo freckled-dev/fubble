@@ -2,11 +2,9 @@
 #include <QCoreApplication>
 #include <QDirIterator>
 #include <QQmlEngine>
+#include <QSettings>
 #include <QTranslator>
 #include <boost/assert.hpp>
-extern "C" {
-#include <stdio.h>
-}
 
 using namespace client;
 
@@ -27,11 +25,19 @@ QVariant languages_model::data(const QModelIndex &index, int role) const {
 language_settings_model::language_settings_model(QQmlEngine &engine,
                                                  QObject *parent)
     : QObject(parent), languages{new languages_model(this)}, engine(engine) {
-  BOOST_LOG_SEV(logger, logging::severity::debug)
-      << __FUNCTION__ << ", env LANG:" << getenv("LANG");
+  QSettings settings;
+  if (!settings.contains("language"))
+    return;
+  QString set = settings.value("language").toString();
+  if (set == "en")
+    selected = 1;
+  if (set == "de")
+    selected = 2;
+  on_selected_changed(selected);
+  set_language(set);
 }
 
-language_settings_model::~language_settings_model() { remove_translator(); }
+language_settings_model::~language_settings_model() = default;
 
 void language_settings_model::set_selected(int change) {
   if (change == selected)
@@ -44,19 +50,22 @@ void language_settings_model::set_selected(int change) {
   }
 #endif
   QString setting;
-  if (change == 2)
-    setting = "de";
   if (change == 1)
     setting = "en";
+  if (change == 2)
+    setting = "de";
+  set_language(setting);
+}
+
+void language_settings_model::set_language(QString setting) {
   BOOST_LOG_SEV(logger, logging::severity::debug)
       << __FUNCTION__ << ", uiLanguage:" << engine.uiLanguage().toStdString()
       << ", chaning to " << setting.toStdString();
   engine.setUiLanguage(setting);
-}
-
-void language_settings_model::remove_translator() {
-  if (!translator)
+  QSettings settings;
+  if (setting.isEmpty()) {
+    settings.remove("language");
     return;
-  QCoreApplication::removeTranslator(translator.get());
-  translator.reset();
+  }
+  settings.setValue("language", setting);
 }

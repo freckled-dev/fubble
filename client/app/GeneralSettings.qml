@@ -55,7 +55,7 @@ Item {
         }
         ComboBox {
             // does not work. i guess because the property is read only
-            // currentIndex: languageModel.languageIndex
+            currentIndex: languageModel.languageIndex
             onCurrentIndexChanged: languageModel.languageIndex = currentIndex
             textRole: "description"
             anchors.top: languageTitle.bottom
