@@ -52,7 +52,7 @@ Popup {
             }
 
             TabButton {
-                text: qsTr("Sounds / Notifications")
+                text: qsTr("Notifications")
                 width: implicitWidth
             }
 

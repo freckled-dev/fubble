@@ -15,6 +15,7 @@ Item {
 
     Item {
         id: settingItems
+        anchors.fill: parent
 
         Label {
             id: uiTitle
@@ -47,19 +48,40 @@ Item {
 
         Label {
             id: languageTitle
-            text: qsTr("Language")
+            text: qsTr("Language Settings")
             anchors.topMargin: 20
             anchors.top: roomHistorySwitch.bottom
             font.pointSize: Style.current.largeTextPointSize
             width: settingsDialog.availableWidth
         }
-        ComboBox {
-            // does not work. i guess because the property is read only
-            currentIndex: languageModel.languageIndex
-            onCurrentIndexChanged: languageModel.languageIndex = currentIndex
-            textRole: "description"
+
+        Item {
+            id: item1
+            anchors.topMargin: 10
             anchors.top: languageTitle.bottom
-            model: languageModel.languages
+            anchors.left: parent.left
+            anchors.right: parent.right
+            implicitHeight: languageCombo.implicitHeight
+
+            Label {
+                id: languageLabel
+                text: qsTr("Language")
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.left: parent.left
+                font.pointSize: Style.current.textPointSize
+            }
+
+            ComboBox {
+                id: languageCombo
+                // does not work. i guess because the property is read only
+                currentIndex: languageModel.languageIndex
+                onCurrentIndexChanged: languageModel.languageIndex = currentIndex
+                textRole: "description"
+                anchors.left: languageLabel.right
+                anchors.right: parent.right
+                anchors.leftMargin: 20
+                model: languageModel.languages
+            }
         }
     }
 }

@@ -126,12 +126,7 @@
     <message>
         <location filename="../ChatItem.qml" line="87"/>
         <source></source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ChatItem.qml" line="87"/>
-        <source></source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -193,7 +188,7 @@ Feel free to contact us anytime!</source>
     </message>
     <message>
         <location filename="../FubbleSettings.qml" line="55"/>
-        <source>Sounds / Notifications</source>
+        <source>Notifications</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -205,22 +200,27 @@ Feel free to contact us anytime!</source>
 <context>
     <name>GeneralSettings</name>
     <message>
-        <location filename="../GeneralSettings.qml" line="21"/>
+        <location filename="../GeneralSettings.qml" line="22"/>
         <source>User Interface</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GeneralSettings.qml" line="30"/>
+        <location filename="../GeneralSettings.qml" line="31"/>
         <source>Enable dark mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GeneralSettings.qml" line="44"/>
+        <location filename="../GeneralSettings.qml" line="45"/>
         <source>Show the room history</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GeneralSettings.qml" line="50"/>
+        <location filename="../GeneralSettings.qml" line="51"/>
+        <source>Language Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GeneralSettings.qml" line="68"/>
         <source>Language</source>
         <translation type="unfinished"></translation>
     </message>
