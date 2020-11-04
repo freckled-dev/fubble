@@ -26,7 +26,6 @@ client_gui_sources += qt5.preprocess(
     'own_media_model.hpp', 'language_settings_model.hpp',
     'participants_model.hpp', 'participant_model.hpp', 'poll_asio_by_qt.hpp']
   )
-qt5.compile_translations(['i18n/qml_de.ts'])
 client_gui_sources += qt5.compile_translations(qresource: 'i18n.qrc',
   build_by_default: true)
 if host_machine.system() == 'windows'

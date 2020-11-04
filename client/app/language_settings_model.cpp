@@ -38,7 +38,7 @@ void language_settings_model::set_selected(int change) {
     qDebug() << it.next();
   }
 #endif
-#if 1
+#if 0
   remove_translator();
   if (change == 1) {
     BOOST_LOG_SEV(logger, logging::severity::debug)
@@ -46,7 +46,7 @@ void language_settings_model::set_selected(int change) {
     translator = std::make_unique<QTranslator>();
     // this is hacky. it's not a ts file, but a qml file.
     // https://github.com/mesonbuild/meson/issues/7925
-    [[maybe_unused]] bool loaded = translator->load(":/i18n/de.qm");
+    [[maybe_unused]] bool loaded = translator->load(":/i18n/qml_de.qm");
     BOOST_ASSERT(loaded);
     [[maybe_unused]] bool installed =
         QCoreApplication::installTranslator(translator.get());
