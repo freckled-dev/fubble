@@ -11,6 +11,12 @@ webrtc_peer_dep = declare_dependency(
   link_with: [webrtc_peer],
   dependencies: [boost_dep, utils_dep]
   )
+install_headers([
+  'rtc/connection.hpp', 'rtc/data_channel.hpp', 'rtc/data_channel_ptr.hpp',
+  'rtc/ice_candidate.hpp', 'rtc/logger.hpp', 'rtc/message.hpp',
+  'rtc/session_description.hpp', 'rtc/track.hpp', 'rtc/track_ptr.hpp',
+  'rtc/video_devices.hpp',
+  ], subdir: 'rtc')
 subdir('rtc/gstreamer')
 subdir('rtc/google')
 
