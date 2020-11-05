@@ -6,7 +6,6 @@ matrix = library('matrix',
     ],
   dependencies: [fmt_dep, http_dep],
   include_directories: ['..'],
-  cpp_pch: '../pch/precompiled.hpp',
   install: true
   )
 matrix_dep = declare_dependency(

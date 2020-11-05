@@ -11,7 +11,6 @@ http = library('http',
   http_sources,
   dependencies: http_dependencies,
   include_directories: ['..'],
-  cpp_pch: '../pch/precompiled.hpp',
   install: true
   )
 http_dep = declare_dependency(
@@ -30,7 +29,6 @@ install_headers([
 http_test = executable('http_test',
   ['client_test.cpp'],
   dependencies : [gtest_dep, http_dep, fmt_dep],
-  cpp_pch: '../pch/precompiled.hpp',
   link_with: [test_main]
   )
 

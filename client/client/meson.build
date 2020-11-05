@@ -16,7 +16,6 @@ client = library('fubble',
     'audio_settings_module.cpp', 'video_module.cpp', 'session_module.cpp',
     'desktop_sharing_module.cpp',
     ],
-  cpp_pch: '../../pch/precompiled.hpp',
   dependencies: [boost_dep, utils_dep, signaling_client_dep,
     webrtc_google_peer_dep, matrix_dep, fruit_dep, version_getter_dep],
   include_directories: ['..'],
@@ -68,7 +67,6 @@ test('client muted_deaf_communicator test', client_muted_deaf_communicator_test,
 
 client_room_test = executable('client_room_test',
   ['room_test.cpp'],
-  cpp_pch: '../../pch/precompiled.hpp',
   dependencies: [client_dep, gtest_dep, version_server_dep],
   link_with: [google_webrtc_test_main]
   )
