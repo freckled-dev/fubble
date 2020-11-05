@@ -51,6 +51,9 @@ class FubbleConan(ConanFile):
     def imports(self):
         self.copy("*.dll", dst="bin", keep_path=False)
 
+    def source(self):
+        self.run("git clone git@gitlab.com:acof/fubble.git")
+
     def build_requirements(self):
         # if self.settings.os == "Windows":
         #     # will not compile with less than visual studio 2019
@@ -97,10 +100,12 @@ class FubbleConan(ConanFile):
             with_tests = False
         if self.settings.os == "Linux":
             with_servers = True
+        with_ui = self.options.enable_ui == True
 
         # https://mesonbuild.com/Builtin-options.html#base-options
         meson_options = {'cpp_std': 'c++17', 'b_ndebug': 'if-release',
-                        'with_servers': with_servers, 'with_tests': with_tests}
+                        'with_servers': with_servers, 'with_tests': with_tests,
+                        'with_ui': with_ui}
         if self.settings.os == "Linux":
             meson_options['warning_level'] = '3'
         if self.options.treat_warnings_as_errors:
