@@ -29,6 +29,9 @@ version_getter_dep = declare_dependency(
   dependencies: [http_dep]
   )
 
+install_headers(['client_module.hpp', 'getter.hpp', 'logger.hpp', 'server.hpp',
+  ], subdir: 'version')
+
 version_test = executable('version_test',
   ['test.cpp'],
   dependencies: [gtest_dep, version_server_dep, version_getter_dep],

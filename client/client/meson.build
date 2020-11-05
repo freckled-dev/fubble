@@ -1,4 +1,4 @@
-client = library('client',
+client = library('fubble',
   ['peer.cpp', 'peer_creator.cpp', 'p2p/negotiation/ice_candidates.cpp',
     'p2p/negotiation/offer_answer.cpp', 'joiner.cpp', 'peers.cpp',
     'add_video_to_connection.cpp', 'room.cpp', 'rooms.cpp',
@@ -28,6 +28,24 @@ client_dep = declare_dependency(
     webrtc_google_peer_dep, fruit_dep, temporary_room_dep],
   include_directories: ['..']
   )
+install_headers([
+  'p2p/negotiation/ice_candidates.hpp', 'p2p/negotiation/offer_answer.hpp',
+  'peers.hpp', 'logger.hpp', 'rooms.hpp', 'chat.hpp', 'room_creator.hpp',
+  'local_audio_listener.hpp', 'add_data_channel.hpp', 'bot_participant.hpp',
+  'track_adder.hpp', 'users.hpp', 'own_microphone_tester.hpp',
+  'audio_device_settings.hpp', 'peer.hpp', 'peer_creator.hpp',
+  'participants.hpp', 'remote_participant.hpp',
+  'participant_creator_creator.hpp', 'add_audio_to_connection.hpp',
+  'add_video_to_connection.hpp', 'audio_level_calculator.hpp',
+  'audio_module.hpp', 'audio_settings_module.hpp',
+  'audio_tracks_volume.hpp', 'crash_catcher.hpp', 'desktop_sharing.hpp',
+  'desktop_sharing_module.hpp', 'factory.hpp', 'joiner.hpp', 'leaver.hpp',
+  'loopback_audio.hpp', 'mute_deaf_communicator.hpp',
+  'own_audio_information.hpp', 'own_audio_track.hpp', 'own_media.hpp',
+  'own_participant.hpp', 'own_video.hpp', 'participant.hpp',
+  'participant_creator.hpp', 'session_module.hpp', 'video_settings.hpp',
+  'tracks_adder.hpp', 'video_module.hpp', 'room.hpp',
+  ], subdir: 'client')
 
 client_video_settings_test = executable('client_video_settings_test',
   ['video_settings_test.cpp'],

@@ -14,6 +14,12 @@ matrix_dep = declare_dependency(
   link_with: [matrix],
   dependencies: [utils_dep, http_dep]
   )
+install_headers([
+  'client_factory.hpp', 'logger.hpp', 'factory.hpp', 'error.hpp', 'users.hpp',
+  'chat.hpp', 'fixture.hpp', 'module.hpp', 'room_states.hpp',
+  'authentification.hpp', 'client.hpp', 'events.hpp', 'room.hpp', 'rooms.hpp',
+  'user.hpp', 'room_participant.hpp',
+  ], subdir: 'matrix')
 
 matrix_test_dep = declare_dependency(
   dependencies : [gtest_dep, matrix_dep, fmt_dep],

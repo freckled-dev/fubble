@@ -19,6 +19,14 @@ http_dep = declare_dependency(
   link_with: [http],
   dependencies: [utils_dep, json_dep]
   )
+install_headers([
+  'logger.hpp', 'action_factory.hpp', 'add_windows_root_certs.hpp',
+  'connection.hpp', 'connection_creator.hpp', 'connector.hpp',
+  'https_connection.hpp', 'server.hpp', 'action.hpp', 'client.hpp',
+  'client_factory.hpp', 'client_module.hpp', 'ssl_upgrader.hpp',
+  'connection_impl.hpp', 'fields.hpp', 'http_connection.hpp',
+  ], subdir: 'http')
+
 http_test = executable('http_test',
   ['client_test.cpp'],
   dependencies : [gtest_dep, http_dep, fmt_dep],

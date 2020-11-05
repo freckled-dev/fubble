@@ -10,6 +10,11 @@ websocket_dep = declare_dependency(
   link_with: [websocket],
   dependencies: [boost_dep, utils_dep]
   )
+install_headers([
+  'acceptor.hpp', 'connection_ptr.hpp', 'logger.hpp', 'connection.hpp',
+  'connection_creator.hpp', 'caching_connection.hpp', 'connector.hpp',
+  'connection_impl.hpp',
+  ], subdir: 'websocket')
 websocket_test = executable('websocket_test',
   ['test.cpp'],
   dependencies : [gtest_dep, boost_dep, websocket_dep],

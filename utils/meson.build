@@ -23,6 +23,14 @@ utils_dep = declare_dependency(
   link_with: [utils],
   dependencies: [asio_dep]
   )
+install_headers([
+  'executor_asio.hpp', 'joined_thread.hpp', 'uuid.hpp', 'wait_for_event.hpp',
+  'exit_signals.hpp', 'version.hpp', 'options_adder.hpp', 'exception.hpp',
+  'executor_module.hpp', 'timer.hpp',
+  ], subdir: 'utils')
+install_headers(['logging/logger.hpp', 'logging/initialser.hpp',
+  ], subdir: 'utils/logging')
+
 utils_test = executable('utils_test',
   ['executor_asio_test.cpp', 'boost_thread_test.cpp'],
   dependencies: [gtest_dep, utils_dep],

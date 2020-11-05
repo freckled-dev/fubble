@@ -5,17 +5,19 @@ import os
 
 class FubbleConan(ConanFile):
     name = "fubble"
-    version = "1.0"
+    version = "1.0.0"
     license = "All Rights Reserved"
     author = "Fubble OG <contact@fubble.io>"
     url = "fubble.io"
     description = "Conferencing that works"
     topics = ("conference", "fubble", "video", "audio", "webrtc")
     settings = "os", "compiler", "build_type", "arch"
-    options = {"shared": [False, True], "treat_warnings_as_errors": [True, False],
-            "sanatize": [True, False], "qt_install": "ANY"}
+    options = {"shared": [False, True],
+            "treat_warnings_as_errors": [True, False],
+            "sanatize": [True, False], "qt_install": "ANY",
+            "enable_ui": [True, False]}
     # https://docs.conan.io/en/latest/reference/conanfile/attributes.html#default-options
-    default_options = {"shared": False, "qt_install": None,
+    default_options = {"shared": False, "qt_install": None, "enable_ui": True,
             "nlohmann_json:multiple_headers": True,
             "restinio:asio": "boost",
             # qt options
@@ -135,6 +137,8 @@ class FubbleConan(ConanFile):
     def package(self):
         meson = Meson(self)
         meson.install(build_dir="meson")
+        if self.settings.os == "Linux":
+            pass
         if self.settings.os == "Windows":
             bin_dir = os.path.join(self.package_folder, 'bin')
             vars_dict = tools.vcvars_dict(self.settings)

@@ -14,6 +14,21 @@ signaling_dep = declare_dependency(
   link_with: [signaling],
   dependencies: [boost_dep, utils_dep, websocket_dep]
   )
+install_headers([
+  'signaling/answer.hpp', 'signaling/client/client.hpp',
+  'signaling/client/connection.hpp', 'signaling/client/connection_creator.hpp',
+  'signaling/client/connection_ptr.hpp', 'signaling/client_module.hpp',
+  'signaling/connection.hpp', 'signaling/connection_ptr.hpp',
+  'signaling/create_offer.hpp', 'signaling/device/creator.hpp',
+  'signaling/device/device.hpp', 'signaling/device/device_ptr.hpp',
+  'signaling/ice_candidate.hpp', 'signaling/json_message.hpp',
+  'signaling/logger.hpp', 'signaling/want_to_negotiate.hpp',
+  'signaling/registration.hpp', 'signaling/registration_handler.hpp',
+  'signaling/server/application.hpp', 'signaling/server/connection.hpp',
+  'signaling/server/connection_creator.hpp', 'signaling/offer.hpp',
+  'signaling/server/connection_ptr.hpp', 'signaling/server/server.hpp',
+  ], subdir: 'signaling')
+
 signaling_test = executable('signaling_test',
   ['signaling/json_message_test.cpp',
     'signaling/registration_handler_test.cpp'],
