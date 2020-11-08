@@ -21,6 +21,8 @@ parser.add_argument('--skip_package', help='don\'t run conan package',
         action="store_true")
 parser.add_argument('--skip_qt', help='don\'t pull qt',
         action="store_true")
+parser.add_argument('--skip_export', help='don\'t export the package to conan',
+        action="store_true")
 parser.add_argument('--profile', help='the conan profile to use', default='default')
 parser.add_argument('--use_asan', help='use address sanitizer \'memory,undefined\'', action="store_true")
 parser.add_argument('--treat_warnings_as_errors', help='warnings shall get handled as errors', action="store_true")
@@ -99,16 +101,27 @@ if not args.skip_build:
     subprocess.run(['conan', 'build',
        paths.source_dir,
         # '--build', 'missing',
-        '--build-folder', paths.build_dir,
+        '--source-folder', paths.source_dir,
         '--install-folder', paths.dependencies_dir,
+        '--build-folder', paths.build_dir,
         '--package-folder', paths.prefix_dir,
         ], check=True)
 
 if not args.skip_package:
     subprocess.run(['conan', 'package',
         paths.source_dir,
-        '--build-folder', paths.build_dir,
+        '--source-folder', paths.source_dir,
         '--install-folder', paths.dependencies_dir,
+        '--build-folder', paths.build_dir,
+        '--package-folder', paths.prefix_dir,
+        ], check=True)
+
+if not args.skip_export:
+    subprocess.run(['conan', 'export-pkg',
+        paths.source_dir,
+        '--source-folder', paths.source_dir,
+        '--install-folder', paths.dependencies_dir,
+        '--build-folder', paths.build_dir,
         '--package-folder', paths.prefix_dir,
         ], check=True)
 

@@ -27,8 +27,8 @@ class FubbleConan(ConanFile):
             # "qt:qtsvg": True, "qt:qtmultimedia": True, "qt:qtquickcontrols2": True, "qt:qtcharts": True,
             "treat_warnings_as_errors": False, "sanatize": False}
     generators = "pkg_config"
-    exports_sources = "*"
-    # no_copy_source = True
+    # exports_sources = "*", "!client/app/mock_qml_models*"
+    no_copy_source = True
 
     def _get_qt_bin_paths(self):
         if self.settings.os != "Windows":
@@ -52,7 +52,7 @@ class FubbleConan(ConanFile):
         self.copy("*.dll", dst="bin", keep_path=False)
 
     def source(self):
-        self.run("git clone git@gitlab.com:acof/fubble.git")
+        self.run("git clone git@gitlab.com:acof/fubble.git .")
 
     def build_requirements(self):
         # if self.settings.os == "Windows":
@@ -170,4 +170,4 @@ class FubbleConan(ConanFile):
                         % (qml_dir))
 
     def package_info(self):
-        pass
+        self.cpp_info.libs = ['fubble']
