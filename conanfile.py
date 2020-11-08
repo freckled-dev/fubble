@@ -1,21 +1,23 @@
 from conans import ConanFile, Meson, tools
+from six import StringIO
 from conans.errors import ConanInvalidConfiguration
 from conans.tools import os_info
 import os
 
 class FubbleConan(ConanFile):
     name = "fubble"
-    version = "1.0"
     license = "All Rights Reserved"
     author = "Fubble OG <contact@fubble.io>"
     url = "fubble.io"
     description = "Conferencing that works"
     topics = ("conference", "fubble", "video", "audio", "webrtc")
     settings = "os", "compiler", "build_type", "arch"
-    options = {"shared": [False, True], "treat_warnings_as_errors": [True, False],
-            "sanatize": [True, False], "qt_install": "ANY"}
+    options = {"shared": [False, True],
+            "treat_warnings_as_errors": [True, False],
+            "sanatize": [True, False], "qt_install": "ANY",
+            "enable_ui": [True, False]}
     # https://docs.conan.io/en/latest/reference/conanfile/attributes.html#default-options
-    default_options = {"shared": False, "qt_install": None,
+    default_options = {"shared": False, "qt_install": None, "enable_ui": True,
             "nlohmann_json:multiple_headers": True,
             "restinio:asio": "boost",
             # qt options
@@ -25,8 +27,15 @@ class FubbleConan(ConanFile):
             # "qt:qtsvg": True, "qt:qtmultimedia": True, "qt:qtquickcontrols2": True, "qt:qtcharts": True,
             "treat_warnings_as_errors": False, "sanatize": False}
     generators = "pkg_config"
-    exports_sources = "*"
-    # no_copy_source = True
+    exports_sources = "*", "!client/app/mock_qml_models*"
+    no_copy_source = True
+
+    # https://docs.conan.io/en/latest/versioning/introduction.html
+    version = '1.0.0'
+    #def set_version(self):
+    #    buffer = StringIO()
+    #    self.run("git describe", output=buffer)
+    #    self.version = buffer.getvalue()
 
     def _get_qt_bin_paths(self):
         if self.settings.os != "Windows":
@@ -48,6 +57,9 @@ class FubbleConan(ConanFile):
 
     def imports(self):
         self.copy("*.dll", dst="bin", keep_path=False)
+
+    #def source(self):
+    #    self.run("git clone git@gitlab.com:acof/fubble.git .")
 
     def build_requirements(self):
         # if self.settings.os == "Windows":
@@ -95,10 +107,12 @@ class FubbleConan(ConanFile):
             with_tests = False
         if self.settings.os == "Linux":
             with_servers = True
+        with_ui = self.options.enable_ui == True
 
         # https://mesonbuild.com/Builtin-options.html#base-options
         meson_options = {'cpp_std': 'c++17', 'b_ndebug': 'if-release',
-                        'with_servers': with_servers, 'with_tests': with_tests}
+                        'with_servers': with_servers, 'with_tests': with_tests,
+                        'with_ui': with_ui}
         if self.settings.os == "Linux":
             meson_options['warning_level'] = '3'
         if self.options.treat_warnings_as_errors:
@@ -135,6 +149,8 @@ class FubbleConan(ConanFile):
     def package(self):
         meson = Meson(self)
         meson.install(build_dir="meson")
+        if self.settings.os == "Linux":
+            pass
         if self.settings.os == "Windows":
             bin_dir = os.path.join(self.package_folder, 'bin')
             vars_dict = tools.vcvars_dict(self.settings)
@@ -161,4 +177,14 @@ class FubbleConan(ConanFile):
                         % (qml_dir))
 
     def package_info(self):
-        pass
+        self.cpp_info.libs = ['fubble']
+        self.cpp_info.includedirs = ['include', 'include/utils']
+        self.cpp_info.cxxflags = [
+            '-DBOOST_THREAD_VERSION=5',
+            '-DBOOST_ASIO_SEPARATE_COMPILATION',
+            '-DBOOST_BEAST_SEPARATE_COMPILATION',
+            ]
+        if self.settings.os == "Windows":
+            self.cpp_info.system_libs = [
+                'ole32.lib', 'dbgeng.lib',
+                ]

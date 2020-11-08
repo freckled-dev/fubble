@@ -1,7 +1,6 @@
 if host_machine.system() == 'linux'
   client_cli = executable('fubble_cli',
     ['client.cpp', 'options.cpp'],
-    cpp_pch: '../../pch/precompiled.hpp',
     dependencies: [client_dep],
     install: true
     )

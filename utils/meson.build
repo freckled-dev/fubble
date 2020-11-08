@@ -15,7 +15,6 @@ utils_sources += vcs_tag(
 utils = library('utils',
   utils_sources,
   dependencies: [asio_dep, fmt_dep],
-  cpp_pch: '../pch/precompiled.hpp',
   install: true
   )
 utils_dep = declare_dependency(
@@ -23,10 +22,17 @@ utils_dep = declare_dependency(
   link_with: [utils],
   dependencies: [asio_dep]
   )
+install_headers([
+  'executor_asio.hpp', 'joined_thread.hpp', 'uuid.hpp', 'wait_for_event.hpp',
+  'exit_signals.hpp', 'version.hpp', 'options_adder.hpp', 'exception.hpp',
+  'executor_module.hpp', 'timer.hpp',
+  ], subdir: 'utils')
+install_headers(['logging/logger.hpp', 'logging/initialser.hpp',
+  ], subdir: 'utils/logging')
+
 utils_test = executable('utils_test',
   ['executor_asio_test.cpp', 'boost_thread_test.cpp'],
   dependencies: [gtest_dep, utils_dep],
-  cpp_pch: '../pch/precompiled.hpp',
   link_with: [test_main]
   )
 test('utils test', utils_test)
