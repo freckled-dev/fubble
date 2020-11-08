@@ -31,7 +31,8 @@ endif
 boost_dep_modules = ['thread', 'program_options', 'regex', 'log', 'log_setup',
   'filesystem']
 boost_dep_link_with = []
-boost_compile_args = ['-DBOOST_THREAD_VERSION=5',
+boost_compile_args = [
+  '-DBOOST_THREAD_VERSION=5',
   '-DBOOST_ASIO_SEPARATE_COMPILATION',
   '-DBOOST_BEAST_SEPARATE_COMPILATION',
   ]

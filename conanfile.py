@@ -30,11 +30,12 @@ class FubbleConan(ConanFile):
     exports_sources = "*", "!client/app/mock_qml_models*"
     no_copy_source = True
 
-    #version = '1.0.0'
-    def set_version(self):
-        buffer = StringIO()
-        self.run("git describe", output=buffer)
-        self.version = buffer.getvalue()
+    # https://docs.conan.io/en/latest/versioning/introduction.html
+    version = '1.0.0'
+    #def set_version(self):
+    #    buffer = StringIO()
+    #    self.run("git describe", output=buffer)
+    #    self.version = buffer.getvalue()
 
     def _get_qt_bin_paths(self):
         if self.settings.os != "Windows":
@@ -177,3 +178,13 @@ class FubbleConan(ConanFile):
 
     def package_info(self):
         self.cpp_info.libs = ['fubble']
+        self.cpp_info.includedirs = ['include', 'include/utils']
+        self.cpp_info.cxxflags = [
+            '-DBOOST_THREAD_VERSION=5',
+            '-DBOOST_ASIO_SEPARATE_COMPILATION',
+            '-DBOOST_BEAST_SEPARATE_COMPILATION',
+            ]
+        if self.settings.os == "Windows":
+            self.cpp_info.system_libs = [
+                'ole32.lib', 'dbgeng.lib',
+                ]
