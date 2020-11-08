@@ -1,11 +1,11 @@
 from conans import ConanFile, Meson, tools
+from six import StringIO
 from conans.errors import ConanInvalidConfiguration
 from conans.tools import os_info
 import os
 
 class FubbleConan(ConanFile):
     name = "fubble"
-    version = "1.0.0"
     license = "All Rights Reserved"
     author = "Fubble OG <contact@fubble.io>"
     url = "fubble.io"
@@ -27,8 +27,14 @@ class FubbleConan(ConanFile):
             # "qt:qtsvg": True, "qt:qtmultimedia": True, "qt:qtquickcontrols2": True, "qt:qtcharts": True,
             "treat_warnings_as_errors": False, "sanatize": False}
     generators = "pkg_config"
-    # exports_sources = "*", "!client/app/mock_qml_models*"
+    exports_sources = "*", "!client/app/mock_qml_models*"
     no_copy_source = True
+
+    #version = '1.0.0'
+    def set_version(self):
+        buffer = StringIO()
+        self.run("git describe", output=buffer)
+        self.version = buffer.getvalue()
 
     def _get_qt_bin_paths(self):
         if self.settings.os != "Windows":
@@ -51,8 +57,8 @@ class FubbleConan(ConanFile):
     def imports(self):
         self.copy("*.dll", dst="bin", keep_path=False)
 
-    def source(self):
-        self.run("git clone git@gitlab.com:acof/fubble.git .")
+    #def source(self):
+    #    self.run("git clone git@gitlab.com:acof/fubble.git .")
 
     def build_requirements(self):
         # if self.settings.os == "Windows":

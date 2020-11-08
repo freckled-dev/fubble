@@ -119,9 +119,7 @@ if not args.skip_package:
 if not args.skip_export:
     subprocess.run(['conan', 'export-pkg',
         paths.source_dir,
-        '--source-folder', paths.source_dir,
-        '--install-folder', paths.dependencies_dir,
-        '--build-folder', paths.build_dir,
+        '-f',
         '--package-folder', paths.prefix_dir,
         ], check=True)
 
