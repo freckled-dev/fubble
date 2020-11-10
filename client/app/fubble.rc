@@ -5,7 +5,7 @@
 
 // the Logo.ico contains the logo in several resolutions
 // https://doc.qt.io/qt-5/appicon.html#setting-the-application-icon-on-windows
-IDI_ICON1 ICON "../../updater/Logo.ico"
+IDI_ICON1 ICON "logo.ico"
 
 #define VER_FILEVERSION             1,0,0,0
 #define VER_FILEVERSION_STR         "1.0.0.0\0"
