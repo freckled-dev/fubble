@@ -108,3 +108,21 @@ deploy services:
   script:
     - ./scripts/deploy.py
 
+deploy updater:
+  stage: deploy
+  image: registry.gitlab.com/acof/fubble-deploy/ansible_deploy:latest
+  variables:
+    ANSIBLE_HOST_KEY_CHECKING: "False"
+  when: manual
+  needs:
+    - build ubuntu_18.04 release
+    - appimage
+    - build windows release
+  before_script:
+    - eval $(ssh-agent -s)
+    - ssh-add <(echo "$FUBBLE_SSH_KEY")
+    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/acof/fubble-deploy.git deploy
+  script:
+    - ./scripts/deploy.py
+
+

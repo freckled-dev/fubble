@@ -24,6 +24,9 @@ args += [
     '-i', 'deploy/inventory/production.yml',
     '-e', 'fubble_binaries_dir=%s' % (install_linux),
     '-e', 'fubble_binaries_windows_dir="%s"' % (install_windows)
+    '-e', 'fubble_enable_server=yes',
+    '-e', 'fubble_enable_windows_client=yes',
+    '-e', 'fubble_enable_appimage=yes'
     ]
 if matrix_user:
     print('using matrix_user:%s' % matrix_user)
