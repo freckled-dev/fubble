@@ -38,7 +38,7 @@ if matrix_user:
         args += [
                 '-e', 'fubble_temporary_room_matrix_device_id=%s' % matrix_device_id
                 ]
-args += ['deploy/site.yml']
+args += ['../deploy/site.yml']
 
 subprocess.run(args, check=True)
 
