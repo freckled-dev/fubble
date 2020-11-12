@@ -93,23 +93,6 @@ build windows debug:
 
 deploy services:
   stage: deploy
-  image: ubuntu:20.04
-  variables:
-    ANSIBLE_HOST_KEY_CHECKING: "False"
-  when: manual
-  needs:
-    - build ubuntu_18.04 release
-    - appimage
-    - build windows release
-  before_script:
-    - apt-get update && apt-get install -y openssh-client ansible git rsync
-    - eval $(ssh-agent -s)
-    - ssh-add <(echo "$SSH_DEPLOY_PRIVATE_KEY")
-  script:
-    - ./scripts/deploy.py
-
-deploy updater:
-  stage: deploy
   image: registry.gitlab.com/acof/fubble-deploy/ansible_deploy:latest
   variables:
     ANSIBLE_HOST_KEY_CHECKING: "False"
