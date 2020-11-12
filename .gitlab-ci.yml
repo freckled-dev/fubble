@@ -17,6 +17,7 @@ build ubuntu_18.04 release:
     FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install
   script:
     - ccache -s
+    - git describe
     - ./scripts/ci/build_release
   after_script:
     # - rm -r ./deploy/development/install
