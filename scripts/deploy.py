@@ -18,6 +18,8 @@ install_windows = os.path.join(script_dir, '..', 'install_windows')
 matrix_user = os.environ.get('FUBBLE_TEMPORARY_ROOM_MATRIX_USER')
 matrix_password = os.environ.get('FUBBLE_TEMPORARY_ROOM_MATRIX_PASSWORD')
 matrix_device_id = os.environ.get('FUBBLE_TEMPORARY_ROOM_MATRIX_DEVICE_ID')
+gitlab_registry_username = os.environ.get('CI_REGISTRY_USER')
+gitlab_registry_password = os.environ.get('CI_REGISTRY_PASSWORD')
 
 args = ['ansible-playbook']
 args += [
@@ -26,7 +28,9 @@ args += [
     '-e', 'fubble_binaries_windows_dir="%s"' % (install_windows),
     '-e', 'fubble_enable_server=yes',
     '-e', 'fubble_enable_windows_client=yes',
-    '-e', 'fubble_enable_appimage=yes'
+    '-e', 'fubble_enable_appimage=yes',
+    '-e', 'gitlab_registry_username="%s"' % gitlab_registry_username,
+    '-e', 'gitlab_registry_password="%s"' % gitlab_registry_password
     ]
 if matrix_user:
     print('using matrix_user:%s' % matrix_user)
