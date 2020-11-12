@@ -23,7 +23,7 @@ gitlab_registry_password = os.environ.get('CI_REGISTRY_PASSWORD')
 
 args = ['ansible-playbook']
 args += [
-    '-i', 'deploy/inventory/production.yml',
+    '-i', '../deploy/inventory/production.yml',
     '-e', 'fubble_binaries_dir=%s' % (install_linux),
     '-e', 'fubble_binaries_windows_dir="%s"' % (install_windows),
     '-e', 'fubble_enable_server=yes',
