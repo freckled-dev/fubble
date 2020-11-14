@@ -91,16 +91,15 @@ boost::future<void> participants::close() {
   BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
   auto leaver_ = std::make_shared<close_waiter>();
   auto participants_copy = participants_;
-  std::transform(
-      participants_copy.begin(), participants_copy.end(),
-      std::back_inserter(leaver_->futures), [this](auto participant_) {
-        BOOST_LOG_SEV(logger, logging::severity::debug)
-            << __FUNCTION__ << ", participant_:" << participant_.get();
-        auto id = participant_->get_id();
-        return participant_->close().then(
-            this->executor,
-            [this, id](auto result) { on_async_closed(result, id); });
-      });
+  std::transform(participants_copy.begin(), participants_copy.end(),
+                 std::back_inserter(leaver_->futures),
+                 [this](auto participant_) {
+                   auto id = participant_->get_id();
+                   return participant_->close().then(
+                       this->executor, [this, id](auto result) {
+                         on_async_closed(result, id);
+                       });
+                 });
   return leaver_->wait_for_done();
 }
 
