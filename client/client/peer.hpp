@@ -1,6 +1,7 @@
 #ifndef CLIENT_PEER_HPP
 #define CLIENT_PEER_HPP
 
+#include "client/logger.hpp"
 #include "p2p/negotiation/ice_candidates.hpp"
 #include "p2p/negotiation/offer_answer.hpp"
 #include "signaling/client/client.hpp"
@@ -13,6 +14,7 @@ public:
   peer(boost::executor &executor,
        std::unique_ptr<signaling::client::client> signaling_,
        std::unique_ptr<rtc::connection> rtc_);
+  ~peer();
 
   void connect(const std::string &token, const std::string &key);
   boost::future<void> close();
@@ -20,6 +22,7 @@ public:
   const rtc::connection &rtc_connection() const;
 
 protected:
+  client::logger logger{"peer"};
   std::unique_ptr<signaling::client::client> signaling_client;
   std::unique_ptr<rtc::connection> rtc_connection_;
   client::p2p::negotiation::ice_candidates ice_candidate_handler;

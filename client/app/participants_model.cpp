@@ -28,8 +28,8 @@ boost::optional<participant_model *> participants_model::get_own() const {
   return {};
 }
 
-int participants_model::rowCount([
-    [maybe_unused]] const QModelIndex &parent) const {
+int participants_model::rowCount(
+    [[maybe_unused]] const QModelIndex &parent) const {
   return participants.size();
 }
 
@@ -95,6 +95,7 @@ participants_model::filter_out_bots(const std::vector<participant *> &joining) {
 void participants_model::on_leaves(std::vector<std::string> leaves) {
   int participants_count = participants.size();
   int leaves_count = leaves.size();
+  BOOST_ASSERT(leaves_count == 1); // TODO test and support more than one!
   BOOST_LOG_SEV(logger, logging::severity::debug)
       << fmt::format("on_leaves, participants_count:{}, leaves_count:{}",
                      participants_count, leaves_count);

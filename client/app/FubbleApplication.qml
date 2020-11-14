@@ -26,6 +26,7 @@ ApplicationWindow {
     property LeaveModel leaveModel: leaveModelFromCpp
     property ErrorModel errorModel: errorModelFromCpp
     property UtilsModel utilsModel: utilsModelFromCpp
+    property RoomsModel roomsModel: roomsModelFromCpp
     property ShareDesktopModel shareDesktopModel: shareDesktopModelFromCpp
     property AudioVideoSettingsModel audioVideoModel: audioVideoModelFromCpp
     property LanguageSettingsModel languageModel: languageModelFromCpp
@@ -77,7 +78,7 @@ ApplicationWindow {
         settingsDialog: settingsDialog
         onJoined: {
             stack.push(roomComponent, {
-                           "room": room
+                           "room": roomsModel.room
                        })
             fubbleState = "Room"
 
@@ -196,7 +197,7 @@ ApplicationWindow {
 
     Component {
         id: roomComponent
-        Room {}
+        Room { }
     }
 
     // audio effects

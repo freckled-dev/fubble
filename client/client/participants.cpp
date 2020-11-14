@@ -66,7 +66,9 @@ participants::participants(
       });
 }
 
-participants::~participants() = default;
+participants::~participants() {
+  BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
+}
 
 std::vector<participant *> participants::get_all() const {
   std::vector<participant *> result;
@@ -86,10 +88,19 @@ participant *participants::get(const std::string &id) const {
 }
 
 boost::future<void> participants::close() {
+  BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
   auto leaver_ = std::make_shared<close_waiter>();
-  std::transform(participants_.begin(), participants_.end(),
-                 std::back_inserter(leaver_->futures),
-                 [](auto &participant_) { return participant_->close(); });
+  auto participants_copy = participants_;
+  std::transform(
+      participants_copy.begin(), participants_copy.end(),
+      std::back_inserter(leaver_->futures), [this](auto participant_) {
+        BOOST_LOG_SEV(logger, logging::severity::debug)
+            << __FUNCTION__ << ", participant_:" << participant_.get();
+        auto id = participant_->get_id();
+        return participant_->close().then(
+            this->executor,
+            [this, id](auto result) { on_async_closed(result, id); });
+      });
   return leaver_->wait_for_done();
 }
 
@@ -115,7 +126,7 @@ void participants::remove_by_id(const std::string &id) {
   BOOST_ASSERT(found != participants_.cend());
   if (found == participants_.cend())
     return;
-  std::shared_ptr<participant> shared = std::move(*found);
+  std::shared_ptr<participant> shared = *found;
   shared->close().then(executor,
                        [this, shared](auto result) { on_closed(result); });
   participants_.erase(found);
@@ -135,10 +146,43 @@ void participants::on_closed(boost::future<void> &result) {
   }
 }
 
+void participants::on_async_closed(boost::future<void> &result,
+                                   const std::string &id) {
+  BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
+  try {
+    result.get();
+  } catch (const boost::exception &error_) {
+    BOOST_LOG_SEV(this->logger, logging::severity::error)
+        << __FUNCTION__ << ", could not close participant, boost::exception:"
+        << boost::diagnostic_information(error_);
+  } catch (const std::exception &error_) {
+    BOOST_LOG_SEV(this->logger, logging::severity::error)
+        << __FUNCTION__
+        << ", could not close participant, std::exception:" << error_.what();
+  } catch (...) {
+    BOOST_LOG_SEV(this->logger, logging::severity::error)
+        << __FUNCTION__ << ", could not close participant, unknown exception";
+    BOOST_ASSERT(false);
+  }
+  auto erase = find(id);
+  BOOST_ASSERT(erase != participants_.cend());
+  if (erase == participants_.cend()) {
+    BOOST_LOG_SEV(logger, logging::severity::error)
+        << __FUNCTION__ << ", could not find participant for deletion";
+    return;
+  }
+  participants_.erase(erase);
+  std::vector<std::string> casted;
+  casted.push_back(id);
+  on_removed(casted);
+}
+
 void participants::add(matrix::room_participant &add_) {
   BOOST_ASSERT(find(add_.get_id()) == participants_.cend());
-  auto new_participant = participant_creator_->create(add_.get_user());
-  participants_.push_back(std::move(new_participant));
+  std::shared_ptr<participant> new_participant =
+      participant_creator_->create(add_.get_user());
+  participants_.push_back(new_participant);
+  BOOST_ASSERT(participants_.back() != nullptr);
   std::vector<participant *> signal_argument;
   signal_argument.push_back(participants_.back().get());
   on_added(signal_argument);

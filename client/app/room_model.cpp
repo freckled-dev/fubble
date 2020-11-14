@@ -25,6 +25,10 @@ room_model::room_model(model_creator &model_creator_,
   set_name();
 }
 
+room_model::~room_model() {
+  BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
+}
+
 void room_model::recalculate_video_available() {
   auto has_videos = participants_with_video->rowCount() != 0;
   BOOST_LOG_SEV(logger, logging::severity::debug)

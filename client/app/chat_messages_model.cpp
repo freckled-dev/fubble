@@ -28,14 +28,15 @@ chat_messages_model::chat_messages_model(room &room_, QObject *parent)
   auto messages_to_cast = chat_.get_messages();
   std::transform(messages_to_cast.cbegin(), messages_to_cast.cend(),
                  std::back_inserter(messages), cast_client_message);
-  on_message_connection = chat_.on_message.connect([this](const auto &new_) {
-    auto casted = cast_client_message(new_);
-    add_message(casted);
-  });
-  participants_.on_added.connect(
-      [this](const auto &added) { on_participants_added(added); });
-  participants_.on_removed.connect(
-      [this](const auto &removed) { on_participants_removed(removed); });
+  signal_connections.push_back(
+      chat_.on_message.connect([this](const auto &new_) {
+        auto casted = cast_client_message(new_);
+        add_message(casted);
+      }));
+  signal_connections.push_back(participants_.on_added.connect(
+      [this](const auto &added) { on_participants_added(added); }));
+  signal_connections.push_back(participants_.on_removed.connect(
+      [this](const auto &removed) { on_participants_removed(removed); }));
 }
 
 void chat_messages_model::add_message(const chat_message &add) {
@@ -81,8 +82,8 @@ void chat_messages_model::on_participants_removed(
   endInsertRows();
 }
 
-int chat_messages_model::rowCount([
-    [maybe_unused]] const QModelIndex &parent) const {
+int chat_messages_model::rowCount(
+    [[maybe_unused]] const QModelIndex &parent) const {
   return messages.size();
 }
 

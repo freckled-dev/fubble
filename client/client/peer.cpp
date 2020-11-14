@@ -10,11 +10,17 @@ peer::peer(boost::executor &executor,
       ice_candidate_handler(*signaling_client, *rtc_connection_),
       offer_answer_handler(executor, *signaling_client, *rtc_connection_) {}
 
+peer::~peer() {
+  BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
+}
+
 void peer::connect(const std::string &token, const std::string &key) {
+  BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
   signaling_client->connect(token, key);
 }
 
 boost::future<void> peer::close() {
+  BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
   rtc_connection_->close();
   return signaling_client->close();
 }

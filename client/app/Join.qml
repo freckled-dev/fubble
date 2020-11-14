@@ -18,7 +18,7 @@ FocusScope {
     property alias roomName: roomTextField.text
     property bool demoMode: Utils.isDemoMode()
 
-    signal joined(RoomModel room)
+    signal joined()
 
     Material.foreground: Style.current.foreground
     Material.background: Style.current.background
@@ -42,9 +42,9 @@ FocusScope {
 
         Connections {
             target: joinModel
-            function onJoined(room) {
+            function onJoined() {
                 joinPopup.close()
-                joined(room)
+                joined()
             }
             function onJoin_failed() {
                 joinPopup.close()

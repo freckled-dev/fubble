@@ -27,9 +27,9 @@ void join_model::join(const QString &room, const QString &name) {
 void join_model::on_joined(boost::future<std::shared_ptr<class room>> room_) {
   BOOST_LOG_SEV(logger, logging::severity::debug) << "on_joined";
   try {
-    auto got_room = room_.get();
-    auto room_model_ = model_factory.create_room_model(got_room, this);
-    joined(room_model_);
+    [[maybe_unused]] auto got_room = room_.get();
+    BOOST_ASSERT(got_room);
+    joined();
     return;
   } catch (const joiner::update_required &error) {
     BOOST_LOG_SEV(logger, logging::severity::warning)

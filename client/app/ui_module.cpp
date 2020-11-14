@@ -12,6 +12,7 @@
 #include "participants_model.hpp"
 #include "participants_with_video_model.hpp"
 #include "room_model.hpp"
+#include "rooms_model.hpp"
 #include "share_desktop_model.hpp"
 #include "ui/add_version_to_qml_context.hpp"
 #include "ui/frame_provider_google_video_device.hpp"
@@ -94,6 +95,8 @@ ui_module::ui_module(
                                           "can't instance error_model");
   qmlRegisterUncreatableType<leave_model>("io.fubble", 1, 0, "LeaveModel",
                                           "can't instance leave_model");
+  qmlRegisterUncreatableType<rooms_model>("io.fubble", 1, 0, "RoomsModel",
+                                          "can't instance rooms_model");
   qmlRegisterUncreatableType<language_settings_model>(
       "io.fubble", 1, 0, "LanguageSettingsModel", "can't instance leave_model");
   qmlRegisterUncreatableType<chat_model>("io.fubble", 1, 0, "ChatModel",
@@ -141,6 +144,8 @@ ui_module::ui_module(
       *client_audio_settings_module->get_audio_device_settings(),
       *client_video_module->get_video_settings(), *error_model_,
       executor_module->get_timer_factory());
+  rooms_model_ = std::make_shared<rooms_model>(
+      client_session_module->get_rooms(), model_creator_);
   language_settings_model_ = std::make_shared<language_settings_model>(*engine);
 
   //  works from 5.14 onwards
@@ -157,6 +162,7 @@ ui_module::ui_module(
                                   audio_video_settings_model_.get());
   qml_context->setContextProperty("shareDesktopModelFromCpp",
                                   share_desktop_model_.get());
+  qml_context->setContextProperty("roomsModelFromCpp", rooms_model_.get());
   qml_context->setContextProperty("languageModelFromCpp",
                                   language_settings_model_.get());
   ui_add_version_to_qml_context =

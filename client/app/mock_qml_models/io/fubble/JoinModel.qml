@@ -4,15 +4,14 @@ QtObject {
     id: container
 
     property var timer: Timer {
-        property RoomModel roomModel
         id: timer
         interval: 50
         running: false
         repeat: false
-        onTriggered: joined(roomModel)
+        onTriggered: joined()
     }
 
-    signal joined(QtObject room)
+    signal joined()
     signal join_failed
 
     function join(roomName, nickName) {
@@ -24,11 +23,6 @@ QtObject {
     }
 
     function mockJoin(roomName) {
-        var component = Qt.createComponent("RoomModel.qml")
-        var roomModel = component.createObject(container)
-        roomModel.name = roomName
-
-        timer.roomModel = roomModel
         timer.start()
     }
 }
