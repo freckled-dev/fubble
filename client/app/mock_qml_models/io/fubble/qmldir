@@ -6,6 +6,7 @@ LeaveModel 1.0 LeaveModel.qml
 ErrorModel 1.0 ErrorModel.qml
 ChatModel 1.0 ChatModel.qml
 UtilsModel 1.0 UtilsModel.qml
+RoomsModel 1.0 RoomsModel.qml
 ShareDesktopModel 1.0 ShareDesktopModel.qml
 AudioVideoSettingsModel 1.0 AudioVideoSettingsModel.qml
 LanguageSettingsModel 1.0 LanguageSettingsModel.qml

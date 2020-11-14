@@ -35,7 +35,8 @@ protected:
   void remove_by_id(const std::string &id);
   void add(matrix::room_participant &add_);
   void on_closed(boost::future<void> &result);
-  using participants_container = std::vector<std::unique_ptr<participant>>;
+  void on_async_closed(boost::future<void> &result, const std::string &id);
+  using participants_container = std::vector<std::shared_ptr<participant>>;
   participants_container::iterator find(const std::string &id);
   participants_container::const_iterator find(const std::string &id) const;
 

@@ -22,7 +22,7 @@ public:
   Q_INVOKABLE void join(const QString &room, const QString &name);
 
 signals:
-  void joined(client::room_model *room);
+  void joined();
   void join_failed();
 
 protected:

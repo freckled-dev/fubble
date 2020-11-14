@@ -30,6 +30,7 @@ class room_model : public QObject {
 public:
   room_model(model_creator &model_creator_, const std::shared_ptr<room> &room_,
              QObject *parent);
+  ~room_model();
 
 public slots:
   void recalculate_video_available();

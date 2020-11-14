@@ -51,7 +51,7 @@ protected:
   participants &participants_;
   users &users_;
   std::deque<chat_message> messages;
-  boost::signals2::scoped_connection on_message_connection;
+  std::vector<boost::signals2::scoped_connection> signal_connections;
 };
 } // namespace client
 

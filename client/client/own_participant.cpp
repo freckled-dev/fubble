@@ -8,18 +8,20 @@ own_participant::own_participant(matrix::user &matrix_participant,
     : participant(matrix_participant),
       own_media_(own_media_), desktop_sharing_{
                                   own_media_.get_desktop_sharing()} {
-  own_media_.get_videos().on_added.connect(
-      [this](auto source) { on_video_added(source); });
-  own_media_.get_videos().on_removed.connect(
-      [this](auto source) { on_video_removed(source); });
-  desktop_sharing_->on_added.connect(
-      [this](auto source) { on_screen_added(source); });
-  desktop_sharing_->on_removed.connect(
-      [this](auto source) { on_screen_removed(source); });
+  signal_connections.push_back(own_media_.get_videos().on_added.connect(
+      [this](auto source) { on_video_added(source); }));
+  signal_connections.push_back(own_media_.get_videos().on_removed.connect(
+      [this](auto source) { on_video_removed(source); }));
+  signal_connections.push_back(desktop_sharing_->on_added.connect(
+      [this](auto source) { on_screen_added(source); }));
+  signal_connections.push_back(desktop_sharing_->on_removed.connect(
+      [this](auto source) { on_screen_removed(source); }));
   // TODO add and removal of audio!
 }
 
-own_participant::~own_participant() = default;
+own_participant::~own_participant() {
+  BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
+}
 
 boost::future<void> own_participant::close() {
   return boost::make_ready_future();

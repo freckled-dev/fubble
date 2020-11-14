@@ -9,6 +9,7 @@ FubbleApplication {
     leaveModel: LeaveModel {}
     errorModel: ErrorModel {}
     utilsModel: UtilsModel {}
+    roomsModel: RoomsModel {}
     shareDesktopModel: ShareDesktopModel {}
     audioVideoModel: AudioVideoSettingsModel {}
     languageModel: LanguageSettingsModel {}

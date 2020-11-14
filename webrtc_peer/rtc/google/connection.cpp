@@ -229,12 +229,22 @@ void connection::remove_track(rtc::track_ptr track_) {
       << __FUNCTION__ << ", track:" << track_.get();
   auto found = find_sending_track(track_);
   BOOST_ASSERT(found != sending_tracks.cend());
+  if (found == sending_tracks.cend()) {
+    BOOST_LOG_SEV(logger, logging::severity::error)
+        << __FUNCTION__ << "could not remove connection";
+    return;
+  }
   auto track_casted = std::dynamic_pointer_cast<track>(track_);
   BOOST_ASSERT(track_casted);
   auto native_track = track_casted->native_track();
   BOOST_ASSERT(native_track);
-  if (native->peer_connection_state() !=
+  if (native->peer_connection_state() ==
       webrtc::PeerConnectionInterface::PeerConnectionState::kClosed) {
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << "not removing track from the delegating-connection, because "
+           "connection is PeerConnectionState::kClosed. we are still removing "
+           "it from the wrapping instance";
+  } else {
     bool result = native->RemoveTrack(found->rtp);
     BOOST_ASSERT(result);
     if (!result) {
