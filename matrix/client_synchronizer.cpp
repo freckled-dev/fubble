@@ -30,8 +30,12 @@ public:
         return;
       }
       // TODO do an error signal!
-      reconnect_timer->start([this] { start_sync(); });
+    } catch (const std::exception &error) {
+      BOOST_LOG_SEV(logger, logging::severity::warning)
+          << __FUNCTION__ << ", error:" << error.what();
+      // TODO do an error signal!
     }
+    reconnect_timer->start([this] { start_sync(); });
   }
 
   void start_sync() {

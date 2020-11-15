@@ -139,6 +139,8 @@ void client::on_sync_till_stop(
         << "an error occured while parsing the sync response!";
     sync_till_stop_promise->set_exception(error);
     sync_till_stop_promise.reset();
+    sync_till_stop_active = false;
+    http_sync_action.reset();
   }
 }
 
