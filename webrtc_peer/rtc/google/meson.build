@@ -55,7 +55,7 @@ webrtc_google_peer_test = executable('google_peer_test',
   dependencies: [gtest_dep, webrtc_google_peer_dep, fmt_dep],
   link_with: [google_webrtc_test_main]
   )
-suppr_file = meson.current_source_dir() / 'webrtc_peer/lsan_suppressions_google'
+suppr_file = meson.current_source_dir() / '../../lsan_suppressions_google'
 suppr_option = 'LSAN_OPTIONS=suppressions=' + suppr_file
 test('webrtc_google_peer test',
   webrtc_google_peer_test,

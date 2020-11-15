@@ -12,7 +12,7 @@
 using namespace client;
 
 room::room(std::unique_ptr<participant_creator> participant_creator_parameter,
-           std::unique_ptr<matrix::client> client_parameter,
+           std::shared_ptr<matrix::client> client_parameter,
            matrix::room &room_parameter)
     : logger{fmt::format("room:{}", room_parameter.get_id())},
       client_(std::move(client_parameter)),

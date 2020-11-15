@@ -15,7 +15,7 @@ class room_creator {
 public:
   room_creator(participant_creator_creator &participant_creator_creator_);
 
-  std::unique_ptr<room> create(std::unique_ptr<matrix::client> client_,
+  std::unique_ptr<room> create(std::shared_ptr<matrix::client> client_,
                                matrix::room &room_);
 
 protected:

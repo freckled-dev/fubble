@@ -19,6 +19,7 @@
 #include "http/connection_creator.hpp"
 #include "matrix/authentification.hpp"
 #include "matrix/client_factory.hpp"
+#include "matrix/client_synchronizer.hpp"
 #include "matrix/factory.hpp"
 #include "matrix/testing.hpp"
 #include "rtc/data_channel.hpp"
@@ -33,6 +34,7 @@
 #include "temporary_room/testing.hpp"
 #include "test_executor.hpp"
 #include "utils/executor_asio.hpp"
+#include "utils/timer.hpp"
 #include "version/server.hpp"
 #include "version/testing.hpp"
 #include "websocket/connection_creator.hpp"
@@ -75,6 +77,8 @@ struct test_client {
   boost::asio::executor executor{context.get_executor()};
   boost::executor_adaptor<executor_asio> boost_executor{
       context}; // TODO remove!
+  std::shared_ptr<utils::timer_factory> timer_factory =
+      std::make_shared<utils::timer_factory>(context);
 
   // websocket
   websocket::connection_creator websocket_connection_creator{context};
@@ -92,9 +96,9 @@ struct test_client {
       context, boost_executor, signaling_json};
   signaling::client::connect_information signaling_connect_information =
       signaling::testing::make_connect_information();
-  signaling::client::factory_impl client_creator{
-      websocket_connector, signaling_connection_creator,
-      signaling_connect_information};
+  signaling::client::factory_impl client_creator{websocket_connector,
+                                                 signaling_connection_creator,
+                                                 signaling_connect_information};
 
   // version
   std::shared_ptr<http::client> version_http_client =
@@ -114,6 +118,9 @@ struct test_client {
                                                http_client_factory};
   matrix::authentification matrix_authentification{http_client_factory,
                                                    matrix_client_factory};
+  std::shared_ptr<matrix::client_synchronizer> matrix_client_synchronizer =
+      matrix::client_synchronizer::create_retrying(
+          timer_factory->create_one_shot_timer(std::chrono::seconds(1)));
 
   // rtc
   rtc::google::factory rtc_connection_creator;
@@ -133,8 +140,9 @@ struct test_client {
   client::participant_creator_creator participant_creator_creator{
       client_factory, peer_creator, tracks_adder, own_media};
   client::room_creator client_room_creator{participant_creator_creator};
-  client::joiner joiner{client_room_creator, *rooms, matrix_authentification,
-                        temporary_room_client, version_getter};
+  client::joiner joiner{client_room_creator,     *rooms,
+                        matrix_authentification, temporary_room_client,
+                        version_getter,          matrix_client_synchronizer};
 
   boost::future<std::shared_ptr<client::room>> join(std::string name) {
     client::joiner::parameters join_paramenters;

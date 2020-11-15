@@ -213,9 +213,14 @@ TEST_F(Room, SaneShutdown) {
   two_participants_with_data_channel test{*this, room_name};
   auto &first_room = test.participants->first.room;
   auto &second_room = test.participants->second.room;
+  bool called_leave{};
   auto done = test.do_().then(boost_executor, [&](auto result) {
     result.get();
     second_room->get_participants().on_removed.connect([&](auto left) {
+      if (called_leave)
+        return;
+      called_leave = true;
+      EXPECT_EQ(left.size(), 1);
       EXPECT_EQ(left.front(), first_room->get_own_id());
       second_room->leave().then(inline_executor, [this](auto result) {
         EXPECT_FALSE(result.has_exception());

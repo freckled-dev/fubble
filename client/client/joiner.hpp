@@ -10,10 +10,11 @@
 namespace matrix {
 class authentification;
 class client;
+class client_synchronizer;
 } // namespace matrix
 namespace temporary_room::net {
 class client;
-}
+} // namespace temporary_room::net
 
 namespace client {
 class room;
@@ -32,7 +33,8 @@ public:
   joiner(room_creator &room_creator_, rooms &rooms_,
          matrix::authentification &matrix_authentification,
          temporary_room::net::client &temporary_room_client,
-         std::shared_ptr<version::getter> version_getter);
+         std::shared_ptr<version::getter> version_getter,
+         std::shared_ptr<matrix::client_synchronizer> syncher);
   ~joiner();
 
   struct parameters {
@@ -53,6 +55,7 @@ protected:
   matrix::authentification &matrix_authentification;
   temporary_room::net::client &temporary_room_client;
   std::shared_ptr<version::getter> version_getter;
+  std::shared_ptr<matrix::client_synchronizer> client_synchronizer;
 };
 } // namespace client
 

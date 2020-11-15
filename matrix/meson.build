@@ -2,7 +2,7 @@ matrix = library('matrix',
   ['authentification.cpp', 'error.cpp', 'client.cpp', 'factory.cpp',
     'chat.cpp', 'room_participant.cpp', 'events.cpp', 'room_states.cpp',
     'client_factory.cpp', 'room.cpp', 'user.cpp', 'users.cpp', 'rooms.cpp',
-    'module.cpp',
+    'module.cpp', 'client_synchronizer.cpp',
     ],
   dependencies: [fmt_dep, http_dep],
   include_directories: ['..'],
@@ -17,7 +17,7 @@ install_headers([
   'client_factory.hpp', 'logger.hpp', 'factory.hpp', 'error.hpp', 'users.hpp',
   'chat.hpp', 'fixture.hpp', 'module.hpp', 'room_states.hpp',
   'authentification.hpp', 'client.hpp', 'events.hpp', 'room.hpp', 'rooms.hpp',
-  'user.hpp', 'room_participant.hpp',
+  'user.hpp', 'room_participant.hpp', 'client_synchronizer.hpp',
   ], subdir: 'matrix')
 
 matrix_test_dep = declare_dependency(

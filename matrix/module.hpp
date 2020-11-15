@@ -10,6 +10,7 @@ class client_factory;
 namespace matrix {
 class factory;
 class client_factory;
+class client_synchronizer;
 class authentification;
 class module {
 public:
@@ -29,6 +30,7 @@ public:
   std::shared_ptr<client_factory> get_client_factory();
   std::shared_ptr<authentification> get_authentification();
   std::shared_ptr<http::client_factory> get_http_client_factory();
+  std::shared_ptr<client_synchronizer> get_client_synchronizer();
 
 protected:
   std::shared_ptr<utils::executor_module> executor_module;
@@ -38,6 +40,7 @@ protected:
   std::shared_ptr<client_factory> client_factory_;
   std::shared_ptr<authentification> authentification_;
   std::shared_ptr<http::client_factory> http_client_factory;
+  std::shared_ptr<client_synchronizer> client_synchronizer_;
 };
 } // namespace matrix
 

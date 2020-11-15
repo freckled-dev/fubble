@@ -135,15 +135,21 @@ void client::on_sync_till_stop(
     do_sync();
   } catch (...) {
     auto error = boost::current_exception();
-    BOOST_LOG_SEV(logger, logging::severity::error)
+    BOOST_LOG_SEV(logger, logging::severity::warning)
         << "an error occured while parsing the sync response!";
     sync_till_stop_promise->set_exception(error);
     sync_till_stop_promise.reset();
+    sync_till_stop_active = false;
+    http_sync_action.reset();
   }
 }
 
 void client::stop_sync() {
-  BOOST_ASSERT(sync_till_stop_active);
+  if (!sync_till_stop_active) {
+    BOOST_LOG_SEV(logger, logging::severity::warning)
+        << __FUNCTION__ << ", stopping sync although not syncing.";
+    return;
+  }
   sync_till_stop_active = false;
   if (!http_sync_action) // may be nullptr if is getting called from
                          // on_sync_till_stop callback
