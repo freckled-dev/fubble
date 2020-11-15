@@ -24,7 +24,7 @@ class room {
 public:
   // TODO refactor. client shall not be owned by room
   room(std::unique_ptr<participant_creator> participant_creator_,
-       std::unique_ptr<matrix::client> client_, matrix::room &room_);
+       std::shared_ptr<matrix::client> client_, matrix::room &room_);
   ~room();
 
   chat &get_chat() const;
@@ -42,7 +42,7 @@ protected:
   client::logger logger;
   std::unique_ptr<participant_creator> participant_creator_;
   boost::inline_executor executor;
-  std::unique_ptr<matrix::client> client_;
+  std::shared_ptr<matrix::client> client_;
   matrix::room &room_;
   std::unique_ptr<chat> chat_;
   std::unique_ptr<users> users_;

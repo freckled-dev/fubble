@@ -10,7 +10,7 @@ room_creator::room_creator(
     : participant_creator_creator_(participant_creator_creator_) {}
 
 std::unique_ptr<room>
-room_creator::create(std::unique_ptr<matrix::client> client_,
+room_creator::create(std::shared_ptr<matrix::client> client_,
                      matrix::room &room_) {
   auto own_id = client_->get_user_id();
   BOOST_ASSERT(!own_id.empty());

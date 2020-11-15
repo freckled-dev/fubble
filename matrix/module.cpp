@@ -2,8 +2,10 @@
 #include "matrix/authentification.hpp"
 #include "matrix/client.hpp"
 #include "matrix/client_factory.hpp"
+#include "matrix/client_synchronizer.hpp"
 #include "matrix/factory.hpp"
 #include "matrix/rooms.hpp"
+#include "utils/timer.hpp"
 
 using namespace matrix;
 
@@ -46,4 +48,10 @@ std::shared_ptr<http::client_factory> module::get_http_client_factory() {
         std::make_pair(http_matrix_client_server, http_matrix_client_fields));
   }
   return http_client_factory;
+}
+
+std::shared_ptr<client_synchronizer> module::get_client_synchronizer() {
+  auto timer = executor_module->get_timer_factory()->create_one_shot_timer(
+      std::chrono::seconds(1));
+  return client_synchronizer::create_retrying(std::move(timer));
 }

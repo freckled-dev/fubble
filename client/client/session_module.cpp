@@ -26,10 +26,12 @@ session_module::session_module(
 
 std::shared_ptr<joiner> session_module::get_joiner() {
   if (!joiner_)
-    joiner_ = std::make_shared<joiner>(*get_room_creator(), *get_rooms(),
-                                       *matrix_module->get_authentification(),
-                                       *temporary_room_module->get_client(),
-                                       version_client_module->get_getter());
+    joiner_ =
+        std::make_shared<joiner>(*get_room_creator(), *get_rooms(),
+                                 *matrix_module->get_authentification(),
+                                 *temporary_room_module->get_client(),
+                                 version_client_module->get_getter(),
+                                 matrix_module->get_client_synchronizer());
   return joiner_;
 }
 

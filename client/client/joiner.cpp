@@ -1,5 +1,6 @@
 #include "joiner.hpp"
 #include "matrix/authentification.hpp"
+#include "matrix/client_synchronizer.hpp"
 #include "room.hpp"
 #include "room_creator.hpp"
 #include "rooms.hpp"
@@ -17,11 +18,13 @@ public:
   join(room_creator &room_creator_,
        matrix::authentification &matrix_authentification,
        temporary_room::net::client &temporary_room_client,
-       std::shared_ptr<version::getter> version_getter)
+       std::shared_ptr<version::getter> version_getter,
+       std::shared_ptr<matrix::client_synchronizer> client_synchronizer)
       : room_creator_(room_creator_),
         matrix_authentification(matrix_authentification),
-        temporary_room_client(temporary_room_client), version_getter{
-                                                          version_getter} {}
+        temporary_room_client(temporary_room_client),
+        version_getter{version_getter}, client_synchronizer{
+                                            client_synchronizer} {}
   ~join() { BOOST_LOG_SEV(logger, logging::severity::debug) << "destructor"; }
 
   boost::future<joiner::room_ptr> join_(const joiner::parameters &parameters_) {
@@ -51,12 +54,13 @@ public:
 protected:
   void on_version(boost::future<version::getter::result> &result) {
     BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
+    auto this_version = utils::version();
     auto version = result.get();
-    if (version.minimum_version <= utils::version())
+    if (version.minimum_version <= this_version)
       return;
     BOOST_THROW_EXCEPTION(
         joiner::update_required()
-        << joiner::current_version_info(utils::version())
+        << joiner::current_version_info(this_version)
         << joiner::minimum_version_info(version.minimum_version)
         << joiner::installed_version_info(version.current_version));
   }
@@ -67,9 +71,7 @@ protected:
     BOOST_ASSERT(client_);
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << "connected as client with the id:" << client_->get_user_id();
-    // TODO encapsue this call in something like client_runner. so that errors
-    // while synching are getting caught.
-    client_->sync_till_stop();
+    client_synchronizer->set(client_);
   }
 
   boost::future<void> set_name() {
@@ -112,8 +114,9 @@ protected:
   matrix::authentification &matrix_authentification;
   temporary_room::net::client &temporary_room_client;
   std::shared_ptr<version::getter> version_getter;
+  std::shared_ptr<matrix::client_synchronizer> client_synchronizer;
   boost::inline_executor executor;
-  std::unique_ptr<matrix::client> client_;
+  std::shared_ptr<matrix::client> client_;
   joiner::parameters parameters_;
 };
 } // namespace
@@ -121,11 +124,13 @@ protected:
 joiner::joiner(room_creator &room_creator_, rooms &rooms_,
                matrix::authentification &matrix_authentification,
                temporary_room::net::client &temporary_room_client,
-               std::shared_ptr<version::getter> version_getter)
+               std::shared_ptr<version::getter> version_getter,
+               std::shared_ptr<matrix::client_synchronizer> client_synchronizer)
     : room_creator_(room_creator_), rooms_(rooms_),
       matrix_authentification(matrix_authentification),
-      temporary_room_client(temporary_room_client), version_getter{
-                                                        version_getter} {}
+      temporary_room_client(temporary_room_client),
+      version_getter{version_getter}, client_synchronizer{client_synchronizer} {
+}
 
 joiner::~joiner() = default;
 
@@ -135,9 +140,9 @@ joiner::join(const parameters &parameters_) {
       << __FUNCTION__
       << fmt::format("parameters_.name:'{}', .room:'{}'", parameters_.name,
                      parameters_.room);
-  auto join_ =
-      std::make_shared<class join>(room_creator_, matrix_authentification,
-                                   temporary_room_client, version_getter);
+  auto join_ = std::make_shared<class join>(
+      room_creator_, matrix_authentification, temporary_room_client,
+      version_getter, client_synchronizer);
   return join_->join_(parameters_).then(executor, [join_, this](auto result) {
     return on_joined(result);
   });
