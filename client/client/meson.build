@@ -53,7 +53,7 @@ client_video_settings_test = executable('client_video_settings_test',
   )
 test('client video_settings test', client_video_settings_test)
 
-suppr_file = meson.current_source_dir() / 'webrtc_peer/lsan_suppressions_google'
+suppr_file = meson.current_source_dir() / '../../webrtc_peer/lsan_suppressions_google'
 suppr_option = 'LSAN_OPTIONS=suppressions=' + suppr_file
 client_test_env = [ 'ASAN_OPTIONS=fast_unwind_on_malloc=0', suppr_option ]
 
