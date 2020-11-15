@@ -54,15 +54,17 @@ public:
 protected:
   void on_version(boost::future<version::getter::result> &result) {
     BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
-    auto this_version = utils::version();
-    auto version = result.get();
-    if (version.minimum_version <= this_version)
+    std::string this_version = utils::version();
+    auto versions = result.get();
+    if (versions.minimum_version.substr(0,
+                                        versions.minimum_version.find('-')) <=
+        this_version.substr(0, this_version.find('-')))
       return;
     BOOST_THROW_EXCEPTION(
         joiner::update_required()
-        << joiner::current_version_info(this_version)
-        << joiner::minimum_version_info(version.minimum_version)
-        << joiner::installed_version_info(version.current_version));
+        << joiner::current_version_info(versions.current_version)
+        << joiner::minimum_version_info(versions.minimum_version)
+        << joiner::installed_version_info(this_version));
   }
 
   void on_connected(boost::future<std::unique_ptr<matrix::client>> &result) {
