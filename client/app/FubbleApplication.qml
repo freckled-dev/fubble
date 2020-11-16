@@ -16,6 +16,7 @@ ApplicationWindow {
     height: Math.min(Screen.height, 768)
     x: 0
     y: 0
+    Component.onCompleted: ensureValidWindowPosition()
 
     minimumWidth: 800
     minimumHeight: 600
@@ -58,6 +59,7 @@ ApplicationWindow {
     }
 
     Settings {
+        id: settings
         property alias x: container.x
         property alias y: container.y
         property alias width: container.width
@@ -197,7 +199,7 @@ ApplicationWindow {
 
     Component {
         id: roomComponent
-        Room { }
+        Room {}
     }
 
     // audio effects
@@ -247,5 +249,18 @@ ApplicationWindow {
         if (isErrorSoundEnabled) {
             errorSound.play()
         }
+    }
+
+    function ensureValidWindowPosition() {
+        if (Qt.platform.os == "windows") {
+            return
+        }
+
+        console.log(Screen.width)
+        console.log(Screen.height)
+        console.log("x: " + settings.x)
+        console.log("y: " + settings.y)
+        //        window.x = (savedScreenLayout) ? settings.x : Screen.width / 2 - window.width / 2
+        //        window.y = (savedScreenLayout) ? settings.y : Screen.height / 2 - window.height / 2
     }
 }
