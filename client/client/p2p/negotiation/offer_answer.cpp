@@ -1,4 +1,5 @@
 #include "offer_answer.hpp"
+#include <boost/exception/diagnostic_information.hpp>
 
 using namespace client::p2p::negotiation;
 
@@ -67,9 +68,23 @@ void offer_answer::on_offer(signaling::offer sdp) {
 void offer_answer::on_offer_set(boost::future<void> &set_result) {
   try {
     set_result.get();
+  } catch (const boost::exception &error) {
+    BOOST_LOG_SEV(logger, logging::severity::error)
+        << __FUNCTION__ << ", could not set offer as remote_description, error:"
+        << boost::diagnostic_information(error);
+    BOOST_ASSERT(false);
+    return;
+  } catch (const std::exception &error) {
+    BOOST_LOG_SEV(logger, logging::severity::error)
+        << __FUNCTION__ << ", could not set offer as remote_description, error:"
+        << error.what();
+    BOOST_ASSERT(false);
+    return;
   } catch (...) {
     BOOST_LOG_SEV(logger, logging::severity::error)
-        << __FUNCTION__ << ", could not set offer as remote_description";
+        << __FUNCTION__
+        << ", could not set offer as remote_description, unknown error";
+    BOOST_ASSERT(false);
     return;
   }
   rtc_connection.create_answer().then(executor, [this](auto answer_future) {
