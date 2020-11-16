@@ -314,7 +314,7 @@ void connection::OnRemoveTrack(
     ::webrtc::MediaStreamTrackInterface &interface_) {
   if (interface_.kind() != ::webrtc::MediaStreamTrackInterface::kVideoKind)
     return nullptr;
-  auto track_casted = dynamic_cast<webrtc::VideoTrackInterface *>(&interface_);
+  auto track_casted = static_cast<webrtc::VideoTrackInterface *>(&interface_);
   BOOST_ASSERT(track_casted);
   return std::make_shared<video_track_sink>(track_casted);
 }

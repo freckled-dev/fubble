@@ -20,6 +20,7 @@ public:
   }
 
   void on_stopped(boost::future<void> &result) {
+    BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
     try {
       result.get();
     } catch (const boost::system::system_error &error) {

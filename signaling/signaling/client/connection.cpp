@@ -92,6 +92,12 @@ void connection::did_read(boost::future<std::string> &message_future) {
     BOOST_LOG_SEV(this->logger, logging::severity::warning)
         << "an error occured while running, error:" << error.what();
     run_promise_moved->set_exception(error);
+  } catch (const std::exception &error) {
+    running = false;
+    auto run_promise_moved = std::move(run_promise);
+    BOOST_LOG_SEV(this->logger, logging::severity::warning)
+        << "an error occured while running, error:" << error.what();
+    run_promise_moved->set_exception(error);
   } catch (...) {
     BOOST_ASSERT(false);
   }
