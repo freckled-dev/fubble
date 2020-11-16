@@ -63,7 +63,7 @@ client_muted_deaf_communicator_test = executable('client_muted_deaf_communicator
   link_with: [google_webrtc_test_main]
   )
 test('client muted_deaf_communicator test', client_muted_deaf_communicator_test,
-  env: client_test_env, timeout: 8)
+  env: client_test_env)
 
 client_room_test = executable('client_room_test',
   ['room_test.cpp'],

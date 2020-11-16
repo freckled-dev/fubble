@@ -196,8 +196,7 @@ public:
     answer_cache = answer_;
   }
 
-  void
-  send_ice_candidate(const signaling::ice_candidate &candidate_) override {
+  void send_ice_candidate(const signaling::ice_candidate &candidate_) override {
     if (is_connected())
       return delegate->send_ice_candidate(candidate_);
     BOOST_LOG_SEV(logger, logging::severity::warning)

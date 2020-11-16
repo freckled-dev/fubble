@@ -43,5 +43,5 @@ temporary_room_test = executable('temporary_room_test',
   dependencies : [gtest_dep, temporary_room_dep],
   link_with: [websocket, test_main]
   )
-test('temporary_room test', temporary_room_test, timeout: 10)
+test('temporary_room test', temporary_room_test)
 
