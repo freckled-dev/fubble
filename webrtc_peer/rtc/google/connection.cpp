@@ -410,11 +410,11 @@ void connection::set_session_description_observer::OnFailure(
 
 void connection::set_remote_description_observer::
     OnSetRemoteDescriptionComplete(webrtc::RTCError error) {
-  BOOST_LOG_SEV(logger, logging::severity::info)
-      << "connection::set_session_description_observer::OnFailure, error:"
-      << error.message();
+  BOOST_LOG_SEV(logger, logging::severity::info) << __FUNCTION__;
   if (error.ok())
-    return;
+    return promise.set_value();
+  BOOST_LOG_SEV(logger, logging::severity::error)
+      << __FUNCTION__ << ", error:" << error.message();
   // TODO refactor to boost::exception
   promise.set_exception(std::runtime_error(error.message()));
 }
