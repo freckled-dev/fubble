@@ -141,9 +141,11 @@ boost::future<std::string> connection_impl::read() {
 void connection_impl::on_read(const boost::system::error_code &error,
                               std::size_t) {
   BOOST_LOG_SEV(logger, logging::severity::debug)
-      << "stream.async_read, this:" << this << ", error:" << error.message();
+      << "stream.async_read, this:" << this;
   auto read_promise_moved = std::move(read_promise);
   if (error) {
+    BOOST_LOG_SEV(logger, logging::severity::warning)
+        << "stream.async_read, this:" << this << ", error:" << error.message();
     reading = false;
     read_promise_moved->set_exception(boost::system::system_error(error));
     return;

@@ -54,6 +54,8 @@ protected:
   check_handle_video_track(::webrtc::MediaStreamTrackInterface &interface_);
   ::rtc::track_ptr
   check_handle_audio_track(::webrtc::MediaStreamTrackInterface &interface_);
+  std::unique_ptr<webrtc::SessionDescriptionInterface>
+  cast_session_description(const rtc::session_description &description);
 
   struct create_session_description_observer
       : webrtc::CreateSessionDescriptionObserver {
@@ -69,6 +71,12 @@ protected:
     rtc::logger logger{"set_session_description_observer"};
     void OnSuccess() override;
     void OnFailure(webrtc::RTCError error) override;
+  };
+  struct set_remote_description_observer
+      : public webrtc::SetRemoteDescriptionObserverInterface {
+    boost::promise<void> promise;
+    rtc::logger logger{"set_remote_description_observer"};
+    void OnSetRemoteDescriptionComplete(webrtc::RTCError error) override;
   };
   struct sending_track {
     track_ptr track_;
