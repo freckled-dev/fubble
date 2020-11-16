@@ -94,26 +94,7 @@ operator<<(std::ostream &out,
 
 using namespace rtc::google;
 
-namespace {
-std::unique_ptr<::webrtc::SessionDescriptionInterface>
-cast_session_description(const rtc::session_description &description) {
-  webrtc::SdpParseError error;
-  auto type_casted = [&] {
-    if (description.type_ == rtc::session_description::type::answer)
-      return webrtc::SdpType::kAnswer;
-    BOOST_ASSERT(description.type_ == rtc::session_description::type::offer);
-    return webrtc::SdpType::kOffer;
-  }();
-  auto casted =
-      webrtc::CreateSessionDescription(type_casted, description.sdp, &error);
-  if (casted)
-    return casted;
-  auto error_description =
-      fmt::format("sdp parsing error, description:'{}', line:{}",
-                  error.description, error.line);
-  throw std::runtime_error(error_description);
-}
-} // namespace
+namespace {} // namespace
 
 connection::connection()
     : logger{fmt::format("connection:{}", static_cast<void *>(this))} {}
@@ -155,35 +136,39 @@ boost::future<rtc::session_description> connection::create_answer() {
 boost::future<void>
 connection::set_local_description(const rtc::session_description &description) {
   BOOST_LOG_SEV(logger, logging::severity::info) << "set_local_description";
+  std::unique_ptr<::webrtc::SessionDescriptionInterface> casted;
   try {
-    auto casted = cast_session_description(description);
-    auto observer =
-        new rtc::RefCountedObject<set_session_description_observer>();
-    // watchout. `SetLocalDescription` takes ownerhip
-    auto result = observer->promise.get_future();
-    native->SetLocalDescription(observer, casted.release());
-    return result;
-  } catch (...) {
-    return boost::make_exceptional_future<void>();
+    casted = cast_session_description(description);
+  } catch (const std::runtime_error &error) {
+    BOOST_LOG_SEV(logger, logging::severity::error)
+        << __FUNCTION__ << ", an error occured while casting and setting, what:"
+        << error.what();
+    return boost::make_exceptional_future<void>(error);
   }
+  auto observer = new rtc::RefCountedObject<set_session_description_observer>();
+  // watchout. `SetLocalDescription` takes ownerhip
+  auto result = observer->promise.get_future();
+  native->SetLocalDescription(observer, casted.release());
+  return result;
 }
 
 boost::future<void> connection::set_remote_description(
     const rtc::session_description &description) {
   BOOST_LOG_SEV(logger, logging::severity::info)
       << __FUNCTION__ << ", description:" << description.sdp.size();
+  std::unique_ptr<::webrtc::SessionDescriptionInterface> casted;
   try {
-    std::unique_ptr<::webrtc::SessionDescriptionInterface> casted =
-        cast_session_description(description);
-    auto observer =
-        new rtc::RefCountedObject<set_session_description_observer>();
-    // watchout. `SetRemoteDescription` takes ownerhip
-    auto result = observer->promise.get_future();
-    native->SetRemoteDescription(observer, casted.release());
-    return result;
-  } catch (...) {
-    return boost::make_exceptional_future<void>();
+    casted = cast_session_description(description);
+  } catch (const std::runtime_error &error) {
+    BOOST_LOG_SEV(logger, logging::severity::error)
+        << __FUNCTION__ << ", an error occured while casting and setting, what:"
+        << error.what();
+    return boost::make_exceptional_future<void>(error);
   }
+  auto observer = new rtc::RefCountedObject<set_remote_description_observer>();
+  auto result = observer->promise.get_future();
+  native->SetRemoteDescription(std::move(casted), observer);
+  return result;
 }
 
 void connection::add_ice_candidate(const rtc::ice_candidate &candidate) {
@@ -329,7 +314,7 @@ void connection::OnRemoveTrack(
     ::webrtc::MediaStreamTrackInterface &interface_) {
   if (interface_.kind() != ::webrtc::MediaStreamTrackInterface::kVideoKind)
     return nullptr;
-  auto track_casted = dynamic_cast<webrtc::VideoTrackInterface *>(&interface_);
+  auto track_casted = static_cast<webrtc::VideoTrackInterface *>(&interface_);
   BOOST_ASSERT(track_casted);
   return std::make_shared<video_track_sink>(track_casted);
 }
@@ -421,4 +406,38 @@ void connection::set_session_description_observer::OnFailure(
       << error.message();
   // TODO refactor to boost::exception
   promise.set_exception(std::runtime_error(error.message()));
+}
+
+void connection::set_remote_description_observer::
+    OnSetRemoteDescriptionComplete(webrtc::RTCError error) {
+  BOOST_LOG_SEV(logger, logging::severity::info) << __FUNCTION__;
+  if (error.ok())
+    return promise.set_value();
+  BOOST_LOG_SEV(logger, logging::severity::error)
+      << __FUNCTION__ << ", error:" << error.message();
+  // TODO refactor to boost::exception
+  promise.set_exception(std::runtime_error(error.message()));
+}
+
+std::unique_ptr<::webrtc::SessionDescriptionInterface>
+connection::cast_session_description(
+    const rtc::session_description &description) {
+  webrtc::SdpParseError error;
+  auto type_casted = [&] {
+    if (description.type_ == rtc::session_description::type::answer)
+      return webrtc::SdpType::kAnswer;
+    BOOST_ASSERT(description.type_ == rtc::session_description::type::offer);
+    return webrtc::SdpType::kOffer;
+  }();
+  auto casted =
+      webrtc::CreateSessionDescription(type_casted, description.sdp, &error);
+  if (casted)
+    return casted;
+  auto error_description =
+      fmt::format("sdp parsing error, description:'{}', line:{}",
+                  error.description, error.line);
+  BOOST_LOG_SEV(logger, logging::severity::warning)
+      << __FUNCTION__ << ", failed to cast description, error_description:"
+      << error_description;
+  throw std::runtime_error(error_description);
 }

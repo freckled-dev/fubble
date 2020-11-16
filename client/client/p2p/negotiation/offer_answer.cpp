@@ -1,4 +1,5 @@
 #include "offer_answer.hpp"
+#include <boost/exception/diagnostic_information.hpp>
 
 using namespace client::p2p::negotiation;
 
@@ -17,6 +18,7 @@ offer_answer::offer_answer(boost::executor &executor,
 }
 
 void offer_answer::on_create_offer() {
+  BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
   auto sdp = rtc_connection.create_offer();
   sdp.then(executor,
            [this](auto offer_future) {
@@ -32,7 +34,7 @@ void offer_answer::on_create_offer() {
 }
 
 void offer_answer::on_negotiation_needed() {
-  BOOST_LOG_SEV(logger, logging::severity::debug) << "on_negotiation_needed";
+  BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
   if (connected) {
     signaling_client.send_want_to_negotiate();
     return;
@@ -41,7 +43,7 @@ void offer_answer::on_negotiation_needed() {
 }
 
 void offer_answer::on_connected() {
-  BOOST_LOG_SEV(logger, logging::severity::debug) << "on_connected";
+  BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
   connected = true;
   if (!wants_to_negotiate)
     return;
@@ -52,12 +54,14 @@ void offer_answer::on_connected() {
 void offer_answer::on_closed() { connected = false; }
 
 void offer_answer::on_answer(signaling::answer sdp) {
+  BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
   rtc::session_description answer_casted{rtc::session_description::type::answer,
                                          sdp.sdp};
   rtc_connection.set_remote_description(answer_casted);
 }
 
 void offer_answer::on_offer(signaling::offer sdp) {
+  BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
   rtc::session_description sdp_casted{rtc::session_description::type::offer,
                                       sdp.sdp};
   rtc_connection.set_remote_description(sdp_casted)
@@ -65,11 +69,26 @@ void offer_answer::on_offer(signaling::offer sdp) {
 }
 
 void offer_answer::on_offer_set(boost::future<void> &set_result) {
+  BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
   try {
     set_result.get();
+  } catch (const boost::exception &error) {
+    BOOST_LOG_SEV(logger, logging::severity::error)
+        << __FUNCTION__ << ", could not set offer as remote_description, error:"
+        << boost::diagnostic_information(error);
+    BOOST_ASSERT(false);
+    return;
+  } catch (const std::exception &error) {
+    BOOST_LOG_SEV(logger, logging::severity::error)
+        << __FUNCTION__ << ", could not set offer as remote_description, error:"
+        << error.what();
+    BOOST_ASSERT(false);
+    return;
   } catch (...) {
     BOOST_LOG_SEV(logger, logging::severity::error)
-        << __FUNCTION__ << ", could not set offer as remote_description";
+        << __FUNCTION__
+        << ", could not set offer as remote_description, unknown error";
+    BOOST_ASSERT(false);
     return;
   }
   rtc_connection.create_answer().then(executor, [this](auto answer_future) {

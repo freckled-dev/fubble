@@ -42,6 +42,8 @@ boost::optional<rects_type> try_pack(const QList<QQuickItem *> &children_,
 #endif
   for (const auto &child : children_) {
     auto child_aspect = get_aspect(*child);
+    if (child_aspect < 0.5)
+        child_aspect = 0.5;
 #if ENABLE_LOGGING
     qDebug() << "child_aspect:" << child_aspect;
 #endif
