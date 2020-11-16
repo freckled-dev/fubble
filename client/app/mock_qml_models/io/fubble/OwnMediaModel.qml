@@ -5,7 +5,7 @@ QtObject {
     property bool muted
     property bool videoDisabled
     property bool deafed
-    property bool videoAvailable: false
+    property bool videoAvailable: true
     property bool loopbackOwnVoice
     signal newAudioLevel(int level)
     signal newAudioTestLevel(int level)

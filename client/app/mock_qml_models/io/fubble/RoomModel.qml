@@ -15,13 +15,8 @@ QtObject {
     property list<QtObject> participants: [
         QtObject {
             property var participant: ParticipantModel {
-                name: qsTr("Sarah")
+                name: qsTr("Vanessa")
                 own: true
-            }
-        },
-        QtObject {
-            property var participant: ParticipantModel {
-                name: qsTr("Konrad")
             }
         },
         QtObject {
@@ -36,38 +31,47 @@ QtObject {
         },
         QtObject {
             property var participant: ParticipantModel {
-                name: qsTr("Andreas")
-            }
-        },
-        QtObject {
-            property var participant: ParticipantModel {
-                name: qsTr("Zebra")
-            }
-        },
-        QtObject {
-            property var participant: ParticipantModel {
-                name: qsTr("Walter")
-            }
-        },
-        QtObject {
-            property var participant: ParticipantModel {
-                name: qsTr("Barbara")
+                name: qsTr("Konrad")
             }
         }
     ]
 
-    property list<QtObject> participantsWithVideo
-
-
-    /*: [
+    property list<QtObject> participantsWithVideo: [
         QtObject {
             property var participant: ParticipantModel {
-                name: qsTr("Sarah")
+                name: qsTr("Vanessa")
+                video: MediaPlayer {
+                    source: "/home/tamrielle/Downloads/Sintel_webm_extract.webm"
+                    autoPlay: true
+                }
+            }
+        },
+        QtObject {
+            property var participant: ParticipantModel {
+                name: qsTr("Toni")
+                video: MediaPlayer {
+                    source: "/home/tamrielle/Downloads/Sintel_webm_extract.webm"
+                    autoPlay: true
+                }
+            }
+        },
+        QtObject {
+            property var participant: ParticipantModel {
+                name: qsTr("Christine")
+                video: MediaPlayer {
+                    source: "/home/tamrielle/Downloads/Sintel_webm_extract.webm"
+                    autoPlay: true
+                }
+            }
+        },
+        QtObject {
+            property var participant: ParticipantModel {
+                name: qsTr("Konrad")
                 video: MediaPlayer {
                     source: "/home/tamrielle/Downloads/Sintel_webm_extract.webm"
                     autoPlay: true
                 }
             }
         }
-    ]*/
+    ]
 }

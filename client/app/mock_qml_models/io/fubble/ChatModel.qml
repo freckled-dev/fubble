@@ -14,7 +14,7 @@ QtObject {
         ListElement {
             participantId: "1"
             own: true
-            name: "Sarah"
+            name: "Vanessa"
             type: "join"
         }
         ListElement {
@@ -24,7 +24,7 @@ QtObject {
         }
         ListElement {
             participantId: "1"
-            name: "Sarah"
+            name: "Vanessa"
             own: true
             timestamp: 1592567700000
             message: "Hello Guys! How are you today?"
@@ -34,12 +34,12 @@ QtObject {
             participantId: "2"
             name: "Toni"
             timestamp: 1592567780000
-            message: "Hi Sarah, doing great today, thanks 😃 And yourself?"
+            message: "Hi Vanessa, doing great today, thanks 😃 And yourself?"
             type: "message"
         }
         ListElement {
             participantId: "1"
-            name: "Sarah"
+            name: "Vanessa"
             timestamp: 1592567935000
             own: true
             message: "Had a lovely morning. I treated myself to cinnamon rolls and a matcha latte 🍵"
@@ -47,9 +47,9 @@ QtObject {
         }
         ListElement {
             participantId: "2"
-            name: "Toni asdfadsf asdf asdf asdf sadf asdf sdaf adsfa"
+            name: "Toni"
             timestamp: 1592568005000
-            message: "Oh wow, that sounds delicious! https://www.google.com/"
+            message: "Oh wow, that sounds delicious!"
             type: "message"
         }
         ListElement {
@@ -66,7 +66,7 @@ QtObject {
         }
         ListElement {
             participantId: "1"
-            name: "Sarah"
+            name: "Vanessa"
             timestamp: 1592568030000
             own: true
             type: "message"
