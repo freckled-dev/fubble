@@ -3,7 +3,7 @@ import QtMultimedia 5.15
 
 QtObject {
 
-    property bool desktopSharingActive: true
+    property bool desktopSharingActive: false
 
     function startPreviews() {
         for (var categoryIndex = 0; categoryIndex < categories.length; categoryIndex++) {

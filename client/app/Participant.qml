@@ -12,8 +12,8 @@ Rectangle {
     property ParticipantModel participant
     property bool demoMode: false
     property double aspect: {
-        var width = video.sourceRect.width
-        var height = video.sourceRect.height
+        var width = demoMode ? 400 : video.sourceRect.width
+        var height = demoMode ? 400 : video.sourceRect.height
         var result = width / height
         return result
     }

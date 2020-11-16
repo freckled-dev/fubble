@@ -117,7 +117,7 @@ FocusScope {
             id: demoImageComponent
 
             Image {
-                source: Style.current.demoImagesPath + "Sarah.jpg"
+                source: Style.current.demoImagesPath + "Vanessa.jpg"
                 fillMode: Image.PreserveAspectCrop
 
                 AudioVideoOverlay {
