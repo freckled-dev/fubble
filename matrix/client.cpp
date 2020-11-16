@@ -19,15 +19,12 @@ client::client(factory &factory_, http::client_factory &http_factory,
 }
 
 client::~client() {
-  BOOST_LOG_SEV(logger, logging::severity::debug) << "destructor";
+  BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
   if (!sync_till_stop_promise)
     return;
   BOOST_LOG_SEV(logger, logging::severity::warning)
       << "sync_till_stop_promise not nullptr";
-#if 1
-  sync_till_stop_promise->set_exception(
-      boost::system::system_error(boost::asio::error::operation_aborted));
-#endif
+  sync_till_stop_active = false;
 }
 
 const std::string &client::get_user_id() const { return information_.user_id; }
@@ -108,11 +105,6 @@ boost::future<void> client::sync_till_stop(std::chrono::milliseconds timeout) {
 }
 
 void client::do_sync() {
-  if (!sync_till_stop_active) {
-    auto moved = std::move(sync_till_stop_promise);
-    moved->set_value();
-    return;
-  }
   auto target = make_sync_target(sync_till_stop_timeout);
   BOOST_ASSERT(!http_sync_action);
   http_sync_action = http_client->get_action(target);
@@ -123,6 +115,11 @@ void client::do_sync() {
 void client::on_sync_till_stop(
     boost::future<std::pair<boost::beast::http::status, nlohmann::json>>
         &result) {
+  if (!sync_till_stop_active) {
+    auto moved = std::move(sync_till_stop_promise);
+    moved->set_value();
+    return;
+  }
   try {
     auto response = result.get();
     // don't destroy http_sync_action before result.get. In case the descructor

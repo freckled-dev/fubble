@@ -24,7 +24,7 @@ connection_impl::connection_impl(boost::asio::io_context &context, bool secure)
 }
 
 connection_impl::~connection_impl() {
-  BOOST_LOG_SEV(logger, logging::severity::debug) << "websocket::~connection()";
+  BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
   if (!reading)
     return;
   BOOST_LOG_SEV(logger, logging::severity::warning)

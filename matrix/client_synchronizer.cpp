@@ -23,11 +23,17 @@ public:
     BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
     try {
       result.get();
+      BOOST_LOG_SEV(logger, logging::severity::info)
+          << __FUNCTION__ << ", synchronization stopped, resetting class";
+      client_.reset();
+      return;
     } catch (const boost::system::system_error &error) {
       if (error.code() == boost::asio::error::operation_aborted) {
         BOOST_LOG_SEV(logger, logging::severity::debug)
             << __FUNCTION__ << ", sync got cancelled, stopping the sync";
         client_.reset();
+        // on success(cancel) the promise shall be fullfilled
+        BOOST_ASSERT(false);
         return;
       }
       // TODO do an error signal!

@@ -38,10 +38,12 @@ void connector::on_resolved(
     const boost::system::error_code &error,
     const boost::asio::ip::tcp::resolver::results_type &endpoints) {
   BOOST_LOG_SEV(logger, logging::severity::debug)
-      << "on_resolved, error:" << error.message()
-      << ", results.size():" << endpoints.size();
-  if (check_error(error))
+      << __FUNCTION__ << ", results.size():" << endpoints.size();
+  if (check_error(error)) {
+    BOOST_LOG_SEV(logger, logging::severity::warning)
+        << __FUNCTION__ << ", error:" << error.message();
     return;
+  }
   connect_to_endpoints(endpoints);
 }
 
@@ -69,10 +71,12 @@ void connector::connect_to_endpoints(
 }
 
 void connector::on_connected(const boost::system::error_code &error) {
-  BOOST_LOG_SEV(logger, logging::severity::debug)
-      << "on_connected, error:" << error.message();
-  if (check_error(error))
+  BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
+  if (check_error(error)) {
+    BOOST_LOG_SEV(logger, logging::severity::warning)
+        << __FUNCTION__ << ", error:" << error.message();
     return;
+  }
   if (!config_.ssl)
     return handshake();
   secure();

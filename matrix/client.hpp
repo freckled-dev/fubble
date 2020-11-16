@@ -61,7 +61,6 @@ protected:
   // fields in its own struct
   std::unique_ptr<boost::promise<void>> sync_till_stop_promise;
   std::unique_ptr<http::client> http_client;
-  std::unique_ptr<http::action> http_sync_action;
   std::chrono::milliseconds sync_till_stop_timeout;
   bool sync_till_stop_active{};
   const information information_;
@@ -69,6 +68,7 @@ protected:
   std::unique_ptr<users> users_;
   std::unique_ptr<rooms> rooms_;
   int transaction_id_counter{};
+  std::unique_ptr<http::action> http_sync_action;
 };
 } // namespace matrix
 
