@@ -2,6 +2,8 @@
 
 Get the prebuild binaries at [fubble.io](https://fubble.io)
 
+[Screenshot](https://fubble.io/assets/images/screenshots/main.png)
+
 # Build Status
 
 [![GitlabCI](https://gitlab.com/acof/fubble/badges/master/pipeline.svg)](https://gitlab.com/acof/fubble/pipelines)
@@ -62,7 +64,7 @@ pip3 install --user conan meson aqtinstall
 The MacOS version is currently work-in-progress. There is currently no video support.
 To run it you have to use `--use-video 0`, like this:
 ```bash
-../fubble_build/install/bin/fubble --use video 0
+../fubble_build/install/bin/fubble --use-video 0
 ```
 
 ## Windows
@@ -71,7 +73,7 @@ Set up your PC according to the [Chrome Building Instructions](https://chromium.
 You need at least Visual Studio 2019.
 
 install `pyhton3`, `cmake` and `pkgconfiglite` using [chocolatey](https://chocolatey.org/) in a powershell with Administration Rights
-```ps
+```powershell
 choco install python pkgconfiglite cmake --installargs 'ADD_CMAKE_TO_PATH=System'
 # load PATH
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
@@ -79,19 +81,19 @@ pip install conan aqtinstall
 ```
 
 At last install Qt to `C:\Qt` using the script `install_qt.py`
-```ps
+```powershell
 python scripts/install_qt.py
 ```
 
-### build
+### Build
 
-```ps
+```powershell
 python scripts/make_build.py --profile scripts/conan_profiles/windows_release
 ```
 
-# set up servers for local testing and deployment
+# Set up servers for local testing and deployment
 
-The only supported server platform for server is Linux and docker.
+The only supported server platform for server is Docker.
 To run your own instances of the servers build fubble then run
 
 ```bash
@@ -101,4 +103,9 @@ docker-compose up
 
 Use `docker-compose up --build` to update the containers.
 Use `docker-compose up --detach` to detach and run the services in the background.
+
+Connect to them using fubble:
+```bash
+../fubble_build/install/bin/fubble --host localhost --service http --use-ssl 0
+```
 
