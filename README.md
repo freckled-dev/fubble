@@ -2,7 +2,7 @@
 
 Get the prebuild binaries at [fubble.io](https://fubble.io)
 
-[Screenshot](https://fubble.io/assets/images/screenshots/main.png)
+![Screenshot](https://fubble.io/assets/images/screenshots/main.png "Welcome Screen")
 
 # Build Status
 
