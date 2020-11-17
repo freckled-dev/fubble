@@ -11,4 +11,7 @@ build_type=Debug
 [options]
 [build_requires]
 [env]
+fubble:with_ui=False
+fubble:with_tests=False
+fubble:with_servers=False
 

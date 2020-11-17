@@ -2,8 +2,6 @@ project('fubble', 'cpp',
   meson_version : '>=0.56.0',
   license: ['proprietary'],
   default_options : ['cpp_std=c++17'])
-# there is a bug in meson 0.52.0. cant use boost with meson
-# https://github.com/mesonbuild/meson/issues/6003
 
 disabled = disabler()
 if get_option('with_servers')
