@@ -14,8 +14,8 @@ ApplicationWindow {
     // initial values - will be overwritten by users settings
     width: Math.min(Screen.width, 1024)
     height: Math.min(Screen.height, 768)
-    x: 0
-    y: 0
+    x: Screen.width / 2 - container.width / 2
+    y: Screen.height / 2 - container.height / 2
     Component.onCompleted: ensureValidWindowPosition()
 
     minimumWidth: 800
@@ -252,15 +252,16 @@ ApplicationWindow {
     }
 
     function ensureValidWindowPosition() {
-        if (Qt.platform.os == "windows") {
+        if (Qt.platform.os != "windows") {
             return
         }
 
-        console.log(Screen.width)
-        console.log(Screen.height)
-        console.log("x: " + settings.x)
-        console.log("y: " + settings.y)
-        //        window.x = (savedScreenLayout) ? settings.x : Screen.width / 2 - window.width / 2
-        //        window.y = (savedScreenLayout) ? settings.y : Screen.height / 2 - window.height / 2
+        // if any saved value is out of range for the current screen -> reset
+        if (settings.x >= Screen.desktopAvailableWidth
+                || settings.y >= Screen.desktopAvailableHeight) {
+            console.log("Recentered application window, because it was out of the visible display area.")
+            settings.x = Screen.width / 2 - container.width / 2
+            settings.y = Screen.height / 2 - container.height / 2
+        }
     }
 }
