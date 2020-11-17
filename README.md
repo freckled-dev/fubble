@@ -1,204 +1,134 @@
-# set up
+# Fubble - fast realtime multimedia communication
+
+There are two parts:
+- "fubble" is a conferencing solution. It extends the [matrix standard](https://matrix.org/) with a many-to-many webrtc solution.
+- "libfubble" is a library that can be used in other products as webrtc-as-a-service. It solves the signaling and the communication challenges.
+
+Unlike other solutions it's implemented in a realtime language,
+so it can be used on low-powered devices, like phones and Raspberry Pis.
+
+Get the prebuild binaries at [fubble.io](https://fubble.io).
+
+![Screenshot](https://fubble.io/assets/images/screenshots/main.png "Welcome Screen")
+
+# Build Status
+
+[![GitlabCI](https://gitlab.com/acof/fubble/badges/master/pipeline.svg)](https://gitlab.com/acof/fubble/pipelines)
+
+# Get the source
+
+- Gitlab [gitlab.com/acof/fubble](https://gitlab.com/acof/fubble)
+- Github [github.com/freckled-dev/fubble](https://github.com/freckled-dev/fubble)
+
+# Build from source
+
+Fubble uses mainly these heavy frameworks:
+- [google webrtc](https://webrtc.googlesource.com/src/+/refs/heads/master/docs/native-code/index.md)
+- [qt5](https://qt.io)
+- [boost](https://boost.org)
+- [Googletest](https://github.com/google/googletest)
+
+The build system uses:
+- [meson](https://mesonbuild.com/) for building fubble. (build system)
+- [aqtinstall](https://github.com/miurahr/aqtinstall) for installing qt5
+- [conan](https://conan.io) for intalling all other dependencies, including webrtc.
+
+## Ubuntu 20.04 Desktop
+
+### install the webrtc dependencies
 
 ```bash
-# ubuntu 18.04
-sudo apt-get update
-sudo apt-get install fish
-./scripts/install_system_dependencies
-FUBBLE_TREAT_WARNING_AS_ERROR=0 ./scripts/make_build.py
-
-# fedora
-sudo dnf install -y \
-  gstreamer1-plugins-bad-free-devel \
-  libasan \
-  libX11-devel \
-  qt5-devel \
-  qt5-qtquickcontrols2-devel
-
-# opensuse
-sudo zypper install -y \
-  libX11-devel cmake gcc-c++ git libqt5-qttools \
-  libqt5-qtsvg-devel libQt5QuickControls2-devel
+curl -LO 'https://raw.githubusercontent.com/chromium/chromium/master/build/install-build-deps.sh'
+chmod u+x install-build-deps.sh --no-arm --no-chromeos-fonts --no-nacl
+./install-build-deps.sh
 ```
 
-# mac
-```bash
-brew install cmake ninja ccache
-```
-
-# all platforms
-
-install build helpers
-```
-pip3 install --user --upgrade conan meson aqtinstall
-```
-
-## build
-
-```
-make
-```
-
-## set up servers for local testing
+### install project build systems
 
 ```bash
-make install
-./deploy/development/deploy_build_install_foreground
+pip3 install --user conan meson aqtinstall
+# ensure `$HOME/.local/bin/` is in your `PATH`
+which conan
 ```
 
-## run tests
+### build and install
 
 ```bash
-# unit and integration tests
-make test
-# gui
-../fubble_build/meson/client/app/fubble
+./scripts/make_build.py --profile ./scripts/conan_profiles/linux64_gcc9_release
 ```
 
-## speed up compilation
+This command will result in a ready to use fubble client. The binaries can be found in `../fubble_build/install/bin`.
 
-open `~/.conan/profiles/default` and add the line
-```
-fubble:LDFLAGS='-Wl,-fuse-ld=lld'
-```
-to the `[env]` section. now an incremental build shall not take more than 10 seconds.
+Run it using `LD_LIBRARY_PATH=../fubble_build/qt/5.15.1/gcc_64/lib/ ../fubble_build/install/bin/fubble`.
 
-## markus notes - ignore
+## MacOS
 
-if using fish add the python3 bin path to PATH
+You need to install the newest XCode on Mojave. Next install the build helpers
 ```
-> cat ~/.config/fish/config.fish
-set -x PATH $PATH $HOME/.local/bin
+brew install cmake ninja ccache python
+pip3 install --user conan meson aqtinstall
 ```
 
-fix gcc >= 5 ABI. https://docs.conan.io/en/latest/howtos/manage_gcc_abi.html
-Change conan config file `~/.conan/profiles/default` and set `compiler.libcxx=libstdc++11`.
-
-# notes on qt5
-
-## logging and fedora
-
-by default it's disabled to log with `console.log` and `console.debug`. other logs still work, eg: `console.info`.
-https://stackoverflow.com/questions/36338000/qml-console-log-and-console-debug-dont-write-to-console
-
-## qml
-
-When using the `Q_PROPERTY` I have to give the full typename with all namespaces noted.
-Same applies to signals.
-Don't do `typedef`s or `using`s.
-- https://stackoverflow.com/questions/19889163/using-qt-properties-with-custom-types-defined-in-namespaces
-- https://wiki.qt.io/How_to_use_a_C_class_declared_in_a_namespace_with_Q_PROPERTY_and_QML
-- https://stackoverflow.com/questions/24231470/qmetapropertyread-unable-to-handle-unregistered-datatype-treeiteminspectori
-
-# conan
-enable `_GLIBCXX_USE_CXX11_ABI` by setting `compiler.libcxx=libstdc++11` in `~/.conan/profiles/default`
-
-# python2 is mandatory
-
-```
-sudo dnf install -y \
-  python2
-pip2 install --user virtualenv
-python2 -m virtualenv venv
-source venv/bin/activate.fish
-```
-
-# dependency google webrtc
-
-## linux
-
-seems to not work with fedora. Tested on ubuntu 18.04 and 19.04
-
-```fish
-apt install -y git wget curl
-git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
-set PATH $PATH /home/mlanner/Development/projects/fubble/google_webrtc/depot_tools/
-# dont skip `--nohooks`
-# if `fetch` fails. delete all files (including the hidden ones) and run again.
-fetch --nohooks webrtc
-git checkout -b my_branch refs/remotes/branch-heads/m79
-gclient sync
-```
-
-list all build args
-```
-gn args --list out/Default
-# the following line will bring up an editor with the set values
-# more information: https://chromium.googlesource.com/chromium/src/tools/gn/+/48062805e19b4697c5fbd926dc649c78b6aaa138/docs/quick_start.md
-gn args out/Default
-```
-
-# v4l2loopback
-
-source: https://github.com/umlaeute/v4l2loopback
+### build
 
 ```bash
-# preconditions
-sudo dnf install kernel-devel
-# build
-git clone https://github.com/umlaeute/v4l2loopback.git
-cd v4l2loopback
-make
-sudo make install
-# load
-# gstreamer can't allocate unless `max_buffers` is set.
-# https://github.com/umlaeute/v4l2loopback/issues/166#issuecomment-465960256
-sudo modprobe v4l2loopback max_buffers=2
+./scripts/make_build.py --profile ./scripts/conan_profiles/mac_release
 ```
 
-send videos to fake device
+The MacOS version is a work-in-progress. There is currently no video support.
+To run it you have to use `--use-video 0`, like this:
+```bash
+../fubble_build/install/bin/fubble --use-video 0
+```
 
-- ffmpeg: https://github.com/umlaeute/v4l2loopback/wiki/Ffmpeg
-- gstreamer: webrtc could not read it https://github.com/umlaeute/v4l2loopback/wiki/Gstreamer
+## Windows
+
+Set up your PC according to the [Chrome Building Instructions](https://chromium.googlesource.com/chromium/src/+/master/docs/windows_build_instructions.md#visual-studio).
+You need at least Visual Studio 2019.
+
+Install `python3`, `cmake` and `pkgconfiglite` using [chocolatey](https://chocolatey.org/) in a powershell with Administration Rights
+```powershell
+choco install python pkgconfiglite cmake --installargs 'ADD_CMAKE_TO_PATH=System'
+# load PATH
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+pip install conan aqtinstall
+```
+
+At last install Qt to `C:\Qt` using the script `install_qt.py`
+```powershell
+python scripts/install_qt.py
+```
+
+### Build
+
+```powershell
+python scripts/make_build.py --profile scripts/conan_profiles/windows_release
+```
+
+You can find the resulting client at `..\fubble_build\install\bin`
+
+# Set up servers for local testing and deployment
+
+The only supported platform for the servers is [Docker](https://docker.io). Install it using `apt install docker.io`.
+
+To run your own instances of the servers, build fubble then run
 
 ```bash
-# produce a video
-# sintel https://durian.blender.org/download/
-curl -LO http://peach.themazzone.com/durian/movies/sintel-1280-surround.mp4
-// TODO more movie links. maybe with torrent: https://www.maketecheasier.com/how-to-download-torrents-from-the-command-line-in-ubuntu/
-ffmpeg -re -i ./sintel-1280-surround.mp4 -f v4l2 /dev/video0
-
-# consume it by gstreamer
-gst-launch-1.0 v4l2src device=/dev/video0 ! videoconvert ! autovideosink
+cd docker
+docker-compose up
 ```
 
-## windows
+Use `docker-compose up --build` to update the containers.
+Use `docker-compose up --detach` to detach and run the services in the background.
 
-instructions for webrtc
-https://chromium.googlesource.com/chromium/src/+/master/docs/windows_build_instructions.md
-
-use the visual studio installer and install the “Desktop development with C++”
-component and the “MFC/ATL support” sub-components.
-
-The SDK Debugging Tools must also be installed. If the Windows 10 SDK was 
-installed via the Visual Studio installer, then they can be installed by going
-to: Control Panel → Programs → Programs and Features → 
-Select the “Windows Software Development Kit” → Change → Change → 
-Check “Debugging Tools For Windows” → Change.
-
-
-because there's no pip, install conan by installer \
-https://conan.io/downloads.html
-https://dl.bintray.com/conan/installers/conan-win-64_1_24_1.exe
-
-install git and python3 (ensure python3 and pip3 become part of PATH)
-- https://git-scm.com/download/win
-- https://www.python.org/ftp/python/3.8.2/python-3.8.2.exe
-
-install pkg-config
-- https://sourceforge.net/projects/pkgconfiglite/
-
-install cmake for, needed by qt dependencies
-
-add conan remotes
-```bat
-conan remote add bincrafters "https://api.bintray.com/conan/bincrafters/public-conan"
-conan remote add inexorgame "https://api.bintray.com/conan/inexorgame/inexor-conan"
-conan remote add google_webrtc "https://api.bintray.com/conan/freckled/google-webrtc"
+Connect to them using fubble:
+```bash
+../fubble_build/install/bin/fubble --host localhost --service http --use-ssl 0
 ```
 
-build using conan
-```bat
-conan create . --build missing
-```
+## ports
+
+To change port of the backend edit `./docker/docker-compose.yml` file and adapt
+the first value of the `ports` entry `"80:80"` to your liking.
+For example change to `"8000:80"`.
 
