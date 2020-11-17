@@ -1,6 +1,13 @@
 # About
 
-Get the prebuild binaries at [fubble.io](https://fubble.io)
+There are two parts:
+- "fubble" is a conferencing solution. It extends the [matrix standard](https://matrix.org/) with a many-to-many webrtc solution.
+- "libfubble" is a library that can be used in other products as webrtc-as-a-service. It solves the signaling and the communication challenges.
+
+Unlike other solutions it's implemented in a realtime language,
+so it can be uses on low-powered devices, like phones and the Raspberry Pi.
+
+Get the prebuild binaries at [fubble.io](https://fubble.io).
 
 ![Screenshot](https://fubble.io/assets/images/screenshots/main.png "Welcome Screen")
 
@@ -20,6 +27,11 @@ Fubble uses mainly these heavy frameworks:
 - [qt5](https://qt.io)
 - [boost](https://boost.org)
 - [Googletest](https://github.com/google/googletest)
+
+The build system uses:
+- [meson](https://mesonbuild.com/) for building fubble. (build system)
+- [aqtinstall](https://github.com/miurahr/aqtinstall) for installing qt5
+- [conan](https://conan.io) for intalling all other dependencies, including webrtc.
 
 ## Ubuntu 20.04 Desktop
 
