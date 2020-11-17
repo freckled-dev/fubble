@@ -124,3 +124,9 @@ Connect to them using fubble:
 ../fubble_build/install/bin/fubble --host localhost --service http --use-ssl 0
 ```
 
+## ports
+
+To change port of the backend edit `./docker/docker-compose.yml` file and adapt
+the first value of the `ports` entry `"80:80"` to your liking.
+For example change to `"8000:80"`.
+
