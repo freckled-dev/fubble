@@ -1,11 +1,11 @@
-# About
+# Fubble - fast realtime multimedia communication
 
 There are two parts:
 - "fubble" is a conferencing solution. It extends the [matrix standard](https://matrix.org/) with a many-to-many webrtc solution.
 - "libfubble" is a library that can be used in other products as webrtc-as-a-service. It solves the signaling and the communication challenges.
 
 Unlike other solutions it's implemented in a realtime language,
-so it can be uses on low-powered devices, like phones and the Raspberry Pi.
+so it can be used on low-powered devices, like phones and Raspberry Pis.
 
 Get the prebuild binaries at [fubble.io](https://fubble.io).
 
@@ -17,8 +17,8 @@ Get the prebuild binaries at [fubble.io](https://fubble.io).
 
 # Get the source
 
-- [gitlab.com/acof/fubble](https://gitlab.com/acof/fubble)
-- [github.com/freckled-dev/fubble](https://github.com/freckled-dev/fubble)
+- Gitlab [gitlab.com/acof/fubble](https://gitlab.com/acof/fubble)
+- Github [github.com/freckled-dev/fubble](https://github.com/freckled-dev/fubble)
 
 # Build from source
 
@@ -33,7 +33,7 @@ The build system uses:
 - [aqtinstall](https://github.com/miurahr/aqtinstall) for installing qt5
 - [conan](https://conan.io) for intalling all other dependencies, including webrtc.
 
-## Ubuntu 20.04 Desktop
+## Ubuntu 18.04 and 20.04 Desktop
 
 ### install the webrtc dependencies
 
@@ -57,7 +57,8 @@ which conan
 ./scripts/make_build.py --profile ./scripts/conan_profiles/linux64_gcc10_release
 ```
 
-This command will result in a ready to use fubble client. Checkout `../fubble_build/install`.
+This command will result in a ready to use fubble client.
+Checkout `../fubble_build/install/bin` or run it directly using `../fubble_build/install/bin/fubble`.
 
 ## MacOS
 
@@ -73,7 +74,7 @@ pip3 install --user conan meson aqtinstall
 ./scripts/make_build.py --profile ./scripts/conan_profiles/mac_release
 ```
 
-The MacOS version is currently work-in-progress. There is currently no video support.
+The MacOS version is a work-in-progress. There is currently no video support.
 To run it you have to use `--use-video 0`, like this:
 ```bash
 ../fubble_build/install/bin/fubble --use-video 0
@@ -84,7 +85,7 @@ To run it you have to use `--use-video 0`, like this:
 Set up your PC according to the [Chrome Building Instructions](https://chromium.googlesource.com/chromium/src/+/master/docs/windows_build_instructions.md#visual-studio).
 You need at least Visual Studio 2019.
 
-install `pyhton3`, `cmake` and `pkgconfiglite` using [chocolatey](https://chocolatey.org/) in a powershell with Administration Rights
+Install `python3`, `cmake` and `pkgconfiglite` using [chocolatey](https://chocolatey.org/) in a powershell with Administration Rights
 ```powershell
 choco install python pkgconfiglite cmake --installargs 'ADD_CMAKE_TO_PATH=System'
 # load PATH
@@ -103,10 +104,12 @@ python scripts/install_qt.py
 python scripts/make_build.py --profile scripts/conan_profiles/windows_release
 ```
 
+You can find the resulting client at `..\fubble_build\install\bin`
+
 # Set up servers for local testing and deployment
 
-The only supported server platform for server is Docker.
-To run your own instances of the servers build fubble then run
+The only supported platform for the servers is [Docker](https://docker.io).
+To run your own instances of the servers, build fubble then run
 
 ```bash
 cd docker
