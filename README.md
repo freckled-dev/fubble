@@ -33,13 +33,13 @@ The build system uses:
 - [aqtinstall](https://github.com/miurahr/aqtinstall) for installing qt5
 - [conan](https://conan.io) for intalling all other dependencies, including webrtc.
 
-## Ubuntu 18.04 and 20.04 Desktop
+## Ubuntu 20.04 Desktop
 
 ### install the webrtc dependencies
 
 ```bash
-curl -LO 'https://source.chromium.org/chromium/chromium/src/+/master:build/install-build-deps.sh'
-chmod u+x install-build-deps.sh
+curl -LO 'https://raw.githubusercontent.com/chromium/chromium/master/build/install-build-deps.sh'
+chmod u+x install-build-deps.sh --no-arm --no-chromeos-fonts --no-nacl
 ./install-build-deps.sh
 ```
 
@@ -54,11 +54,12 @@ which conan
 ### build and install
 
 ```bash
-./scripts/make_build.py --profile ./scripts/conan_profiles/linux64_gcc10_release
+./scripts/make_build.py --profile ./scripts/conan_profiles/linux64_gcc9_release
 ```
 
-This command will result in a ready to use fubble client.
-Checkout `../fubble_build/install/bin` or run it directly using `../fubble_build/install/bin/fubble`.
+This command will result in a ready to use fubble client. The binaries can be found in `../fubble_build/install/bin`.
+
+Run it using `LD_LIBRARY_PATH=../fubble_build/qt/5.15.1/gcc_64/lib/ ../fubble_build/install/bin/fubble`.
 
 ## MacOS
 
@@ -108,7 +109,8 @@ You can find the resulting client at `..\fubble_build\install\bin`
 
 # Set up servers for local testing and deployment
 
-The only supported platform for the servers is [Docker](https://docker.io).
+The only supported platform for the servers is [Docker](https://docker.io). Install it using `apt install docker.io`.
+
 To run your own instances of the servers, build fubble then run
 
 ```bash
