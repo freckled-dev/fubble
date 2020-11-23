@@ -93,7 +93,7 @@ void own_media_model::update_video() {
     video_changed(video);
   }
 
-  auto own_videos = own_media_.get_videos().get_all();
+  auto own_videos = own_media_.get_videos()->get_all();
   if (own_videos.empty()) {
     video_available_changed(get_video_available());
     return;

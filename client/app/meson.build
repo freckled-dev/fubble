@@ -6,6 +6,17 @@ if host_machine.system() == 'linux'
     )
 endif
 
+client_app_sources = ['core_module.cpp']
+client_app = library('app_client', client_app_sources,
+  dependencies: [client_dep], install: true)
+client_app_dep = declare_dependency(link_with: [client_app],
+  dependencies: [client_dep])
+
+audio_client = executable('audio_client', 
+  ['audio_client.cpp', 'audio_client_main.cpp'],
+  dependencies: [client_app_dep],
+  install: true)
+
 client_gui_sources = ['gui.cpp', 'utils_model.cpp', 'join_model.cpp',
   'poll_asio_by_qt.cpp', 'participants_model.cpp',
   'gui_options.cpp', 'error_model.cpp', 'leave_model.cpp',
@@ -34,7 +45,7 @@ if host_machine.system() == 'windows'
 endif
 
 rcc = find_program('rcc-qt5', 'rcc')
-client_gui_dependencies = [client_dep, ui_dep, temporary_room_dep, video_layout_dep]
+client_gui_dependencies = [client_app_dep, ui_dep, video_layout_dep]
 if host_machine.system() != 'windows'
   qt_dir = run_command('dirname', '--', rcc.full_path()).stdout().strip() / '..'
   # error(qt_dir)
