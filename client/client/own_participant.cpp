@@ -12,10 +12,12 @@ own_participant::own_participant(matrix::user &matrix_participant,
       [this](auto source) { on_video_added(source); }));
   signal_connections.push_back(own_media_.get_videos().on_removed.connect(
       [this](auto source) { on_video_removed(source); }));
-  signal_connections.push_back(desktop_sharing_->on_added.connect(
-      [this](auto source) { on_screen_added(source); }));
-  signal_connections.push_back(desktop_sharing_->on_removed.connect(
-      [this](auto source) { on_screen_removed(source); }));
+  if (desktop_sharing_) {
+    signal_connections.push_back(desktop_sharing_->on_added.connect(
+        [this](auto source) { on_screen_added(source); }));
+    signal_connections.push_back(desktop_sharing_->on_removed.connect(
+        [this](auto source) { on_screen_removed(source); }));
+  }
   // TODO add and removal of audio!
 }
 

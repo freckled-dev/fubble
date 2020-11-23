@@ -20,6 +20,7 @@ core_module::config::config(const std::string &host, const std::string &service,
 }
 
 core_module::core_module(const config &config_) : config_{config_} {}
+
 core_module::~core_module() = default;
 
 std::shared_ptr<crash_catcher> core_module::get_crash_catcher() {

@@ -26,6 +26,7 @@ public:
 
   rtc::google::audio_track *get_audio() const;
   own_video &get_videos() const;
+  // may return nullptr!
   std::shared_ptr<desktop_sharing> get_desktop_sharing() const;
 
 protected:
