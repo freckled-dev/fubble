@@ -25,7 +25,8 @@ public:
   void set_desktop_sharing(std::shared_ptr<desktop_sharing> desktop_sharing_);
 
   rtc::google::audio_track *get_audio() const;
-  own_video &get_videos() const;
+  // may return nullptr!
+  std::shared_ptr<own_video> get_videos() const;
   // may return nullptr!
   std::shared_ptr<desktop_sharing> get_desktop_sharing() const;
 

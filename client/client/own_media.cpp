@@ -24,7 +24,7 @@ rtc::google::audio_track *own_media::get_audio() const {
   return track.get();
 }
 
-own_video &own_media::get_videos() const { return *own_video_; }
+std::shared_ptr<own_video> own_media::get_videos() const { return own_video_; }
 
 std::shared_ptr<desktop_sharing> own_media::get_desktop_sharing() const {
   return desktop_sharing_;

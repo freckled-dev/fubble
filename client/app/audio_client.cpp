@@ -1,7 +1,7 @@
 #include "audio_client.hpp"
 #include "client/joiner.hpp"
+#include "client/leaver.hpp"
 #include "client/own_media.hpp"
-#include "client/own_video.hpp"
 #include "client/session_module.hpp"
 #include "utils/uuid.hpp"
 #include <boost/asio/io_context.hpp>
@@ -24,26 +24,50 @@ public:
     // TODO instancition adds the audio track to the tracks_adder. refactor!
     if (config_.send_audio)
       audio_settings->get_audio_tracks_volume();
-
-    // TODO refactor!
-    auto own_video_ = client::own_video::create();
-    core->get_session_module()->get_own_media()->set_own_video(
-        std::move(own_video_));
   }
 
 private:
-  int run() override {
+  boost::future<int> run() override {
     auto joiner = core->get_session_module()->get_joiner();
     client::joiner::parameters parameters{uuid::generate(), "fun"};
-    joiner->join(parameters);
+    joiner->join(parameters).then(executor, [this](auto result) {
+      try {
+        result.get();
+      } catch (...) {
+        run_promise.set_exception(boost::current_exception());
+        stop_execution();
+      }
+    });
     core->get_utils_executor_module()->get_io_context()->run();
-    return 0;
+    return run_promise.get_future();
+  }
+
+  void stop_execution() {
+    core->get_utils_executor_module()->get_io_context()->stop();
+  }
+
+  void stop() override {
+    core->get_session_module()->get_leaver()->leave().then([this](auto result) {
+      try {
+        result.get();
+        run_promise.set_value(0);
+      } catch (...) {
+        run_promise.set_exception(boost::current_exception());
+      }
+      stop_execution();
+    });
+  }
+
+  std::shared_ptr<client::core_module> get_core() const override {
+    return core;
   }
 
   const config config_;
+  boost::inline_executor executor;
   std::shared_ptr<client::core_module> core;
   std::shared_ptr<client::audio_module> audio;
   std::shared_ptr<client::audio_settings_module> audio_settings;
+  boost::promise<int> run_promise;
 };
 } // namespace
 
