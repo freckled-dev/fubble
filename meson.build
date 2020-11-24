@@ -10,10 +10,23 @@ else
   enable_servers = disabled
 endif
 
+cxx = meson.get_compiler('cpp')
+
 # debug PATH
 # error(run_command('sh', '-c', 'echo $PATH').stdout().strip())
 
 is_debug = get_option('debug')
+
+is_ios = false
+if host_machine.system() == 'darwin'
+  ios_test_code = '''#include <TargetConditionals.h>
+  #if ! TARGET_OS_IPHONE
+  #error "Not iOS/tvOS/watchOS/iPhoneSimulator"
+  #endif'''
+  if cxx.compiles(ios_test_code, name : 'building for iOS')
+    is_ios = true
+  endif
+endif
 
 if host_machine.system() == 'windows'
   # support windows 7 onwards
@@ -47,7 +60,6 @@ if host_machine.system() == 'windows'
     'dbgeng.lib',
     ]
 else
-  cxx = meson.get_compiler('cpp')
   if cxx.has_header('backtrace.h')
     message('using boost_stacktrace_backtrace')
     boost_dep_modules += [
@@ -56,12 +68,15 @@ else
     boost_dep_link_with += [
       '-lbacktrace',
       ]
-  else
-    # message('using boost_stacktrace_basic')
+  elif dependency('boost', modules : ['stacktrace_addr2line'], static: true, required: false).found()
     message('using boost_stacktrace_addr2line')
     boost_dep_modules += [
-      # 'stacktrace_basic',
       'stacktrace_addr2line',
+      ]
+  else
+    message('using boost_stacktrace_basic')
+    boost_dep_modules += [
+       'stacktrace_basic',
       ]
   endif
   boost_compile_args += [
@@ -108,38 +123,42 @@ gstreamer_webrtc_dep_pkg = dependency('gstreamer-webrtc-1.0',
   required : false, disabler : true)
 gstreamer_sdp_dep = dependency('gstreamer-sdp-1.0',
   required : false, disabler : true)
-qt5_clear_dep = dependency('qt5',
-  modules: ['Core', 'Gui', 'Qml', 'Quick', 'Widgets', 'Network', 'Multimedia',
-    'Svg', 'QuickControls2', 'Charts'], method: 'qmake',
-  version: '>=5.15.0')
-
-qt5_dep_dependencies = [qt5_clear_dep]
-qt5_dep_link_with = []
-if host_machine.system() == 'windows' and false
-  # needed because of static linking
-  # dependencies are from qt.pc
-  qt_pc_depends = ['zlib',
-    # 'openssl',
-    'libpcre2', 'glib', 'double-conversion', 'freetype2',
-    'harfbuzz', 'libjpeg', 'libpng', 'sqlite3', 'libpq', 'openal', 'zstd', 'opengl']
-  foreach dependency : qt_pc_depends
-    qt5_dep_dependencies += dependency(dependency)
-  endforeach
-  qt5_dep_link_with += []
-endif
-# `QT_NO_EMIT` is neccessary because google webrtc declares a method/function called `emit`
-qt5_dep_compile_args = ['-DQT_DEPRECATED_WARNINGS', '-DQT_NO_EMIT']
-if is_debug
-  qt5_dep_compile_args += '-DQT_QML_DEBUG=1'
-  message('enabled QT_QML_DEBUG')
+if get_option('with_ui')
+  qt5_clear_dep = dependency('qt5',
+    modules: ['Core', 'Gui', 'Qml', 'Quick', 'Widgets', 'Network', 'Multimedia',
+      'Svg', 'QuickControls2', 'Charts'], method: 'qmake',
+    version: '>=5.15.0')
+  
+  qt5_dep_dependencies = [qt5_clear_dep]
+  qt5_dep_link_with = []
+  if host_machine.system() == 'windows' and false
+    # needed because of static linking
+    # dependencies are from qt.pc
+    qt_pc_depends = ['zlib',
+      # 'openssl',
+      'libpcre2', 'glib', 'double-conversion', 'freetype2',
+      'harfbuzz', 'libjpeg', 'libpng', 'sqlite3', 'libpq', 'openal', 'zstd', 'opengl']
+    foreach dependency : qt_pc_depends
+      qt5_dep_dependencies += dependency(dependency)
+    endforeach
+    qt5_dep_link_with += []
+  endif
+  # `QT_NO_EMIT` is neccessary because google webrtc declares a method/function called `emit`
+  qt5_dep_compile_args = ['-DQT_DEPRECATED_WARNINGS', '-DQT_NO_EMIT']
+  if is_debug
+    qt5_dep_compile_args += '-DQT_QML_DEBUG=1'
+    message('enabled QT_QML_DEBUG')
+  else
+    message('disabled QT_QML_DEBUG')
+  endif
+  qt5_dep = declare_dependency(
+    compile_args: qt5_dep_compile_args,
+    dependencies: qt5_dep_dependencies,
+    link_with: qt5_dep_link_with
+    )
 else
-  message('disabled QT_QML_DEBUG')
+  qt5_dep = disabled
 endif
-qt5_dep = declare_dependency(
-  compile_args: qt5_dep_compile_args,
-  dependencies: qt5_dep_dependencies,
-  link_with: qt5_dep_link_with
-  )
 gstreamer_webrtc_dep = declare_dependency(
   dependencies : [gstreamer_webrtc_dep_pkg, gstreamer_sdp_dep,
     gstreamer_webrtc_dep_pkg
@@ -161,13 +180,23 @@ elif host_machine.system() == 'windows'
     link_args: ['d3d11.lib', 'dxgi.lib']
   )
 elif host_machine.system() == 'darwin'
-  webrtc_apple_deps = dependency('appleframeworks', modules : [
-    'foundation',
-    'iosurface',
-    'coreaudio',
-    'audiotoolbox',
-    'cocoa',
-    ])
+  if is_ios
+    webrtc_apple_deps = dependency('appleframeworks', modules : [
+      'audiotoolbox',
+      'avfoundation',
+      'coreaudio',
+      'foundation',
+      'uikit',
+      ])
+  else
+    webrtc_apple_deps = dependency('appleframeworks', modules : [
+      'audiotoolbox', # maybe not needed
+      'cocoa',
+      'coreaudio',
+      'foundation',
+      'iosurface',
+      ])
+  endif
   google_webrtc_system_deps = declare_dependency(
     dependencies: [webrtc_apple_deps]
     )
@@ -180,7 +209,7 @@ google_webrtc_dep = declare_dependency(
   )
 # ssl_dep = dependency('openssl', include_type: 'system', required: false)
 ssl_dep = google_webrtc_dep
-rectangle_bin_pack_dep = dependency('RectangleBinPack', include_type: 'system')
+rectangle_bin_pack_dep = dependency('RectangleBinPack', include_type: 'system', required: false, disabler: true)
 if host_machine.system() == 'linux'
   restinio_dep = dependency('restinio', include_type: 'system')
 else

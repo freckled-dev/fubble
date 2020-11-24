@@ -43,6 +43,9 @@ class FubbleConan(ConanFile):
         return ['C:\\Qt\\5.15.1\\msvc2019_64\\bin']
         # return self.deps_cpp_info["qt"].bin_paths
 
+    def _is_ios(self):
+            return self.settings.os == "iOS"
+
     def _get_build_type(self):
         return self.settings.get_safe("build_type", default="Release")
 
@@ -76,7 +79,8 @@ class FubbleConan(ConanFile):
         self.requires("gtest/1.10.0")
         self.requires("fmt/7.0.3")
         self.requires("google-webrtc/84")
-        self.requires("RectangleBinPack/1.0.2")
+        if not self._is_ios():
+            self.requires("RectangleBinPack/1.0.2")
         self.requires("fruit/3.6.0")
         if self.settings.os == "Linux":
             self.requires("restinio/0.6.11")
@@ -108,6 +112,10 @@ class FubbleConan(ConanFile):
         if self.settings.os == "Linux":
             with_servers = True
         with_ui = self.options.enable_ui == True
+        if self._is_ios():
+            with_servers = False
+            with_tests = False
+            with_ui = False
 
         # https://mesonbuild.com/Builtin-options.html#base-options
         meson_options = {'cpp_std': 'c++17', 'b_ndebug': 'if-release',
@@ -135,8 +143,12 @@ class FubbleConan(ConanFile):
             pkg_config_paths = [self.install_folder]
             if self.options.qt_install:
                 pkg_config_paths += [os.path.join(str(self.options.qt_install), 'lib/pkgconfig')]
+            meson_args = ['--fatal-meson-warnings']
+            if self._is_ios():
+                meson_args += ['--cross-file',
+                        os.path.join(self.source_folder, 'scripts', 'meson_cross', 'ios')]
             meson.configure( build_folder="meson", defs=meson_options,
-                    args=['--fatal-meson-warnings'],
+                    args=meson_args,
                     pkg_config_paths=pkg_config_paths
                     )
             build_args = []
