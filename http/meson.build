@@ -1,7 +1,7 @@
 http_sources = ['client.cpp', 'action.cpp', 'connection_creator.cpp', 
     'action_factory.cpp', 'connection_impl.cpp', 'ssl_upgrader.cpp',
     'client_module.cpp']
-http_dependencies = [utils_dep, fmt_dep, json_dep]
+http_dependencies = [utils_dep, fmt_dep, json_dep, ssl_dep]
 if host_machine.system() == 'windows'
   http_sources += 'add_windows_root_certs.cpp'
   crypt32_dep = meson.get_compiler('cpp').find_library('crypt32')
@@ -16,7 +16,7 @@ http = library('http',
 http_dep = declare_dependency(
   include_directories: '..',
   link_with: [http],
-  dependencies: [utils_dep, json_dep]
+  dependencies: [utils_dep, json_dep, ssl_dep]
   )
 install_headers([
   'logger.hpp', 'action_factory.hpp', 'add_windows_root_certs.hpp',

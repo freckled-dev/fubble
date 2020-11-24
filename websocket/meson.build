@@ -1,13 +1,13 @@
 websocket = library('websocket',
   ['acceptor.cpp', 'connection.cpp', 'connection_impl.cpp',
     'connection_creator.cpp', 'connector.cpp', 'caching_connection.cpp'],
-  dependencies: [boost_dep, fmt_dep, utils_dep, http_dep],
+  dependencies: [boost_dep, fmt_dep, utils_dep, http_dep, ssl_dep],
   install: true
   )
 websocket_dep = declare_dependency(
   include_directories: '..',
   link_with: [websocket],
-  dependencies: [boost_dep, utils_dep]
+  dependencies: [boost_dep, utils_dep, ssl_dep]
   )
 install_headers([
   'acceptor.hpp', 'connection_ptr.hpp', 'logger.hpp', 'connection.hpp',

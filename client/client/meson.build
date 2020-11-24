@@ -17,14 +17,14 @@ client = library('fubble',
     'desktop_sharing_module.cpp',
     ],
   dependencies: [boost_dep, utils_dep, signaling_client_dep,
-    webrtc_google_peer_dep, matrix_dep, fruit_dep, version_getter_dep],
+    webrtc_google_peer_dep, matrix_dep, version_getter_dep],
   include_directories: ['..'],
   install: true
   )
 client_dep = declare_dependency(
   link_with: [client],
   dependencies: [boost_dep, utils_dep, signaling_client_dep,
-    webrtc_google_peer_dep, fruit_dep, temporary_room_dep],
+    webrtc_google_peer_dep, temporary_room_dep],
   include_directories: ['..']
   )
 install_headers([

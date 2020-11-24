@@ -76,9 +76,11 @@ test('asio_signaling_thread test',
     ],
   timeout: 4)
 
-webrtc_google_capture_desktop_enumerator = executable('google_desktop_enumerator',
-  ['capture/desktop/enumerator_app.cpp'],
-  dependencies: [webrtc_google_peer_dep, fmt_dep],
-  install: true
-  )
+if not is_ios
+  webrtc_google_capture_desktop_enumerator = executable('google_desktop_enumerator',
+    ['capture/desktop/enumerator_app.cpp'],
+    dependencies: [webrtc_google_peer_dep, fmt_dep],
+    install: true
+    )
+endif
 

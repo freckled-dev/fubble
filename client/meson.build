@@ -1,7 +1,7 @@
 subdir('client')
-subdir('video_layout')
 if get_option('with_ui')
+  subdir('video_layout')
   subdir('ui')
-  subdir('app')
 endif
+subdir('app')
 

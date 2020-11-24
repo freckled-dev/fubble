@@ -23,7 +23,9 @@ parser.add_argument('--skip_qt', help='don\'t pull qt',
         action="store_true")
 parser.add_argument('--skip_export', help='don\'t export the package to conan',
         action="store_true")
-parser.add_argument('--profile', help='the conan profile to use', default='default')
+parser.add_argument('--profile', help='the conan profile to use', default=None)
+parser.add_argument('--profile_host', help='the conan profile:host to use', default=None)
+parser.add_argument('--profile_build', help='the conan profile:build to use', default=None)
 parser.add_argument('--use_asan', help='use address sanitizer \'memory,undefined\'', action="store_true")
 parser.add_argument('--treat_warnings_as_errors', help='warnings shall get handled as errors', action="store_true")
 args = parser.parse_args()
@@ -83,7 +85,13 @@ if not args.skip_install:
     install_args = ['conan', 'install',
         '--build', 'missing',
         '--install-folder', paths.dependencies_dir,
-        '--profile', args.profile]
+        ]
+    if args.profile:
+        install_args += ['--profile', args.profile]
+    if args.profile_build:
+        install_args += ['--profile:build', args.profile_build]
+    if args.profile_host:
+        install_args += ['--profile:host', args.profile_host]
     if platform.system() != "Windows":
         install_args += ['-o', 'fubble:qt_install={}'.format(qt_install)]
     if not args.skip_install_update:
