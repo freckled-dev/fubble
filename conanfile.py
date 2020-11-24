@@ -81,7 +81,6 @@ class FubbleConan(ConanFile):
         self.requires("google-webrtc/84")
         if not self._is_ios():
             self.requires("RectangleBinPack/1.0.2")
-        self.requires("fruit/3.6.0")
         if self.settings.os == "Linux":
             self.requires("restinio/0.6.11")
             # self.requires("qt/5.15.1@bincrafters/stable")

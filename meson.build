@@ -117,7 +117,6 @@ else
   gtest_dep = disabled
 endif
 fmt_dep = dependency('fmt', include_type: 'system')
-fruit_dep = dependency('fruit', include_type: 'system')
 json_dep = dependency('nlohmann_json')
 gstreamer_webrtc_dep_pkg = dependency('gstreamer-webrtc-1.0',
   required : false, disabler : true)
