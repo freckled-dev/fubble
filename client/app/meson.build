@@ -12,10 +12,18 @@ client_app = library('app_client', client_app_sources,
 client_app_dep = declare_dependency(link_with: [client_app],
   dependencies: [client_dep])
 
-audio_client = executable('audio_client', 
-  ['audio_client.cpp', 'audio_client_main.cpp'],
+audio_client_lib = shared_library('audio_client', 
+  ['audio_client.cpp'],
   dependencies: [client_app_dep],
-  install: true)
+  install: true
+  )
+audio_client_lib_dep = declare_dependency(link_with: [audio_client_lib],
+  dependencies: [client_app_dep])
+audio_client = executable('audio_client',
+  ['audio_client_main.cpp'],
+  dependencies: [audio_client_lib_dep],
+  install: true
+  )
 
 if get_option('with_ui')
   client_gui_sources = ['gui.cpp', 'utils_model.cpp', 'join_model.cpp',

@@ -42,20 +42,28 @@ build mac release:
     expire_in: 1 week
     when: always
 
-build ios release:
+.build ios: &build_ios
   tags:
     - macos
   stage: build
   variables:
     FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install
-  script:
-    - python3 scripts/make_build.py --profile_build scripts/conan_profiles/mac_release --profile_host scripts/conan_profiles/ios_release
   after_script:
     - mv -v ../fubble_build/meson/meson-logs .
   artifacts:
     untracked: true
     expire_in: 1 week
     when: always
+
+build ios release:
+  <<: *build_ios
+  script:
+    - python3 scripts/make_build.py --profile_build scripts/conan_profiles/mac_release --profile_host scripts/conan_profiles/ios_release
+
+build ios simulator release:
+  <<: *build_ios
+  script:
+    - python3 scripts/make_build.py --profile_build scripts/conan_profiles/mac_release --profile_host scripts/conan_profiles/ios_simulator_ios_release
 
 appimage:
   image: registry.gitlab.com/acof/fubble/ci/build_ubuntu_1804:v2

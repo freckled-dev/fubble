@@ -144,8 +144,16 @@ class FubbleConan(ConanFile):
                 pkg_config_paths += [os.path.join(str(self.options.qt_install), 'lib/pkgconfig')]
             meson_args = ['--fatal-meson-warnings']
             if self._is_ios():
-                meson_args += ['--cross-file',
-                        os.path.join(self.source_folder, 'scripts', 'meson_cross', 'ios')]
+                cross_files_dir = os.path.join(self.source_folder, 'scripts', 'meson_cross')
+                if self.settings.arch == "armv8":
+                    meson_args += ['--cross-file',
+                            os.path.join(cross_files_dir, 'ios')]
+                elif self.settings.arch == "x86_64":
+                    meson_args += ['--cross-file',
+                            os.path.join(cross_files_dir, 'ios_simulator')]
+                else:
+                    raise ConanInvalidConfiguration("not a valid iOS arch:" + settings.arch)
+
             meson.configure( build_folder="meson", defs=meson_options,
                     args=meson_args,
                     pkg_config_paths=pkg_config_paths

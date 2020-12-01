@@ -3,6 +3,8 @@ project('fubble', 'cpp',
   license: ['proprietary'],
   default_options : ['cpp_std=c++17'])
 
+add_project_arguments('-DBUILDING_FUBBLE', language: 'cpp')
+
 disabled = disabler()
 if get_option('with_servers')
   enable_servers = declare_dependency()
@@ -27,6 +29,7 @@ if host_machine.system() == 'darwin'
     is_ios = true
   endif
 endif
+
 
 if host_machine.system() == 'windows'
   # support windows 7 onwards
