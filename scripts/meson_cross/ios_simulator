@@ -17,7 +17,7 @@ has_function_hfkerhisadf = false
 
 [host_machine]
 system = 'darwin'
-cpu_family = 'arm'
+cpu_family = 'x86_64'
 cpu = 'x86_64'
 endian = 'little'
 
