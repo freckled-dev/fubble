@@ -63,7 +63,7 @@ build ios release:
 build ios simulator release:
   <<: *build_ios
   script:
-    - python3 scripts/make_build.py --profile_build scripts/conan_profiles/mac_release --profile_host scripts/conan_profiles/ios_simulator_ios_release
+    - python3 scripts/make_build.py --profile_build scripts/conan_profiles/mac_release --profile_host scripts/conan_profiles/ios_simulator_release
 
 appimage:
   image: registry.gitlab.com/acof/fubble/ci/build_ubuntu_1804:v2
