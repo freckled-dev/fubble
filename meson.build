@@ -130,7 +130,7 @@ if get_option('with_ui')
     modules: ['Core', 'Gui', 'Qml', 'Quick', 'Widgets', 'Network', 'Multimedia',
       'Svg', 'QuickControls2', 'Charts'], method: 'qmake',
     version: '>=5.15.0')
-  
+
   qt5_dep_dependencies = [qt5_clear_dep]
   qt5_dep_link_with = []
   if host_machine.system() == 'windows' and false
@@ -173,9 +173,16 @@ if host_machine.system() == 'linux'
   xfixes_dep = dependency('xfixes')
   xdamage_dep = dependency('xdamage')
   xrandr_dep = dependency('xrandr')
+  #glib_dep = dependency('glib-2.0')
+  #glib_dbus_dep = dependency('dbus-glib-1')
+  gio_dep = dependency('gio-2.0')
   google_webrtc_system_deps = declare_dependency(
     dependencies: [x11_dep, xext_dep, xcomposite_dep, xfixes_dep,
-      xdamage_dep, xrandr_dep]
+      xdamage_dep, xrandr_dep,
+      #glib_dep,
+      #glib_dbus_dep,
+      gio_dep,
+      ]
     )
 elif host_machine.system() == 'windows'
   google_webrtc_system_deps = declare_dependency(
