@@ -7,7 +7,7 @@
 namespace client {
 class desktop_sharing;
 class desktop_sharing_previews;
-class desktop_sharing_module {
+class FUBBLE_PUBLIC desktop_sharing_module {
 public:
   desktop_sharing_module(
       std::shared_ptr<utils::executor_module> executor_module,

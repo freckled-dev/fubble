@@ -14,6 +14,7 @@ utils_sources += vcs_tag(
   input: 'version.cpp.in', output: 'version.cpp', fallback: '1.0.0-undefined+deadbeef')
 utils = library('utils',
   utils_sources,
+  include_directories: ['..'], # TODO remove
   dependencies: [asio_dep, fmt_dep],
   install: true
   )

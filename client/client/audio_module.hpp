@@ -2,6 +2,7 @@
 #define UUID_2761C87F_C48F_4545_BAED_5C5E847EDF9C
 
 #include "rtc/google/module.hpp"
+#include "utils/export.hpp"
 
 namespace client {
 class audio_level_calculator_factory;
@@ -9,7 +10,7 @@ class own_audio_track;
 class add_audio_to_connection;
 class loopback_audio;
 class own_audio_information;
-class audio_module {
+class FUBBLE_PUBLIC audio_module {
 public:
   struct config {};
 

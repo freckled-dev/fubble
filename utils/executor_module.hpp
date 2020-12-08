@@ -1,6 +1,7 @@
 #ifndef UUID_341BB8DD_DF67_4277_ABD0_05A336C3EE40
 #define UUID_341BB8DD_DF67_4277_ABD0_05A336C3EE40
 
+#include "utils/export.hpp"
 #include <memory>
 
 namespace boost {
@@ -14,7 +15,7 @@ class executor;
 
 namespace utils {
 class timer_factory;
-class executor_module {
+class FUBBLE_PUBLIC executor_module {
 public:
   executor_module();
   virtual ~executor_module();

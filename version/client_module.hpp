@@ -6,7 +6,7 @@
 
 namespace version {
 class getter;
-class client_module {
+class FUBBLE_PUBLIC client_module {
 public:
   struct config {
     std::string host = "fubble.io";

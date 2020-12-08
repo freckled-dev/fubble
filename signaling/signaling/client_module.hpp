@@ -20,7 +20,7 @@ struct connect_information;
 } // namespace signaling::client
 namespace signaling {
 class json_message;
-class client_module {
+class FUBBLE_PUBLIC client_module {
 public:
   struct config {
     bool secure{true};
