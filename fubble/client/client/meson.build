@@ -18,14 +18,12 @@ client = library('fubble',
     ],
   dependencies: [boost_dep, utils_dep, signaling_client_dep,
     webrtc_google_peer_dep, matrix_dep, version_getter_dep],
-  include_directories: ['..'],
   install: true
   )
 client_dep = declare_dependency(
   link_with: [client],
   dependencies: [boost_dep, utils_dep, signaling_client_dep,
     webrtc_google_peer_dep, temporary_room_dep],
-  include_directories: ['..']
   )
 install_headers([
   'p2p/negotiation/ice_candidates.hpp', 'p2p/negotiation/offer_answer.hpp',

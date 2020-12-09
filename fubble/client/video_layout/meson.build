@@ -6,7 +6,6 @@ video_layout = library('video_layout_not_plugin', video_layout_sources, install:
 video_layout_dep = declare_dependency(
   link_with: [video_layout],
   dependencies: [utils_dep, webrtc_google_peer_dep, qt5_dep],
-  include_directories: ['..']
   )
 
 if host_machine.system() == 'linux'
@@ -20,7 +19,6 @@ if host_machine.system() == 'linux'
   video_layout_plugin_dep = declare_dependency(
     link_with: [video_layout_plugin],
     dependencies: [utils_dep, webrtc_google_peer_dep, qt5_dep],
-    include_directories: ['..']
     )
 endif
 

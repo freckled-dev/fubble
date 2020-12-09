@@ -12,7 +12,6 @@ webrtc_gstreamer_peer = library('webrtc_gstreamer_peer',
   install: true
   )
 webrtc_gstreamer_peer_dep = declare_dependency(
-  include_directories: '.',
   link_with: [webrtc_gstreamer_peer],
   dependencies: [boost_dep, webrtc_peer_dep, gstreamer_webrtc_dep]
   )

@@ -6,7 +6,6 @@ webrtc_peer = library('webrtc_peer',
   install: true
   )
 webrtc_peer_dep = declare_dependency(
-  include_directories: '.',
   link_with: [webrtc_peer],
   dependencies: [boost_dep, utils_dep]
   )

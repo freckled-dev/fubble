@@ -9,7 +9,6 @@ signaling = library('signaling',
   install: true
   )
 signaling_dep = declare_dependency(
-  include_directories: '.',
   link_with: [signaling],
   dependencies: [boost_dep, utils_dep, websocket_dep]
   )
@@ -52,7 +51,6 @@ signaling_client = library('signaling_client',
   install: true
   )
 signaling_client_dep = declare_dependency(
-  include_directories: '.',
   dependencies: [fmt_dep, websocket_dep, signaling_dep, boost_dep],
   link_with: [signaling_client]
   )
@@ -65,7 +63,6 @@ server = library('signaling_server',
   install: true
   )
 server_dep = declare_dependency(
-  include_directories: '.',
   link_with: [server],
   dependencies: [websocket_dep, signaling_dep]
   )

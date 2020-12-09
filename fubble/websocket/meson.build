@@ -5,7 +5,6 @@ websocket = library('websocket',
   install: true
   )
 websocket_dep = declare_dependency(
-  include_directories: '..',
   link_with: [websocket],
   dependencies: [boost_dep, utils_dep, ssl_dep]
   )

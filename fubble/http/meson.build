@@ -10,11 +10,9 @@ endif
 http = library('http',
   http_sources,
   dependencies: http_dependencies,
-  include_directories: ['..'],
   install: true
   )
 http_dep = declare_dependency(
-  include_directories: '..',
   link_with: [http],
   dependencies: [utils_dep, json_dep, ssl_dep]
   )

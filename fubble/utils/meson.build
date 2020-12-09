@@ -14,12 +14,12 @@ utils_sources += vcs_tag(
   input: 'version.cpp.in', output: 'version.cpp', fallback: '1.0.0-undefined+deadbeef')
 utils = library('utils',
   utils_sources,
-  include_directories: ['..'], # TODO remove
+  include_directories: ['../..'],
   dependencies: [asio_dep, fmt_dep],
   install: true
   )
 utils_dep = declare_dependency(
-  include_directories: ['.', '..'], # TODO remove `'.'`
+  include_directories: ['../..'],
   link_with: [utils],
   dependencies: [asio_dep]
   )

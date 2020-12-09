@@ -5,11 +5,9 @@ matrix = library('matrix',
     'module.cpp', 'client_synchronizer.cpp',
     ],
   dependencies: [fmt_dep, http_dep],
-  include_directories: ['..'],
   install: true
   )
 matrix_dep = declare_dependency(
-  include_directories: '..',
   link_with: [matrix],
   dependencies: [utils_dep, http_dep]
   )

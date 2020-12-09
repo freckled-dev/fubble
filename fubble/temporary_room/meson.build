@@ -4,13 +4,11 @@ temporary_room_rooms = library('temporary_room_rooms',
     'net/server.cpp', 'net/client.cpp', 'net/server.cpp', 'net/acceptor.cpp',
     'server/application.cpp', 'client_module.cpp',
     ],
-  include_directories: '..',
   dependencies: [fmt_dep, json_dep, utils_dep, matrix_dep],
   link_with: [],
   install: true
   )
 temporary_room_dep = declare_dependency(
-  include_directories: '..',
   link_with: [temporary_room_rooms],
   dependencies: [boost_dep, json_dep, utils_dep, http_dep, matrix_dep]
   )

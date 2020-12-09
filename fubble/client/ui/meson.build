@@ -12,6 +12,5 @@ ui = library('ui', ui_sources,
 ui_dep = declare_dependency(
   link_with: [ui],
   dependencies: [utils_dep, webrtc_google_peer_dep, qt5_dep],
-  include_directories: ['..']
   )
 
