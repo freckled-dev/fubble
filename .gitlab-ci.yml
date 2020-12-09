@@ -34,7 +34,8 @@ build mac release:
   variables:
     FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install
   script:
-    - > python3 scripts/make_build.py
+    - >
+      python3 scripts/make_build.py
       --profile scripts/conan_profiles/mac_release
       --skip_export
   after_script:
@@ -60,7 +61,8 @@ build mac release:
 build ios release:
   <<: *build_ios
   script:
-    - > python3 scripts/make_build.py
+    - >
+      python3 scripts/make_build.py
       --profile_build scripts/conan_profiles/mac_release
       --profile_host scripts/conan_profiles/ios_release
       --skip_export
@@ -68,7 +70,8 @@ build ios release:
 build ios simulator release:
   <<: *build_ios
   script:
-    - > python3 scripts/make_build.py
+    - >
+      python3 scripts/make_build.py
       --profile_build scripts/conan_profiles/mac_release
       --profile_host scripts/conan_profiles/ios_simulator_release
       --skip_export
@@ -115,14 +118,16 @@ appimage:
 build windows release:
   <<: *build_windows
   script:
-    - > python scripts/make_build.py
+    - >
+      python scripts/make_build.py
       --profile scripts/conan_profiles/windows_release
       --skip_export
 
 build windows debug:
   <<: *build_windows
   script:
-    - > python scripts/make_build.py
+    - >
+      python scripts/make_build.py
       --profile scripts/conan_profiles/windows_debug
       --skip_export
   when: manual
