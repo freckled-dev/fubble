@@ -4,12 +4,12 @@
 #include "client/session_module.hpp"
 #include "fubble/http/client_module.hpp"
 #include "fubble/matrix/module.hpp"
+#include "fubble/rtc/google/module.hpp"
 #include "fubble/signaling/client_module.hpp"
+#include "fubble/temporary_room/client_module.hpp"
 #include "fubble/utils/executor_module.hpp"
 #include "fubble/utils/export.hpp"
 #include "fubble/version/client_module.hpp"
-#include "rtc/google/module.hpp"
-#include "temporary_room/client_module.hpp"
 
 namespace client {
 class crash_catcher;

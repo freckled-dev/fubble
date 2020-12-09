@@ -1,6 +1,6 @@
 #include "client_module.hpp"
 #include "fubble/http/client.hpp"
-#include "temporary_room/net/client.hpp"
+#include "fubble/temporary_room/net/client.hpp"
 
 using namespace temporary_room;
 

@@ -1,14 +1,14 @@
 #include "fubble/http/action_factory.hpp"
+#include "fubble/http/connection_creator.hpp"
 #include "fubble/matrix/authentification.hpp"
 #include "fubble/matrix/client_factory.hpp"
 #include "fubble/matrix/testing.hpp"
+#include "fubble/temporary_room/net/client.hpp"
+#include "fubble/temporary_room/server/application.hpp"
 #include "fubble/utils/executor_asio.hpp"
 #include "fubble/utils/uuid.hpp"
-#include "http/connection_creator.hpp"
 #include "matrix_rooms_factory_adapter.hpp"
 #include "server.hpp"
-#include "temporary_room/net/client.hpp"
-#include "temporary_room/server/application.hpp"
 #include <gtest/gtest.h>
 
 namespace {

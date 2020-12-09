@@ -2,7 +2,7 @@
 #define UUID_E928967D_952B_4293_A853_EBE17F6B4F59
 
 #include "fubble/matrix/client.hpp"
-#include "temporary_room/rooms/rooms.hpp"
+#include "fubble/temporary_room/rooms/rooms.hpp"
 
 namespace temporary_room::server {
 // TODO there's a bug. if there is an invited user, but no joined ones, the room

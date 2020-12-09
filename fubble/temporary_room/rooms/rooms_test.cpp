@@ -1,5 +1,5 @@
+#include "fubble/utils/uuid.hpp"
 #include "rooms.hpp"
-#include "uuid.hpp"
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 

@@ -1,7 +1,7 @@
 #include "asio_signaling_thread.hpp"
 #include "fubble/utils/joined_thread.hpp"
+#include "fubble/utils/wait_for_event.hpp"
 #include "test_peer.hpp"
-#include "wait_for_event.hpp"
 #include <boost/asio/executor.hpp>
 #include <boost/asio/executor_work_guard.hpp>
 #include <boost/asio/io_context.hpp>

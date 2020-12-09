@@ -2,7 +2,7 @@
 #define UUID_C2962803_5917_42AB_8D8A_0BE1127565FD
 
 #include "fubble/matrix/testing.hpp"
-#include "temporary_room/server/application.hpp"
+#include "fubble/temporary_room/server/application.hpp"
 
 namespace temporary_room::testing {
 struct server {

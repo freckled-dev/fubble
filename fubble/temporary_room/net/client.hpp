@@ -1,7 +1,7 @@
 #ifndef UUID_8CFB5B2F_0E59_4213_AE28_1EEF84B422AC
 #define UUID_8CFB5B2F_0E59_4213_AE28_1EEF84B422AC
 
-#include "temporary_room/logger.hpp"
+#include "fubble/temporary_room/logger.hpp"
 #include <boost/beast/http/status.hpp>
 #include <boost/exception/exception.hpp>
 #include <boost/thread/executors/inline_executor.hpp>

@@ -1,9 +1,9 @@
-#include "audio_devices.hpp"
-#include "data_channel.hpp"
+#include "fubble/rtc/google/audio_devices.hpp"
+#include "fubble/rtc/google/data_channel.hpp"
+#include "fubble/rtc/google/video_track.hpp"
+#include "fubble/rtc/google/video_track_source.hpp"
+#include "fubble/utils/wait_for_event.hpp"
 #include "test_peer.hpp"
-#include "video_track.hpp"
-#include "video_track_source.hpp"
-#include "wait_for_event.hpp"
 #include <fmt/format.h>
 #include <gtest/gtest.h>
 #include <thread>
