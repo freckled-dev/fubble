@@ -1,7 +1,7 @@
 #ifndef UUID_462A443A_5A30_4E50_AFBB_10BDC2F871F9
 #define UUID_462A443A_5A30_4E50_AFBB_10BDC2F871F9
 
-#include "logging/logger.hpp"
+#include "fubble/utils/logging/logger.hpp"
 
 namespace matrix {
 class logger : public logging::module_logger {

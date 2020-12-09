@@ -5,7 +5,7 @@ extern "C" {
 #define GST_USE_UNSTABLE_API
 #include <gst/webrtc/webrtc.h>
 }
-#include "logging/logger.hpp"
+#include "fubble/utils/logging/logger.hpp"
 #include <boost/assert.hpp>
 #include <boost/log/keywords/auto_flush.hpp>
 #include <boost/log/keywords/format.hpp>

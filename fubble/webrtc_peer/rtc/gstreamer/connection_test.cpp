@@ -1,5 +1,5 @@
 #include "connection.hpp"
-#include "logging/logger.hpp"
+#include "fubble/utils/logging/logger.hpp"
 #include "rtc/gstreamer/video_track.hpp"
 #include <boost/signals2/connection.hpp>
 #include <boost/thread/executors/executor_adaptor.hpp>
@@ -299,4 +299,3 @@ TEST_F(GstreamerConnection, Connection) {
   connection_creator();
 }
 #endif
-

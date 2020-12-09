@@ -1,8 +1,8 @@
 #ifndef RTC_GSTREAMER_CONNECTION_HPP
 #define RTC_GSTREAMER_CONNECTION_HPP
 
+#include "fubble/utils/logging/logger.hpp"
 #include "gst_element_deleter.hpp"
-#include "logging/logger.hpp"
 #include "rtc/connection.hpp"
 extern "C" {
 #define GST_USE_UNSTABLE_API

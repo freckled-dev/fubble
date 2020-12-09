@@ -1,7 +1,7 @@
 #ifndef UTILS_EXIT_SIGNALS_HPP
 #define UTILS_EXIT_SIGNALS_HPP
 
-#include "logging/logger.hpp"
+#include "fubble/utils/logging/logger.hpp"
 #include <boost/asio/executor.hpp>
 
 class exit_signals {

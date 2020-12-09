@@ -1,6 +1,6 @@
 #include "audio_client.hpp"
-#include "logging/initialser.hpp"
-#include "logging/logger.hpp"
+#include "fubble/utils/logging/initialser.hpp"
+#include "fubble/utils/logging/logger.hpp"
 #include "rtc/google/log_webrtc_to_logging.hpp"
 #include "utils/exit_signals.hpp"
 #include "utils/options_adder.hpp"

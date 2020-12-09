@@ -1,4 +1,4 @@
-#include "logging/initialser.hpp"
+#include "fubble/utils/logging/initialser.hpp"
 #include <gtest/gtest.h>
 
 int main(int argc, char *argv[]) {

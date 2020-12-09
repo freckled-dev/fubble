@@ -1,4 +1,4 @@
-#include "logging/logger.hpp"
+#include "fubble/utils/logging/logger.hpp"
 #include "testing.hpp"
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/beast/core.hpp>
@@ -20,7 +20,7 @@ const std::string target_prefix = matrix::testing::target_prefix;
 const std::string agent = BOOST_BEAST_VERSION_STRING;
 #else
 const std::string agent =
-    "curl";       // with curl matrix returns a pretty-printed json
+    "curl"; // with curl matrix returns a pretty-printed json
 #endif
 #if 1
 int version = 11; // http 1.1
