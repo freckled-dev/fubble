@@ -1,7 +1,7 @@
 #ifndef UUID_359FE6BC_8226_4460_8FB3_959DECA38C39
 #define UUID_359FE6BC_8226_4460_8FB3_959DECA38C39
 
-#include "client/logger.hpp"
+#include "fubble/client/logger.hpp"
 #include "participant.hpp"
 
 namespace client {

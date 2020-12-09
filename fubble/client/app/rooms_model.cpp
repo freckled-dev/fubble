@@ -1,6 +1,6 @@
 #include "rooms_model.hpp"
-#include "client/room.hpp"
-#include "client/rooms.hpp"
+#include "fubble/client/room.hpp"
+#include "fubble/client/rooms.hpp"
 #include "model_creator.hpp"
 #include "room_model.hpp"
 

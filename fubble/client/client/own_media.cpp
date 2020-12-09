@@ -1,8 +1,8 @@
 #include "own_media.hpp"
-#include "client/desktop_sharing.hpp"
+#include "fubble/client/desktop_sharing.hpp"
+#include "fubble/rtc/google/audio_track.hpp"
 #include "loopback_audio.hpp"
 #include "own_audio_track.hpp"
-#include "fubble/rtc/google/audio_track.hpp"
 
 using namespace client;
 

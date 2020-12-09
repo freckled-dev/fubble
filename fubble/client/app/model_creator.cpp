@@ -1,5 +1,5 @@
 #include "model_creator.hpp"
-#include "client/audio_device_settings.hpp"
+#include "fubble/client/audio_device_settings.hpp"
 #include "participant_model.hpp"
 #include "participants_model.hpp"
 #include "room_model.hpp"

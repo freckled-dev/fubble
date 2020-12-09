@@ -1,5 +1,5 @@
 #include "crash_catcher.hpp"
-#include "client/logger.hpp"
+#include "fubble/client/logger.hpp"
 #include <boost/filesystem.hpp>
 #include <boost/stacktrace.hpp>
 #include <fstream>

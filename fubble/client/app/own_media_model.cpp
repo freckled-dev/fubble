@@ -1,11 +1,11 @@
 #include "own_media_model.hpp"
-#include "client/audio_device_settings.hpp"
-#include "client/audio_tracks_volume.hpp"
-#include "client/own_audio_information.hpp"
-#include "client/own_media.hpp"
-#include "client/own_microphone_tester.hpp"
-#include "client/ui/frame_provider_google_video_frame.hpp"
-#include "client/video_settings.hpp"
+#include "fubble/client/audio_device_settings.hpp"
+#include "fubble/client/audio_tracks_volume.hpp"
+#include "fubble/client/own_audio_information.hpp"
+#include "fubble/client/own_media.hpp"
+#include "fubble/client/own_microphone_tester.hpp"
+#include "fubble/client/ui/frame_provider_google_video_frame.hpp"
+#include "fubble/client/video_settings.hpp"
 
 using namespace client;
 

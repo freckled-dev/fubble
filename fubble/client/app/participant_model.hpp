@@ -1,7 +1,7 @@
 #ifndef UUID_912B7A62_19DE_45A9_B92E_0FC0046CE8C5
 #define UUID_912B7A62_19DE_45A9_B92E_0FC0046CE8C5
 
-#include "client/logger.hpp"
+#include "fubble/client/logger.hpp"
 #include "fubble/rtc/google/audio_source_ptr.hpp"
 #include "fubble/rtc/google/video_source_ptr.hpp"
 #include "ui/frame_provider_google_video_frame.hpp"

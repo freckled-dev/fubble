@@ -1,9 +1,9 @@
 #ifndef UUID_879851E1_6012_47BE_AF61_ECB95660B186
 #define UUID_879851E1_6012_47BE_AF61_ECB95660B186
 
-#include "client/logger.hpp"
-#include "participant.hpp"
+#include "fubble/client/logger.hpp"
 #include "fubble/rtc/track_ptr.hpp"
+#include "participant.hpp"
 
 namespace rtc::google {
 class audio_track_sink;

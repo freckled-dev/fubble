@@ -1,7 +1,7 @@
 #ifndef UUID_FC8EB317_730A_47D7_999E_DFF57083EA87
 #define UUID_FC8EB317_730A_47D7_999E_DFF57083EA87
 
-#include "client/logger.hpp"
+#include "fubble/client/logger.hpp"
 #include "participants_model.hpp"
 #include <QAbstractListModel>
 #include <deque>

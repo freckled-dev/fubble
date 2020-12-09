@@ -1,7 +1,7 @@
 #include "video_module.hpp"
-#include "client/add_video_to_connection.hpp"
-#include "client/own_video.hpp"
-#include "client/video_settings.hpp"
+#include "fubble/client/add_video_to_connection.hpp"
+#include "fubble/client/own_video.hpp"
+#include "fubble/client/video_settings.hpp"
 #include "fubble/rtc/google/capture/video/enumerator.hpp"
 #include "fubble/utils/timer.hpp"
 

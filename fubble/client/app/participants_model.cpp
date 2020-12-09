@@ -1,7 +1,7 @@
 #include "participants_model.hpp"
-#include "client/bot_participant.hpp"
-#include "client/participant.hpp"
-#include "client/participants.hpp"
+#include "fubble/client/bot_participant.hpp"
+#include "fubble/client/participant.hpp"
+#include "fubble/client/participants.hpp"
 #include "model_creator.hpp"
 #include <boost/assert.hpp>
 #include <fmt/format.h>

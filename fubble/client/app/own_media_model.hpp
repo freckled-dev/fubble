@@ -1,7 +1,7 @@
 #ifndef UUID_04C6146E_9EA8_4A08_B962_D5AEEEEC9087
 #define UUID_04C6146E_9EA8_4A08_B962_D5AEEEEC9087
 
-#include "client/logger.hpp"
+#include "fubble/client/logger.hpp"
 #include <QObject>
 #include <boost/signals2/connection.hpp>
 #include <vector>

@@ -1,7 +1,7 @@
 #ifndef UUID_93601485_1C7B_4CDE_9303_1CB02F7FBA15
 #define UUID_93601485_1C7B_4CDE_9303_1CB02F7FBA15
 
-#include "client/logger.hpp"
+#include "fubble/client/logger.hpp"
 #include <boost/signals2/signal.hpp>
 #include <boost/thread/executors/inline_executor.hpp>
 #include <boost/thread/future.hpp>

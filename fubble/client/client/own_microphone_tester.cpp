@@ -1,6 +1,6 @@
 #include "own_microphone_tester.hpp"
-#include "client/audio_tracks_volume.hpp"
-#include "client/loopback_audio.hpp"
+#include "fubble/client/audio_tracks_volume.hpp"
+#include "fubble/client/loopback_audio.hpp"
 
 using namespace client;
 

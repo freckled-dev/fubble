@@ -1,7 +1,7 @@
 #ifndef UUID_5D0F470B_C872_46EB_8804_1972618A74E6
 #define UUID_5D0F470B_C872_46EB_8804_1972618A74E6
 
-#include "client/logger.hpp"
+#include "fubble/client/logger.hpp"
 #include <QObject>
 #include <boost/thread/executors/inline_executor.hpp>
 #include <boost/thread/future.hpp>

@@ -1,8 +1,8 @@
 #ifndef UUID_5ACD0027_5192_4804_B778_E80244B84D45
 #define UUID_5ACD0027_5192_4804_B778_E80244B84D45
 
-#include "client/logger.hpp"
-#include "client/participant.hpp"
+#include "fubble/client/logger.hpp"
+#include "fubble/client/participant.hpp"
 
 namespace client {
 class peer_creator;

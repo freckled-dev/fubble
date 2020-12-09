@@ -1,7 +1,7 @@
 #ifndef UUID_D2EB99EB_418F_4447_BCF0_879740D9D162
 #define UUID_D2EB99EB_418F_4447_BCF0_879740D9D162
 
-#include "client/logger.hpp"
+#include "fubble/client/logger.hpp"
 #include "fubble/rtc/connection.hpp"
 #include "fubble/rtc/google/factory.hpp"
 #include "rtc/google/capture/video/device.hpp"

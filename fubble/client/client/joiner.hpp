@@ -1,7 +1,7 @@
 #ifndef UUID_B27E182A_AF56_48E7_B9B3_428F3B393E2B
 #define UUID_B27E182A_AF56_48E7_B9B3_428F3B393E2B
 
-#include "client/logger.hpp"
+#include "fubble/client/logger.hpp"
 #include "fubble/utils/exception.hpp"
 #include "fubble/version/getter.hpp"
 #include <boost/thread/executors/inline_executor.hpp>

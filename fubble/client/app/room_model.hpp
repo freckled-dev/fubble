@@ -2,7 +2,7 @@
 #define UUID_3B809525_60BA_4E59_9647_52C23E7A52EE
 
 #include "chat_model.hpp"
-#include "client/logger.hpp"
+#include "fubble/client/logger.hpp"
 #include "participant_model.hpp"
 #include "participants_model.hpp"
 #include "participants_with_video_model.hpp"

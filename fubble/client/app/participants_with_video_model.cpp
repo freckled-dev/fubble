@@ -1,7 +1,7 @@
 #include "participants_with_video_model.hpp"
-#include "client/bot_participant.hpp"
-#include "client/own_participant.hpp"
-#include "client/participant.hpp"
+#include "fubble/client/bot_participant.hpp"
+#include "fubble/client/own_participant.hpp"
+#include "fubble/client/participant.hpp"
 #include "participants_model.hpp"
 #include <boost/assert.hpp>
 #include <fmt/format.h>
@@ -17,8 +17,8 @@ participants_with_video_model::participants_with_video_model(
           &participants_with_video_model::on_participants_about_to_be_removed);
 }
 
-int participants_with_video_model::rowCount([
-    [maybe_unused]] const QModelIndex &parent) const {
+int participants_with_video_model::rowCount(
+    [[maybe_unused]] const QModelIndex &parent) const {
   auto result = participants_container.size();
   return static_cast<int>(result);
 }
@@ -106,4 +106,3 @@ participants_with_video_model::find(const std::string &id) {
                    [&](auto check) { return check->get_id() == id; });
   return result;
 }
-

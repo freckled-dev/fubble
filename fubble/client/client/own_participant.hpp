@@ -1,8 +1,8 @@
 #ifndef UUID_E1835F9B_FE3B_4435_9CB4_0660FB771C06
 #define UUID_E1835F9B_FE3B_4435_9CB4_0660FB771C06
 
-#include "client/desktop_sharing.hpp"
-#include "client/participant.hpp"
+#include "fubble/client/desktop_sharing.hpp"
+#include "fubble/client/participant.hpp"
 
 namespace client {
 class own_media;

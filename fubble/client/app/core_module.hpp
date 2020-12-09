@@ -1,7 +1,7 @@
 #ifndef UUID_7D8D7FBB_D9E0_4A16_911E_E633E18ACFCF
 #define UUID_7D8D7FBB_D9E0_4A16_911E_E633E18ACFCF
 
-#include "client/session_module.hpp"
+#include "fubble/client/session_module.hpp"
 #include "fubble/http/client_module.hpp"
 #include "fubble/matrix/module.hpp"
 #include "fubble/rtc/google/module.hpp"

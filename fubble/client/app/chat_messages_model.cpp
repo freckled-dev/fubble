@@ -1,10 +1,10 @@
 #include "chat_messages_model.hpp"
-#include "client/bot_participant.hpp"
-#include "client/chat.hpp"
-#include "client/participant.hpp"
-#include "client/participants.hpp"
-#include "client/room.hpp"
-#include "client/users.hpp"
+#include "fubble/client/bot_participant.hpp"
+#include "fubble/client/chat.hpp"
+#include "fubble/client/participant.hpp"
+#include "fubble/client/participants.hpp"
+#include "fubble/client/room.hpp"
+#include "fubble/client/users.hpp"
 
 using namespace client;
 

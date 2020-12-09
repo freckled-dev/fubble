@@ -1,8 +1,8 @@
 #ifndef UUID_FD8A9B65_2453_4AB1_A862_41616BC96172
 #define UUID_FD8A9B65_2453_4AB1_A862_41616BC96172
 
-#include "client/logger.hpp"
-#include "client/track_adder.hpp"
+#include "fubble/client/logger.hpp"
+#include "fubble/client/track_adder.hpp"
 #include "fubble/rtc/google/capture/audio/device.hpp"
 #include "fubble/rtc/google/factory.hpp"
 

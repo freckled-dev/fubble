@@ -1,10 +1,10 @@
 #ifndef CLIENT_PEER_HPP
 #define CLIENT_PEER_HPP
 
-#include "client/logger.hpp"
+#include "fubble/client/logger.hpp"
+#include "fubble/signaling/client/client.hpp"
 #include "p2p/negotiation/ice_candidates.hpp"
 #include "p2p/negotiation/offer_answer.hpp"
-#include "fubble/signaling/client/client.hpp"
 #include <memory>
 
 // TODO move to p2p

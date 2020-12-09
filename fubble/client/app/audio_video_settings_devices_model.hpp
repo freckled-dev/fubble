@@ -1,7 +1,7 @@
 #ifndef UUID_2C19AB1C_E61F_4B57_A0FA_7E028A3C62F3
 #define UUID_2C19AB1C_E61F_4B57_A0FA_7E028A3C62F3
 
-#include "client/audio_device_settings.hpp"
+#include "fubble/client/audio_device_settings.hpp"
 #include "fubble/rtc/google/audio_devices.hpp"
 #include "fubble/rtc/google/capture/video/enumerator.hpp"
 #include "rtc/google/capture/video/device.hpp"

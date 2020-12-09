@@ -1,7 +1,7 @@
 #ifndef UUID_3F220ACF_9A73_441D_911A_A2585AD9619D
 #define UUID_3F220ACF_9A73_441D_911A_A2585AD9619D
 
-#include "client/logger.hpp"
+#include "fubble/client/logger.hpp"
 
 namespace rtc::google {
 class audio_devices;

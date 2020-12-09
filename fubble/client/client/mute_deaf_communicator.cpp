@@ -1,5 +1,5 @@
 #include "mute_deaf_communicator.hpp"
-#include "client/room.hpp"
+#include "fubble/client/room.hpp"
 #include "fubble/matrix/room.hpp"
 #include "fubble/matrix/room_states.hpp"
 

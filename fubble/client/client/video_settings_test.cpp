@@ -1,6 +1,6 @@
-#include "client/add_video_to_connection.hpp"
-#include "client/tracks_adder.hpp"
-#include "client/video_settings.hpp"
+#include "fubble/client/add_video_to_connection.hpp"
+#include "fubble/client/tracks_adder.hpp"
+#include "fubble/client/video_settings.hpp"
 #include "fubble/rtc/google/capture/video/device.hpp"
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>

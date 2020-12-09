@@ -1,8 +1,8 @@
 #include "audio_client.hpp"
-#include "client/joiner.hpp"
-#include "client/leaver.hpp"
-#include "client/own_media.hpp"
-#include "client/session_module.hpp"
+#include "fubble/client/joiner.hpp"
+#include "fubble/client/leaver.hpp"
+#include "fubble/client/own_media.hpp"
+#include "fubble/client/session_module.hpp"
 #include "fubble/utils/uuid.hpp"
 #include <boost/asio/io_context.hpp>
 

@@ -1,7 +1,7 @@
 #include "video_settings.hpp"
-#include "client/add_video_to_connection.hpp"
-#include "client/own_media.hpp"
-#include "client/tracks_adder.hpp"
+#include "fubble/client/add_video_to_connection.hpp"
+#include "fubble/client/own_media.hpp"
+#include "fubble/client/tracks_adder.hpp"
 #include "fubble/rtc/google/capture/video/device.hpp"
 #include <fmt/format.h>
 

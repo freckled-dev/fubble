@@ -1,7 +1,7 @@
 #ifndef UUID_56991B82_F65A_4091_B353_801DDE773A7E
 #define UUID_56991B82_F65A_4091_B353_801DDE773A7E
 
-#include "client/session_module.hpp"
+#include "fubble/client/session_module.hpp"
 #include "fubble/rtc/google/module.hpp"
 #include "fubble/utils/executor_module.hpp"
 #include <chrono>

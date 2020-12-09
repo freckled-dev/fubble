@@ -1,7 +1,7 @@
 #ifndef UUID_44723430_4624_4131_9BF4_5C1475643AB0
 #define UUID_44723430_4624_4131_9BF4_5C1475643AB0
 
-#include "client/logger.hpp"
+#include "fubble/client/logger.hpp"
 #include "fubble/rtc/google/video_source.hpp"
 #include <QtMultimedia/qabstractvideosurface.h>
 #include <QtMultimedia/qvideosurfaceformat.h>

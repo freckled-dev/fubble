@@ -1,7 +1,7 @@
 #ifndef UUID_8BB23974_D591_472A_A225_ABDB2CC6DB2A
 #define UUID_8BB23974_D591_472A_A225_ABDB2CC6DB2A
 
-#include "client/logger.hpp"
+#include "fubble/client/logger.hpp"
 #include <boost/signals2/signal.hpp>
 
 namespace client {

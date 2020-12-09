@@ -1,7 +1,7 @@
 #ifndef UUID_3AF1EB16_2810_4C69_9A46_59A98C68EAB5
 #define UUID_3AF1EB16_2810_4C69_9A46_59A98C68EAB5
 
-#include "client/logger.hpp"
+#include "fubble/client/logger.hpp"
 #include <boost/signals2/signal.hpp>
 
 namespace rtc::google {

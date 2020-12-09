@@ -1,5 +1,5 @@
 #include "desktop_sharing_module.hpp"
-#include "client/desktop_sharing.hpp"
+#include "fubble/client/desktop_sharing.hpp"
 
 using namespace client;
 

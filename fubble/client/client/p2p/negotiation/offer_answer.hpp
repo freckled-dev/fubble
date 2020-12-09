@@ -1,7 +1,7 @@
 #ifndef CLIENT_P2P_NEGOTIATION_OFFER_ANSWER_HPP
 #define CLIENT_P2P_NEGOTIATION_OFFER_ANSWER_HPP
 
-#include "client/logger.hpp"
+#include "fubble/client/logger.hpp"
 #include "fubble/rtc/connection.hpp"
 #include "fubble/signaling/client/client.hpp"
 #include <boost/thread/executors/executor.hpp>

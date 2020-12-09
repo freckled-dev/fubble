@@ -1,5 +1,5 @@
-#include "client/add_data_channel.hpp"
-#include "client/test_client.hpp"
+#include "fubble/client/add_data_channel.hpp"
+#include "fubble/client/test_client.hpp"
 #include "fubble/utils/uuid.hpp"
 #include "fubble/utils/wait_for_event.hpp"
 #include "test_executor.hpp"

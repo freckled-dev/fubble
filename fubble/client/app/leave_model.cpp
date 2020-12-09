@@ -1,6 +1,6 @@
 #include "leave_model.hpp"
-#include "client/leaver.hpp"
-#include "client/room.hpp"
+#include "fubble/client/leaver.hpp"
+#include "fubble/client/room.hpp"
 
 using namespace client;
 

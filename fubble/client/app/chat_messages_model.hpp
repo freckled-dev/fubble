@@ -1,7 +1,7 @@
 #ifndef UUID_FC90FCBC_7D76_4157_AB90_EA2E070E85BC
 #define UUID_FC90FCBC_7D76_4157_AB90_EA2E070E85BC
 
-#include "client/logger.hpp"
+#include "fubble/client/logger.hpp"
 #include <QAbstractItemModel>
 #include <QtCore/QDateTime>
 #include <boost/signals2/connection.hpp>

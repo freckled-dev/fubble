@@ -1,10 +1,10 @@
 #ifndef UUID_F7A69AED_205D_4411_BD0C_BDC8A16E3D4D
 #define UUID_F7A69AED_205D_4411_BD0C_BDC8A16E3D4D
 
-#include "client/add_video_to_connection.hpp"
-#include "client/leaver.hpp"
-#include "client/tracks_adder.hpp"
-#include "client/video_settings.hpp"
+#include "fubble/client/add_video_to_connection.hpp"
+#include "fubble/client/leaver.hpp"
+#include "fubble/client/tracks_adder.hpp"
+#include "fubble/client/video_settings.hpp"
 #include "fubble/rtc/google/capture/desktop/capturer.hpp"
 #include <boost/signals2/signal.hpp>
 #include <functional>

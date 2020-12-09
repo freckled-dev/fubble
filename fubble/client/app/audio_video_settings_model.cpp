@@ -1,8 +1,8 @@
 #include "audio_video_settings_model.hpp"
 #include "audio_video_settings_devices_model.hpp"
-#include "client/ui/frame_provider_google_video_device.hpp"
-#include "client/video_settings.hpp"
 #include "error_model.hpp"
+#include "fubble/client/ui/frame_provider_google_video_device.hpp"
+#include "fubble/client/video_settings.hpp"
 #include "fubble/utils/timer.hpp"
 
 using namespace client;

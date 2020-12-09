@@ -1,7 +1,7 @@
-#include "client/add_audio_to_connection.hpp"
-#include "client/audio_tracks_volume.hpp"
-#include "client/mute_deaf_communicator.hpp"
-#include "client/test_client.hpp"
+#include "fubble/client/add_audio_to_connection.hpp"
+#include "fubble/client/audio_tracks_volume.hpp"
+#include "fubble/client/mute_deaf_communicator.hpp"
+#include "fubble/client/test_client.hpp"
 #include "fubble/temporary_room/server/test_server.hpp"
 #include "fubble/utils/uuid.hpp"
 #include <gtest/gtest.h>

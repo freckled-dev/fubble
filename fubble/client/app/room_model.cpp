@@ -1,5 +1,5 @@
 #include "room_model.hpp"
-#include "client/room.hpp"
+#include "fubble/client/room.hpp"
 #include "model_creator.hpp"
 #include "participants_model.hpp"
 #include "participants_with_video_model.hpp"

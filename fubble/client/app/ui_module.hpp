@@ -1,12 +1,12 @@
 #ifndef UUID_0267F6EB_70FA_4730_85C5_B11D433A7EF4
 #define UUID_0267F6EB_70FA_4730_85C5_B11D433A7EF4
 
-#include "client/audio_module.hpp"
-#include "client/audio_settings_module.hpp"
-#include "client/desktop_sharing_module.hpp"
-#include "client/logger.hpp"
-#include "client/session_module.hpp"
-#include "client/video_module.hpp"
+#include "fubble/client/audio_module.hpp"
+#include "fubble/client/audio_settings_module.hpp"
+#include "fubble/client/desktop_sharing_module.hpp"
+#include "fubble/client/logger.hpp"
+#include "fubble/client/session_module.hpp"
+#include "fubble/client/video_module.hpp"
 #include "fubble/utils/export.hpp"
 #include <memory>
 

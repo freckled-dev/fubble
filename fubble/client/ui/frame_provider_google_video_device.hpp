@@ -1,7 +1,7 @@
 #ifndef UUID_85C81A68_0C92_497B_8018_52B904D1012F
 #define UUID_85C81A68_0C92_497B_8018_52B904D1012F
 
-#include "client/logger.hpp"
+#include "fubble/client/logger.hpp"
 #include <QObject>
 
 class QAbstractVideoSurface;

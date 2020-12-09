@@ -1,9 +1,9 @@
 #ifndef UUID_1A7B513A_FA47_48C2_950C_01771F50FEAC
 #define UUID_1A7B513A_FA47_48C2_950C_01771F50FEAC
 
-#include "client/desktop_sharing.hpp"
-#include "client/logger.hpp"
-#include "client/ui/frame_provider_google_video_frame.hpp"
+#include "fubble/client/desktop_sharing.hpp"
+#include "fubble/client/logger.hpp"
+#include "fubble/client/ui/frame_provider_google_video_frame.hpp"
 #include <QAbstractItemModel>
 
 namespace client {

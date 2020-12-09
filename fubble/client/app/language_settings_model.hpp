@@ -1,7 +1,7 @@
 #ifndef UUID_8133A390_B8DF_40EF_BE53_2F723267CAFE
 #define UUID_8133A390_B8DF_40EF_BE53_2F723267CAFE
 
-#include "client/logger.hpp"
+#include "fubble/client/logger.hpp"
 #include <QAbstractItemModel>
 #include <memory>
 

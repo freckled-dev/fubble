@@ -1,5 +1,5 @@
 #include "loopback_audio.hpp"
-#include "client/add_audio_to_connection.hpp"
+#include "fubble/client/add_audio_to_connection.hpp"
 #include "fubble/rtc/google/audio_source.hpp"
 #include "fubble/rtc/google/audio_track.hpp"
 #include "fubble/rtc/google/audio_track_sink.hpp"

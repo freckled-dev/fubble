@@ -1,8 +1,8 @@
 #ifndef UUID_3F20FC60_F52B_4FFE_9CFA_8134CAE97A86
 #define UUID_3F20FC60_F52B_4FFE_9CFA_8134CAE97A86
 
-#include "client/logger.hpp"
-#include "client/room.hpp"
+#include "fubble/client/logger.hpp"
+#include "fubble/client/room.hpp"
 #include "participant_model.hpp"
 #include <QAbstractItemModel>
 #include <deque>

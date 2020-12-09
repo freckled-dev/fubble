@@ -1,6 +1,6 @@
 #include "chat_model.hpp"
-#include "client/chat.hpp"
-#include "client/room.hpp"
+#include "fubble/client/chat.hpp"
+#include "fubble/client/room.hpp"
 #include <boost/algorithm/string/replace.hpp>
 
 using namespace client;

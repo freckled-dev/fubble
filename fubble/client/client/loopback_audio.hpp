@@ -1,7 +1,7 @@
 #ifndef UUID_B5FA71A7_53B9_4F85_BEA4_05ED7D9F580E
 #define UUID_B5FA71A7_53B9_4F85_BEA4_05ED7D9F580E
 
-#include "client/logger.hpp"
+#include "fubble/client/logger.hpp"
 #include "fubble/rtc/track_ptr.hpp"
 #include <boost/signals2/signal.hpp>
 #include <boost/thread/executors/inline_executor.hpp>

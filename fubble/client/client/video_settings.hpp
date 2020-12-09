@@ -1,12 +1,12 @@
 #ifndef UUID_DE3E4714_AD73_44A4_9ED2_AA1F55903106
 #define UUID_DE3E4714_AD73_44A4_9ED2_AA1F55903106
 
-#include "client/logger.hpp"
-#include "client/own_video.hpp"
+#include "fubble/client/logger.hpp"
+#include "fubble/client/own_video.hpp"
 #include "fubble/rtc/video_devices.hpp"
+#include <boost/optional.hpp>
 #include <boost/signals2/signal.hpp>
 #include <memory>
-#include <boost/optional.hpp>
 
 namespace rtc::google {
 class video_source;

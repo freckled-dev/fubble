@@ -1,7 +1,7 @@
 #ifndef UUID_C92BDF54_AEE0_4DC1_87CA_B5EBBFDA3FFE
 #define UUID_C92BDF54_AEE0_4DC1_87CA_B5EBBFDA3FFE
 
-#include "client/logger.hpp"
+#include "fubble/client/logger.hpp"
 #include "track_adder.hpp"
 #include <memory>
 #include <vector>

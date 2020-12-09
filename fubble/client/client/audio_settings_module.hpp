@@ -1,8 +1,8 @@
 #ifndef UUID_DA215727_927E_49D3_A600_CBD9C8E62A7F
 #define UUID_DA215727_927E_49D3_A600_CBD9C8E62A7F
 
-#include "client/audio_module.hpp"
-#include "client/session_module.hpp"
+#include "fubble/client/audio_module.hpp"
+#include "fubble/client/session_module.hpp"
 #include "fubble/rtc/google/module.hpp"
 #include "fubble/utils/export.hpp"
 

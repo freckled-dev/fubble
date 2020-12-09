@@ -1,11 +1,11 @@
 #include "audio_tracks_volume.hpp"
-#include "client/add_audio_to_connection.hpp"
-#include "client/own_audio_track.hpp"
-#include "client/participant.hpp"
-#include "client/participants.hpp"
-#include "client/room.hpp"
-#include "client/rooms.hpp"
-#include "client/tracks_adder.hpp"
+#include "fubble/client/add_audio_to_connection.hpp"
+#include "fubble/client/own_audio_track.hpp"
+#include "fubble/client/participant.hpp"
+#include "fubble/client/participants.hpp"
+#include "fubble/client/room.hpp"
+#include "fubble/client/rooms.hpp"
+#include "fubble/client/tracks_adder.hpp"
 #include "fubble/rtc/google/audio_track.hpp"
 
 using namespace client;

@@ -2,7 +2,7 @@
 #define UUID_C9B76A9B_14FF_41A0_A176_747182459D11
 
 #include "audio_video_settings_devices_model.hpp"
-#include "client/logger.hpp"
+#include "fubble/client/logger.hpp"
 #include "fubble/rtc/video_devices.hpp"
 #include "fubble/utils/timer.hpp"
 #include <QAbstractItemModel>

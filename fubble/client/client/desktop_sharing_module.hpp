@@ -1,8 +1,8 @@
 #ifndef UUID_B05CFCC0_C2D9_4C48_BFBF_F2206126E864
 #define UUID_B05CFCC0_C2D9_4C48_BFBF_F2206126E864
 
-#include "client/session_module.hpp"
-#include "client/video_module.hpp"
+#include "fubble/client/session_module.hpp"
+#include "fubble/client/video_module.hpp"
 
 namespace client {
 class desktop_sharing;

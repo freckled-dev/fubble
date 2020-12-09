@@ -1,5 +1,5 @@
 #include "core_module.hpp"
-#include "client/crash_catcher.hpp"
+#include "fubble/client/crash_catcher.hpp"
 
 using namespace client;
 

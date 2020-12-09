@@ -1,8 +1,8 @@
 #include "join_model.hpp"
-#include "client/joiner.hpp"
-#include "client/own_media.hpp"
-#include "client/room.hpp"
 #include "error_model.hpp"
+#include "fubble/client/joiner.hpp"
+#include "fubble/client/own_media.hpp"
+#include "fubble/client/room.hpp"
 #include "model_creator.hpp"
 #include "room_model.hpp"
 
