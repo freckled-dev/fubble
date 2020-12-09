@@ -24,9 +24,9 @@ install_headers([
   'executor_asio.hpp', 'joined_thread.hpp', 'uuid.hpp', 'wait_for_event.hpp',
   'exit_signals.hpp', 'version.hpp', 'options_adder.hpp', 'exception.hpp',
   'executor_module.hpp', 'timer.hpp',
-  ], subdir: 'utils')
+  ], subdir: 'fubble/utils')
 install_headers(['logging/logger.hpp', 'logging/initialser.hpp',
-  ], subdir: 'utils/logging')
+  ], subdir: 'fubble/utils/logging')
 
 test_main = static_library('test_main',
   ['test_main.cpp'],

@@ -16,7 +16,7 @@ install_headers([
   'chat.hpp', 'fixture.hpp', 'module.hpp', 'room_states.hpp',
   'authentification.hpp', 'client.hpp', 'events.hpp', 'room.hpp', 'rooms.hpp',
   'user.hpp', 'room_participant.hpp', 'client_synchronizer.hpp',
-  ], subdir: 'matrix')
+  ], subdir: 'fubble/matrix')
 
 matrix_test_dep = declare_dependency(
   dependencies : [gtest_dep, matrix_dep, fmt_dep],

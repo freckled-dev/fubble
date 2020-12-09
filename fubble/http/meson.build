@@ -22,7 +22,7 @@ install_headers([
   'https_connection.hpp', 'server.hpp', 'action.hpp', 'client.hpp',
   'client_factory.hpp', 'client_module.hpp', 'ssl_upgrader.hpp',
   'connection_impl.hpp', 'fields.hpp', 'http_connection.hpp',
-  ], subdir: 'http')
+  ], subdir: 'fubble/http')
 
 http_test = executable('http_test',
   ['client_test.cpp'],

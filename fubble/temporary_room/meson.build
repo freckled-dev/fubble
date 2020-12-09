@@ -15,16 +15,16 @@ temporary_room_dep = declare_dependency(
 install_headers([
   'logger.hpp', 'client_module.hpp',
   'rooms/rooms.hpp',
-  ], subdir: 'temporary_room')
+  ], subdir: 'fubble/temporary_room')
 install_headers([
   'server/server.hpp', 'server/matrix_rooms_factory_adapter.hpp',
   'server/test_server.hpp', 'server/application.hpp',
-  ], subdir: 'temporary_room/server')
-install_headers(['rooms/rooms.hpp'], subdir: 'temporary_room/rooms')
-install_headers(['matrix/room_factory.hpp'], subdir: 'temporary_room/net')
+  ], subdir: 'fubble/temporary_room/server')
+install_headers(['rooms/rooms.hpp'], subdir: 'fubble/temporary_room/rooms')
+install_headers(['matrix/room_factory.hpp'], subdir: 'fubble/temporary_room/net')
 install_headers([
   'net/server.hpp', 'net/client.hpp', 'net/acceptor.hpp',
-  ], subdir: 'temporary_room/matrix')
+  ], subdir: 'fubble/temporary_room/matrix')
 
 
 temporary_room_server = executable('temporary_room_server',

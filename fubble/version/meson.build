@@ -26,7 +26,7 @@ version_getter_dep = declare_dependency(
   )
 
 install_headers(['client_module.hpp', 'getter.hpp', 'logger.hpp', 'server.hpp',
-  ], subdir: 'version')
+  ], subdir: 'fubble/version')
 
 version_test = executable('version_test',
   ['test.cpp'],

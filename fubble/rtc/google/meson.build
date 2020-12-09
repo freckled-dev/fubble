@@ -34,17 +34,17 @@ install_headers([
   'video_source.hpp', 'video_source_ptr.hpp', 'video_track.hpp',
   'video_track_ptr.hpp', 'video_track_sink.hpp', 'video_track_source.hpp',
   'voice_detection.hpp',
-  ], subdir: 'rtc/google')
+  ], subdir: 'fubble/rtc/google')
 install_headers([
   'capture/audio/device_creator.hpp', 'capture/audio/device.hpp',
-  ], subdir: 'rtc/google/capture/audio')
+  ], subdir: 'fubble/rtc/google/capture/audio')
 install_headers([
   'capture/video/enumerator.hpp', 'capture/video/information.hpp',
   'capture/video/device.hpp',
-  ], subdir: 'rtc/google/capture/video')
+  ], subdir: 'fubble/rtc/google/capture/video')
 install_headers([
   'capture/desktop/enumerator.hpp', 'capture/desktop/capturer.hpp',
-  ], subdir: 'rtc/google/capture/desktop')
+  ], subdir: 'fubble/rtc/google/capture/desktop')
 
 google_webrtc_test_main = static_library('google_webrtc_test_main',
   ['test_main.cpp'],

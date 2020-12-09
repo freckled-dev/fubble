@@ -42,7 +42,7 @@ install_headers([
   'own_participant.hpp', 'own_video.hpp', 'participant.hpp',
   'participant_creator.hpp', 'session_module.hpp', 'video_settings.hpp',
   'tracks_adder.hpp', 'video_module.hpp', 'room.hpp',
-  ], subdir: 'client')
+  ], subdir: 'fubble/client')
 
 client_video_settings_test = executable('client_video_settings_test',
   ['video_settings_test.cpp'],

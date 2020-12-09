@@ -25,7 +25,7 @@ install_headers([
   'server/application.hpp', 'server/connection.hpp',
   'server/connection_creator.hpp', 'offer.hpp',
   'server/connection_ptr.hpp', 'server/server.hpp',
-  ], subdir: 'signaling')
+  ], subdir: 'fubble/signaling')
 
 signaling_test = executable('signaling_test',
   ['json_message_test.cpp',

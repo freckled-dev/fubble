@@ -37,7 +37,7 @@ install_headers([
   'share_desktop_model.hpp', 'utils_model.hpp', 'chat_messages_model.hpp',
   'join_model.hpp', 'room_model.hpp', 'rooms_model.hpp', 'ui_module.hpp',
   'audio_client.hpp', 'core_module.hpp',
-  ], subdir: 'app')
+  ], subdir: 'fubble/app')
 
 if get_option('with_ui')
   client_gui_sources = ['gui.cpp', 'utils_model.cpp', 'join_model.cpp',
