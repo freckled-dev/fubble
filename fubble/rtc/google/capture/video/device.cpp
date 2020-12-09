@@ -1,5 +1,5 @@
 #include "device.hpp"
-#include "exception.hpp"
+#include "fubble/utils/exception.hpp"
 #include <api/video/video_sink_interface.h>
 #include <modules/audio_device/include/audio_device.h>
 #include <modules/video_capture/video_capture.h>

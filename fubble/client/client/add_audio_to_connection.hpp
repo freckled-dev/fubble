@@ -3,8 +3,8 @@
 
 #include "client/logger.hpp"
 #include "client/track_adder.hpp"
-#include "rtc/google/capture/audio/device.hpp"
-#include "rtc/google/factory.hpp"
+#include "fubble/rtc/google/capture/audio/device.hpp"
+#include "fubble/rtc/google/factory.hpp"
 
 namespace client {
 class add_audio_to_connection : public track_adder {

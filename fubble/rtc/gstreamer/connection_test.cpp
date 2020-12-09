@@ -1,6 +1,6 @@
 #include "connection.hpp"
 #include "fubble/utils/logging/logger.hpp"
-#include "rtc/gstreamer/video_track.hpp"
+#include "fubble/rtc/gstreamer/video_track.hpp"
 #include <boost/signals2/connection.hpp>
 #include <boost/thread/executors/executor_adaptor.hpp>
 #include <fmt/format.h>

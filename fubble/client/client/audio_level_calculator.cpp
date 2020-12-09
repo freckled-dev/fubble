@@ -1,6 +1,6 @@
 #include "audio_level_calculator.hpp"
-#include "rtc/google/audio_source.hpp"
-#include "rtc/google/voice_detection.hpp"
+#include "fubble/rtc/google/audio_source.hpp"
+#include "fubble/rtc/google/voice_detection.hpp"
 #include <numeric>
 
 using namespace client;

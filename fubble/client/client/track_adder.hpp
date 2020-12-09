@@ -1,7 +1,7 @@
 #ifndef UUID_DDCA1D2B_2146_4D2D_B139_31820D20408F
 #define UUID_DDCA1D2B_2146_4D2D_B139_31820D20408F
 
-#include "rtc/connection.hpp"
+#include "fubble/rtc/connection.hpp"
 
 namespace client {
 class track_adder {

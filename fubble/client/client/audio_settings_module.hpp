@@ -3,8 +3,8 @@
 
 #include "client/audio_module.hpp"
 #include "client/session_module.hpp"
+#include "fubble/rtc/google/module.hpp"
 #include "fubble/utils/export.hpp"
-#include "rtc/google/module.hpp"
 
 namespace rtc::google {
 class audio_track;

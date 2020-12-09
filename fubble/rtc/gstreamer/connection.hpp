@@ -3,7 +3,7 @@
 
 #include "fubble/utils/logging/logger.hpp"
 #include "gst_element_deleter.hpp"
-#include "rtc/connection.hpp"
+#include "fubble/rtc/connection.hpp"
 extern "C" {
 #define GST_USE_UNSTABLE_API
 #include <gst/webrtc/webrtc.h>

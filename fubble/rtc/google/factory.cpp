@@ -4,7 +4,7 @@
 #include "audio_source.hpp"
 #include "audio_track_source.hpp"
 #include "connection.hpp"
-#include "uuid.hpp"
+#include "fubble/utils/uuid.hpp"
 #include "video_source.hpp"
 #include "video_track.hpp"
 #include "video_track_source.hpp"

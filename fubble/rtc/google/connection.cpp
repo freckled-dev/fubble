@@ -1,7 +1,7 @@
 #include "connection.hpp"
 #include "audio_track_sink.hpp"
 #include "data_channel.hpp"
-#include "uuid.hpp"
+#include "fubble/utils/uuid.hpp"
 #include "video_track_sink.hpp"
 #include <boost/assert.hpp>
 #include <boost/config.hpp>

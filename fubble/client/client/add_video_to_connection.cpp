@@ -1,6 +1,6 @@
 #include "add_video_to_connection.hpp"
-#include "rtc/google/connection.hpp"
-#include "rtc/google/video_track.hpp"
+#include "fubble/rtc/google/connection.hpp"
+#include "fubble/rtc/google/video_track.hpp"
 
 using namespace client;
 

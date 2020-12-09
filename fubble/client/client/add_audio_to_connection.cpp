@@ -1,6 +1,6 @@
 #include "add_audio_to_connection.hpp"
-#include "rtc/google/audio_track.hpp"
-#include "rtc/google/connection.hpp"
+#include "fubble/rtc/google/audio_track.hpp"
+#include "fubble/rtc/google/connection.hpp"
 
 using namespace client;
 

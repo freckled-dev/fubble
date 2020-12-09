@@ -7,7 +7,7 @@
 #include "client/own_participant.hpp"
 #include "client/participant.hpp"
 #include "client/video_settings.hpp"
-#include "rtc/google/audio_track.hpp"
+#include "fubble/rtc/google/audio_track.hpp"
 
 using namespace client;
 

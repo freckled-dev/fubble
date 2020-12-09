@@ -2,7 +2,7 @@
 #include "client/add_video_to_connection.hpp"
 #include "client/own_media.hpp"
 #include "client/tracks_adder.hpp"
-#include "rtc/google/capture/video/device.hpp"
+#include "fubble/rtc/google/capture/video/device.hpp"
 #include <fmt/format.h>
 
 using namespace client;

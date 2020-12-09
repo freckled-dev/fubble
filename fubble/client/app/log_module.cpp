@@ -1,6 +1,6 @@
 #include "log_module.hpp"
+#include "fubble/rtc/google/log_webrtc_to_logging.hpp"
 #include "fubble/utils/logging/initialser.hpp"
-#include "rtc/google/log_webrtc_to_logging.hpp"
 #include "ui/log_qt_to_logging.hpp"
 
 using namespace client;

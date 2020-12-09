@@ -1,6 +1,6 @@
 #include "frame_provider_google_video_device.hpp"
 #include "client/ui/frame_provider_google_video_frame.hpp"
-#include "rtc/google/capture/video/device.hpp"
+#include "fubble/rtc/google/capture/video/device.hpp"
 #include <QtMultimedia/qabstractvideosurface.h>
 
 using namespace client::ui;

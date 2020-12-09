@@ -1,7 +1,7 @@
 #ifndef UUID_D7779D07_9C76_4C2F_A286_2EA21561E97E
 #define UUID_D7779D07_9C76_4C2F_A286_2EA21561E97E
 
-#include "rtc/logger.hpp"
+#include "fubble/rtc/logger.hpp"
 #include <vector>
 
 namespace rtc {

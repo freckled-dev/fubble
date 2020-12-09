@@ -1,8 +1,8 @@
 #ifndef UUID_2761C87F_C48F_4545_BAED_5C5E847EDF9C
 #define UUID_2761C87F_C48F_4545_BAED_5C5E847EDF9C
 
+#include "fubble/rtc/google/module.hpp"
 #include "fubble/utils/export.hpp"
-#include "rtc/google/module.hpp"
 
 namespace client {
 class audio_level_calculator_factory;

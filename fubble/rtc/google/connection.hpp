@@ -1,8 +1,8 @@
 #ifndef RTC_GOOGLE_CONNECTION_HPP
 #define RTC_GOOGLE_CONNECTION_HPP
 
-#include "rtc/connection.hpp"
-#include "rtc/logger.hpp"
+#include "fubble/rtc/connection.hpp"
+#include "fubble/rtc/logger.hpp"
 #include "video_track_ptr.hpp"
 #include <api/candidate.h>
 #include <api/media_stream_interface.h>

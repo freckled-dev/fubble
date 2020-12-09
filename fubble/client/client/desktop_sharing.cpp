@@ -2,9 +2,9 @@
 #include "add_video_to_connection.hpp"
 #include "client/logger.hpp"
 #include "client/tracks_adder.hpp"
+#include "fubble/rtc/google/capture/desktop/enumerator.hpp"
+#include "fubble/rtc/google/video_track_source.hpp"
 #include "fubble/utils/timer.hpp"
-#include "rtc/google/capture/desktop/enumerator.hpp"
-#include "rtc/google/video_track_source.hpp"
 #include <boost/thread/executors/inline_executor.hpp>
 #include <chrono>
 

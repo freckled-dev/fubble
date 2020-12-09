@@ -1,8 +1,8 @@
 #ifndef RTC_GOOGLE_DATA_CHANNEL_HPP
 #define RTC_GOOGLE_DATA_CHANNEL_HPP
 
-#include "rtc/data_channel.hpp"
-#include "rtc/logger.hpp"
+#include "fubble/rtc/data_channel.hpp"
+#include "fubble/rtc/logger.hpp"
 #include <api/data_channel_interface.h>
 
 namespace rtc {

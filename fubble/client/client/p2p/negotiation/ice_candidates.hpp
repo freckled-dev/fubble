@@ -1,7 +1,7 @@
 #ifndef CLIENT_P2P_NEGOTIATION_ICE_CANDIDATES_HPP
 #define CLIENT_P2P_NEGOTIATION_ICE_CANDIDATES_HPP
 
-#include "rtc/connection.hpp"
+#include "fubble/rtc/connection.hpp"
 #include "fubble/signaling/client/client.hpp"
 
 namespace client::p2p::negotiation {

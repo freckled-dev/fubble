@@ -3,7 +3,7 @@
 
 #include "client/logger.hpp"
 #include "client/own_video.hpp"
-#include "rtc/video_devices.hpp"
+#include "fubble/rtc/video_devices.hpp"
 #include <boost/signals2/signal.hpp>
 #include <memory>
 #include <boost/optional.hpp>

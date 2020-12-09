@@ -2,9 +2,9 @@
 #define UUID_D2EB99EB_418F_4447_BCF0_879740D9D162
 
 #include "client/logger.hpp"
-#include "rtc/connection.hpp"
+#include "fubble/rtc/connection.hpp"
+#include "fubble/rtc/google/factory.hpp"
 #include "rtc/google/capture/video/device.hpp"
-#include "rtc/google/factory.hpp"
 #include "track_adder.hpp"
 
 namespace client {

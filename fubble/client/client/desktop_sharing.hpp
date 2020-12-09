@@ -5,7 +5,7 @@
 #include "client/leaver.hpp"
 #include "client/tracks_adder.hpp"
 #include "client/video_settings.hpp"
-#include "rtc/google/capture/desktop/capturer.hpp"
+#include "fubble/rtc/google/capture/desktop/capturer.hpp"
 #include <boost/signals2/signal.hpp>
 #include <functional>
 #include <memory>

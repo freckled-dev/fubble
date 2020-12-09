@@ -1,8 +1,8 @@
 #ifndef RTC_GOOGLE_CAPTURE_VIDEO_DEVICE_HPP
 #define RTC_GOOGLE_CAPTURE_VIDEO_DEVICE_HPP
 
-#include "rtc/google/video_source.hpp"
-#include "rtc/logger.hpp"
+#include "fubble/rtc/google/video_source.hpp"
+#include "fubble/rtc/logger.hpp"
 
 namespace rtc {
 namespace google {

@@ -1,7 +1,7 @@
 #include "capturer.hpp"
-#include "exception.hpp"
-#include "rtc/logger.hpp"
-#include "timer.hpp"
+#include "fubble/rtc/logger.hpp"
+#include "fubble/utils/exception.hpp"
+#include "fubble/utils/timer.hpp"
 #include <api/video/i420_buffer.h>
 #include <api/video/video_frame.h>
 #include <boost/assert.hpp>

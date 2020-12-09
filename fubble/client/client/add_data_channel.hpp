@@ -1,7 +1,7 @@
 #ifndef UUID_0589BF64_7763_43BC_9EA6_D3FBA6370DA2
 #define UUID_0589BF64_7763_43BC_9EA6_D3FBA6370DA2
 
-#include "rtc/data_channel_ptr.hpp"
+#include "fubble/rtc/data_channel_ptr.hpp"
 #include "track_adder.hpp"
 #include <boost/signals2/signal.hpp>
 

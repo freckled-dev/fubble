@@ -3,7 +3,7 @@
 
 #include "client/logger.hpp"
 #include "participant.hpp"
-#include "rtc/track_ptr.hpp"
+#include "fubble/rtc/track_ptr.hpp"
 
 namespace rtc::google {
 class audio_track_sink;

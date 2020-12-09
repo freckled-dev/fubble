@@ -1,6 +1,6 @@
 #include "voice_detection.hpp"
-#include "rtc/google/audio_data.hpp"
-#include "rtc/logger.hpp"
+#include "fubble/rtc/google/audio_data.hpp"
+#include "fubble/rtc/logger.hpp"
 #include <boost/assert.hpp>
 #include <common_audio/vad/include/webrtc_vad.h>
 #include <modules/audio_processing/audio_buffer.h>

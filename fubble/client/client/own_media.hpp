@@ -2,7 +2,7 @@
 #define UUID_BE2C6F4A_FF34_4689_941A_8BF68E644DA1
 
 #include "client/own_video.hpp"
-#include "rtc/google/video_source_ptr.hpp"
+#include "fubble/rtc/google/video_source_ptr.hpp"
 #include <boost/assert.hpp>
 #include <boost/signals2/signal.hpp>
 
