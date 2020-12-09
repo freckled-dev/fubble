@@ -225,14 +225,5 @@ else
   restinio_dep = disabled
 endif
 
-subdir('asio')
-subdir('utils')
-subdir('http')
-subdir('websocket')
-subdir('matrix')
-subdir('signaling')
-subdir('webrtc_peer')
-subdir('temporary_room')
-subdir('version')
-subdir('client')
+subdir('fubble')
 
