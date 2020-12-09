@@ -2,7 +2,7 @@
 #define UUID_7D8D7FBB_D9E0_4A16_911E_E633E18ACFCF
 
 #include "client/session_module.hpp"
-#include "http/client_module.hpp"
+#include "fubble/http/client_module.hpp"
 #include "matrix/module.hpp"
 #include "rtc/google/module.hpp"
 #include "signaling/client_module.hpp"

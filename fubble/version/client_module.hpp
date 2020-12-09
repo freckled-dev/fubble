@@ -1,7 +1,7 @@
 #ifndef UUID_54138699_A916_4166_9274_61D4F66DA327
 #define UUID_54138699_A916_4166_9274_61D4F66DA327
 
-#include "http/client_module.hpp"
+#include "fubble/http/client_module.hpp"
 #include <string>
 
 namespace version {

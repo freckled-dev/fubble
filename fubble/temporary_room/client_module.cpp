@@ -1,5 +1,5 @@
 #include "client_module.hpp"
-#include "http/client.hpp"
+#include "fubble/http/client.hpp"
 #include "temporary_room/net/client.hpp"
 
 using namespace temporary_room;

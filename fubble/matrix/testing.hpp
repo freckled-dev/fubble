@@ -1,8 +1,8 @@
 #ifndef UUID_7E48ABA1_27AF_4041_AF31_8C26D6C15A75
 #define UUID_7E48ABA1_27AF_4041_AF31_8C26D6C15A75
 
-#include "http/fields.hpp"
-#include "http/server.hpp"
+#include "fubble/http/fields.hpp"
+#include "fubble/http/server.hpp"
 #include "utils/testing.hpp"
 
 namespace matrix::testing {

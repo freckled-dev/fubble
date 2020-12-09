@@ -1,8 +1,8 @@
 #ifndef UUID_9D797151_1E6F_4F32_9BED_C58D093C6C4A
 #define UUID_9D797151_1E6F_4F32_9BED_C58D093C6C4A
 
-#include "http/fields.hpp"
-#include "http/server.hpp"
+#include "fubble/http/fields.hpp"
+#include "fubble/http/server.hpp"
 #include "utils/testing.hpp"
 
 namespace temporary_room::testing {

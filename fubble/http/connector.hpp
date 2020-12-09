@@ -2,7 +2,7 @@
 #define UUID_DCEE3AD5_70DA_4351_9B44_5F25183DC2A0
 
 #include "connection_impl.hpp"
-#include "http/logger.hpp"
+#include "fubble/http/logger.hpp"
 #include "http_connection.hpp"
 #include "https_connection.hpp"
 #include "ssl_upgrader.hpp"

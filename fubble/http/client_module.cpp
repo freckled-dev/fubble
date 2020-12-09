@@ -1,6 +1,6 @@
-#include "http/client_module.hpp"
-#include "http/action_factory.hpp"
-#include "http/connection_creator.hpp"
+#include "fubble/http/client_module.hpp"
+#include "fubble/http/action_factory.hpp"
+#include "fubble/http/connection_creator.hpp"
 #include <boost/asio/io_context.hpp>
 
 using namespace http;

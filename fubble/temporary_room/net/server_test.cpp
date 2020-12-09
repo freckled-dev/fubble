@@ -1,7 +1,7 @@
 #include "client.hpp"
-#include "http/action_factory.hpp"
+#include "fubble/http/action_factory.hpp"
+#include "fubble/http/connection_creator.hpp"
 #include "http/client.hpp"
-#include "http/connection_creator.hpp"
 #include "server.hpp"
 #include <gtest/gtest.h>
 

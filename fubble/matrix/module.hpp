@@ -1,7 +1,7 @@
 #ifndef UUID_CB55A92E_2D77_4D9A_A961_11E825878AB1
 #define UUID_CB55A92E_2D77_4D9A_A961_11E825878AB1
 
-#include "http/client_module.hpp"
+#include "fubble/http/client_module.hpp"
 #include <string>
 
 namespace http {

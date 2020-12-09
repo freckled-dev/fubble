@@ -2,7 +2,7 @@
 #define UUID_9B76ABAB_BFE7_44BC_91BF_785B58B45A9B
 
 #include "factory.hpp"
-#include "http/client_factory.hpp"
+#include "fubble/http/client_factory.hpp"
 #include "rooms.hpp"
 #include "users.hpp"
 #include <boost/signals2/signal.hpp>

@@ -2,7 +2,7 @@
 #define UUID_602DF6B7_FC5A_4E8D_9CD9_EAB83FB12967
 
 #include "client.hpp"
-#include "http/client_factory.hpp"
+#include "fubble/http/client_factory.hpp"
 
 namespace matrix {
 class client_factory {

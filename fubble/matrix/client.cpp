@@ -1,6 +1,6 @@
 #include "client.hpp"
 #include "error.hpp"
-#include "http/action.hpp"
+#include "fubble/http/action.hpp"
 #include "room.hpp"
 #include <fmt/format.h>
 #include <fmt/ostream.h>

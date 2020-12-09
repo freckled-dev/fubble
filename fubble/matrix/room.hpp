@@ -1,7 +1,7 @@
 #ifndef UUID_89583835_54BA_4B8D_AD82_A68806B04398
 #define UUID_89583835_54BA_4B8D_AD82_A68806B04398
 
-#include "http/client.hpp"
+#include "fubble/http/client.hpp"
 #include "logger.hpp"
 #include <boost/signals2/connection.hpp>
 #include <boost/signals2/signal.hpp>

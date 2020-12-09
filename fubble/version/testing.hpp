@@ -1,8 +1,8 @@
 #ifndef UUID_2CE437A3_4A8A_451D_B0CD_81AFA972B50D
 #define UUID_2CE437A3_4A8A_451D_B0CD_81AFA972B50D
 
-#include "http/fields.hpp"
-#include "http/server.hpp"
+#include "fubble/http/fields.hpp"
+#include "fubble/http/server.hpp"
 #include "utils/testing.hpp"
 
 namespace version::testing {

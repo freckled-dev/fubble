@@ -1,5 +1,5 @@
 #include "action_factory.hpp"
-#include "http/action.hpp"
+#include "fubble/http/action.hpp"
 
 using namespace http;
 action_factory::action_factory(connection_creator &connection_creator_)

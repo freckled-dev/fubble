@@ -2,7 +2,7 @@
 #define UUID_FA86766A_7231_4254_9E64_C74DEBFFBAC7
 
 #include "add_windows_root_certs.hpp"
-#include "http/logger.hpp"
+#include "fubble/http/logger.hpp"
 #include "server.hpp"
 #include <boost/asio/error.hpp>
 #include <boost/asio/ssl.hpp>

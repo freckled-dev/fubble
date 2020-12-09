@@ -1,6 +1,6 @@
 #include "application.hpp"
-#include "http/action_factory.hpp"
-#include "http/connection_creator.hpp"
+#include "fubble/http/action_factory.hpp"
+#include "fubble/http/connection_creator.hpp"
 #include "matrix/authentification.hpp"
 #include "matrix/client_factory.hpp"
 #include "temporary_room/server/matrix_rooms_factory_adapter.hpp"

@@ -3,7 +3,7 @@
 
 #include "client.hpp"
 #include "client_factory.hpp"
-#include "http/client_factory.hpp"
+#include "fubble/http/client_factory.hpp"
 #include <boost/thread/executors/inline_executor.hpp>
 #include <boost/thread/future.hpp>
 

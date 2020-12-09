@@ -1,7 +1,7 @@
 #include "connector.hpp"
 #include "connection_creator.hpp"
 #include "connection_impl.hpp"
-#include "http/ssl_upgrader.hpp"
+#include "fubble/http/ssl_upgrader.hpp"
 #include <boost/asio/connect.hpp>
 #include <fmt/format.h>
 

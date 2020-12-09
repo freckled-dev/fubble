@@ -1,5 +1,5 @@
 #include "client.hpp"
-#include "http/client.hpp"
+#include "fubble/http/client.hpp"
 #include <boost/thread/future.hpp>
 #include <fmt/format.h>
 #include <nlohmann/json.hpp>
