@@ -3,6 +3,10 @@
 #include "chat_model.hpp"
 #include "error_model.hpp"
 #include "fubble/client/audio_tracks_volume.hpp"
+#include "fubble/client/ui/add_version_to_qml_context.hpp"
+#include "fubble/client/ui/frame_provider_google_video_device.hpp"
+#include "fubble/client/ui/frame_provider_google_video_frame.hpp"
+#include "fubble/video_layout/video_layout.hpp"
 #include "join_model.hpp"
 #include "language_settings_model.hpp"
 #include "leave_model.hpp"
@@ -14,11 +18,7 @@
 #include "room_model.hpp"
 #include "rooms_model.hpp"
 #include "share_desktop_model.hpp"
-#include "ui/add_version_to_qml_context.hpp"
-#include "ui/frame_provider_google_video_device.hpp"
-#include "ui/frame_provider_google_video_frame.hpp"
 #include "utils_model.hpp"
-#include "video_layout/video_layout.hpp"
 #include <QApplication>
 #include <QIcon>
 #include <QQmlApplicationEngine>

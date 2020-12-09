@@ -3,8 +3,8 @@
 
 #include "fubble/client/logger.hpp"
 #include "fubble/rtc/connection.hpp"
+#include "fubble/rtc/google/capture/video/device.hpp"
 #include "fubble/rtc/google/factory.hpp"
-#include "rtc/google/capture/video/device.hpp"
 #include "track_adder.hpp"
 
 namespace client {

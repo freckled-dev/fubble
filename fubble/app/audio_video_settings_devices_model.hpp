@@ -3,8 +3,8 @@
 
 #include "fubble/client/audio_device_settings.hpp"
 #include "fubble/rtc/google/audio_devices.hpp"
+#include "fubble/rtc/google/capture/video/device.hpp"
 #include "fubble/rtc/google/capture/video/enumerator.hpp"
-#include "rtc/google/capture/video/device.hpp"
 #include <QAbstractItemModel>
 
 namespace client {

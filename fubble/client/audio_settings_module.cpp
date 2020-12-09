@@ -5,8 +5,8 @@
 #include "fubble/client/own_audio_information.hpp"
 #include "fubble/client/own_microphone_tester.hpp"
 #include "fubble/rtc/google/audio_track.hpp"
+#include "fubble/rtc/google/capture/audio/device.hpp"
 #include "fubble/rtc/google/factory.hpp"
-#include "rtc/google/capture/audio/device.hpp"
 
 using namespace client;
 

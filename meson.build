@@ -130,7 +130,6 @@ if get_option('with_ui')
     modules: ['Core', 'Gui', 'Qml', 'Quick', 'Widgets', 'Network', 'Multimedia',
       'Svg', 'QuickControls2', 'Charts'], method: 'qmake',
     version: '>=5.15.0')
-
   qt5_dep_dependencies = [qt5_clear_dep]
   qt5_dep_link_with = []
   if host_machine.system() == 'windows' and false
@@ -158,6 +157,7 @@ if get_option('with_ui')
     dependencies: qt5_dep_dependencies,
     link_with: qt5_dep_link_with
     )
+  qt5 = import('qt5')
 else
   qt5_dep = disabled
 endif

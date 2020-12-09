@@ -49,7 +49,6 @@ if get_option('with_ui')
     'language_settings_model.cpp', 'ui_module.cpp', 'rooms_model.cpp',
     'audio_video_settings_model.cpp', 'own_media_model.cpp', 'log_module.cpp',
     ]
-  qt5 = import('qt5')
   client_gui_sources += qt5.preprocess(
     qresources: ['qml.qrc'],
     moc_headers: ['join_model.hpp', 'utils_model.hpp',  'room_model.hpp',
