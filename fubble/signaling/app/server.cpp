@@ -1,6 +1,6 @@
-#include "signaling/server/server.hpp"
+#include "fubble/signaling/server/server.hpp"
+#include "fubble/signaling/server/application.hpp"
 #include "fubble/utils/logging/initialser.hpp"
-#include "signaling/server/application.hpp"
 #include <boost/asio/io_context.hpp>
 #include <boost/asio/signal_set.hpp>
 #include <boost/optional.hpp>

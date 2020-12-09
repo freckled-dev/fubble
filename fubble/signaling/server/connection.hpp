@@ -1,10 +1,10 @@
 #ifndef SERVER_CONNECTION_HPP
 #define SERVER_CONNECTION_HPP
 
+#include "fubble/signaling/connection.hpp"
+#include "fubble/signaling/json_message.hpp"
+#include "fubble/signaling/logger.hpp"
 #include "fubble/websocket/connection_ptr.hpp"
-#include "signaling/connection.hpp"
-#include "signaling/json_message.hpp"
-#include "signaling/logger.hpp"
 
 namespace websocket {
 class connection;

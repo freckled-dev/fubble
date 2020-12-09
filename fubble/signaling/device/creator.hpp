@@ -2,7 +2,7 @@
 #define SIGNALING_DEVICE_CREATOR_HPP
 
 #include "device_ptr.hpp"
-#include "signaling/connection_ptr.hpp"
+#include "fubble/signaling/connection_ptr.hpp"
 #include <boost/thread/executors/executor.hpp>
 
 namespace signaling::device {

@@ -1,7 +1,7 @@
+#include "fubble/signaling/connection.hpp"
+#include "fubble/signaling/device/creator.hpp"
 #include "fubble/utils/uuid.hpp"
 #include "registration_handler.hpp"
-#include "signaling/connection.hpp"
-#include "signaling/device/creator.hpp"
 #include <boost/thread/executors/inline_executor.hpp>
 #include <gtest/gtest.h>
 

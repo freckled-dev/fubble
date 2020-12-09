@@ -3,7 +3,7 @@
 
 #include "client/logger.hpp"
 #include "fubble/utils/exception.hpp"
-#include "version/getter.hpp"
+#include "fubble/version/getter.hpp"
 #include <boost/thread/executors/inline_executor.hpp>
 #include <boost/thread/future.hpp>
 

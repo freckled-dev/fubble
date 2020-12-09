@@ -1,5 +1,5 @@
-#include "version/server.hpp"
-#include "version/logger.hpp"
+#include "fubble/version/server.hpp"
+#include "fubble/version/logger.hpp"
 #include <nlohmann/json.hpp>
 #include <restinio/all.hpp>
 

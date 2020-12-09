@@ -1,9 +1,9 @@
 signaling = library('signaling',
-  ['signaling/registration_handler.cpp',
-    'signaling/device/creator.cpp',
-    'signaling/json_message.cpp', 'signaling/offer.cpp',
-    'signaling/answer.cpp', 'signaling/ice_candidate.cpp',
-    'signaling/device/device.cpp', 'signaling/client_module.cpp',
+  ['registration_handler.cpp',
+    'device/creator.cpp',
+    'json_message.cpp', 'offer.cpp',
+    'answer.cpp', 'ice_candidate.cpp',
+    'device/device.cpp', 'client_module.cpp',
     ],
   dependencies: [fmt_dep, json_dep, utils_dep, websocket_dep],
   install: true
@@ -13,23 +13,23 @@ signaling_dep = declare_dependency(
   dependencies: [boost_dep, utils_dep, websocket_dep]
   )
 install_headers([
-  'signaling/answer.hpp', 'signaling/client/client.hpp',
-  'signaling/client/connection.hpp', 'signaling/client/connection_creator.hpp',
-  'signaling/client/connection_ptr.hpp', 'signaling/client_module.hpp',
-  'signaling/connection.hpp', 'signaling/connection_ptr.hpp',
-  'signaling/create_offer.hpp', 'signaling/device/creator.hpp',
-  'signaling/device/device.hpp', 'signaling/device/device_ptr.hpp',
-  'signaling/ice_candidate.hpp', 'signaling/json_message.hpp',
-  'signaling/logger.hpp', 'signaling/want_to_negotiate.hpp',
-  'signaling/registration.hpp', 'signaling/registration_handler.hpp',
-  'signaling/server/application.hpp', 'signaling/server/connection.hpp',
-  'signaling/server/connection_creator.hpp', 'signaling/offer.hpp',
-  'signaling/server/connection_ptr.hpp', 'signaling/server/server.hpp',
+  'answer.hpp', 'client/client.hpp',
+  'client/connection.hpp', 'client/connection_creator.hpp',
+  'client/connection_ptr.hpp', 'client_module.hpp',
+  'connection.hpp', 'connection_ptr.hpp',
+  'create_offer.hpp', 'device/creator.hpp',
+  'device/device.hpp', 'device/device_ptr.hpp',
+  'ice_candidate.hpp', 'json_message.hpp',
+  'logger.hpp', 'want_to_negotiate.hpp',
+  'registration.hpp', 'registration_handler.hpp',
+  'server/application.hpp', 'server/connection.hpp',
+  'server/connection_creator.hpp', 'offer.hpp',
+  'server/connection_ptr.hpp', 'server/server.hpp',
   ], subdir: 'signaling')
 
 signaling_test = executable('signaling_test',
-  ['signaling/json_message_test.cpp',
-    'signaling/registration_handler_test.cpp'],
+  ['json_message_test.cpp',
+    'registration_handler_test.cpp'],
   dependencies : [gtest_dep, signaling_dep],
   link_with: [websocket, test_main]
   )
@@ -43,8 +43,8 @@ dependencies_test = executable('dependencies_test',
 test('dependencies test', dependencies_test)
 
 signaling_client = library('signaling_client',
-  ['signaling/client/client.cpp', 'signaling/client/connection.cpp',
-    'signaling/client/connection_creator.cpp',
+  ['client/client.cpp', 'client/connection.cpp',
+    'client/connection_creator.cpp',
     ],
   dependencies: [fmt_dep, websocket_dep, signaling_dep],
   link_with: [],
@@ -56,9 +56,9 @@ signaling_client_dep = declare_dependency(
   )
 
 server = library('signaling_server',
-  ['signaling/server/server.cpp', 'signaling/server/connection.cpp',
-    'signaling/server/connection_creator.cpp',
-    'signaling/server/application.cpp'],
+  ['server/server.cpp', 'server/connection.cpp',
+    'server/connection_creator.cpp',
+    'server/application.cpp'],
   dependencies: [boost_dep, fmt_dep, utils_dep, signaling_dep, enable_servers],
   install: true
   )
@@ -67,14 +67,14 @@ server_dep = declare_dependency(
   dependencies: [websocket_dep, signaling_dep]
   )
 server_test = executable('signaling_server_test',
-  ['signaling/server/server_test.cpp'],
+  ['server/server_test.cpp'],
   dependencies: [boost_dep, gtest_dep, fmt_dep, server_dep],
   link_with: [signaling_client, test_main]
   )
 test('signaling server test', server_test, timeout: 8)
 
 client_test = executable('signaling_client_test',
-  ['signaling/client/client_test.cpp'],
+  ['client/client_test.cpp'],
   dependencies: [boost_dep, gtest_dep, fmt_dep, signaling_client_dep, server_dep],
   link_with: [test_main]
   )

@@ -1,5 +1,5 @@
 #include "device.hpp"
-#include "signaling/connection.hpp"
+#include "fubble/signaling/connection.hpp"
 
 using namespace signaling::device;
 

@@ -3,7 +3,7 @@
 
 #include "client/logger.hpp"
 #include "rtc/connection.hpp"
-#include "signaling/client/client.hpp"
+#include "fubble/signaling/client/client.hpp"
 #include <boost/thread/executors/executor.hpp>
 
 namespace client::p2p::negotiation {

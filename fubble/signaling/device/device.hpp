@@ -1,16 +1,16 @@
 #ifndef SIGNALING_DEVICE_DEVICE_HPP
 #define SIGNALING_DEVICE_DEVICE_HPP
 
-#include "signaling/answer.hpp"
-#include "signaling/connection_ptr.hpp"
-#include "signaling/ice_candidate.hpp"
-#include "signaling/logger.hpp"
-#include "signaling/offer.hpp"
-#include "signaling/want_to_negotiate.hpp"
+#include "fubble/signaling/answer.hpp"
+#include "fubble/signaling/connection_ptr.hpp"
+#include "fubble/signaling/ice_candidate.hpp"
+#include "fubble/signaling/logger.hpp"
+#include "fubble/signaling/offer.hpp"
+#include "fubble/signaling/want_to_negotiate.hpp"
+#include <boost/optional.hpp>
 #include <boost/signals2/connection.hpp>
 #include <functional>
 #include <memory>
-#include <boost/optional.hpp>
 #include <vector>
 
 namespace signaling::device {

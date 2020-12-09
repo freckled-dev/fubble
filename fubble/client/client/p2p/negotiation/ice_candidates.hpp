@@ -2,7 +2,7 @@
 #define CLIENT_P2P_NEGOTIATION_ICE_CANDIDATES_HPP
 
 #include "rtc/connection.hpp"
-#include "signaling/client/client.hpp"
+#include "fubble/signaling/client/client.hpp"
 
 namespace client::p2p::negotiation {
 class ice_candidates {

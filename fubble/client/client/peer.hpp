@@ -4,7 +4,7 @@
 #include "client/logger.hpp"
 #include "p2p/negotiation/ice_candidates.hpp"
 #include "p2p/negotiation/offer_answer.hpp"
-#include "signaling/client/client.hpp"
+#include "fubble/signaling/client/client.hpp"
 #include <memory>
 
 // TODO move to p2p

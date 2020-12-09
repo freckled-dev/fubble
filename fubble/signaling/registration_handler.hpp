@@ -3,7 +3,7 @@
 
 #include "connection_ptr.hpp"
 #include "logger.hpp"
-#include "signaling/device/device_ptr.hpp"
+#include "fubble/signaling/device/device_ptr.hpp"
 #include <boost/signals2/connection.hpp>
 #include <boost/thread/executors/executor.hpp>
 #include <boost/thread/future.hpp>

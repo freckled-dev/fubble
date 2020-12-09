@@ -3,10 +3,10 @@
 
 #include "connection_creator.hpp"
 #include "connection_ptr.hpp"
-#include "signaling/answer.hpp"
-#include "signaling/ice_candidate.hpp"
-#include "signaling/logger.hpp"
-#include "signaling/offer.hpp"
+#include "fubble/signaling/answer.hpp"
+#include "fubble/signaling/ice_candidate.hpp"
+#include "fubble/signaling/logger.hpp"
+#include "fubble/signaling/offer.hpp"
 #include <boost/signals2/signal.hpp>
 #include <boost/thread/future.hpp>
 

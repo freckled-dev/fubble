@@ -1,5 +1,5 @@
-#include "version/getter.hpp"
-#include "version/logger.hpp"
+#include "fubble/version/getter.hpp"
+#include "fubble/version/logger.hpp"
 #include <boost/thread/executors/inline_executor.hpp>
 #include <nlohmann/json.hpp>
 

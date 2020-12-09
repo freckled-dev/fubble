@@ -3,7 +3,7 @@
 
 #include "client/test_executor.hpp"
 #include "temporary_room/server/test_server.hpp"
-#include "version/server.hpp"
+#include "fubble/version/server.hpp"
 
 namespace client::testing {
 struct test_services : test_executor {

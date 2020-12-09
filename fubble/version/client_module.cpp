@@ -1,5 +1,5 @@
 #include "client_module.hpp"
-#include "version/getter.hpp"
+#include "fubble/version/getter.hpp"
 
 using namespace version;
 

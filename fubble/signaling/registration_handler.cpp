@@ -1,7 +1,7 @@
 #include "registration_handler.hpp"
 #include "connection.hpp"
-#include "signaling/device/creator.hpp"
-#include "signaling/device/device.hpp"
+#include "fubble/signaling/device/creator.hpp"
+#include "fubble/signaling/device/device.hpp"
 #include <fmt/format.h>
 
 using namespace signaling;
