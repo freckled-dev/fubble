@@ -2,7 +2,7 @@
 #define SERVER_CONNECTION_CREATOR_HPP
 
 #include "connection_ptr.hpp"
-#include "websocket/connection_ptr.hpp"
+#include "fubble/websocket/connection_ptr.hpp"
 #include <boost/asio/io_context.hpp>
 #include <boost/thread/executors/executor.hpp>
 

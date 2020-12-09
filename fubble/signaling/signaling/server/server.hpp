@@ -1,8 +1,8 @@
 #ifndef SERVER_SERVER_HPP
 #define SERVER_SERVER_HPP
 
+#include "fubble/websocket/connection_ptr.hpp"
 #include "signaling/logger.hpp"
-#include "websocket/connection_ptr.hpp"
 #include <boost/thread/executors/executor.hpp>
 
 namespace websocket {

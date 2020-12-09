@@ -2,7 +2,7 @@
 #include "client/factory.hpp"
 #include "client/peer.hpp"
 #include "client/tracks_adder.hpp"
-#include "matrix/user.hpp"
+#include "fubble/matrix/user.hpp"
 #include "rtc/google/audio_track_sink.hpp"
 #include "rtc/google/video_track_sink.hpp"
 #include <fmt/format.h>

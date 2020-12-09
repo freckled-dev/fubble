@@ -1,6 +1,6 @@
 #include "room_creator.hpp"
-#include "matrix/client.hpp"
-#include "matrix/room.hpp"
+#include "fubble/matrix/client.hpp"
+#include "fubble/matrix/room.hpp"
 #include "room.hpp"
 
 using namespace client;

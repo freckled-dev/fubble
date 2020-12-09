@@ -1,7 +1,7 @@
 #ifndef UUID_E928967D_952B_4293_A853_EBE17F6B4F59
 #define UUID_E928967D_952B_4293_A853_EBE17F6B4F59
 
-#include "matrix/client.hpp"
+#include "fubble/matrix/client.hpp"
 #include "temporary_room/rooms/rooms.hpp"
 
 namespace temporary_room::server {

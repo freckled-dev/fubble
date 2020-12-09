@@ -1,6 +1,6 @@
 #include "connection_creator.hpp"
 #include "connection.hpp"
-#include "websocket/connection.hpp"
+#include "fubble/websocket/connection.hpp"
 
 using namespace signaling::client;
 

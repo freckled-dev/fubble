@@ -1,6 +1,6 @@
 #include "connection.hpp"
+#include "fubble/websocket/connection.hpp"
 #include "signaling/json_message.hpp"
-#include "websocket/connection.hpp"
 #include <boost/beast.hpp>
 #include <fmt/format.h>
 
@@ -42,8 +42,7 @@ void connection::send_offer(const signaling::offer &send_) {
   auto serialized = message_parser.serialize(send_);
   send(serialized);
 }
-void connection::send_ice_candidate(
-    const signaling::ice_candidate &candidate) {
+void connection::send_ice_candidate(const signaling::ice_candidate &candidate) {
   auto serialized = message_parser.serialize(candidate);
   send(serialized);
 }

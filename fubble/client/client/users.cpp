@@ -1,5 +1,5 @@
 #include "users.hpp"
-#include "matrix/users.hpp"
+#include "fubble/matrix/users.hpp"
 
 using namespace client;
 

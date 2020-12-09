@@ -1,6 +1,6 @@
 #include "matrix_rooms_factory_adapter.hpp"
-#include "matrix/room_participant.hpp"
-#include "matrix/room_states.hpp"
+#include "fubble/matrix/room_participant.hpp"
+#include "fubble/matrix/room_states.hpp"
 #include <boost/exception/diagnostic_information.hpp>
 #include <boost/thread/future.hpp>
 #include <fmt/format.h>

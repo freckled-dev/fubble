@@ -1,6 +1,6 @@
 #include "client_synchronizer.hpp"
+#include "fubble/matrix/client.hpp"
 #include "fubble/utils/timer.hpp"
-#include "matrix/client.hpp"
 #include <boost/asio/error.hpp>
 
 using namespace matrix;

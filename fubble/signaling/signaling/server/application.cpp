@@ -1,12 +1,12 @@
 #include "application.hpp"
 #include "fubble/utils/executor_asio.hpp"
+#include "fubble/websocket/acceptor.hpp"
+#include "fubble/websocket/connection_creator.hpp"
 #include "signaling/device/creator.hpp"
 #include "signaling/json_message.hpp"
 #include "signaling/registration_handler.hpp"
 #include "signaling/server/connection_creator.hpp"
 #include "signaling/server/server.hpp"
-#include "websocket/acceptor.hpp"
-#include "websocket/connection_creator.hpp"
 #include <boost/asio/io_context.hpp>
 #include <boost/thread/executors/executor_adaptor.hpp>
 

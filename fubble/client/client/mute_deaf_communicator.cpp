@@ -1,7 +1,7 @@
 #include "mute_deaf_communicator.hpp"
 #include "client/room.hpp"
-#include "matrix/room.hpp"
-#include "matrix/room_states.hpp"
+#include "fubble/matrix/room.hpp"
+#include "fubble/matrix/room_states.hpp"
 
 using namespace client;
 

@@ -1,5 +1,5 @@
 #include "connection.hpp"
-#include "websocket/connection.hpp"
+#include "fubble/websocket/connection.hpp"
 #include <boost/asio/error.hpp>
 #include <fmt/format.h>
 
@@ -75,8 +75,7 @@ void connection::send_offer(const signaling::offer &offer) {
   send(message_parser.serialize(offer));
 }
 
-void connection::send_ice_candidate(
-    const signaling::ice_candidate &candidate) {
+void connection::send_ice_candidate(const signaling::ice_candidate &candidate) {
   send(message_parser.serialize(candidate));
 }
 

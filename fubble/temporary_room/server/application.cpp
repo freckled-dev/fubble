@@ -1,8 +1,8 @@
 #include "application.hpp"
 #include "fubble/http/action_factory.hpp"
-#include "fubble/http/connection_creator.hpp"
-#include "matrix/authentification.hpp"
-#include "matrix/client_factory.hpp"
+#include "fubble/matrix/authentification.hpp"
+#include "fubble/matrix/client_factory.hpp"
+#include "http/connection_creator.hpp"
 #include "temporary_room/server/matrix_rooms_factory_adapter.hpp"
 #include "temporary_room/server/server.hpp"
 

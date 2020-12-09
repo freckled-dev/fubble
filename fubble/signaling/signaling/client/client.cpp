@@ -2,8 +2,8 @@
 #include "connection.hpp"
 #include "connection_creator.hpp"
 #include "fubble/utils/timer.hpp"
-#include "websocket/connection.hpp"
-#include "websocket/connector.hpp"
+#include "fubble/websocket/connection.hpp"
+#include "fubble/websocket/connector.hpp"
 #include <boost/thread/executors/inline_executor.hpp>
 #include <fmt/format.h>
 #include <iostream>

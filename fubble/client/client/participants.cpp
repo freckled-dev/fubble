@@ -1,6 +1,6 @@
 #include "participants.hpp"
-#include "matrix/room.hpp"
-#include "matrix/room_participant.hpp"
+#include "fubble/matrix/room.hpp"
+#include "fubble/matrix/room_participant.hpp"
 #include "participant.hpp"
 #include "participant_creator.hpp"
 

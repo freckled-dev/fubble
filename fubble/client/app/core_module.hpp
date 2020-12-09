@@ -3,9 +3,9 @@
 
 #include "client/session_module.hpp"
 #include "fubble/http/client_module.hpp"
+#include "fubble/matrix/module.hpp"
 #include "fubble/utils/executor_module.hpp"
 #include "fubble/utils/export.hpp"
-#include "matrix/module.hpp"
 #include "rtc/google/module.hpp"
 #include "signaling/client_module.hpp"
 #include "temporary_room/client_module.hpp"

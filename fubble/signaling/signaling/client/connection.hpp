@@ -1,12 +1,12 @@
 #ifndef SIGNALING_CLIENT_CONNECTION_HPP
 #define SIGNALING_CLIENT_CONNECTION_HPP
 
+#include "fubble/websocket/connection_ptr.hpp"
 #include "signaling/answer.hpp"
 #include "signaling/ice_candidate.hpp"
 #include "signaling/logger.hpp"
 #include "signaling/offer.hpp"
 #include "signaling/registration.hpp"
-#include "websocket/connection_ptr.hpp"
 #include <boost/signals2/signal.hpp>
 #include <boost/thread/executors/inline_executor.hpp>
 #include <boost/thread/future.hpp>

@@ -1,6 +1,6 @@
 #include "events.hpp"
-#include "matrix/logger.hpp"
-#include "matrix/users.hpp"
+#include "fubble/matrix/logger.hpp"
+#include "fubble/matrix/users.hpp"
 #include <boost/algorithm/string/predicate.hpp>
 #include <nlohmann/json.hpp>
 

@@ -2,6 +2,9 @@
 #include "executor_asio.hpp"
 #include "fubble/http/connection_creator.hpp"
 #include "fubble/utils/uuid.hpp"
+#include "fubble/websocket/acceptor.hpp"
+#include "fubble/websocket/connection_creator.hpp"
+#include "fubble/websocket/connector.hpp"
 #include "server.hpp"
 #include "signaling/client/client.hpp"
 #include "signaling/client/connection.hpp"
@@ -9,9 +12,6 @@
 #include "signaling/device/creator.hpp"
 #include "signaling/json_message.hpp"
 #include "signaling/registration_handler.hpp"
-#include "websocket/acceptor.hpp"
-#include "websocket/connection_creator.hpp"
-#include "websocket/connector.hpp"
 #include <boost/log/keywords/auto_flush.hpp>
 #include <boost/log/utility/setup/console.hpp>
 #include <boost/thread/executors/executor_adaptor.hpp>

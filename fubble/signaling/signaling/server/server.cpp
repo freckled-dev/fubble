@@ -1,8 +1,8 @@
 #include "server.hpp"
 #include "connection.hpp"
 #include "connection_creator.hpp"
-#include "websocket/acceptor.hpp"
-#include "websocket/connection.hpp"
+#include "fubble/websocket/acceptor.hpp"
+#include "fubble/websocket/connection.hpp"
 #include <boost/thread/executors/executor.hpp>
 #include <fmt/format.h>
 #include <signaling/registration_handler.hpp>

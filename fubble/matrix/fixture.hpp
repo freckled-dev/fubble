@@ -5,8 +5,8 @@
 #include "client_factory.hpp"
 #include "error.hpp"
 #include "fubble/http/action_factory.hpp"
-#include "fubble/http/connection_creator.hpp"
-#include "matrix/testing.hpp"
+#include "fubble/matrix/testing.hpp"
+#include "http/connection_creator.hpp"
 #include "room.hpp"
 #include "users.hpp"
 #include <boost/asio/io_context.hpp>

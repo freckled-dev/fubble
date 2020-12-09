@@ -1,6 +1,6 @@
 #include "participant_creator.hpp"
 #include "bot_participant.hpp"
-#include "matrix/user.hpp"
+#include "fubble/matrix/user.hpp"
 #include "own_participant.hpp"
 #include "peer_creator.hpp"
 #include "remote_participant.hpp"

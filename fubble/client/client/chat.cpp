@@ -1,6 +1,6 @@
 #include "chat.hpp"
-#include "matrix/chat.hpp"
-#include "matrix/user.hpp"
+#include "fubble/matrix/chat.hpp"
+#include "fubble/matrix/user.hpp"
 
 using namespace client;
 
