@@ -34,7 +34,9 @@ build mac release:
   variables:
     FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install
   script:
-    - python3 scripts/make_build.py --profile scripts/conan_profiles/mac_release
+    - > python3 scripts/make_build.py
+      --profile scripts/conan_profiles/mac_release
+      --skip_export
   after_script:
     - mv -v ../fubble_build/meson/meson-logs .
   artifacts:
@@ -58,12 +60,18 @@ build mac release:
 build ios release:
   <<: *build_ios
   script:
-    - python3 scripts/make_build.py --profile_build scripts/conan_profiles/mac_release --profile_host scripts/conan_profiles/ios_release
+    - > python3 scripts/make_build.py
+      --profile_build scripts/conan_profiles/mac_release
+      --profile_host scripts/conan_profiles/ios_release
+      --skip_export
 
 build ios simulator release:
   <<: *build_ios
   script:
-    - python3 scripts/make_build.py --profile_build scripts/conan_profiles/mac_release --profile_host scripts/conan_profiles/ios_simulator_release
+    - > python3 scripts/make_build.py
+      --profile_build scripts/conan_profiles/mac_release
+      --profile_host scripts/conan_profiles/ios_simulator_release
+      --skip_export
 
 appimage:
   image: registry.gitlab.com/acof/fubble/ci/build_ubuntu_1804:v2
@@ -107,12 +115,16 @@ appimage:
 build windows release:
   <<: *build_windows
   script:
-    - python scripts/make_build.py --profile scripts/conan_profiles/windows_release
+    - > python scripts/make_build.py
+      --profile scripts/conan_profiles/windows_release
+      --skip_export
 
 build windows debug:
   <<: *build_windows
   script:
-    - python scripts/make_build.py --profile scripts/conan_profiles/windows_debug
+    - > python scripts/make_build.py
+      --profile scripts/conan_profiles/windows_debug
+      --skip_export
   when: manual
 
 deploy services:
