@@ -15,7 +15,7 @@ curl -LO https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous
 curl -LO https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
 chmod u+x linuxdeploy-x86_64.AppImage linuxdeploy-plugin-qt-x86_64.AppImage
 
-export QML_SOURCES_PATHS="${source_dir}/client/app"
+export QML_SOURCES_PATHS="${source_dir}/fubble/app"
 
 mkdir -p appdir/usr
 cp -rv "${prefix_dir}/share" appdir/usr
