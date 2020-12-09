@@ -1,0 +1,15 @@
+subdir('asio')
+subdir('utils')
+subdir('http')
+subdir('websocket')
+subdir('matrix')
+subdir('signaling')
+subdir('rtc')
+subdir('temporary_room')
+subdir('version')
+subdir('client')
+if get_option('with_ui')
+  subdir('video_layout')
+endif
+subdir('app')
+
