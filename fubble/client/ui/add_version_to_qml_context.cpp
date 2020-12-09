@@ -1,5 +1,5 @@
 #include "add_version_to_qml_context.hpp"
-#include "utils/version.hpp"
+#include "fubble/utils/version.hpp"
 #include <QQmlContext>
 
 using namespace client::ui;

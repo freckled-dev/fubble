@@ -2,8 +2,8 @@
 #include "client/audio_tracks_volume.hpp"
 #include "client/mute_deaf_communicator.hpp"
 #include "client/test_client.hpp"
+#include "fubble/utils/uuid.hpp"
 #include "temporary_room/server/test_server.hpp"
-#include "utils/uuid.hpp"
 #include <gtest/gtest.h>
 
 namespace {

@@ -1,11 +1,11 @@
 #include "joiner.hpp"
+#include "fubble/utils/version.hpp"
 #include "matrix/authentification.hpp"
 #include "matrix/client_synchronizer.hpp"
 #include "room.hpp"
 #include "room_creator.hpp"
 #include "rooms.hpp"
 #include "temporary_room/net/client.hpp"
-#include "utils/version.hpp"
 #include <boost/asio/defer.hpp>
 #include <fmt/format.h>
 

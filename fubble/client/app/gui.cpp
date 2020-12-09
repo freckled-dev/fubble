@@ -6,12 +6,12 @@
 #include "client/video_module.hpp"
 #include "core_module.hpp"
 #include "fubble/utils/logging/logger.hpp"
+#include "fubble/utils/version.hpp"
 #include "gui_options.hpp"
 #include "log_module.hpp"
 #include "poll_asio_by_qt.hpp"
 #include "ui/add_version_to_qml_context.hpp"
 #include "ui_module.hpp"
-#include "utils/version.hpp"
 
 int main(int argc, char *argv[]) {
   gui_options options_parser;

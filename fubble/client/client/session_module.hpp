@@ -1,11 +1,11 @@
 #ifndef UUID_E1787C7F_9E5F_4756_9483_18AC5D05415D
 #define UUID_E1787C7F_9E5F_4756_9483_18AC5D05415D
 
+#include "fubble/utils/executor_module.hpp"
 #include "matrix/module.hpp"
 #include "rtc/google/module.hpp"
 #include "signaling/client_module.hpp"
 #include "temporary_room/client_module.hpp"
-#include "utils/executor_module.hpp"
 #include "version/client_module.hpp"
 
 namespace client {

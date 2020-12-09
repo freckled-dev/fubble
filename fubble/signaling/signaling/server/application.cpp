@@ -1,10 +1,10 @@
 #include "application.hpp"
+#include "fubble/utils/executor_asio.hpp"
 #include "signaling/device/creator.hpp"
 #include "signaling/json_message.hpp"
 #include "signaling/registration_handler.hpp"
 #include "signaling/server/connection_creator.hpp"
 #include "signaling/server/server.hpp"
-#include "utils/executor_asio.hpp"
 #include "websocket/acceptor.hpp"
 #include "websocket/connection_creator.hpp"
 #include <boost/asio/io_context.hpp>
@@ -42,8 +42,8 @@ protected:
   signaling::device::creator device_creator_{asio_executor};
   signaling::registration_handler registration_handler{device_creator_};
   signaling::server::server server_{asio_executor, websocket_acceptor,
-                                     server_connection_creator,
-                                     registration_handler};
+                                    server_connection_creator,
+                                    registration_handler};
 };
 } // namespace
 

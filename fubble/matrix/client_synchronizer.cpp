@@ -1,6 +1,6 @@
 #include "client_synchronizer.hpp"
+#include "fubble/utils/timer.hpp"
 #include "matrix/client.hpp"
-#include "utils/timer.hpp"
 #include <boost/asio/error.hpp>
 
 using namespace matrix;
@@ -29,7 +29,9 @@ public:
       return;
     } catch (const boost::system::system_error &error) {
       BOOST_LOG_SEV(logger, logging::severity::debug)
-            << __FUNCTION__ << ", sync got cancelled, stopping the sync, error:code():" << error.code() << ", what:" << error.what();
+          << __FUNCTION__
+          << ", sync got cancelled, stopping the sync, error:code():"
+          << error.code() << ", what:" << error.what();
       if (error.code() == boost::asio::error::operation_aborted) {
         BOOST_LOG_SEV(logger, logging::severity::debug)
             << __FUNCTION__ << ", sync got cancelled, stopping the sync";

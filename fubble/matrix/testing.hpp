@@ -2,8 +2,8 @@
 #define UUID_7E48ABA1_27AF_4041_AF31_8C26D6C15A75
 
 #include "fubble/http/fields.hpp"
-#include "fubble/http/server.hpp"
-#include "utils/testing.hpp"
+#include "fubble/utils/testing.hpp"
+#include "http/server.hpp"
 
 namespace matrix::testing {
 namespace {

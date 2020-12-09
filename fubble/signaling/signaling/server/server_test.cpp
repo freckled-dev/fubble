@@ -1,6 +1,7 @@
 #include "connection_creator.hpp"
 #include "executor_asio.hpp"
 #include "fubble/http/connection_creator.hpp"
+#include "fubble/utils/uuid.hpp"
 #include "server.hpp"
 #include "signaling/client/client.hpp"
 #include "signaling/client/connection.hpp"
@@ -8,7 +9,6 @@
 #include "signaling/device/creator.hpp"
 #include "signaling/json_message.hpp"
 #include "signaling/registration_handler.hpp"
-#include "utils/uuid.hpp"
 #include "websocket/acceptor.hpp"
 #include "websocket/connection_creator.hpp"
 #include "websocket/connector.hpp"
@@ -38,21 +38,21 @@ struct Server : testing::Test {
   websocket::connector_creator websocket_connector{
       context, websocket_connection_creator};
   signaling::client::connection_creator connection_creator{context, executor,
-                                                            signaling_json};
+                                                           signaling_json};
   std::unique_ptr<signaling::client::client> client_instance =
       signaling::client::client::create(websocket_connector,
-                                         connection_creator);
+                                        connection_creator);
   signaling::client::client &client_{*client_instance};
   std::unique_ptr<signaling::client::client> client_answering_instance =
       signaling::client::client::create(websocket_connector,
-                                         connection_creator);
+                                        connection_creator);
   signaling::client::client &client_answering{*client_answering_instance};
 
   std::unique_ptr<signaling::client::client>
   create_client_and_connect(const std::string &token = uuid::generate()) {
     std::unique_ptr<signaling::client::client> result =
         signaling::client::client::create(websocket_connector,
-                                           connection_creator);
+                                          connection_creator);
     connect(*result, token);
     return result;
   }

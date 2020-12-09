@@ -1,11 +1,11 @@
 #include "module.hpp"
+#include "fubble/utils/timer.hpp"
 #include "matrix/authentification.hpp"
 #include "matrix/client.hpp"
 #include "matrix/client_factory.hpp"
 #include "matrix/client_synchronizer.hpp"
 #include "matrix/factory.hpp"
 #include "matrix/rooms.hpp"
-#include "utils/timer.hpp"
 
 using namespace matrix;
 

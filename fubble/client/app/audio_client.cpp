@@ -3,7 +3,7 @@
 #include "client/leaver.hpp"
 #include "client/own_media.hpp"
 #include "client/session_module.hpp"
-#include "utils/uuid.hpp"
+#include "fubble/utils/uuid.hpp"
 #include <boost/asio/io_context.hpp>
 
 namespace {

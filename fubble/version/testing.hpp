@@ -2,8 +2,8 @@
 #define UUID_2CE437A3_4A8A_451D_B0CD_81AFA972B50D
 
 #include "fubble/http/fields.hpp"
-#include "fubble/http/server.hpp"
-#include "utils/testing.hpp"
+#include "fubble/utils/testing.hpp"
+#include "http/server.hpp"
 
 namespace version::testing {
 static const std::string server = "localhost";

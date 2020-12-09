@@ -1,7 +1,7 @@
+#include "fubble/utils/uuid.hpp"
 #include "registration_handler.hpp"
 #include "signaling/connection.hpp"
 #include "signaling/device/creator.hpp"
-#include "utils/uuid.hpp"
 #include <boost/thread/executors/inline_executor.hpp>
 #include <gtest/gtest.h>
 
@@ -23,9 +23,7 @@ struct mock_connection final : signaling::connection {
     candidates.push_back(candidate);
   }
   boost::optional<signaling::answer> answer;
-  void send_answer(const signaling::answer &answer_) final {
-    answer = answer_;
-  }
+  void send_answer(const signaling::answer &answer_) final { answer = answer_; }
   bool state_offering_called{};
   void send_do_offer() final { state_offering_called = true; }
   bool close_called{};

@@ -1,7 +1,7 @@
 #include "client.hpp"
 #include "connection.hpp"
 #include "connection_creator.hpp"
-#include "utils/timer.hpp"
+#include "fubble/utils/timer.hpp"
 #include "websocket/connection.hpp"
 #include "websocket/connector.hpp"
 #include <boost/thread/executors/inline_executor.hpp>

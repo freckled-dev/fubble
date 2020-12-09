@@ -1,5 +1,7 @@
 #include "fubble/http/action_factory.hpp"
-#include "fubble/http/connection_creator.hpp"
+#include "fubble/utils/executor_asio.hpp"
+#include "fubble/utils/uuid.hpp"
+#include "http/connection_creator.hpp"
 #include "matrix/authentification.hpp"
 #include "matrix/client_factory.hpp"
 #include "matrix/testing.hpp"
@@ -7,8 +9,6 @@
 #include "server.hpp"
 #include "temporary_room/net/client.hpp"
 #include "temporary_room/server/application.hpp"
-#include "utils/executor_asio.hpp"
-#include "utils/uuid.hpp"
 #include <gtest/gtest.h>
 
 namespace {

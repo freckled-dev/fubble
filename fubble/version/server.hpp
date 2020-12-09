@@ -1,7 +1,7 @@
 #ifndef UUID_B07D6F3D_3682_486D_84BA_55DDFE035829
 #define UUID_B07D6F3D_3682_486D_84BA_55DDFE035829
 
-#include "utils/version.hpp"
+#include "fubble/utils/version.hpp"
 #include <boost/asio/io_context.hpp>
 #include <memory>
 

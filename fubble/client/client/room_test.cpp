@@ -1,8 +1,8 @@
 #include "client/add_data_channel.hpp"
 #include "client/test_client.hpp"
+#include "fubble/utils/uuid.hpp"
+#include "fubble/utils/wait_for_event.hpp"
 #include "test_executor.hpp"
-#include "utils/uuid.hpp"
-#include "utils/wait_for_event.hpp"
 #include <gtest/gtest.h>
 
 namespace {

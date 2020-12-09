@@ -2,7 +2,7 @@
 #define UUID_B27E182A_AF56_48E7_B9B3_428F3B393E2B
 
 #include "client/logger.hpp"
-#include "utils/exception.hpp"
+#include "fubble/utils/exception.hpp"
 #include "version/getter.hpp"
 #include <boost/thread/executors/inline_executor.hpp>
 #include <boost/thread/future.hpp>

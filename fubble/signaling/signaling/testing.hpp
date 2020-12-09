@@ -2,8 +2,8 @@
 #define UUID_1AB9BA1B_893D_44B7_BACA_2918CBBAC222
 
 #include "signaling/client/client.hpp"
-#include "utils/testing.hpp"
-#include "utils/uuid.hpp"
+#include "fubble/utils/testing.hpp"
+#include "fubble/utils/uuid.hpp"
 
 namespace signaling::testing {
 client::connect_information make_connect_information() {
