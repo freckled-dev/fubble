@@ -20,7 +20,7 @@ webrtc_gstreamer_peer_test = executable('webrtc_peer_test',
     'video_track_test.cpp'],
   dependencies: [gtest_dep, webrtc_gstreamer_peer_dep, utils_dep, fmt_dep]
   )
-suppr_file = meson.current_source_dir() / 'webrtc_peer/lsan_suppressions_gstreamer'
+suppr_file = meson.current_source_dir() / 'fubble/rtc/lsan_suppressions_gstreamer'
 suppr_option = 'LSAN_OPTIONS=suppressions=' + suppr_file
 test('webrtc_gstreamer_peer test',
   webrtc_gstreamer_peer_test,
