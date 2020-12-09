@@ -18,7 +18,7 @@ class room_creator;
 class factory;
 class own_media;
 class participant_creator_creator;
-class session_module {
+class FUBBLE_PUBLIC session_module {
 public:
   struct config {};
   session_module(

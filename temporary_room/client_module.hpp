@@ -11,7 +11,7 @@ namespace temporary_room::net {
 class client;
 }
 namespace temporary_room {
-class client_module {
+class FUBBLE_PUBLIC client_module {
 public:
   struct config {
     std::string host = "fubble.io";

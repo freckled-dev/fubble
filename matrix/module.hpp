@@ -12,7 +12,7 @@ class factory;
 class client_factory;
 class client_synchronizer;
 class authentification;
-class module {
+class FUBBLE_PUBLIC module {
 public:
   struct config {
     std::string host = "fubble.io";

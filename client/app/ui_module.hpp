@@ -7,6 +7,7 @@
 #include "client/logger.hpp"
 #include "client/session_module.hpp"
 #include "client/video_module.hpp"
+#include "utils/export.hpp"
 #include <memory>
 
 class QApplication;
@@ -27,7 +28,7 @@ class mute_deaf_communicator;
 class own_media_model;
 class share_desktop_model;
 class utils_model;
-class ui_module {
+class FUBBLE_PUBLIC ui_module {
 public:
   ui_module(
       std::shared_ptr<utils::executor_module> executor_module,

@@ -27,6 +27,18 @@ audio_client = executable('audio_client',
   install: true
   )
 
+install_headers([
+  'audio_video_settings_devices_model.hpp', 'audio_video_settings_model.hpp',
+  'chat_model.hpp', 'error_model.hpp', 'gui_options.hpp',
+  'language_settings_model.hpp', 'leave_model.hpp', 'log_module.hpp',
+  'model_creator.hpp', 'options.hpp', 'own_media_model.hpp',
+  'participant_model.hpp', 'participants_model.hpp',
+  'participants_with_video_model.hpp', 'poll_asio_by_qt.hpp',
+  'share_desktop_model.hpp', 'utils_model.hpp', 'chat_messages_model.hpp',
+  'join_model.hpp', 'room_model.hpp', 'rooms_model.hpp', 'ui_module.hpp',
+  'audio_client.hpp', 'core_module.hpp',
+  ], subdir: 'app')
+
 if get_option('with_ui')
   client_gui_sources = ['gui.cpp', 'utils_model.cpp', 'join_model.cpp',
     'poll_asio_by_qt.cpp', 'participants_model.cpp',

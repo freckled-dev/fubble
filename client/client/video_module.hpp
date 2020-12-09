@@ -16,7 +16,7 @@ namespace client {
 class add_video_to_connection_factory;
 class own_video;
 class video_settings;
-class video_module {
+class FUBBLE_PUBLIC video_module {
 public:
   struct config {
     bool enabled;

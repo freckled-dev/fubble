@@ -6,7 +6,7 @@
 namespace http {
 class connection_creator;
 class action_factory;
-class client_module {
+class FUBBLE_PUBLIC client_module {
 public:
   client_module(std::shared_ptr<utils::executor_module> executor_module);
   virtual ~client_module();

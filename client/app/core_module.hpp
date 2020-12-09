@@ -8,11 +8,12 @@
 #include "signaling/client_module.hpp"
 #include "temporary_room/client_module.hpp"
 #include "utils/executor_module.hpp"
+#include "utils/export.hpp"
 #include "version/client_module.hpp"
 
 namespace client {
 class crash_catcher;
-class core_module {
+class FUBBLE_PUBLIC core_module {
 public:
   struct config {
     signaling::client_module::config signaling_;

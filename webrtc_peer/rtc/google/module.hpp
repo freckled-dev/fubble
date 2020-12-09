@@ -18,7 +18,7 @@ class device_factory;
 struct settings;
 class asio_signaling_thread;
 class factory;
-class module {
+class FUBBLE_PUBLIC module {
 public:
   module(std::shared_ptr<utils::executor_module> executor_module,
          const settings rtc_settings);

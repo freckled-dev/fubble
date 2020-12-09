@@ -4,8 +4,8 @@
 #include "client/audio_module.hpp"
 #include "client/audio_settings_module.hpp"
 #include "core_module.hpp"
+#include "utils/export.hpp"
 #include <boost/thread/future.hpp>
-#include "export.hpp"
 
 namespace audio_client {
 class FUBBLE_PUBLIC audio_client {

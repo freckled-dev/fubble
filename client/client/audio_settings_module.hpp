@@ -4,6 +4,7 @@
 #include "client/audio_module.hpp"
 #include "client/session_module.hpp"
 #include "rtc/google/module.hpp"
+#include "utils/export.hpp"
 
 namespace rtc::google {
 class audio_track;
@@ -13,7 +14,7 @@ class loopback_audio_factory;
 class audio_tracks_volume;
 class own_microphone_tester;
 class audio_device_settings;
-class audio_settings_module {
+class FUBBLE_PUBLIC audio_settings_module {
 public:
   struct config {};
   audio_settings_module(std::shared_ptr<utils::executor_module> executor_module,
