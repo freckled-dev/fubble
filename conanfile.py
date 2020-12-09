@@ -190,14 +190,14 @@ class FubbleConan(ConanFile):
             qt_path_bin = self._get_qt_bin_paths()
             with tools.environment_append({"PATH": qt_path_bin}):
                 with tools.chdir(bin_dir):
-                    qml_dir = os.path.join(self.source_folder, 'client', 'app')
+                    qml_dir = os.path.join(self.source_folder, 'fubble', 'app')
                     # dont do -no-widgets # widgets is needed for svg
                     self.run('windeployqt.exe fubble.exe --no-compiler-runtime --qmldir "%s"'
                         % (qml_dir))
 
     def package_info(self):
         self.cpp_info.libs = ['fubble']
-        self.cpp_info.includedirs = ['include', 'include/utils']
+        self.cpp_info.includedirs = ['include']
         self.cpp_info.cxxflags = [
             '-DBOOST_THREAD_VERSION=5',
             '-DBOOST_ASIO_SEPARATE_COMPILATION',
