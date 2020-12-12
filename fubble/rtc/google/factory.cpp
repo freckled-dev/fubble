@@ -14,14 +14,6 @@
 #include <api/video_codecs/builtin_video_decoder_factory.h>
 #include <api/video_codecs/builtin_video_encoder_factory.h>
 
-// kWindowsCoreAudio2
-// https://chromium.googlesource.com/external/webrtc/+/HEAD/modules/audio_device/include/audio_device_factory.h
-#define FUBBLE_ENABLE_GOOGLE_WEBRTC_CORE_AUDIO2 0
-
-#if BOOST_OS_WINDOWS && FUBBLE_ENABLE_GOOGLE_WEBRTC_CORE_AUDIO2
-#include <modules/audio_device/include/audio_device_factory.h>
-#endif
-
 using namespace rtc::google;
 
 factory::factory(const settings &settings_, rtc::Thread &signaling_thread)
@@ -161,35 +153,6 @@ void factory::instance_audio_device_module() {
             webrtc::AudioDeviceModule::kPlatformDefaultAudio,
             task_queue_factory.get());
       });
-#if BOOST_OS_WINDOWS
-  if (!settings_.windows_use_core_audio2)
-    return;
-#if FUBBLE_ENABLE_GOOGLE_WEBRTC_CORE_AUDIO2
-#error "currently not supported. will not link"
-  BOOST_LOG_SEV(logger, logging::severity::trace)
-      << "due to windows_use_core_audio2 using "
-         "CreateWindowsCoreAudioAudioDeviceModule";
-  BOOST_ASSERT(!task_queue_factory);
-  audio_device_module = worker_thread->Invoke<decltype(audio_device_module)>(
-      RTC_FROM_HERE, [this]() -> rtc::scoped_refptr<webrtc::AudioDeviceModule> {
-        com_initializer_ =
-            std::make_unique<webrtc::webrtc_win::ScopedCOMInitializer>(
-                webrtc::webrtc_win::ScopedCOMInitializer::kMTA);
-        if (!com_initializer_->Succeeded()) {
-          BOOST_LOG_SEV(this->logger, logging::severity::error)
-              << "could not initialze COM";
-          return nullptr;
-        }
-        // TODO does not link. build flag include_tests may resolve the issue
-        return webrtc::CreateWindowsCoreAudioAudioDeviceModule(
-            task_queue_factory.get());
-      });
-#else
-  BOOST_LOG_SEV(this->logger, logging::severity::error)
-      << "no windows core audio2 enabled at compile time";
-  BOOST_ASSERT(false);
-#endif
-#endif
   BOOST_ASSERT(audio_device_module);
 }
 
