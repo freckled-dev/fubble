@@ -5,7 +5,6 @@
 #include "fubble/client/audio_module.hpp"
 #include "fubble/client/audio_settings_module.hpp"
 #include "fubble/utils/export.hpp"
-#include <boost/thread/future.hpp>
 
 namespace audio_client {
 class FUBBLE_PUBLIC audio_client {
@@ -19,9 +18,7 @@ public:
   static std::unique_ptr<audio_client> create(const config &config_);
   virtual ~audio_client() = default;
 
-  // TODO actually this method will block! change from future to `optional`,
-  // `outcome` or `expected`
-  virtual boost::future<int> run() = 0;
+  virtual int run() = 0;
   virtual void stop() = 0;
 
   virtual std::shared_ptr<client::core_module> get_core() const = 0;

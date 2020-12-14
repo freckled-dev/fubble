@@ -37,5 +37,5 @@ int main(int argc, char *argv[]) {
   exit_signals exit_signals_{exit_executor};
   exit_signals_.async_wait([&](auto) { audio_client->stop(); });
   auto result = audio_client->run();
-  return result.get();
+  return result;
 }

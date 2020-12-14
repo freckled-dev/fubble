@@ -105,6 +105,12 @@ else
       # '-fvisibility=default',
       ]
   endif
+  if is_ios
+    boost_compile_args += [
+      '-DBOOST_AC_USE_PTHREADS',
+      '-DBOOST_SP_USE_PTHREADS'
+      ]
+  endif
 endif
 boost_dep_pkg = dependency('boost', modules : boost_dep_modules, static: true,
   include_type : 'system'
@@ -196,6 +202,7 @@ elif host_machine.system() == 'darwin'
       'coreaudio',
       'foundation',
       'uikit',
+      'coremedia',
       ])
   else
     webrtc_apple_deps = dependency('appleframeworks', modules : [

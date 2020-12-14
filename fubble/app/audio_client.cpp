@@ -27,7 +27,7 @@ public:
   }
 
 private:
-  boost::future<int> run() override {
+  int run() override {
     auto joiner = core->get_session_module()->get_joiner();
     client::joiner::parameters parameters{uuid::generate(), "fun"};
     joiner->join(parameters).then(executor, [this](auto result) {
@@ -39,7 +39,7 @@ private:
       }
     });
     core->get_utils_executor_module()->get_io_context()->run();
-    return run_promise.get_future();
+    return run_promise.get_future().get();
   }
 
   void stop_execution() {

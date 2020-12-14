@@ -15,7 +15,6 @@ namespace video {
 class device_factory;
 }
 } // namespace capture
-struct settings;
 class asio_signaling_thread;
 class factory;
 class FUBBLE_PUBLIC module {
