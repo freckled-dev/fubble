@@ -8,9 +8,10 @@ compiler.libcxx=libc++
 build_type=Debug
 
 [options]
-boost:extra_b2_flags=cxxflags=-fsanitize=address visibility=global
+boost:extra_b2_flags=cxxflags=visibility=global
+# boost:extra_b2_flags=cxxflags=-fsanitize=address visibility=global
 [build_requires]
 [env]
-boost:CXXFLAGS=-fsanitize=address
-boost:CFLAGS=-fsanitize=address
+#boost:CXXFLAGS=-fsanitize=address
+#boost:CFLAGS=-fsanitize=address
 
