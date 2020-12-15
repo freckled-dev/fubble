@@ -19,8 +19,7 @@ class FubbleConan(ConanFile):
     # https://docs.conan.io/en/latest/reference/conanfile/attributes.html#default-options
     default_options = {"shared": False, "qt_install": None, "enable_ui": True,
             "meson_cross_file": None,
-            "nlohmann_json:multiple_headers": True,
-            "restinio:asio": "boost",
+            "nlohmann_json:multiple_headers": True, "restinio:asio": "boost",
             # qt options
             # "qt:openssl": False, "qt:with_mysql": False, "qt:with_pq": False, "qt:with_odbc": False, "qt:widgets": False,
             # "qt:with_libalsa": False,
@@ -28,7 +27,7 @@ class FubbleConan(ConanFile):
             # "qt:qtsvg": True, "qt:qtmultimedia": True, "qt:qtquickcontrols2": True, "qt:qtcharts": True,
             "treat_warnings_as_errors": False, "sanatize": False}
     generators = "pkg_config"
-    exports_sources = "*", "!client/app/mock_qml_models*"
+    exports_sources = "*", "!fubble/app/mock_qml_models*"
     no_copy_source = True
 
     # https://docs.conan.io/en/latest/versioning/introduction.html
