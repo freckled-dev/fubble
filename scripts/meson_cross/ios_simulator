@@ -5,11 +5,33 @@ ar = 'ar'
 strip = 'strip'
 
 [built-in options]
+c_args = [
+  '-arch', 'x86_64',
+  '-miphoneos-version-min=12.0',
+  '-isysroot', '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk'
+  ]
+cpp_args = [
+  '-arch', 'x86_64',
+  '-miphoneos-version-min=12.0',
+  '-isysroot', '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk',
+  '-fvisibility=hidden',
+  '-fvisibility-inlines-hidden'
+  ]
 # dont forget about the flag '-ObjC' else there are weird objective c runtime errors!
-c_args = ['-fsanitize=address,undefined', '-arch', 'x86_64', '-miphoneos-version-min=12.0', '-isysroot', '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk']
-cpp_args = ['-fsanitize=address,undefined', '-arch', 'x86_64', '-miphoneos-version-min=12.0', '-isysroot', '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk', '-fvisibility=hidden', '-fvisibility-inlines-hidden']
-c_link_args = ['-ObjC', '-fsanitize=address,undefined', '-arch', 'x86_64', '-miphoneos-version-min=12.0', '-isysroot', '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk']
-cpp_link_args = ['-ObjC', '-fsanitize=address,undefined', '-arch', 'x86_64', '-miphoneos-version-min=12.0', '-isysroot', '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk']
+c_link_args = [
+  '-ObjC',
+  # '-fsanitize=address,undefined',
+  '-arch', 'x86_64',
+  '-miphoneos-version-min=12.0',
+  '-isysroot', '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk'
+  ]
+cpp_link_args = [
+  '-ObjC',
+  # '-fsanitize=address,undefined',
+  '-arch', 'x86_64',
+  '-miphoneos-version-min=12.0',
+  '-isysroot', '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk'
+  ]
 
 [properties]
 root = '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer'

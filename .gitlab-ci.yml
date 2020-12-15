@@ -49,8 +49,6 @@ build mac release:
   tags:
     - macos
   stage: build
-  variables:
-    FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install
   after_script:
     - mv -v ../fubble_build/meson/meson-logs .
   artifacts:
@@ -58,8 +56,32 @@ build mac release:
     expire_in: 1 week
     when: always
 
+build ios debug:
+  <<: *build_ios
+  variables:
+    FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install_ios_debug
+  script:
+    - >
+      python3 scripts/make_build.py
+      --profile_build scripts/conan_profiles/mac_release
+      --profile_host scripts/conan_profiles/ios_debug
+      --skip_export
+
+build ios simulator debug:
+  <<: *build_ios
+  variables:
+    FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install_ios_simulator_debug
+  script:
+    - >
+      python3 scripts/make_build.py
+      --profile_build scripts/conan_profiles/mac_release
+      --profile_host scripts/conan_profiles/ios_simulator_debug
+      --skip_export
+
 build ios release:
   <<: *build_ios
+  variables:
+    FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install_ios_release
   script:
     - >
       python3 scripts/make_build.py
@@ -69,6 +91,8 @@ build ios release:
 
 build ios simulator release:
   <<: *build_ios
+  variables:
+    FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install_ios_simulator_release
   script:
     - >
       python3 scripts/make_build.py
@@ -115,7 +139,8 @@ appimage:
     expire_in: 1 week
     when: always
 
-build windows release:
+# re-enable when issue https://github.com/conan-io/conan-center-index/issues/3869 is closed
+.build windows release:
   <<: *build_windows
   script:
     - >
@@ -123,7 +148,8 @@ build windows release:
       --profile scripts/conan_profiles/windows_release
       --skip_export
 
-build windows debug:
+# re-enable when issue https://github.com/conan-io/conan-center-index/issues/3869 is closed
+.build windows debug:
   <<: *build_windows
   script:
     - >
@@ -132,7 +158,8 @@ build windows debug:
       --skip_export
   when: manual
 
-deploy services:
+# re-enable when issue https://github.com/conan-io/conan-center-index/issues/3869 is closed
+.deploy services:
   stage: deploy
   image: registry.gitlab.com/acof/fubble-deploy/ansible_deploy:latest
   variables:
