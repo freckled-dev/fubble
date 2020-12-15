@@ -18,6 +18,7 @@ class FubbleConan(ConanFile):
             "enable_ui": [True, False], "meson_cross_file": "ANY"}
     # https://docs.conan.io/en/latest/reference/conanfile/attributes.html#default-options
     default_options = {"shared": False, "qt_install": None, "enable_ui": True,
+            "meson_cross_file": None,
             "nlohmann_json:multiple_headers": True,
             "restinio:asio": "boost",
             # qt options
