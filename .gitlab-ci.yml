@@ -142,7 +142,8 @@ appimage:
       --profile scripts/conan_profiles/windows_release
       --skip_export
 
-build windows debug:
+# re-enable when issue https://github.com/conan-io/conan-center-index/issues/3869 is closed
+.build windows debug:
   <<: *build_windows
   script:
     - >
@@ -151,7 +152,8 @@ build windows debug:
       --skip_export
   when: manual
 
-deploy services:
+# re-enable when issue https://github.com/conan-io/conan-center-index/issues/3869 is closed
+.deploy services:
   stage: deploy
   image: registry.gitlab.com/acof/fubble-deploy/ansible_deploy:latest
   variables:
