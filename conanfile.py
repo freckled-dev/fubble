@@ -148,7 +148,6 @@ class FubbleConan(ConanFile):
                     cross_file = os.path.abspath(os.path.join(self.source_folder, cross_file))
                 self.output.info("cross_file %s" % cross_file)
                 meson_args += ['--cross-file', cross_file]
-            self.output.info("2")
 
             meson.configure( build_folder="meson", defs=meson_options,
                     args=meson_args,
