@@ -49,8 +49,6 @@ build mac release:
   tags:
     - macos
   stage: build
-  variables:
-    FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install
   after_script:
     - mv -v ../fubble_build/meson/meson-logs .
   artifacts:
@@ -60,6 +58,8 @@ build mac release:
 
 build ios debug:
   <<: *build_ios
+  variables:
+    FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install_ios_debug
   script:
     - >
       python3 scripts/make_build.py
@@ -69,6 +69,8 @@ build ios debug:
 
 build ios simulator debug:
   <<: *build_ios
+  variables:
+    FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install_ios_simulator_debug
   script:
     - >
       python3 scripts/make_build.py
@@ -78,6 +80,8 @@ build ios simulator debug:
 
 build ios release:
   <<: *build_ios
+  variables:
+    FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install_ios_release
   script:
     - >
       python3 scripts/make_build.py
@@ -87,6 +91,8 @@ build ios release:
 
 build ios simulator release:
   <<: *build_ios
+  variables:
+    FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install_ios_simulator_release
   script:
     - >
       python3 scripts/make_build.py
