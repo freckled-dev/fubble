@@ -58,6 +58,24 @@ build mac release:
     expire_in: 1 week
     when: always
 
+build ios debug:
+  <<: *build_ios
+  script:
+    - >
+      python3 scripts/make_build.py
+      --profile_build scripts/conan_profiles/mac_release
+      --profile_host scripts/conan_profiles/ios_debug
+      --skip_export
+
+build ios simulator debug:
+  <<: *build_ios
+  script:
+    - >
+      python3 scripts/make_build.py
+      --profile_build scripts/conan_profiles/mac_release
+      --profile_host scripts/conan_profiles/ios_simulator_debug
+      --skip_export
+
 build ios release:
   <<: *build_ios
   script:
@@ -115,7 +133,8 @@ appimage:
     expire_in: 1 week
     when: always
 
-build windows release:
+# re-enable when issue https://github.com/conan-io/conan-center-index/issues/3869 is closed
+.build windows release:
   <<: *build_windows
   script:
     - >

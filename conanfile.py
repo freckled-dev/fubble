@@ -15,7 +15,7 @@ class FubbleConan(ConanFile):
     options = {"shared": [False, True],
             "treat_warnings_as_errors": [True, False],
             "sanatize": [True, False], "qt_install": "ANY",
-            "enable_ui": [True, False]}
+            "enable_ui": [True, False], "meson_cross_file": "ANY"}
     # https://docs.conan.io/en/latest/reference/conanfile/attributes.html#default-options
     default_options = {"shared": False, "qt_install": None, "enable_ui": True,
             "nlohmann_json:multiple_headers": True,
@@ -132,7 +132,6 @@ class FubbleConan(ConanFile):
         meson_options['b_pch'] = 'false'
         # meson_options['b_vscrt'] = 'mtd'
 
-        ninja_jobs = os.getenv('FUBBLE_BUILD_NINJA_JOBS')
         meson = Meson(self)
         with tools.environment_append({
                 "PATH": addtional_paths,
@@ -143,22 +142,20 @@ class FubbleConan(ConanFile):
             if self.options.qt_install:
                 pkg_config_paths += [os.path.join(str(self.options.qt_install), 'lib/pkgconfig')]
             meson_args = ['--fatal-meson-warnings']
-            if self._is_ios():
-                cross_files_dir = os.path.join(self.source_folder, 'scripts', 'meson_cross')
-                if self.settings.arch == "armv8":
-                    meson_args += ['--cross-file',
-                            os.path.join(cross_files_dir, 'ios')]
-                elif self.settings.arch == "x86_64":
-                    meson_args += ['--cross-file',
-                            os.path.join(cross_files_dir, 'ios_simulator')]
-                else:
-                    raise ConanInvalidConfiguration("not a valid iOS arch:" + settings.arch)
+            if self.options.meson_cross_file:
+                cross_file = str(self.options.meson_cross_file)
+                if not os.path.isabs(cross_file):
+                    cross_file = os.path.abspath(os.path.join(self.source_folder, cross_file))
+                self.output.info("cross_file %s" % cross_file)
+                meson_args += ['--cross-file', cross_file]
+            self.output.info("2")
 
             meson.configure( build_folder="meson", defs=meson_options,
                     args=meson_args,
                     pkg_config_paths=pkg_config_paths
                     )
             build_args = []
+            ninja_jobs = os.getenv('FUBBLE_BUILD_NINJA_JOBS')
             if ninja_jobs:
                 build_args += ['-j %s' % (ninja_jobs)]
             meson.build(args=build_args)
