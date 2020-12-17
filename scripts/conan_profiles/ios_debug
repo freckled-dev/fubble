@@ -11,5 +11,8 @@ build_type=Debug
 boost:extra_b2_flags=visibility=global
 fubble:meson_cross_file=scripts/meson_cross/ios
 [build_requires]
+# https://docs.conan.io/en/latest/integrations/cross_platform/ios.html
+#darwin-toolchain/1.0.8@theodelrieu/stable
 [env]
+CXXFLAGS=-fembed-bitcode
 

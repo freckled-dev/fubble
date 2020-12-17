@@ -129,6 +129,8 @@ class FubbleConan(ConanFile):
             meson_options['b_lto'] = 'false'
         if 'sanatize' in self.options and self.options.sanatize:
             meson_options['b_sanitize'] = 'address,undefined'
+        if self._is_ios():
+            meson_options['b_bitcode'] = 'true'
         meson_options['b_pch'] = 'false'
         # meson_options['b_vscrt'] = 'mtd'
 
