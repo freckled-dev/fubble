@@ -5,7 +5,7 @@ set -ex
 rm -rf fubble.framework
 mkdir fubble.framework
 
-cp -r install_ios_debug/include fubble.framework/Headers
+cp -r install_ios_debug/include/fubble fubble.framework/Headers
 
 lipo -create \
         install_ios_debug/lib/libaudio_client.dylib \
