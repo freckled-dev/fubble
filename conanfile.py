@@ -79,7 +79,7 @@ class FubbleConan(ConanFile):
         self.requires("gtest/1.10.0")
         self.requires("fmt/7.0.3")
         self.requires("google-webrtc/84")
-        if not self._is_ios():
+        if not self._is_ios() and self.options.enable_ui:
             self.requires("RectangleBinPack/1.0.2")
         if self.settings.os == "Linux":
             self.requires("restinio/0.6.11")
@@ -157,9 +157,9 @@ class FubbleConan(ConanFile):
             ninja_jobs = os.getenv('FUBBLE_BUILD_NINJA_JOBS')
             if ninja_jobs:
                 build_args += ['-j %s' % (ninja_jobs)]
+            # build_args += ['-k0']
+            # build_args += ['-v]
             meson.build(args=build_args)
-            # meson.build(args=["-k0"])
-            # meson.build()
 
     def package(self):
         meson = Meson(self)
