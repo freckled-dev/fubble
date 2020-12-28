@@ -69,6 +69,7 @@ build ios debug:
       --profile_build scripts/conan_profiles/mac_release
       --profile_host scripts/conan_profiles/ios_debug
       --skip_export
+      --skip_qt
 
 build ios simulator debug:
   <<: *build_ios
@@ -80,6 +81,7 @@ build ios simulator debug:
       --profile_build scripts/conan_profiles/mac_release
       --profile_host scripts/conan_profiles/ios_simulator_debug
       --skip_export
+      --skip_qt
 
 build ios release:
   <<: *build_ios
@@ -91,6 +93,7 @@ build ios release:
       --profile_build scripts/conan_profiles/mac_release
       --profile_host scripts/conan_profiles/ios_release
       --skip_export
+      --skip_qt
 
 build ios simulator release:
   <<: *build_ios
@@ -102,6 +105,7 @@ build ios simulator release:
       --profile_build scripts/conan_profiles/mac_release
       --profile_host scripts/conan_profiles/ios_simulator_release
       --skip_export
+      --skip_qt
 
 .bundle ios: &bundle_ios
   tags:
