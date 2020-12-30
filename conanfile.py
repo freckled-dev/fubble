@@ -2,7 +2,9 @@ from conans import ConanFile, Meson, tools
 from six import StringIO
 from conans.errors import ConanInvalidConfiguration
 from conans.tools import os_info
+from conan.tools.meson import MesonToolchain
 import os
+import shutil
 
 class FubbleConan(ConanFile):
     name = "fubble"
@@ -85,6 +87,11 @@ class FubbleConan(ConanFile):
             self.requires("restinio/0.6.11")
             # self.requires("qt/5.15.1@bincrafters/stable")
 
+    # does not work well... it's a very new feature (2020-12), revisit and do issues!
+    #def generate(self):
+    #    tc = MesonToolchain(self)
+    #    tc.generate()
+
     def build(self):
         # https://docs.conan.io/en/latest/reference/build_helpers/meson.html
         addtional_paths = []
@@ -146,8 +153,21 @@ class FubbleConan(ConanFile):
                 cross_file = str(self.options.meson_cross_file)
                 if not os.path.isabs(cross_file):
                     cross_file = os.path.abspath(os.path.join(self.source_folder, cross_file))
-                self.output.info("cross_file %s" % cross_file)
-                meson_args += ['--cross-file', cross_file]
+                cross_file_copy = os.path.join(self.install_folder, 'meson_cross.ini')
+                shutil.copyfile(cross_file, cross_file_copy)
+                tools.replace_in_file(cross_file_copy,
+                    '__SYSROOT__', os.environ.get("SYSROOT", None))
+                tools.replace_in_file(cross_file_copy,
+                    '__CC__', os.environ.get("CC", None))
+                tools.replace_in_file(cross_file_copy,
+                    '__CXX__', os.environ.get("CXX", None))
+                tools.replace_in_file(cross_file_copy,
+                    '__AR__', os.environ.get("AR", None))
+                tools.replace_in_file(cross_file_copy,
+                    '__STRIP__', os.environ.get("STRIP", None))
+                self.output.info("cross_file %s" % cross_file_copy)
+                meson_args += ['--cross-file', cross_file_copy]
+            # meson_args += ['--cross-file', os.path.join(self.install_folder, 'conan_meson_cross.ini')]
 
             meson.configure( build_folder="meson", defs=meson_options,
                     args=meson_args,
