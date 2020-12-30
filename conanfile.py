@@ -2,7 +2,7 @@ from conans import ConanFile, Meson, tools
 from six import StringIO
 from conans.errors import ConanInvalidConfiguration
 from conans.tools import os_info
-from conan.tools.meson import MesonToolchain
+# from conan.tools.meson import MesonToolchain
 import os
 import shutil
 
