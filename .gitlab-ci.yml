@@ -45,6 +45,7 @@ build mac release:
     expire_in: 1 week
     when: always
 
+
 .build ios: &build_ios
   tags:
     - macos
@@ -52,9 +53,11 @@ build mac release:
   after_script:
     - mv -v ../fubble_build/meson/meson-logs .
   artifacts:
-    untracked: true
     expire_in: 1 week
     when: always
+    paths:
+      - ./install*
+      - ./meson-logs
 
 build ios debug:
   <<: *build_ios
@@ -66,6 +69,7 @@ build ios debug:
       --profile_build scripts/conan_profiles/mac_release
       --profile_host scripts/conan_profiles/ios_debug
       --skip_export
+      --skip_qt
 
 build ios simulator debug:
   <<: *build_ios
@@ -77,6 +81,7 @@ build ios simulator debug:
       --profile_build scripts/conan_profiles/mac_release
       --profile_host scripts/conan_profiles/ios_simulator_debug
       --skip_export
+      --skip_qt
 
 build ios release:
   <<: *build_ios
@@ -88,6 +93,7 @@ build ios release:
       --profile_build scripts/conan_profiles/mac_release
       --profile_host scripts/conan_profiles/ios_release
       --skip_export
+      --skip_qt
 
 build ios simulator release:
   <<: *build_ios
@@ -99,6 +105,33 @@ build ios simulator release:
       --profile_build scripts/conan_profiles/mac_release
       --profile_host scripts/conan_profiles/ios_simulator_release
       --skip_export
+      --skip_qt
+
+.bundle ios: &bundle_ios
+  tags:
+    - macos
+  stage: package
+  artifacts:
+    expire_in: 1 week
+    when: always
+    paths:
+      - ./fubble.framework
+
+package ios debug:
+  <<: *bundle_ios
+  needs:
+    - build ios debug
+    - build ios simulator debug
+  script:
+    - ./scripts/bundle_framework_ios_debug
+
+package ios release:
+  <<: *bundle_ios
+  needs:
+    - build ios release
+    - build ios simulator release
+  script:
+    - ./scripts/bundle_framework_ios_release
 
 appimage:
   image: registry.gitlab.com/acof/fubble/ci/build_ubuntu_1804:v2

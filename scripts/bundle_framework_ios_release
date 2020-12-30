@@ -1,0 +1,20 @@
+#!/bin/bash
+
+set -ex
+
+rm -rf fubble.framework
+mkdir fubble.framework
+
+cp -r install_ios_release/include/fubble fubble.framework/Headers
+
+lipo -create \
+        install_ios_release/lib/libaudio_client.dylib \
+        install_ios_simulator_release/lib/libaudio_client.dylib \
+        -o fubble.framework/fubble
+
+install_name_tool \
+        -id @rpath/fubble.framework/fubble \
+        fubble.framework/fubble
+
+cp scripts/ios_info.plist fubble.framework/Info.plist
+

@@ -9,6 +9,7 @@
 #include <boost/beast/core/error.hpp>
 #include <boost/predef/os/windows.h>
 #include <boost/thread/future.hpp>
+#include <boost/predef/os/ios.h>
 
 namespace http {
 namespace internal {
@@ -57,6 +58,7 @@ public:
 #else
     ssl_context.set_default_verify_paths();
 #endif
+#if !BOOST_OS_IOS
     connection_.set_verify_mode(boost::asio::ssl::verify_peer);
     connection_.set_verify_callback(internal::make_verbose_verification(
         boost::asio::ssl::host_name_verification(server_.host)));
@@ -67,6 +69,9 @@ public:
       check_and_handle_error(error);
       return promise->get_future();
     }
+#else
+    connection_.set_verify_mode(boost::asio::ssl::verify_none);
+#endif
     std::weak_ptr<boost::promise<void>> alive = promise;
     connection_.async_handshake(
         boost::asio::ssl::stream_base::client,

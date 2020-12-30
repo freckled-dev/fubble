@@ -78,7 +78,7 @@ class FubbleConan(ConanFile):
         self.requires("boost/1.73.0")
         self.requires("gtest/1.10.0")
         self.requires("fmt/7.0.3")
-        self.requires("google-webrtc/84")
+        self.requires("google-webrtc/88")
         if not self._is_ios():
             self.requires("RectangleBinPack/1.0.2")
         if self.settings.os == "Linux":
@@ -129,6 +129,8 @@ class FubbleConan(ConanFile):
             meson_options['b_lto'] = 'false'
         if 'sanatize' in self.options and self.options.sanatize:
             meson_options['b_sanitize'] = 'address,undefined'
+        if self._is_ios() and self.settings.arch != "x86_64": # no bitcode for simulator
+            meson_options['b_bitcode'] = 'true'
         meson_options['b_pch'] = 'false'
         # meson_options['b_vscrt'] = 'mtd'
 
