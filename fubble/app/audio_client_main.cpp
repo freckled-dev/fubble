@@ -17,6 +17,8 @@ int main(int argc, char *argv[]) {
   utils::option_adder adder{general};
   adder.add("send-audio", audio_client_config.send_audio,
             "send your own audio stream");
+  adder.add("audio-layer", audio_client_config.core.rtc_.audio_layer_,
+            "choose the audio-layer to use. eg. linux_alsa or linux_pulse");
   bpo::variables_map vm;
   bpo::store(bpo::parse_command_line(argc, argv, general), vm);
   bpo::notify(vm);
