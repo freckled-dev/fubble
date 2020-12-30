@@ -158,15 +158,20 @@ class FubbleConan(ConanFile):
                 cross_file_copy = os.path.join(self.install_folder, 'meson_cross.ini')
                 shutil.copyfile(cross_file, cross_file_copy)
                 tools.replace_in_file(cross_file_copy,
-                    '__SYSROOT__', os.environ.get("SYSROOT", None))
+                    '__SYSROOT__', os.environ.get("SYSROOT", None),
+                    strict=False)
                 tools.replace_in_file(cross_file_copy,
-                    '__CC__', os.environ.get("CC", None))
+                    '__CC__', os.environ.get("CC", None),
+                    strict=False)
                 tools.replace_in_file(cross_file_copy,
-                    '__CXX__', os.environ.get("CXX", None))
+                    '__CXX__', os.environ.get("CXX", None),
+                    strict=False)
                 tools.replace_in_file(cross_file_copy,
-                    '__AR__', os.environ.get("AR", None))
+                    '__AR__', os.environ.get("AR", None),
+                    strict=False)
                 tools.replace_in_file(cross_file_copy,
-                    '__STRIP__', os.environ.get("STRIP", None))
+                    '__STRIP__', os.environ.get("STRIP", None),
+                    strict=False)
                 self.output.info("cross_file %s" % cross_file_copy)
                 meson_args += ['--cross-file', cross_file_copy]
             # meson_args += ['--cross-file', os.path.join(self.install_folder, 'conan_meson_cross.ini')]
