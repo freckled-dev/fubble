@@ -170,7 +170,7 @@ class FubbleConan(ConanFile):
                     '__AR__', os.environ.get("AR", ""),
                     strict=False)
                 tools.replace_in_file(cross_file_copy,
-                    '__STRIP__', os.environ.get("STRIP", None),
+                    '__STRIP__', os.environ.get("STRIP", ""),
                     strict=False)
                 self.output.info("cross_file %s" % cross_file_copy)
                 meson_args += ['--cross-file', cross_file_copy]
