@@ -22,7 +22,7 @@ struct settings {
     android_java_input_and_aaudio_output,
     dummy
   };
-  audio_layer audio_layer_;
+  audio_layer audio_layer_{audio_layer::default_};
 };
 
 std::ostream &operator<<(std::ostream &out, settings::audio_layer print);
