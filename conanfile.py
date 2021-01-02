@@ -2,7 +2,9 @@ from conans import ConanFile, Meson, tools
 from six import StringIO
 from conans.errors import ConanInvalidConfiguration
 from conans.tools import os_info
+# from conan.tools.meson import MesonToolchain
 import os
+import shutil
 
 class FubbleConan(ConanFile):
     name = "fubble"
@@ -79,11 +81,16 @@ class FubbleConan(ConanFile):
         self.requires("gtest/1.10.0")
         self.requires("fmt/7.0.3")
         self.requires("google-webrtc/88")
-        if not self._is_ios():
+        if not self._is_ios() and self.options.enable_ui:
             self.requires("RectangleBinPack/1.0.2")
         if self.settings.os == "Linux":
             self.requires("restinio/0.6.11")
             # self.requires("qt/5.15.1@bincrafters/stable")
+
+    # does not work well... it's a very new feature (2020-12), revisit and do issues!
+    #def generate(self):
+    #    tc = MesonToolchain(self)
+    #    tc.generate()
 
     def build(self):
         # https://docs.conan.io/en/latest/reference/build_helpers/meson.html
@@ -148,8 +155,26 @@ class FubbleConan(ConanFile):
                 cross_file = str(self.options.meson_cross_file)
                 if not os.path.isabs(cross_file):
                     cross_file = os.path.abspath(os.path.join(self.source_folder, cross_file))
-                self.output.info("cross_file %s" % cross_file)
-                meson_args += ['--cross-file', cross_file]
+                cross_file_copy = os.path.join(self.install_folder, 'meson_cross.ini')
+                shutil.copyfile(cross_file, cross_file_copy)
+                tools.replace_in_file(cross_file_copy,
+                    '__SYSROOT__', os.environ.get("SYSROOT", ""),
+                    strict=False)
+                tools.replace_in_file(cross_file_copy,
+                    '__CC__', os.environ.get("CC", ""),
+                    strict=False)
+                tools.replace_in_file(cross_file_copy,
+                    '__CXX__', os.environ.get("CXX", ""),
+                    strict=False)
+                tools.replace_in_file(cross_file_copy,
+                    '__AR__', os.environ.get("AR", ""),
+                    strict=False)
+                tools.replace_in_file(cross_file_copy,
+                    '__STRIP__', os.environ.get("STRIP", ""),
+                    strict=False)
+                self.output.info("cross_file %s" % cross_file_copy)
+                meson_args += ['--cross-file', cross_file_copy]
+            # meson_args += ['--cross-file', os.path.join(self.install_folder, 'conan_meson_cross.ini')]
 
             meson.configure( build_folder="meson", defs=meson_options,
                     args=meson_args,
@@ -159,9 +184,9 @@ class FubbleConan(ConanFile):
             ninja_jobs = os.getenv('FUBBLE_BUILD_NINJA_JOBS')
             if ninja_jobs:
                 build_args += ['-j %s' % (ninja_jobs)]
+            # build_args += ['-k0']
+            # build_args += ['-v]
             meson.build(args=build_args)
-            # meson.build(args=["-k0"])
-            # meson.build()
 
     def package(self):
         meson = Meson(self)

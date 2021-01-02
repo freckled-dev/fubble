@@ -145,13 +145,43 @@ void factory::instance_audio_processing() {
 #endif
 }
 
+namespace {
+webrtc::AudioDeviceModule::AudioLayer
+cast_audio_layer(settings::audio_layer cast) {
+  switch (cast) {
+  case settings::audio_layer::default_:
+    return webrtc::AudioDeviceModule::kPlatformDefaultAudio;
+  case settings::audio_layer::windows_core:
+    return webrtc::AudioDeviceModule::kWindowsCoreAudio;
+  case settings::audio_layer::windows_core2:
+    return webrtc::AudioDeviceModule::kWindowsCoreAudio2;
+  case settings::audio_layer::linux_alsa:
+    return webrtc::AudioDeviceModule::kLinuxAlsaAudio;
+  case settings::audio_layer::linux_pulse:
+    return webrtc::AudioDeviceModule::kLinuxPulseAudio;
+  case settings::audio_layer::android_java:
+    return webrtc::AudioDeviceModule::kAndroidJavaAudio;
+  case settings::audio_layer::android_open_sles:
+    return webrtc::AudioDeviceModule::kAndroidOpenSLESAudio;
+  case settings::audio_layer::android_java_input_and_open_sles_output:
+    return webrtc::AudioDeviceModule::kAndroidJavaInputAndOpenSLESOutputAudio;
+  case settings::audio_layer::android_aaudio:
+    return webrtc::AudioDeviceModule::kAndroidAAudioAudio;
+  case settings::audio_layer::android_java_input_and_aaudio_output:
+    return webrtc::AudioDeviceModule::kAndroidJavaInputAndAAudioOutputAudio;
+  case settings::audio_layer::dummy:
+    return webrtc::AudioDeviceModule::kDummyAudio;
+  }
+  BOOST_ASSERT(false);
+}
+} // namespace
+
 void factory::instance_audio_device_module() {
   task_queue_factory = webrtc::CreateDefaultTaskQueueFactory();
   audio_device_module = worker_thread->Invoke<decltype(audio_device_module)>(
       RTC_FROM_HERE, [this]() -> rtc::scoped_refptr<webrtc::AudioDeviceModule> {
         return webrtc::AudioDeviceModule::Create(
-            webrtc::AudioDeviceModule::kPlatformDefaultAudio,
-            task_queue_factory.get());
+            cast_audio_layer(settings_.audio_layer_), task_queue_factory.get());
       });
   BOOST_ASSERT(audio_device_module);
 }
