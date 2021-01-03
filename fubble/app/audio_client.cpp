@@ -5,6 +5,7 @@
 #include "fubble/client/session_module.hpp"
 #include "fubble/utils/uuid.hpp"
 #include <boost/asio/io_context.hpp>
+#include "fubble/rtc/google/log_webrtc_to_logging.hpp"
 
 namespace {
 class audio_client_impl : public audio_client::audio_client {
@@ -63,6 +64,7 @@ private:
   }
 
   const config config_;
+  rtc::google::log_webrtc_to_logging log_webrtc_to_logging;
   boost::inline_executor executor;
   std::shared_ptr<client::core_module> core;
   std::shared_ptr<client::audio_module> audio;

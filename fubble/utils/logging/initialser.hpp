@@ -5,8 +5,8 @@
 #include "fubble/utils/logging/severity.hpp"
 
 namespace logging {
-void FUBBLE_PUBLIC add_console_log(logging::severity severity_);
-void FUBBLE_PUBLIC add_file_log(logging::severity severity_);
+FUBBLE_PUBLIC void add_console_log(FUBBLE_PUBLIC logging::severity severity_);
+FUBBLE_PUBLIC void add_file_log(logging::severity severity_);
 } // namespace logging
 
 #endif
