@@ -26,15 +26,17 @@ std::istream &logging::operator>>(std::istream &in, logging::severity &set) {
   in >> word;
   if (word == "trace")
     set = trace;
-  if (word == "debug")
+  else if (word == "debug")
     set = debug;
-  if (word == "info")
+  else if (word == "info")
     set = info;
-  if (word == "warning")
+  else if (word == "warning")
     set = warning;
-  if (word == "error")
+  else if (word == "error")
     set = error;
-  if (word == "fatal")
+  else if (word == "fatal")
     set = fatal;
+  else
+    BOOST_ASSERT(false);
   return in;
 }

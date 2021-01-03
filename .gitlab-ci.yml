@@ -180,7 +180,7 @@ build windows release:
       --profile scripts/conan_profiles/windows_release
       --skip_export
 
-.build windows debug:
+build windows debug:
   <<: *build_windows
   script:
     - >
