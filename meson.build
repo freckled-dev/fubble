@@ -174,6 +174,7 @@ gstreamer_webrtc_dep = declare_dependency(
   )
 if host_machine.system() == 'linux'
   x11_dep = dependency('x11')
+  xtest_dep = dependency('xtst')
   xext_dep = dependency('xext')
   xcomposite_dep = dependency('xcomposite')
   xfixes_dep = dependency('xfixes')
@@ -183,7 +184,7 @@ if host_machine.system() == 'linux'
   #glib_dbus_dep = dependency('dbus-glib-1')
   gio_dep = dependency('gio-2.0')
   google_webrtc_system_deps = declare_dependency(
-    dependencies: [x11_dep, xext_dep, xcomposite_dep, xfixes_dep,
+    dependencies: [x11_dep, xtest_dep, xext_dep, xcomposite_dep, xfixes_dep,
       xdamage_dep, xrandr_dep,
       #glib_dep,
       #glib_dbus_dep,
