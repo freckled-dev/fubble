@@ -1,5 +1,6 @@
 #include "fubble/temporary_room/server/application.hpp"
 #include "fubble/utils/logging/initialser.hpp"
+#include "fubble/utils/logging/logger.hpp"
 #include "fubble/utils/options_adder.hpp"
 #include <boost/asio/signal_set.hpp>
 #include <boost/optional.hpp>
