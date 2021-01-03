@@ -1,6 +1,6 @@
 utils_sources = ['executor_asio.cpp', 'logging/logger.cpp',
   'logging/initialser.cpp', 'exit_signals.cpp', 'uuid.cpp',
-  'timer.cpp', 'executor_module.cpp',
+  'timer.cpp', 'executor_module.cpp', 'logging/severity.cpp',
     ]
 # By default vcs_tag will output something using git describe such as
 # 0.33.0-22-g58359c8 which basically means 22 commits after the 0.33.0 tag,

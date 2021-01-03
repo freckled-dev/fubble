@@ -5,12 +5,12 @@
 #include <boost/log/keywords/auto_flush.hpp>
 #include <boost/log/keywords/format.hpp>
 #include <boost/log/support/date_time.hpp>
-#include <boost/log/trivial.hpp>
 #include <boost/log/utility/setup/common_attributes.hpp>
 #include <boost/log/utility/setup/console.hpp>
 #include <boost/log/utility/setup/file.hpp>
 #include <iostream>
 
+BOOST_LOG_ATTRIBUTE_KEYWORD(severity_keyword, "Severity", logging::severity)
 BOOST_LOG_ATTRIBUTE_KEYWORD(tag_attr, "Tag", std::string)
 BOOST_LOG_ATTRIBUTE_KEYWORD(module_attr, "Module", std::string)
 
@@ -103,10 +103,9 @@ void initialise_globals() {
 
 void logging::add_console_log(logging::severity severity_) {
   initialise_globals();
-  boost::log::add_console_log(std::cout,
-                              boost::log::keywords::filter =
-                                  boost::log::trivial::severity >= severity_,
-                              boost::log::keywords::auto_flush = true)
+  boost::log::add_console_log(
+      std::cout, boost::log::keywords::filter = severity_keyword >= severity_,
+      boost::log::keywords::auto_flush = true)
       ->set_formatter(&colorized_console_formatter);
 }
 
@@ -123,7 +122,7 @@ void logging::add_file_log(logging::severity severity_) {
   auto twenty_mega_bytes = 20 * 1024 * 1024;
   auto sink = boost::log::add_file_log(
       log_file, boost::log::keywords::auto_flush = true,
-      boost::log::keywords::filter = boost::log::trivial::severity >= severity_,
+      boost::log::keywords::filter = severity_keyword >= severity_,
       boost::log::keywords::open_mode = std::ios_base::app);
   sink->locked_backend()->set_file_collector(
       boost::log::sinks::file::make_collector(
