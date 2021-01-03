@@ -162,7 +162,7 @@ appimage:
     # - refreshenv # did not work
     - $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
     - python --version
-    - pip install conan aqtinstall
+    - pip install --upgrade conan aqtinstall
     - python scripts/install_qt.py
     - conan --version
   after_script:
@@ -180,7 +180,7 @@ build windows release:
       --profile scripts/conan_profiles/windows_release
       --skip_export
 
-build windows debug:
+.build windows debug:
   <<: *build_windows
   script:
     - >
