@@ -26,6 +26,7 @@ install_headers([
   'executor_module.hpp', 'timer.hpp', 'export.hpp',
   ], subdir: 'fubble/utils')
 install_headers(['logging/logger.hpp', 'logging/initialser.hpp',
+  'logging/severity.hpp',
   ], subdir: 'fubble/utils/logging')
 
 test_main = static_library('test_main',
