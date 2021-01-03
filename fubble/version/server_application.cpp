@@ -1,4 +1,5 @@
 #include "fubble/utils/logging/initialser.hpp"
+#include "fubble/utils/logging/logger.hpp"
 #include "fubble/utils/options_adder.hpp"
 #include "fubble/version/server.hpp"
 #include <boost/asio/signal_set.hpp>

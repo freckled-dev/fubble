@@ -1,7 +1,7 @@
 #ifndef LOGGING_INITIALISER_HPP
 #define LOGGING_INITIALISER_HPP
 
-#include "logger.hpp"
+#include "fubble/utils/logging/severity.hpp"
 
 namespace logging {
 void add_console_log(logging::severity severity_);
