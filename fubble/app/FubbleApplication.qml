@@ -21,7 +21,6 @@ ApplicationWindow {
     minimumWidth: 800
     minimumHeight: 600
     visible: true
-    visibility: "Windowed"
 
     property JoinModel joinModel: joinModelFromCpp
     property LeaveModel leaveModel: leaveModelFromCpp
@@ -255,6 +254,7 @@ ApplicationWindow {
         if (Qt.platform.os != "windows") {
             return
         }
+        console.log("ensureValidWindowPosition")
 
         // if any saved value is out of range for the current screen -> reset
         if (settings.x >= Screen.desktopAvailableWidth
