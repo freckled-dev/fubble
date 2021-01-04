@@ -35,13 +35,21 @@ The build system uses:
 
 ## Ubuntu 20.04 Desktop
 
+### install system dependencies
+
+```bash
+sudo apt install python3 python-is-python3 python3-pip ninja-build cmake ccache
+```
+
 ### install the webrtc dependencies
 
 ```bash
 curl -LO 'https://raw.githubusercontent.com/chromium/chromium/master/build/install-build-deps.sh'
-chmod u+x install-build-deps.sh --no-arm --no-chromeos-fonts --no-nacl
-./install-build-deps.sh
+chmod u+x install-build-deps.sh 
+./install-build-deps.sh --no-arm --no-chromeos-fonts --no-nacl
 ```
+
+
 
 ### install project build systems
 

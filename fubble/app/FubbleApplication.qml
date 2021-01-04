@@ -11,17 +11,9 @@ ApplicationWindow {
     id: container
     title: qsTr("Fubble")
 
-    // initial values - will be overwritten by users settings
-    width: Math.min(Screen.width, 1024)
-    height: Math.min(Screen.height, 768)
-    x: Screen.width / 2 - container.width / 2
-    y: Screen.height / 2 - container.height / 2
-    Component.onCompleted: ensureValidWindowPosition()
-
     minimumWidth: 800
     minimumHeight: 600
     visible: true
-    visibility: "Windowed"
 
     property JoinModel joinModel: joinModelFromCpp
     property LeaveModel leaveModel: leaveModelFromCpp
@@ -60,11 +52,8 @@ ApplicationWindow {
 
     Settings {
         id: settings
-        property alias x: container.x
-        property alias y: container.y
         property alias width: container.width
         property alias height: container.height
-        property alias visibility: container.visibility
     }
 
     StackView {
@@ -248,20 +237,6 @@ ApplicationWindow {
         var isErrorSoundEnabled = settingsDialog.notificationSettings.errorSound
         if (isErrorSoundEnabled) {
             errorSound.play()
-        }
-    }
-
-    function ensureValidWindowPosition() {
-        if (Qt.platform.os != "windows") {
-            return
-        }
-
-        // if any saved value is out of range for the current screen -> reset
-        if (settings.x >= Screen.desktopAvailableWidth
-                || settings.y >= Screen.desktopAvailableHeight) {
-            console.log("Recentered application window, because it was out of the visible display area.")
-            settings.x = Screen.width / 2 - container.width / 2
-            settings.y = Screen.height / 2 - container.height / 2
         }
     }
 }
