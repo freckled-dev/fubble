@@ -105,6 +105,11 @@ Item {
                 id: enterTimeLabel
                 anchors.top: roomNameLabel.bottom
                 text: new Date(enterTime).toLocaleDateString()
+                anchors.right: deleteHistoryIcon.left
+                anchors.rightMargin: 10
+                elide: Text.ElideRight
+                clip:true
+                anchors.left: parent.left
             }
 
             Label {
