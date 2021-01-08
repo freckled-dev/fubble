@@ -61,6 +61,11 @@ services:
     volumes:
       - coturn_data:/var/lib/coturn
     restart: on-failure
+    # not needed when `network_mode: host`
+    #ports:
+    #  - "3478:3478"
+    #  - "49152-65535:49152-65535/udp"
+
 volumes:
   synapse_data:
   synapse_database_data:
