@@ -162,7 +162,7 @@ appimage:
     # - refreshenv # did not work
     - $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
     - python --version
-    - pip install conan aqtinstall
+    - pip install --upgrade conan aqtinstall
     - python scripts/install_qt.py
     - conan --version
   after_script:
@@ -172,8 +172,7 @@ appimage:
     expire_in: 1 week
     when: always
 
-# re-enable when issue https://github.com/conan-io/conan-center-index/issues/3869 is closed
-.build windows release:
+build windows release:
   <<: *build_windows
   script:
     - >
@@ -181,8 +180,7 @@ appimage:
       --profile scripts/conan_profiles/windows_release
       --skip_export
 
-# re-enable when issue https://github.com/conan-io/conan-center-index/issues/3869 is closed
-.build windows debug:
+build windows debug:
   <<: *build_windows
   script:
     - >
@@ -191,8 +189,7 @@ appimage:
       --skip_export
   when: manual
 
-# re-enable when issue https://github.com/conan-io/conan-center-index/issues/3869 is closed
-.deploy services:
+deploy services:
   stage: deploy
   image: registry.gitlab.com/acof/fubble-deploy/ansible_deploy:latest
   variables:

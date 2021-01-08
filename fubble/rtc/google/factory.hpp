@@ -5,11 +5,7 @@
 #include "fubble/rtc/logger.hpp"
 #include <api/create_peerconnection_factory.h>
 #include <boost/asio/io_context.hpp>
-#include <boost/predef/os/windows.h>
 #include <memory>
-#if BOOST_OS_WINDOWS
-#include <modules/audio_device/win/core_audio_utility_win.h>
-#endif
 
 namespace rtc {
 namespace google {
@@ -58,9 +54,6 @@ private:
   rtc::scoped_refptr<webrtc::AudioProcessing> audio_processing;
   rtc::scoped_refptr<webrtc::AudioDecoderFactory> audio_decoder;
   rtc::scoped_refptr<webrtc::AudioEncoderFactory> audio_encoder;
-#if BOOST_OS_WINDOWS
-  std::unique_ptr<webrtc::webrtc_win::ScopedCOMInitializer> com_initializer_;
-#endif
   rtc::scoped_refptr<webrtc::AudioDeviceModule> audio_device_module;
   std::unique_ptr<webrtc::VideoDecoderFactory> video_decoder;
   std::unique_ptr<webrtc::VideoEncoderFactory> video_encoder;
