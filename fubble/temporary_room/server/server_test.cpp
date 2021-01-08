@@ -165,6 +165,28 @@ TEST_F(Server, JoinSameParallel) {
   all_joined.get();
 }
 
+TEST_F(Server, JoinSameUpperLowerCaseWhitecase) {
+  instance_application();
+  auto acceptor_done = application->run();
+  auto first_client =
+      std::make_unique<test_client>(context, application->get_port());
+  auto second_client =
+      std::make_unique<test_client>(context, application->get_port());
+  std::string room_name = "fun nam_e";
+  auto first_joined = join(*first_client, "   FunNam_e   ");
+  auto second_joined = join(*second_client, room_name);
+  auto all_joined =
+      boost::when_all(std::move(first_joined), std::move(second_joined))
+          .then(asio_executor, [&](auto result) {
+            application->close();
+            result.get();
+          });
+  context.run();
+  ensure_client_rooms_match(*first_client, *second_client);
+  acceptor_done.get();
+  all_joined.get();
+}
+
 TEST_F(Server, Restart) {
   {
     temporary_room::server::application::options::login login_;

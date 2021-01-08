@@ -60,10 +60,12 @@ services:
     network_mode: host # docker network sucks, when it comes to wide port ranges. so use host
     volumes:
       - coturn_data:/var/lib/coturn
-    ports:
-      - "3478:3478"
-      - "49152-65535:49152-65535/udp"
     restart: on-failure
+    # not needed when `network_mode: host`
+    #ports:
+    #  - "3478:3478"
+    #  - "49152-65535:49152-65535/udp"
+
 volumes:
   synapse_data:
   synapse_database_data:

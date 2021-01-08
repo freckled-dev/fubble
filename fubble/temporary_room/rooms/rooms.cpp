@@ -1,7 +1,17 @@
 #include "rooms.hpp"
 #include <fmt/format.h>
+#include <boost/algorithm/string.hpp>
 
 using namespace temporary_room::rooms;
+
+namespace {
+std::string remove_whitespaces_and_lower_case(std::string input) {
+  input.erase(std::remove_if(input.begin(), input.end(), ::isspace),
+              input.end());
+  boost::algorithm::to_lower(input);
+  return input;
+}
+} // namespace
 
 rooms::rooms(room_factory &factory) : factory(factory) {
   BOOST_ASSERT(!factory.on_room);
@@ -10,8 +20,9 @@ rooms::rooms(room_factory &factory) : factory(factory) {
 
 rooms::~rooms() = default;
 
-boost::future<room_id> rooms::get_or_create_room_id(const room_name &name,
+boost::future<room_id> rooms::get_or_create_room_id(const room_name &name_fix,
                                                     const user_id &user_id_) {
+  const std::string name = remove_whitespaces_and_lower_case(name_fix);
   auto add = std::make_shared<participant>(user_id_);
   auto result = add->promise->get_future();
   auto found = rooms_.find(name);
