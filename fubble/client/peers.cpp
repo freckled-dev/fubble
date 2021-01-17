@@ -7,15 +7,10 @@ using namespace client;
 
 peers::~peers() = default;
 
-void peers::close() {
-  for (auto &peer : container)
-    peer->close();
-  container.clear();
-}
 
 void peers::add(const peer_ptr &add_) {
   container.push_back(add_);
-  on_added();
+  on_added(add_);
 }
 
 std::vector<peers::peer_ptr> peers::get_all() { return container; }
@@ -26,5 +21,5 @@ void peers::remove(const peer_ptr &remove_) {
   if (found == container.cend())
     return;
   container.erase(found);
-  on_removed();
+  on_removed(remove_);
 }

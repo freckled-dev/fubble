@@ -255,6 +255,23 @@ void connection::close() {
   native->Close();
 }
 
+namespace {
+struct stats_collector_callback : webrtc::RTCStatsCollectorCallback {
+  rtc::logger logger{"stats_collector_callback"};
+  void OnStatsDelivered(
+      const rtc::scoped_refptr<const webrtc::RTCStatsReport> &report) override {
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << "report->ToJson():" << report->ToJson();
+  }
+};
+} // namespace
+
+void connection::get_stats() {
+  rtc::scoped_refptr<webrtc::RTCStatsCollectorCallback> callback =
+      new rtc::RefCountedObject<stats_collector_callback>();
+  native->GetStats(callback);
+}
+
 void connection::OnConnectionChange(
     webrtc::PeerConnectionInterface::PeerConnectionState new_state) {
   BOOST_LOG_SEV(logger, logging::severity::info)

@@ -13,11 +13,12 @@ namespace client {
 class audio_track_information_listener;
 class factory;
 class peer;
+class peers;
 class peer_creator;
 class tracks_adder;
 class remote_participant : public participant {
 public:
-  remote_participant(factory &factory_, std::unique_ptr<peer> peer_,
+  remote_participant(factory &factory_, std::shared_ptr<peers> peers_, std::unique_ptr<peer> peer_,
                      matrix::user &matrix_participant,
                      tracks_adder &tracks_adder_);
   ~remote_participant();
@@ -38,8 +39,9 @@ protected:
 
   client::logger logger;
   factory &factory_;
+  std::shared_ptr<peers> peers_;
   tracks_adder &tracks_adder_;
-  std::unique_ptr<peer> peer_;
+  std::shared_ptr<peer> peer_;
   videos_type videos;
   audios_type audios;
 };

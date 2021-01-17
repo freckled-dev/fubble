@@ -1,6 +1,7 @@
 #include "remote_participant.hpp"
 #include "fubble/client/factory.hpp"
 #include "fubble/client/peer.hpp"
+#include "fubble/client/peers.hpp"
 #include "fubble/client/tracks_adder.hpp"
 #include "fubble/matrix/user.hpp"
 #include "fubble/rtc/google/audio_track_sink.hpp"
@@ -10,14 +11,16 @@
 using namespace client;
 
 remote_participant::remote_participant(factory &factory_,
+                                       std::shared_ptr<peers> peers_,
                                        std::unique_ptr<peer> peer_moved,
                                        matrix::user &matrix_participant,
                                        tracks_adder &tracks_adder_)
     : participant(matrix_participant), logger{fmt::format(
                                            "remote_participant:{}",
                                            matrix_participant.get_id())},
-      factory_(factory_), tracks_adder_(tracks_adder_),
+      factory_(factory_), peers_{peers_}, tracks_adder_(tracks_adder_),
       peer_(std::move(peer_moved)) {
+  peers_->add(peer_);
   tracks_adder_.add_connection(peer_->rtc_connection());
   peer_->rtc_connection().on_track_added.connect(
       [this](auto track) { on_track_added(track); });
@@ -27,6 +30,7 @@ remote_participant::remote_participant(factory &factory_,
 
 remote_participant::~remote_participant() {
   tracks_adder_.remove_connection(peer_->rtc_connection());
+  peers_->remove(peer_);
 }
 
 boost::future<void> remote_participant::close() {
