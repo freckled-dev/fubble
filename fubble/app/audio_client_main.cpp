@@ -81,7 +81,11 @@ int main(int argc, char *argv[]) {
   logging::add_console_log(logging::severity::debug);
   rtc::google::log_webrtc_to_logging webrtc_logger;
   webrtc_logger.set_enabled(false);
+  logging::logger logger{"main"};
   auto audio_client = audio_client::audio_client::create(audio_client_config);
+  audio_client->set_stats_callback([&logger](std::string out) {
+    BOOST_LOG_SEV(logger, logging::severity::debug) << out;
+  });
   boost::asio::executor exit_executor = audio_client->get_core()
                                             ->get_utils_executor_module()
                                             ->get_io_context()

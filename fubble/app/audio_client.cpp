@@ -9,6 +9,7 @@
 #include "fubble/utils/timer.hpp"
 #include "fubble/utils/uuid.hpp"
 #include <boost/asio/io_context.hpp>
+#include <fmt/format.h>
 #include <nlohmann/json.hpp>
 
 namespace {
@@ -46,37 +47,68 @@ private:
 
   void print_stats(const nlohmann::json &print) {
     // https://w3c.github.io/webrtc-stats/#dom-rtcinboundrtpstreamstats-jitterbufferdelay
+    float relative_packet_arrival_delay{};
+    float jitter_buffer_delay{};
+    int jitter_buffer_emitted_count{};
+    int jitter_buffer_flushes{};
+    int jitter_buffer_target_delay{};
+    float jitter_buffer_target_delay_devised_by_emitted_count{};
+    float jitter{};
+    int packets_lost{};
+    int packets_received{};
+    int removed_samples_for_acceleration{};
     for (const auto &item : print) {
       if (item["type"] == "track") {
-        const float relative_packet_arrival_delay =
-            item["relativePacketArrivalDelay"];
-        const float jitter_buffer_delay = item["jitterBufferDelay"];
-        const int jitter_buffer_emitted_count =
-            item["jitterBufferEmittedCount"];
-        const int jitter_buffer_flushes = item["jitterBufferFlushes"];
-        const int jitter_buffer_target_delay = item["jitterBufferTargetDelay"];
+        relative_packet_arrival_delay = item["relativePacketArrivalDelay"];
+        jitter_buffer_delay = item["jitterBufferDelay"];
+        jitter_buffer_emitted_count = item["jitterBufferEmittedCount"];
+        jitter_buffer_flushes = item["jitterBufferFlushes"];
+        jitter_buffer_target_delay = item["jitterBufferTargetDelay"];
+        jitter_buffer_target_delay_devised_by_emitted_count =
+            jitter_buffer_delay / jitter_buffer_emitted_count;
+#if 0
         BOOST_LOG_SEV(logger, logging::severity::debug)
             << "relative_packet_arrival_delay:" << relative_packet_arrival_delay
             << ", (jitterBufferDelay/jitterBufferEmittedCount):"
-            << (jitter_buffer_delay / jitter_buffer_emitted_count)
+            << jitter_buffer_target_delay_devised_by_emitted_count
             << ", jitter_buffer_delay:" << jitter_buffer_delay
             << ", jitter_buffer_emitted_count:" << jitter_buffer_emitted_count
             << ", jitter_buffer_flushes:" << jitter_buffer_flushes
             << ", jitter_buffer_target_delay:" << jitter_buffer_target_delay;
+#endif
       }
       if (item["type"] == "inbound-rtp") {
-        const float jitter = item["jitter"];
-        const int packets_lost = item["packetsLost"];
-        const int packets_received = item["packetsReceived"];
-        const int removed_samples_for_acceleration =
+        jitter = item["jitter"];
+        packets_lost = item["packetsLost"];
+        packets_received = item["packetsReceived"];
+        removed_samples_for_acceleration =
             item["removedSamplesForAcceleration"];
+#if 0
         BOOST_LOG_SEV(logger, logging::severity::debug)
             << ", jitter:" << jitter << ", packets_lost:" << packets_lost
             << ", packets_received:" << packets_received
             << ", removed_samples_for_acceleration:"
             << removed_samples_for_acceleration;
+#endif
       }
     }
+    const std::string result = fmt::format(
+        "relative_packet_arrival_delay: {}\n"
+        "jitter_buffer_delay: {}\n"
+        "jitter_buffer_emitted_count: {}\n"
+        "jitter_buffer_flushes: {}\n"
+        "jitter_buffer_target_delay: {}\n"
+        "jbtd_devided_by_jbec: {}\n"
+        "jitter: {}\n"
+        "packets_lost: {}\n"
+        "packets_received: {}\n"
+        "removed_samples_for_acceleration: {}",
+        relative_packet_arrival_delay, jitter_buffer_delay,
+        jitter_buffer_emitted_count, jitter_buffer_flushes,
+        jitter_buffer_target_delay,
+        jitter_buffer_target_delay_devised_by_emitted_count, jitter,
+        packets_lost, packets_received, removed_samples_for_acceleration);
+    stats_callback(result);
   }
 
   int run() override {
@@ -110,6 +142,10 @@ private:
     });
   }
 
+  void set_stats_callback(std::function<void(std::string)> callback) override {
+    stats_callback = std::move(callback);
+  }
+
   std::shared_ptr<client::core_module> get_core() const override {
     return core;
   }
@@ -123,6 +159,7 @@ private:
   std::shared_ptr<client::audio_settings_module> audio_settings;
   std::shared_ptr<utils::interval_timer> stats_timer;
   boost::promise<int> run_promise;
+  std::function<void(std::string)> stats_callback;
 };
 } // namespace
 
