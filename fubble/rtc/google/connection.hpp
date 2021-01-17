@@ -29,7 +29,7 @@ public:
   // seems like data channels can't be removed!
   rtc::data_channel_ptr create_data_channel() override;
   void close() override;
-  void get_stats() override;
+  void get_stats(const stats_callback& callback) override;
 
 protected:
   void OnConnectionChange(

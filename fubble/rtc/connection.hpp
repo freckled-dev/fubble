@@ -7,6 +7,7 @@
 #include "track_ptr.hpp"
 #include <boost/signals2/signal.hpp>
 #include <boost/thread/future.hpp>
+#include <functional>
 
 namespace rtc {
 class connection {
@@ -23,7 +24,8 @@ public:
   virtual void remove_track(track_ptr) = 0;
   virtual rtc::data_channel_ptr create_data_channel() = 0;
   virtual void close() = 0;
-  virtual void get_stats() = 0;
+  using stats_callback = std::function<void(std::string)>;
+  virtual void get_stats(const stats_callback& callback) = 0;
   boost::signals2::signal<void()> on_negotiation_needed;
   boost::signals2::signal<void(track_ptr)> on_track_added;
   boost::signals2::signal<void(track_ptr)> on_track_removed;

@@ -9,6 +9,7 @@
 #include "fubble/utils/timer.hpp"
 #include "fubble/utils/uuid.hpp"
 #include <boost/asio/io_context.hpp>
+#include <nlohmann/json.hpp>
 
 namespace {
 class audio_client_impl : public audio_client::audio_client {
@@ -30,14 +31,54 @@ public:
     stats_timer = core->get_utils_executor_module()
                       ->get_timer_factory()
                       ->create_interval_timer(std::chrono::seconds(1));
-    stats_timer->start([this] {
-      auto all = core->get_session_module()->get_peers()->get_all();
-      for (auto &do_ : all)
-        do_->rtc_connection().get_stats();
-    });
+    stats_timer->start([this] { print_stats(); });
   }
 
 private:
+  void print_stats() {
+    auto all = core->get_session_module()->get_peers()->get_all();
+    for (auto &do_ : all)
+      do_->rtc_connection().get_stats([this](const std::string &stats) {
+        nlohmann::json stats_json = nlohmann::json::parse(stats);
+        print_stats(stats_json);
+      });
+  }
+
+  void print_stats(const nlohmann::json &print) {
+    // https://w3c.github.io/webrtc-stats/#dom-rtcinboundrtpstreamstats-jitterbufferdelay
+    for (const auto &item : print) {
+      if (item["type"] == "track") {
+        const float relative_packet_arrival_delay =
+            item["relativePacketArrivalDelay"];
+        const float jitter_buffer_delay = item["jitterBufferDelay"];
+        const int jitter_buffer_emitted_count =
+            item["jitterBufferEmittedCount"];
+        const int jitter_buffer_flushes = item["jitterBufferFlushes"];
+        const int jitter_buffer_target_delay = item["jitterBufferTargetDelay"];
+        BOOST_LOG_SEV(logger, logging::severity::debug)
+            << "relative_packet_arrival_delay:" << relative_packet_arrival_delay
+            << ", (jitterBufferDelay/jitterBufferEmittedCount):"
+            << (jitter_buffer_delay / jitter_buffer_emitted_count)
+            << ", jitter_buffer_delay:" << jitter_buffer_delay
+            << ", jitter_buffer_emitted_count:" << jitter_buffer_emitted_count
+            << ", jitter_buffer_flushes:" << jitter_buffer_flushes
+            << ", jitter_buffer_target_delay:" << jitter_buffer_target_delay;
+      }
+      if (item["type"] == "inbound-rtp") {
+        const float jitter = item["jitter"];
+        const int packets_lost = item["packetsLost"];
+        const int packets_received = item["packetsReceived"];
+        const int removed_samples_for_acceleration =
+            item["removedSamplesForAcceleration"];
+        BOOST_LOG_SEV(logger, logging::severity::debug)
+            << ", jitter:" << jitter << ", packets_lost:" << packets_lost
+            << ", packets_received:" << packets_received
+            << ", removed_samples_for_acceleration:"
+            << removed_samples_for_acceleration;
+      }
+    }
+  }
+
   int run() override {
     auto joiner = core->get_session_module()->get_joiner();
     client::joiner::parameters parameters{uuid::generate(), "fun"};
@@ -74,6 +115,7 @@ private:
   }
 
   const config config_;
+  logging::logger logger{"audio_client"};
   rtc::google::log_webrtc_to_logging log_webrtc_to_logging;
   boost::inline_executor executor;
   std::shared_ptr<client::core_module> core;
