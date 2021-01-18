@@ -38,6 +38,15 @@ std::unique_ptr<connection> factory::create_connection() {
         << "setting `disable_ipv6` to `true`";
     configuration.disable_ipv6 = true;
   }
+  configuration.disable_ipv6_on_wifi = settings_.disable_ipv6_on_wifi;
+  configuration.audio_jitter_buffer_max_packets =
+      settings_.audio_jitter_buffer_max_packets;
+  configuration.audio_jitter_buffer_fast_accelerate =
+      settings_.audio_jitter_buffer_fast_accelerate;
+  configuration.audio_jitter_buffer_min_delay_ms =
+      settings_.audio_jitter_buffer_min_delay_ms;
+  configuration.audio_jitter_buffer_enable_rtx_handling =
+      settings_.audio_jitter_buffer_enable_rtx_handling;
 #if 1
   webrtc::PeerConnectionInterface::IceServer ice_server;
   ice_server.uri = "turn:fubble.io";

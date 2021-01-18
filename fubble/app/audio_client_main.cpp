@@ -63,12 +63,23 @@ int main(int argc, char *argv[]) {
     adder.add("version-target", core.version_.target,
               "target prefix. like \"api/v0\"");
   }
+  bpo::options_description rtc_("rtc");
+  {
+    utils::option_adder adder{rtc_};
+    auto &set = core.rtc_;
+    adder.add("disable_ipv6_on_wifi", set.disable_ipv6_on_wifi, "");
+    adder.add("audio_jitter_buffer_enable_rtx_handling", set.audio_jitter_buffer_enable_rtx_handling, "");
+    adder.add("audio_jitter_buffer_max_packets", set.audio_jitter_buffer_max_packets, "");
+    adder.add("audio_jitter_buffer_fast_accelerate", set.audio_jitter_buffer_fast_accelerate, "");
+    adder.add("audio_jitter_buffer_min_delay_ms", set.audio_jitter_buffer_min_delay_ms, "");
+  }
   bpo::options_description options;
   options.add(general);
   options.add(signaling);
   options.add(matrix);
   options.add(temporary_room);
   options.add(version);
+  options.add(rtc_);
   bpo::variables_map vm;
   bpo::store(bpo::parse_command_line(argc, argv, options), vm);
   bpo::notify(vm);
@@ -80,7 +91,7 @@ int main(int argc, char *argv[]) {
 
   logging::add_console_log(logging::severity::debug);
   rtc::google::log_webrtc_to_logging webrtc_logger;
-  webrtc_logger.set_enabled(false);
+  webrtc_logger.set_enabled(true);
   logging::logger logger{"main"};
   auto audio_client = audio_client::audio_client::create(audio_client_config);
   audio_client->set_stats_callback([&logger](std::string out) {

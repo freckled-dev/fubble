@@ -59,6 +59,8 @@ private:
     int removed_samples_for_acceleration{};
     for (const auto &item : print) {
       if (item["type"] == "track") {
+        if (item["remoteSource"] == false)
+          continue;
         relative_packet_arrival_delay = item["relativePacketArrivalDelay"];
         jitter_buffer_delay = item["jitterBufferDelay"];
         jitter_buffer_emitted_count = item["jitterBufferEmittedCount"];
@@ -66,7 +68,7 @@ private:
         jitter_buffer_target_delay = item["jitterBufferTargetDelay"];
         jitter_buffer_target_delay_devised_by_emitted_count =
             jitter_buffer_delay / jitter_buffer_emitted_count;
-#if 0
+#if 1
         BOOST_LOG_SEV(logger, logging::severity::debug)
             << "relative_packet_arrival_delay:" << relative_packet_arrival_delay
             << ", (jitterBufferDelay/jitterBufferEmittedCount):"
@@ -83,7 +85,7 @@ private:
         packets_received = item["packetsReceived"];
         removed_samples_for_acceleration =
             item["removedSamplesForAcceleration"];
-#if 0
+#if 1
         BOOST_LOG_SEV(logger, logging::severity::debug)
             << ", jitter:" << jitter << ", packets_lost:" << packets_lost
             << ", packets_received:" << packets_received
