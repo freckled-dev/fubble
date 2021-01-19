@@ -110,7 +110,8 @@ private:
         jitter_buffer_target_delay,
         jitter_buffer_target_delay_devised_by_emitted_count, jitter,
         packets_lost, packets_received, removed_samples_for_acceleration);
-    stats_callback(result);
+    if (stats_callback)
+      stats_callback(result);
   }
 
   int run() override {
