@@ -8,8 +8,8 @@ using audio_layer_info =
     boost::error_info<struct invalid_audio_layer_tag, std::string>;
 
 std::ostream &rtc::google::operator<<(std::ostream &out,
-                                      settings::audio_layer print) {
-  using audio_layer = settings::audio_layer;
+                                      settings::audio::layer print) {
+  using audio_layer = settings::audio::layer;
   switch (print) {
   case audio_layer::default_:
     return out << "default";
@@ -39,8 +39,8 @@ std::ostream &rtc::google::operator<<(std::ostream &out,
 }
 
 std::istream &rtc::google::operator>>(std::istream &in,
-                                      settings::audio_layer &set) {
-  using audio_layer = settings::audio_layer;
+                                      settings::audio::layer &set) {
+  using audio_layer = settings::audio::layer;
   std::string word;
   in >> word;
   if (word == "default")

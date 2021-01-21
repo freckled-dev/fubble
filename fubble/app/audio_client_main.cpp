@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
     utils::option_adder adder{general};
     adder.add("send-audio", audio_client_config.send_audio,
               "send your own audio stream");
-    adder.add("audio-layer", audio_client_config.core.rtc_.audio_layer_,
+    adder.add("audio-layer", audio_client_config.core.rtc_.audio_.layer_,
               "choose the audio-layer to use. eg. linux_alsa or linux_pulse");
   }
   bpo::options_description signaling("signaling");
@@ -68,10 +68,10 @@ int main(int argc, char *argv[]) {
     utils::option_adder adder{rtc_};
     auto &set = core.rtc_;
     adder.add("disable_ipv6_on_wifi", set.disable_ipv6_on_wifi, "");
-    adder.add("audio_jitter_buffer_enable_rtx_handling", set.audio_jitter_buffer_enable_rtx_handling, "");
-    adder.add("audio_jitter_buffer_max_packets", set.audio_jitter_buffer_max_packets, "");
-    adder.add("audio_jitter_buffer_fast_accelerate", set.audio_jitter_buffer_fast_accelerate, "");
-    adder.add("audio_jitter_buffer_min_delay_ms", set.audio_jitter_buffer_min_delay_ms, "");
+    adder.add("audio_jitter_buffer_enable_rtx_handling", set.audio_.jitter_buffer_enable_rtx_handling, "");
+    adder.add("audio_jitter_buffer_max_packets", set.audio_.jitter_buffer_max_packets, "");
+    adder.add("audio_jitter_buffer_fast_accelerate", set.audio_.jitter_buffer_fast_accelerate, "");
+    adder.add("audio_jitter_buffer_min_delay_ms", set.audio_.jitter_buffer_min_delay_ms, "");
   }
   bpo::options_description options;
   options.add(general);

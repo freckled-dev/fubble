@@ -11,31 +11,40 @@ struct settings {
   bool use_ip_v6{true};
   bool disable_ipv6_on_wifi = false;
 
-  enum class audio_layer {
-    default_,
-    windows_core, // default on windows
-    windows_core2,
-    linux_alsa,
-    linux_pulse, // default on linux
-    android_java,
-    android_open_sles,
-    android_java_input_and_open_sles_output,
-    android_aaudio,
-    android_java_input_and_aaudio_output,
-    dummy
+  struct audio {
+    enum class layer {
+      default_,
+      windows_core,  // default on windows
+      windows_core2,
+      linux_alsa,
+      linux_pulse,  // default on linux
+      android_java,
+      android_open_sles,
+      android_java_input_and_open_sles_output,
+      android_aaudio,
+      android_java_input_and_aaudio_output,
+      dummy
+    };
+    layer layer_{layer::default_};
+    // TODO refactor to optional, and set no default values
+    int jitter_buffer_max_packets = 200;
+    bool jitter_buffer_fast_accelerate = false;
+    int jitter_buffer_min_delay_ms = 0;
+    bool jitter_buffer_enable_rtx_handling = false;
+
+    bool enable_echo_canceller{true};
+    bool enable_gain_controller1{true};
+    bool enable_gain_controller2{true};
+    bool enable_high_pass_filter{true};
+    bool enable_voice_detection{true};
   };
-  audio_layer audio_layer_{audio_layer::default_};
-  // TODO refactor to optional, and set no default values
-  int audio_jitter_buffer_max_packets = 200;
-  bool audio_jitter_buffer_fast_accelerate = false;
-  int audio_jitter_buffer_min_delay_ms = 0;
-  bool audio_jitter_buffer_enable_rtx_handling = false;
+  audio audio_;
 };
 
-std::ostream &operator<<(std::ostream &out, settings::audio_layer print);
-std::istream &operator>>(std::istream &in, settings::audio_layer &set);
+std::ostream& operator<<(std::ostream& out, settings::audio::layer print);
+std::istream& operator>>(std::istream& in, settings::audio::layer& set);
 
-} // namespace google
-} // namespace rtc
+}  // namespace google
+}  // namespace rtc
 
 #endif
