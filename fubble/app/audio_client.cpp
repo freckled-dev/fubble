@@ -95,19 +95,21 @@ private:
       }
     }
     const std::string result = fmt::format(
-        "relative_packet_arrival_delay: {}\n"
-        "jitter_buffer_delay: {}\n"
-        "jitter_buffer_emitted_count: {}\n"
-        "jitter_buffer_flushes: {}\n"
-        "jitter_buffer_target_delay: {}\n"
+        //"relative_packet_arrival_delay: {}\n"
+        //"jitter_buffer_delay: {}\n"
+        //"jitter_buffer_emitted_count: {}\n"
+        //"jitter_buffer_flushes: {}\n"
+        //"jitter_buffer_target_delay: {}\n"
         "jbtd_devided_by_jbec: {}\n"
         "jitter: {}\n"
         "packets_lost: {}\n"
         "packets_received: {}\n"
         "removed_samples_for_acceleration: {}",
-        relative_packet_arrival_delay, jitter_buffer_delay,
-        jitter_buffer_emitted_count, jitter_buffer_flushes,
-        jitter_buffer_target_delay,
+        //relative_packet_arrival_delay,
+        //jitter_buffer_delay,
+        //jitter_buffer_emitted_count,
+        //jitter_buffer_flushes,
+        //jitter_buffer_target_delay,
         jitter_buffer_target_delay_devised_by_emitted_count, jitter,
         packets_lost, packets_received, removed_samples_for_acceleration);
     if (stats_callback)
