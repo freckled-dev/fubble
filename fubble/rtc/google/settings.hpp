@@ -14,10 +14,10 @@ struct settings {
   struct audio {
     enum class layer {
       default_,
-      windows_core,  // default on windows
+      windows_core, // default on windows
       windows_core2,
       linux_alsa,
-      linux_pulse,  // default on linux
+      linux_pulse, // default on linux
       android_java,
       android_open_sles,
       android_java_input_and_open_sles_output,
@@ -33,18 +33,19 @@ struct settings {
     bool jitter_buffer_enable_rtx_handling = false;
 
     bool enable_echo_canceller{true};
-    bool enable_gain_controller1{true};
-    bool enable_gain_controller2{true};
+    bool enable_gain_controller{true};
     bool enable_high_pass_filter{true};
     bool enable_voice_detection{true};
+    bool enable_noise_suppression{true};
+    bool enable_typing_detection{true};
   };
   audio audio_;
 };
 
-std::ostream& operator<<(std::ostream& out, settings::audio::layer print);
-std::istream& operator>>(std::istream& in, settings::audio::layer& set);
+std::ostream &operator<<(std::ostream &out, settings::audio::layer print);
+std::istream &operator>>(std::istream &in, settings::audio::layer &set);
 
-}  // namespace google
-}  // namespace rtc
+} // namespace google
+} // namespace rtc
 
 #endif

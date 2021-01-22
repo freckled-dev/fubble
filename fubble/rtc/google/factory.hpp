@@ -32,6 +32,7 @@ public:
 
   rtc::Thread &get_signaling_thread() const;
   audio_devices &get_audio_devices();
+  const settings& get_settings() const;
 
 private:
   void instance_members();

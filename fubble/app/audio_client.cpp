@@ -57,6 +57,9 @@ private:
     int packets_lost{};
     int packets_received{};
     int removed_samples_for_acceleration{};
+#if 0
+    BOOST_LOG_SEV(logger, logging::severity::debug) << "stats:" << print.dump(2);
+#endif
     for (const auto &item : print) {
       if (item["type"] == "track") {
         if (item["remoteSource"] == false)

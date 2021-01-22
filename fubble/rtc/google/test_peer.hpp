@@ -15,7 +15,7 @@ struct test_peer {
   ~test_peer() { instance->close(); }
 
   boost::shared_future<rtc::session_description> create_offer() {
-    return instance->create_offer();
+    return instance->create_offer({});
   }
 
   boost::future<rtc::session_description> create_answer() {

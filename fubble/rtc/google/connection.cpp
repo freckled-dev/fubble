@@ -111,14 +111,18 @@ void connection::initialise(
   native = native_;
 }
 
-boost::future<rtc::session_description> connection::create_offer() {
+boost::future<rtc::session_description>
+connection::create_offer(const offer_options &options) {
   BOOST_LOG_SEV(logger, logging::severity::info) << "create_offer";
   auto observer =
       new rtc::RefCountedObject<create_session_description_observer>();
   observer->result.type_ = ::rtc::session_description::type::offer;
-  const webrtc::PeerConnectionInterface::RTCOfferAnswerOptions options;
+  webrtc::PeerConnectionInterface::RTCOfferAnswerOptions options_native;
+  options_native.offer_to_receive_audio = options.offer_to_receive_audio;
+  options_native.offer_to_receive_video = options.offer_to_receive_video;
+  options_native.voice_activity_detection = options.voice_activity_detection;
   auto result = observer->promise.get_future();
-  native->CreateOffer(observer, options);
+  native->CreateOffer(observer, options_native);
   return result;
 }
 

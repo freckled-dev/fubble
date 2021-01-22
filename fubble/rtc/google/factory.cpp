@@ -10,6 +10,7 @@
 #include "video_track_source.hpp"
 #include <api/audio_codecs/builtin_audio_decoder_factory.h>
 #include <api/audio_codecs/builtin_audio_encoder_factory.h>
+#include <api/audio_codecs/opus_audio_encoder_factory.h>
 #include <api/task_queue/default_task_queue_factory.h>
 #include <api/video_codecs/builtin_video_decoder_factory.h>
 #include <api/video_codecs/builtin_video_encoder_factory.h>
@@ -93,6 +94,8 @@ rtc::Thread &factory::get_signaling_thread() const { return *signaling_thread; }
 
 audio_devices &factory::get_audio_devices() { return *audio_devices_; }
 
+const settings &factory::get_settings() const { return settings_; }
+
 void factory::instance_members() {
   instance_threads();
   instance_audio();
@@ -120,7 +123,11 @@ void factory::instance_threads() {
 void factory::instance_audio() {
   BOOST_LOG_SEV(logger, logging::severity::trace) << "instance_audio";
   audio_decoder = webrtc::CreateBuiltinAudioDecoderFactory();
+#if 1
   audio_encoder = webrtc::CreateBuiltinAudioEncoderFactory();
+#else
+  audio_encoder = webrtc::CreateOpusAudioEncoderFactory();
+#endif
   instance_audio_processing();
   instance_audio_device_module();
   audio_devices_ =
@@ -130,41 +137,21 @@ void factory::instance_audio() {
 void factory::instance_audio_processing() {
   webrtc::AudioProcessingBuilder builder;
   audio_processing = builder.Create();
-  webrtc::AudioProcessing::Config config;
-  config.echo_canceller.enabled = settings_.audio_.enable_echo_canceller;
-  config.echo_canceller.mobile_mode = false;
-
-  config.gain_controller1.enabled = settings_.audio_.enable_gain_controller1;
-  config.gain_controller1.mode =
-      webrtc::AudioProcessing::Config::GainController1::kAdaptiveAnalog;
-  config.gain_controller1.analog_level_minimum = 0;
-  config.gain_controller1.analog_level_maximum = 255;
-
-  config.gain_controller2.enabled = settings_.audio_.enable_gain_controller2;
-
-  config.high_pass_filter.enabled = settings_.audio_.enable_high_pass_filter;
-
-  config.voice_detection.enabled = settings_.audio_.enable_voice_detection;
-  audio_processing->ApplyConfig(config);
-
-#if 0
-  audio_processing->noise_reduction()->set_level(
-      webrtc::AudioProcessing::kHighSuppression);
-  audio_processing->noise_reduction()->Enable(true);
-#endif
+  // do not apply config. will be overwritten with the options from
+  // device_creator audio_processing->ApplyConfig(config);
 }
 
 namespace {
 webrtc::AudioDeviceModule::AudioLayer
 cast_audio_layer(settings::audio::layer cast) {
   switch (cast) {
-    case settings::audio::layer::default_:
+  case settings::audio::layer::default_:
     return webrtc::AudioDeviceModule::kPlatformDefaultAudio;
-    case settings::audio::layer::windows_core:
+  case settings::audio::layer::windows_core:
     return webrtc::AudioDeviceModule::kWindowsCoreAudio;
-    case settings::audio::layer::windows_core2:
+  case settings::audio::layer::windows_core2:
     return webrtc::AudioDeviceModule::kWindowsCoreAudio2;
-    case settings::audio::layer::linux_alsa:
+  case settings::audio::layer::linux_alsa:
     return webrtc::AudioDeviceModule::kLinuxAlsaAudio;
   case settings::audio::layer::linux_pulse:
     return webrtc::AudioDeviceModule::kLinuxPulseAudio;
@@ -190,7 +177,8 @@ void factory::instance_audio_device_module() {
   audio_device_module = worker_thread->Invoke<decltype(audio_device_module)>(
       RTC_FROM_HERE, [this]() -> rtc::scoped_refptr<webrtc::AudioDeviceModule> {
         return webrtc::AudioDeviceModule::Create(
-            cast_audio_layer(settings_.audio_.layer_), task_queue_factory.get());
+            cast_audio_layer(settings_.audio_.layer_),
+            task_queue_factory.get());
       });
   BOOST_ASSERT(audio_device_module);
 }
