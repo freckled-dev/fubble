@@ -94,6 +94,7 @@ build ios release:
       --profile_host scripts/conan_profiles/ios_release
       --skip_export
       --skip_qt
+  when: manual
 
 build ios simulator release:
   <<: *build_ios
@@ -106,6 +107,7 @@ build ios simulator release:
       --profile_host scripts/conan_profiles/ios_simulator_release
       --skip_export
       --skip_qt
+  when: manual
 
 .bundle ios: &bundle_ios
   tags:
