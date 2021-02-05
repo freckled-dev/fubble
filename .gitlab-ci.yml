@@ -127,14 +127,14 @@ package ios debug:
   script:
     - ./scripts/bundle_framework_ios_debug
 
-package ios release:
+# does not work due to 'build ios * release' being manual. pipline gets stuck
+.package ios release:
   <<: *bundle_ios
   needs:
     - build ios release
     - build ios simulator release
   script:
     - ./scripts/bundle_framework_ios_release
-  when: manual
 
 appimage:
   image: registry.gitlab.com/acof/fubble/ci/build_ubuntu_1804:v2
