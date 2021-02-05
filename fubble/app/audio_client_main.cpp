@@ -93,17 +93,7 @@ int main(int argc, char *argv[]) {
   rtc::google::log_webrtc_to_logging webrtc_logger;
   webrtc_logger.set_enabled(true);
   logging::logger logger{"main"};
-  auto &rtc_audio = audio_client_config.core.rtc_.audio_;
-  rtc_audio.enable_echo_canceller = false;
-  rtc_audio.enable_gain_controller = false;
-  rtc_audio.enable_high_pass_filter = false;
-  rtc_audio.enable_noise_suppression = false;
-  rtc_audio.enable_typing_detection = false;
-  rtc_audio.enable_voice_detection = false;
   auto audio_client = audio_client::audio_client::create(audio_client_config);
-  audio_client->set_stats_callback([&logger](std::string out) {
-    BOOST_LOG_SEV(logger, logging::severity::debug) << out;
-  });
   boost::asio::executor exit_executor = audio_client->get_core()
                                             ->get_utils_executor_module()
                                             ->get_io_context()

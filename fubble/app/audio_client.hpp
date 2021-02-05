@@ -22,9 +22,6 @@ public:
   virtual int run() = 0;
   virtual void stop() = 0;
 
-  virtual void
-  set_stats_callback(std::function<void(std::string)> callback) = 0;
-
   virtual std::shared_ptr<client::core_module> get_core() const = 0;
 };
 } // namespace audio_client

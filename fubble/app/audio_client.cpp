@@ -45,78 +45,8 @@ private:
       });
   }
 
-  void print_stats(const nlohmann::json &print) {
-    // https://w3c.github.io/webrtc-stats/#dom-rtcinboundrtpstreamstats-jitterbufferdelay
-    float relative_packet_arrival_delay{};
-    float jitter_buffer_delay{};
-    int jitter_buffer_emitted_count{};
-    int jitter_buffer_flushes{};
-    int jitter_buffer_target_delay{};
-    float jitter_buffer_target_delay_devised_by_emitted_count{};
-    float jitter{};
-    int packets_lost{};
-    int packets_received{};
-    int removed_samples_for_acceleration{};
-#if 0
-    BOOST_LOG_SEV(logger, logging::severity::debug) << "stats:" << print.dump(2);
-#endif
-    for (const auto &item : print) {
-      if (item["type"] == "track") {
-        if (item["remoteSource"] == false)
-          continue;
-        relative_packet_arrival_delay = item["relativePacketArrivalDelay"];
-        jitter_buffer_delay = item["jitterBufferDelay"];
-        jitter_buffer_emitted_count = item["jitterBufferEmittedCount"];
-        jitter_buffer_flushes = item["jitterBufferFlushes"];
-        jitter_buffer_target_delay = item["jitterBufferTargetDelay"];
-        jitter_buffer_target_delay_devised_by_emitted_count =
-            jitter_buffer_delay / jitter_buffer_emitted_count;
-#if 1
-        BOOST_LOG_SEV(logger, logging::severity::debug)
-            << "relative_packet_arrival_delay:" << relative_packet_arrival_delay
-            << ", (jitterBufferDelay/jitterBufferEmittedCount):"
-            << jitter_buffer_target_delay_devised_by_emitted_count
-            << ", jitter_buffer_delay:" << jitter_buffer_delay
-            << ", jitter_buffer_emitted_count:" << jitter_buffer_emitted_count
-            << ", jitter_buffer_flushes:" << jitter_buffer_flushes
-            << ", jitter_buffer_target_delay:" << jitter_buffer_target_delay;
-#endif
-      }
-      if (item["type"] == "inbound-rtp") {
-        jitter = item["jitter"];
-        packets_lost = item["packetsLost"];
-        packets_received = item["packetsReceived"];
-        removed_samples_for_acceleration =
-            item["removedSamplesForAcceleration"];
-#if 1
-        BOOST_LOG_SEV(logger, logging::severity::debug)
-            << ", jitter:" << jitter << ", packets_lost:" << packets_lost
-            << ", packets_received:" << packets_received
-            << ", removed_samples_for_acceleration:"
-            << removed_samples_for_acceleration;
-#endif
-      }
-    }
-    const std::string result = fmt::format(
-        //"relative_packet_arrival_delay: {}\n"
-        //"jitter_buffer_delay: {}\n"
-        //"jitter_buffer_emitted_count: {}\n"
-        //"jitter_buffer_flushes: {}\n"
-        //"jitter_buffer_target_delay: {}\n"
-        "jbtd_devided_by_jbec: {}\n"
-        "jitter: {}\n"
-        "packets_lost: {}\n"
-        "packets_received: {}\n"
-        "removed_samples_for_acceleration: {}",
-        //relative_packet_arrival_delay,
-        //jitter_buffer_delay,
-        //jitter_buffer_emitted_count,
-        //jitter_buffer_flushes,
-        //jitter_buffer_target_delay,
-        jitter_buffer_target_delay_devised_by_emitted_count, jitter,
-        packets_lost, packets_received, removed_samples_for_acceleration);
-    if (stats_callback)
-      stats_callback(result);
+  void print_stats(const nlohmann::json &) {
+    // TODO
   }
 
   int run() override {
@@ -150,10 +80,6 @@ private:
     });
   }
 
-  void set_stats_callback(std::function<void(std::string)> callback) override {
-    stats_callback = std::move(callback);
-  }
-
   std::shared_ptr<client::core_module> get_core() const override {
     return core;
   }
@@ -167,7 +93,6 @@ private:
   std::shared_ptr<client::audio_settings_module> audio_settings;
   std::shared_ptr<utils::interval_timer> stats_timer;
   boost::promise<int> run_promise;
-  std::function<void(std::string)> stats_callback;
 };
 } // namespace
 
