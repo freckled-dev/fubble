@@ -74,7 +74,7 @@ TEST_F(GoogleConnection, Offer) {
   test_peer peer{creator};
   boost::future<::rtc::session_description> offer;
   peer.instance->on_negotiation_needed.connect(
-      [&] { offer = peer.instance->create_offer(); });
+      [&] { offer = peer.instance->create_offer({}); });
   peer.instance->create_data_channel();
   const ::rtc::session_description description = offer.get();
   EXPECT_FALSE(description.sdp.empty());
@@ -164,7 +164,7 @@ TEST_F(GoogleConnection, VideoTrackInOffer) {
   std::shared_ptr<rtc::track> track = creator.create_video_track(source);
   auto connection = creator.create_connection();
   connection->add_track(track);
-  auto offer = connection->create_offer();
+  auto offer = connection->create_offer({});
   auto offer_ = offer.get();
   EXPECT_NE(offer_.sdp.find("video"), std::string::npos);
 }

@@ -111,14 +111,18 @@ void connection::initialise(
   native = native_;
 }
 
-boost::future<rtc::session_description> connection::create_offer() {
+boost::future<rtc::session_description>
+connection::create_offer(const offer_options &options) {
   BOOST_LOG_SEV(logger, logging::severity::info) << "create_offer";
   auto observer =
       new rtc::RefCountedObject<create_session_description_observer>();
   observer->result.type_ = ::rtc::session_description::type::offer;
-  const webrtc::PeerConnectionInterface::RTCOfferAnswerOptions options;
+  webrtc::PeerConnectionInterface::RTCOfferAnswerOptions options_native;
+  options_native.offer_to_receive_audio = options.offer_to_receive_audio;
+  options_native.offer_to_receive_video = options.offer_to_receive_video;
+  options_native.voice_activity_detection = options.voice_activity_detection;
   auto result = observer->promise.get_future();
-  native->CreateOffer(observer, options);
+  native->CreateOffer(observer, options_native);
   return result;
 }
 
@@ -253,6 +257,24 @@ rtc::data_channel_ptr connection::create_data_channel() {
 void connection::close() {
   // closes and destroys the data channels
   native->Close();
+}
+
+namespace {
+struct stats_collector_callback : webrtc::RTCStatsCollectorCallback {
+  connection::stats_callback callback;
+  stats_collector_callback(const connection::stats_callback &set)
+      : callback{set} {}
+  void OnStatsDelivered(
+      const rtc::scoped_refptr<const webrtc::RTCStatsReport> &report) override {
+    callback(report->ToJson());
+  }
+};
+} // namespace
+
+void connection::get_stats(const stats_callback &callback) {
+  rtc::scoped_refptr<webrtc::RTCStatsCollectorCallback> callback_casted =
+      new rtc::RefCountedObject<stats_collector_callback>(callback);
+  native->GetStats(callback_casted);
 }
 
 void connection::OnConnectionChange(

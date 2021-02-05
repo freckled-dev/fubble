@@ -46,7 +46,7 @@ public:
   }
 
   void negotiation_needed() {
-    rtc_connection_offering->create_offer()
+    rtc_connection_offering->create_offer({})
         .then(executor,
               [this](auto offer) {
                 auto got_offer = offer.get();

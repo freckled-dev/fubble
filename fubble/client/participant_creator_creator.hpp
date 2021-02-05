@@ -5,17 +5,19 @@
 
 namespace client {
 class own_media;
-// TODO this class is very small. make header only
 class participant_creator_creator {
 public:
-  participant_creator_creator(factory &factory_, peer_creator &peer_creator_,
+  participant_creator_creator(factory &factory_, std::shared_ptr<peers> peers_,
+                              peer_creator &peer_creator_,
                               tracks_adder &tracks_adder_,
                               own_media &own_media_);
+  ~participant_creator_creator();
 
   std::unique_ptr<participant_creator> create(const std::string &own_id);
 
 protected:
   factory &factory_;
+  std::shared_ptr<peers> peers_;
   peer_creator &peer_creator_;
   tracks_adder &tracks_adder_;
   own_media &own_media_;

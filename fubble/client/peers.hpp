@@ -7,7 +7,6 @@
 
 namespace client {
 class peer;
-// TODO delete?!
 class peers {
 public:
   using peer_ptr = std::shared_ptr<peer>;
@@ -16,10 +15,9 @@ public:
   void add(const peer_ptr &add_);
   std::vector<peer_ptr> get_all();
   void remove(const peer_ptr &remove_);
-  void close();
 
-  boost::signals2::signal<void()> on_added;
-  boost::signals2::signal<void()> on_removed;
+  boost::signals2::signal<void(peer_ptr)> on_added;
+  boost::signals2::signal<void(peer_ptr)> on_removed;
 
 protected:
   std::vector<peer_ptr> container;

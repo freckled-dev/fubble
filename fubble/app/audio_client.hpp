@@ -5,6 +5,7 @@
 #include "fubble/client/audio_module.hpp"
 #include "fubble/client/audio_settings_module.hpp"
 #include "fubble/utils/export.hpp"
+#include <functional>
 
 namespace audio_client {
 class FUBBLE_PUBLIC audio_client {
@@ -22,8 +23,6 @@ public:
   virtual void stop() = 0;
 
   virtual std::shared_ptr<client::core_module> get_core() const = 0;
-
-protected:
 };
 } // namespace audio_client
 

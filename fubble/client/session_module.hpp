@@ -9,15 +9,16 @@
 #include "fubble/version/client_module.hpp"
 
 namespace client {
-class joiner;
-class peer_creator;
-class leaver;
-class tracks_adder;
-class rooms;
-class room_creator;
 class factory;
+class joiner;
+class leaver;
 class own_media;
 class participant_creator_creator;
+class peer_creator;
+class peers;
+class room_creator;
+class rooms;
+class tracks_adder;
 class FUBBLE_PUBLIC session_module {
 public:
   struct config {};
@@ -35,6 +36,7 @@ public:
   std::shared_ptr<tracks_adder> get_tracks_adder();
   std::shared_ptr<rooms> get_rooms();
   std::shared_ptr<own_media> get_own_media();
+  std::shared_ptr<peers> get_peers();
 
 protected:
   std::shared_ptr<room_creator> get_room_creator();
@@ -60,6 +62,7 @@ protected:
   std::shared_ptr<room_creator> room_creator_;
   std::shared_ptr<participant_creator_creator> participant_creator_creator_;
   std::shared_ptr<peer_creator> peer_creator_;
+  std::shared_ptr<peers> peers_;
 };
 } // namespace client
 

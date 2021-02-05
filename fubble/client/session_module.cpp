@@ -1,5 +1,6 @@
 #include "session_module.hpp"
 #include "fubble/client/factory.hpp"
+#include "fubble/client/peers.hpp"
 #include "fubble/client/joiner.hpp"
 #include "fubble/client/leaver.hpp"
 #include "fubble/client/own_media.hpp"
@@ -59,6 +60,12 @@ std::shared_ptr<own_media> session_module::get_own_media() {
   return own_media_;
 }
 
+std::shared_ptr<peers> session_module::get_peers() {
+  if (!peers_)
+    peers_ = std::make_shared<peers>();
+  return peers_;
+}
+
 std::shared_ptr<room_creator> session_module::get_room_creator() {
   if (!room_creator_)
     room_creator_ = std::make_shared<client::room_creator>(
@@ -85,7 +92,7 @@ session_module::get_participant_creator_creator() {
   if (!participant_creator_creator_)
     participant_creator_creator_ =
         std::make_shared<client::participant_creator_creator>(
-            *get_factory(), *get_peer_creator(), *get_tracks_adder(),
-            *get_own_media());
+            *get_factory(), get_peers(), *get_peer_creator(),
+            *get_tracks_adder(), *get_own_media());
   return participant_creator_creator_;
 }

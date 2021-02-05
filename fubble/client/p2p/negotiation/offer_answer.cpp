@@ -19,7 +19,9 @@ offer_answer::offer_answer(boost::executor &executor,
 
 void offer_answer::on_create_offer() {
   BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
-  auto sdp = rtc_connection.create_offer();
+
+  rtc::connection::offer_options options;
+  auto sdp = rtc_connection.create_offer(options);
   sdp.then(executor,
            [this](auto offer_future) {
              auto offer = offer_future.get();

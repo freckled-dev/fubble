@@ -7,12 +7,19 @@
 #include "track_ptr.hpp"
 #include <boost/signals2/signal.hpp>
 #include <boost/thread/future.hpp>
+#include <functional>
 
 namespace rtc {
 class connection {
 public:
   virtual ~connection();
-  virtual boost::future<session_description> create_offer() = 0;
+  struct offer_options {
+    bool offer_to_receive_audio{true};
+    bool offer_to_receive_video{true};
+    bool voice_activity_detection{true};
+  };
+  virtual boost::future<session_description>
+  create_offer(const offer_options &options) = 0;
   virtual boost::future<session_description> create_answer() = 0;
   virtual boost::future<void>
   set_local_description(const session_description &) = 0;
@@ -23,6 +30,8 @@ public:
   virtual void remove_track(track_ptr) = 0;
   virtual rtc::data_channel_ptr create_data_channel() = 0;
   virtual void close() = 0;
+  using stats_callback = std::function<void(std::string)>;
+  virtual void get_stats(const stats_callback &callback) = 0;
   boost::signals2::signal<void()> on_negotiation_needed;
   boost::signals2::signal<void(track_ptr)> on_track_added;
   boost::signals2::signal<void(track_ptr)> on_track_removed;

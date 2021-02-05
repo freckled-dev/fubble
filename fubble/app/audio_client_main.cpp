@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
     utils::option_adder adder{general};
     adder.add("send-audio", audio_client_config.send_audio,
               "send your own audio stream");
-    adder.add("audio-layer", audio_client_config.core.rtc_.audio_layer_,
+    adder.add("audio-layer", audio_client_config.core.rtc_.audio_.layer_,
               "choose the audio-layer to use. eg. linux_alsa or linux_pulse");
   }
   bpo::options_description signaling("signaling");
@@ -63,12 +63,23 @@ int main(int argc, char *argv[]) {
     adder.add("version-target", core.version_.target,
               "target prefix. like \"api/v0\"");
   }
+  bpo::options_description rtc_("rtc");
+  {
+    utils::option_adder adder{rtc_};
+    auto &set = core.rtc_;
+    adder.add("disable_ipv6_on_wifi", set.disable_ipv6_on_wifi, "");
+    adder.add("audio_jitter_buffer_enable_rtx_handling", set.audio_.jitter_buffer_enable_rtx_handling, "");
+    adder.add("audio_jitter_buffer_max_packets", set.audio_.jitter_buffer_max_packets, "");
+    adder.add("audio_jitter_buffer_fast_accelerate", set.audio_.jitter_buffer_fast_accelerate, "");
+    adder.add("audio_jitter_buffer_min_delay_ms", set.audio_.jitter_buffer_min_delay_ms, "");
+  }
   bpo::options_description options;
   options.add(general);
   options.add(signaling);
   options.add(matrix);
   options.add(temporary_room);
   options.add(version);
+  options.add(rtc_);
   bpo::variables_map vm;
   bpo::store(bpo::parse_command_line(argc, argv, options), vm);
   bpo::notify(vm);
@@ -80,7 +91,8 @@ int main(int argc, char *argv[]) {
 
   logging::add_console_log(logging::severity::debug);
   rtc::google::log_webrtc_to_logging webrtc_logger;
-  webrtc_logger.set_enabled(false);
+  webrtc_logger.set_enabled(true);
+  logging::logger logger{"main"};
   auto audio_client = audio_client::audio_client::create(audio_client_config);
   boost::asio::executor exit_executor = audio_client->get_core()
                                             ->get_utils_executor_module()

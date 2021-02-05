@@ -10,6 +10,7 @@
 #include "fubble/client/participant_creator_creator.hpp"
 #include "fubble/client/participants.hpp"
 #include "fubble/client/peer_creator.hpp"
+#include "fubble/client/peers.hpp"
 #include "fubble/client/room.hpp"
 #include "fubble/client/room_creator.hpp"
 #include "fubble/client/rooms.hpp"
@@ -137,8 +138,9 @@ struct test_client {
       client::desktop_sharing::create_noop();
   client::own_media own_media;
   client::factory client_factory;
+  std::shared_ptr<peers> peers_ = std::make_shared<peers>();
   client::participant_creator_creator participant_creator_creator{
-      client_factory, peer_creator, tracks_adder, own_media};
+      client_factory, peers_, peer_creator, tracks_adder, own_media};
   client::room_creator client_room_creator{participant_creator_creator};
   client::joiner joiner{client_room_creator,     *rooms,
                         matrix_authentification, temporary_room_client,

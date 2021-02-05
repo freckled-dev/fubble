@@ -17,7 +17,7 @@ public:
   connection();
   ~connection() override;
   void initialise(rtc::scoped_refptr<::webrtc::PeerConnectionInterface> native);
-  boost::future<session_description> create_offer() override;
+  boost::future<session_description> create_offer(const offer_options& options) override;
   boost::future<session_description> create_answer() override;
   boost::future<void>
   set_local_description(const session_description &) override;
@@ -29,6 +29,7 @@ public:
   // seems like data channels can't be removed!
   rtc::data_channel_ptr create_data_channel() override;
   void close() override;
+  void get_stats(const stats_callback& callback) override;
 
 protected:
   void OnConnectionChange(
