@@ -119,7 +119,7 @@ build ios simulator release:
     paths:
       - ./fubble.framework
 
-package ios debug:
+.package ios debug:
   <<: *bundle_ios
   needs:
     - build ios debug

@@ -1,7 +1,11 @@
-project('fubble', 'cpp',
+project('fubble', ['cpp'],
   meson_version : '>=0.56.0',
   license: ['proprietary'],
   default_options : ['cpp_std=c++17'])
+
+if host_machine.system() == 'darwin'
+  add_languages('objcpp', native: false)
+endif
 
 add_project_arguments('-DBUILDING_FUBBLE', language: 'cpp')
 

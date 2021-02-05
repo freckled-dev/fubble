@@ -3,20 +3,26 @@ evaluation = executable('webrtc_google_peer_evaluation',
   dependencies: [utils_dep, google_webrtc_dep, signaling_client_dep],
   override_options: ['cpp_std=c++14']
   )
-
+webrtc_google_peer_sources = [
+  'connection.cpp', 'factory.cpp', 'data_channel.cpp',
+  'video_track.cpp', 'video_track_source.cpp',
+  'capture/video/enumerator.cpp',
+  'capture/video/device.cpp', 'audio_source.cpp',
+  'capture/audio/device_creator.cpp', 'capture/audio/device.cpp',
+  'audio_track_source.cpp', 'audio_track_sink.cpp',
+  'video_track_source.cpp', 'video_track_sink.cpp', 'video_source.cpp',
+  'asio_signaling_thread.cpp', 'log_webrtc_to_logging.cpp',
+  'audio_devices.cpp', 'audio_track.cpp', 'track.cpp',
+  'voice_detection.cpp', 'capture/desktop/capturer.cpp',
+  'capture/desktop/enumerator.cpp', 'module.cpp', 'settings.cpp',
+  ]
+if host_machine.system() == 'darwin'
+  webrtc_google_peer_sources += [
+    'capture/video/authorization.mm',
+    ]
+endif
 webrtc_google_peer = library('webrtc_google_peer',
-  ['connection.cpp', 'factory.cpp', 'data_channel.cpp',
-    'video_track.cpp', 'video_track_source.cpp',
-    'capture/video/enumerator.cpp',
-    'capture/video/device.cpp', 'audio_source.cpp',
-    'capture/audio/device_creator.cpp', 'capture/audio/device.cpp',
-    'audio_track_source.cpp', 'audio_track_sink.cpp',
-    'video_track_source.cpp', 'video_track_sink.cpp', 'video_source.cpp',
-    'asio_signaling_thread.cpp', 'log_webrtc_to_logging.cpp',
-    'audio_devices.cpp', 'audio_track.cpp', 'track.cpp',
-    'voice_detection.cpp', 'capture/desktop/capturer.cpp',
-    'capture/desktop/enumerator.cpp', 'module.cpp', 'settings.cpp',
-    ],
+  webrtc_google_peer_sources,
   override_options: ['cpp_std=c++14'],
   dependencies: [webrtc_peer_dep, utils_dep, fmt_dep, google_webrtc_dep],
   install: true
