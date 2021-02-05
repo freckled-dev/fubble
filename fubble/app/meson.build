@@ -12,13 +12,8 @@ client_app = library('app_client', client_app_sources,
 client_app_dep = declare_dependency(link_with: [client_app],
   dependencies: [client_dep])
 
-if is_ios
-  audio_client_lib = shared_library('audio_client', ['audio_client.cpp'],
-    dependencies: [client_app_dep], install: true)
-else
-  audio_client_lib = library('audio_client', ['audio_client.cpp'],
-    dependencies: [client_app_dep], install: true)
-endif
+audio_client_lib = library('audio_client', ['audio_client.cpp'],
+  dependencies: [client_app_dep], install: true)
 audio_client_lib_dep = declare_dependency(link_with: [audio_client_lib],
   dependencies: [client_app_dep])
 audio_client = executable('audio_client',

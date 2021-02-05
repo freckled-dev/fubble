@@ -18,7 +18,6 @@ utils = library('utils',
 utils_dep = declare_dependency(
   include_directories: ['../..'],
   link_with: [utils],
-  link_whole: [utils],
   dependencies: [asio_dep]
   )
 install_headers([

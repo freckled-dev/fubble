@@ -15,4 +15,6 @@ fubble:meson_cross_file=scripts/meson_cross/ios
 #darwin-toolchain/1.0.8@theodelrieu/stable
 [env]
 CXXFLAGS=-fembed-bitcode
+CFLAGS=-fembed-bitcode
+LDLAGS=-fembed-bitcode
 
