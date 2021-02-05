@@ -134,6 +134,7 @@ package ios release:
     - build ios simulator release
   script:
     - ./scripts/bundle_framework_ios_release
+  when: manual
 
 appimage:
   image: registry.gitlab.com/acof/fubble/ci/build_ubuntu_1804:v2
