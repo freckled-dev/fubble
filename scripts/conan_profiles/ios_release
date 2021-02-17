@@ -15,7 +15,7 @@ fubble:meson_cross_file=scripts/meson_cross/ios
 [build_requires]
 
 [env]
-CXXFLAGS=-fembed-bitcode
+CXXFLAGS=-fembed-bitcode -fvisibility=hidden -fexceptions
 CFLAGS=-fembed-bitcode
 LDLAGS=-fembed-bitcode
 

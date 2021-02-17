@@ -14,7 +14,8 @@ fubble:meson_cross_file=scripts/meson_cross/ios
 # https://docs.conan.io/en/latest/integrations/cross_platform/ios.html
 #darwin-toolchain/1.0.8@theodelrieu/stable
 [env]
-CXXFLAGS=-fembed-bitcode
+# webrtc and boost set `visibilty` by default to hidden
+CXXFLAGS=-fembed-bitcode -fvisibility=hidden -fexceptions
 CFLAGS=-fembed-bitcode
 LDLAGS=-fembed-bitcode
 
