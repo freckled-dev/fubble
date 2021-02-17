@@ -103,13 +103,7 @@ else
       '-no-pie'
       ]
   endif
-  if host_machine.system() == 'darwin'
-    boost_compile_args += [
-      '-fexceptions',
-      # '-fvisibility=default',
-      ]
-  endif
-  if is_ios
+  if is_ios # move to profile!
     boost_compile_args += [
       '-DBOOST_AC_USE_PTHREADS',
       '-DBOOST_SP_USE_PTHREADS'
