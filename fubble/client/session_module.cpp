@@ -1,14 +1,14 @@
 #include "session_module.hpp"
-#include "fubble/client/factory.hpp"
-#include "fubble/client/peers.hpp"
-#include "fubble/client/joiner.hpp"
-#include "fubble/client/leaver.hpp"
-#include "fubble/client/own_media.hpp"
-#include "fubble/client/participant_creator_creator.hpp"
-#include "fubble/client/room_creator.hpp"
-#include "fubble/client/rooms.hpp"
-#include "fubble/client/tracks_adder.hpp"
 #include "peer_creator.hpp"
+#include <fubble/client/factory.hpp>
+#include <fubble/client/joiner.hpp>
+#include <fubble/client/leaver.hpp>
+#include <fubble/client/own_media.hpp>
+#include <fubble/client/participant_creator_creator.hpp>
+#include <fubble/client/peers.hpp>
+#include <fubble/client/room_creator.hpp>
+#include <fubble/client/rooms.hpp>
+#include <fubble/client/tracks_adder.hpp>
 
 using namespace client;
 
@@ -80,10 +80,15 @@ std::shared_ptr<factory> session_module::get_factory() {
 }
 
 std::shared_ptr<peer_creator> session_module::get_peer_creator() {
-  if (!peer_creator_)
-    peer_creator_ = std::make_shared<peer_creator>(
-        *executor_module->get_boost_executor(),
-        *signaling_module->get_client_creator(), *rtc_module->get_factory());
+  if (!peer_creator_) {
+    client::peer::config config;
+    config.receive_audio = config_.receive_audio;
+    config.receive_video = config_.receive_video;
+    peer_creator_ =
+        std::make_shared<peer_creator>(*executor_module->get_boost_executor(),
+                                       *signaling_module->get_client_creator(),
+                                       *rtc_module->get_factory(), config);
+  }
   return peer_creator_;
 }
 

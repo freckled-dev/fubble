@@ -21,7 +21,10 @@ class rooms;
 class tracks_adder;
 class FUBBLE_PUBLIC session_module {
 public:
-  struct config {};
+  struct config {
+    bool receive_audio{true};
+    bool receive_video{true};
+  };
   session_module(
       std::shared_ptr<utils::executor_module> executor_module,
       std::shared_ptr<matrix::module> matrix_module,

@@ -1,16 +1,15 @@
-if host_machine.system() == 'linux'
-  client_cli = executable('fubble_cli',
-    ['client.cpp', 'options.cpp'],
-    dependencies: [client_dep],
-    install: true
-    )
-endif
-
 client_app_sources = ['core_module.cpp']
 client_app = library('app_client', client_app_sources,
   dependencies: [client_dep], install: true)
 client_app_dep = declare_dependency(link_with: [client_app],
   dependencies: [client_dep])
+
+cli_client_lib = library('fubble_cli', ['cli_client.cpp'],
+  dependencies: [client_app_dep], install: true)
+cli_client_dep = declare_dependency(link_with: [cli_client_lib],
+  dependencies: [client_app_dep])
+cli_client = executable('fubble_cli', ['cli_client_main.cpp'],
+  dependencies: [cli_client_dep], install: true)
 
 if is_ios
   audio_client_lib = shared_library('audio_client', ['audio_client.cpp'],
@@ -30,13 +29,13 @@ audio_client = executable('audio_client',
 install_headers([
   'audio_video_settings_devices_model.hpp', 'audio_video_settings_model.hpp',
   'chat_model.hpp', 'error_model.hpp', 'gui_options.hpp',
-  'language_settings_model.hpp', 'leave_model.hpp', 'log_module.hpp',
+  'language_settings_model.hpp', 'leave_model.hpp',
   'model_creator.hpp', 'options.hpp', 'own_media_model.hpp',
   'participant_model.hpp', 'participants_model.hpp',
   'participants_with_video_model.hpp', 'poll_asio_by_qt.hpp',
   'share_desktop_model.hpp', 'utils_model.hpp', 'chat_messages_model.hpp',
   'join_model.hpp', 'room_model.hpp', 'rooms_model.hpp', 'ui_module.hpp',
-  'audio_client.hpp', 'core_module.hpp',
+  'audio_client.hpp', 'core_module.hpp', 'cli_client.hpp',
   ], subdir: 'fubble/app')
 
 if get_option('with_ui')
@@ -47,7 +46,7 @@ if get_option('with_ui')
     'chat_messages_model.cpp', 'share_desktop_model.cpp',
     'participant_model.cpp', 'room_model.cpp', 'model_creator.cpp',
     'language_settings_model.cpp', 'ui_module.cpp', 'rooms_model.cpp',
-    'audio_video_settings_model.cpp', 'own_media_model.cpp', 'log_module.cpp',
+    'audio_video_settings_model.cpp', 'own_media_model.cpp',
     ]
   client_gui_sources += qt5.preprocess(
     qresources: ['qml.qrc'],

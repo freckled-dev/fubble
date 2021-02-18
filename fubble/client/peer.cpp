@@ -4,11 +4,13 @@ using namespace client;
 
 peer::peer(boost::executor &executor,
            std::unique_ptr<signaling::client::client> signaling_moved,
-           std::unique_ptr<rtc::connection> rtc_moved)
+           std::unique_ptr<rtc::connection> rtc_moved, const config &config_)
     : signaling_client(std::move(signaling_moved)),
       rtc_connection_(std::move(rtc_moved)),
       ice_candidate_handler(*signaling_client, *rtc_connection_),
-      offer_answer_handler(executor, *signaling_client, *rtc_connection_) {}
+      offer_answer_handler(executor, *signaling_client, *rtc_connection_,
+                           {config_.receive_audio, config_.receive_video}),
+      config_{config_} {}
 
 peer::~peer() {
   BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;

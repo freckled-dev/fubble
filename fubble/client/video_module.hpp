@@ -19,7 +19,7 @@ class video_settings;
 class FUBBLE_PUBLIC video_module {
 public:
   struct config {
-    bool enabled;
+    bool enabled{true};
     std::chrono::steady_clock::duration video_enumerator_refresh_timeout =
         std::chrono::seconds(1);
   };

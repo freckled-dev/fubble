@@ -11,9 +11,13 @@
 namespace client {
 class peer {
 public:
+  struct config {
+    bool receive_audio{true};
+    bool receive_video{true};
+  };
   peer(boost::executor &executor,
        std::unique_ptr<signaling::client::client> signaling_,
-       std::unique_ptr<rtc::connection> rtc_);
+       std::unique_ptr<rtc::connection> rtc_, const config &config_);
   ~peer();
 
   void connect(const std::string &token, const std::string &key);
@@ -27,6 +31,7 @@ protected:
   std::unique_ptr<rtc::connection> rtc_connection_;
   client::p2p::negotiation::ice_candidates ice_candidate_handler;
   client::p2p::negotiation::offer_answer offer_answer_handler;
+  const config config_;
 };
 } // namespace client
 

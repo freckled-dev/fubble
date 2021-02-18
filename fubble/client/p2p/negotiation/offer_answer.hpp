@@ -9,11 +9,15 @@
 namespace client::p2p::negotiation {
 class offer_answer {
 public:
+  struct config {
+    bool receive_audio{true};
+    bool receive_video{true};
+  };
   // TODO remove executor. A executor gets used here because google::webrtc
   // sometimes switches threads. Move the executor to google::webrtc
   offer_answer(boost::executor &executor,
                signaling::client::client &signaling_client,
-               rtc::connection &rtc_connection);
+               rtc::connection &rtc_connection, config config_);
 
 protected:
   void on_negotiation_needed();
@@ -30,6 +34,7 @@ protected:
   rtc::connection &rtc_connection;
   bool connected{};
   bool wants_to_negotiate{};
+  const config config_;
 };
 } // namespace client::p2p::negotiation
 

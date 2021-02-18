@@ -126,7 +126,8 @@ struct test_client {
   // rtc
   rtc::google::factory rtc_connection_creator;
   client::peer_creator peer_creator{boost_executor, client_creator,
-                                    rtc_connection_creator};
+                                    rtc_connection_creator,
+                                    client::peer::config{}};
 
   // client
   client::tracks_adder tracks_adder;
