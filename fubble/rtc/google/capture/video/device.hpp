@@ -1,8 +1,9 @@
 #ifndef RTC_GOOGLE_CAPTURE_VIDEO_DEVICE_HPP
 #define RTC_GOOGLE_CAPTURE_VIDEO_DEVICE_HPP
 
-#include "fubble/rtc/google/video_source.hpp"
-#include "fubble/rtc/logger.hpp"
+#include <fubble/rtc/google/video_source.hpp>
+#include <fubble/rtc/logger.hpp>
+#include <fubble/rtc/video_capability.hpp>
 
 namespace rtc {
 namespace google {
@@ -13,7 +14,7 @@ public:
   device() = default;
   virtual ~device() = default;
 
-  virtual void start() = 0;
+  virtual void start(const rtc::video::capability &cap) = 0;
   virtual void stop() = 0;
   virtual bool get_started() const = 0;
 

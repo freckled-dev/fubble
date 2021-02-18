@@ -13,7 +13,7 @@ install_headers([
   'connection.hpp', 'data_channel.hpp', 'data_channel_ptr.hpp',
   'ice_candidate.hpp', 'logger.hpp', 'message.hpp',
   'session_description.hpp', 'track.hpp', 'track_ptr.hpp',
-  'video_devices.hpp',
+  'video_devices.hpp', 'video_capability.hpp',
   ], subdir: 'fubble/rtc')
 subdir('gstreamer')
 subdir('google')

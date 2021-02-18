@@ -8,6 +8,7 @@
 #include <fubble/client/peers.hpp>
 #include <fubble/client/session_module.hpp>
 #include <fubble/client/video_module.hpp>
+#include <fubble/client/video_settings.hpp>
 #include <fubble/rtc/google/log_webrtc_to_logging.hpp>
 #include <fubble/utils/timer.hpp>
 #include <fubble/utils/uuid.hpp>
@@ -47,9 +48,13 @@ public:
     core->get_session_module()->get_own_media()->set_own_video(
         client_video->get_own_video());
 #endif
-    // TODO instancition adds the video track to the tracks_adder. refactor!
-    if (config_.send_video)
-      client_video->get_video_settings();
+    // TODO instancition of video_settings adds the video track to the
+    // tracks_adder. refactor!
+    auto video_settings = client_video->get_video_settings();
+    // video_settings->set_capability({320, 240, 30});
+    video_settings->set_capability({1280, 720, 30});
+    // video_settings->set_capability({1920, 1080, 30});
+    video_settings->pause(!config_.send_video);
   }
 
 private:

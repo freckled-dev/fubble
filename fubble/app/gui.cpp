@@ -11,6 +11,7 @@
 #include <fubble/client/ui/add_version_to_qml_context.hpp>
 #include <fubble/client/ui/log_qt_to_logging.hpp>
 #include <fubble/client/video_module.hpp>
+#include <fubble/client/video_settings.hpp>
 #include <fubble/utils/logging/logger.hpp>
 #include <fubble/utils/version.hpp>
 
@@ -79,6 +80,9 @@ int main(int argc, char *argv[]) {
   // TODO refactor #355
   core_module_->get_session_module()->get_own_media()->set_own_video(
       client_video_module->get_own_video());
+  auto video_settings = client_video_module->get_video_settings();
+  video_settings->set_capability({1280, 720, 30});
+  video_settings->pause(false);
 
   // desktop
   BOOST_LOG_SEV(logger, logging::severity::trace)
