@@ -25,6 +25,7 @@ webrtc_google_peer = library('webrtc_google_peer',
   webrtc_google_peer_sources,
   override_options: ['cpp_std=c++14'],
   dependencies: [webrtc_peer_dep, utils_dep, fmt_dep, google_webrtc_dep],
+  objcpp_args: ['-std=c++14'],
   install: true
   )
 webrtc_google_peer_dep = declare_dependency(
