@@ -1,6 +1,7 @@
 [binaries]
 c = ['ccache', 'clang']
 cpp = ['ccache', 'clang++']
+objcpp = ['ccache', 'clang++']
 ar = 'ar'
 strip = 'strip'
 
