@@ -200,12 +200,12 @@ elif host_machine.system() == 'darwin'
       'avfoundation',
       'coreaudio',
       'foundation',
-      'uikit',
       'coremedia',
       ])
   else
     webrtc_apple_deps = dependency('appleframeworks', modules : [
       'audiotoolbox', # maybe not needed
+      'avfoundation', # camera and audio
       'cocoa',
       'coreaudio',
       'foundation',
