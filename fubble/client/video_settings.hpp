@@ -1,11 +1,12 @@
 #ifndef UUID_DE3E4714_AD73_44A4_9ED2_AA1F55903106
 #define UUID_DE3E4714_AD73_44A4_9ED2_AA1F55903106
 
-#include "fubble/client/logger.hpp"
-#include "fubble/client/own_video.hpp"
-#include "fubble/rtc/video_devices.hpp"
 #include <boost/optional.hpp>
 #include <boost/signals2/signal.hpp>
+#include <fubble/client/logger.hpp>
+#include <fubble/client/own_video.hpp>
+#include <fubble/rtc/video_capability.hpp>
+#include <fubble/rtc/video_devices.hpp>
 #include <memory>
 
 namespace rtc::google {
@@ -42,7 +43,10 @@ public:
   std::shared_ptr<rtc::google::video_source> get_video_source() const;
   boost::signals2::signal<void()> on_video_source_changed;
 
+  void set_capability(rtc::video::capability capability);
+
 protected:
+  void setup_initial_device();
   void reset_current_video_capture();
   void reset_current_video();
   void on_video_devices_changed();
@@ -56,9 +60,10 @@ protected:
 
   std::shared_ptr<rtc::google::capture::video::device> capture_device;
   std::shared_ptr<add_video_to_connection> video_track_adder;
-  bool paused{};
+  bool paused{true};
   // TODO refactor to `current_device_id`
   boost::optional<std::string> last_device_id;
+  rtc::video::capability capability;
 };
 } // namespace client
 

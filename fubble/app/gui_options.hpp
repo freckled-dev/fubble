@@ -1,8 +1,8 @@
 #ifndef UUID_CD44B89A_7977_4C7E_9EB2_983FCDCA2681
 #define UUID_CD44B89A_7977_4C7E_9EB2_983FCDCA2681
 
-#include "fubble/utils/logging/logger.hpp"
 #include <boost/optional.hpp>
+#include <fubble/utils/logging/logger.hpp>
 #include <string>
 
 struct gui_config {

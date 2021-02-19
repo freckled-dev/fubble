@@ -1,17 +1,19 @@
 #include "core_module.hpp"
-#include "fubble/client/audio_module.hpp"
-#include "fubble/client/audio_settings_module.hpp"
-#include "fubble/client/crash_catcher.hpp"
-#include "fubble/client/mute_deaf_communicator.hpp"
-#include "fubble/client/own_media.hpp"
-#include "fubble/client/ui/add_version_to_qml_context.hpp"
-#include "fubble/client/video_module.hpp"
-#include "fubble/utils/logging/logger.hpp"
-#include "fubble/utils/version.hpp"
 #include "gui_options.hpp"
-#include "log_module.hpp"
 #include "poll_asio_by_qt.hpp"
 #include "ui_module.hpp"
+#include <fubble/client/audio_module.hpp>
+#include <fubble/client/audio_settings_module.hpp>
+#include <fubble/client/crash_catcher.hpp>
+#include <fubble/client/log_module.hpp>
+#include <fubble/client/mute_deaf_communicator.hpp>
+#include <fubble/client/own_media.hpp>
+#include <fubble/client/ui/add_version_to_qml_context.hpp>
+#include <fubble/client/ui/log_qt_to_logging.hpp>
+#include <fubble/client/video_module.hpp>
+#include <fubble/client/video_settings.hpp>
+#include <fubble/utils/logging/logger.hpp>
+#include <fubble/utils/version.hpp>
 
 int main(int argc, char *argv[]) {
   gui_options options_parser;
@@ -20,7 +22,11 @@ int main(int argc, char *argv[]) {
     return 1;
   gui_config config = config_check.value();
 
-  client::log_module log_module_{config};
+  client::log_module::config log_config;
+  log_config.severity = config.general_.log_severity;
+  log_config.webrtc = config.general_.log_webrtc;
+  client::log_module log_module_{log_config};
+  client::ui::log_qt_to_logging qt_logger;
   logging::logger logger{"main"};
 
   BOOST_LOG_SEV(logger, logging::severity::info)
@@ -74,6 +80,9 @@ int main(int argc, char *argv[]) {
   // TODO refactor #355
   core_module_->get_session_module()->get_own_media()->set_own_video(
       client_video_module->get_own_video());
+  auto video_settings = client_video_module->get_video_settings();
+  video_settings->set_capability({1280, 720, 30});
+  video_settings->pause(false);
 
   // desktop
   BOOST_LOG_SEV(logger, logging::severity::trace)

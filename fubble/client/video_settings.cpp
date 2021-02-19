@@ -1,9 +1,9 @@
 #include "video_settings.hpp"
-#include "fubble/client/add_video_to_connection.hpp"
-#include "fubble/client/own_media.hpp"
-#include "fubble/client/tracks_adder.hpp"
-#include "fubble/rtc/google/capture/video/device.hpp"
 #include <fmt/format.h>
+#include <fubble/client/add_video_to_connection.hpp>
+#include <fubble/client/own_media.hpp>
+#include <fubble/client/tracks_adder.hpp>
+#include <fubble/rtc/google/capture/video/device.hpp>
 
 using namespace client;
 
@@ -17,6 +17,12 @@ video_settings::video_settings(
       add_video_to_connection_factory_(add_video_to_connection_factory_) {
   enumerator.on_enumerated_changed.connect(
       [this] { on_video_devices_changed(); });
+  setup_initial_device();
+}
+
+video_settings::~video_settings() = default;
+
+void video_settings::setup_initial_device() {
   auto devices = enumerator.get_enumerated();
   for (const auto &device : devices)
     BOOST_LOG_SEV(logger, logging::severity::debug)
@@ -24,7 +30,6 @@ video_settings::video_settings(
   if (devices.empty())
     BOOST_LOG_SEV(logger, logging::severity::warning)
         << "there are no capture devices";
-
   for (const auto &current_device : devices) {
     try {
       change_to_device(current_device.id);
@@ -42,13 +47,9 @@ video_settings::video_settings(
   }
 }
 
-video_settings::~video_settings() = default;
-
 void video_settings::pause(bool paused_) {
-  if (paused == paused_) {
-    BOOST_ASSERT(false);
+  if (paused == paused_)
     return;
-  }
   paused = paused_;
   if (paused) {
     reset_current_video_capture();
@@ -87,7 +88,7 @@ void video_settings::change_to_device(const std::string &id) {
   try {
     std::shared_ptr<rtc::google::capture::video::device> capture_device_check =
         device_creator.create(id);
-    capture_device_check->start();
+    capture_device_check->start(capability);
     capture_device = capture_device_check;
   } catch (...) {
     last_device_id.reset();
@@ -134,6 +135,11 @@ void video_settings::on_video_devices_changed() {
 std::shared_ptr<rtc::google::video_source>
 video_settings::get_video_source() const {
   return capture_device->get_source();
+}
+
+void video_settings::set_capability(rtc::video::capability capability_) {
+  capability = capability_;
+  // TODO restart camera capture
 }
 
 bool video_settings::is_a_video_available() const {

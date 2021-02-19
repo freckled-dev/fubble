@@ -15,7 +15,7 @@ struct mock_video_device_factory : rtc::google::capture::video::device_factory {
               (const std::string &), (override));
 };
 struct mock_video_device : rtc::google::capture::video::device {
-  MOCK_METHOD(void, start, (), (override));
+  MOCK_METHOD(void, start, (const rtc::video::capability &), (override));
   MOCK_METHOD(void, stop, (), (override));
   MOCK_METHOD(bool, get_started, (), (const override));
   MOCK_METHOD(std::string, get_id, (), (const override));

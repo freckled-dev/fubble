@@ -48,13 +48,13 @@ public:
     device_->DeRegisterCaptureDataCallback();
   }
 
-  void start() override {
+  void start(const rtc::video::capability &cap) override {
     BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
     // webrtc::VideoCaptureCapability capabilities;
     webrtc::VideoCaptureCapability capabilities;
-    capabilities.width = 1280;
-    capabilities.height = 720;
-    capabilities.maxFPS = 30;
+    capabilities.width = cap.width;
+    capabilities.height = cap.height;
+    capabilities.maxFPS = cap.fps;
     auto result = device_->StartCapture(capabilities);
     if (result == 0)
       return;
@@ -95,7 +95,7 @@ public:
   std::shared_ptr<rtc::google::video_source> get_source() const override {
     return delegate->get_source();
   }
-  void start() override {
+  void start(const rtc::video::capability &cap) override {
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << ", started:" << started;
     if (started)
@@ -104,7 +104,7 @@ public:
     int &counter = *start_stop_counter;
     ++counter;
     if (counter == 1)
-      delegate->start();
+      delegate->start(cap);
   }
   void stop() override {
     BOOST_LOG_SEV(logger, logging::severity::debug)

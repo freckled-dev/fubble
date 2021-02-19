@@ -5,9 +5,9 @@ using namespace client::p2p::negotiation;
 
 offer_answer::offer_answer(boost::executor &executor,
                            signaling::client::client &signaling_client,
-                           rtc::connection &rtc_connection)
+                           rtc::connection &rtc_connection, config config_)
     : executor(executor), signaling_client(signaling_client),
-      rtc_connection(rtc_connection) {
+      rtc_connection(rtc_connection), config_{config_} {
   rtc_connection.on_negotiation_needed.connect(
       [this] { on_negotiation_needed(); });
   signaling_client.on_offer.connect([this](auto sdp) { on_offer(sdp); });
@@ -20,6 +20,8 @@ offer_answer::offer_answer(boost::executor &executor,
 void offer_answer::on_create_offer() {
   BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
   rtc::connection::offer_options options;
+  options.offer_to_receive_audio = config_.receive_audio;
+  options.offer_to_receive_video = config_.receive_video;
   auto sdp = rtc_connection.create_offer(options);
   sdp.then(executor,
            [this](auto offer_future) {

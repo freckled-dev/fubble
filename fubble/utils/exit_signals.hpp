@@ -6,7 +6,7 @@
 
 class exit_signals {
 public:
-  exit_signals(boost::asio::executor &executor);
+  exit_signals(const boost::asio::executor &executor);
   ~exit_signals();
 
   using callback_type = std::function<void(const boost::system::error_code &)>;
