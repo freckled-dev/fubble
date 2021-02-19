@@ -24,7 +24,9 @@ QAbstractVideoSurface *frame_provider_google_video_device::get_surface() const {
   return delegate->get_surface();
 }
 
-void frame_provider_google_video_device::play() { device.start(); }
+void frame_provider_google_video_device::play() {
+  device.start(rtc::video::capability{1280, 720, 30});
+}
 
 void frame_provider_google_video_device::stop() { device.stop(); }
 
