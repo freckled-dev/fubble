@@ -30,7 +30,7 @@ webrtc_google_peer = library('webrtc_google_peer',
   )
 webrtc_google_peer_dep = declare_dependency(
   link_with: [webrtc_google_peer],
-  dependencies: [boost_dep, webrtc_peer_dep, google_webrtc_dep],
+  dependencies: [utils_dep, webrtc_peer_dep, google_webrtc_dep],
   )
 install_headers([
   'asio_signaling_thread.hpp', 'audio_data.hpp', 'audio_devices.hpp',
