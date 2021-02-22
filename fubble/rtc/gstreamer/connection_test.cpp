@@ -105,7 +105,7 @@ struct create_offer_and_set_local_description {
 struct create_connection {
   create_offer_and_set_local_description &setup;
   rtc::gstreamer::connection &answering;
-  void operator()() {
+  void create() {
     auto offer = setup();
     auto &offering = setup.test.connection;
     auto &executor = setup.test.executor;
@@ -296,6 +296,6 @@ TEST_F(GstreamerConnection, Connection) {
   create_offer_and_set_local_description setup{*this};
   rtc::gstreamer::connection answering{executor};
   create_connection connection_creator{setup, answering};
-  connection_creator();
+  connection_creator.create();
 }
 #endif

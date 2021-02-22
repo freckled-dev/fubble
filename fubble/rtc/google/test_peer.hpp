@@ -8,7 +8,7 @@
 namespace {
 struct test_peer {
   boost::inline_executor executor;
-  std::unique_ptr<rtc::google::connection> instance;
+  std::unique_ptr<rtc::connection> instance;
 
   test_peer(rtc::google::factory &creator)
       : instance(creator.create_connection()) {}

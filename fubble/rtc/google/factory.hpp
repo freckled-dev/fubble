@@ -1,13 +1,16 @@
 #ifndef RTC_GOOGLE_FACTORY_HPP
 #define RTC_GOOGLE_FACTORY_HPP
 
-#include "fubble/rtc/google/settings.hpp"
-#include "fubble/rtc/logger.hpp"
 #include <api/create_peerconnection_factory.h>
 #include <boost/asio/io_context.hpp>
+#include <fubble/rtc/connection.hpp>
+#include <fubble/rtc/factory.hpp>
+#include <fubble/rtc/google/settings.hpp>
+#include <fubble/rtc/logger.hpp>
 #include <memory>
 
 namespace rtc {
+class connection;
 namespace google {
 class video_source;
 class video_track;
@@ -15,14 +18,14 @@ class audio_source;
 class audio_track;
 class audio_devices;
 class connection;
-class factory {
+class factory : public rtc::factory {
 public:
   explicit factory(const settings &settings_, rtc::Thread &signaling_thread);
   // TODO remove default constructor
   factory();
   ~factory();
 
-  std::unique_ptr<connection> create_connection();
+  std::unique_ptr<rtc::connection> create_connection() override;
   std::unique_ptr<video_track>
   create_video_track(const std::shared_ptr<video_source> &source);
 
@@ -32,7 +35,7 @@ public:
 
   rtc::Thread &get_signaling_thread() const;
   audio_devices &get_audio_devices();
-  const settings& get_settings() const;
+  const settings &get_settings() const;
 
 private:
   void instance_members();
