@@ -45,3 +45,7 @@ void video_track::link_to_webrtc(const connection::natives &natives) {
   // it now belongs to the webrtc elemnt. dont delete it no more!
   unref_bin = false;
 }
+
+void video_track::set_enabled(bool) {
+  BOOST_ASSERT(false && "not implemented");
+}

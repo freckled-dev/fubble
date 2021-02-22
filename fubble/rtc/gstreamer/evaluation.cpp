@@ -5,7 +5,7 @@ extern "C" {
 #define GST_USE_UNSTABLE_API
 #include <gst/webrtc/webrtc.h>
 }
-#include "fubble/utils/logging/logger.hpp"
+#include <fubble/utils/logging/logger.hpp>
 #include <boost/assert.hpp>
 #include <boost/log/keywords/auto_flush.hpp>
 #include <boost/log/keywords/format.hpp>
@@ -41,7 +41,7 @@ static gboolean on_pipe_bus_message(GstBus *bus, GstMessage *message,
 static void on_incoming_stream(GstElement *webrtc, GstPad *pad,
                                gpointer user_data);
 
-static logging::logger logger;
+static logging::logger logger{"main"};
 static offering offering_;
 static answering answering_;
 static GMainLoop *loop;

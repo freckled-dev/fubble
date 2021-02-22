@@ -1,9 +1,10 @@
 #ifndef RTC_GSTREAMER_CONNECTION_HPP
 #define RTC_GSTREAMER_CONNECTION_HPP
 
-#include "fubble/utils/logging/logger.hpp"
-#include "gst_element_deleter.hpp"
-#include "fubble/rtc/connection.hpp"
+#include <fubble/rtc/connection.hpp>
+#include <fubble/rtc/gstreamer/gst_element_deleter.hpp>
+#include <fubble/rtc/logger.hpp>
+// TODO move, implementation details to impl file
 extern "C" {
 #define GST_USE_UNSTABLE_API
 #include <gst/webrtc/webrtc.h>
@@ -20,15 +21,21 @@ public:
   connection(boost::executor &executor);
   ~connection() override;
   boost::future<void> run();
-  void close();
+  void close() override;
   void add_track(track_ptr) override;
-  void add_ice_candidate(const ice_candidate &candidate);
-  boost::future<session_description> create_offer() override;
-  boost::future<session_description> create_answer();
+  void add_ice_candidate(const ice_candidate &candidate) override;
+  boost::future<session_description>
+  create_offer(const offer_options &options) override;
+  boost::future<session_description> create_answer() override;
   boost::future<void>
   set_local_description(const session_description &) override;
   boost::future<void>
   set_remote_description(const session_description &) override;
+
+  void remove_track(track_ptr) override;
+  rtc::data_channel_ptr create_data_channel() override;
+  void get_stats(const stats_callback &callback) override;
+
   enum struct state {
     new_,
     connecting,
@@ -84,7 +91,7 @@ private:
   void connect_signal(const std::string &name, GCallback function);
   void disconnect_signals();
 
-  logging::logger logger;
+  rtc::logger logger{"connection"};
   boost::executor &executor;
   std::unique_ptr<GstElement, gst_element_deleter> pipeline;
   GstElement *webrtc;

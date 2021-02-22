@@ -14,6 +14,7 @@ file `/etc/modprobe.d/bcm_v4l2_workaround.conf` content
 # https://www.raspberrypi.org/forums/viewtopic.php?f=43&t=87430
 # workaround to keep gstreamer happy with camera resolution reporting
 options bcm2835-v4l2 gst_v4l2src_is_broken=1
+# in /etc/modprobe.d/bcm_v4l2_workaround.conf
 ```
 
 ## enable v4l2 at rpi
@@ -74,4 +75,7 @@ v4l2-ctl --set-ctrl exposure_dynamic_framerate=1
 
 # webrtc gstreamer resources
 https://blog.nirbheek.in/2018/02/gstreamer-webrtc.html
+
+# gpu encoded webrtc using gstreamer (python)
+https://cloud.google.com/solutions/gpu-accelerated-streaming-using-webrtc
 

@@ -189,6 +189,10 @@ void factory::instance_video() {
   // weird api design.
   video_decoder = webrtc::CreateBuiltinVideoDecoderFactory();
   video_encoder = webrtc::CreateBuiltinVideoEncoderFactory();
+  for (const auto format : video_encoder->GetSupportedFormats()) {
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << __FUNCTION__ << "supported video_format: " << format.ToString();
+  }
 }
 
 void factory::instance_factory() {

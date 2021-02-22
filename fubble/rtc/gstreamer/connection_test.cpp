@@ -1,6 +1,6 @@
 #include "connection.hpp"
-#include "fubble/utils/logging/logger.hpp"
 #include "fubble/rtc/gstreamer/video_track.hpp"
+#include "fubble/utils/logging/logger.hpp"
 #include <boost/signals2/connection.hpp>
 #include <boost/thread/executors/executor_adaptor.hpp>
 #include <fmt/format.h>
@@ -20,7 +20,7 @@ struct glib_executor {
     callback callback_;
   };
   std::queue<callback_with_id> callbacks;
-  logging::logger logger;
+  logging::logger logger{"glib_executor"};
   std::mutex mutex;
   ~glib_executor() {
     if (callbacks.empty())
@@ -66,7 +66,7 @@ struct glib_executor {
 using executor_type = boost::executor_adaptor<glib_executor>;
 
 struct GstreamerConnection : ::testing::Test {
-  logging::logger logger;
+  logging::logger logger{"GstreamerConnection"};
   GMainLoop *main_loop = g_main_loop_new(nullptr, false);
   executor_type executor;
   std::thread::id main_thread_id = std::this_thread::get_id();
@@ -91,7 +91,7 @@ struct create_offer_and_set_local_description {
   void negotiation_needed() {
     EXPECT_EQ(std::this_thread::get_id(), test.main_thread_id);
     negotiation_needed_connection.disconnect();
-    test.connection.create_offer()
+    test.connection.create_offer({})
         .then(test.executor,
               [this](auto result_) {
                 result = result_.get();
@@ -150,7 +150,7 @@ TEST_F(GstreamerConnection, NegotiationNeeded) {
 TEST_F(GstreamerConnection, CreateOffer) {
   bool called{};
   connection.on_negotiation_needed.connect([&] {
-    connection.create_offer().then(executor, [&](auto result) {
+    connection.create_offer({}).then(executor, [&](auto result) {
       auto description = result.get();
       BOOST_LOG_SEV(logger, logging::severity::info)
           << "got session_description, sdp:" << description.sdp;
@@ -167,7 +167,7 @@ TEST_F(GstreamerConnection, CreateOffer) {
 TEST_F(GstreamerConnection, SetLocalDescription) {
   bool called{};
   connection.on_negotiation_needed.connect([&] {
-    connection.create_offer()
+    connection.create_offer({})
         .then(executor,
               [&](auto result) -> boost::future<void> {
                 return connection.set_local_description(result.get());

@@ -87,7 +87,8 @@ void connection::close() {
   set_gst_state(pipeline.get(), GST_STATE_NULL);
 }
 
-boost::future<rtc::session_description> connection::create_offer() {
+boost::future<rtc::session_description>
+connection::create_offer(const offer_options &) {
   auto promise = new boost::promise<rtc::session_description>();
   auto result = promise->get_future();
   GstPromise *gst_promise =
@@ -138,6 +139,19 @@ void connection::add_track(track_ptr track_) {
   auto track_casted = dynamic_cast<video_track *>(track_.get());
   BOOST_ASSERT(track_casted);
   track_casted->link_to_webrtc(get_natives());
+}
+
+rtc::data_channel_ptr connection::create_data_channel() {
+  BOOST_ASSERT(false && "not implemented");
+  return nullptr;
+}
+
+void connection::remove_track(track_ptr) {
+  BOOST_ASSERT(false && "not implemented");
+}
+
+void connection::get_stats(const stats_callback &) {
+  BOOST_ASSERT(false && "not implemented");
 }
 
 void connection::add_ice_candidate(const ice_candidate &candidate) {
@@ -287,7 +301,7 @@ void connection::on_answer_created(GstPromise *gst_promise,
 
 void connection::on_description_set(GstPromise *promise_gst,
                                     gpointer user_data) {
-  logging::logger logger;
+  rtc::logger logger{"connection::on_description_set"};
   BOOST_LOG_SEV(logger, logging::severity::info) << "on_description_set";
   BOOST_ASSERT(promise_gst);
   BOOST_ASSERT(user_data);
