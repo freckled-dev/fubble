@@ -5,8 +5,8 @@ evaluation = executable('webrtc_gstreamer_peer_evaluation',
   )
 
 webrtc_gstreamer_peer = library('webrtc_gstreamer_peer',
-  ['connection.cpp', 'video_track.cpp',
-    'gst_element_deleter.cpp'
+  ['connection.cpp', 'video_track.cpp', 'gst_element_deleter.cpp',
+    'factory.cpp',
     ],
   dependencies: [webrtc_peer_dep, gstreamer_webrtc_dep, fmt_dep],
   install: true
