@@ -26,15 +26,15 @@ public:
   ~factory();
 
   std::unique_ptr<rtc::connection> create_connection() override;
-  std::unique_ptr<video_track>
-  create_video_track(const std::shared_ptr<video_source> &source);
+  std::unique_ptr<rtc::video_track>
+  create_video_track(const std::shared_ptr<rtc::video_source> &source) override;
 
   std::unique_ptr<audio_track> create_audio_track(audio_source &source);
 
   webrtc::PeerConnectionFactoryInterface &get_native() const;
 
   rtc::Thread &get_signaling_thread() const;
-  audio_devices &get_audio_devices();
+  std::shared_ptr<rtc::audio_devices> get_audio_devices() override;
   const settings &get_settings() const;
 
 private:
@@ -62,7 +62,7 @@ private:
   std::unique_ptr<webrtc::VideoDecoderFactory> video_decoder;
   std::unique_ptr<webrtc::VideoEncoderFactory> video_encoder;
   rtc::scoped_refptr<webrtc::PeerConnectionFactoryInterface> factory_;
-  std::unique_ptr<audio_devices> audio_devices_;
+  std::shared_ptr<audio_devices> audio_devices_;
 };
 } // namespace google
 } // namespace rtc

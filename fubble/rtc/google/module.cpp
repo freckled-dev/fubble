@@ -20,7 +20,7 @@ std::shared_ptr<asio_signaling_thread> module::get_asio_signaling_thread() {
   return asio_signaling_thread_;
 }
 
-std::shared_ptr<factory> module::get_factory() {
+std::shared_ptr<rtc::factory> module::get_factory() {
   if (!factory_)
     factory_ = std::make_shared<rtc::google::factory>(
         rtc_settings, get_asio_signaling_thread()->get_native());
@@ -30,8 +30,8 @@ std::shared_ptr<factory> module::get_factory() {
 std::shared_ptr<capture::audio::device_creator>
 module::get_audio_device_creator() {
   if (!audio_device_creator)
-    audio_device_creator =
-        std::make_shared<capture::audio::device_creator>(*get_factory());
+    audio_device_creator = std::make_shared<capture::audio::device_creator>(
+        *std::static_pointer_cast<rtc::google::factory>(get_factory()));
   return audio_device_creator;
 }
 

@@ -65,8 +65,8 @@ std::unique_ptr<rtc::connection> factory::create_connection() {
   return result;
 }
 
-std::unique_ptr<video_track>
-factory::create_video_track(const std::shared_ptr<video_source> &source) {
+std::unique_ptr<rtc::video_track>
+factory::create_video_track(const std::shared_ptr<rtc::video_source> &source) {
   auto label = uuid::generate();
   rtc::scoped_refptr<video_track_source::adapter> source_adapter =
       new rtc::RefCountedObject<video_track_source::adapter>;
@@ -75,9 +75,11 @@ factory::create_video_track(const std::shared_ptr<video_source> &source) {
   assert(native);
   if (!native)
     throw std::runtime_error("could not create video track");
+  auto source_casted =
+      std::static_pointer_cast<rtc::google::video_source>(source);
   // TODO adapter shall take source, not track
-  auto result =
-      std::make_unique<video_track_source>(native, source_adapter, source);
+  auto result = std::make_unique<video_track_source>(native, source_adapter,
+                                                     source_casted);
   return result;
 }
 
@@ -92,7 +94,9 @@ std::unique_ptr<audio_track> factory::create_audio_track(audio_source &source) {
 
 rtc::Thread &factory::get_signaling_thread() const { return *signaling_thread; }
 
-audio_devices &factory::get_audio_devices() { return *audio_devices_; }
+std::shared_ptr<rtc::audio_devices> factory::get_audio_devices() {
+  return audio_devices_;
+}
 
 const settings &factory::get_settings() const { return settings_; }
 
@@ -131,7 +135,7 @@ void factory::instance_audio() {
   instance_audio_processing();
   instance_audio_device_module();
   audio_devices_ =
-      std::make_unique<audio_devices>(*worker_thread, *audio_device_module);
+      std::make_shared<audio_devices>(*worker_thread, *audio_device_module);
 }
 
 void factory::instance_audio_processing() {

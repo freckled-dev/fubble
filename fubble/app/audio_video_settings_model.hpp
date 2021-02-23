@@ -41,7 +41,7 @@ class audio_video_settings_model : public QObject {
 
 public:
   audio_video_settings_model(
-      rtc::google::audio_devices &audio_devices,
+      std::shared_ptr<rtc::audio_devices> audio_devices,
       rtc::video_devices &video_device_enumerator,
       rtc::google::capture::video::device_factory &video_device_factory,
       audio_device_settings &audio_settings_, video_settings &video_settings_,
@@ -72,7 +72,7 @@ protected:
   void on_enable_update_audio_devices(bool);
 
   client::logger logger{"audio_video_settings_model"};
-  rtc::google::audio_devices &audio_devices;
+  std::shared_ptr<rtc::audio_devices> audio_devices;
   std::shared_ptr<utils::interval_timer> audio_devices_timer;
   rtc::video_devices &video_device_enumerator;
   client::audio_device_settings &audio_settings;

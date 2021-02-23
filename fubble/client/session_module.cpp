@@ -87,7 +87,7 @@ std::shared_ptr<peer_creator> session_module::get_peer_creator() {
     peer_creator_ =
         std::make_shared<peer_creator>(*executor_module->get_boost_executor(),
                                        *signaling_module->get_client_creator(),
-                                       *rtc_module->get_factory(), config);
+                                       rtc_module->get_factory(), config);
   }
   return peer_creator_;
 }

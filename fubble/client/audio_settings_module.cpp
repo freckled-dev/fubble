@@ -49,7 +49,7 @@ audio_settings_module::get_own_microphone_tester() {
 std::shared_ptr<audio_device_settings>
 audio_settings_module::get_audio_device_settings() {
   if (!audio_device_settings_) {
-    auto &rtc_audio_devices = rtc_module->get_factory()->get_audio_devices();
+    auto rtc_audio_devices = rtc_module->get_factory()->get_audio_devices();
     audio_device_settings_ =
         std::make_shared<audio_device_settings>(rtc_audio_devices);
   }
@@ -59,12 +59,15 @@ audio_settings_module::get_audio_device_settings() {
 std::shared_ptr<loopback_audio>
 audio_settings_module::get_loopback_audio_test() {
   if (!loopback_audio_test) {
-    settings_audio_track = rtc_module->get_factory()->create_audio_track(
-        rtc_module->get_audio_device()->get_source());
+    settings_audio_track =
+        std::static_pointer_cast<rtc::google::factory>(
+            rtc_module->get_factory())
+            ->create_audio_track(rtc_module->get_audio_device()->get_source());
     loopback_audio_test_factory =
         std::make_shared<client::loopback_audio_impl_factory>(
-            *rtc_module->get_factory(), settings_audio_track,
-            executor_module->get_boost_executor());
+            *std::static_pointer_cast<rtc::google::factory>(
+                rtc_module->get_factory()),
+            settings_audio_track, executor_module->get_boost_executor());
     loopback_audio_test = std::make_shared<loopback_audio_noop_if_disabled>(
         *loopback_audio_test_factory);
   }

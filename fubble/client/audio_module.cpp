@@ -1,12 +1,12 @@
 #include "audio_module.hpp"
-#include "fubble/client/add_audio_to_connection.hpp"
-#include "fubble/client/audio_level_calculator.hpp"
-#include "fubble/client/loopback_audio.hpp"
-#include "fubble/client/own_audio_information.hpp"
-#include "fubble/client/own_audio_track.hpp"
-#include "fubble/rtc/google/capture/audio/device.hpp"
-#include "fubble/rtc/google/factory.hpp"
-#include "fubble/utils/executor_module.hpp"
+#include <fubble/client/add_audio_to_connection.hpp>
+#include <fubble/client/audio_level_calculator.hpp>
+#include <fubble/client/loopback_audio.hpp>
+#include <fubble/client/own_audio_information.hpp>
+#include <fubble/client/own_audio_track.hpp>
+#include <fubble/rtc/google/capture/audio/device.hpp>
+#include <fubble/rtc/google/factory.hpp>
+#include <fubble/utils/executor_module.hpp>
 
 using namespace client;
 
@@ -19,7 +19,8 @@ audio_module::audio_module(
 std::shared_ptr<own_audio_track> audio_module::get_own_audio_track() {
   if (!own_audio_track_)
     own_audio_track_ =
-        own_audio_track::create(*rtc_module->get_factory(),
+        own_audio_track::create(*std::static_pointer_cast<rtc::google::factory>(
+                                    rtc_module->get_factory()),
                                 rtc_module->get_audio_device()->get_source());
   return own_audio_track_;
 }
@@ -34,9 +35,11 @@ audio_module::get_own_audio_track_adder() {
 
 std::shared_ptr<loopback_audio> audio_module::get_loopback_audio() {
   if (!loopback_audio_)
-    loopback_audio_ = loopback_audio::create(
-        *rtc_module->get_factory(), get_own_audio_track()->get_track(),
-        executor_module->get_boost_executor());
+    loopback_audio_ =
+        loopback_audio::create(*std::static_pointer_cast<rtc::google::factory>(
+                                   rtc_module->get_factory()),
+                               get_own_audio_track()->get_track(),
+                               executor_module->get_boost_executor());
   return loopback_audio_;
 }
 

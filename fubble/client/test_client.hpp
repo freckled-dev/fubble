@@ -52,17 +52,18 @@ struct test_client {
   test_client(test_executor &fixture, const connect_information &information_,
               const std::string &room_name)
       : context(fixture.context), connect_information_{information_},
-        room_name(room_name), rtc_connection_creator{
-                                  rtc::google::settings{},
-                                  fixture.rtc_signaling_thread.get_native()} {
+        room_name(room_name),
+        rtc_connection_creator{std::make_shared<rtc::google::factory>(
+            rtc::google::settings{},
+            fixture.rtc_signaling_thread.get_native())} {
     set_own_media();
   }
 
   test_client(test_executor &fixture, const std::string &room_name)
-      : context(fixture.context),
-        room_name(room_name), rtc_connection_creator{
-                                  rtc::google::settings{},
-                                  fixture.rtc_signaling_thread.get_native()} {
+      : context(fixture.context), room_name(room_name),
+        rtc_connection_creator{std::make_shared<rtc::google::factory>(
+            rtc::google::settings{},
+            fixture.rtc_signaling_thread.get_native())} {
     set_own_media();
   }
 
@@ -124,7 +125,7 @@ struct test_client {
           timer_factory->create_one_shot_timer(std::chrono::seconds(1)));
 
   // rtc
-  rtc::google::factory rtc_connection_creator;
+  std::shared_ptr<rtc::google::factory> rtc_connection_creator;
   client::peer_creator peer_creator{boost_executor, client_creator,
                                     rtc_connection_creator,
                                     client::peer::config{}};

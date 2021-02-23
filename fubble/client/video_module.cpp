@@ -36,7 +36,7 @@ video_module::get_add_video_to_connection_factory() {
   if (!add_video_to_connection_factory_)
     add_video_to_connection_factory_ =
         std::make_shared<add_video_to_connection_factory_impl>(
-            *rtc_module->get_factory());
+            rtc_module->get_factory());
   return add_video_to_connection_factory_;
 }
 

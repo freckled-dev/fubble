@@ -39,10 +39,9 @@ public:
 
     // video
     client::video_module::config client_video_config;
-    static std::shared_ptr<client::video_module> client_video =
-        std::make_shared<client::video_module>(
-            core->get_utils_executor_module(), core->get_rtc_module(),
-            core->get_session_module(), client_video_config);
+    client_video = std::make_shared<client::video_module>(
+        core->get_utils_executor_module(), core->get_rtc_module(),
+        core->get_session_module(), client_video_config);
     // TODO refactor #355
 #if 0
     core->get_session_module()->get_own_media()->set_own_video(
@@ -99,6 +98,7 @@ private:
   boost::inline_executor executor;
   std::shared_ptr<client::core_module> core;
   std::shared_ptr<client::audio_settings_module> audio_settings;
+  std::shared_ptr<client::video_module> client_video;
   boost::promise<int> run_promise;
 };
 } // namespace

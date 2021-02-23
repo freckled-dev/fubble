@@ -6,13 +6,13 @@
 
 namespace rtc {
 namespace google {
-class track : public rtc::track {
+class track {
 public:
   track(rtc::scoped_refptr<webrtc::MediaStreamTrackInterface> native_track);
 
   rtc::scoped_refptr<webrtc::MediaStreamTrackInterface> native_track() const;
 
-  void set_enabled(bool) override;
+  void set_enabled(bool);
 
 protected:
   rtc::scoped_refptr<webrtc::MediaStreamTrackInterface> native_track_;

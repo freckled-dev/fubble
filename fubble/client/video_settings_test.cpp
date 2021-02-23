@@ -33,7 +33,7 @@ struct mock_tracks_adder : client::tracks_adder {};
 struct mock_add_video_to_connection_factory
     : client::add_video_to_connection_factory {
   MOCK_METHOD(std::unique_ptr<client::add_video_to_connection>, create,
-              (const std::shared_ptr<rtc::google::video_source> &), (override));
+              (const std::shared_ptr<rtc::video_source> &), (override));
 };
 struct VideoSettings : ::testing::Test {
   mock_video_devices devices;

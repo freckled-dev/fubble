@@ -24,7 +24,7 @@ QHash<int, QByteArray> devices_model::roleNames() const {
 }
 
 audio_video_settings_model::audio_video_settings_model(
-    rtc::google::audio_devices &audio_devices,
+    std::shared_ptr<rtc::audio_devices> audio_devices,
     rtc::video_devices &video_device_enumerator,
     rtc::google::capture::video::device_factory &video_device_factory,
     client::audio_device_settings &audio_settings,
@@ -63,7 +63,7 @@ void audio_video_settings_model::onAudioInputDeviceActivated(int index) {
 }
 
 void audio_video_settings_model::update_audio_devices() {
-  audio_devices.enumerate();
+  audio_devices->enumerate();
   output_devices->refresh();
   input_devices->refresh();
   auto new_audio_output_device_index = audio_settings.get_playout_device();
