@@ -9,7 +9,7 @@ using namespace client;
 
 video_module::video_module(
     std::shared_ptr<utils::executor_module> executor_module,
-    std::shared_ptr<rtc::google::module> rtc_module,
+    std::shared_ptr<rtc::module> rtc_module,
     std::shared_ptr<session_module> session_module_, const config &config_)
     : executor_module{executor_module}, rtc_module{rtc_module},
       session_module_{session_module_}, config_{config_} {}
@@ -49,7 +49,7 @@ std::shared_ptr<own_video> video_module::get_own_video() {
 std::shared_ptr<video_settings> video_module::get_video_settings() {
   if (!video_settings_)
     video_settings_ = std::make_shared<client::video_settings>(
-        *get_enumerator(), *rtc_module->get_video_device_creator(),
+        *get_enumerator(), rtc_module->get_video_device_creator(),
         *get_own_video(), *session_module_->get_tracks_adder(),
         *get_add_video_to_connection_factory());
   return video_settings_;

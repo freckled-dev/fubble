@@ -47,7 +47,9 @@ int main(int argc, char *argv[]) {
   std::shared_ptr<client::audio_module> client_audio_module =
       std::make_shared<client::audio_module>(
           core_module_->get_utils_executor_module(),
-          core_module_->get_rtc_module(), client_audio_config);
+          std::static_pointer_cast<rtc::google::module>(
+              core_module_->get_rtc_module()),
+          client_audio_config);
   // TODO refactor #355
   core_module_->get_session_module()->get_own_media()->set_own_audio_track(
       client_audio_module->get_own_audio_track());
@@ -59,8 +61,10 @@ int main(int argc, char *argv[]) {
   std::shared_ptr<client::audio_settings_module> client_audio_settings_module =
       std::make_shared<client::audio_settings_module>(
           core_module_->get_utils_executor_module(),
-          core_module_->get_rtc_module(), client_audio_module,
-          core_module_->get_session_module(), client_audio_settings_config);
+          std::static_pointer_cast<rtc::google::module>(
+              core_module_->get_rtc_module()),
+          client_audio_module, core_module_->get_session_module(),
+          client_audio_settings_config);
 
   // audio communicator
   std::shared_ptr<client::mute_deaf_communicator> mute_deaf_communicator_ =
@@ -101,7 +105,9 @@ int main(int argc, char *argv[]) {
   // ui
   BOOST_LOG_SEV(logger, logging::severity::debug) << "setting up qt";
   auto client_ui_module = std::make_shared<client::ui_module>(
-      core_module_->get_utils_executor_module(), core_module_->get_rtc_module(),
+      core_module_->get_utils_executor_module(),
+      std::static_pointer_cast<rtc::google::module>(
+          core_module_->get_rtc_module()),
       client_audio_module, client_audio_settings_module,
       mute_deaf_communicator_, client_video_module,
       client_desktop_sharing_module, core_module_->get_session_module(), argc,

@@ -6,8 +6,9 @@
 #include <fubble/client/logger.hpp>
 #include <fubble/client/own_video.hpp>
 #include <fubble/rtc/video_capability.hpp>
+#include <fubble/rtc/video_device.hpp>
+#include <fubble/rtc/video_device_factory.hpp>
 #include <fubble/rtc/video_devices.hpp>
-#include <memory>
 
 namespace rtc::google {
 class video_source;
@@ -26,7 +27,7 @@ class video_settings {
 public:
   video_settings(
       rtc::video_devices &enumerator,
-      rtc::google::capture::video::device_factory &device_creator,
+      std::shared_ptr<rtc::video_device_factory> device_creator,
       own_video &own_media_, tracks_adder &tracks_adder_,
       add_video_to_connection_factory &add_video_to_connection_factory_);
   ~video_settings();
@@ -40,7 +41,7 @@ public:
   bool is_a_video_available() const;
   boost::optional<std::string> get_device_id() const;
 
-  std::shared_ptr<rtc::google::video_source> get_video_source() const;
+  std::shared_ptr<rtc::video_source> get_video_source() const;
   boost::signals2::signal<void()> on_video_source_changed;
 
   void set_capability(rtc::video::capability capability);
@@ -53,12 +54,12 @@ protected:
 
   client::logger logger{"video_settings"};
   rtc::video_devices &enumerator;
-  rtc::google::capture::video::device_factory &device_creator;
+  std::shared_ptr<rtc::video_device_factory> device_creator;
   own_video &own_media_;
   tracks_adder &tracks_adder_;
   add_video_to_connection_factory &add_video_to_connection_factory_;
 
-  std::shared_ptr<rtc::google::capture::video::device> capture_device;
+  std::shared_ptr<rtc::video_device> capture_device;
   std::shared_ptr<add_video_to_connection> video_track_adder;
   bool paused{true};
   // TODO refactor to `current_device_id`

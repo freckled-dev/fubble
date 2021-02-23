@@ -1,6 +1,7 @@
 #include "device.hpp"
-#include "fubble/utils/exception.hpp"
 #include <api/video/video_sink_interface.h>
+#include <fubble/rtc/google/video_source.hpp>
+#include <fubble/utils/exception.hpp>
 #include <modules/audio_device/include/audio_device.h>
 #include <modules/video_capture/video_capture.h>
 #include <modules/video_capture/video_capture_factory.h>
@@ -66,7 +67,7 @@ public:
     device_->StopCapture();
   }
 
-  std::shared_ptr<rtc::google::video_source> get_source() const override {
+  std::shared_ptr<rtc::video_source> get_source() const override {
     return source_adapter;
   }
 
@@ -92,7 +93,7 @@ public:
         << ", start_stop_counter.use_count:" << start_stop_counter.use_count();
     stop();
   }
-  std::shared_ptr<rtc::google::video_source> get_source() const override {
+  std::shared_ptr<rtc::video_source> get_source() const override {
     return delegate->get_source();
   }
   void start(const rtc::video::capability &cap) override {
@@ -131,7 +132,8 @@ protected:
 
 device_factory::device_factory() = default;
 
-std::unique_ptr<device> device_factory::create(const std::string &id) {
+std::unique_ptr<rtc::video_device>
+device_factory::create(const std::string &id) {
   auto found =
       std::find_if(devices.begin(), devices.end(), [&](const auto &check) {
         return check.device_->get_id() == id;

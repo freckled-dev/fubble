@@ -11,15 +11,15 @@ struct mock_video_devices : rtc::video_devices {
   MOCK_METHOD(std::vector<information>, get_enumerated, (), (const override));
 };
 struct mock_video_device_factory : rtc::google::capture::video::device_factory {
-  MOCK_METHOD(std::unique_ptr<rtc::google::capture::video::device>, create,
-              (const std::string &), (override));
+  MOCK_METHOD(std::unique_ptr<rtc::video_device>, create, (const std::string &),
+              (override));
 };
 struct mock_video_device : rtc::google::capture::video::device {
   MOCK_METHOD(void, start, (const rtc::video::capability &), (override));
   MOCK_METHOD(void, stop, (), (override));
   MOCK_METHOD(bool, get_started, (), (const override));
   MOCK_METHOD(std::string, get_id, (), (const override));
-  MOCK_METHOD(std::shared_ptr<rtc::google::video_source>, get_source, (),
+  MOCK_METHOD(std::shared_ptr<rtc::video_source>, get_source, (),
               (const override));
 };
 struct mock_own_video : client::own_video {
@@ -37,7 +37,8 @@ struct mock_add_video_to_connection_factory
 };
 struct VideoSettings : ::testing::Test {
   mock_video_devices devices;
-  mock_video_device_factory device_factory;
+  std::shared_ptr<mock_video_device_factory> device_factory =
+      std::make_shared<mock_video_device_factory>();
   mock_own_video own_videos;
   mock_tracks_adder tracks_adder;
   mock_add_video_to_connection_factory add_video_to_connection_factory;
@@ -49,7 +50,7 @@ struct VideoSettings : ::testing::Test {
   }
 
   VideoSettings() {
-    ON_CALL(device_factory, create(::testing::_)).WillByDefault([](auto) {
+    ON_CALL(*device_factory, create(::testing::_)).WillByDefault([](auto) {
       return std::make_unique<mock_video_device>();
     });
     ON_CALL(add_video_to_connection_factory, create(::testing::_))

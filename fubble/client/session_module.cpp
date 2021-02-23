@@ -15,7 +15,7 @@ using namespace client;
 session_module::session_module(
     std::shared_ptr<utils::executor_module> executor_module,
     std::shared_ptr<matrix::module> matrix_module,
-    std::shared_ptr<rtc::google::module> rtc_module,
+    std::shared_ptr<rtc::module> rtc_module,
     std::shared_ptr<signaling::client_module> signaling_module,
     std::shared_ptr<temporary_room::client_module> temporary_room_module,
     std::shared_ptr<version::client_module> version_client_module,

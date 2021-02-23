@@ -28,18 +28,19 @@ protected:
 class video_devices_model : public devices_model {
   Q_OBJECT
 public:
-  video_devices_model(rtc::video_devices &enumerator, QObject *parent)
+  video_devices_model(std::shared_ptr<rtc::video_devices> enumerator,
+                      QObject *parent)
       : devices_model(parent), enumerator(enumerator) {
     refresh();
-    enumerator.on_enumerated_changed.connect([this] { refresh(); });
+    enumerator->on_enumerated_changed.connect([this] { refresh(); });
   }
 
   void refresh() override {
-    auto devices_cache = enumerator.get_enumerated();
+    auto devices_cache = enumerator->get_enumerated();
     if (devices_cache == devices)
       return;
     beginResetModel();
-    devices = enumerator.get_enumerated();
+    devices = enumerator->get_enumerated();
     update_available(!devices.empty());
     endResetModel();
   }
@@ -70,7 +71,7 @@ public:
     return devices[index].id;
   }
 
-  rtc::video_devices &enumerator;
+  std::shared_ptr<rtc::video_devices> enumerator;
   std::vector<rtc::google::capture::video::information> devices;
 };
 class audio_devices_model : public devices_model {

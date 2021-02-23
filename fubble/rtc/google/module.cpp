@@ -41,8 +41,7 @@ std::shared_ptr<capture::audio::device> module::get_audio_device() {
   return audio_device;
 }
 
-std::shared_ptr<capture::video::device_factory>
-module::get_video_device_creator() {
+std::shared_ptr<rtc::video_device_factory> module::get_video_device_creator() {
   if (!video_device_creator)
     video_device_creator = std::make_shared<capture::video::device_factory>();
   return video_device_creator;

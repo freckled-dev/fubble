@@ -139,8 +139,8 @@ ui_module::ui_module(
       *client_session_module->get_own_media());
   audio_video_settings_model_ = std::make_shared<audio_video_settings_model>(
       rtc_module->get_factory()->get_audio_devices(),
-      *client_video_module->get_enumerator(),
-      *rtc_module->get_video_device_creator(),
+      client_video_module->get_enumerator(),
+      rtc_module->get_video_device_creator(),
       *client_audio_settings_module->get_audio_device_settings(),
       *client_video_module->get_video_settings(), *error_model_,
       executor_module->get_timer_factory());

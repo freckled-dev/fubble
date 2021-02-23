@@ -1,15 +1,16 @@
 #ifndef UUID_7D8D7FBB_D9E0_4A16_911E_E633E18ACFCF
 #define UUID_7D8D7FBB_D9E0_4A16_911E_E633E18ACFCF
 
-#include "fubble/client/session_module.hpp"
-#include "fubble/http/client_module.hpp"
-#include "fubble/matrix/module.hpp"
-#include "fubble/rtc/google/module.hpp"
-#include "fubble/signaling/client_module.hpp"
-#include "fubble/temporary_room/client_module.hpp"
-#include "fubble/utils/executor_module.hpp"
-#include "fubble/utils/export.hpp"
-#include "fubble/version/client_module.hpp"
+#include <fubble/client/session_module.hpp>
+#include <fubble/http/client_module.hpp>
+#include <fubble/matrix/module.hpp>
+#include <fubble/rtc/google/settings.hpp>
+#include <fubble/rtc/module.hpp>
+#include <fubble/signaling/client_module.hpp>
+#include <fubble/temporary_room/client_module.hpp>
+#include <fubble/utils/executor_module.hpp>
+#include <fubble/utils/export.hpp>
+#include <fubble/version/client_module.hpp>
 
 namespace client {
 class crash_catcher;
@@ -36,7 +37,7 @@ public:
   std::shared_ptr<matrix::module> get_matrix_module();
   std::shared_ptr<temporary_room::client_module> get_temporary_room_module();
   std::shared_ptr<version::client_module> get_version_module();
-  std::shared_ptr<rtc::google::module> get_rtc_module();
+  std::shared_ptr<rtc::module> get_rtc_module();
   std::shared_ptr<session_module> get_session_module();
 
 protected:
@@ -48,7 +49,7 @@ protected:
   std::shared_ptr<matrix::module> matrix_module;
   std::shared_ptr<temporary_room::client_module> temporary_room_module;
   std::shared_ptr<version::client_module> version_module;
-  std::shared_ptr<rtc::google::module> rtc_module;
+  std::shared_ptr<rtc::module> rtc_module;
   std::shared_ptr<client::session_module> session_module_;
 };
 } // namespace client

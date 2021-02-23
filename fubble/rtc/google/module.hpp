@@ -28,7 +28,8 @@ public:
   std::shared_ptr<rtc::factory> get_factory() override;
   std::shared_ptr<capture::audio::device_creator> get_audio_device_creator();
   std::shared_ptr<capture::audio::device> get_audio_device();
-  std::shared_ptr<capture::video::device_factory> get_video_device_creator();
+  std::shared_ptr<rtc::video_device_factory>
+  get_video_device_creator() override;
 
 protected:
   std::shared_ptr<utils::executor_module> executor_module;
