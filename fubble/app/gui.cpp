@@ -88,7 +88,7 @@ int main(int argc, char *argv[]) {
   video_settings->set_capability({1280, 720, 30});
   try {
     video_settings->pause(false);
-  } catch (const std::exception &error) {
+  } catch (const std::exception &) {
   }
 
   // desktop

@@ -1,0 +1,73 @@
+
+// Configuration Row Macro
+//
+// CR   : String
+// CR_I : Integer Type
+// CR_B : Boolean Type
+// CR_L : List Type ( string but need speical list parsing function )
+//
+// Configuration Rearod Argument
+//
+// Argument Index:
+//   0 :  confiugration item name
+//   1 :  string to be used as config name in config file
+//   2 :  whether the json message can be modified from remote.
+//   3 :  define cpp type of configuration value
+//   4 :  default value
+//
+
+#define MEDIA_CONFIG_ROW_LIST \
+    _CR_I( CameraSelect,            camera_select,              false, int, 0 ) \
+    _CR( VideoRoi,   				video_roi,  				false, std::string, \
+            "0,0,1.0,1.0" ) \
+    _CR_I( MaxBitrate,              max_bitrate,                false, int, 3500000 ) \
+    _CR_B( Resolution4_3,           resolution_4_3_enable,      false, bool, true ) \
+    _CR_I( VideoRotation,           video_rotation,             true, int, 0) \
+    _CR_B( VideoVFlip,              video_vflip,                true, bool, false ) \
+    _CR_B( VideoHFlip,              video_hflip,                true, bool, false ) \
+    _CR_L( VideoResolutionList43,   video_resolution_list_4_3,  false, std::string, \
+            "320x240,400x300,512x384,640x480,1024x768,1152x864,1296x972,1640x1232" ) \
+    _CR_L( VideoResolutionList169,  video_resolution_list_16_9, false, std::string, \
+            "384x216,512x288,640x360,768x432,896x504,1024x576,1152x648,1280x720,1408x864,1920x1080" ) \
+    _CR_B( VideoDynamicResolution,  use_dynamic_video_resolution, false, bool, true ) \
+    _CR_B( VideoDynamicFps,         use_dynamic_video_fps,      false, bool, true)    \
+    _CR( FixedVideoResolution,      fixed_video_resolution,     false, std::string, \
+            "640x480") \
+    _CR_I( FixedVideoFps,           fixed_video_fps,            false, int, 30) \
+    _CR_B( AudioProcessing,         audio_processing_enable,    false, bool, false ) \
+    _CR_B( AudioEchoCancel,         audio_echo_cancellation,    false, bool, true ) \
+    _CR_B( AudioAutoGainControl,    audio_auto_gain_control,    false, bool, true ) \
+    _CR_B( AudioNoiseSuppression,   audio_noise_suppression,    false, bool, true ) \
+    _CR_B( AudioHighPassFilter,     audio_highpass_filter,      false, bool, true ) \
+    _CR_B( AudioJitterBufferEnable, audio_jitter_buffer_enable, false, bool, false ) \
+    _CR_I( AudioJitterBufferMaxPackets, audio_jitter_buffer_max_packets, false, int, 75 ) \
+    _CR_B( AudioJitterBufferFastAccel, audio_jitter_buffer_fast_accel, false, bool, true ) \
+    _CR_I( AudioJitterBufferMinDelayMs, audio_jitter_buffer_min_delay_ms, false, int, 20 ) \
+    _CR_B( AudioJitterBufferEnableRtx, audio_jitter_buffer_enable_rtx_handling, false, bool, false ) \
+    _CR_B( AudioExperimentalAgc,    audio_experimental_agc,     false, bool, false ) \
+    _CR_B( AudioExperimentalNs,     audio_experimental_ns,      false, bool, false ) \
+    _CR_I( VideoSharpness,          video_sharpness,            true, int, 0 ) \
+    _CR_I( VideoContrast,           video_contrast,             true, int, 0 ) \
+    _CR_I( VideoBrightness,         video_brightness,           true, int, 50 ) \
+    _CR_I( VideoSaturation,         video_saturation,           true, int, 0 ) \
+    _CR_I( VideoEV,                 video_ev,                   true, int, 0 ) \
+    _CR( VideoExposureMode,         video_exposure_mode,        true, std::string, "auto" ) \
+    _CR( VideoFlickerMode,          video_flicker_mode,         true, std::string, "auto" ) \
+    _CR( VideoAwbMode,              video_awb_mode,             true, std::string, "auto" ) \
+    _CR( VideoDrcMode,              video_drc_mode,             true, std::string, "off" ) \
+    _CR_B( VideoStabilisation,      video_stabilisation,        false, bool, false ) \
+    _CR_B( VideoEnableAnnotateText, video_enable_annotate_text, true, bool, false ) \
+    _CR( VideoAnnotateText,         video_annotate_text,        true, std::string,"" )  \
+    _CR_I( VideoAnnotateTextSizeRatio, video_annotate_text_size_ratio, true, int, 3 )
+
+// DO actual macro expansion
+MEDIA_CONFIG_ROW_LIST
+
+// Removing configuraiton row definition macros
+#undef _CR
+#undef _CR_L
+#undef _CR_B
+#undef _CR_I
+#undef MEDIA_CONFIG_ROW_LIST
+
+
