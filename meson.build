@@ -86,18 +86,20 @@ else
     '-DBOOST_STACKTRACE_LINK',
     ]
   if host_machine.system() == 'linux'
-    boost_compile_args += [
-      '-rdynamic',
-      # if "-no-pie" is not set, stacktrace cant load crash on restart.
-      # because of "address space randomization".
-      # https://stackoverflow.com/questions/47778099/what-is-no-pie-used-for
-      # when product is major enough, remove it
-      '-no-pie',
-      ]
-    boost_dep_link_with += [
-      '-rdynamic',
-      '-no-pie'
-      ]
+    if meson.get_compiler('cpp').get_id() == 'gcc'
+      boost_compile_args += [
+        '-rdynamic',
+        # if "-no-pie" is not set, stacktrace cant load crash on restart.
+        # because of "address space randomization".
+        # https://stackoverflow.com/questions/47778099/what-is-no-pie-used-for
+        # when product is major enough, remove it
+        '-no-pie',
+        ]
+      boost_dep_link_with += [
+        '-rdynamic',
+        '-no-pie'
+        ]
+    endif
   endif
   if host_machine.system() == 'darwin'
     boost_compile_args += [
