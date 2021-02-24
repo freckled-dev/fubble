@@ -8,12 +8,15 @@ strip = '__STRIP__'
 c_args = [
   # '-fsanitize=address,undefined',
   '--sysroot', '__SYSROOT__',
+  '-isystem', '__SYSROOT__/opt/vc/include',
   '-target', 'aarch64-linux-gnu',
   ]
 cpp_args = [
   # '-fsanitize=address,undefined',
   '--sysroot', '__SYSROOT__',
+  '-isystem', '__SYSROOT__/opt/vc/include',
   '-target', 'aarch64-linux-gnu',
+  '-Wno-gnu-zero-variadic-macro-arguments',
   ]
 c_link_args = [
   # '-fsanitize=address,undefined',
