@@ -3,11 +3,11 @@
 #SYSROOT=$PROFILE_DIR/../../../fubble_build/sysroot
 #COMPILER=/usr
 #SYSROOT=/run/media/mlanner/rootfs
-SYSROOT=$PROFILE_DIR/../../../rpi-sysroot
+SYSROOT=$PROFILE_DIR/../../../rpi-sysroot-armv7
 
 [settings]
 os=Linux
-arch=armv8
+arch=armv7
 compiler=clang
 compiler.version=11
 compiler.libcxx=libstdc++11
@@ -15,7 +15,7 @@ build_type=RelWithDebInfo
 
 [options]
 fubble:enable_ui=False
-fubble:meson_cross_file=scripts/meson_cross/linux_aarch64
+fubble:meson_cross_file=scripts/meson_cross/raspberry_pi_armv7
 boost:without_context=True
 boost:without_coroutine=True
 boost:without_graph_parallel=True
@@ -29,13 +29,13 @@ pkgconf/1.7.3
 PATH=[$COMPILER/bin]
 CC=clang
 CXX=clang++
-LD=$COMPILER/bin/aarch64-suse-linux-ld
+#LD=$COMPILER/bin/aarch64-suse-linux-ld
 AR=llvm-ar
-AS=$COMPILER/bin/aarch64-suse-linux-as
-STRIP=$COMPILER/bin/aarch64-suse-linux-strip
+#AS=$COMPILER/bin/aarch64-suse-linux-as
+STRIP=llvm-strip
 RANLIB=llvm-ranlib
 SYSROOT=$SYSROOT
-CXXFLAGS=--sysroot=$SYSROOT -target aarch64-linux-gnu
-CFLAGS=--sysroot=$SYSROOT -target aarch64-linux-gnu
-LDFLAGS=--sysroot=$SYSROOT -target aarch64-linux-gnu
+CXXFLAGS=--sysroot=$SYSROOT -target arm-linux-gnueabihf
+CFLAGS=--sysroot=$SYSROOT -target arm-linux-gnueabihf
+LDFLAGS=--sysroot=$SYSROOT -target arm-linux-gnueabihf
 
