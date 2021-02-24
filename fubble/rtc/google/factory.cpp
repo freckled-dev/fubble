@@ -17,6 +17,44 @@
 
 using namespace rtc::google;
 
+namespace {
+class video_encoder_factory : public webrtc::VideoEncoderFactory {
+public:
+  std::vector<webrtc::SdpVideoFormat> GetSupportedFormats() const override {
+    auto supported = delegate->GetSupportedFormats();
+    std::vector<webrtc::SdpVideoFormat> filtered;
+    std::copy_if(supported.cbegin(), supported.cend(),
+                 std::back_inserter(filtered),
+                 [&]([[maybe_unused]] const webrtc::SdpVideoFormat &check) {
+#if 1
+                   return check.name == "H264";
+#else
+                   return true;
+#endif
+                 });
+    return filtered;
+  }
+
+  CodecInfo
+  QueryVideoEncoder(const webrtc::SdpVideoFormat &format) const override {
+    return delegate->QueryVideoEncoder(format);
+  }
+
+  std::unique_ptr<webrtc::VideoEncoder>
+  CreateVideoEncoder(const webrtc::SdpVideoFormat &format) override {
+    return delegate->CreateVideoEncoder(format);
+  }
+
+  std::unique_ptr<EncoderSelectorInterface>
+  GetEncoderSelector() const override {
+    return delegate->GetEncoderSelector();
+  }
+
+  std::unique_ptr<webrtc::VideoEncoderFactory> delegate =
+      webrtc::CreateBuiltinVideoEncoderFactory();
+};
+} // namespace
+
 factory::factory(const settings &settings_, rtc::Thread &signaling_thread)
     : settings_(settings_), signaling_thread(&signaling_thread) {
   instance_members();
@@ -188,10 +226,16 @@ void factory::instance_video() {
   // WATCHOUT. `instance_factory` will move them inside factory!
   // weird api design.
   video_decoder = webrtc::CreateBuiltinVideoDecoderFactory();
-  video_encoder = webrtc::CreateBuiltinVideoEncoderFactory();
+  for (const auto format : video_decoder->GetSupportedFormats()) {
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << __FUNCTION__
+        << ", supported decoder video_format: " << format.ToString();
+  }
+  video_encoder = std::make_unique<video_encoder_factory>();
   for (const auto format : video_encoder->GetSupportedFormats()) {
     BOOST_LOG_SEV(logger, logging::severity::debug)
-        << __FUNCTION__ << "supported video_format: " << format.ToString();
+        << __FUNCTION__
+        << ", supported encoder video_format: " << format.ToString();
   }
 }
 
