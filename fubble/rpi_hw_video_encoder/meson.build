@@ -4,7 +4,7 @@ rpi_hw_video_encoder = library('rpi_hw_video_encoder',
     'frame_queue.cc', 'raspicamcontrol.c', 'raspicli.c', 'raspipreview.c',
     'raspi_quality_config.cc',
     ],
-  dependencies: [webrtc_google_peer_dep]
+  dependencies: [google_webrtc_dep]
   )
 rpi_hw_video_encoder_dep = declare_dependency(
   link_with: [rpi_hw_video_encoder]
