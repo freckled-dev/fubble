@@ -1,7 +1,7 @@
 #include "core_module.hpp"
 #include <fubble/client/crash_catcher.hpp>
-#include <fubble/rtc/google/factory.hpp>
 #include <fubble/rtc/google/module.hpp>
+#include <fubble/rtc/gstreamer/module.hpp>
 
 using namespace client;
 
@@ -68,9 +68,14 @@ std::shared_ptr<version::client_module> core_module::get_version_module() {
   return version_module;
 }
 std::shared_ptr<rtc::module> core_module::get_rtc_module() {
-  if (!rtc_module)
-    rtc_module = std::make_shared<rtc::google::module>(
-        get_utils_executor_module(), config_.rtc_);
+  if (!rtc_module) {
+    if (false)
+      rtc_module = std::make_shared<rtc::google::module>(
+          get_utils_executor_module(), config_.rtc_);
+    else
+      rtc_module = std::make_shared<rtc::gstreamer::module>(
+          get_utils_executor_module(), rtc::gstreamer::settings{});
+  }
   return rtc_module;
 }
 
