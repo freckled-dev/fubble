@@ -26,13 +26,13 @@ public:
     // audio
     auto client_audio_module = std::make_shared<client::audio_module>(
         core->get_utils_executor_module(),
-        std::static_pointer_cast<rtc::google::module>(core->get_rtc_module()),
+        std::dynamic_pointer_cast<rtc::google::module>(core->get_rtc_module()),
         config_.audio);
     core->get_session_module()->get_own_media()->set_own_audio_track(
         client_audio_module->get_own_audio_track());
     audio_settings = std::make_shared<client::audio_settings_module>(
         core->get_utils_executor_module(),
-        std::static_pointer_cast<rtc::google::module>(core->get_rtc_module()),
+        std::dynamic_pointer_cast<rtc::google::module>(core->get_rtc_module()),
         client_audio_module, core->get_session_module(),
         config_.audio_settings);
     // TODO instancition adds the audio track to the tracks_adder. refactor!

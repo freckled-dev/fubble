@@ -76,7 +76,7 @@ factory::create_video_track(const std::shared_ptr<rtc::video_source> &source) {
   if (!native)
     throw std::runtime_error("could not create video track");
   auto source_casted =
-      std::static_pointer_cast<rtc::google::video_source>(source);
+      std::dynamic_pointer_cast<rtc::google::video_source>(source);
   // TODO adapter shall take source, not track
   auto result = std::make_unique<video_track_source>(native, source_adapter,
                                                      source_casted);

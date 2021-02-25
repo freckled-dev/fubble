@@ -18,10 +18,10 @@ audio_module::audio_module(
 
 std::shared_ptr<own_audio_track> audio_module::get_own_audio_track() {
   if (!own_audio_track_)
-    own_audio_track_ =
-        own_audio_track::create(*std::static_pointer_cast<rtc::google::factory>(
-                                    rtc_module->get_factory()),
-                                rtc_module->get_audio_device()->get_source());
+    own_audio_track_ = own_audio_track::create(
+        *std::dynamic_pointer_cast<rtc::google::factory>(
+            rtc_module->get_factory()),
+        rtc_module->get_audio_device()->get_source());
   return own_audio_track_;
 }
 
@@ -36,7 +36,7 @@ audio_module::get_own_audio_track_adder() {
 std::shared_ptr<loopback_audio> audio_module::get_loopback_audio() {
   if (!loopback_audio_)
     loopback_audio_ =
-        loopback_audio::create(*std::static_pointer_cast<rtc::google::factory>(
+        loopback_audio::create(*std::dynamic_pointer_cast<rtc::google::factory>(
                                    rtc_module->get_factory()),
                                get_own_audio_track()->get_track(),
                                executor_module->get_boost_executor());

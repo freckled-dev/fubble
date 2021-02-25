@@ -17,13 +17,14 @@ video_module::video_module(
 std::shared_ptr<rtc::video_devices> video_module::get_enumerator() {
   if (!video_enumerator) {
     if (config_.enabled) {
+      // TODO generalise
       video_enumerator_google =
           std::make_unique<rtc::google::capture::video::enumerator>();
       video_enumerator_timer = std::make_unique<utils::interval_timer>(
           *executor_module->get_io_context(),
           config_.video_enumerator_refresh_timeout);
       video_enumerator = rtc::video_devices::create_interval_enumerating(
-          *video_enumerator_google, *video_enumerator_timer);
+          video_enumerator_google, *video_enumerator_timer);
     } else {
       video_enumerator = std::make_unique<rtc::video_devices_noop>();
     }

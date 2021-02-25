@@ -4,7 +4,7 @@
 namespace rtc {
 class video_source {
 public:
-  ~video_source() = default;
+  virtual ~video_source() = default;
 };
 } // namespace rtc
 

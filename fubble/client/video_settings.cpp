@@ -98,7 +98,7 @@ void video_settings::change_to_device(const std::string &id) {
   video_track_adder =
       add_video_to_connection_factory_.create(capture_device->get_source());
   tracks_adder_.add(video_track_adder);
-  own_media_.add(std::static_pointer_cast<rtc::google::video_source>(
+  own_media_.add(std::dynamic_pointer_cast<rtc::google::video_source>(
       capture_device->get_source()));
   on_video_source_changed();
 }
@@ -108,7 +108,7 @@ void video_settings::reset_current_video_capture() {
     return;
   tracks_adder_.remove(video_track_adder);
   video_track_adder.reset();
-  own_media_.remove(std::static_pointer_cast<rtc::google::video_source>(
+  own_media_.remove(std::dynamic_pointer_cast<rtc::google::video_source>(
       capture_device->get_source()));
   capture_device->stop();
   capture_device.reset();

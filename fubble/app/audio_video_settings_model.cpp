@@ -94,7 +94,8 @@ void audio_video_settings_model::onAudioOutputDeviceActivated(int index) {
 }
 
 void audio_video_settings_model::onVideoDeviceActivated(int index) {
-  auto video_devices_casted = static_cast<video_devices_model *>(video_devices);
+  auto video_devices_casted =
+      dynamic_cast<video_devices_model *>(video_devices);
   BOOST_LOG_SEV(logger, logging::severity::debug)
       << __FUNCTION__ << ", index:" << index;
   if (!video_devices_casted->has_devices())
@@ -115,7 +116,7 @@ void audio_video_settings_model::onVideoDeviceActivated(int index) {
     video_settings_.change_to_device(id);
     video_device = video_device_factory->create(id);
     video = std::make_unique<ui::frame_provider_google_video_device>(
-        *std::static_pointer_cast<rtc::google::capture::video::device>(
+        *std::dynamic_pointer_cast<rtc::google::capture::video::device>(
             video_device),
         nullptr);
     if (was_playing)

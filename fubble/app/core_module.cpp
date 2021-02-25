@@ -69,7 +69,7 @@ std::shared_ptr<version::client_module> core_module::get_version_module() {
 }
 std::shared_ptr<rtc::module> core_module::get_rtc_module() {
   if (!rtc_module) {
-    if (false)
+    if (true)
       rtc_module = std::make_shared<rtc::google::module>(
           get_utils_executor_module(), config_.rtc_);
     else

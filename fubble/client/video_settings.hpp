@@ -61,7 +61,7 @@ protected:
 
   std::shared_ptr<rtc::video_device> capture_device;
   std::shared_ptr<add_video_to_connection> video_track_adder;
-  bool paused{true};
+  bool paused{false};
   // TODO refactor to `current_device_id`
   boost::optional<std::string> last_device_id;
   rtc::video::capability capability;

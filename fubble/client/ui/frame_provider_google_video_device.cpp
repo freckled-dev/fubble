@@ -1,7 +1,8 @@
 #include "frame_provider_google_video_device.hpp"
-#include "fubble/client/ui/frame_provider_google_video_frame.hpp"
-#include "fubble/rtc/google/capture/video/device.hpp"
 #include <QtMultimedia/qabstractvideosurface.h>
+#include <fubble/client/ui/frame_provider_google_video_frame.hpp>
+#include <fubble/rtc/google/capture/video/device.hpp>
+#include <fubble/rtc/google/video_source.hpp>
 
 using namespace client::ui;
 
@@ -9,8 +10,9 @@ frame_provider_google_video_device::frame_provider_google_video_device(
     rtc::google::capture::video::device &device, QObject *parent)
     : QObject(parent), device(device) {
   delegate = new ui::frame_provider_google_video_source(this);
+  std::shared_ptr<rtc::video_source> source = device.get_source();
   delegate->set_source(
-      std::static_pointer_cast<rtc::google::video_source>(device.get_source()));
+      std::dynamic_pointer_cast<rtc::google::video_source>(source));
 }
 
 frame_provider_google_video_device::~frame_provider_google_video_device() =

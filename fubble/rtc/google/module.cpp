@@ -31,7 +31,7 @@ std::shared_ptr<capture::audio::device_creator>
 module::get_audio_device_creator() {
   if (!audio_device_creator)
     audio_device_creator = std::make_shared<capture::audio::device_creator>(
-        *std::static_pointer_cast<rtc::google::factory>(get_factory()));
+        *std::dynamic_pointer_cast<rtc::google::factory>(get_factory()));
   return audio_device_creator;
 }
 

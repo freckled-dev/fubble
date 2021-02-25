@@ -60,12 +60,12 @@ std::shared_ptr<loopback_audio>
 audio_settings_module::get_loopback_audio_test() {
   if (!loopback_audio_test) {
     settings_audio_track =
-        std::static_pointer_cast<rtc::google::factory>(
+        std::dynamic_pointer_cast<rtc::google::factory>(
             rtc_module->get_factory())
             ->create_audio_track(rtc_module->get_audio_device()->get_source());
     loopback_audio_test_factory =
         std::make_shared<client::loopback_audio_impl_factory>(
-            *std::static_pointer_cast<rtc::google::factory>(
+            *std::dynamic_pointer_cast<rtc::google::factory>(
                 rtc_module->get_factory()),
             settings_audio_track, executor_module->get_boost_executor());
     loopback_audio_test = std::make_shared<loopback_audio_noop_if_disabled>(
