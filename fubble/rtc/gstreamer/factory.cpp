@@ -1,5 +1,6 @@
 #include "factory.hpp"
-#include <fubble/rtc/gstreamer/connection.hpp>
+#include "connection.hpp"
+#include "video_track.hpp"
 
 using namespace rtc::gstreamer;
 
@@ -11,5 +12,9 @@ std::unique_ptr<rtc::connection> factory::create_connection() {
 }
 
 std::unique_ptr<rtc::video_track>
-factory::create_video_track(const std::shared_ptr<rtc::video_source> &source) {}
-std::shared_ptr<rtc::audio_devices> factory::get_audio_devices() {}
+factory::create_video_track(const std::shared_ptr<rtc::video_source> &source) {
+  BOOST_ASSERT(std::dynamic_pointer_cast<video_source>(source));
+  return std::make_unique<video_track>();
+}
+
+std::shared_ptr<rtc::audio_devices> factory::get_audio_devices() { return {}; }
