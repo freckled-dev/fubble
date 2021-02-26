@@ -1,6 +1,7 @@
 webrtc_peer = library('webrtc_peer',
   ['connection.cpp', 'ice_candidate.cpp', 'message.cpp',
-    'data_channel.cpp', 'video_devices.cpp'
+    'data_channel.cpp', 'video_devices.cpp', 'video_device_factory.cpp',
+    'video_device.cpp',
     ],
   dependencies: [utils_dep, signaling_client_dep],
   install: true
@@ -13,7 +14,7 @@ install_headers([
   'connection.hpp', 'data_channel.hpp', 'data_channel_ptr.hpp',
   'ice_candidate.hpp', 'logger.hpp', 'message.hpp',
   'session_description.hpp', 'track.hpp', 'track_ptr.hpp',
-  'video_devices.hpp', 'video_capability.hpp',
+  'video_devices.hpp', 'video_capability.hpp', 'video_device_factory.hpp',
   ], subdir: 'fubble/rtc')
 subdir('gstreamer')
 subdir('google')
