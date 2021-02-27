@@ -5,6 +5,7 @@
 #include "audio_track_source.hpp"
 #include "connection.hpp"
 #include "fubble/utils/uuid.hpp"
+#include "video_encoder_v4l2_h264.hpp"
 #include "video_source.hpp"
 #include "video_track.hpp"
 #include "video_track_source.hpp"
@@ -16,6 +17,116 @@
 #include <api/video_codecs/builtin_video_encoder_factory.h>
 
 using namespace rtc::google;
+
+namespace {
+namespace {
+// level-asymmetry-allowed=1 packetization-mode=1 profile-level-id=42001f
+webrtc::SdpVideoFormat h264_format("H264"
+#if 0
+    , {{"level-asymmetry-allowed", "1"},
+    {"packetization-mode", "1"}}
+#endif
+);
+class encoder_selector
+    : public webrtc::VideoEncoderFactory::EncoderSelectorInterface {
+public:
+  encoder_selector() {}
+  void OnCurrentEncoder(const webrtc::SdpVideoFormat &format) {
+    BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
+    (void)format;
+    // TODO
+  }
+
+  // Called every time the available bitrate is updated. Should return a
+  // non-empty if an encoder switch should be performed.
+  absl::optional<webrtc::SdpVideoFormat>
+  OnAvailableBitrate(const webrtc::DataRate &rate) {
+#if 0
+    BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
+#endif
+    (void)rate;
+    return h264_format;
+  }
+
+  // Called if the currently used encoder reports itself as broken. Should
+  // return a non-empty if an encoder switch should be performed.
+  absl::optional<webrtc::SdpVideoFormat> OnEncoderBroken() {
+    BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
+    return h264_format;
+  }
+
+  rtc::logger logger{"encoder_selector"};
+};
+} // namespace
+class video_encoder_factory : public webrtc::VideoEncoderFactory {
+public:
+  std::vector<webrtc::SdpVideoFormat> GetSupportedFormats() const override {
+    BOOST_LOG_SEV(const_cast<video_encoder_factory *>(this)->logger,
+                  logging::severity::debug)
+        << __FUNCTION__;
+    std::vector<webrtc::SdpVideoFormat> result;
+#if 0
+    auto supported = delegate->GetSupportedFormats();
+    std::copy_if(supported.cbegin(), supported.cend(),
+                 std::back_inserter(result),
+                 [&](const webrtc::SdpVideoFormat &check) {
+                   (void)check;
+#if 1
+                   return check.name == "H264";
+#else
+                   return true;
+#endif
+                 });
+#endif
+    result.push_back(h264_format);
+    return result;
+  }
+
+  CodecInfo
+  QueryVideoEncoder(const webrtc::SdpVideoFormat &format) const override {
+    BOOST_LOG_SEV(const_cast<video_encoder_factory *>(this)->logger,
+                  logging::severity::debug)
+        << __FUNCTION__;
+#if 0
+    return delegate->QueryVideoEncoder(format);
+#else
+    (void)format;
+    CodecInfo result;
+    result.has_internal_source = true;
+    return result;
+#endif
+  }
+
+  std::unique_ptr<webrtc::VideoEncoder>
+  CreateVideoEncoder(const webrtc::SdpVideoFormat &format) override {
+    BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
+#if 0
+    return delegate->CreateVideoEncoder(format);
+#else
+    (void)format;
+    return video_encoder_v4l2_h264::create();
+#endif
+  }
+
+  std::unique_ptr<EncoderSelectorInterface>
+  GetEncoderSelector() const override {
+    BOOST_LOG_SEV(const_cast<video_encoder_factory *>(this)->logger,
+                  logging::severity::debug)
+        << __FUNCTION__;
+#if 0
+    return delegate->GetEncoderSelector();
+#else
+    return std::make_unique<encoder_selector>();
+#endif
+  }
+
+#if 0
+  std::unique_ptr<webrtc::VideoEncoderFactory> delegate =
+      webrtc::CreateBuiltinVideoEncoderFactory();
+#endif
+  rtc::logger logger{"video_encoder_factory"};
+};
+} // namespace
 
 factory::factory(const settings &settings_, rtc::Thread &signaling_thread)
     : settings_(settings_), signaling_thread(&signaling_thread) {
@@ -192,7 +303,11 @@ void factory::instance_video() {
   // WATCHOUT. `instance_factory` will move them inside factory!
   // weird api design.
   video_decoder = webrtc::CreateBuiltinVideoDecoderFactory();
+#if 0
   video_encoder = webrtc::CreateBuiltinVideoEncoderFactory();
+#else
+  video_encoder = std::make_unique<video_encoder_factory>();
+#endif
   for (const auto format : video_encoder->GetSupportedFormats()) {
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << "supported video_format: " << format.ToString();
