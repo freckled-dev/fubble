@@ -19,7 +19,6 @@
 using namespace rtc::google;
 
 namespace {
-namespace {
 // level-asymmetry-allowed=1 packetization-mode=1 profile-level-id=42001f
 webrtc::SdpVideoFormat h264_format("H264"
 #if 0
@@ -57,7 +56,6 @@ public:
 
   rtc::logger logger{"encoder_selector"};
 };
-} // namespace
 class video_encoder_factory : public webrtc::VideoEncoderFactory {
 public:
   std::vector<webrtc::SdpVideoFormat> GetSupportedFormats() const override {
@@ -125,6 +123,8 @@ public:
       webrtc::CreateBuiltinVideoEncoderFactory();
 #endif
   rtc::logger logger{"video_encoder_factory"};
+  std::unique_ptr<webrtc::VideoEncoderFactory> delegate =
+      webrtc::CreateBuiltinVideoEncoderFactory();
 };
 } // namespace
 
@@ -300,17 +300,17 @@ void factory::instance_audio_device_module() {
 
 void factory::instance_video() {
   BOOST_LOG_SEV(logger, logging::severity::trace) << "instance_video";
-  // WATCHOUT. `instance_factory` will move them inside factory!
+  // WATCHOUT. `instance_factory` will video_encoder inside factory!
   // weird api design.
-  video_decoder = webrtc::CreateBuiltinVideoDecoderFactory();
-#if 0
+#if 0 
   video_encoder = webrtc::CreateBuiltinVideoEncoderFactory();
 #else
   video_encoder = std::make_unique<video_encoder_factory>();
 #endif
-  for (const auto format : video_encoder->GetSupportedFormats()) {
+  for (const auto format : video_decoder->GetSupportedFormats()) {
     BOOST_LOG_SEV(logger, logging::severity::debug)
-        << __FUNCTION__ << "supported video_format: " << format.ToString();
+        << __FUNCTION__
+        << ", supported decoder video_format: " << format.ToString();
   }
 }
 

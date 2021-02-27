@@ -3,6 +3,8 @@ project('fubble', 'cpp',
   license: ['proprietary'],
   default_options : ['cpp_std=c++17'])
 
+add_languages('c', native: false)
+
 add_project_arguments('-DBUILDING_FUBBLE', language: 'cpp')
 
 disabled = disabler()
