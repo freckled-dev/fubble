@@ -1,7 +1,9 @@
 #include "video_encoder_v4l2_h264.hpp"
 #include <boost/stacktrace.hpp>
 #include <fubble/rtc/logger.hpp>
+#include <modules/video_coding/include/video_codec_interface.h>
 #include <modules/video_coding/include/video_error_codes.h>
+#include <thread>
 extern "C" {
 #include <fcntl.h>
 #include <linux/videodev2.h>
@@ -34,6 +36,12 @@ struct funny {
   // TODO refactor the usage of n_buffers
   unsigned int n_buffers{};
   io_method io = IO_METHOD_MMAP;
+  std::thread read_thread;
+  bool run{true};
+  using data_callback = std::function<void(const void *data, int size)>;
+  data_callback on_data;
+
+  funny(data_callback callback) : on_data{callback} {}
 
   int xioctl(int fh, unsigned long int request, void *arg) {
     int r;
@@ -295,15 +303,10 @@ struct funny {
     }
   }
   void mainloop() {
-    unsigned int count;
-
-    count = 100;
-
-    while (count-- > 0) {
-      for (;;) {
+    read_thread = std::thread([this] {
+      while (run) {
         fd_set fds;
         struct timeval tv;
-        int r;
 
         FD_ZERO(&fds);
         FD_SET(fd, &fds);
@@ -312,25 +315,24 @@ struct funny {
         tv.tv_sec = 2;
         tv.tv_usec = 0;
 
-        r = select(fd + 1, &fds, NULL, NULL, &tv);
+        int result = select(fd + 1, &fds, NULL, NULL, &tv);
 
-        if (-1 == r) {
+        if (-1 == result) {
           if (EINTR == errno)
             continue;
           errno_exit("select");
         }
 
-        if (0 == r) {
+        if (0 == result) {
           fprintf(stderr, "select timeout\\n");
           exit(EXIT_FAILURE);
         }
 
-        if (read_frame())
-          break;
-        /* EAGAIN - continue select loop. */
+        read_frame();
       }
-    }
+    });
   }
+
   int read_frame() {
     BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
     struct v4l2_buffer buf;
@@ -425,14 +427,16 @@ struct funny {
   }
 
   void process_image(const void *p, int size) {
-    (void)p;
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << ", size: " << size;
+    on_data(p, size);
   }
 };
 
 class video_encoder_v4l2_h264_impl : public video_encoder_v4l2_h264 {
 public:
+  webrtc::EncodedImageCallback *callback{};
+
   void SetFecControllerOverride(
       webrtc::FecControllerOverride *fec_controller_override) override {
     (void)fec_controller_override;
@@ -444,7 +448,7 @@ public:
     (void)settings;
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << ", codec_settings->width: " << codec_settings->width;
-    auto fun = new funny();
+    auto fun = new funny([this](auto data, auto size) { on_data(data, size); });
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << ", open_device";
     fun->open_device();
@@ -460,9 +464,32 @@ public:
     return WEBRTC_VIDEO_CODEC_OK;
   }
 
+  void on_data(const void *data, int size) {
+    webrtc::EncodedImage encoded{
+        static_cast<std::uint8_t *>(const_cast<void *>(data)),
+        static_cast<std::size_t>(size), static_cast<std::size_t>(size)};
+    webrtc::CodecSpecificInfo info;
+    webrtc::CodecSpecificInfoH264 codec_info;
+    codec_info.packetization_mode =
+        webrtc::H264PacketizationMode::NonInterleaved;
+    codec_info.idr_frame = false;
+    codec_info.base_layer_sync = false;
+    codec_info.temporal_idx = 0;
+    info.codecSpecific.H264 = codec_info;
+    info.codecType = webrtc::kVideoCodecH264;
+    info.end_of_picture = false;
+    if (!callback) {
+      BOOST_LOG_SEV(logger, logging::severity::debug)
+          << __FUNCTION__ << ", callback not set";
+      return;
+    }
+    // TODO here we r using a deprecated method
+    callback->OnEncodedImage(encoded, &info);
+  }
+
   int32_t RegisterEncodeCompleteCallback(
-      webrtc::EncodedImageCallback *callback) override {
-    (void)callback;
+      webrtc::EncodedImageCallback *callback_) override {
+    callback = callback_;
     BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
     return WEBRTC_VIDEO_CODEC_OK;
   }
