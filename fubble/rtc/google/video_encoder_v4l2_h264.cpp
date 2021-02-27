@@ -3,6 +3,7 @@
 #include <fubble/rtc/logger.hpp>
 #include <modules/video_coding/include/video_codec_interface.h>
 #include <modules/video_coding/include/video_error_codes.h>
+#include <system_wrappers/include/clock.h>
 #include <thread>
 extern "C" {
 #include <fcntl.h>
@@ -436,6 +437,7 @@ struct funny {
 class video_encoder_v4l2_h264_impl : public video_encoder_v4l2_h264 {
 public:
   webrtc::EncodedImageCallback *callback{};
+  webrtc::Clock *const clock_{webrtc::Clock::GetRealTimeClock()};
 
   void SetFecControllerOverride(
       webrtc::FecControllerOverride *fec_controller_override) override {
@@ -472,12 +474,28 @@ public:
     webrtc::CodecSpecificInfoH264 codec_info;
     codec_info.packetization_mode =
         webrtc::H264PacketizationMode::NonInterleaved;
-    codec_info.idr_frame = false;
+    codec_info.temporal_idx = webrtc::kNoTemporalIdx;
+    auto frameType = webrtc::VideoFrameType::kVideoFrameDelta;
+    codec_info.idr_frame = encoded._frameType == frameType;
     codec_info.base_layer_sync = false;
-    codec_info.temporal_idx = 0;
+
+    // In native code, there is DCHECK-related logic for capture_time
+    // and ntp_time. Currently, RWS does not use video frame capture and
+    // encoding, so DCHECK generates an error message in time.
+    // the '-10' value is for the part to prevent this.
+    // it is tempoary measure, but it happens the '-10' will be
+    // removed when this issue fixed
+    int64_t capture_time_ms = clock_->TimeInMilliseconds() - 10;
+    int64_t ntp_capture_time_ms = clock_->CurrentNtpInMilliseconds() - 10;
+
+    encoded.SetTimestamp(capture_time_ms);
+    encoded.SetSpatialIndex(0);
+    encoded.ntp_time_ms_ = ntp_capture_time_ms;
+    encoded.capture_time_ms_ = capture_time_ms;
+
     info.codecSpecific.H264 = codec_info;
     info.codecType = webrtc::kVideoCodecH264;
-    info.end_of_picture = false;
+    // info.end_of_picture = false;
     if (!callback) {
       BOOST_LOG_SEV(logger, logging::severity::debug)
           << __FUNCTION__ << ", callback not set";
@@ -509,8 +527,21 @@ public:
   }
 
   void SetRates(const RateControlParameters &parameters) override {
-    (void)parameters;
-    BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << __FUNCTION__ << ", framerate_fps: " << parameters.framerate_fps
+        << ", bandwidth_allocation: " << parameters.bandwidth_allocation.kbps()
+        << ", bitrate: " << parameters.bitrate.ToString()
+        << ", target_bitrate: " << parameters.target_bitrate.ToString();
+  }
+
+  EncoderInfo GetEncoderInfo() const override {
+    auto info = webrtc::VideoEncoder::GetEncoderInfo();
+    info.has_internal_source = true;
+    info.is_hardware_accelerated = true;
+    BOOST_LOG_SEV(const_cast<video_encoder_v4l2_h264_impl *>(this)->logger,
+                  logging::severity::debug)
+        << __FUNCTION__ << ", info: " << info.ToString();
+    return info;
   }
 
 private:
