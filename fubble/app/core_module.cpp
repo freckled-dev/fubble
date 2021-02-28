@@ -75,8 +75,12 @@ std::shared_ptr<rtc::module> core_module::get_rtc_module() {
           get_utils_executor_module(), config_.rtc_);
       break;
     case config::rtc_backend::gstreamer:
+#if 0
       rtc_module = std::make_shared<rtc::gstreamer::module>(
           get_utils_executor_module(), rtc::gstreamer::settings{});
+#else
+      BOOST_ASSERT(false);
+#endif
       break;
     }
   }

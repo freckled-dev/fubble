@@ -21,6 +21,10 @@ namespace {
 namespace v4l2_hw_h264 {
 class rtc_module : public rtc::google::module {
 public:
+  rtc_module(std::shared_ptr<utils::executor_module> executor_module,
+             const rtc::google::settings rtc_settings)
+      : rtc::google::module(executor_module, rtc_settings) {}
+
   std::shared_ptr<rtc::video_device_factory>
   get_video_device_creator() override {
     if (!video_device_creator)
@@ -34,12 +38,12 @@ public:
 
   std::shared_ptr<rtc::module> get_rtc_module() override {
     if (!rtc_module)
-      rtc_module = std::make_shared<v4l2_hw_h264::rtc_module>();
+      rtc_module = std::make_shared<v4l2_hw_h264::rtc_module>(
+          get_utils_executor_module(), config_.rtc_);
     return rtc_module;
   }
 };
-}
-}
+} // namespace v4l2_hw_h264
 
 class cli_client_impl : public fubble::cli_client {
 public:

@@ -6,6 +6,10 @@
 
 int main(int, char *[]) {
   client::log_module::config log_config;
+#if 0
+  log_config.webrtc = true;
+  log_config.severity = logging::trace;
+#endif
   client::log_module log_module_{log_config};
   logging::logger logger{"main"};
   fubble::cli_client::config config;
