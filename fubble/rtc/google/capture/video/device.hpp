@@ -16,6 +16,7 @@ public:
   device() = default;
   virtual ~device() = default;
 };
+
 class device_factory : public rtc::video_device_factory {
 public:
   device_factory();
@@ -30,6 +31,7 @@ protected:
   };
   std::vector<device_with_start_stop_counter> devices;
 };
+
 } // namespace video
 } // namespace capture
 } // namespace google

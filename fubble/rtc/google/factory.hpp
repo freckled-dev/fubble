@@ -6,6 +6,7 @@
 #include <fubble/rtc/connection.hpp>
 #include <fubble/rtc/factory.hpp>
 #include <fubble/rtc/google/settings.hpp>
+#include <fubble/rtc/google/video_encoder_factory_factory.hpp>
 #include <fubble/rtc/logger.hpp>
 #include <memory>
 
@@ -20,7 +21,9 @@ class audio_devices;
 class connection;
 class factory : public rtc::factory {
 public:
-  explicit factory(const settings &settings_, rtc::Thread &signaling_thread);
+  explicit factory(std::shared_ptr<video_encoder_factory_factory>
+                       video_encoder_factory_factory_,
+                   const settings &settings_, rtc::Thread &signaling_thread);
   // TODO remove default constructor
   factory();
   ~factory();
@@ -48,6 +51,8 @@ private:
 
   rtc::logger logger{"google::factory"};
   const settings settings_;
+  const std::shared_ptr<video_encoder_factory_factory>
+      video_encoder_factory_factory_;
   std::unique_ptr<rtc::Thread> network_thread;
   std::unique_ptr<rtc::Thread> worker_thread;
   // TODO replace signaling_thread with a local thread (asio) implementation

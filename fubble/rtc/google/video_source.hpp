@@ -14,6 +14,10 @@ public:
   virtual ~video_source();
   boost::signals2::signal<void(const webrtc::VideoFrame &)> on_frame;
 };
+
+class video_source_noop : public video_source {
+public:
+};
 } // namespace google
 } // namespace rtc
 

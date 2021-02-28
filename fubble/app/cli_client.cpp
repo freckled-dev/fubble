@@ -13,6 +13,7 @@
 #include <fubble/rtc/google/module.hpp>
 #include <fubble/utils/timer.hpp>
 #include <fubble/utils/uuid.hpp>
+#include <fubble/v4l2_hw_h264/module.hpp>
 #include <nlohmann/json.hpp>
 
 using namespace fubble;
@@ -28,7 +29,8 @@ public:
   std::shared_ptr<rtc::video_device_factory>
   get_video_device_creator() override {
     if (!video_device_creator)
-      video_device_creator = std::make_shared<rtc::video_device_factory_noop>();
+      video_device_creator =
+          std::make_shared<fubble::v4l2_hw_h264::video_device_factory>();
     return video_device_creator;
   }
 };

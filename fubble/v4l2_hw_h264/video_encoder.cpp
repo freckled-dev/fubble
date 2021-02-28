@@ -1,4 +1,4 @@
-#include "video_encoder_v4l2_h264.hpp"
+#include "video_encoder.hpp"
 #include <boost/stacktrace.hpp>
 #include <fubble/rtc/logger.hpp>
 #include <modules/video_coding/include/video_codec_interface.h>
@@ -335,7 +335,9 @@ struct funny {
   }
 
   int read_frame() {
+#if 0
     BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
+#endif
     struct v4l2_buffer buf;
     unsigned int i;
 
@@ -428,13 +430,15 @@ struct funny {
   }
 
   void process_image(const void *p, int size) {
+#if 0
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << ", size: " << size;
+#endif
     on_data(p, size);
   }
 };
 
-class video_encoder_v4l2_h264_impl : public video_encoder_v4l2_h264 {
+class video_encoder_impl : public video_encoder {
 public:
   webrtc::EncodedImageCallback *callback{};
   webrtc::Clock *const clock_{webrtc::Clock::GetRealTimeClock()};
@@ -538,17 +542,17 @@ public:
     auto info = webrtc::VideoEncoder::GetEncoderInfo();
     info.has_internal_source = true;
     info.is_hardware_accelerated = true;
-    BOOST_LOG_SEV(const_cast<video_encoder_v4l2_h264_impl *>(this)->logger,
+    BOOST_LOG_SEV(const_cast<video_encoder_impl *>(this)->logger,
                   logging::severity::debug)
         << __FUNCTION__ << ", info: " << info.ToString();
     return info;
   }
 
 private:
-  rtc::logger logger{"video_encoder_v4l2_h264_impl"};
+  rtc::logger logger{"video_encoder_impl"};
 };
 } // namespace
 
-std::unique_ptr<video_encoder_v4l2_h264> video_encoder_v4l2_h264::create() {
-  return std::make_unique<video_encoder_v4l2_h264_impl>();
+std::unique_ptr<video_encoder> video_encoder::create() {
+  return std::make_unique<video_encoder_impl>();
 }

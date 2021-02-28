@@ -18,6 +18,8 @@ class device_factory;
 } // namespace capture
 class asio_signaling_thread;
 class factory;
+class video_encoder_factory_factory;
+
 class FUBBLE_PUBLIC module : public rtc::module {
 public:
   module(std::shared_ptr<utils::executor_module> executor_module,
@@ -30,6 +32,8 @@ public:
   std::shared_ptr<capture::audio::device> get_audio_device();
   std::shared_ptr<rtc::video_device_factory>
   get_video_device_creator() override;
+  virtual std::shared_ptr<rtc::google::video_encoder_factory_factory>
+  get_video_encoder_factory_factory();
 
 protected:
   std::shared_ptr<utils::executor_module> executor_module;
@@ -39,6 +43,8 @@ protected:
   std::shared_ptr<capture::audio::device_creator> audio_device_creator;
   std::shared_ptr<capture::audio::device> audio_device;
   std::shared_ptr<rtc::video_device_factory> video_device_creator;
+  std::shared_ptr<rtc::google::video_encoder_factory_factory>
+      video_encoder_factory_factory_;
 };
 } // namespace google
 } // namespace rtc

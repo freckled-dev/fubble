@@ -4,6 +4,7 @@
 #include <fubble/rtc/google/capture/audio/device_creator.hpp>
 #include <fubble/rtc/google/capture/video/device.hpp>
 #include <fubble/rtc/google/factory.hpp>
+#include <fubble/rtc/google/video_encoder_factory_factory.hpp>
 #include <fubble/rtc/video_device_factory.hpp>
 
 using namespace rtc::google;
@@ -24,7 +25,8 @@ std::shared_ptr<asio_signaling_thread> module::get_asio_signaling_thread() {
 std::shared_ptr<rtc::factory> module::get_factory() {
   if (!factory_)
     factory_ = std::make_shared<rtc::google::factory>(
-        rtc_settings, get_asio_signaling_thread()->get_native());
+        get_video_encoder_factory_factory(), rtc_settings,
+        get_asio_signaling_thread()->get_native());
   return factory_;
 }
 
@@ -46,4 +48,12 @@ std::shared_ptr<rtc::video_device_factory> module::get_video_device_creator() {
   if (!video_device_creator)
     video_device_creator = std::make_shared<capture::video::device_factory>();
   return video_device_creator;
+}
+
+std::shared_ptr<rtc::google::video_encoder_factory_factory>
+module::get_video_encoder_factory_factory() {
+  if (!video_encoder_factory_factory_)
+    video_encoder_factory_factory_ =
+        std::make_shared<video_encoder_factory_factory>();
+  return video_encoder_factory_factory_;
 }
