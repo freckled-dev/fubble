@@ -307,6 +307,7 @@ void factory::instance_video() {
 #else
   video_encoder = std::make_unique<video_encoder_factory>();
 #endif
+  video_decoder = webrtc::CreateBuiltinVideoDecoderFactory();
   for (const auto format : video_decoder->GetSupportedFormats()) {
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__

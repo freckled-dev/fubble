@@ -12,6 +12,11 @@ public:
 
   virtual std::unique_ptr<video_device> create(const std::string &id) = 0;
 };
+
+class video_device_factory_noop : public video_device_factory {
+public:
+  std::unique_ptr<video_device> create(const std::string &id) override;
+};
 } // namespace rtc
 
 #endif

@@ -26,7 +26,7 @@ struct audio_source::sink : webrtc::AudioTrackSinkInterface {
               std::size_t number_of_channels, std::size_t number_of_frames,
               absl::optional<int64_t> absolute_capture_timestamp_ms) override {
     (void)absolute_capture_timestamp_ms;
-#if 1
+#if 0
     BOOST_LOG_SEV(logger, logging::severity::trace)
         << "OnData, number_of_frames:" << number_of_frames << ", this:" << this;
 #endif

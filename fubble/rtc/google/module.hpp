@@ -38,7 +38,7 @@ protected:
   std::shared_ptr<factory> factory_;
   std::shared_ptr<capture::audio::device_creator> audio_device_creator;
   std::shared_ptr<capture::audio::device> audio_device;
-  std::shared_ptr<capture::video::device_factory> video_device_creator;
+  std::shared_ptr<rtc::video_device_factory> video_device_creator;
 };
 } // namespace google
 } // namespace rtc

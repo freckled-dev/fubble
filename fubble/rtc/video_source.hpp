@@ -6,6 +6,10 @@ class video_source {
 public:
   virtual ~video_source() = default;
 };
+
+class video_source_noop : public video_source {
+public:
+};
 } // namespace rtc
 
 #endif
