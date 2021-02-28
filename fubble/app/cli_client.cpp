@@ -10,6 +10,7 @@
 #include <fubble/client/video_module.hpp>
 #include <fubble/client/video_settings.hpp>
 #include <fubble/rtc/google/log_webrtc_to_logging.hpp>
+#include <fubble/rtc/google/module.hpp>
 #include <fubble/utils/timer.hpp>
 #include <fubble/utils/uuid.hpp>
 #include <nlohmann/json.hpp>
@@ -17,11 +18,37 @@
 using namespace fubble;
 
 namespace {
+namespace v4l2_hw_h264 {
+class rtc_module : public rtc::google::module {
+public:
+  std::shared_ptr<rtc::video_device_factory>
+  get_video_device_creator() override {
+    if (!video_device_creator)
+      video_device_creator = std::make_shared<rtc::video_device_factory_noop>();
+    return video_device_creator;
+  }
+};
+class core_module : public client::core_module {
+public:
+  core_module(const config &config_) : client::core_module(config_) {}
+
+  std::shared_ptr<rtc::module> get_rtc_module() override {
+    if (!rtc_module)
+      rtc_module = std::make_shared<v4l2_hw_h264::rtc_module>();
+    return rtc_module;
+  }
+};
+}
+}
+
 class cli_client_impl : public fubble::cli_client {
 public:
   cli_client_impl(const config &config_) : config_{config_} {
     // core
-    core = std::make_shared<client::core_module>(config_.core);
+    if (config_.use_v4l2_hw_h264)
+      core = std::make_shared<v4l2_hw_h264::core_module>(config_.core);
+    else
+      core = std::make_shared<client::core_module>(config_.core);
 
     // audio
     auto client_audio_module = std::make_shared<client::audio_module>(

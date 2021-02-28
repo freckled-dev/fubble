@@ -1,7 +1,14 @@
 #!/bin/bash
 
-set -ex
-cd "$(dirname "$0")"
+set -x
+cd "$(dirname "$0")/.."
+
+rm -r ../fubble_build/dependencies
+rm -r ../fubble_build/install
+rm -r ../fubble_build/meson
+./scripts/make_build.py --treat_warnings_as_errors --skip_remove --skip_qt --skip_install_update --profile_build scripts/conan_profiles/linux64_gcc10_debug --profile_host scripts/conan_profiles/raspberry_pi_armv8
+
+exit 0
 
 scripts_dir="$(pwd)"
 source_dir="$(realpath ..)"

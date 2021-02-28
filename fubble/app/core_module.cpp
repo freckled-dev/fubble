@@ -69,12 +69,16 @@ std::shared_ptr<version::client_module> core_module::get_version_module() {
 }
 std::shared_ptr<rtc::module> core_module::get_rtc_module() {
   if (!rtc_module) {
-    if (true)
+    switch (config_.rtc_backend_) {
+    case config::rtc_backend::google:
       rtc_module = std::make_shared<rtc::google::module>(
           get_utils_executor_module(), config_.rtc_);
-    else
+      break;
+    case config::rtc_backend::gstreamer:
       rtc_module = std::make_shared<rtc::gstreamer::module>(
           get_utils_executor_module(), rtc::gstreamer::settings{});
+      break;
+    }
   }
   return rtc_module;
 }

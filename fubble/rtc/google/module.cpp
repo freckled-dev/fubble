@@ -1,9 +1,10 @@
 #include "module.hpp"
-#include "fubble/rtc/google/asio_signaling_thread.hpp"
-#include "fubble/rtc/google/capture/audio/device.hpp"
-#include "fubble/rtc/google/capture/audio/device_creator.hpp"
-#include "fubble/rtc/google/capture/video/device.hpp"
-#include "fubble/rtc/google/factory.hpp"
+#include <fubble/rtc/google/asio_signaling_thread.hpp>
+#include <fubble/rtc/google/capture/audio/device.hpp>
+#include <fubble/rtc/google/capture/audio/device_creator.hpp>
+#include <fubble/rtc/google/capture/video/device.hpp>
+#include <fubble/rtc/google/factory.hpp>
+#include <fubble/rtc/video_device_factory.hpp>
 
 using namespace rtc::google;
 

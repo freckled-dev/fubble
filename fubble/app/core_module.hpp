@@ -17,6 +17,8 @@ class crash_catcher;
 class FUBBLE_PUBLIC core_module {
 public:
   struct config {
+    enum struct rtc_backend { google, gstreamer };
+    rtc_backend rtc_backend_{rtc_backend::google};
     signaling::client_module::config signaling_;
     matrix::module::config matrix_;
     temporary_room::client_module::config temporary_room_;
@@ -28,17 +30,18 @@ public:
            const bool use_ssl);
   };
   core_module(const config &config_);
-  ~core_module();
+  virtual ~core_module();
 
-  std::shared_ptr<crash_catcher> get_crash_catcher();
-  std::shared_ptr<utils::executor_module> get_utils_executor_module();
-  std::shared_ptr<http::client_module> get_http_module();
-  std::shared_ptr<signaling::client_module> get_signaling_module();
-  std::shared_ptr<matrix::module> get_matrix_module();
-  std::shared_ptr<temporary_room::client_module> get_temporary_room_module();
-  std::shared_ptr<version::client_module> get_version_module();
-  std::shared_ptr<rtc::module> get_rtc_module();
-  std::shared_ptr<session_module> get_session_module();
+  virtual std::shared_ptr<crash_catcher> get_crash_catcher();
+  virtual std::shared_ptr<utils::executor_module> get_utils_executor_module();
+  virtual std::shared_ptr<http::client_module> get_http_module();
+  virtual std::shared_ptr<signaling::client_module> get_signaling_module();
+  virtual std::shared_ptr<matrix::module> get_matrix_module();
+  virtual std::shared_ptr<temporary_room::client_module>
+  get_temporary_room_module();
+  virtual std::shared_ptr<version::client_module> get_version_module();
+  virtual std::shared_ptr<rtc::module> get_rtc_module();
+  virtual std::shared_ptr<session_module> get_session_module();
 
 protected:
   const config config_;
