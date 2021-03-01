@@ -4,6 +4,7 @@
 #include <fubble/rtc/google/capture/video/device.hpp>
 #include <fubble/rtc/google/video_encoder_factory_factory.hpp>
 #include <fubble/rtc/google/video_source.hpp>
+#include <fubble/v4l2_hw_h264/config.hpp>
 
 namespace fubble {
 namespace v4l2_hw_h264 {
@@ -34,7 +35,11 @@ protected:
 class video_encoder_factory_factory
     : public rtc::google::video_encoder_factory_factory {
 public:
+  video_encoder_factory_factory(const config &config_);
   std::unique_ptr<webrtc::VideoEncoderFactory> create() override;
+
+protected:
+  const config config_;
 };
 
 } // namespace v4l2_hw_h264

@@ -68,6 +68,8 @@ public:
 
 class video_encoder_factory : public webrtc::VideoEncoderFactory {
 public:
+  video_encoder_factory(const config &config_) : config_{config_} {}
+
   std::vector<webrtc::SdpVideoFormat> GetSupportedFormats() const override {
     BOOST_LOG_SEV(const_cast<video_encoder_factory *>(this)->logger,
                   logging::severity::debug)
@@ -92,7 +94,7 @@ public:
   CreateVideoEncoder(const webrtc::SdpVideoFormat &format) override {
     BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
     (void)format;
-    return video_encoder::create();
+    return video_encoder::create(config_);
   }
 
   std::unique_ptr<EncoderSelectorInterface>
@@ -103,11 +105,17 @@ public:
     return std::make_unique<encoder_selector>();
   }
 
+protected:
   rtc::logger logger{"video_encoder_factory"};
+  const config config_;
 };
 } // namespace
 
+video_encoder_factory_factory::video_encoder_factory_factory(
+    const config &config_)
+    : config_{config_} {}
+
 std::unique_ptr<webrtc::VideoEncoderFactory>
 video_encoder_factory_factory::create() {
-  return std::make_unique<video_encoder_factory>();
+  return std::make_unique<video_encoder_factory>(config_);
 }

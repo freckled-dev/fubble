@@ -1,5 +1,7 @@
 #include "video_encoder.hpp"
 #include <boost/stacktrace.hpp>
+#include <common_video/h264/h264_bitstream_parser.h>
+#include <common_video/h264/h264_common.h>
 #include <fubble/rtc/logger.hpp>
 #include <modules/video_coding/include/video_codec_interface.h>
 #include <modules/video_coding/include/video_error_codes.h>
@@ -18,7 +20,7 @@ using namespace fubble::v4l2_hw_h264;
 
 namespace {
 #define CLEAR(x) memset(&(x), 0, sizeof(x))
-struct funny {
+struct v4l2_h264_reader {
   struct buffer {
     void *start;
     size_t length;
@@ -29,8 +31,11 @@ struct funny {
     IO_METHOD_USERPTR,
   };
 
-  rtc::logger logger{"video_encoder_funny"};
-  std::string device = "/dev/video0";
+  rtc::logger logger{"v4l2_h264_reader"};
+  const config config_;
+  using data_callback = std::function<void(const void *data, int size)>;
+  data_callback on_data;
+  const std::string &device = config_.path;
   const char *device_c = device.c_str();
   int fd{-1};
   struct buffer *buffers{};
@@ -39,19 +44,18 @@ struct funny {
   io_method io = IO_METHOD_MMAP;
   std::thread read_thread;
   bool run{true};
-  using data_callback = std::function<void(const void *data, int size)>;
-  data_callback on_data;
 
-  funny(data_callback callback) : on_data{callback} {}
+  v4l2_h264_reader(const config &config_, data_callback callback)
+      : config_{config_}, on_data{callback} {}
 
   int xioctl(int fh, unsigned long int request, void *arg) {
-    int r;
+    int result;
 
     do {
-      r = ioctl(fh, request, arg);
-    } while (-1 == r && EINTR == errno);
+      result = ioctl(fh, request, arg);
+    } while (-1 == result && EINTR == errno);
 
-    return r;
+    return result;
   }
   void errno_exit(const char *s) {
     BOOST_LOG_SEV(logger, logging::severity::debug)
@@ -200,10 +204,10 @@ struct funny {
     CLEAR(fmt);
 
     fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-    bool force_format = false;
+    bool force_format = true;
     if (force_format) {
-      fmt.fmt.pix.width = 640;
-      fmt.fmt.pix.height = 480;
+      fmt.fmt.pix.width = config_.width;
+      fmt.fmt.pix.height = config_.height;
       fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_H264;
       fmt.fmt.pix.field = V4L2_FIELD_INTERLACED;
 
@@ -442,6 +446,10 @@ class video_encoder_impl : public video_encoder {
 public:
   webrtc::EncodedImageCallback *callback{};
   webrtc::Clock *const clock_{webrtc::Clock::GetRealTimeClock()};
+  const config config_;
+  std::unique_ptr<v4l2_h264_reader> reader;
+
+  video_encoder_impl(const config &config_) : config_{config_} {}
 
   void SetFecControllerOverride(
       webrtc::FecControllerOverride *fec_controller_override) override {
@@ -451,26 +459,33 @@ public:
 
   int InitEncode(const webrtc::VideoCodec *codec_settings,
                  const VideoEncoder::Settings &settings) override {
+#if 0
+    // TODO
+    codec_settings->startBitrate;
+#endif
     (void)settings;
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << ", codec_settings->width: " << codec_settings->width;
-    auto fun = new funny([this](auto data, auto size) { on_data(data, size); });
+    BOOST_ASSERT(!reader);
+    reader = std::make_unique<v4l2_h264_reader>(
+        config_, [this](auto data, auto size) { on_data(data, size); });
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << ", open_device";
-    fun->open_device();
+    reader->open_device();
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << ", init_device";
-    fun->init_device();
+    reader->init_device();
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << ", start_capturing";
-    fun->start_capturing();
+    reader->start_capturing();
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << ", main_loop";
-    fun->mainloop();
+    reader->mainloop();
     return WEBRTC_VIDEO_CODEC_OK;
   }
 
   void on_data(const void *data, int size) {
+    // TODO here we r using a deprecated method
     webrtc::EncodedImage encoded{
         static_cast<std::uint8_t *>(const_cast<void *>(data)),
         static_cast<std::size_t>(size), static_cast<std::size_t>(size)};
@@ -479,23 +494,37 @@ public:
     codec_info.packetization_mode =
         webrtc::H264PacketizationMode::NonInterleaved;
     codec_info.temporal_idx = webrtc::kNoTemporalIdx;
+    // TODO detect i-frame (intra frame)
+    // https://stackoverflow.com/questions/1957427/detect-mpeg4-h264-i-frame-idr-in-rtp-stream
     auto frameType = webrtc::VideoFrameType::kVideoFrameDelta;
     codec_info.idr_frame = encoded._frameType == frameType;
     codec_info.base_layer_sync = false;
 
-    // In native code, there is DCHECK-related logic for capture_time
-    // and ntp_time. Currently, RWS does not use video frame capture and
-    // encoding, so DCHECK generates an error message in time.
-    // the '-10' value is for the part to prevent this.
-    // it is tempoary measure, but it happens the '-10' will be
-    // removed when this issue fixed
-    int64_t capture_time_ms = clock_->TimeInMilliseconds() - 10;
-    int64_t ntp_capture_time_ms = clock_->CurrentNtpInMilliseconds() - 10;
+    h264_bitstream_parser_.ParseBitstream(rtc::ArrayView<const std::uint8_t>(
+        static_cast<const std::uint8_t *>(data), size));
+    encoded.qp_ = h264_bitstream_parser_.GetLastSliceQp().value_or(-1);
+
+    const std::vector<webrtc::H264::NaluIndex> nalu_indexes =
+        webrtc::H264::FindNaluIndices(static_cast<const std::uint8_t *>(data),
+                                      size);
+
+    if (nalu_indexes.empty()) {
+      // could not find the nal unit in the buffer, so do nothing.
+      BOOST_LOG_SEV(logger, logging::severity::debug)
+          << __FUNCTION__ << "NAL unit length is zero! "
+          << "Frame length : " << size;
+      return;
+    };
+
+    int64_t capture_time_ms = clock_->TimeInMilliseconds();
+    int64_t ntp_capture_time_ms = clock_->CurrentNtpInMilliseconds();
 
     encoded.SetTimestamp(capture_time_ms);
     encoded.SetSpatialIndex(0);
     encoded.ntp_time_ms_ = ntp_capture_time_ms;
     encoded.capture_time_ms_ = capture_time_ms;
+    encoded._encodedWidth = config_.width;
+    encoded._encodedHeight = config_.height;
 
     info.codecSpecific.H264 = codec_info;
     info.codecType = webrtc::kVideoCodecH264;
@@ -505,8 +534,14 @@ public:
           << __FUNCTION__ << ", callback not set";
       return;
     }
-    // TODO here we r using a deprecated method
-    callback->OnEncodedImage(encoded, &info);
+    webrtc::EncodedImageCallback::Result result =
+        callback->OnEncodedImage(encoded, &info);
+    if (result.error ==
+        webrtc::EncodedImageCallback::Result::ERROR_SEND_FAILED) {
+      BOOST_LOG_SEV(logger, logging::severity::error)
+          << __FUNCTION__ << "error in passing EncodedImage, ERROR_SEND_FAILED";
+      // consequences?
+    }
   }
 
   int32_t RegisterEncodeCompleteCallback(
@@ -550,9 +585,10 @@ public:
 
 private:
   rtc::logger logger{"video_encoder_impl"};
+  webrtc::H264BitstreamParser h264_bitstream_parser_;
 };
 } // namespace
 
-std::unique_ptr<video_encoder> video_encoder::create() {
-  return std::make_unique<video_encoder_impl>();
+std::unique_ptr<video_encoder> video_encoder::create(const config &config_) {
+  return std::make_unique<video_encoder_impl>(config_);
 }

@@ -24,8 +24,8 @@ namespace fubble::v4l2_hw_h264 {
 class rtc_module : public rtc::google::module {
 public:
   rtc_module(std::shared_ptr<utils::executor_module> executor_module,
-             const rtc::google::settings rtc_settings)
-      : rtc::google::module(executor_module, rtc_settings) {}
+             const rtc::google::settings rtc_settings, const config &config_)
+      : rtc::google::module(executor_module, rtc_settings), config_{config_} {}
 
   std::shared_ptr<rtc::video_device_factory>
   get_video_device_creator() override {
@@ -38,20 +38,27 @@ public:
   get_video_encoder_factory_factory() override {
     if (!video_encoder_factory_factory_)
       video_encoder_factory_factory_ =
-          std::make_shared<video_encoder_factory_factory>();
+          std::make_shared<video_encoder_factory_factory>(config_);
     return video_encoder_factory_factory_;
   }
+
+protected:
+  const config config_;
 };
 class core_module : public client::core_module {
 public:
-  core_module(const config &config_) : client::core_module(config_) {}
+  core_module(const core_module::config &core_config_,
+              const v4l2_hw_h264::config &encoder_config_)
+      : client::core_module(core_config_), encoder_config_{encoder_config_} {}
 
   std::shared_ptr<rtc::module> get_rtc_module() override {
     if (!rtc_module)
       rtc_module = std::make_shared<v4l2_hw_h264::rtc_module>(
-          get_utils_executor_module(), config_.rtc_);
+          get_utils_executor_module(), config_.rtc_, encoder_config_);
     return rtc_module;
   }
+
+  const v4l2_hw_h264::config encoder_config_;
 };
 } // namespace fubble::v4l2_hw_h264
 #endif
@@ -65,13 +72,16 @@ public:
 #if !BOOST_OS_LINUX
     BOOST_ASSERT(use_v4l2_hw_h264 == false);
     use_v4l2_hw_h264 = false;
-#else
-    BOOST_ASSERT(false);
-    core = std::make_shared<client::core_module>(config_.core);
 #endif
     if (use_v4l2_hw_h264) {
 #if BOOST_OS_LINUX
-      core = std::make_shared<v4l2_hw_h264::core_module>(config_.core);
+      v4l2_hw_h264::config v4l2_hw_h264_config;
+      v4l2_hw_h264_config.frame_rate = 30;
+      v4l2_hw_h264_config.width = 1920;
+      v4l2_hw_h264_config.height = 1080;
+      v4l2_hw_h264_config.path = "/dev/video1";
+      core = std::make_shared<v4l2_hw_h264::core_module>(config_.core,
+                                                         v4l2_hw_h264_config);
 #endif
     } else {
       core = std::make_shared<client::core_module>(config_.core);
