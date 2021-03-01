@@ -106,3 +106,8 @@ public:
   rtc::logger logger{"video_encoder_factory"};
 };
 } // namespace
+
+std::unique_ptr<webrtc::VideoEncoderFactory>
+video_encoder_factory_factory::create() {
+  return std::make_unique<video_encoder_factory>();
+}

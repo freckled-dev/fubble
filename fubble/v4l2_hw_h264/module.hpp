@@ -2,6 +2,7 @@
 #define UUID_877B0E32_D5DA_4ECF_9C25_32E4DB237421
 
 #include <fubble/rtc/google/capture/video/device.hpp>
+#include <fubble/rtc/google/video_encoder_factory_factory.hpp>
 #include <fubble/rtc/google/video_source.hpp>
 
 namespace fubble {
@@ -28,6 +29,12 @@ public:
 protected:
   const std::unique_ptr<rtc::video_device> noop;
   std::shared_ptr<video_source> source;
+};
+
+class video_encoder_factory_factory
+    : public rtc::google::video_encoder_factory_factory {
+public:
+  std::unique_ptr<webrtc::VideoEncoderFactory> create() override;
 };
 
 } // namespace v4l2_hw_h264

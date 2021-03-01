@@ -14,7 +14,7 @@ extern "C" {
 #include <sys/types.h>
 }
 
-using namespace rtc::google;
+using namespace fubble::v4l2_hw_h264;
 
 namespace {
 #define CLEAR(x) memset(&(x), 0, sizeof(x))
@@ -30,7 +30,7 @@ struct funny {
   };
 
   rtc::logger logger{"video_encoder_funny"};
-  std::string device = "/dev/video1";
+  std::string device = "/dev/video0";
   const char *device_c = device.c_str();
   int fd{-1};
   struct buffer *buffers{};

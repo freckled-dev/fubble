@@ -1,5 +1,5 @@
 google_v4l2_hw_h264 = library('v4l2_hw_h264',
-  ['module.cpp'],
+  ['module.cpp', 'video_encoder.cpp'],
   dependencies: [webrtc_google_peer_dep],
   )
 google_v4l2_hw_h264_dep = declare_dependency(

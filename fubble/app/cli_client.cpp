@@ -18,8 +18,7 @@
 
 using namespace fubble;
 
-namespace {
-namespace v4l2_hw_h264 {
+namespace fubble ::v4l2_hw_h264 {
 class rtc_module : public rtc::google::module {
 public:
   rtc_module(std::shared_ptr<utils::executor_module> executor_module,
@@ -29,9 +28,16 @@ public:
   std::shared_ptr<rtc::video_device_factory>
   get_video_device_creator() override {
     if (!video_device_creator)
-      video_device_creator =
-          std::make_shared<fubble::v4l2_hw_h264::video_device_factory>();
+      video_device_creator = std::make_shared<video_device_factory>();
     return video_device_creator;
+  }
+
+  std::shared_ptr<rtc::google::video_encoder_factory_factory>
+  get_video_encoder_factory_factory() override {
+    if (!video_encoder_factory_factory_)
+      video_encoder_factory_factory_ =
+          std::make_shared<video_encoder_factory_factory>();
+    return video_encoder_factory_factory_;
   }
 };
 class core_module : public client::core_module {
@@ -45,8 +51,9 @@ public:
     return rtc_module;
   }
 };
-} // namespace v4l2_hw_h264
+} // namespace fubble::v4l2_hw_h264
 
+namespace {
 class cli_client_impl : public fubble::cli_client {
 public:
   cli_client_impl(const config &config_) : config_{config_} {

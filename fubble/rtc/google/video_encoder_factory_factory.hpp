@@ -7,7 +7,8 @@ namespace rtc {
 namespace google {
 class video_encoder_factory_factory {
 public:
-  std::unique_ptr<webrtc::VideoEncoderFactory> create();
+  virtual ~video_encoder_factory_factory() = default;
+  virtual std::unique_ptr<webrtc::VideoEncoderFactory> create();
 };
 } // namespace google
 } // namespace rtc
