@@ -19,6 +19,8 @@ extern "C" {
 using namespace fubble::v4l2_hw_h264;
 
 namespace {
+// mostly copied from v4l2 capture example
+// https://www.kernel.org/doc/html/v4.9/media/uapi/v4l/capture.c.html
 #define CLEAR(x) memset(&(x), 0, sizeof(x))
 struct v4l2_h264_reader {
   struct buffer {
@@ -98,7 +100,7 @@ struct v4l2_h264_reader {
                 "%s does not support "
                 "memory mappingn",
                 device_c);
-        exit(EXIT_FAILURE);
+        std::exit(EXIT_FAILURE);
       } else {
         errno_exit("VIDIOC_REQBUFS");
       }
@@ -106,14 +108,14 @@ struct v4l2_h264_reader {
 
     if (req.count < 2) {
       fprintf(stderr, "Insufficient buffer memory on %s\\n", device_c);
-      exit(EXIT_FAILURE);
+      std::exit(EXIT_FAILURE);
     }
 
     buffers = static_cast<buffer *>(calloc(req.count, sizeof(*buffers)));
 
     if (!buffers) {
       fprintf(stderr, "Out of memory\\n");
-      exit(EXIT_FAILURE);
+      std::exit(EXIT_FAILURE);
     }
 
     for (n_buffers = 0; n_buffers < req.count; ++n_buffers) {
@@ -149,7 +151,7 @@ struct v4l2_h264_reader {
     if (-1 == xioctl(fd, VIDIOC_QUERYCAP, &cap)) {
       if (EINVAL == errno) {
         fprintf(stderr, "%s is no V4L2 device\\n", device_c);
-        exit(EXIT_FAILURE);
+        std::exit(EXIT_FAILURE);
       } else {
         errno_exit("VIDIOC_QUERYCAP");
       }
@@ -157,14 +159,14 @@ struct v4l2_h264_reader {
 
     if (!(cap.capabilities & V4L2_CAP_VIDEO_CAPTURE)) {
       fprintf(stderr, "%s is no video capture device\\n", device_c);
-      exit(EXIT_FAILURE);
+      std::exit(EXIT_FAILURE);
     }
 
     switch (io) {
     case IO_METHOD_READ:
       if (!(cap.capabilities & V4L2_CAP_READWRITE)) {
         fprintf(stderr, "%s does not support read i/o\\n", device_c);
-        exit(EXIT_FAILURE);
+        std::exit(EXIT_FAILURE);
       }
       break;
 
@@ -172,7 +174,7 @@ struct v4l2_h264_reader {
     case IO_METHOD_USERPTR:
       if (!(cap.capabilities & V4L2_CAP_STREAMING)) {
         fprintf(stderr, "%s does not support streaming i/o\\n", device_c);
-        exit(EXIT_FAILURE);
+        std::exit(EXIT_FAILURE);
       }
       break;
     }
@@ -249,7 +251,7 @@ struct v4l2_h264_reader {
 
     if (!buffers) {
       fprintf(stderr, "Out of memory\\n");
-      exit(EXIT_FAILURE);
+      std::exit(EXIT_FAILURE);
     }
 
     buffers[0].length = buffer_size;
@@ -257,7 +259,7 @@ struct v4l2_h264_reader {
 
     if (!buffers[0].start) {
       fprintf(stderr, "Out of memory\\n");
-      exit(EXIT_FAILURE);
+      std::exit(EXIT_FAILURE);
     }
   }
   void start_capturing() {
@@ -330,7 +332,7 @@ struct v4l2_h264_reader {
 
         if (0 == result) {
           fprintf(stderr, "select timeout\\n");
-          exit(EXIT_FAILURE);
+          std::exit(EXIT_FAILURE);
         }
 
         read_frame();
