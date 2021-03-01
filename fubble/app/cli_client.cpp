@@ -1,5 +1,6 @@
 #include "cli_client.hpp"
 #include <boost/asio/io_context.hpp>
+#include <boost/predef/os/linux.h>
 #include <fmt/format.h>
 #include <fubble/client/joiner.hpp>
 #include <fubble/client/leaver.hpp>
@@ -18,7 +19,8 @@
 
 using namespace fubble;
 
-namespace fubble ::v4l2_hw_h264 {
+#if BOOST_OS_LINUX
+namespace fubble::v4l2_hw_h264 {
 class rtc_module : public rtc::google::module {
 public:
   rtc_module(std::shared_ptr<utils::executor_module> executor_module,
@@ -52,16 +54,28 @@ public:
   }
 };
 } // namespace fubble::v4l2_hw_h264
+#endif
 
 namespace {
 class cli_client_impl : public fubble::cli_client {
 public:
   cli_client_impl(const config &config_) : config_{config_} {
     // core
-    if (config_.use_v4l2_hw_h264)
+    bool use_v4l2_hw_h264 = config_.use_v4l2_hw_h264;
+#if !BOOST_OS_LINUX
+    BOOST_ASSERT(use_v4l2_hw_h264 == false);
+    use_v4l2_hw_h264 = false;
+#else
+    BOOST_ASSERT(false);
+    core = std::make_shared<client::core_module>(config_.core);
+#endif
+    if (config_.use_v4l2_hw_h264) {
+#if BOOST_OS_LINUX
       core = std::make_shared<v4l2_hw_h264::core_module>(config_.core);
-    else
+#endif
+    } else {
       core = std::make_shared<client::core_module>(config_.core);
+    }
 
     // audio
     auto client_audio_module = std::make_shared<client::audio_module>(
