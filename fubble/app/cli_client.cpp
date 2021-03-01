@@ -69,7 +69,7 @@ public:
     BOOST_ASSERT(false);
     core = std::make_shared<client::core_module>(config_.core);
 #endif
-    if (config_.use_v4l2_hw_h264) {
+    if (use_v4l2_hw_h264) {
 #if BOOST_OS_LINUX
       core = std::make_shared<v4l2_hw_h264::core_module>(config_.core);
 #endif
