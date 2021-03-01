@@ -438,7 +438,53 @@ struct v4l2_h264_reader {
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << ", size: " << size;
 #endif
+    if (!run)
+      return;
     on_data(p, size);
+  }
+
+  void stop_capturing(void) {
+    run = false;
+    if (read_thread.joinable())
+      read_thread.join();
+
+    switch (io) {
+    case IO_METHOD_READ:
+      /* Nothing to do. */
+      break;
+
+    case IO_METHOD_MMAP:
+    case IO_METHOD_USERPTR:
+      enum v4l2_buf_type type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+      if (-1 == xioctl(fd, VIDIOC_STREAMOFF, &type))
+        errno_exit("VIDIOC_STREAMOFF");
+      break;
+    }
+  }
+
+  void uninit_device() {
+    switch (io) {
+    case IO_METHOD_READ:
+      free(buffers[0].start);
+      break;
+    case IO_METHOD_MMAP:
+      for (unsigned int index = 0; index < n_buffers; ++index)
+        if (-1 == munmap(buffers[index].start, buffers[index].length))
+          errno_exit("munmap");
+      break;
+    case IO_METHOD_USERPTR:
+      for (unsigned int index = 0; index < n_buffers; ++index)
+        free(buffers[index].start);
+      break;
+    }
+
+    free(buffers);
+  }
+
+  void close_device() {
+    if (-1 == close(fd))
+      errno_exit("close");
+    fd = -1;
   }
 };
 
@@ -553,6 +599,10 @@ public:
 
   int32_t Release() override {
     BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
+    reader->stop_capturing();
+    reader->uninit_device();
+    reader->close_device();
+    reader.reset();
     return WEBRTC_VIDEO_CODEC_OK;
   }
 
