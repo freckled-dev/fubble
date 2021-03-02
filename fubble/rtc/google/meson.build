@@ -19,7 +19,7 @@ webrtc_google_peer = library('webrtc_google_peer',
     ],
   override_options: ['cpp_std=c++14'],
   dependencies: [webrtc_peer_dep, utils_dep, fmt_dep, google_webrtc_dep,
-    rpi_hw_video_encoder_dep],
+    ],
   install: true
   )
 webrtc_google_peer_dep = declare_dependency(
