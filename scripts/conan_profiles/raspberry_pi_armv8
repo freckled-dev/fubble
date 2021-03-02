@@ -26,7 +26,7 @@ boost:without_fiber=True
 pkgconf/1.7.3
 
 [env]
-PATH=[$COMPILER/bin]
+#PATH=[$COMPILER/bin]
 CC=clang
 CXX=clang++
 LD=$COMPILER/bin/aarch64-suse-linux-ld

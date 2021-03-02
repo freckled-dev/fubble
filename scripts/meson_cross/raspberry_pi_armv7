@@ -8,16 +8,13 @@ strip = '__STRIP__'
 c_args = [
   # '-fsanitize=address,undefined',
   '--sysroot', '__SYSROOT__',
-  '-isystem', '__SYSROOT__/opt/vc/include',
+  #'-isystem', '__SYSROOT__/opt/vc/include',
   '-target', 'arm-linux-gnueabihf',
   ]
 cpp_args = [
   # '-fsanitize=address,undefined',
   '--sysroot', '__SYSROOT__',
-  #'-Wno-gnu-zero-variadic-macro-arguments',
-  #'-stdlib=libstdc++',
-  #'-isystem__SYSROOT__/usr/include/arm-linux-gnueabihf/bits/',
-  '-isystem', '__SYSROOT__/opt/vc/include',
+  #'-isystem', '__SYSROOT__/opt/vc/include',
   '-target', 'arm-linux-gnueabihf',
   '-Wno-gnu-zero-variadic-macro-arguments',
   ]
@@ -25,16 +22,6 @@ c_link_args = [
   # '-fsanitize=address,undefined',
   '--sysroot', '__SYSROOT__',
   '-target', 'arm-linux-gnueabihf',
-
-  '-L__SYSROOT__/opt/vc/lib',
-  '-lmmal_core',
-  '-lmmal_vc_client',
-  '-lmmal_util',
-  '-lmmal_components',
-  '-lmmal',
-  '-lvcos',
-  '-lbcm_host',
-  '-lvchiq_arm',
   ]
 cpp_link_args = [
   # '-fsanitize=address,undefined',
@@ -44,16 +31,6 @@ cpp_link_args = [
   '-Wl,-rpath=/lib/arm-linux-gnueabihf',
   '-latomic',
   '-target', 'arm-linux-gnueabihf',
-
-  '-L__SYSROOT__/opt/vc/lib',
-  '-lmmal_core',
-  '-lmmal_vc_client',
-  '-lmmal_util',
-  '-lmmal_components',
-  '-lmmal',
-  '-lvcos',
-  '-lbcm_host',
-  '-lvchiq_arm',
   ]
 
 [properties]
@@ -61,9 +38,7 @@ cpp_link_args = [
 sys_root = '__SYSROOT__'
 pkg_config_libdir = [
   #'__SYSROOT__/lib/arm-linux-gnueabihf/pkgconfig',
-  #'__SYSROOT__/usr/lib/arm-linux-gnueabihf/pkgconfig',
   #'__SYSROOT__/usr/lib/pkgconfig',
-  #'__SYSROOT__/usr/share/pkgconfig',
   '__SYSROOT__/usr/share/pkgconfig',
   '__SYSROOT__/usr/lib/arm-linux-gnueabihf/pkgconfig',
   ]
