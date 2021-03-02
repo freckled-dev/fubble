@@ -19,7 +19,8 @@ webrtc_google_peer = library('webrtc_google_peer',
     'video_encoder_factory_factory.cpp',
     ],
   override_options: ['cpp_std=c++14'],
-  dependencies: [webrtc_peer_dep, utils_dep, fmt_dep, google_webrtc_dep],
+  dependencies: [webrtc_peer_dep, utils_dep, fmt_dep, google_webrtc_dep,
+    ],
   install: true
   )
 webrtc_google_peer_dep = declare_dependency(

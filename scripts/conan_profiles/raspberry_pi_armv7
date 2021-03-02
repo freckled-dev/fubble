@@ -1,3 +1,8 @@
+# https://docs.conan.io/en/latest/reference/profiles.html#variable-declaration
+#COMPILER=$PROFILE_DIR/../../../fubble_build/compiler
+#SYSROOT=$PROFILE_DIR/../../../fubble_build/sysroot
+#COMPILER=/usr
+#SYSROOT=/run/media/mlanner/rootfs
 SYSROOT=$PROFILE_DIR/../../../rpi-sysroot-armv7
 
 [settings]
@@ -16,6 +21,7 @@ boost:without_coroutine=True
 boost:without_graph_parallel=True
 boost:without_mpi=True
 boost:without_fiber=True
+boost:without_iostreams=True
 boost:zlib=False
 boost:bzip2=False
 
@@ -23,6 +29,7 @@ boost:bzip2=False
 pkgconf/1.7.3
 
 [env]
+PATH=[$COMPILER/bin]
 CC=clang
 CXX=clang++
 #LD=$COMPILER/bin/aarch64-suse-linux-ld
