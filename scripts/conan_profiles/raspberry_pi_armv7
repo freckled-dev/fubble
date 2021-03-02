@@ -1,0 +1,37 @@
+SYSROOT=$PROFILE_DIR/../../../rpi-sysroot-armv7
+
+[settings]
+os=Linux
+arch=armv7
+compiler=clang
+compiler.version=11
+compiler.libcxx=libstdc++11
+build_type=RelWithDebInfo
+
+[options]
+fubble:enable_ui=False
+fubble:meson_cross_file=scripts/meson_cross/raspberry_pi_armv7
+boost:without_context=True
+boost:without_coroutine=True
+boost:without_graph_parallel=True
+boost:without_mpi=True
+boost:without_fiber=True
+boost:zlib=False
+boost:bzip2=False
+
+[build_requires]
+pkgconf/1.7.3
+
+[env]
+CC=clang
+CXX=clang++
+#LD=$COMPILER/bin/aarch64-suse-linux-ld
+AR=llvm-ar
+#AS=$COMPILER/bin/aarch64-suse-linux-as
+STRIP=llvm-strip
+RANLIB=llvm-ranlib
+SYSROOT=$SYSROOT
+CXXFLAGS=--sysroot=$SYSROOT -target arm-linux-gnueabihf
+CFLAGS=--sysroot=$SYSROOT -target arm-linux-gnueabihf
+LDFLAGS=--sysroot=$SYSROOT -target arm-linux-gnueabihf
+

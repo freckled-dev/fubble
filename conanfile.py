@@ -1,4 +1,5 @@
 from conans import ConanFile, Meson, tools
+from conan.tools.meson import MesonToolchain
 from six import StringIO
 from conans.errors import ConanInvalidConfiguration
 from conans.tools import os_info
@@ -174,8 +175,10 @@ class FubbleConan(ConanFile):
                     strict=False)
                 self.output.info("cross_file %s" % cross_file_copy)
                 meson_args += ['--cross-file', cross_file_copy]
+
             # meson_args += ['--cross-file', os.path.join(self.install_folder, 'conan_meson_cross.ini')]
 
+            self.output.info("pkg_config_paths: %s" % pkg_config_paths)
             meson.configure( build_folder="meson", defs=meson_options,
                     args=meson_args,
                     pkg_config_paths=pkg_config_paths

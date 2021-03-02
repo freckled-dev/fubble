@@ -101,7 +101,7 @@ if not args.skip_install:
     if args.use_asan:
         install_args += ['-o', 'fubble:sanatize=True']
     subprocess.run(install_args + [paths.source_dir],
-        check=False # may fail, due to instability of bintray
+        check=True
         )
 
 if not args.skip_build:
