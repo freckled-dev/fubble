@@ -16,13 +16,12 @@ cpp_args = [
   '-target', 'arm-linux-gnueabihf',
   #'-Wno-gnu-zero-variadic-macro-arguments',
   #'-stdlib=libstdc++',
-  '-isystem=/usr/include'
+  #'-isystem__SYSROOT__/usr/include/arm-linux-gnueabihf/bits/',
   ]
 c_link_args = [
   # '-fsanitize=address,undefined',
   '--sysroot', '__SYSROOT__',
   '-target', 'arm-linux-gnueabihf',
-  '-isystem=/usr/include'
   ]
 cpp_link_args = [
   # '-fsanitize=address,undefined',
