@@ -18,7 +18,7 @@ public:
     client::audio_module::config audio;
     client::audio_settings_module::config audio_settings;
     client::video_module::config video;
-    bool use_v4l2_hw_h264{true};
+    bool use_v4l2_hw_h264{false};
   };
   static std::unique_ptr<cli_client> create(const config &config_);
   virtual ~cli_client() = default;

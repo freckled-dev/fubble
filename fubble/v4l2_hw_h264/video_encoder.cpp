@@ -151,6 +151,8 @@ struct v4l2_h264_reader {
     if (-1 == xioctl(fd, VIDIOC_QUERYCAP, &cap)) {
       if (EINVAL == errno) {
         fprintf(stderr, "%s is no V4L2 device\\n", device_c);
+        BOOST_LOG_SEV(logger, logging::severity::error)
+            << __FUNCTION__ << device << " is no v4l2 device.";
         std::exit(EXIT_FAILURE);
       } else {
         errno_exit("VIDIOC_QUERYCAP");
@@ -158,14 +160,18 @@ struct v4l2_h264_reader {
     }
 
     if (!(cap.capabilities & V4L2_CAP_VIDEO_CAPTURE)) {
-      fprintf(stderr, "%s is no video capture device\\n", device_c);
+      BOOST_LOG_SEV(logger, logging::severity::error)
+          << __FUNCTION__ << device
+          << " is no video capture device. cap.capabilities & "
+             "V4L2_CAP_VIDEO_CAPTURE";
       std::exit(EXIT_FAILURE);
     }
 
     switch (io) {
     case IO_METHOD_READ:
       if (!(cap.capabilities & V4L2_CAP_READWRITE)) {
-        fprintf(stderr, "%s does not support read i/o\\n", device_c);
+        BOOST_LOG_SEV(logger, logging::severity::error)
+            << __FUNCTION__ << device << " does not support read i/o";
         std::exit(EXIT_FAILURE);
       }
       break;
@@ -173,7 +179,8 @@ struct v4l2_h264_reader {
     case IO_METHOD_MMAP:
     case IO_METHOD_USERPTR:
       if (!(cap.capabilities & V4L2_CAP_STREAMING)) {
-        fprintf(stderr, "%s does not support streaming i/o\\n", device_c);
+        BOOST_LOG_SEV(logger, logging::severity::error)
+            << __FUNCTION__ << device << " does not support streaming i/o";
         std::exit(EXIT_FAILURE);
       }
       break;

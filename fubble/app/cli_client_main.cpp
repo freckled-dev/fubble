@@ -6,7 +6,7 @@
 
 int main(int, char *[]) {
   client::log_module::config log_config;
-#if 0
+#if 1
   log_config.webrtc = true;
   log_config.severity = logging::trace;
 #endif
@@ -14,6 +14,7 @@ int main(int, char *[]) {
   logging::logger logger{"main"};
   fubble::cli_client::config config;
   config.send_audio = false;
+  config.use_v4l2_hw_h264 = true;
   auto &session_config = config.core.session_;
   session_config.receive_audio = session_config.receive_video = false;
   auto client = fubble::cli_client::create(config);
