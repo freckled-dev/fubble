@@ -3,7 +3,6 @@
 #SYSROOT=$PROFILE_DIR/../../../fubble_build/sysroot
 #COMPILER=/usr
 #SYSROOT=/run/media/mlanner/rootfs
-SYSROOT=$PROFILE_DIR/../../../rpi-sysroot-armv7
 
 [settings]
 os=Linux
@@ -27,18 +26,7 @@ boost:bzip2=False
 
 [build_requires]
 pkgconf/1.7.3
+linux_armv7/1.0
 
 [env]
-#PATH=[$COMPILER/bin]
-CC=clang
-CXX=clang++
-#LD=$COMPILER/bin/aarch64-suse-linux-ld
-AR=llvm-ar
-#AS=$COMPILER/bin/aarch64-suse-linux-as
-STRIP=llvm-strip
-RANLIB=llvm-ranlib
-SYSROOT=$SYSROOT
-CXXFLAGS=--sysroot=$SYSROOT -target arm-linux-gnueabihf
-CFLAGS=--sysroot=$SYSROOT -target arm-linux-gnueabihf
-LDFLAGS=--sysroot=$SYSROOT -target arm-linux-gnueabihf
 

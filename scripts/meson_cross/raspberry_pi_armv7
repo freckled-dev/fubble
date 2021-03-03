@@ -38,7 +38,7 @@ cpp_link_args = [
 sys_root = '__SYSROOT__'
 pkg_config_libdir = [
   #'__SYSROOT__/lib/arm-linux-gnueabihf/pkgconfig',
-  #'__SYSROOT__/usr/lib/pkgconfig',
+  '__SYSROOT__/usr/lib/pkgconfig',
   '__SYSROOT__/usr/share/pkgconfig',
   '__SYSROOT__/usr/lib/arm-linux-gnueabihf/pkgconfig',
   ]

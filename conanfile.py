@@ -176,6 +176,10 @@ class FubbleConan(ConanFile):
                 self.output.info("cross_file %s" % cross_file_copy)
                 meson_args += ['--cross-file', cross_file_copy]
 
+                # this is a very dirty hack. for pkgconf. https://github.com/mesonbuild/meson/issues/8448
+                self.run('ln -fs /home $SYSROOT')
+                self.run('ln -fs /root $SYSROOT')
+
             # meson_args += ['--cross-file', os.path.join(self.install_folder, 'conan_meson_cross.ini')]
 
             self.output.info("pkg_config_paths: %s" % pkg_config_paths)
