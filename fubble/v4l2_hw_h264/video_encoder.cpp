@@ -48,7 +48,9 @@ struct v4l2_h264_reader {
   bool run{true};
 
   v4l2_h264_reader(const config &config_, data_callback callback)
-      : config_{config_}, on_data{callback} {}
+      : config_{config_}, on_data{callback} {
+    BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
+  }
 
   int xioctl(int fh, unsigned long int request, void *arg) {
     int result;
@@ -67,10 +69,12 @@ struct v4l2_h264_reader {
     std::exit(1);
   }
   void open_device() {
+    BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
     struct stat st;
     if (-1 == stat(device_c, &st)) {
-      fprintf(stderr, "Cannot identify '%s': %d, %s\\n", device_c, errno,
-              strerror(errno));
+      BOOST_LOG_SEV(logger, logging::severity::debug)
+          << __FUNCTION__ << "Cannot identify '" << device
+          << "', error: " << errno << ", strerror: " << strerror(errno);
       std::exit(1);
     }
     if (!S_ISCHR(st.st_mode)) {
@@ -86,6 +90,7 @@ struct v4l2_h264_reader {
   }
 
   void init_mmap() {
+    BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
     struct v4l2_requestbuffers req;
 
     CLEAR(req);
@@ -142,6 +147,7 @@ struct v4l2_h264_reader {
   }
 
   void init_device() {
+    BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
     struct v4l2_capability cap;
     struct v4l2_cropcap cropcap;
     struct v4l2_crop crop;
@@ -213,7 +219,7 @@ struct v4l2_h264_reader {
     CLEAR(fmt);
 
     fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-    bool force_format = true;
+    bool force_format = false;
     if (force_format) {
       fmt.fmt.pix.width = config_.width;
       fmt.fmt.pix.height = config_.height;
@@ -254,6 +260,7 @@ struct v4l2_h264_reader {
     }
   }
   void init_read(unsigned int buffer_size) {
+    BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
     buffers = static_cast<buffer *>(calloc(1, sizeof(*buffers)));
 
     if (!buffers) {
@@ -270,9 +277,9 @@ struct v4l2_h264_reader {
     }
   }
   void start_capturing() {
+    BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
     unsigned int i;
     enum v4l2_buf_type type;
-    BOOST_ASSERT(io == IO_METHOD_MMAP);
 
     switch (io) {
     case IO_METHOD_READ:
@@ -317,6 +324,15 @@ struct v4l2_h264_reader {
     }
   }
   void mainloop() {
+    BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
+#if 0
+    if (run) {
+      BOOST_LOG_SEV(logger, logging::severity::warning)
+          << __FUNCTION__ << ", already running";
+      return;
+    }
+    run = true;
+#endif
     read_thread = std::thread([this] {
       while (run) {
         fd_set fds;
@@ -336,10 +352,10 @@ struct v4l2_h264_reader {
             continue;
           errno_exit("select");
         }
-
         if (0 == result) {
-          fprintf(stderr, "select timeout\\n");
-          std::exit(EXIT_FAILURE);
+          BOOST_LOG_SEV(logger, logging::severity::error)
+              << __FUNCTION__ << "select timeout";
+          continue;
         }
 
         read_frame();
@@ -348,13 +364,12 @@ struct v4l2_h264_reader {
   }
 
   int read_frame() {
-#if 0
+#if 1
     BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
 #endif
     struct v4l2_buffer buf;
     unsigned int i;
 
-    BOOST_ASSERT(io == IO_METHOD_MMAP);
     switch (io) {
     case IO_METHOD_READ:
       if (-1 == read(fd, buffers[0].start, buffers[0].length)) {
@@ -443,7 +458,7 @@ struct v4l2_h264_reader {
   }
 
   void process_image(const void *p, int size) {
-#if 0
+#if 1
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << ", size: " << size;
 #endif
@@ -472,6 +487,7 @@ struct v4l2_h264_reader {
   }
 
   void uninit_device() {
+    BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
     switch (io) {
     case IO_METHOD_READ:
       free(buffers[0].start);
@@ -491,9 +507,36 @@ struct v4l2_h264_reader {
   }
 
   void close_device() {
+    BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
     if (-1 == close(fd))
       errno_exit("close");
     fd = -1;
+  }
+
+  void set_bitrate(int bitrate) {
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << __FUNCTION__ << ", bitrate: " << bitrate;
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << __FUNCTION__ << ", no fun";
+    return;
+
+    struct v4l2_control control;
+    CLEAR(control);
+    control.id = V4L2_CID_MPEG_VIDEO_BITRATE_MODE;
+    control.value = V4L2_MPEG_VIDEO_BITRATE_MODE_CBR;
+    if (-1 == xioctl(fd, VIDIOC_S_CTRL, &control))
+      errno_exit("VIDIOC_S_CTRL");
+
+    CLEAR(control);
+    control.id = V4L2_CID_MPEG_VIDEO_BITRATE;
+    control.value = bitrate;
+    if (-1 == xioctl(fd, VIDIOC_S_CTRL, &control))
+      errno_exit("VIDIOC_S_CTRL");
+
+    // V4L2_CID_MPEG_VIDEO_BITRATE
+    // V4L2_CID_MPEG_VIDEO_BITRATE_MODE
+    // V4L2_MPEG_VIDEO_BITRATE_MODE_VBR // variable
+    // V4L2_MPEG_VIDEO_BITRATE_MODE_CBR // constant
   }
 };
 
@@ -514,10 +557,6 @@ public:
 
   int InitEncode(const webrtc::VideoCodec *codec_settings,
                  const VideoEncoder::Settings &settings) override {
-#if 0
-    // TODO
-    codec_settings->startBitrate;
-#endif
     (void)settings;
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << ", codec_settings->width: " << codec_settings->width;
@@ -531,15 +570,22 @@ public:
         << __FUNCTION__ << ", init_device";
     reader->init_device();
     BOOST_LOG_SEV(logger, logging::severity::debug)
+        << __FUNCTION__ << ", set_bitrate";
+    reader->set_bitrate(codec_settings->startBitrate);
+    BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << ", start_capturing";
     reader->start_capturing();
     BOOST_LOG_SEV(logger, logging::severity::debug)
-        << __FUNCTION__ << ", main_loop";
+        << __FUNCTION__ << ", mainloop";
     reader->mainloop();
     return WEBRTC_VIDEO_CODEC_OK;
   }
 
   void on_data(const void *data, int size) {
+#if 0
+    BOOST_LOG_SEV(logger, logging::severity::trace)
+        << __FUNCTION__ << ", size:" << size;
+#endif
     // TODO here we r using a deprecated method
     webrtc::EncodedImage encoded{
         static_cast<std::uint8_t *>(const_cast<void *>(data)),
@@ -594,7 +640,8 @@ public:
     if (result.error ==
         webrtc::EncodedImageCallback::Result::ERROR_SEND_FAILED) {
       BOOST_LOG_SEV(logger, logging::severity::error)
-          << __FUNCTION__ << "error in passing EncodedImage, ERROR_SEND_FAILED";
+          << __FUNCTION__
+          << ", error in passing EncodedImage, ERROR_SEND_FAILED";
       // consequences?
     }
   }
@@ -621,6 +668,9 @@ public:
     (void)frame;
     (void)frame_types;
     BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
+#if 0
+     reader->mainloop();
+#endif
     return WEBRTC_VIDEO_CODEC_OK;
   }
 

@@ -8,7 +8,7 @@ int main(int, char *[]) {
   client::log_module::config log_config;
 #if 1
   log_config.webrtc = true;
-  log_config.severity = logging::trace;
+  log_config.severity = logging::debug;
 #endif
   client::log_module log_module_{log_config};
   logging::logger logger{"main"};
