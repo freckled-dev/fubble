@@ -51,7 +51,7 @@ raspivid -t 0 -h 720 -w 1080 -fps 50 -b 10000000 -o - | gst-launch-1.0 fdsrc ! h
 
 gst-launch-1.0 tcpclientsrc host=192.168.0.18 port=5000  ! gdpdepay !  rtph264depay !  vaapih264dec low-latency=true ! fpsdisplaysink sync=false
 # use avdec_h264 for slower software decoder. has higher latency
-# instead of fpsdisplaysink you may want to use "videoconvert !s autovideosink"
+# instead of fpsdisplaysink you may want to use "videoconvert ! autovideosink"
 # use "udpsrc port=1234" if the sender uses udp
 ```
 

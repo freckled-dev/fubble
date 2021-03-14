@@ -219,7 +219,7 @@ struct v4l2_h264_reader {
     CLEAR(fmt);
 
     fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-    bool force_format = false;
+    bool force_format = true;
     if (force_format) {
       fmt.fmt.pix.width = config_.width;
       fmt.fmt.pix.height = config_.height;
@@ -364,7 +364,7 @@ struct v4l2_h264_reader {
   }
 
   int read_frame() {
-#if 1
+#if 0
     BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
 #endif
     struct v4l2_buffer buf;
@@ -458,7 +458,7 @@ struct v4l2_h264_reader {
   }
 
   void process_image(const void *p, int size) {
-#if 1
+#if 0
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << ", size: " << size;
 #endif
@@ -516,9 +516,6 @@ struct v4l2_h264_reader {
   void set_bitrate(int bitrate) {
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << ", bitrate: " << bitrate;
-    BOOST_LOG_SEV(logger, logging::severity::debug)
-        << __FUNCTION__ << ", no fun";
-    return;
 
     struct v4l2_control control;
     CLEAR(control);
@@ -581,6 +578,33 @@ public:
     return WEBRTC_VIDEO_CODEC_OK;
   }
 
+  bool isH264iFrame(const std::uint8_t *paket) {
+    // https://stackoverflow.com/questions/1957427/detect-mpeg4-h264-i-frame-idr-in-rtp-stream
+    int RTPHeaderBytes = 4;
+
+    int fragment_type = paket[RTPHeaderBytes + 0] & 0x1F;
+    int nal_type = paket[RTPHeaderBytes + 1] & 0x1F;
+    int start_bit = paket[RTPHeaderBytes + 1] & 0x80;
+
+    bool result{};
+    if (((fragment_type == 28 || fragment_type == 29) && nal_type == 5 &&
+         start_bit == 128) ||
+        fragment_type == 5) {
+      result = true;
+    }
+
+#if 0
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << __FUNCTION__ << std::hex << ", " << int(paket[0]) << ", "
+        << int(paket[1]) << ", " << int(paket[2]) << ", " << int(paket[3])
+        << ", " << int(paket[4]) << ", " << int(paket[5]) << ", "
+        << int(paket[6]) << ", " << int(paket[7]) << ", " << int(paket[8])
+        << ", " << int(paket[9]) << std::dec << ", result: " << result;
+#endif
+
+    return result;
+  }
+
   void on_data(const void *data, int size) {
 #if 0
     BOOST_LOG_SEV(logger, logging::severity::trace)
@@ -592,12 +616,16 @@ public:
         static_cast<std::size_t>(size), static_cast<std::size_t>(size)};
     webrtc::CodecSpecificInfo info;
     webrtc::CodecSpecificInfoH264 codec_info;
+    webrtc::RTPHeaderExtension;
     codec_info.packetization_mode =
         webrtc::H264PacketizationMode::NonInterleaved;
     codec_info.temporal_idx = webrtc::kNoTemporalIdx;
-    // TODO detect i-frame (intra frame)
-    // https://stackoverflow.com/questions/1957427/detect-mpeg4-h264-i-frame-idr-in-rtp-stream
     auto frameType = webrtc::VideoFrameType::kVideoFrameDelta;
+    if (isH264iFrame(static_cast<const uint8_t *>(data))) {
+      BOOST_LOG_SEV(logger, logging::severity::debug)
+          << __FUNCTION__ << ", idr_frame detected";
+      frameType = webrtc::VideoFrameType::kVideoFrameKey;
+    }
     codec_info.idr_frame = encoded._frameType == frameType;
     codec_info.base_layer_sync = false;
 
@@ -618,18 +646,19 @@ public:
     };
 
     int64_t capture_time_ms = clock_->TimeInMilliseconds();
-    int64_t ntp_capture_time_ms = clock_->CurrentNtpInMilliseconds();
+    // int64_t ntp_capture_time_ms = clock_->CurrentNtpInMilliseconds();
 
     encoded.SetTimestamp(capture_time_ms);
     encoded.SetSpatialIndex(0);
-    encoded.ntp_time_ms_ = ntp_capture_time_ms;
-    encoded.capture_time_ms_ = capture_time_ms;
-    encoded._encodedWidth = config_.width;
-    encoded._encodedHeight = config_.height;
+    encoded._frameType = frameType;
+    // encoded.ntp_time_ms_ = ntp_capture_time_ms;
+    // encoded.capture_time_ms_ = capture_time_ms;
+    // encoded._encodedWidth = config_.width;
+    // encoded._encodedHeight = config_.height;
 
     info.codecSpecific.H264 = codec_info;
     info.codecType = webrtc::kVideoCodecH264;
-    // info.end_of_picture = false;
+    // info.end_of_picture = true;
     if (!callback) {
       BOOST_LOG_SEV(logger, logging::severity::debug)
           << __FUNCTION__ << ", callback not set";
@@ -665,9 +694,12 @@ public:
   int32_t
   Encode(const webrtc::VideoFrame &frame,
          const std::vector<webrtc::VideoFrameType> *frame_types) override {
+    // this function gets called with width=1 if the remote client demands an
+    // iframe
     (void)frame;
     (void)frame_types;
-    BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << __FUNCTION__ << ", frame.width: " << frame.width();
 #if 0
      reader->mainloop();
 #endif
@@ -680,12 +712,16 @@ public:
         << ", bandwidth_allocation: " << parameters.bandwidth_allocation.kbps()
         << ", bitrate: " << parameters.bitrate.ToString()
         << ", target_bitrate: " << parameters.target_bitrate.ToString();
+    reader->set_bitrate(parameters.target_bitrate.get_sum_bps());
   }
 
   EncoderInfo GetEncoderInfo() const override {
     auto info = webrtc::VideoEncoder::GetEncoderInfo();
+    // webrtc::VideoEncoder::EncoderInfo info;
     info.has_internal_source = true;
     info.is_hardware_accelerated = true;
+    info.implementation_name = "v4l2_hw_h264";
+    info.scaling_settings = webrtc::VideoEncoder::ScalingSettings::kOff;
     BOOST_LOG_SEV(const_cast<video_encoder_impl *>(this)->logger,
                   logging::severity::debug)
         << __FUNCTION__ << ", info: " << info.ToString();
