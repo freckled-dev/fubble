@@ -45,7 +45,7 @@ struct v4l2_h264_reader {
   unsigned int n_buffers{};
   io_method io = IO_METHOD_MMAP;
   std::thread read_thread;
-  bool run{true};
+  bool run{false};
 
   v4l2_h264_reader(const config &config_, data_callback callback)
       : config_{config_}, on_data{callback} {
@@ -63,8 +63,8 @@ struct v4l2_h264_reader {
   }
   void errno_exit(const char *s) {
     BOOST_LOG_SEV(logger, logging::severity::debug)
-        << __FUNCTION__ << ", errno: " << errno << ", description: " << s
-        << ", stacktrace:\n"
+        << __FUNCTION__ << ", description: " << s << ", errno: " << errno
+        << ", strerror: " << strerror(errno) << ", stacktrace:\n"
         << boost::stacktrace::stacktrace();
     std::exit(1);
   }
@@ -325,7 +325,7 @@ struct v4l2_h264_reader {
   }
   void mainloop() {
     BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
-#if 0
+#if 1
     if (run) {
       BOOST_LOG_SEV(logger, logging::severity::warning)
           << __FUNCTION__ << ", already running";
@@ -543,6 +543,7 @@ public:
   webrtc::Clock *const clock_{webrtc::Clock::GetRealTimeClock()};
   const config config_;
   std::unique_ptr<v4l2_h264_reader> reader;
+  bool got_first_iframe{};
 
   video_encoder_impl(const config &config_) : config_{config_} {}
 
@@ -572,19 +573,21 @@ public:
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << ", start_capturing";
     reader->start_capturing();
+#if 0
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << ", mainloop";
     reader->mainloop();
+#endif
     return WEBRTC_VIDEO_CODEC_OK;
   }
 
-  bool isH264iFrame(const std::uint8_t *paket) {
+  bool isH264iFrame(const std::uint8_t *packet) {
     // https://stackoverflow.com/questions/1957427/detect-mpeg4-h264-i-frame-idr-in-rtp-stream
     int RTPHeaderBytes = 4;
 
-    int fragment_type = paket[RTPHeaderBytes + 0] & 0x1F;
-    int nal_type = paket[RTPHeaderBytes + 1] & 0x1F;
-    int start_bit = paket[RTPHeaderBytes + 1] & 0x80;
+    int fragment_type = packet[RTPHeaderBytes + 0] & 0x1F;
+    int nal_type = packet[RTPHeaderBytes + 1] & 0x1F;
+    int start_bit = packet[RTPHeaderBytes + 1] & 0x80;
 
     bool result{};
     if (((fragment_type == 28 || fragment_type == 29) && nal_type == 5 &&
@@ -595,12 +598,25 @@ public:
 
 #if 0
     BOOST_LOG_SEV(logger, logging::severity::debug)
-        << __FUNCTION__ << std::hex << ", " << int(paket[0]) << ", "
-        << int(paket[1]) << ", " << int(paket[2]) << ", " << int(paket[3])
-        << ", " << int(paket[4]) << ", " << int(paket[5]) << ", "
-        << int(paket[6]) << ", " << int(paket[7]) << ", " << int(paket[8])
-        << ", " << int(paket[9]) << std::dec << ", result: " << result;
+        << __FUNCTION__ << std::hex << ", 0x" << int(packet[0]) << ", 0x"
+        << int(packet[1]) << ", 0x" << int(packet[2]) << ", 0x"
+        << int(packet[3]) << ", 0x" << int(packet[4]) << ", 0x"
+        << int(packet[5]) << ", 0x" << int(packet[6]) << ", 0x"
+        << int(packet[7]) << ", 0x" << int(packet[8]) << ", 0x"
+        << int(packet[9]) << std::dec << ", result: " << result;
 #endif
+
+    // hack! the above code didn't get the iframe. check what the next line is
+    // actually doiing!
+    // checkout https://www.cardinalpeak.com/the-h-264-sequence-parameter-set
+    // and https://en.wikipedia.org/wiki/Network_Abstraction_Layer
+    if (int(packet[4]) == 0x27) {
+#if 0
+      BOOST_LOG_SEV(logger, logging::severity::debug)
+          << __FUNCTION__ << " hack";
+#endif
+      return true;
+    }
 
     return result;
   }
@@ -621,10 +637,23 @@ public:
         webrtc::H264PacketizationMode::NonInterleaved;
     codec_info.temporal_idx = webrtc::kNoTemporalIdx;
     auto frameType = webrtc::VideoFrameType::kVideoFrameDelta;
-    if (isH264iFrame(static_cast<const uint8_t *>(data))) {
+    auto is_intra_frame = isH264iFrame(static_cast<const uint8_t *>(data));
+    if (is_intra_frame) {
+      if (!got_first_iframe) {
+        BOOST_LOG_SEV(logger, logging::severity::debug)
+            << __FUNCTION__ << ", got_first_iframe = true";
+        got_first_iframe = true;
+      }
+#if 0
       BOOST_LOG_SEV(logger, logging::severity::debug)
           << __FUNCTION__ << ", idr_frame detected";
+#endif
       frameType = webrtc::VideoFrameType::kVideoFrameKey;
+    }
+    if (!got_first_iframe) {
+      BOOST_LOG_SEV(logger, logging::severity::debug)
+          << __FUNCTION__ << " !got_first_iframe";
+      return;
     }
     codec_info.idr_frame = encoded._frameType == frameType;
     codec_info.base_layer_sync = false;
@@ -700,8 +729,8 @@ public:
     (void)frame_types;
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << ", frame.width: " << frame.width();
-#if 0
-     reader->mainloop();
+#if 1
+    reader->mainloop();
 #endif
     return WEBRTC_VIDEO_CODEC_OK;
   }

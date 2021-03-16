@@ -76,9 +76,14 @@ public:
     if (use_v4l2_hw_h264) {
 #if BOOST_OS_LINUX
       v4l2_hw_h264::config v4l2_hw_h264_config;
-      v4l2_hw_h264_config.frame_rate = 5;
+      v4l2_hw_h264_config.frame_rate = 30;
+#if 0
       v4l2_hw_h264_config.width = 640;
       v4l2_hw_h264_config.height = 480;
+#else
+      v4l2_hw_h264_config.width = 1280;
+      v4l2_hw_h264_config.height = 720;
+#endif
       v4l2_hw_h264_config.path = "/dev/video0";
       core = std::make_shared<v4l2_hw_h264::core_module>(config_.core,
                                                          v4l2_hw_h264_config);
