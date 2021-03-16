@@ -11,7 +11,8 @@ extern "C" {
 #include <fcntl.h>
 #include <linux/videodev2.h>
 #include <sys/ioctl.h>
-#include <sys/mman.h> // mmap
+#include <sys/mman.h>  // mmap
+#include <sys/prctl.h> // thread naming
 #include <sys/stat.h>
 #include <sys/types.h>
 }
@@ -334,6 +335,7 @@ struct v4l2_h264_reader {
     run = true;
 #endif
     read_thread = std::thread([this] {
+      prctl(PR_SET_NAME, "rtc_v4l2_read", 0, 0, 0);
       while (run) {
         fd_set fds;
         struct timeval tv;
@@ -751,6 +753,8 @@ public:
     info.is_hardware_accelerated = true;
     info.implementation_name = "v4l2_hw_h264";
     info.scaling_settings = webrtc::VideoEncoder::ScalingSettings::kOff;
+    info.resolution_bitrate_limits = {VideoEncoder::ResolutionBitrateLimits(
+        1280 * 720, 25'000, 25'000, 25'000'000)};
     BOOST_LOG_SEV(const_cast<video_encoder_impl *>(this)->logger,
                   logging::severity::debug)
         << __FUNCTION__ << ", info: " << info.ToString();
