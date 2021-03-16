@@ -2,6 +2,7 @@ if host_machine.system() == 'linux'
   google_v4l2_hw_h264 = library('v4l2_hw_h264',
     ['module.cpp', 'video_encoder.cpp'],
     dependencies: [webrtc_google_peer_dep],
+    override_options: ['cpp_std=c++14']
     )
   google_v4l2_hw_h264_dep = declare_dependency(
     link_with: [google_v4l2_hw_h264],

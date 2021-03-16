@@ -50,7 +50,13 @@ struct v4l2_h264_reader {
 
   v4l2_h264_reader(const config &config_, data_callback callback)
       : config_{config_}, on_data{callback} {
-    BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << __FUNCTION__ << ", this:" << this;
+  }
+
+  ~v4l2_h264_reader() {
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << __FUNCTION__ << ", this:" << this;
   }
 
   int xioctl(int fh, unsigned long int request, void *arg) {
@@ -547,7 +553,15 @@ public:
   std::unique_ptr<v4l2_h264_reader> reader;
   bool got_first_iframe{};
 
-  video_encoder_impl(const config &config_) : config_{config_} {}
+  video_encoder_impl(const config &config_) : config_{config_} {
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << __FUNCTION__ << ", this:" << this;
+  }
+
+  ~video_encoder_impl() {
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << __FUNCTION__ << ", this:" << this;
+  }
 
   void SetFecControllerOverride(
       webrtc::FecControllerOverride *fec_controller_override) override {
