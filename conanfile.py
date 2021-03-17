@@ -1,5 +1,4 @@
 from conans import ConanFile, Meson, tools
-from conan.tools.meson import MesonToolchain
 from six import StringIO
 from conans.errors import ConanInvalidConfiguration
 from conans.tools import os_info
