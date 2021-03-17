@@ -19,7 +19,7 @@
 
 using namespace fubble;
 
-#if BOOST_OS_LINUX
+#if FUBBLE_WITH_V4L2_HW_H264
 namespace fubble::v4l2_hw_h264 {
 class rtc_module : public rtc::google::module {
 public:
@@ -69,12 +69,12 @@ public:
   cli_client_impl(const config &config_) : config_{config_} {
     // core
     bool use_v4l2_hw_h264 = config_.use_v4l2_hw_h264;
-#if !BOOST_OS_LINUX
+#if !FUBBLE_WITH_V4L2_HW_H264
     BOOST_ASSERT(use_v4l2_hw_h264 == false);
     use_v4l2_hw_h264 = false;
 #endif
     if (use_v4l2_hw_h264) {
-#if BOOST_OS_LINUX
+#if FUBBLE_WITH_V4L2_HW_H264
       v4l2_hw_h264::config v4l2_hw_h264_config;
       v4l2_hw_h264_config.frame_rate = 30;
 #if 0

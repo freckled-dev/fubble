@@ -648,7 +648,6 @@ public:
         static_cast<std::size_t>(size), static_cast<std::size_t>(size)};
     webrtc::CodecSpecificInfo info;
     webrtc::CodecSpecificInfoH264 codec_info;
-    webrtc::RTPHeaderExtension;
     codec_info.packetization_mode =
         webrtc::H264PacketizationMode::NonInterleaved;
     codec_info.temporal_idx = webrtc::kNoTemporalIdx;

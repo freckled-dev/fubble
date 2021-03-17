@@ -11,7 +11,8 @@ arch=armv7
 compiler=clang
 compiler.version=11
 compiler.libcxx=libstdc++11
-build_type=Debug
+#build_type=Debug
+build_type=RelWithDebInfo
 
 [options]
 fubble:enable_ui=False
