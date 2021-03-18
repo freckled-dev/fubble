@@ -334,8 +334,10 @@ struct v4l2_h264_reader {
     BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
 #if 1
     if (run) {
+#if 0
       BOOST_LOG_SEV(logger, logging::severity::warning)
           << __FUNCTION__ << ", already running";
+#endif
       return;
     }
     run = true;
@@ -768,6 +770,7 @@ public:
     info.scaling_settings = webrtc::VideoEncoder::ScalingSettings::kOff;
     info.resolution_bitrate_limits = {VideoEncoder::ResolutionBitrateLimits(
         1280 * 720, 25'000, 25'000, 25'000'000)};
+    // info.supports_simulcast = false; // not needed. `false` is default
     BOOST_LOG_SEV(const_cast<video_encoder_impl *>(this)->logger,
                   logging::severity::debug)
         << __FUNCTION__ << ", info: " << info.ToString();

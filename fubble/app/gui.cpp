@@ -85,11 +85,6 @@ int main(int argc, char *argv[]) {
   core_module_->get_session_module()->get_own_media()->set_own_video(
       client_video_module->get_own_video());
   auto video_settings = client_video_module->get_video_settings();
-  video_settings->set_capability({1280, 720, 30});
-  try {
-    video_settings->pause(false);
-  } catch (const std::exception &) {
-  }
 
   // desktop
   BOOST_LOG_SEV(logger, logging::severity::trace)

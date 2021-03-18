@@ -52,6 +52,6 @@ std::shared_ptr<video_settings> video_module::get_video_settings() {
     video_settings_ = std::make_shared<client::video_settings>(
         *get_enumerator(), rtc_module->get_video_device_creator(),
         *get_own_video(), *session_module_->get_tracks_adder(),
-        *get_add_video_to_connection_factory());
+        *get_add_video_to_connection_factory(), config_.capability);
   return video_settings_;
 }

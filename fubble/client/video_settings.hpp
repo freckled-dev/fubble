@@ -29,7 +29,8 @@ public:
       rtc::video_devices &enumerator,
       std::shared_ptr<rtc::video_device_factory> device_creator,
       own_video &own_media_, tracks_adder &tracks_adder_,
-      add_video_to_connection_factory &add_video_to_connection_factory_);
+      add_video_to_connection_factory &add_video_to_connection_factory_,
+      const rtc::video::capability &capability_);
   ~video_settings();
 
   void pause(bool paused);
@@ -43,8 +44,6 @@ public:
 
   std::shared_ptr<rtc::video_source> get_video_source() const;
   boost::signals2::signal<void()> on_video_source_changed;
-
-  void set_capability(rtc::video::capability capability);
 
 protected:
   void setup_initial_device();

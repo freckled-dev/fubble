@@ -46,7 +46,7 @@ struct VideoSettings : ::testing::Test {
   std::unique_ptr<client::video_settings> make_settings() {
     return std::make_unique<client::video_settings>(
         devices, device_factory, own_videos, tracks_adder,
-        add_video_to_connection_factory);
+        add_video_to_connection_factory, rtc::video::capability{});
   }
 
   VideoSettings() {
