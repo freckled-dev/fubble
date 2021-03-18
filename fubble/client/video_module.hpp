@@ -1,10 +1,10 @@
 #ifndef UUID_56991B82_F65A_4091_B353_801DDE773A7E
 #define UUID_56991B82_F65A_4091_B353_801DDE773A7E
 
-#include "fubble/client/session_module.hpp"
-#include "fubble/rtc/module.hpp"
-#include "fubble/utils/executor_module.hpp"
 #include <chrono>
+#include <fubble/client/session_module.hpp>
+#include <fubble/rtc/module.hpp>
+#include <fubble/utils/executor_module.hpp>
 
 namespace utils {
 class interval_timer;
@@ -22,6 +22,7 @@ public:
     bool enabled{true};
     std::chrono::steady_clock::duration video_enumerator_refresh_timeout =
         std::chrono::seconds(1);
+    rtc::video::capability capability;
   };
   video_module(std::shared_ptr<utils::executor_module> executor_module,
                std::shared_ptr<rtc::module> rtc_module,

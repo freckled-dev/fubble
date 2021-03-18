@@ -12,10 +12,12 @@ video_settings::video_settings(
     rtc::video_devices &enumerator,
     std::shared_ptr<rtc::video_device_factory> device_creator,
     own_video &own_media_, tracks_adder &tracks_adder_,
-    add_video_to_connection_factory &add_video_to_connection_factory_)
+    add_video_to_connection_factory &add_video_to_connection_factory_,
+    const rtc::video::capability &capability_)
     : enumerator(enumerator), device_creator(device_creator),
       own_media_(own_media_), tracks_adder_(tracks_adder_),
-      add_video_to_connection_factory_(add_video_to_connection_factory_) {
+      add_video_to_connection_factory_(add_video_to_connection_factory_),
+      capability{capability_} {
   enumerator.on_enumerated_changed.connect(
       [this] { on_video_devices_changed(); });
   setup_initial_device();
@@ -136,11 +138,6 @@ void video_settings::on_video_devices_changed() {
 
 std::shared_ptr<rtc::video_source> video_settings::get_video_source() const {
   return capture_device->get_source();
-}
-
-void video_settings::set_capability(rtc::video::capability capability_) {
-  capability = capability_;
-  // TODO restart camera capture
 }
 
 bool video_settings::is_a_video_available() const {
