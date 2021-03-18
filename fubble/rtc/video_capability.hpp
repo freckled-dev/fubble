@@ -4,9 +4,9 @@
 namespace rtc {
 namespace video {
 struct capability {
-  int width{};
-  int height{};
-  int fps{};
+  int width{1280};
+  int height{720};
+  int fps{30};
 };
 } // namespace video
 } // namespace rtc

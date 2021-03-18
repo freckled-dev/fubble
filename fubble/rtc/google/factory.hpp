@@ -1,13 +1,17 @@
 #ifndef RTC_GOOGLE_FACTORY_HPP
 #define RTC_GOOGLE_FACTORY_HPP
 
-#include "fubble/rtc/google/settings.hpp"
-#include "fubble/rtc/logger.hpp"
 #include <api/create_peerconnection_factory.h>
 #include <boost/asio/io_context.hpp>
+#include <fubble/rtc/connection.hpp>
+#include <fubble/rtc/factory.hpp>
+#include <fubble/rtc/google/settings.hpp>
+#include <fubble/rtc/google/video_encoder_factory_factory.hpp>
+#include <fubble/rtc/logger.hpp>
 #include <memory>
 
 namespace rtc {
+class connection;
 namespace google {
 class video_source;
 class video_track;
@@ -15,24 +19,26 @@ class audio_source;
 class audio_track;
 class audio_devices;
 class connection;
-class factory {
+class factory : public rtc::factory {
 public:
-  explicit factory(const settings &settings_, rtc::Thread &signaling_thread);
+  explicit factory(std::shared_ptr<video_encoder_factory_factory>
+                       video_encoder_factory_factory_,
+                   const settings &settings_, rtc::Thread &signaling_thread);
   // TODO remove default constructor
   factory();
   ~factory();
 
-  std::unique_ptr<connection> create_connection();
-  std::unique_ptr<video_track>
-  create_video_track(const std::shared_ptr<video_source> &source);
+  std::unique_ptr<rtc::connection> create_connection() override;
+  std::unique_ptr<rtc::video_track>
+  create_video_track(const std::shared_ptr<rtc::video_source> &source) override;
 
   std::unique_ptr<audio_track> create_audio_track(audio_source &source);
 
   webrtc::PeerConnectionFactoryInterface &get_native() const;
 
   rtc::Thread &get_signaling_thread() const;
-  audio_devices &get_audio_devices();
-  const settings& get_settings() const;
+  std::shared_ptr<rtc::audio_devices> get_audio_devices() override;
+  const settings &get_settings() const;
 
 private:
   void instance_members();
@@ -45,6 +51,8 @@ private:
 
   rtc::logger logger{"google::factory"};
   const settings settings_;
+  const std::shared_ptr<video_encoder_factory_factory>
+      video_encoder_factory_factory_;
   std::unique_ptr<rtc::Thread> network_thread;
   std::unique_ptr<rtc::Thread> worker_thread;
   // TODO replace signaling_thread with a local thread (asio) implementation
@@ -59,7 +67,7 @@ private:
   std::unique_ptr<webrtc::VideoDecoderFactory> video_decoder;
   std::unique_ptr<webrtc::VideoEncoderFactory> video_encoder;
   rtc::scoped_refptr<webrtc::PeerConnectionFactoryInterface> factory_;
-  std::unique_ptr<audio_devices> audio_devices_;
+  std::shared_ptr<audio_devices> audio_devices_;
 };
 } // namespace google
 } // namespace rtc

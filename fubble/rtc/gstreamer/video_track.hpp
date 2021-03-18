@@ -3,6 +3,7 @@
 
 #include <fubble/rtc/gstreamer/connection.hpp>
 #include <fubble/rtc/track.hpp>
+#include <fubble/rtc/video_track.hpp>
 #include <fubble/utils/logging/logger.hpp>
 extern "C" {
 #define GST_USE_UNSTABLE_API
@@ -11,7 +12,7 @@ extern "C" {
 
 namespace rtc::gstreamer {
 
-class video_track : public track {
+class video_track : public rtc::video_track {
 public:
   struct parse_error : std::runtime_error {
     parse_error(GError *error);

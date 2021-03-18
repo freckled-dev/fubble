@@ -1,12 +1,12 @@
 #ifndef RTC_CONNECTION_HPP
 #define RTC_CONNECTION_HPP
 
-#include "data_channel_ptr.hpp"
-#include "ice_candidate.hpp"
-#include "session_description.hpp"
-#include "track_ptr.hpp"
 #include <boost/signals2/signal.hpp>
 #include <boost/thread/future.hpp>
+#include <fubble/rtc/data_channel_ptr.hpp>
+#include <fubble/rtc/ice_candidate.hpp>
+#include <fubble/rtc/session_description.hpp>
+#include <fubble/rtc/track_ptr.hpp>
 #include <functional>
 
 namespace rtc {

@@ -28,7 +28,7 @@ public:
   boost::signals2::signal<void()> on_enumerated_changed;
 
   static std::unique_ptr<video_devices>
-  create_interval_enumerating(video_devices &adopt,
+  create_interval_enumerating(std::shared_ptr<video_devices> adopt,
                               utils::interval_timer &timer);
 };
 class video_devices_noop : public video_devices {

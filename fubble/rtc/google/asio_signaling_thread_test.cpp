@@ -16,7 +16,11 @@ struct AsioSignalingThread : ::testing::Test {
 TEST_F(AsioSignalingThread, AddDataChannel) {
   rtc::google::asio_signaling_thread signaling_thread{context};
   rtc::google::settings rtc_settings;
-  rtc::google::factory creator{rtc_settings, signaling_thread.get_native()};
+  std::shared_ptr<rtc::google::video_encoder_factory_factory>
+      video_encoder_factory_factory =
+          std::make_shared<rtc::google::video_encoder_factory_factory>();
+  rtc::google::factory creator{video_encoder_factory_factory, rtc_settings,
+                               signaling_thread.get_native()};
   test_peer peer{creator};
   peer.instance->on_negotiation_needed.connect([&] {
     BOOST_LOG_SEV(logger, logging::severity::debug) << "done";

@@ -195,7 +195,7 @@ void connection::add_track(rtc::track_ptr track_) {
       << __FUNCTION__ << ", track:" << track_.get();
   BOOST_ASSERT(track_);
   BOOST_ASSERT(find_sending_track(track_) == sending_tracks.cend());
-  auto track_casted = std::dynamic_pointer_cast<track>(track_);
+  auto track_casted = std::dynamic_pointer_cast<rtc::google::track>(track_);
   BOOST_ASSERT(track_casted);
   auto native_track = track_casted->native_track();
   BOOST_ASSERT(native_track);

@@ -2,7 +2,7 @@
 #define UUID_56991B82_F65A_4091_B353_801DDE773A7E
 
 #include "fubble/client/session_module.hpp"
-#include "fubble/rtc/google/module.hpp"
+#include "fubble/rtc/module.hpp"
 #include "fubble/utils/executor_module.hpp"
 #include <chrono>
 
@@ -24,7 +24,7 @@ public:
         std::chrono::seconds(1);
   };
   video_module(std::shared_ptr<utils::executor_module> executor_module,
-               std::shared_ptr<rtc::google::module> rtc_module,
+               std::shared_ptr<rtc::module> rtc_module,
                std::shared_ptr<session_module> session_module_,
                const config &config_);
 
@@ -36,7 +36,7 @@ public:
 
 protected:
   std::shared_ptr<utils::executor_module> executor_module;
-  std::shared_ptr<rtc::google::module> rtc_module;
+  std::shared_ptr<rtc::module> rtc_module;
   std::shared_ptr<session_module> session_module_;
   const config config_;
 

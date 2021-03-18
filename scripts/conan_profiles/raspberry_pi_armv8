@@ -1,32 +1,41 @@
 # https://docs.conan.io/en/latest/reference/profiles.html#variable-declaration
-COMPILER=$PROFILE_DIR/../../../fubble_build/compiler
-SYSROOT=$PROFILE_DIR/../../../fubble_build/sysroot
+#COMPILER=$PROFILE_DIR/../../../fubble_build/compiler
+#SYSROOT=$PROFILE_DIR/../../../fubble_build/sysroot
+#COMPILER=/usr
+#SYSROOT=/run/media/mlanner/rootfs
+SYSROOT=$PROFILE_DIR/../../../rpi-sysroot
 
 [settings]
 os=Linux
 arch=armv8
-compiler=gcc
-compiler.version=10
+compiler=clang
+compiler.version=11
 compiler.libcxx=libstdc++11
 build_type=RelWithDebInfo
 
 [options]
 fubble:enable_ui=False
 fubble:meson_cross_file=scripts/meson_cross/linux_aarch64
+boost:without_context=True
+boost:without_coroutine=True
+boost:without_graph_parallel=True
+boost:without_mpi=True
+boost:without_fiber=True
 
 [build_requires]
 pkgconf/1.7.3
 
 [env]
-PATH=[$COMPILER/bin]
-CC=$COMPILER/bin/aarch64-linux-gnu-gcc
-CXX=$COMPILER/bin/aarch64-linux-gnu-g++
-LD=$COMPILER/bin/aarch64-linux-gnu-ld
-AR=$COMPILER/bin/aarch64-linux-gnu-ar
-AS=$COMPILER/bin/aarch64-linux-gnu-as
-STRIP=$COMPILER/bin/aarch64-linux-gnu-strip
-RANLIB=$COMPILER/bin/aarch64-linux-gnu-ranlib
+#PATH=[$COMPILER/bin]
+CC=clang
+CXX=clang++
+LD=$COMPILER/bin/aarch64-suse-linux-ld
+AR=llvm-ar
+AS=$COMPILER/bin/aarch64-suse-linux-as
+STRIP=$COMPILER/bin/aarch64-suse-linux-strip
+RANLIB=llvm-ranlib
 SYSROOT=$SYSROOT
-CXXFLAGS=--sysroot=$SYSROOT
-CFLAGS=--sysroot=$SYSROOT
-LDFLAGS=--sysroot=$SYSROOT
+CXXFLAGS=--sysroot=$SYSROOT -target aarch64-linux-gnu
+CFLAGS=--sysroot=$SYSROOT -target aarch64-linux-gnu
+LDFLAGS=--sysroot=$SYSROOT -target aarch64-linux-gnu
+

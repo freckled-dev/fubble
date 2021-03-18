@@ -24,9 +24,9 @@ QHash<int, QByteArray> devices_model::roleNames() const {
 }
 
 audio_video_settings_model::audio_video_settings_model(
-    rtc::google::audio_devices &audio_devices,
-    rtc::video_devices &video_device_enumerator,
-    rtc::google::capture::video::device_factory &video_device_factory,
+    std::shared_ptr<rtc::audio_devices> audio_devices,
+    std::shared_ptr<rtc::video_devices> video_device_enumerator,
+    std::shared_ptr<rtc::video_device_factory> video_device_factory,
     client::audio_device_settings &audio_settings,
     video_settings &video_settings_, error_model &error_model_,
     std::shared_ptr<utils::timer_factory> timer_factory, QObject *parent)
@@ -63,7 +63,7 @@ void audio_video_settings_model::onAudioInputDeviceActivated(int index) {
 }
 
 void audio_video_settings_model::update_audio_devices() {
-  audio_devices.enumerate();
+  audio_devices->enumerate();
   output_devices->refresh();
   input_devices->refresh();
   auto new_audio_output_device_index = audio_settings.get_playout_device();
@@ -94,7 +94,8 @@ void audio_video_settings_model::onAudioOutputDeviceActivated(int index) {
 }
 
 void audio_video_settings_model::onVideoDeviceActivated(int index) {
-  auto video_devices_casted = static_cast<video_devices_model *>(video_devices);
+  auto video_devices_casted =
+      dynamic_cast<video_devices_model *>(video_devices);
   BOOST_LOG_SEV(logger, logging::severity::debug)
       << __FUNCTION__ << ", index:" << index;
   if (!video_devices_casted->has_devices())
@@ -113,9 +114,11 @@ void audio_video_settings_model::onVideoDeviceActivated(int index) {
   const auto id = video_devices_casted->get_id_by_index(index);
   try {
     video_settings_.change_to_device(id);
-    video_device = video_device_factory.create(id);
+    video_device = video_device_factory->create(id);
     video = std::make_unique<ui::frame_provider_google_video_device>(
-        *video_device, nullptr);
+        *std::dynamic_pointer_cast<rtc::google::capture::video::device>(
+            video_device),
+        nullptr);
     if (was_playing)
       video->play();
     video_changed(video.get());
@@ -139,7 +142,7 @@ void audio_video_settings_model::update_video_device_index() {
     return;
   }
   auto id = id_optional.value();
-  auto devices = video_device_enumerator.get_enumerated();
+  auto devices = video_device_enumerator->get_enumerated();
   auto found = std::find_if(devices.cbegin(), devices.cend(),
                             [&](const auto &check) { return check.id == id; });
   if (found == devices.cend())

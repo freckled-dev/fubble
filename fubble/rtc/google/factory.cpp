@@ -13,50 +13,15 @@
 #include <api/audio_codecs/opus_audio_encoder_factory.h>
 #include <api/task_queue/default_task_queue_factory.h>
 #include <api/video_codecs/builtin_video_decoder_factory.h>
-#include <api/video_codecs/builtin_video_encoder_factory.h>
 
 using namespace rtc::google;
 
-namespace {
-class video_encoder_factory : public webrtc::VideoEncoderFactory {
-public:
-  std::vector<webrtc::SdpVideoFormat> GetSupportedFormats() const override {
-    auto supported = delegate->GetSupportedFormats();
-    std::vector<webrtc::SdpVideoFormat> filtered;
-    std::copy_if(supported.cbegin(), supported.cend(),
-                 std::back_inserter(filtered),
-                 [&]([[maybe_unused]] const webrtc::SdpVideoFormat &check) {
-#if 1
-                   return check.name == "H264";
-#else
-                   return true;
-#endif
-                 });
-    return filtered;
-  }
-
-  CodecInfo
-  QueryVideoEncoder(const webrtc::SdpVideoFormat &format) const override {
-    return delegate->QueryVideoEncoder(format);
-  }
-
-  std::unique_ptr<webrtc::VideoEncoder>
-  CreateVideoEncoder(const webrtc::SdpVideoFormat &format) override {
-    return delegate->CreateVideoEncoder(format);
-  }
-
-  std::unique_ptr<EncoderSelectorInterface>
-  GetEncoderSelector() const override {
-    return delegate->GetEncoderSelector();
-  }
-
-  std::unique_ptr<webrtc::VideoEncoderFactory> delegate =
-      webrtc::CreateBuiltinVideoEncoderFactory();
-};
-} // namespace
-
-factory::factory(const settings &settings_, rtc::Thread &signaling_thread)
-    : settings_(settings_), signaling_thread(&signaling_thread) {
+factory::factory(std::shared_ptr<video_encoder_factory_factory>
+                     video_encoder_factory_factory_,
+                 const settings &settings_, rtc::Thread &signaling_thread)
+    : settings_(settings_),
+      video_encoder_factory_factory_{video_encoder_factory_factory_},
+      signaling_thread(&signaling_thread) {
   instance_members();
 }
 
@@ -69,7 +34,7 @@ factory::~factory() {
                               [this] { audio_device_module = nullptr; });
 }
 
-std::unique_ptr<connection> factory::create_connection() {
+std::unique_ptr<rtc::connection> factory::create_connection() {
   webrtc::PeerConnectionInterface::RTCConfiguration configuration;
   configuration.sdp_semantics = webrtc::SdpSemantics::kUnifiedPlan;
   if (!settings_.use_ip_v6) {
@@ -103,8 +68,8 @@ std::unique_ptr<connection> factory::create_connection() {
   return result;
 }
 
-std::unique_ptr<video_track>
-factory::create_video_track(const std::shared_ptr<video_source> &source) {
+std::unique_ptr<rtc::video_track>
+factory::create_video_track(const std::shared_ptr<rtc::video_source> &source) {
   auto label = uuid::generate();
   rtc::scoped_refptr<video_track_source::adapter> source_adapter =
       new rtc::RefCountedObject<video_track_source::adapter>;
@@ -113,9 +78,12 @@ factory::create_video_track(const std::shared_ptr<video_source> &source) {
   assert(native);
   if (!native)
     throw std::runtime_error("could not create video track");
+  auto source_casted =
+      std::dynamic_pointer_cast<rtc::google::video_source>(source);
+  BOOST_ASSERT(source_casted);
   // TODO adapter shall take source, not track
-  auto result =
-      std::make_unique<video_track_source>(native, source_adapter, source);
+  auto result = std::make_unique<video_track_source>(native, source_adapter,
+                                                     source_casted);
   return result;
 }
 
@@ -130,7 +98,9 @@ std::unique_ptr<audio_track> factory::create_audio_track(audio_source &source) {
 
 rtc::Thread &factory::get_signaling_thread() const { return *signaling_thread; }
 
-audio_devices &factory::get_audio_devices() { return *audio_devices_; }
+std::shared_ptr<rtc::audio_devices> factory::get_audio_devices() {
+  return audio_devices_;
+}
 
 const settings &factory::get_settings() const { return settings_; }
 
@@ -169,7 +139,7 @@ void factory::instance_audio() {
   instance_audio_processing();
   instance_audio_device_module();
   audio_devices_ =
-      std::make_unique<audio_devices>(*worker_thread, *audio_device_module);
+      std::make_shared<audio_devices>(*worker_thread, *audio_device_module);
 }
 
 void factory::instance_audio_processing() {
@@ -223,16 +193,16 @@ void factory::instance_audio_device_module() {
 
 void factory::instance_video() {
   BOOST_LOG_SEV(logger, logging::severity::trace) << "instance_video";
-  // WATCHOUT. `instance_factory` will move them inside factory!
+  // WATCHOUT. `instance_factory` will video_encoder inside factory!
   // weird api design.
+  video_encoder = video_encoder_factory_factory_->create();
   video_decoder = webrtc::CreateBuiltinVideoDecoderFactory();
-  for (const auto format : video_decoder->GetSupportedFormats()) {
+  for (const auto &format : video_decoder->GetSupportedFormats()) {
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__
         << ", supported decoder video_format: " << format.ToString();
   }
-  video_encoder = std::make_unique<video_encoder_factory>();
-  for (const auto format : video_encoder->GetSupportedFormats()) {
+  for (const auto &format : video_encoder->GetSupportedFormats()) {
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__
         << ", supported encoder video_format: " << format.ToString();

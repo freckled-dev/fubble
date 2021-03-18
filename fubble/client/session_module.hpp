@@ -1,12 +1,12 @@
 #ifndef UUID_E1787C7F_9E5F_4756_9483_18AC5D05415D
 #define UUID_E1787C7F_9E5F_4756_9483_18AC5D05415D
 
-#include "fubble/matrix/module.hpp"
-#include "fubble/rtc/google/module.hpp"
-#include "fubble/signaling/client_module.hpp"
-#include "fubble/temporary_room/client_module.hpp"
-#include "fubble/utils/executor_module.hpp"
-#include "fubble/version/client_module.hpp"
+#include <fubble/matrix/module.hpp>
+#include <fubble/rtc/module.hpp>
+#include <fubble/signaling/client_module.hpp>
+#include <fubble/temporary_room/client_module.hpp>
+#include <fubble/utils/executor_module.hpp>
+#include <fubble/version/client_module.hpp>
 
 namespace client {
 class factory;
@@ -28,7 +28,7 @@ public:
   session_module(
       std::shared_ptr<utils::executor_module> executor_module,
       std::shared_ptr<matrix::module> matrix_module,
-      std::shared_ptr<rtc::google::module> rtc_module,
+      std::shared_ptr<rtc::module> rtc_module,
       std::shared_ptr<signaling::client_module> signaling_module,
       std::shared_ptr<temporary_room::client_module> temporary_room_module,
       std::shared_ptr<version::client_module> version_client_module,
@@ -50,7 +50,7 @@ protected:
 
   const std::shared_ptr<utils::executor_module> executor_module;
   const std::shared_ptr<matrix::module> matrix_module;
-  const std::shared_ptr<rtc::google::module> rtc_module;
+  const std::shared_ptr<rtc::module> rtc_module;
   const std::shared_ptr<signaling::client_module> signaling_module;
   const std::shared_ptr<temporary_room::client_module> temporary_room_module;
   const std::shared_ptr<version::client_module> version_client_module;

@@ -1,16 +1,13 @@
 #ifndef UUID_3F220ACF_9A73_441D_911A_A2585AD9619D
 #define UUID_3F220ACF_9A73_441D_911A_A2585AD9619D
 
-#include "fubble/client/logger.hpp"
-
-namespace rtc::google {
-class audio_devices;
-}
+#include <fubble/client/logger.hpp>
+#include <fubble/rtc/audio_devices.hpp>
 
 namespace client {
 class audio_device_settings {
 public:
-  audio_device_settings(rtc::google::audio_devices &rtc_audio_devices);
+  audio_device_settings(std::shared_ptr<rtc::audio_devices> rtc_audio_devices);
 
   void set_recording_device(int id);
   int get_recording_device() const;
@@ -24,7 +21,7 @@ public:
 
 protected:
   client::logger logger{"audio_device_settings"};
-  rtc::google::audio_devices &rtc_audio_devices;
+  std::shared_ptr<rtc::audio_devices> rtc_audio_devices;
   int current_output_device{};
   int current_recording_device{};
 };

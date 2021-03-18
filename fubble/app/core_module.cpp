@@ -1,5 +1,10 @@
 #include "core_module.hpp"
-#include "fubble/client/crash_catcher.hpp"
+#include <fubble/client/crash_catcher.hpp>
+#include <fubble/rtc/google/module.hpp>
+#define FUBBLE_ENABLE_GSTREAMER 0
+#if FUBBLE_ENABLE_GSTREAMER
+#include <fubble/rtc/gstreamer/module.hpp>
+#endif
 
 using namespace client;
 
@@ -65,10 +70,23 @@ std::shared_ptr<version::client_module> core_module::get_version_module() {
                                                               config_.version_);
   return version_module;
 }
-std::shared_ptr<rtc::google::module> core_module::get_rtc_module() {
-  if (!rtc_module)
-    rtc_module = std::make_shared<rtc::google::module>(
-        get_utils_executor_module(), config_.rtc_);
+std::shared_ptr<rtc::module> core_module::get_rtc_module() {
+  if (!rtc_module) {
+    switch (config_.rtc_backend_) {
+    case config::rtc_backend::google:
+      rtc_module = std::make_shared<rtc::google::module>(
+          get_utils_executor_module(), config_.rtc_);
+      break;
+    case config::rtc_backend::gstreamer:
+#if FUBBLE_ENABLE_GSTREAMER
+      rtc_module = std::make_shared<rtc::gstreamer::module>(
+          get_utils_executor_module(), rtc::gstreamer::settings{});
+#else
+      BOOST_ASSERT(false);
+#endif
+      break;
+    }
+  }
   return rtc_module;
 }
 

@@ -1,17 +1,18 @@
 #include "video_devices.hpp"
-#include "fubble/utils/timer.hpp"
 #include "fubble/rtc/logger.hpp"
+#include "fubble/utils/timer.hpp"
 
 using namespace rtc;
 
 namespace {
 class interval_video_devices : public video_devices {
 public:
-  interval_video_devices(video_devices &adopt, utils::interval_timer &timer)
+  interval_video_devices(std::shared_ptr<video_devices> adopt,
+                         utils::interval_timer &timer)
       : delegate(adopt), timer(timer) {
     on_timeout();
     timer.start([this] { on_timeout(); });
-    enumerated_changed_connection = delegate.on_enumerated_changed.connect(
+    enumerated_changed_connection = delegate->on_enumerated_changed.connect(
         [this] { on_enumerated_changed(); });
   }
 
@@ -19,22 +20,22 @@ public:
 
   void on_timeout() { enumerate(); }
 
-  bool enumerate() override { return delegate.enumerate(); }
+  bool enumerate() override { return delegate->enumerate(); }
 
   std::vector<information> get_enumerated() const override {
-    return delegate.get_enumerated();
+    return delegate->get_enumerated();
   }
 
 protected:
   rtc::logger logger{"interval_video_devices"};
-  video_devices &delegate;
+  std::shared_ptr<video_devices> delegate;
   utils::interval_timer &timer;
   boost::signals2::scoped_connection enumerated_changed_connection;
 };
 } // namespace
 
 std::unique_ptr<video_devices>
-video_devices::create_interval_enumerating(video_devices &adopt,
+video_devices::create_interval_enumerating(std::shared_ptr<video_devices> adopt,
                                            utils::interval_timer &timer) {
   return std::make_unique<interval_video_devices>(adopt, timer);
 }

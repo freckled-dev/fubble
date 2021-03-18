@@ -1,7 +1,7 @@
 #ifndef RTC_TRACK_PTR_HPP
 #define RTC_TRACK_PTR_HPP
 
-#include "track.hpp"
+#include <fubble/rtc/track.hpp>
 #include <memory>
 
 namespace rtc {

@@ -101,7 +101,7 @@ if not args.skip_install:
     if args.use_asan:
         install_args += ['-o', 'fubble:sanatize=True']
     subprocess.run(install_args + [paths.source_dir],
-        check=False # may fail, due to instability of bintray
+        check=True
         )
 
 if not args.skip_build:
@@ -124,7 +124,7 @@ if not args.skip_package:
         '--package-folder', paths.prefix_dir,
         ], check=True)
 
-if not args.skip_export:
+if not args.skip_export and not args.skip_package:
     subprocess.run(['conan', 'export-pkg',
         paths.source_dir,
         '-f',

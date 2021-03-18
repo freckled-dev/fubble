@@ -4,7 +4,7 @@ using namespace rtc::google;
 
 audio_track::audio_track(
     const rtc::scoped_refptr<webrtc::AudioTrackInterface> &track_)
-    : track(track_) {}
+    : google::track(track_) {}
 
 #if 0
 audio_track::stats audio_track::get_stats() {

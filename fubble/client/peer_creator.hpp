@@ -3,10 +3,8 @@
 
 #include <boost/thread/executor.hpp>
 #include <fubble/client/peer.hpp>
+#include <fubble/rtc/factory.hpp>
 
-namespace rtc::google {
-class factory;
-}
 namespace signaling::client {
 class factory;
 }
@@ -15,7 +13,7 @@ class peer_creator {
 public:
   peer_creator(boost::executor &executor,
                signaling::client::factory &client_creator,
-               rtc::google::factory &connection_creator,
+               std::shared_ptr<rtc::factory> connection_creator,
                const peer::config &config_);
 
   std::unique_ptr<peer> create();
@@ -23,7 +21,7 @@ public:
 protected:
   boost::executor &executor;
   signaling::client::factory &client_creator;
-  rtc::google::factory &connection_creator;
+  std::shared_ptr<rtc::factory> connection_creator;
   const peer::config config_;
 };
 } // namespace client

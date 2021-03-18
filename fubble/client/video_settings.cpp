@@ -4,12 +4,13 @@
 #include <fubble/client/own_media.hpp>
 #include <fubble/client/tracks_adder.hpp>
 #include <fubble/rtc/google/capture/video/device.hpp>
+#include <fubble/rtc/google/video_source.hpp>
 
 using namespace client;
 
 video_settings::video_settings(
     rtc::video_devices &enumerator,
-    rtc::google::capture::video::device_factory &device_creator,
+    std::shared_ptr<rtc::video_device_factory> device_creator,
     own_video &own_media_, tracks_adder &tracks_adder_,
     add_video_to_connection_factory &add_video_to_connection_factory_)
     : enumerator(enumerator), device_creator(device_creator),
@@ -58,7 +59,6 @@ void video_settings::pause(bool paused_) {
     if (!last_device_id) {
       BOOST_LOG_SEV(logger, logging::severity::error)
           << "cannot unpause a video without a device_id set!";
-      BOOST_ASSERT(false);
       return;
     }
     change_to_device(last_device_id.value());
@@ -86,8 +86,8 @@ void video_settings::change_to_device(const std::string &id) {
     return;
   }
   try {
-    std::shared_ptr<rtc::google::capture::video::device> capture_device_check =
-        device_creator.create(id);
+    std::shared_ptr<rtc::video_device> capture_device_check =
+        device_creator->create(id);
     capture_device_check->start(capability);
     capture_device = capture_device_check;
   } catch (...) {
@@ -98,7 +98,8 @@ void video_settings::change_to_device(const std::string &id) {
   video_track_adder =
       add_video_to_connection_factory_.create(capture_device->get_source());
   tracks_adder_.add(video_track_adder);
-  own_media_.add(capture_device->get_source());
+  own_media_.add(std::dynamic_pointer_cast<rtc::google::video_source>(
+      capture_device->get_source()));
   on_video_source_changed();
 }
 
@@ -107,7 +108,8 @@ void video_settings::reset_current_video_capture() {
     return;
   tracks_adder_.remove(video_track_adder);
   video_track_adder.reset();
-  own_media_.remove(capture_device->get_source());
+  own_media_.remove(std::dynamic_pointer_cast<rtc::google::video_source>(
+      capture_device->get_source()));
   capture_device->stop();
   capture_device.reset();
 }
@@ -132,8 +134,7 @@ void video_settings::on_video_devices_changed() {
   reset_current_video();
 }
 
-std::shared_ptr<rtc::google::video_source>
-video_settings::get_video_source() const {
+std::shared_ptr<rtc::video_source> video_settings::get_video_source() const {
   return capture_device->get_source();
 }
 

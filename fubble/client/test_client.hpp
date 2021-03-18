@@ -1,45 +1,46 @@
 #ifndef UUID_E783A63B_9395_477D_8767_422C504840CC
 #define UUID_E783A63B_9395_477D_8767_422C504840CC
 
-#include "fubble/client/factory.hpp"
-#include "fubble/client/joiner.hpp"
-#include "fubble/client/loopback_audio.hpp"
-#include "fubble/client/own_audio_track.hpp"
-#include "fubble/client/own_media.hpp"
-#include "fubble/client/own_participant.hpp"
-#include "fubble/client/participant_creator_creator.hpp"
-#include "fubble/client/participants.hpp"
-#include "fubble/client/peer_creator.hpp"
-#include "fubble/client/peers.hpp"
-#include "fubble/client/room.hpp"
-#include "fubble/client/room_creator.hpp"
-#include "fubble/client/rooms.hpp"
-#include "fubble/client/tracks_adder.hpp"
-#include "fubble/http/action_factory.hpp"
-#include "fubble/http/client_factory.hpp"
-#include "fubble/http/connection_creator.hpp"
-#include "fubble/matrix/authentification.hpp"
-#include "fubble/matrix/client_factory.hpp"
-#include "fubble/matrix/client_synchronizer.hpp"
-#include "fubble/matrix/factory.hpp"
-#include "fubble/matrix/testing.hpp"
-#include "fubble/rtc/data_channel.hpp"
-#include "fubble/rtc/google/asio_signaling_thread.hpp"
-#include "fubble/rtc/google/factory.hpp"
-#include "fubble/signaling/client/client.hpp"
-#include "fubble/signaling/client/connection_creator.hpp"
-#include "fubble/signaling/json_message.hpp"
-#include "fubble/signaling/testing.hpp"
-#include "fubble/temporary_room/net/client.hpp"
-#include "fubble/temporary_room/server/application.hpp"
-#include "fubble/temporary_room/testing.hpp"
-#include "fubble/utils/executor_asio.hpp"
-#include "fubble/utils/timer.hpp"
-#include "fubble/version/server.hpp"
-#include "fubble/version/testing.hpp"
-#include "fubble/websocket/connection_creator.hpp"
-#include "fubble/websocket/connector.hpp"
-#include "test_executor.hpp"
+#include <fubble/client/factory.hpp>
+#include <fubble/client/joiner.hpp>
+#include <fubble/client/loopback_audio.hpp>
+#include <fubble/client/own_audio_track.hpp>
+#include <fubble/client/own_media.hpp>
+#include <fubble/client/own_participant.hpp>
+#include <fubble/client/participant_creator_creator.hpp>
+#include <fubble/client/participants.hpp>
+#include <fubble/client/peer_creator.hpp>
+#include <fubble/client/peers.hpp>
+#include <fubble/client/room.hpp>
+#include <fubble/client/room_creator.hpp>
+#include <fubble/client/rooms.hpp>
+#include <fubble/client/tracks_adder.hpp>
+#include <fubble/http/action_factory.hpp>
+#include <fubble/http/client_factory.hpp>
+#include <fubble/http/connection_creator.hpp>
+#include <fubble/matrix/authentification.hpp>
+#include <fubble/matrix/client_factory.hpp>
+#include <fubble/matrix/client_synchronizer.hpp>
+#include <fubble/matrix/factory.hpp>
+#include <fubble/matrix/testing.hpp>
+#include <fubble/rtc/data_channel.hpp>
+#include <fubble/rtc/google/asio_signaling_thread.hpp>
+#include <fubble/rtc/google/factory.hpp>
+#include <fubble/rtc/google/video_encoder_factory_factory.hpp>
+#include <fubble/signaling/client/client.hpp>
+#include <fubble/signaling/client/connection_creator.hpp>
+#include <fubble/signaling/json_message.hpp>
+#include <fubble/signaling/testing.hpp>
+#include <fubble/temporary_room/net/client.hpp>
+#include <fubble/temporary_room/server/application.hpp>
+#include <fubble/temporary_room/testing.hpp>
+#include <fubble/utils/executor_asio.hpp>
+#include <fubble/utils/timer.hpp>
+#include <fubble/version/server.hpp>
+#include <fubble/version/testing.hpp>
+#include <fubble/websocket/connection_creator.hpp>
+#include <fubble/websocket/connector.hpp>
+#include <test_executor.hpp>
 
 namespace client::testing {
 struct test_client {
@@ -52,17 +53,18 @@ struct test_client {
   test_client(test_executor &fixture, const connect_information &information_,
               const std::string &room_name)
       : context(fixture.context), connect_information_{information_},
-        room_name(room_name), rtc_connection_creator{
-                                  rtc::google::settings{},
-                                  fixture.rtc_signaling_thread.get_native()} {
+        room_name(room_name),
+        rtc_connection_creator{std::make_shared<rtc::google::factory>(
+            video_encoder_factory_factory, rtc::google::settings{},
+            fixture.rtc_signaling_thread.get_native())} {
     set_own_media();
   }
 
   test_client(test_executor &fixture, const std::string &room_name)
-      : context(fixture.context),
-        room_name(room_name), rtc_connection_creator{
-                                  rtc::google::settings{},
-                                  fixture.rtc_signaling_thread.get_native()} {
+      : context(fixture.context), room_name(room_name),
+        rtc_connection_creator{std::make_shared<rtc::google::factory>(
+            video_encoder_factory_factory, rtc::google::settings{},
+            fixture.rtc_signaling_thread.get_native())} {
     set_own_media();
   }
 
@@ -124,7 +126,10 @@ struct test_client {
           timer_factory->create_one_shot_timer(std::chrono::seconds(1)));
 
   // rtc
-  rtc::google::factory rtc_connection_creator;
+  std::shared_ptr<rtc::google::video_encoder_factory_factory>
+      video_encoder_factory_factory =
+          std::make_shared<rtc::google::video_encoder_factory_factory>();
+  std::shared_ptr<rtc::google::factory> rtc_connection_creator;
   client::peer_creator peer_creator{boost_executor, client_creator,
                                     rtc_connection_creator,
                                     client::peer::config{}};
