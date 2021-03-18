@@ -1,7 +1,10 @@
 #include "core_module.hpp"
 #include <fubble/client/crash_catcher.hpp>
 #include <fubble/rtc/google/module.hpp>
+#define FUBBLE_ENABLE_GSTREAMER 0
+#if FUBBLE_ENABLE_GSTREAMER
 #include <fubble/rtc/gstreamer/module.hpp>
+#endif
 
 using namespace client;
 
@@ -75,7 +78,7 @@ std::shared_ptr<rtc::module> core_module::get_rtc_module() {
           get_utils_executor_module(), config_.rtc_);
       break;
     case config::rtc_backend::gstreamer:
-#if 0
+#if FUBBLE_ENABLE_GSTREAMER
       rtc_module = std::make_shared<rtc::gstreamer::module>(
           get_utils_executor_module(), rtc::gstreamer::settings{});
 #else
