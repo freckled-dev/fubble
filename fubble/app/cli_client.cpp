@@ -10,9 +10,6 @@
 #include <fubble/client/session_module.hpp>
 #include <fubble/client/video_module.hpp>
 #include <fubble/client/video_settings.hpp>
-#if FUBBLE_WITH_RPI_H264_ENCODER
-#include <fubble/rpi_h264_encoder/module.hpp>
-#endif
 #include <fubble/rtc/google/log_webrtc_to_logging.hpp>
 #include <fubble/rtc/google/module.hpp>
 #include <fubble/utils/timer.hpp>
@@ -32,16 +29,13 @@ public:
              const rtc::google::settings rtc_settings, const config &config_)
       : rtc::google::module(executor_module, rtc_settings), config_{config_} {}
 
-#if 1
   std::shared_ptr<rtc::video_device_factory>
   get_video_device_creator() override {
     if (!video_device_creator)
       video_device_creator = std::make_shared<video_device_factory>();
     return video_device_creator;
   }
-#endif
 
-#if 1
   std::shared_ptr<rtc::google::video_encoder_factory_factory>
   get_video_encoder_factory_factory() override {
     if (!video_encoder_factory_factory_)
@@ -49,17 +43,6 @@ public:
           std::make_shared<video_encoder_factory_factory>(config_);
     return video_encoder_factory_factory_;
   }
-#else
-  std::shared_ptr<rtc::google::video_encoder_factory_factory>
-  get_video_encoder_factory_factory() override {
-    rpi_h264_encoder::config config_;
-    if (!video_encoder_factory_factory_)
-      video_encoder_factory_factory_ =
-          std::make_shared<rpi_h264_encoder::video_encoder_factory_factory>(
-              config_);
-    return video_encoder_factory_factory_;
-  }
-#endif
 
 protected:
   const config config_;
