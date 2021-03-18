@@ -5,7 +5,9 @@ client_app_dep = declare_dependency(link_with: [client_app],
   dependencies: [client_dep])
 
 cli_client_lib = library('fubble_cli', ['cli_client.cpp'],
-  dependencies: [client_app_dep, google_v4l2_hw_h264_dep],
+  dependencies: [client_app_dep, google_v4l2_hw_h264_dep, 
+    #rpi_h264_encoder_dep
+    ],
   install: true)
 cli_client_dep = declare_dependency(link_with: [cli_client_lib],
   dependencies: [client_app_dep])

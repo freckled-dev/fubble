@@ -14,7 +14,9 @@
 #include <fubble/rtc/google/module.hpp>
 #include <fubble/utils/timer.hpp>
 #include <fubble/utils/uuid.hpp>
+#if FUBBLE_WITH_V4L2_HW_H264
 #include <fubble/v4l2_hw_h264/module.hpp>
+#endif
 #include <nlohmann/json.hpp>
 
 using namespace fubble;
@@ -110,6 +112,9 @@ public:
 
     // video
     client::video_module::config client_video_config;
+    client_video_config.capability.width = 1280;
+    client_video_config.capability.height = 720;
+    client_video_config.capability.fps = 30;
     client_video = std::make_shared<client::video_module>(
         core->get_utils_executor_module(), core->get_rtc_module(),
         core->get_session_module(), client_video_config);
