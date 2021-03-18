@@ -121,9 +121,6 @@ public:
     // TODO instancition of video_settings adds the video track to the
     // tracks_adder. refactor!
     auto video_settings = client_video->get_video_settings();
-    // video_settings->set_capability({320, 240, 30});
-    video_settings->set_capability({1280, 720, 30});
-    // video_settings->set_capability({1920, 1080, 30});
     video_settings->pause(!config_.send_video);
   }
 
