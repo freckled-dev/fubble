@@ -1,4 +1,4 @@
-FROM registry.gitlab.com/acof/fubble-deploy/server:latest
+FROM registry.gitlab.com/acof/fubble/server:latest
 
 RUN mkdir /fubble
 WORKDIR /fubble

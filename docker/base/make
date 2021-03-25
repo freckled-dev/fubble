@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -ex
+cd "$(dirname "$0")"
+image_name='registry.gitlab.com/acof/fubble/server'
+docker build -t "$image_name" .
+docker push "$image_name"
+
