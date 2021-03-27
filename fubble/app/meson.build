@@ -1,4 +1,4 @@
-client_app_sources = ['core_module.cpp']
+client_app_sources = ['core_module.cpp', 'options.cpp']
 client_app = library('app_client', client_app_sources,
   dependencies: [client_dep], install: true)
 client_app_dep = declare_dependency(link_with: [client_app],

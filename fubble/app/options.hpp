@@ -1,37 +1,18 @@
-#ifndef CLIENT_OPTIONS_HPP
-#define CLIENT_OPTIONS_HPP
+#ifndef UUID_3CD9552E_58E8_4F8B_96C4_0A0EC07C783B
+#define UUID_3CD9552E_58E8_4F8B_96C4_0A0EC07C783B
 
-#include <boost/optional.hpp>
-#include <string>
+#include <boost/program_options/options_description.hpp>
+#include <fubble/app/core_module.hpp>
+#include <fubble/client/log_module.hpp>
+#include <fubble/v4l2_hw_h264/config.hpp>
 
-struct config {
-  struct video {
-    bool send{false};
-  };
-  video video_;
-  struct signaling {
-    std::string host{"localhost"};
-    std::string service{"http"};
-    std::string id{"test"}; // TODO remove this flag. join a room!
-  };
-  signaling signaling_;
-#if 0
-  struct matrix {
-    std::string host{"localhost"};
-    std::string service{"8008"};
-  };
-  matrix matrix_;
-  struct temporary_room {
-    std::string host{"localhost"};
-    std::string service{"8009"};
-  };
-  temporary_room temporary_room_;
-#endif
-};
-
-class options {
-public:
-  boost::optional<config> operator()(int argc, char *argv[]);
-};
+namespace fubble::client::options {
+boost::program_options::options_description
+create(::client::log_module::config &config);
+boost::program_options::options_description
+create(::client::core_module::config &config);
+boost::program_options::options_description
+create(v4l2_hw_h264::config &config);
+} // namespace fubble::client::options
 
 #endif
