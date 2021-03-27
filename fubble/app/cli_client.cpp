@@ -77,18 +77,8 @@ public:
 #endif
     if (use_v4l2_hw_h264) {
 #if FUBBLE_WITH_V4L2_HW_H264
-      v4l2_hw_h264::config v4l2_hw_h264_config;
-      v4l2_hw_h264_config.frame_rate = 30;
-#if 0
-      v4l2_hw_h264_config.width = 640;
-      v4l2_hw_h264_config.height = 480;
-#else
-      v4l2_hw_h264_config.width = 1280;
-      v4l2_hw_h264_config.height = 720;
-#endif
-      v4l2_hw_h264_config.path = "/dev/video0";
-      core = std::make_shared<v4l2_hw_h264::core_module>(config_.core,
-                                                         v4l2_hw_h264_config);
+      core = std::make_shared<v4l2_hw_h264::core_module>(
+          config_.core, config_.v4l2_hw_h264_config);
 #endif
     } else {
       core = std::make_shared<client::core_module>(config_.core);
@@ -132,7 +122,7 @@ public:
 private:
   int run() override {
     auto joiner = core->get_session_module()->get_joiner();
-    client::joiner::parameters parameters{uuid::generate(), "fun"};
+    client::joiner::parameters parameters{uuid::generate(), config_.room_name};
     joiner->join(parameters).then(executor, [this](auto result) {
       try {
         result.get();

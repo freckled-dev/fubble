@@ -14,7 +14,7 @@ namespace client {
 class FUBBLE_PUBLIC log_module {
 public:
   struct config {
-    bool webrtc{};
+    bool webrtc{true};
     logging::severity severity{logging::severity::debug};
   };
   log_module(const config config_);

@@ -6,6 +6,7 @@
 #include <fubble/client/audio_settings_module.hpp>
 #include <fubble/client/video_module.hpp>
 #include <fubble/utils/export.hpp>
+#include <fubble/v4l2_hw_h264/config.hpp>
 #include <functional>
 
 namespace fubble {
@@ -14,11 +15,13 @@ public:
   struct config {
     bool send_audio{true};
     bool send_video{true};
-    client::core_module::config core;
-    client::audio_module::config audio;
-    client::audio_settings_module::config audio_settings;
-    client::video_module::config video;
     bool use_v4l2_hw_h264{false};
+    std::string room_name{"fun"};
+    ::client::core_module::config core;
+    ::client::audio_module::config audio;
+    ::client::audio_settings_module::config audio_settings;
+    ::client::video_module::config video;
+    v4l2_hw_h264::config v4l2_hw_h264_config;
   };
   static std::unique_ptr<cli_client> create(const config &config_);
   virtual ~cli_client() = default;
@@ -26,7 +29,7 @@ public:
   virtual int run() = 0;
   virtual void stop() = 0;
 
-  virtual std::shared_ptr<client::core_module> get_core() const = 0;
+  virtual std::shared_ptr<::client::core_module> get_core() const = 0;
 };
 } // namespace fubble
 
