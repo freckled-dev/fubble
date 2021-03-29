@@ -2,7 +2,9 @@
 #include <boost/stacktrace.hpp>
 #include <common_video/h264/h264_bitstream_parser.h>
 #include <common_video/h264/h264_common.h>
+#include <fmt/format.h>
 #include <fubble/rtc/logger.hpp>
+#include <fubble/utils/exception.hpp>
 #include <modules/video_coding/include/video_codec_interface.h>
 #include <modules/video_coding/include/video_error_codes.h>
 #include <system_wrappers/include/clock.h>
@@ -19,6 +21,13 @@ extern "C" {
 
 using namespace fubble::v4l2_hw_h264;
 
+struct v4l2_error : utils::exception {};
+using error_description =
+    boost::error_info<struct error_description_tag, std::string>;
+using errno_info = boost::error_info<struct errno_tag, int>;
+using errno_str_info = boost::error_info<struct errno_str_tag, std::string>;
+using device_info = boost::error_info<struct device_tag, std::string>;
+
 namespace {
 // mostly copied from v4l2 capture example
 // https://www.kernel.org/doc/html/v4.9/media/uapi/v4l/capture.c.html
@@ -31,7 +40,6 @@ struct v4l2_h264_reader {
   enum io_method {
     IO_METHOD_READ,
     IO_METHOD_MMAP,
-    IO_METHOD_USERPTR,
   };
 
   rtc::logger logger{"v4l2_h264_reader"};
@@ -59,8 +67,27 @@ struct v4l2_h264_reader {
         << __FUNCTION__ << ", this:" << this;
   }
 
+  void throw_description(const std::string &description) {
+    BOOST_THROW_EXCEPTION(v4l2_error() << error_description(description)
+                                       << device_info(device));
+  }
+
+  void throw_errno(const std::string &description) {
+    BOOST_THROW_EXCEPTION(
+        v4l2_error() << errno_info(errno) << errno_str_info(strerror(errno))
+                     << error_description(description) << device_info(device));
+  }
+
+  int xioctl_throw(int fd, unsigned long int request, void *arg,
+                   std::string description) {
+    auto result = xioctl(fd, request, arg);
+    if (result < 0)
+      throw_errno(description);
+    return result;
+  }
+
   int xioctl(int fh, unsigned long int request, void *arg) {
-    int result;
+    int result{};
 
     do {
       result = ioctl(fh, request, arg);
@@ -68,32 +95,16 @@ struct v4l2_h264_reader {
 
     return result;
   }
-  void errno_exit(const char *s) {
-    BOOST_LOG_SEV(logger, logging::severity::debug)
-        << __FUNCTION__ << ", description: " << s << ", errno: " << errno
-        << ", strerror: " << strerror(errno) << ", stacktrace:\n"
-        << boost::stacktrace::stacktrace();
-    std::exit(1);
-  }
   void open_device() {
     BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
     struct stat st;
-    if (-1 == stat(device_c, &st)) {
-      BOOST_LOG_SEV(logger, logging::severity::debug)
-          << __FUNCTION__ << "Cannot identify '" << device
-          << "', error: " << errno << ", strerror: " << strerror(errno);
-      std::exit(1);
-    }
-    if (!S_ISCHR(st.st_mode)) {
-      fprintf(stderr, "%s is no devicen", device_c);
-      std::exit(1);
-    }
+    if (-1 == stat(device_c, &st))
+      throw_errno("Cannot identify device");
+    if (!S_ISCHR(st.st_mode))
+      throw_description("not a linux-device");
     fd = open(device_c, O_RDWR /* required */ | O_NONBLOCK, 0);
-    if (-1 == fd) {
-      fprintf(stderr, "Cannot open '%s': %d, %s\\n", device_c, errno,
-              strerror(errno));
-      std::exit(1);
-    }
+    if (-1 == fd)
+      throw_description("can't open device");
   }
 
   void init_mmap() {
@@ -107,28 +118,18 @@ struct v4l2_h264_reader {
     req.memory = V4L2_MEMORY_MMAP;
 
     if (-1 == xioctl(fd, VIDIOC_REQBUFS, &req)) {
-      if (EINVAL == errno) {
-        fprintf(stderr,
-                "%s does not support "
-                "memory mappingn",
-                device_c);
-        std::exit(EXIT_FAILURE);
-      } else {
-        errno_exit("VIDIOC_REQBUFS");
-      }
+      if (EINVAL == errno)
+        throw_errno("does not support memory mapping");
+      throw_errno("VIDIOC_REQBUFS");
     }
 
-    if (req.count < 2) {
-      fprintf(stderr, "Insufficient buffer memory on %s\\n", device_c);
-      std::exit(EXIT_FAILURE);
-    }
+    if (req.count < 2)
+      throw_description("Insufficient buffer memory");
 
     buffers = static_cast<buffer *>(calloc(req.count, sizeof(*buffers)));
 
-    if (!buffers) {
-      fprintf(stderr, "Out of memory\\n");
-      std::exit(EXIT_FAILURE);
-    }
+    if (!buffers)
+      throw_description("Out of memory");
 
     for (n_buffers = 0; n_buffers < req.count; ++n_buffers) {
       struct v4l2_buffer buf;
@@ -139,8 +140,7 @@ struct v4l2_h264_reader {
       buf.memory = V4L2_MEMORY_MMAP;
       buf.index = n_buffers;
 
-      if (-1 == xioctl(fd, VIDIOC_QUERYBUF, &buf))
-        errno_exit("VIDIOC_QUERYBUF");
+      xioctl_throw(fd, VIDIOC_QUERYBUF, &buf, "VIDIOC_QUERYBUF");
 
       buffers[n_buffers].length = buf.length;
       buffers[n_buffers].start =
@@ -149,7 +149,7 @@ struct v4l2_h264_reader {
                MAP_SHARED /* recommended */, fd, buf.m.offset);
 
       if (MAP_FAILED == buffers[n_buffers].start)
-        errno_exit("mmap");
+        throw_errno("mmap");
     }
   }
 
@@ -160,48 +160,31 @@ struct v4l2_h264_reader {
     unsigned int min;
 
     struct v4l2_capability cap;
-    if (-1 == xioctl(fd, VIDIOC_QUERYCAP, &cap)) {
-      if (EINVAL == errno) {
-        fprintf(stderr, "%s is no V4L2 device\\n", device_c);
-        BOOST_LOG_SEV(logger, logging::severity::error)
-            << __FUNCTION__ << device << " is no v4l2 device.";
-        std::exit(EXIT_FAILURE);
-      } else {
-        errno_exit("VIDIOC_QUERYCAP");
-      }
+    if (xioctl(fd, VIDIOC_QUERYCAP, &cap) < 0) {
+      if (EINVAL == errno)
+        throw_errno("It's no V4L2 device");
+      else
+        throw_errno("VIDIOC_QUERYCAP");
     }
 
-    if (!(cap.capabilities & V4L2_CAP_VIDEO_CAPTURE)) {
-      BOOST_LOG_SEV(logger, logging::severity::error)
-          << __FUNCTION__ << device
-          << " is no video capture device. cap.capabilities & "
-             "V4L2_CAP_VIDEO_CAPTURE";
-      std::exit(EXIT_FAILURE);
-    }
+    if (!(cap.capabilities & V4L2_CAP_VIDEO_CAPTURE))
+      throw_description("device is no video capture device. "
+                        "cap.capabilities & V4L2_CAP_VIDEO_CAPTURE");
 
     switch (io) {
     case IO_METHOD_READ:
-      if (!(cap.capabilities & V4L2_CAP_READWRITE)) {
-        BOOST_LOG_SEV(logger, logging::severity::error)
-            << __FUNCTION__ << device << " does not support read i/o";
-        std::exit(EXIT_FAILURE);
-      }
+      if (!(cap.capabilities & V4L2_CAP_READWRITE))
+        throw_description("device does not support read i/o");
       break;
 
     case IO_METHOD_MMAP:
-    case IO_METHOD_USERPTR:
-      if (!(cap.capabilities & V4L2_CAP_STREAMING)) {
-        BOOST_LOG_SEV(logger, logging::severity::error)
-            << __FUNCTION__ << device << " does not support streaming i/o";
-        std::exit(EXIT_FAILURE);
-      }
+      if (!(cap.capabilities & V4L2_CAP_STREAMING))
+        throw_description("device does not support streaming i/o");
       break;
     }
 
     /* Select video input, video standard and tune here. */
-
     CLEAR(cropcap);
-
     cropcap.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
 
     if (0 == xioctl(fd, VIDIOC_CROPCAP, &cropcap)) {
@@ -234,16 +217,14 @@ struct v4l2_h264_reader {
       fmt.fmt.pix.field = V4L2_FIELD_INTERLACED;
 
       // Note VIDIOC_S_FMT may change width and height.
-      if (-1 == xioctl(fd, VIDIOC_S_FMT, &fmt))
-        errno_exit("VIDIOC_S_FMT");
+      xioctl_throw(fd, VIDIOC_S_FMT, &fmt, "VIDIOC_S_FMT");
 
       struct v4l2_streamparm parm;
       CLEAR(parm);
       parm.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
       parm.parm.capture.timeperframe.numerator = 1;
       parm.parm.capture.timeperframe.denominator = config_.framerate;
-      if (-1 == xioctl(fd, VIDIOC_S_PARM, &parm))
-        errno_exit("VIDIOC_S_PARM");
+      xioctl_throw(fd, VIDIOC_S_PARM, &parm, "VIDIOC_S_PARM");
       // inside parm gets the actual set framerate set. log?
 
       // v4l2-ctl --set-ctrl repeat_sequence_header=1
@@ -253,13 +234,12 @@ struct v4l2_h264_reader {
       CLEAR(seq_header);
       seq_header.id = V4L2_CID_MPEG_VIDEO_REPEAT_SEQ_HEADER;
       seq_header.value = 1;
-      if (-1 == xioctl(fd, VIDIOC_S_CTRL, &seq_header))
-        errno_exit("V4L2_CID_MPEG_VIDEO_REPEAT_SEQ_HEADER");
+      xioctl_throw(fd, VIDIOC_S_CTRL, &seq_header,
+                   "VIDIOC_S_CTRL, V4L2_CID_MPEG_VIDEO_REPEAT_SEQ_HEADER");
 
     } else {
-      /* Preserve original settings as set by v4l2-ctl for example */
-      if (-1 == xioctl(fd, VIDIOC_G_FMT, &fmt))
-        errno_exit("VIDIOC_G_FMT");
+      // Preserve original settings as set by v4l2-ctl for example
+      xioctl_throw(fd, VIDIOC_G_FMT, &fmt, "VIDIOC_G_FMT");
     }
 
     /* Buggy driver paranoia. */
@@ -278,29 +258,21 @@ struct v4l2_h264_reader {
     case IO_METHOD_MMAP:
       init_mmap();
       break;
-
-    case IO_METHOD_USERPTR:
-      BOOST_ASSERT(false);
-      // init_userp(fmt.fmt.pix.sizeimage);
-      break;
     }
   }
+
   void init_read(unsigned int buffer_size) {
     BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
     buffers = static_cast<buffer *>(calloc(1, sizeof(*buffers)));
 
-    if (!buffers) {
-      fprintf(stderr, "Out of memory\\n");
-      std::exit(EXIT_FAILURE);
-    }
+    if (!buffers)
+      throw_description("Out of memory");
 
     buffers[0].length = buffer_size;
     buffers[0].start = malloc(buffer_size);
 
-    if (!buffers[0].start) {
-      fprintf(stderr, "Out of memory\\n");
-      std::exit(EXIT_FAILURE);
-    }
+    if (!buffers[0].start)
+      throw_description("Out of memory");
   }
 
   void trigger_i_frame() {
@@ -312,8 +284,8 @@ struct v4l2_h264_reader {
     v4l2_control control;
     CLEAR(control);
     control.id = V4L2_CID_MPEG_VIDEO_FORCE_KEY_FRAME;
-    if (-1 == xioctl(fd, VIDIOC_S_CTRL, &control))
-      errno_exit("VIDIOC_S_CTRL, V4L2_CID_MPEG_VIDEO_FORCE_KEY_FRAME");
+    xioctl_throw(fd, VIDIOC_S_CTRL, &control,
+                 "VIDIOC_S_CTRL, V4L2_CID_MPEG_VIDEO_FORCE_KEY_FRAME");
 #endif
   }
 
@@ -336,34 +308,14 @@ struct v4l2_h264_reader {
         buf.memory = V4L2_MEMORY_MMAP;
         buf.index = i;
 
-        if (-1 == xioctl(fd, VIDIOC_QBUF, &buf))
-          errno_exit("VIDIOC_QBUF");
+        xioctl_throw(fd, VIDIOC_QBUF, &buf, "VIDIOC_QBUF");
       }
       type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-      if (-1 == xioctl(fd, VIDIOC_STREAMON, &type))
-        errno_exit("VIDIOC_STREAMON");
-      break;
-
-    case IO_METHOD_USERPTR:
-      for (i = 0; i < n_buffers; ++i) {
-        struct v4l2_buffer buf;
-
-        CLEAR(buf);
-        buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-        buf.memory = V4L2_MEMORY_USERPTR;
-        buf.index = i;
-        buf.m.userptr = (unsigned long)buffers[i].start;
-        buf.length = buffers[i].length;
-
-        if (-1 == xioctl(fd, VIDIOC_QBUF, &buf))
-          errno_exit("VIDIOC_QBUF");
-      }
-      type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-      if (-1 == xioctl(fd, VIDIOC_STREAMON, &type))
-        errno_exit("VIDIOC_STREAMON");
+      xioctl_throw(fd, VIDIOC_STREAMON, &type, "VIDIOC_STREAMON");
       break;
     }
   }
+
   void mainloop() {
     BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
 #if 1
@@ -394,7 +346,7 @@ struct v4l2_h264_reader {
         if (-1 == result) {
           if (EINTR == errno)
             continue;
-          errno_exit("select");
+          throw_errno("select");
         }
         if (0 == result) {
           BOOST_LOG_SEV(logger, logging::severity::error)
@@ -412,7 +364,6 @@ struct v4l2_h264_reader {
     BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
 #endif
     struct v4l2_buffer buf;
-    unsigned int i;
 
     switch (io) {
     case IO_METHOD_READ:
@@ -427,7 +378,7 @@ struct v4l2_h264_reader {
           /* fall through */
 
         default:
-          errno_exit("read");
+          throw_errno("read");
         }
       }
 
@@ -451,7 +402,7 @@ struct v4l2_h264_reader {
           /* fall through */
 
         default:
-          errno_exit("VIDIOC_DQBUF");
+          throw_errno("VIDIOC_DQBUF");
         }
       }
 
@@ -459,42 +410,7 @@ struct v4l2_h264_reader {
 
       process_image(buffers[buf.index].start, buf.bytesused);
 
-      if (-1 == xioctl(fd, VIDIOC_QBUF, &buf))
-        errno_exit("VIDIOC_QBUF");
-      break;
-
-    case IO_METHOD_USERPTR:
-      CLEAR(buf);
-
-      buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-      buf.memory = V4L2_MEMORY_USERPTR;
-
-      if (-1 == xioctl(fd, VIDIOC_DQBUF, &buf)) {
-        switch (errno) {
-        case EAGAIN:
-          return 0;
-
-        case EIO:
-          /* Could ignore EIO, see spec. */
-
-          /* fall through */
-
-        default:
-          errno_exit("VIDIOC_DQBUF");
-        }
-      }
-
-      for (i = 0; i < n_buffers; ++i)
-        if (buf.m.userptr == (unsigned long)buffers[i].start &&
-            buf.length == buffers[i].length)
-          break;
-
-      assert(i < n_buffers);
-
-      process_image((void *)buf.m.userptr, buf.bytesused);
-
-      if (-1 == xioctl(fd, VIDIOC_QBUF, &buf))
-        errno_exit("VIDIOC_QBUF");
+      xioctl_throw(fd, VIDIOC_QBUF, &buf, "VIDIOC_QBUF");
       break;
     }
 
@@ -522,10 +438,8 @@ struct v4l2_h264_reader {
       break;
 
     case IO_METHOD_MMAP:
-    case IO_METHOD_USERPTR:
       enum v4l2_buf_type type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-      if (-1 == xioctl(fd, VIDIOC_STREAMOFF, &type))
-        errno_exit("VIDIOC_STREAMOFF");
+      xioctl_throw(fd, VIDIOC_STREAMOFF, &type, "VIDIOC_STREAMOFF");
       break;
     }
   }
@@ -539,11 +453,7 @@ struct v4l2_h264_reader {
     case IO_METHOD_MMAP:
       for (unsigned int index = 0; index < n_buffers; ++index)
         if (-1 == munmap(buffers[index].start, buffers[index].length))
-          errno_exit("munmap");
-      break;
-    case IO_METHOD_USERPTR:
-      for (unsigned int index = 0; index < n_buffers; ++index)
-        free(buffers[index].start);
+          throw_errno("munmap");
       break;
     }
 
@@ -553,7 +463,7 @@ struct v4l2_h264_reader {
   void close_device() {
     BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
     if (-1 == close(fd))
-      errno_exit("close");
+      throw_errno("close");
     fd = -1;
   }
 
@@ -564,20 +474,16 @@ struct v4l2_h264_reader {
     struct v4l2_control control;
     CLEAR(control);
     control.id = V4L2_CID_MPEG_VIDEO_BITRATE_MODE;
+    // V4L2_MPEG_VIDEO_BITRATE_MODE_VBR // variable
     control.value = V4L2_MPEG_VIDEO_BITRATE_MODE_CBR; // cbr -> constant bitrate
-    if (-1 == xioctl(fd, VIDIOC_S_CTRL, &control))
-      errno_exit("VIDIOC_S_CTRL, V4L2_CID_MPEG_VIDEO_BITRATE_MODE");
+    xioctl_throw(fd, VIDIOC_S_CTRL, &control,
+                 "VIDIOC_S_CTRL, V4L2_CID_MPEG_VIDEO_BITRATE_MODE");
 
     CLEAR(control);
     control.id = V4L2_CID_MPEG_VIDEO_BITRATE;
     control.value = bitrate;
-    if (-1 == xioctl(fd, VIDIOC_S_CTRL, &control))
-      errno_exit("VIDIOC_S_CTRL, V4L2_CID_MPEG_VIDEO_BITRATE");
-
-    // V4L2_CID_MPEG_VIDEO_BITRATE
-    // V4L2_CID_MPEG_VIDEO_BITRATE_MODE
-    // V4L2_MPEG_VIDEO_BITRATE_MODE_VBR // variable
-    // V4L2_MPEG_VIDEO_BITRATE_MODE_CBR // constant
+    xioctl_throw(fd, VIDIOC_S_CTRL, &control,
+                 "VIDIOC_S_CTRL, V4L2_CID_MPEG_VIDEO_BITRATE");
   }
 };
 
