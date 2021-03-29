@@ -2,12 +2,14 @@
 #include <boost/stacktrace.hpp>
 #include <common_video/h264/h264_bitstream_parser.h>
 #include <common_video/h264/h264_common.h>
+#include <fmt/format.h>
 #include <fubble/rtc/logger.hpp>
 #include <fubble/utils/exception.hpp>
 #include <modules/video_coding/include/video_codec_interface.h>
 #include <modules/video_coding/include/video_error_codes.h>
 #include <system_wrappers/include/clock.h>
 #include <thread>
+#include <unordered_set>
 extern "C" {
 #include <fcntl.h>
 #include <linux/videodev2.h>
@@ -48,6 +50,7 @@ struct v4l2_h264_reader {
   buffers_type buffers;
   std::thread read_thread;
   bool run{false};
+  std::unordered_set<int> available_ctrls;
 
   v4l2_h264_reader(const config &config_, data_callback callback)
       : config_{config_}, on_data{callback} {
@@ -60,12 +63,37 @@ struct v4l2_h264_reader {
         << __FUNCTION__ << ", this:" << this;
   }
 
+  void enumerate_ctrls() {
+    // https://www.kernel.org/doc/html/latest/userspace-api/media/v4l/control.html
+    v4l2_queryctrl queryctrl;
+    CLEAR(queryctrl);
+    queryctrl.id = V4L2_CTRL_FLAG_NEXT_CTRL;
+    while (0 == ioctl(fd, VIDIOC_QUERYCTRL, &queryctrl)) {
+      if (queryctrl.flags & V4L2_CTRL_FLAG_DISABLED)
+        continue;
+
+      BOOST_LOG_SEV(logger, logging::severity::debug)
+          << __FUNCTION__ << ", control.name: "
+          << reinterpret_cast<const char *>(queryctrl.name);
+      available_ctrls.insert(queryctrl.id);
+      queryctrl.id |= V4L2_CTRL_FLAG_NEXT_CTRL;
+    }
+    if (errno != EINVAL)
+      throw_errno("VIDIOC_QUERYCTRL");
+  }
+
   void throw_description(const std::string &description) {
+    BOOST_LOG_SEV(logger, logging::severity::warning) << fmt::format(
+        "throwing, device: '{}', description: '{}'", device, description);
     BOOST_THROW_EXCEPTION(v4l2_error() << error_description(description)
                                        << device_info(device));
   }
 
   void throw_errno(const std::string &description) {
+    std::string errno_str = strerror(errno);
+    BOOST_LOG_SEV(logger, logging::severity::warning) << fmt::format(
+        "throwing, device: '{}', errno: {}, strerror: '{}', description: '{}'",
+        device, errno, errno_str, description);
     BOOST_THROW_EXCEPTION(
         v4l2_error() << errno_info(errno) << errno_str_info(strerror(errno))
                      << error_description(description) << device_info(device));
@@ -207,15 +235,17 @@ struct v4l2_h264_reader {
       // inside parm gets the actual set framerate set. log?
 
       // v4l2-ctl --set-ctrl repeat_sequence_header=1
-      // this is a must! else webrtc won't be able to handle the h264 frame
-      // (SPS/PPS errors)
-      v4l2_control seq_header;
-      CLEAR(seq_header);
-      seq_header.id = V4L2_CID_MPEG_VIDEO_REPEAT_SEQ_HEADER;
-      seq_header.value = 1;
-      xioctl_throw(fd, VIDIOC_S_CTRL, &seq_header,
-                   "VIDIOC_S_CTRL, V4L2_CID_MPEG_VIDEO_REPEAT_SEQ_HEADER");
-
+      // this is a must, if available! else webrtc won't be able to handle the
+      // h264 frame (SPS/PPS errors)
+      if (available_ctrls.find(V4L2_CID_MPEG_VIDEO_REPEAT_SEQ_HEADER) !=
+          available_ctrls.cend()) {
+        v4l2_control seq_header;
+        CLEAR(seq_header);
+        seq_header.id = V4L2_CID_MPEG_VIDEO_REPEAT_SEQ_HEADER;
+        seq_header.value = 1;
+        xioctl_throw(fd, VIDIOC_S_CTRL, &seq_header,
+                     "VIDIOC_S_CTRL, V4L2_CID_MPEG_VIDEO_REPEAT_SEQ_HEADER");
+      }
     } else {
       // Preserve original settings as set by v4l2-ctl for example
       xioctl_throw(fd, VIDIOC_G_FMT, &fmt, "VIDIOC_G_FMT");
@@ -372,14 +402,23 @@ struct v4l2_h264_reader {
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << ", bitrate: " << bitrate;
 
-    struct v4l2_control control;
-    CLEAR(control);
-    control.id = V4L2_CID_MPEG_VIDEO_BITRATE_MODE;
-    // V4L2_MPEG_VIDEO_BITRATE_MODE_VBR // variable
-    control.value = V4L2_MPEG_VIDEO_BITRATE_MODE_CBR; // cbr -> constant bitrate
-    xioctl_throw(fd, VIDIOC_S_CTRL, &control,
-                 "VIDIOC_S_CTRL, V4L2_CID_MPEG_VIDEO_BITRATE_MODE");
+    if (available_ctrls.find(V4L2_CID_MPEG_VIDEO_BITRATE) ==
+        available_ctrls.cend())
+      return;
 
+    if (available_ctrls.find(V4L2_CID_MPEG_VIDEO_BITRATE_MODE) !=
+        available_ctrls.cend()) {
+      struct v4l2_control control;
+      CLEAR(control);
+      control.id = V4L2_CID_MPEG_VIDEO_BITRATE_MODE;
+      // V4L2_MPEG_VIDEO_BITRATE_MODE_VBR // variable
+      control.value =
+          V4L2_MPEG_VIDEO_BITRATE_MODE_CBR; // cbr -> constant bitrate
+      xioctl_throw(fd, VIDIOC_S_CTRL, &control,
+                   "VIDIOC_S_CTRL, V4L2_CID_MPEG_VIDEO_BITRATE_MODE");
+    }
+
+    struct v4l2_control control;
     CLEAR(control);
     control.id = V4L2_CID_MPEG_VIDEO_BITRATE;
     control.value = bitrate;
@@ -424,6 +463,9 @@ public:
         << __FUNCTION__ << ", open_device";
     reader->open_device();
     BOOST_LOG_SEV(logger, logging::severity::debug)
+        << __FUNCTION__ << ", enumerate_ctrls";
+    reader->enumerate_ctrls();
+    BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << ", init_device";
     reader->init_device();
     BOOST_LOG_SEV(logger, logging::severity::debug)
@@ -440,7 +482,7 @@ public:
     return WEBRTC_VIDEO_CODEC_OK;
   }
 
-  bool isH264iFrame(const std::uint8_t *packet) {
+  bool is_h264_i_frame(const std::uint8_t *packet) {
     // https://stackoverflow.com/questions/1957427/detect-mpeg4-h264-i-frame-idr-in-rtp-stream
     int RTPHeaderBytes = 4;
 
@@ -495,7 +537,7 @@ public:
         webrtc::H264PacketizationMode::NonInterleaved;
     codec_info.temporal_idx = webrtc::kNoTemporalIdx;
     auto frameType = webrtc::VideoFrameType::kVideoFrameDelta;
-    auto is_intra_frame = isH264iFrame(static_cast<const uint8_t *>(data));
+    auto is_intra_frame = is_h264_i_frame(static_cast<const uint8_t *>(data));
     if (is_intra_frame) {
       if (!got_first_iframe) {
         BOOST_LOG_SEV(logger, logging::severity::debug)
@@ -508,11 +550,13 @@ public:
 #endif
       frameType = webrtc::VideoFrameType::kVideoFrameKey;
     }
+#if 0 // TODO neccesairy on rpi?
     if (!got_first_iframe) {
       BOOST_LOG_SEV(logger, logging::severity::debug)
           << __FUNCTION__ << " !got_first_iframe";
       return;
     }
+#endif
     codec_info.idr_frame = encoded._frameType == frameType;
     codec_info.base_layer_sync = false;
 

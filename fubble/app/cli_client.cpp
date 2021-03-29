@@ -1,5 +1,6 @@
 #include "cli_client.hpp"
 #include <boost/asio/io_context.hpp>
+#include <boost/exception/diagnostic_information.hpp>
 #include <boost/predef/os/linux.h>
 #include <fmt/format.h>
 #include <fubble/client/joiner.hpp>
@@ -127,7 +128,14 @@ private:
         stop_execution();
       }
     });
-    core->get_utils_executor_module()->get_io_context()->run();
+    try {
+      core->get_utils_executor_module()->get_io_context()->run();
+    } catch (const boost::exception &) {
+      BOOST_LOG_SEV(logger, logging::severity::error)
+          << __FUNCTION__ << " "
+          << boost::current_exception_diagnostic_information();
+      run_promise.set_exception(boost::current_exception());
+    }
     return run_promise.get_future().get();
   }
 
