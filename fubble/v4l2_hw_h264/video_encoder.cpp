@@ -226,17 +226,25 @@ struct v4l2_h264_reader {
     CLEAR(fmt);
 
     fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-    bool force_format = true;
-    if (force_format) {
+    const bool set_format = true;
+    if (set_format) {
       fmt.fmt.pix.width = config_.width;
       fmt.fmt.pix.height = config_.height;
       fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_H264;
       fmt.fmt.pix.field = V4L2_FIELD_INTERLACED;
 
+      // Note VIDIOC_S_FMT may change width and height.
       if (-1 == xioctl(fd, VIDIOC_S_FMT, &fmt))
         errno_exit("VIDIOC_S_FMT");
 
-      /* Note VIDIOC_S_FMT may change width and height. */
+      struct v4l2_streamparm parm;
+      CLEAR(parm);
+      parm.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+      parm.parm.capture.timeperframe.numerator = 1;
+      parm.parm.capture.timeperframe.denominator = config_.framerate;
+      if (-1 == xioctl(fd, VIDIOC_S_PARM, &parm))
+        errno_exit("VIDIOC_S_PARM");
+
     } else {
       /* Preserve original settings as set by v4l2-ctl for example */
       if (-1 == xioctl(fd, VIDIOC_G_FMT, &fmt))

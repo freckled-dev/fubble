@@ -8,9 +8,9 @@ namespace fubble {
 namespace v4l2_hw_h264 {
 struct FUBBLE_PUBLIC config {
   std::string path{"/dev/video0"};
-  int width{};
-  int height{};
-  int frame_rate{};
+  int width{1280};
+  int height{720};
+  int framerate{30};
 };
 } // namespace v4l2_hw_h264
 } // namespace fubble
