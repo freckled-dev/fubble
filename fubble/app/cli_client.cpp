@@ -101,13 +101,9 @@ public:
       audio_settings->get_audio_tracks_volume();
 
     // video
-    client::video_module::config client_video_config;
-    client_video_config.capability.width = 1280;
-    client_video_config.capability.height = 720;
-    client_video_config.capability.fps = 30;
     client_video = std::make_shared<client::video_module>(
         core->get_utils_executor_module(), core->get_rtc_module(),
-        core->get_session_module(), client_video_config);
+        core->get_session_module(), config_.video);
     // TODO refactor #355
 #if 0
     core->get_session_module()->get_own_media()->set_own_video(
