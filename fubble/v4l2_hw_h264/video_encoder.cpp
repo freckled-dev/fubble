@@ -155,12 +155,11 @@ struct v4l2_h264_reader {
 
   void init_device() {
     BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
-    struct v4l2_capability cap;
     struct v4l2_cropcap cropcap;
     struct v4l2_crop crop;
-    struct v4l2_format fmt;
     unsigned int min;
 
+    struct v4l2_capability cap;
     if (-1 == xioctl(fd, VIDIOC_QUERYCAP, &cap)) {
       if (EINVAL == errno) {
         fprintf(stderr, "%s is no V4L2 device\\n", device_c);
@@ -223,6 +222,7 @@ struct v4l2_h264_reader {
       /* Errors ignored. */
     }
 
+    struct v4l2_format fmt;
     CLEAR(fmt);
 
     fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
@@ -244,6 +244,17 @@ struct v4l2_h264_reader {
       parm.parm.capture.timeperframe.denominator = config_.framerate;
       if (-1 == xioctl(fd, VIDIOC_S_PARM, &parm))
         errno_exit("VIDIOC_S_PARM");
+      // inside parm gets the actual set framerate set. log?
+
+      // v4l2-ctl --set-ctrl repeat_sequence_header=1
+      // this is a must! else webrtc won't be able to handle the h264 frame
+      // (SPS/PPS errors)
+      v4l2_control seq_header;
+      CLEAR(seq_header);
+      seq_header.id = V4L2_CID_MPEG_VIDEO_REPEAT_SEQ_HEADER;
+      seq_header.value = 1;
+      if (-1 == xioctl(fd, VIDIOC_S_CTRL, &seq_header))
+        errno_exit("V4L2_CID_MPEG_VIDEO_REPEAT_SEQ_HEADER");
 
     } else {
       /* Preserve original settings as set by v4l2-ctl for example */
@@ -291,6 +302,21 @@ struct v4l2_h264_reader {
       std::exit(EXIT_FAILURE);
     }
   }
+
+  void trigger_i_frame() {
+    // TODO does not work
+    // https://github.com/raspberrypi/linux/issues/3171#issuecomment-809332554
+    // creates error "invalid argument"
+    return;
+#ifdef V4L2_CID_MPEG_VIDEO_FORCE_KEY_FRAME
+    v4l2_control control;
+    CLEAR(control);
+    control.id = V4L2_CID_MPEG_VIDEO_FORCE_KEY_FRAME;
+    if (-1 == xioctl(fd, VIDIOC_S_CTRL, &control))
+      errno_exit("VIDIOC_S_CTRL, V4L2_CID_MPEG_VIDEO_FORCE_KEY_FRAME");
+#endif
+  }
+
   void start_capturing() {
     BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
     unsigned int i;
@@ -538,15 +564,15 @@ struct v4l2_h264_reader {
     struct v4l2_control control;
     CLEAR(control);
     control.id = V4L2_CID_MPEG_VIDEO_BITRATE_MODE;
-    control.value = V4L2_MPEG_VIDEO_BITRATE_MODE_CBR;
+    control.value = V4L2_MPEG_VIDEO_BITRATE_MODE_CBR; // cbr -> constant bitrate
     if (-1 == xioctl(fd, VIDIOC_S_CTRL, &control))
-      errno_exit("VIDIOC_S_CTRL");
+      errno_exit("VIDIOC_S_CTRL, V4L2_CID_MPEG_VIDEO_BITRATE_MODE");
 
     CLEAR(control);
     control.id = V4L2_CID_MPEG_VIDEO_BITRATE;
     control.value = bitrate;
     if (-1 == xioctl(fd, VIDIOC_S_CTRL, &control))
-      errno_exit("VIDIOC_S_CTRL");
+      errno_exit("VIDIOC_S_CTRL, V4L2_CID_MPEG_VIDEO_BITRATE");
 
     // V4L2_CID_MPEG_VIDEO_BITRATE
     // V4L2_CID_MPEG_VIDEO_BITRATE_MODE
@@ -754,9 +780,18 @@ public:
     (void)frame_types;
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << ", frame.width: " << frame.width();
-#if 1
     reader->mainloop();
-#endif
+    if (frame_types != nullptr) {
+      // We only support a single stream.
+      RTC_DCHECK_EQ(frame_types->size(), static_cast<size_t>(1));
+      // Skip frame?
+      if ((*frame_types)[0] == webrtc::VideoFrameType::kEmptyFrame) {
+        return WEBRTC_VIDEO_CODEC_OK;
+      }
+      // Force key frame?
+      if ((*frame_types)[0] == webrtc::VideoFrameType::kVideoFrameKey)
+        reader->trigger_i_frame();
+    }
     return WEBRTC_VIDEO_CODEC_OK;
   }
 
@@ -776,6 +811,7 @@ public:
     info.is_hardware_accelerated = true;
     info.implementation_name = "v4l2_hw_h264";
     info.scaling_settings = webrtc::VideoEncoder::ScalingSettings::kOff;
+    // TODO don't use fixed values
     info.resolution_bitrate_limits = {VideoEncoder::ResolutionBitrateLimits(
         1280 * 720, 25'000, 25'000, 25'000'000)};
     // info.supports_simulcast = false; // not needed. `false` is default
