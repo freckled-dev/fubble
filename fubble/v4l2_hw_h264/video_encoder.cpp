@@ -33,7 +33,17 @@ namespace {
 // mostly copied from v4l2 capture example
 // https://www.kernel.org/doc/html/v4.9/media/uapi/v4l/capture.c.html
 #define CLEAR(x) memset(&(x), 0, sizeof(x))
-struct v4l2_h264_reader {
+class v4l2_h264_reader {
+public:
+  virtual ~v4l2_h264_reader() = default;
+  virtual void stop() = 0;
+  virtual void set_bitrate(int bitrate) = 0;
+  virtual void trigger_i_frame() = 0;
+  virtual void mainloop() = 0;
+};
+
+class v4l2_h264_reader_impl : public v4l2_h264_reader {
+public:
   struct buffer {
     void *start{};
     size_t length{};
@@ -52,13 +62,35 @@ struct v4l2_h264_reader {
   bool run{false};
   std::unordered_set<int> available_ctrls;
 
-  v4l2_h264_reader(const config &config_, data_callback callback)
+  v4l2_h264_reader_impl(const config &config_, unsigned int start_bitrate,
+                        data_callback callback)
       : config_{config_}, on_data{callback} {
+
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << ", this:" << this;
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << __FUNCTION__ << ", open_device";
+    open_device();
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << __FUNCTION__ << ", enumerate_ctrls";
+    enumerate_ctrls();
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << __FUNCTION__ << ", init_device";
+    init_device();
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << __FUNCTION__ << ", set_bitrate";
+    set_bitrate(start_bitrate);
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << __FUNCTION__ << ", start_capturing";
+    start_capturing();
+#if 0
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << __FUNCTION__ << ", mainloop";
+    mainloop();
+#endif
   }
 
-  ~v4l2_h264_reader() {
+  ~v4l2_h264_reader_impl() {
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << ", this:" << this;
   }
@@ -262,7 +294,7 @@ struct v4l2_h264_reader {
     init_mmap();
   }
 
-  void trigger_i_frame() {
+  void trigger_i_frame() override {
     // TODO does not work
     // https://github.com/raspberrypi/linux/issues/3171#issuecomment-809332554
     // creates error "invalid argument"
@@ -293,7 +325,7 @@ struct v4l2_h264_reader {
     xioctl_throw(fd, VIDIOC_STREAMON, &type, "VIDIOC_STREAMON");
   }
 
-  void mainloop() {
+  void mainloop() override {
     BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
 #if 1
     if (run) {
@@ -425,7 +457,29 @@ struct v4l2_h264_reader {
     xioctl_throw(fd, VIDIOC_S_CTRL, &control,
                  "VIDIOC_S_CTRL, V4L2_CID_MPEG_VIDEO_BITRATE");
   }
+
+  void stop() override {
+    stop_capturing();
+    uninit_device();
+    close_device();
+  }
 };
+
+#if 0
+class v4l2_h264_reader_singleton : public v4l2_h264_reader {
+public:
+  std::shared_ptr<v4l2_h264_reader> get_singleton() {
+    // only one instance must exist
+    static std::weak_ptr<v4l2_h264_reader> singleton;
+    auto result = singleton.lock();
+    if (!result) {
+      result = std::make_shared<v4l2_h264_reader>();
+      singleton = result;
+    }
+    return result;
+  }
+};
+#endif
 
 class video_encoder_impl : public video_encoder {
 public:
@@ -457,28 +511,15 @@ public:
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << ", codec_settings->width: " << codec_settings->width;
     BOOST_ASSERT(!reader);
-    reader = std::make_unique<v4l2_h264_reader>(
-        config_, [this](auto data, auto size) { on_data(data, size); });
-    BOOST_LOG_SEV(logger, logging::severity::debug)
-        << __FUNCTION__ << ", open_device";
-    reader->open_device();
-    BOOST_LOG_SEV(logger, logging::severity::debug)
-        << __FUNCTION__ << ", enumerate_ctrls";
-    reader->enumerate_ctrls();
-    BOOST_LOG_SEV(logger, logging::severity::debug)
-        << __FUNCTION__ << ", init_device";
-    reader->init_device();
-    BOOST_LOG_SEV(logger, logging::severity::debug)
-        << __FUNCTION__ << ", set_bitrate";
-    reader->set_bitrate(codec_settings->startBitrate);
-    BOOST_LOG_SEV(logger, logging::severity::debug)
-        << __FUNCTION__ << ", start_capturing";
-    reader->start_capturing();
-#if 0
-    BOOST_LOG_SEV(logger, logging::severity::debug)
-        << __FUNCTION__ << ", mainloop";
-    reader->mainloop();
-#endif
+    try {
+      reader = std::make_unique<v4l2_h264_reader_impl>(
+          config_, codec_settings->startBitrate,
+          [this](auto data, auto size) { on_data(data, size); });
+    } catch (const boost::exception &error) {
+      BOOST_LOG_SEV(logger, logging::severity::error)
+          << __FUNCTION__ << ", " << boost::diagnostic_information(error);
+      return WEBRTC_VIDEO_CODEC_ERROR;
+    }
     return WEBRTC_VIDEO_CODEC_OK;
   }
 
@@ -615,9 +656,7 @@ public:
 
   int32_t Release() override {
     BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
-    reader->stop_capturing();
-    reader->uninit_device();
-    reader->close_device();
+    reader->stop();
     reader.reset();
     return WEBRTC_VIDEO_CODEC_OK;
   }
@@ -631,6 +670,8 @@ public:
     (void)frame_types;
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << ", frame.width: " << frame.width();
+    if (!reader)
+      return WEBRTC_VIDEO_CODEC_UNINITIALIZED;
     reader->mainloop();
     if (frame_types != nullptr) {
       // We only support a single stream.
@@ -652,6 +693,12 @@ public:
         << ", bandwidth_allocation: " << parameters.bandwidth_allocation.kbps()
         << ", bitrate: " << parameters.bitrate.ToString()
         << ", target_bitrate: " << parameters.target_bitrate.ToString();
+    if (!reader) {
+      BOOST_LOG_SEV(logger, logging::severity::error)
+          << __FUNCTION__ << ", encoder is not initialised";
+      // BOOST_ASSERT(false);
+      return;
+    }
     reader->set_bitrate(parameters.target_bitrate.get_sum_bps());
   }
 
@@ -660,11 +707,13 @@ public:
     // webrtc::VideoEncoder::EncoderInfo info;
     info.has_internal_source = true;
     info.is_hardware_accelerated = true;
+    // info.has_trusted_rate_controller = true; // TODO push to settings!
     info.implementation_name = "v4l2_hw_h264";
-    info.scaling_settings = webrtc::VideoEncoder::ScalingSettings::kOff;
+    // info.scaling_settings = webrtc::VideoEncoder::ScalingSettings::kOff;
     // TODO don't use fixed values
     info.resolution_bitrate_limits = {VideoEncoder::ResolutionBitrateLimits(
         1280 * 720, 25'000, 25'000, 25'000'000)};
+    // https://webrtcglossary.com/simulcast/
     // info.supports_simulcast = false; // not needed. `false` is default
     BOOST_LOG_SEV(const_cast<video_encoder_impl *>(this)->logger,
                   logging::severity::debug)
