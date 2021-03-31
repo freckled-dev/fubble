@@ -122,7 +122,7 @@ public:
 #endif
       frameType = webrtc::VideoFrameType::kVideoFrameKey;
     }
-#if 0 // TODO neccesairy on rpi?
+#if 0 // no need to wait for first iframe no more. has been necessairy on rpi
     if (!got_first_iframe) {
       BOOST_LOG_SEV(logger, logging::severity::debug)
           << __FUNCTION__ << " !got_first_iframe";
