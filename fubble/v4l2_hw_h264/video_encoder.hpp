@@ -9,6 +9,8 @@ namespace v4l2_hw_h264 {
 class video_encoder : public webrtc::VideoEncoder {
 public:
   static std::unique_ptr<video_encoder> create(const config &config_);
+  static std::unique_ptr<video_encoder>
+  create_shared(std::shared_ptr<video_encoder> delegate);
 };
 } // namespace v4l2_hw_h264
 } // namespace fubble
