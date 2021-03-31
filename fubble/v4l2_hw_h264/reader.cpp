@@ -1,4 +1,5 @@
 #include "reader.hpp"
+#include <boost/signals2/connection.hpp>
 #include <fmt/format.h>
 #include <fubble/rtc/logger.hpp>
 #include <fubble/utils/exception.hpp>
@@ -37,8 +38,6 @@ public:
 
   rtc::logger logger{"reader"};
   const config config_;
-  using data_callback = std::function<void(const void *data, int size)>;
-  data_callback on_data;
   const std::string &device = config_.path;
   const char *device_c = device.c_str();
   int fd{-1};
@@ -47,13 +46,14 @@ public:
   bool run{false};
   std::unordered_set<int> available_ctrls;
 
-  reader_impl(const config &config_, data_callback callback)
-      : config_{config_}, on_data{callback} {
+  reader_impl(const config &config_) : config_{config_} {
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << ", this:" << this;
   }
 
   void initialise(unsigned int start_bitrate) override {
+    if (fd >= 0)
+      return;
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << ", open_device";
     open_device();
@@ -237,6 +237,11 @@ public:
     fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
     const bool set_format = true;
     if (set_format) {
+      BOOST_LOG_SEV(logger, logging::severity::debug)
+          << __FUNCTION__
+          << fmt::format(
+                 ", setting format, width: {}, height: {}, framerate: {}",
+                 config_.width, config_.height, config_.framerate);
       fmt.fmt.pix.width = config_.width;
       fmt.fmt.pix.height = config_.height;
       fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_H264;
@@ -253,21 +258,26 @@ public:
       xioctl_throw(fd, VIDIOC_S_PARM, &parm, "VIDIOC_S_PARM");
       // inside parm gets the actual set framerate set. log?
 
-      // v4l2-ctl --set-ctrl repeat_sequence_header=1
-      // this is a must, if available! else webrtc won't be able to handle the
-      // h264 frame (SPS/PPS errors)
-      if (available_ctrls.find(V4L2_CID_MPEG_VIDEO_REPEAT_SEQ_HEADER) !=
-          available_ctrls.cend()) {
-        v4l2_control seq_header;
-        CLEAR(seq_header);
-        seq_header.id = V4L2_CID_MPEG_VIDEO_REPEAT_SEQ_HEADER;
-        seq_header.value = 1;
-        xioctl_throw(fd, VIDIOC_S_CTRL, &seq_header,
-                     "VIDIOC_S_CTRL, V4L2_CID_MPEG_VIDEO_REPEAT_SEQ_HEADER");
-      }
     } else {
       // Preserve original settings as set by v4l2-ctl for example
       xioctl_throw(fd, VIDIOC_G_FMT, &fmt, "VIDIOC_G_FMT");
+    }
+
+    // v4l2-ctl --set-ctrl repeat_sequence_header=1
+    // this is a must, if available! else webrtc won't be able to handle the
+    // h264 frame (SPS/PPS errors)
+    if (available_ctrls.find(V4L2_CID_MPEG_VIDEO_REPEAT_SEQ_HEADER) !=
+        available_ctrls.cend()) {
+      v4l2_control seq_header;
+      CLEAR(seq_header);
+      seq_header.id = V4L2_CID_MPEG_VIDEO_REPEAT_SEQ_HEADER;
+      seq_header.value = 1;
+      xioctl_throw(fd, VIDIOC_S_CTRL, &seq_header,
+                   "VIDIOC_S_CTRL, V4L2_CID_MPEG_VIDEO_REPEAT_SEQ_HEADER");
+    } else {
+      BOOST_LOG_SEV(logger, logging::severity::warning)
+          << __FUNCTION__
+          << ", V4L2_CID_MPEG_VIDEO_REPEAT_SEQ_HEADER is not available.";
     }
 
     /* Buggy driver paranoia. */
@@ -422,8 +432,13 @@ public:
         << __FUNCTION__ << ", bitrate: " << bitrate;
 
     if (available_ctrls.find(V4L2_CID_MPEG_VIDEO_BITRATE) ==
-        available_ctrls.cend())
+        available_ctrls.cend()) {
+      BOOST_LOG_SEV(logger, logging::severity::warning)
+          << __FUNCTION__
+          << ", V4L2_CID_MPEG_VIDEO_BITRATE is not available. Won't be able to "
+             "set bitrate";
       return;
+    }
 
     if (available_ctrls.find(V4L2_CID_MPEG_VIDEO_BITRATE_MODE) !=
         available_ctrls.cend()) {
@@ -454,7 +469,14 @@ public:
 
 class reader_shared : public reader {
 public:
-  reader_shared(std::shared_ptr<reader> delegate) : delegate{delegate} {}
+  reader_shared(std::shared_ptr<reader> delegate) : delegate{delegate} {
+    on_data_connection = delegate->on_data.connect(
+        [this](auto data, auto size) { on_data(data, size); });
+  }
+
+  void initialise(unsigned int start_bitrate) override {
+    delegate->initialise(start_bitrate);
+  }
 
   void set_bitrate(int bitrate) override {
     // TODO do something smart? multiple call sources with different bitrates
@@ -466,5 +488,14 @@ public:
 
 private:
   std::shared_ptr<reader> delegate;
+  boost::signals2::scoped_connection on_data_connection;
 };
 } // namespace
+
+std::unique_ptr<reader> reader::create(config config_) {
+  return std::make_unique<reader_impl>(config_);
+}
+
+std::unique_ptr<reader> reader::create_shared(std::shared_ptr<reader> reader_) {
+  return std::make_unique<reader_shared>(reader_);
+}

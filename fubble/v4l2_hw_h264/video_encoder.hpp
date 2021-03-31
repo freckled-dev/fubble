@@ -3,14 +3,13 @@
 
 #include <api/video_codecs/video_encoder.h>
 #include <fubble/v4l2_hw_h264/config.hpp>
+#include <fubble/v4l2_hw_h264/reader.hpp>
 
 namespace fubble {
 namespace v4l2_hw_h264 {
 class video_encoder : public webrtc::VideoEncoder {
 public:
-  static std::unique_ptr<video_encoder> create(const config &config_);
-  static std::unique_ptr<video_encoder>
-  create_shared(std::shared_ptr<video_encoder> delegate);
+  static std::unique_ptr<video_encoder> create(std::unique_ptr<reader> reader_);
 };
 } // namespace v4l2_hw_h264
 } // namespace fubble

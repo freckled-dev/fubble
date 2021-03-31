@@ -16,6 +16,7 @@ public:
   webrtc::EncodedImageCallback *callback{};
   webrtc::Clock *const clock_{webrtc::Clock::GetRealTimeClock()};
   std::unique_ptr<reader> reader_;
+  boost::signals2::scoped_connection on_data_connection;
   bool got_first_iframe{};
 
   video_encoder_impl(std::unique_ptr<reader> reader_move)
@@ -23,6 +24,8 @@ public:
     BOOST_ASSERT(reader_);
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << ", this:" << this;
+    on_data_connection = reader_->on_data.connect(
+        [this](auto data, auto size) { on_data(data, size); });
   }
 
   ~video_encoder_impl() {
@@ -254,13 +257,7 @@ private:
 };
 } // namespace
 
-std::unique_ptr<video_encoder> video_encoder::create(const config &config_) {
-  return std::make_unique<video_encoder_impl>(config_);
-}
-
 std::unique_ptr<video_encoder>
-video_encoder::create_shared(std::shared_ptr<video_encoder> encoder) {
-  // return std::make_unique<video_encoder_shared>(encoder);
-  BOOST_ASSERT(false);
-  return nullptr;
+video_encoder::create(std::unique_ptr<reader> reader_move) {
+  return std::make_unique<video_encoder_impl>(std::move(reader_move));
 }

@@ -4,7 +4,7 @@
 #include <fubble/rtc/google/capture/video/device.hpp>
 #include <fubble/rtc/google/video_encoder_factory_factory.hpp>
 #include <fubble/rtc/google/video_source.hpp>
-#include <fubble/v4l2_hw_h264/config.hpp>
+#include <fubble/v4l2_hw_h264/reader.hpp>
 
 namespace fubble {
 namespace v4l2_hw_h264 {

@@ -95,7 +95,14 @@ public:
   CreateVideoEncoder(const webrtc::SdpVideoFormat &format) override {
     BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
     (void)format;
-    return video_encoder::create(config_);
+    // the v4l2_hw_h264 encoder must be instanced only once. the shared_reader
+    // is an adapter that keeps a shared reference to a single encoder (with
+    // internal source)
+    auto shared_reader_locked = shared_reader_.lock();
+    if (!shared_reader_locked)
+      shared_reader_ = shared_reader_locked = reader::create(config_);
+    auto shared_ = reader::create_shared(shared_reader_locked);
+    return video_encoder::create(std::move(shared_));
   }
 
   std::unique_ptr<EncoderSelectorInterface>
@@ -109,6 +116,7 @@ public:
 protected:
   rtc::logger logger{"video_encoder_factory"};
   const config config_;
+  std::weak_ptr<reader> shared_reader_;
 };
 } // namespace
 
