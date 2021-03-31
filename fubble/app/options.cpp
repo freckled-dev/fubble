@@ -28,7 +28,7 @@ options::create(v4l2_hw_h264::config &config) {
   utils::option_adder adder{result};
   adder.add("v4l2_hw_h264-width", config.width, "video width");
   adder.add("v4l2_hw_h264-height", config.height, "video height");
-  adder.add("v4l2_hw_h264-framerate", config.height, "video framerate");
+  adder.add("v4l2_hw_h264-framerate", config.framerate, "video framerate");
   adder.add("v4l2_hw_h264-device", config.path, "video device to use");
   return result;
 }

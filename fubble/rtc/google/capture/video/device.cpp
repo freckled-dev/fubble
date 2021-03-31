@@ -50,7 +50,8 @@ public:
   }
 
   void start(const rtc::video::capability &cap) override {
-    BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << __FUNCTION__ << ", capabilities: " << cap;
     // webrtc::VideoCaptureCapability capabilities;
     webrtc::VideoCaptureCapability capabilities;
     capabilities.width = cap.width;

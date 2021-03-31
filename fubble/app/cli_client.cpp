@@ -1,5 +1,6 @@
 #include "cli_client.hpp"
 #include <boost/asio/io_context.hpp>
+#include <boost/exception/diagnostic_information.hpp>
 #include <boost/predef/os/linux.h>
 #include <fmt/format.h>
 #include <fubble/client/joiner.hpp>
@@ -101,13 +102,9 @@ public:
       audio_settings->get_audio_tracks_volume();
 
     // video
-    client::video_module::config client_video_config;
-    client_video_config.capability.width = 1280;
-    client_video_config.capability.height = 720;
-    client_video_config.capability.fps = 30;
     client_video = std::make_shared<client::video_module>(
         core->get_utils_executor_module(), core->get_rtc_module(),
-        core->get_session_module(), client_video_config);
+        core->get_session_module(), config_.video);
     // TODO refactor #355
 #if 0
     core->get_session_module()->get_own_media()->set_own_video(
@@ -131,7 +128,14 @@ private:
         stop_execution();
       }
     });
-    core->get_utils_executor_module()->get_io_context()->run();
+    try {
+      core->get_utils_executor_module()->get_io_context()->run();
+    } catch (const boost::exception &) {
+      BOOST_LOG_SEV(logger, logging::severity::error)
+          << __FUNCTION__ << " "
+          << boost::current_exception_diagnostic_information();
+      run_promise.set_exception(boost::current_exception());
+    }
     return run_promise.get_future().get();
   }
 

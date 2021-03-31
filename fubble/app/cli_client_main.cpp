@@ -39,16 +39,13 @@ int main(int argc, char *argv[]) {
   fubble::cli_client::config config;
   if (!parse_options(argc, argv, log_config, config))
     return 1;
-#if 1
-  log_config.webrtc = true;
-  log_config.severity = logging::debug;
-#endif
   client::log_module log_module_{log_config};
   logging::logger logger{"main"};
-  config.send_audio = false;
-  config.use_v4l2_hw_h264 = false;
   auto &session_config = config.core.session_;
   session_config.receive_audio = session_config.receive_video = false;
+  config.video.video_enumerator_refresh_timeout =
+      std::chrono::minutes(1); // check for new video devices every minute, an
+                               // not for every "few seconds".
   auto client = fubble::cli_client::create(config);
   exit_signals exit_signals_{client->get_core()
                                  ->get_utils_executor_module()
