@@ -55,7 +55,8 @@ if grep -i ubuntu /etc/os-release
     libxdamage-dev libxcomposite-dev libxtst-dev libxrandr-dev \
     rsync rclone curl \
     pulseaudio docker.io
-  and sudo -H pip3 install conan meson docker-compose aqtinstall
+  sudo pip3 install --upgrade pip
+  sudo -H pip3 install conan meson docker-compose aqtinstall
   conan profile new default --detect
   conan profile update settings.compiler.libcxx=libstdc++11 default
 else
