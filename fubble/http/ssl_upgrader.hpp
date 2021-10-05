@@ -7,9 +7,9 @@
 #include <boost/asio/error.hpp>
 #include <boost/asio/ssl.hpp>
 #include <boost/beast/core/error.hpp>
+#include <boost/predef/os/ios.h>
 #include <boost/predef/os/windows.h>
 #include <boost/thread/future.hpp>
-#include <boost/predef/os/ios.h>
 
 namespace http {
 namespace internal {
@@ -58,19 +58,30 @@ public:
 #else
     ssl_context.set_default_verify_paths();
 #endif
-#if !BOOST_OS_IOS
+#if BOOST_OS_IOS
+    connection_.set_verify_mode(boost::asio::ssl::verify_none);
+#else
+#if 1
+    // TODO remove this. I assume webrtc comes with a libssl, that includes a
+    // bunch of certs.
+    connection_.set_verify_mode(boost::asio::ssl::verify_none);
+#else
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << "set_verify_mode(boost::asio::ssl::verify_peer), server_.host:"
+        << server_.host;
     connection_.set_verify_mode(boost::asio::ssl::verify_peer);
     connection_.set_verify_callback(internal::make_verbose_verification(
         boost::asio::ssl::host_name_verification(server_.host)));
     if (!SSL_set_tlsext_host_name(connection_.native_handle(),
                                   server_.host.c_str())) {
+      BOOST_LOG_SEV(logger, logging::severity::debug)
+          << "!SSL_set_tlsext_host_name, server_.host:" << server_.host;
       boost::beast::error_code error{static_cast<int>(::ERR_get_error()),
                                      boost::asio::error::get_ssl_category()};
       check_and_handle_error(error);
       return promise->get_future();
     }
-#else
-    connection_.set_verify_mode(boost::asio::ssl::verify_none);
+#endif
 #endif
     std::weak_ptr<boost::promise<void>> alive = promise;
     connection_.async_handshake(
