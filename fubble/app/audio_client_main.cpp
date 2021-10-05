@@ -68,10 +68,14 @@ int main(int argc, char *argv[]) {
     utils::option_adder adder{rtc_};
     auto &set = core.rtc_;
     adder.add("disable_ipv6_on_wifi", set.disable_ipv6_on_wifi, "");
-    adder.add("audio_jitter_buffer_enable_rtx_handling", set.audio_.jitter_buffer_enable_rtx_handling, "");
-    adder.add("audio_jitter_buffer_max_packets", set.audio_.jitter_buffer_max_packets, "");
-    adder.add("audio_jitter_buffer_fast_accelerate", set.audio_.jitter_buffer_fast_accelerate, "");
-    adder.add("audio_jitter_buffer_min_delay_ms", set.audio_.jitter_buffer_min_delay_ms, "");
+    adder.add("audio_jitter_buffer_enable_rtx_handling",
+              set.audio_.jitter_buffer_enable_rtx_handling, "");
+    adder.add("audio_jitter_buffer_max_packets",
+              set.audio_.jitter_buffer_max_packets, "");
+    adder.add("audio_jitter_buffer_fast_accelerate",
+              set.audio_.jitter_buffer_fast_accelerate, "");
+    adder.add("audio_jitter_buffer_min_delay_ms",
+              set.audio_.jitter_buffer_min_delay_ms, "");
   }
   bpo::options_description options;
   options.add(general);
@@ -94,11 +98,9 @@ int main(int argc, char *argv[]) {
   webrtc_logger.set_enabled(true);
   logging::logger logger{"main"};
   auto audio_client = audio_client::audio_client::create(audio_client_config);
-  boost::asio::executor exit_executor = audio_client->get_core()
-                                            ->get_utils_executor_module()
-                                            ->get_io_context()
-                                            ->get_executor();
-  exit_signals exit_signals_{exit_executor};
+  auto io_context =
+      audio_client->get_core()->get_utils_executor_module()->get_io_context();
+  exit_signals exit_signals_{*io_context};
   exit_signals_.async_wait([&](auto) { audio_client->stop(); });
   auto result = audio_client->run();
   return result;

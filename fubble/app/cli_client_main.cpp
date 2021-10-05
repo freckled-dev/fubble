@@ -47,10 +47,8 @@ int main(int argc, char *argv[]) {
       std::chrono::minutes(1); // check for new video devices every minute, an
                                // not for every "few seconds".
   auto client = fubble::cli_client::create(config);
-  exit_signals exit_signals_{client->get_core()
-                                 ->get_utils_executor_module()
-                                 ->get_io_context()
-                                 ->get_executor()};
+  exit_signals exit_signals_{
+      *client->get_core()->get_utils_executor_module()->get_io_context()};
   exit_signals_.async_wait([&](auto error) {
     BOOST_ASSERT(!error);
     if (error)

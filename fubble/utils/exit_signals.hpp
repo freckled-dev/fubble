@@ -2,11 +2,11 @@
 #define UTILS_EXIT_SIGNALS_HPP
 
 #include "fubble/utils/logging/logger.hpp"
-#include <boost/asio/executor.hpp>
+#include <boost/asio/io_context.hpp>
 
 class exit_signals {
 public:
-  exit_signals(const boost::asio::executor &executor);
+  exit_signals(boost::asio::io_context &executor);
   ~exit_signals();
 
   using callback_type = std::function<void(const boost::system::error_code &)>;

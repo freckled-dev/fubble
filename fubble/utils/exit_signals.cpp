@@ -3,12 +3,14 @@
 #include <fmt/format.h>
 
 struct exit_signals::implementation {
-  implementation(const boost::asio::executor &executor)
-      : waiter{executor, SIGINT, SIGTERM} {}
+  implementation(boost::asio::io_context &executor) : waiter{executor} {
+    waiter.add(SIGINT);
+    waiter.add(SIGTERM);
+  }
   boost::asio::signal_set waiter;
 };
 
-exit_signals::exit_signals(const boost::asio::executor &executor)
+exit_signals::exit_signals(boost::asio::io_context &executor)
     : impl{std::make_unique<implementation>(executor)} {}
 
 exit_signals::~exit_signals() = default;
