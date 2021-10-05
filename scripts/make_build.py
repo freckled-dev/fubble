@@ -78,9 +78,9 @@ if not args.skip_install:
     for remote_name, remote_url in conan_remotes:
         subprocess.run(['conan', 'remote', 'add', '-f', remote_name, remote_url],
                 check=True)
-    subprocess.run(['conan', 'remote', 'add', '--insert', '0', '-f',
-        'fubble_dependencies', 'https://api.bintray.com/conan/freckled/fubble_dependencies'],
-        check=True)
+    #subprocess.run(['conan', 'remote', 'add', '--insert', '0', '-f',
+    #    'fubble_dependencies', 'https://api.bintray.com/conan/freckled/fubble_dependencies'],
+    #    check=True)
 
     install_args = ['conan', 'install',
         '--build', 'missing',
