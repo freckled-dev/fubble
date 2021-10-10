@@ -33,7 +33,7 @@ const rtc::google::audio_source &audio_level_calculator::get_source() const {
   return audio_source;
 }
 
-void audio_level_calculator::on_data(const rtc::google::audio_data &data) {
+void audio_level_calculator::on_data(const rtc::audio_data &data) {
 #if 0
   BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
 #endif
@@ -84,7 +84,7 @@ void audio_level_calculator::calculate_30times_a_second(double new_level) {
 }
 
 void audio_level_calculator::calculate_voice_detection(
-    const rtc::google::audio_data &data) {
+    const rtc::audio_data &data) {
   bool check = voice_detection_->detect(data);
   if (check == voice_detected)
     return;

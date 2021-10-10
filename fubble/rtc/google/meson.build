@@ -31,7 +31,7 @@ webrtc_google_peer_dep = declare_dependency(
     ],
   )
 install_headers([
-  'asio_signaling_thread.hpp', 'audio_data.hpp', 'audio_devices.hpp',
+  'asio_signaling_thread.hpp', 'audio_devices.hpp',
   'audio_source.hpp', 'audio_source_ptr.hpp', 'audio_track.hpp',
   'audio_track_sink.hpp', 'audio_track_source.hpp', 'connection.hpp',
   'data_channel.hpp', 'factory.hpp', 'log_webrtc_to_logging.hpp',

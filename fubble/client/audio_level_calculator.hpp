@@ -1,14 +1,14 @@
 #ifndef UUID_63CC2CDA_533D_43C1_A9E7_51D617CDC08C
 #define UUID_63CC2CDA_533D_43C1_A9E7_51D617CDC08C
 
-#include "fubble/client/logger.hpp"
 #include <boost/signals2/signal.hpp>
 #include <boost/thread/executors/executor.hpp>
+#include <fubble/client/logger.hpp>
+#include <fubble/rtc/audio_data.hpp>
 
 namespace rtc::google {
 class audio_source;
 class voice_detection;
-struct audio_data;
 } // namespace rtc::google
 
 namespace webrtc {
@@ -28,9 +28,9 @@ public:
   boost::signals2::signal<void(bool)> on_voice_detected;
 
 protected:
-  void on_data(const rtc::google::audio_data &data);
+  void on_data(const rtc::audio_data &data);
   void calculate_30times_a_second(double new_level);
-  void calculate_voice_detection(const rtc::google::audio_data &data);
+  void calculate_voice_detection(const rtc::audio_data &data);
 
   client::logger logger{"audio_level_calculator"};
   boost::executor &main_thread;
