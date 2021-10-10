@@ -239,7 +239,7 @@ static void send_offer(GstWebRTCSessionDescription *offer) {
       << fmt::format("got an offer sdp: '{}'", sdp_text);
 
   GstSDPMessage *sdp{};
-  GstSDPResult result = gst_sdp_message_new(&sdp);
+  [[maybe_unused]] GstSDPResult result = gst_sdp_message_new(&sdp);
   BOOST_ASSERT(result == GstSDPResult::GST_SDP_OK);
   static_assert(sizeof(char) == sizeof(guint8));
   result = gst_sdp_message_parse_buffer(
