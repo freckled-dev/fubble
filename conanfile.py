@@ -141,12 +141,12 @@ class FubbleConan(ConanFile):
         meson_options['b_pch'] = 'false'
         # meson_options['b_vscrt'] = 'mtd'
 
-        meson = Meson(self)
         with tools.environment_append({
                 "PATH": addtional_paths,
                 "BOOST_ROOT": boost_path,
                 "BOOST_INCLUDEDIR": boost_include_path,
-                "BOOST_LIBRARYDIR": boost_library_path}):
+                "BOOST_LIBRARYDIR": boost_library_path
+                }):
             pkg_config_paths = [self.install_folder]
             if self.options.qt_install:
                 pkg_config_paths += [os.path.join(str(self.options.qt_install), 'lib/pkgconfig')]
@@ -181,18 +181,21 @@ class FubbleConan(ConanFile):
 
             # meson_args += ['--cross-file', os.path.join(self.install_folder, 'conan_meson_cross.ini')]
 
-            self.output.info("pkg_config_paths: %s" % pkg_config_paths)
-            meson.configure( build_folder="meson", defs=meson_options,
-                    args=meson_args,
-                    pkg_config_paths=pkg_config_paths
-                    )
-            build_args = []
-            ninja_jobs = os.getenv('FUBBLE_BUILD_NINJA_JOBS')
-            if ninja_jobs:
-                build_args += ['-j %s' % (ninja_jobs)]
-            # build_args += ['-k0']
-            # build_args += ['-v]
-            meson.build(args=build_args)
+            # does not work. will set CXXFLAGS with all include and link directories
+            # TODO issue!
+            # self.output.info("pkg_config_paths: %s" % pkg_config_paths)
+            # meson.configure( build_folder="meson", defs=meson_options,
+            #         args=meson_args,
+            #         pkg_config_paths=pkg_config_paths
+            #         )
+            self.run(['meson', 'setup',
+                os.path.join(self.build_folder, 'meson'),
+                self.source_folder,
+                '--pkg-config-path', ','.join(pkg_config_paths),
+                ])
+            self.run(['meson', 'compile',
+                '-C', os.path.join(self.build_folder, 'meson'),
+                ])
 
     def package(self):
         meson = Meson(self)
