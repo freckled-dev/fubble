@@ -41,6 +41,7 @@ int main(int argc, char **argv) {
 
     // This holds the root certificate used for verification
     // load_root_certificates(ctx);
+    ctx.set_default_verify_paths();
 
     // Verify the remote server's certificate
     ctx.set_verify_mode(ssl::verify_peer);

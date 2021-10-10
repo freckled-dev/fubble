@@ -18,7 +18,6 @@ options::create(::client::log_module::config &config) {
 boost::program_options::options_description
 options::create(::client::core_module::config &config) {
   boost::program_options::options_description result{"core"};
-  utils::option_adder adder{result};
   return result;
 }
 

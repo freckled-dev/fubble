@@ -99,7 +99,8 @@ else
         ]
       boost_dep_link_with += [
         '-rdynamic',
-        '-no-pie'
+        # of set, shared libraries want to link `main`
+        #'-no-pie'
         ]
     endif
   endif

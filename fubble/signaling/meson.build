@@ -3,7 +3,7 @@ signaling = library('signaling',
     'device/creator.cpp',
     'json_message.cpp', 'offer.cpp',
     'answer.cpp', 'ice_candidate.cpp',
-    'device/device.cpp', 'client_module.cpp',
+    'device/device.cpp', 
     ],
   dependencies: [fmt_dep, json_dep, utils_dep, websocket_dep],
   install: true
@@ -12,20 +12,6 @@ signaling_dep = declare_dependency(
   link_with: [signaling],
   dependencies: [boost_dep, utils_dep, websocket_dep]
   )
-install_headers([
-  'answer.hpp', 'client/client.hpp',
-  'client/connection.hpp', 'client/connection_creator.hpp',
-  'client/connection_ptr.hpp', 'client_module.hpp',
-  'connection.hpp', 'connection_ptr.hpp',
-  'create_offer.hpp', 'device/creator.hpp',
-  'device/device.hpp', 'device/device_ptr.hpp',
-  'ice_candidate.hpp', 'json_message.hpp',
-  'logger.hpp', 'want_to_negotiate.hpp',
-  'registration.hpp', 'registration_handler.hpp',
-  'server/application.hpp', 'server/connection.hpp',
-  'server/connection_creator.hpp', 'offer.hpp',
-  'server/connection_ptr.hpp', 'server/server.hpp',
-  ], subdir: 'fubble/signaling')
 
 signaling_test = executable('signaling_test',
   ['json_message_test.cpp',
@@ -45,6 +31,7 @@ test('dependencies test', dependencies_test)
 signaling_client = library('signaling_client',
   ['client/client.cpp', 'client/connection.cpp',
     'client/connection_creator.cpp',
+    'client_module.cpp',
     ],
   dependencies: [fmt_dep, websocket_dep, signaling_dep],
   link_with: [],
@@ -86,4 +73,19 @@ server_exec = executable('signaling_server',
   link_with: [],
   install: true
   )
+
+install_headers([
+  'answer.hpp', 'client/client.hpp',
+  'client/connection.hpp', 'client/connection_creator.hpp',
+  'client/connection_ptr.hpp', 'client_module.hpp',
+  'connection.hpp', 'connection_ptr.hpp',
+  'create_offer.hpp', 'device/creator.hpp',
+  'device/device.hpp', 'device/device_ptr.hpp',
+  'ice_candidate.hpp', 'json_message.hpp',
+  'logger.hpp', 'want_to_negotiate.hpp',
+  'registration.hpp', 'registration_handler.hpp',
+  'server/application.hpp', 'server/connection.hpp',
+  'server/connection_creator.hpp', 'offer.hpp',
+  'server/connection_ptr.hpp', 'server/server.hpp',
+  ], subdir: 'fubble/signaling')
 

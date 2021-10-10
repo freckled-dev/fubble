@@ -61,7 +61,7 @@ public:
 #if BOOST_OS_IOS
     connection_.set_verify_mode(boost::asio::ssl::verify_none);
 #else
-#if 1
+#if 0
     // TODO remove this. I assume webrtc comes with a libssl, that includes a
     // bunch of certs.
     connection_.set_verify_mode(boost::asio::ssl::verify_none);

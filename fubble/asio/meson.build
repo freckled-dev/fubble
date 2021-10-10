@@ -5,6 +5,6 @@ asio = library('asio',
   )
 asio_dep = declare_dependency(
   link_with: [asio],
-  dependencies: [boost_dep]
+  dependencies: [boost_dep, ssl_dep]
   )
 

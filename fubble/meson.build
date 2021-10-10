@@ -14,4 +14,5 @@ if get_option('with_ui')
   subdir('video_layout')
 endif
 subdir('app')
+subdir('ssl_test')
 

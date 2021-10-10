@@ -25,7 +25,10 @@ webrtc_google_peer = library('webrtc_google_peer',
   )
 webrtc_google_peer_dep = declare_dependency(
   link_with: [webrtc_google_peer],
-  dependencies: [boost_dep, webrtc_peer_dep, google_webrtc_dep],
+  dependencies: [boost_dep, webrtc_peer_dep, 
+    # TODO don't expose this internal dependency!
+    google_webrtc_dep
+    ],
   )
 install_headers([
   'asio_signaling_thread.hpp', 'audio_data.hpp', 'audio_devices.hpp',
@@ -54,7 +57,7 @@ google_webrtc_test_main = static_library('google_webrtc_test_main',
 # TODO this test needs more than a second. split it into multiple tests
 webrtc_google_peer_test = executable('google_peer_test',
   ['connection_test.cpp'],
-  dependencies: [gtest_dep, webrtc_google_peer_dep, fmt_dep],
+  dependencies: [gtest_dep, webrtc_google_peer_dep, fmt_dep, google_webrtc_dep],
   link_with: [google_webrtc_test_main]
   )
 suppr_file = meson.current_source_dir() / '../lsan_suppressions_google'
@@ -81,7 +84,7 @@ test('asio_signaling_thread test',
 if not is_ios
   webrtc_google_capture_desktop_enumerator = executable('google_desktop_enumerator',
     ['capture/desktop/enumerator_app.cpp'],
-    dependencies: [webrtc_google_peer_dep, fmt_dep],
+    dependencies: [webrtc_google_peer_dep, fmt_dep, google_webrtc_dep],
     install: true
     )
 endif

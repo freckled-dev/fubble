@@ -9,7 +9,7 @@ utils_sources = ['executor_asio.cpp', 'logging/logger.cpp',
 utils_sources += vcs_tag(
   # command: ['git', 'rev-parse', '--short', 'HEAD'],
   input: 'version.cpp.in', output: 'version.cpp', fallback: '1.0.0-undefined+deadbeef')
-utils = library('utils',
+utils = static_library('utils',
   utils_sources,
   include_directories: ['../..'],
   dependencies: [asio_dep, fmt_dep],
@@ -19,7 +19,7 @@ utils_dep = declare_dependency(
   include_directories: ['../..'],
   link_with: [utils],
   link_whole: [utils],
-  dependencies: [asio_dep]
+  dependencies: [asio_dep, boost_dep]
   )
 install_headers([
   'executor_asio.hpp', 'joined_thread.hpp', 'uuid.hpp', 'wait_for_event.hpp',
