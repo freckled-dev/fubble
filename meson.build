@@ -227,9 +227,13 @@ endif
 google_webrtc_dep_fixme = dependency('google-webrtc', include_type : 'system')
 google_webrtc_dep = declare_dependency(
   dependencies: [google_webrtc_dep_fixme, google_webrtc_system_deps]
+ )
+libssl_dep = dependency('libssl', include_type: 'system', required: true)
+libcrypto_dep = dependency('libcrypto', include_type: 'system', required: true)
+ssl_dep = declare_dependency(
+  dependencies: [libssl_dep, libcrypto_dep]
   )
-#ssl_dep = dependency('openssl', include_type: 'system', required: true)
-ssl_dep = google_webrtc_dep
+#ssl_dep = google_webrtc_dep
 rectangle_bin_pack_dep = dependency('RectangleBinPack', include_type: 'system', required: false, disabler: true)
 if host_machine.system() == 'linux'
   restinio_dep = dependency('restinio', include_type: 'system')
