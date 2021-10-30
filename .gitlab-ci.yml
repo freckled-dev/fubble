@@ -182,6 +182,7 @@ build windows release:
       python scripts/make_build.py
       --profile scripts/conan_profiles/windows_release
       --skip_export
+      --skip_install_webrtc
 
 build windows debug:
   <<: *build_windows

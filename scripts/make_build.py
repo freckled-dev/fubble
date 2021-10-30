@@ -13,7 +13,9 @@ parser.add_argument('--skip_remove', help='don\'t remove the build directory',
         action="store_true")
 parser.add_argument('--skip_install', help='don\'t run conan install',
         action="store_true")
-parser.add_argument('--skip_install_update', help='don\'t run conan install --update',
+parser.add_argument('--skip_install_webrtc', help='don\'t run `conan install google-webrtc`',
+        action="store_true")
+parser.add_argument('--skip_install_update', help='don\'t run `conan install --update`',
         action="store_true")
 parser.add_argument('--skip_build', help='don\'t run conan build',
         action="store_true")
@@ -80,15 +82,16 @@ def conan_profile_command_args():
 
 if not args.skip_install:
     print('installing dependencies')
-    # webrtc remote is very buggy, checkout https://gitlab.com/groups/gitlab-org/-/epics/6816 and
-    # remove the following hack as soon as gitlab-conan is production ready
-    subprocess.run(['conan', 'remote', 'add', '-f', 
-        'gitlab_google_webrtc', 'https://gitlab.com/api/v4/projects/19162728/packages/conan'],
-        check=True)
-    subprocess.run(['conan', 'install', 'google-webrtc/94@acof/stable',
-        '--remote', 'gitlab_google_webrtc',
-        ] + conan_profile_command_args(), check=True)
-    subprocess.run(['conan', 'remote', 'remove', 'gitlab_google_webrtc'], check=True)
+    if not args.skip_install_webrtc:
+        # webrtc remote is very buggy, checkout https://gitlab.com/groups/gitlab-org/-/epics/6816 and
+        # remove the following hack as soon as gitlab-conan is production ready
+        subprocess.run(['conan', 'remote', 'add', '-f', 
+            'gitlab_google_webrtc', 'https://gitlab.com/api/v4/projects/19162728/packages/conan'],
+            check=True)
+        subprocess.run(['conan', 'install', 'google-webrtc/94@acof/stable',
+            '--remote', 'gitlab_google_webrtc',
+            ] + conan_profile_command_args(), check=True)
+        subprocess.run(['conan', 'remote', 'remove', 'gitlab_google_webrtc'], check=True)
 
     # when the hack is fixed, just add it as a remote here
     conan_remotes = [
