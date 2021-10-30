@@ -5,19 +5,20 @@
 #include <fubble/rtc/video_capability.hpp>
 #include <fubble/rtc/video_device_factory.hpp>
 #include <fubble/rtc/video_source.hpp>
+#include <fubble/utils/export.hpp>
 #include <vector>
 
 namespace rtc {
 namespace google {
 namespace capture {
 namespace video {
-class device : public rtc::video_device {
+class FUBBLE_PUBLIC device : public rtc::video_device {
 public:
   device() = default;
   virtual ~device() = default;
 };
 
-class device_factory : public rtc::video_device_factory {
+class FUBBLE_PUBLIC device_factory : public rtc::video_device_factory {
 public:
   device_factory();
   virtual ~device_factory() = default;

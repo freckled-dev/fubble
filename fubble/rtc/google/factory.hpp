@@ -8,6 +8,7 @@
 #include <fubble/rtc/google/settings.hpp>
 #include <fubble/rtc/google/video_encoder_factory_factory.hpp>
 #include <fubble/rtc/logger.hpp>
+#include <fubble/utils/export.hpp>
 #include <memory>
 
 namespace rtc {
@@ -19,7 +20,7 @@ class audio_source;
 class audio_track;
 class audio_devices;
 class connection;
-class factory : public rtc::factory {
+class FUBBLE_PUBLIC factory : public rtc::factory {
 public:
   explicit factory(std::shared_ptr<video_encoder_factory_factory>
                        video_encoder_factory_factory_,

@@ -4,6 +4,7 @@
 #include <boost/signals2/signal.hpp>
 #include <fubble/rtc/audio_data.hpp>
 #include <fubble/rtc/logger.hpp>
+#include <fubble/utils/export.hpp>
 
 namespace webrtc {
 class AudioSourceInterface;
@@ -11,7 +12,7 @@ class AudioSourceInterface;
 
 namespace rtc {
 namespace google {
-class audio_source {
+class FUBBLE_PUBLIC audio_source {
 public:
   audio_source(webrtc::AudioSourceInterface &native);
   virtual ~audio_source();
