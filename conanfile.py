@@ -29,7 +29,7 @@ class FubbleConan(ConanFile):
             # "qt:qtsvg": True, "qt:qtmultimedia": True, "qt:qtquickcontrols2": True, "qt:qtcharts": True,
             "treat_warnings_as_errors": False, "sanatize": False}
     generators = "pkg_config"
-    exports_sources = "*", "!fubble/app/mock_qml_models*"
+    #exports_sources = "*", "!fubble/app/mock_qml_models*", "!.*"
     no_copy_source = True
 
     # https://docs.conan.io/en/latest/versioning/introduction.html

@@ -38,7 +38,7 @@ if host_machine.system() == 'windows'
   add_project_arguments('-D_WIN32_WINNT=0x0601', language: 'cpp')
   # https://stackoverflow.com/questions/39689162/qt-project-in-visual-studio-2015-unresolved-external-symbol-wwinmain
   # TODO shall be only disabled on release
-  add_project_link_arguments('/entry:mainCRTStartup', language: 'cpp')
+  #add_project_link_arguments('/entry:mainCRTStartup', language: 'cpp')
   if is_debug
     add_project_arguments('/bigobj', language: 'cpp')
   endif
