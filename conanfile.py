@@ -179,23 +179,34 @@ class FubbleConan(ConanFile):
                 self.run('ln -fs /home $SYSROOT || true')
                 self.run('ln -fs /root $SYSROOT || true')
 
-            # meson_args += ['--cross-file', os.path.join(self.install_folder, 'conan_meson_cross.ini')]
+            if self.settings.compiler == "Visual Studio":
+                env_build = VisualStudioBuildEnvironment(self)
+                with tools.environment_append(env_build.vars):
+                    self._build_meson(pkg_config_paths)
+            else:
+                self._build_meson(pkg_config_paths)
 
-            # does not work. will set CXXFLAGS with all include and link directories
-            # TODO issue!
-            # self.output.info("pkg_config_paths: %s" % pkg_config_paths)
-            # meson.configure( build_folder="meson", defs=meson_options,
-            #         args=meson_args,
-            #         pkg_config_paths=pkg_config_paths
-            #         )
-            self.run(['meson', 'setup',
-                os.path.join(self.build_folder, 'meson'),
-                self.source_folder,
-                '--pkg-config-path', ','.join(pkg_config_paths),
-                ])
-            self.run(['meson', 'compile',
-                '-C', os.path.join(self.build_folder, 'meson'),
-                ])
+
+    def _build_meson(self, pkg_config_paths):
+        # meson_args += ['--cross-file', os.path.join(self.install_folder, 'conan_meson_cross.ini')]
+
+        # does not work. will set CXXFLAGS with all include and link directories
+        # TODO issue!
+        # self.output.info("pkg_config_paths: %s" % pkg_config_paths)
+        # meson.configure( build_folder="meson", defs=meson_options,
+        #         args=meson_args,
+        #         pkg_config_paths=pkg_config_paths
+        #         )
+        self.run(['meson', 'setup',
+            os.path.join(self.build_folder, 'meson'),
+            self.source_folder,
+            '--pkg-config-path', ','.join(pkg_config_paths),
+            '--prefix', self.install_folder,
+        ])
+        self.run(['meson', 'compile',
+            '-C', os.path.join(self.build_folder, 'meson'),
+        ])
+
 
     def package(self):
         meson = Meson(self)
