@@ -10,7 +10,7 @@ build_type=Release
 # compiler.cppstd=17
 
 [options]
-boost:shared=False
+#boost:shared=False
 #boost:layout=tagged
 google-webrtc:use_h264=False
 
