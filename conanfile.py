@@ -1,4 +1,4 @@
-from conans import ConanFile, Meson, tools, VisualStudioBuildEnvironment
+from conans import ConanFile, Meson, tools
 from six import StringIO
 from conans.errors import ConanInvalidConfiguration
 from conans.tools import os_info
@@ -180,9 +180,8 @@ class FubbleConan(ConanFile):
                 self.run('ln -fs /root $SYSROOT || true')
 
             if self.settings.compiler == "Visual Studio":
-                self.output.info("using VisualStudioBuildEnvironment")
-                env_build = VisualStudioBuildEnvironment(self)
-                with tools.environment_append(env_build.vars):
+                self.output.info("using vcvars")
+                with tools.vcvars(self):
                     self._build_meson(pkg_config_paths)
             else:
                 self._build_meson(pkg_config_paths)
