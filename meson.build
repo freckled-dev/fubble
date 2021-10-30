@@ -242,7 +242,7 @@ ssl_dep = declare_dependency(
   dependencies: [libssl_dep, libcrypto_dep]
   )
 #ssl_dep = google_webrtc_dep
-rectangle_bin_pack_dep = dependency('RectangleBinPack', include_type: 'system', required: false, disabler: true)
+rectangle_bin_pack_dep = dependency('rectanglebinpack', include_type: 'system', required: false, disabler: true)
 if host_machine.system() == 'linux'
   restinio_dep = dependency('restinio', include_type: 'system')
 else

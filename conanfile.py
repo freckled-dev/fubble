@@ -188,6 +188,17 @@ class FubbleConan(ConanFile):
             else:
                 self._build_meson(pkg_config_paths)
 
+    def _get_meson_build_type(self):
+        map = {
+            "RelWithDebInfo": "debugoptimized",
+            "Debug": "debug",
+            "Release": "release"
+        }
+        result = map[self._get_build_type()]
+        if result == None:
+            raise ConanInvalidConfiguration("unsupported buildtype: %s" % (self._get_build_type()))
+        return result
+
 
     def _build_meson(self, pkg_config_paths):
         # meson_args += ['--cross-file', os.path.join(self.install_folder, 'conan_meson_cross.ini')]
@@ -208,11 +219,12 @@ class FubbleConan(ConanFile):
             '--pkg-config-path', ','.join(pkg_config_paths),
             '--prefix', self.package_folder,
             '-Dbackend=ninja',
-            '-Dbuildtype=release', # TODO
+            '-Dbuildtype=%s' % self._get_meson_build_type(),
             '-Ddefault_library=static',
             '-Dcpp_std=c++17',
             '-Db_ndebug=if-release',
-            '-Dwith_tests=%s' % with_tests
+            '-Dwith_tests=%s' % with_tests,
+            '-Dwith_ui=%s' % self.options.enable_ui
         ])
         self.run(['meson', 'compile',
             '-C', os.path.join(self.build_folder, 'meson'),

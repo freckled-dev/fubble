@@ -180,6 +180,7 @@ connection::state connection::get_state() {
     return state::closed;
   }
   BOOST_ASSERT(false);
+  return state::closed;
 }
 
 connection::signaling_state connection::get_signaling_state() {
@@ -200,6 +201,7 @@ connection::signaling_state connection::get_signaling_state() {
     return signaling_state::have_remote_pranswer;
   }
   BOOST_ASSERT(false);
+  return signaling_state::closed;
 }
 
 connection::ice_gathering_state connection::get_ice_gathering_state() {
@@ -214,6 +216,7 @@ connection::ice_gathering_state connection::get_ice_gathering_state() {
     return ice_gathering_state::complete;
   }
   BOOST_ASSERT(false);
+  return ice_gathering_state::new_;
 }
 
 connection::ice_connection_state connection::get_ice_connection_state() {
@@ -236,6 +239,7 @@ connection::ice_connection_state connection::get_ice_connection_state() {
     return ice_connection_state::closed;
   }
   BOOST_ASSERT(false);
+  return ice_connection_state::new_;
 }
 
 connection *connection::cast_user_data_to_connection(gpointer user_data) {
@@ -375,6 +379,7 @@ GstWebRTCSessionDescription *connection::cast_session_description_to_gst(
       return GST_WEBRTC_SDP_TYPE_OFFER;
     }
     BOOST_ASSERT(false);
+    return GST_WEBRTC_SDP_TYPE_OFFER;
   }();
   GstWebRTCSessionDescription *sdp_casted =
       gst_webrtc_session_description_new(type_casted, sdp);

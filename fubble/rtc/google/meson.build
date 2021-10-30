@@ -4,7 +4,7 @@ evaluation = executable('webrtc_google_peer_evaluation',
   override_options: ['cpp_std=c++14']
   )
 
-webrtc_google_peer = library('webrtc_google_peer',
+webrtc_google_peer = shared_library('webrtc_google_peer',
   ['connection.cpp', 'factory.cpp', 'data_channel.cpp',
     'video_track.cpp', 'video_track_source.cpp',
     'capture/video/enumerator.cpp',
