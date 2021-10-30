@@ -1,4 +1,4 @@
-from conans import ConanFile, Meson, tools
+from conans import ConanFile, Meson, tools, VisualStudioBuildEnvironment
 from six import StringIO
 from conans.errors import ConanInvalidConfiguration
 from conans.tools import os_info
