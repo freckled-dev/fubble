@@ -11,7 +11,7 @@ build_type=Release
 
 [options]
 boost:shared=False
-boost:layout=tagged
+#boost:layout=tagged
 google-webrtc:use_h264=False
 
 [build_requires]
