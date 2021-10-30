@@ -1,9 +1,10 @@
 #ifndef UUID_2A2B61CE_A845_4E31_ACD4_40E670F9B25D
 #define UUID_2A2B61CE_A845_4E31_ACD4_40E670F9B25D
 
-#include "fubble/rtc/google/video_source.hpp"
 #include <boost/thread/future.hpp>
 #include <cstdint>
+#include <fubble/rtc/google/video_source.hpp>
+#include <fubble/utils/export.hpp>
 #include <memory>
 
 namespace utils {
@@ -15,7 +16,7 @@ namespace google {
 namespace capture {
 namespace desktop {
 
-class capturer {
+class FUBBLE_PUBLIC capturer {
 public:
   virtual ~capturer() = default;
 
@@ -32,7 +33,7 @@ public:
   static std::unique_ptr<capturer> create_window(std::intptr_t id, bool cursor);
 };
 
-class interval_capturer {
+class FUBBLE_PUBLIC interval_capturer {
 public:
   virtual ~interval_capturer() = default;
   virtual boost::future<void> start() = 0;
