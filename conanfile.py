@@ -21,7 +21,7 @@ class FubbleConan(ConanFile):
     # https://docs.conan.io/en/latest/reference/conanfile/attributes.html#default-options
     default_options = {"shared": False, "qt_install": None, "enable_ui": True,
             "meson_cross_file": None,
-            "nlohmann_json:multiple_headers": True, "restinio:asio": "boost",
+            "restinio:asio": "boost",
             # qt options
             # "qt:openssl": False, "qt:with_mysql": False, "qt:with_pq": False, "qt:with_odbc": False, "qt:widgets": False,
             # "qt:with_libalsa": False,
@@ -82,7 +82,7 @@ class FubbleConan(ConanFile):
         self.requires("fmt/7.1.3")
         self.requires("google-webrtc/94@acof/stable")
         if not self._is_ios() and self.options.enable_ui:
-            self.requires("RectangleBinPack/1.0.2")
+            self.requires("rectanglebinpack/cci.20210901")
         if self.settings.os == "Linux":
             self.requires("restinio/0.6.11")
             # self.requires("qt/5.15.1@bincrafters/stable")
