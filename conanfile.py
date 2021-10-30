@@ -81,6 +81,8 @@ class FubbleConan(ConanFile):
         self.requires("gtest/1.10.0")
         self.requires("fmt/7.1.3")
         self.requires("google-webrtc/94@acof/stable")
+        if self.settings.os == "Windows":
+            self.requires("openssl/1.1.1l")
         if not self._is_ios() and self.options.enable_ui:
             self.requires("rectanglebinpack/cci.20210901")
         if self.settings.os == "Linux":
