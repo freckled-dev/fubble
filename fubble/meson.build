@@ -1,4 +1,3 @@
-subdir('asio')
 subdir('utils')
 subdir('http')
 subdir('websocket')

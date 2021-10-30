@@ -6,6 +6,7 @@
 #include <fmt/format.h>
 #include <fmt/ostream.h>
 #include <gtest/gtest.h>
+#include <mutex>
 #include <queue>
 #include <thread>
 extern "C" {

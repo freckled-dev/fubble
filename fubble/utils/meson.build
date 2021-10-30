@@ -12,14 +12,14 @@ utils_sources += vcs_tag(
 utils = static_library('utils',
   utils_sources,
   include_directories: ['../..'],
-  dependencies: [asio_dep, fmt_dep],
+  dependencies: [boost_dep, fmt_dep],
   install: true
   )
 utils_dep = declare_dependency(
   include_directories: ['../..'],
   link_with: [utils],
   link_whole: [utils],
-  dependencies: [asio_dep, boost_dep]
+  dependencies: [boost_dep]
   )
 install_headers([
   'executor_asio.hpp', 'joined_thread.hpp', 'uuid.hpp', 'wait_for_event.hpp',

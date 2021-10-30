@@ -1,6 +1,6 @@
 evaluation = executable('webrtc_google_peer_evaluation',
   ['evaluation.cpp'],
-  dependencies: [utils_dep, google_webrtc_dep, signaling_client_dep],
+  dependencies: [utils_dep, fmt_dep, google_webrtc_dep],
   override_options: ['cpp_std=c++14']
   )
 

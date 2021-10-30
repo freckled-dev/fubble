@@ -49,8 +49,6 @@ boost_dep_modules = ['thread', 'program_options', 'regex', 'log', 'log_setup',
 boost_dep_link_with = []
 boost_compile_args = [
   '-DBOOST_THREAD_VERSION=5',
-  '-DBOOST_ASIO_SEPARATE_COMPILATION',
-  '-DBOOST_BEAST_SEPARATE_COMPILATION',
   ]
 if host_machine.system() == 'windows'
   boost_dep_link_with += ['bcrypt.lib']
@@ -238,10 +236,13 @@ google_webrtc_dep = declare_dependency(
  )
 libssl_dep = dependency('libssl', include_type: 'system', required: true)
 libcrypto_dep = dependency('libcrypto', include_type: 'system', required: true)
-ssl_dep = declare_dependency(
-  dependencies: [libssl_dep, libcrypto_dep]
-  )
-#ssl_dep = google_webrtc_dep
+if host_machine.system() == 'windows'
+  ssl_dep = google_webrtc_dep
+else
+  ssl_dep = declare_dependency(
+    dependencies: [libssl_dep, libcrypto_dep]
+    )
+endif
 rectangle_bin_pack_dep = dependency('rectanglebinpack', include_type: 'system', required: false, disabler: true)
 if host_machine.system() == 'linux'
   restinio_dep = dependency('restinio', include_type: 'system')

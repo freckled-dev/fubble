@@ -77,9 +77,9 @@ class FubbleConan(ConanFile):
 
     def requirements(self):
         self.requires("nlohmann_json/3.7.0")
-        self.requires("boost/1.75.0")
+        self.requires("boost/1.77.0")
         self.requires("gtest/1.10.0")
-        self.requires("fmt/7.1.3")
+        self.requires("fmt/8.0.1")
         self.requires("google-webrtc/94@acof/stable")
         if self.settings.os == "Windows":
             self.requires("openssl/1.1.1l")
@@ -212,7 +212,10 @@ class FubbleConan(ConanFile):
         #         )
         with_tests = True
         if self.settings.os == "Windows":
-           with_tests = False
+            with_tests = False
+        with_servers = False
+        if self.settings.os == "Linux":
+            with_servers = True
         self.run(['meson', 'setup',
             os.path.join(self.build_folder, 'meson'),
             self.source_folder,
@@ -224,6 +227,7 @@ class FubbleConan(ConanFile):
             '-Dcpp_std=c++17',
             '-Db_ndebug=if-release',
             '-Dwith_tests=%s' % with_tests,
+            '-Dwith_servers=%s' % with_servers,
             '-Dwith_ui=%s' % self.options.enable_ui
         ])
         self.run(['meson', 'compile',
