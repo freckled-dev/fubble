@@ -199,16 +199,20 @@ class FubbleConan(ConanFile):
         #         args=meson_args,
         #         pkg_config_paths=pkg_config_paths
         #         )
+        with_tests = True
+        if self.settings.os == "Windows":
+           with_tests = False
         self.run(['meson', 'setup',
             os.path.join(self.build_folder, 'meson'),
             self.source_folder,
             '--pkg-config-path', ','.join(pkg_config_paths),
-            '--prefix', self.install_folder,
+            '--prefix', self.package_folder,
             '-Dbackend=ninja',
             '-Dbuildtype=release', # TODO
             '-Ddefault_library=static',
             '-Dcpp_std=c++17',
             '-Db_ndebug=if-release',
+            '-Dwith_tests=%s' % with_tests
         ])
         self.run(['meson', 'compile',
             '-C', os.path.join(self.build_folder, 'meson'),
