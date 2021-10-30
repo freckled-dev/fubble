@@ -24,10 +24,9 @@ public:
     // TODO what if there're two channels?
     BOOST_ASSERT(0 == WebRtcVad_ValidRateAndFrameLength(data.sample_rate,
                                                         data.number_of_frames));
-    int result =
-        WebRtcVad_Process(instance, data.sample_rate,
-                          static_cast<const std::int16_t *>(data.audio_data),
-                          data.number_of_frames);
+    int result = WebRtcVad_Process(instance, data.sample_rate,
+                                   static_cast<const std::int16_t *>(data.data),
+                                   data.number_of_frames);
     BOOST_ASSERT(result != -1);
 #if 0
     BOOST_LOG_SEV(logger, logging::severity::debug) << "result:" << result;

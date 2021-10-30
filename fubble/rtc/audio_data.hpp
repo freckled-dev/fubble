@@ -3,7 +3,7 @@
 
 namespace rtc {
 struct audio_data {
-  const void *audio_data{};
+  const void *data{};
   int bits_per_sample{};
   int sample_rate{};
   int number_of_channels{};

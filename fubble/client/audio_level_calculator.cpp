@@ -38,7 +38,7 @@ void audio_level_calculator::on_data(const rtc::audio_data &data) {
   BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
 #endif
   auto bits_per_sample = data.bits_per_sample;
-  auto audio_data = data.audio_data;
+  auto audio_data = data.data;
   auto number_of_frames = data.number_of_frames;
   double averaged = [&] {
     auto frame_count = number_of_frames; // * number_of_channels?
