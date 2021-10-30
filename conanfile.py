@@ -202,6 +202,11 @@ class FubbleConan(ConanFile):
             self.source_folder,
             '--pkg-config-path', ','.join(pkg_config_paths),
             '--prefix', self.install_folder,
+            '-Dbackend=ninja',
+            '-Dbuildtype=release', # TODO
+            '-Ddefault_library=static',
+            '-Dcpp_std=c++17',
+            '-Db_ndebug=if-release',
         ])
         self.run(['meson', 'compile',
             '-C', os.path.join(self.build_folder, 'meson'),
