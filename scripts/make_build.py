@@ -79,6 +79,7 @@ def conan_profile_command_args():
     return result
 
 if not args.skip_install:
+    print('installing dependencies')
     # webrtc remote is very buggy, checkout https://gitlab.com/groups/gitlab-org/-/epics/6816 and
     # remove the following hack as soon as gitlab-conan is production ready
     subprocess.run(['conan', 'remote', 'add', '-f', 
@@ -86,7 +87,7 @@ if not args.skip_install:
         check=True)
     subprocess.run(['conan', 'install', 'google-webrtc/94@acof/stable',
         '--remote', 'gitlab_google_webrtc',
-        ] + conan_profile_command_args())
+        ] + conan_profile_command_args(), check=True)
     subprocess.run(['conan', 'remote', 'remove', 'gitlab_google_webrtc'], check=True)
 
     # when the hack is fixed, just add it as a remote here
