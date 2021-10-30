@@ -4,15 +4,15 @@ client_app = library('app_client', client_app_sources,
 client_app_dep = declare_dependency(link_with: [client_app],
   dependencies: [client_dep])
 
-cli_client_lib = library('fubble_cli', ['cli_client.cpp'],
-  dependencies: [client_app_dep, google_v4l2_hw_h264_dep, 
-    #rpi_h264_encoder_dep
-    ],
-  install: true)
-cli_client_dep = declare_dependency(link_with: [cli_client_lib],
-  dependencies: [client_app_dep])
-cli_client = executable('fubble_cli', ['cli_client_main.cpp'],
-  dependencies: [cli_client_dep], install: true)
+#cli_client_lib = library('fubble_cli', ['cli_client.cpp'],
+#  dependencies: [client_app_dep, google_v4l2_hw_h264_dep, 
+#    #rpi_h264_encoder_dep
+#    ],
+#  install: true)
+#cli_client_dep = declare_dependency(link_with: [cli_client_lib],
+#  dependencies: [client_app_dep])
+#cli_client = executable('fubble_cli', ['cli_client_main.cpp'],
+#  dependencies: [cli_client_dep], install: true)
 
 if is_ios
   audio_client_lib = shared_library('audio_client', ['audio_client.cpp'],
