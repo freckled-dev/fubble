@@ -10,4 +10,5 @@ obj
 *.AppImage.zsync
 __pycache__/
 /aqtinstall.log
+compile_commands.json
 
