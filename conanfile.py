@@ -180,6 +180,7 @@ class FubbleConan(ConanFile):
                 self.run('ln -fs /root $SYSROOT || true')
 
             if self.settings.compiler == "Visual Studio":
+                self.output.info("using VisualStudioBuildEnvironment")
                 env_build = VisualStudioBuildEnvironment(self)
                 with tools.environment_append(env_build.vars):
                     self._build_meson(pkg_config_paths)
