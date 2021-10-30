@@ -126,7 +126,12 @@ boost_dep = declare_dependency(
     link_args: boost_dep_link_with
     )
 if get_option('with_tests')
-  gtest_dep = dependency('gtest', include_type : 'system')
+  gtest_dep_pkg = dependency('gtest', include_type : 'system')
+  gmock_dep_pkg = dependency('gmock', include_type : 'system')
+  gtest_dep = declare_dependency(dependencies: [
+    gtest_dep_pkg,
+    gmock_dep_pkg
+    ])
 else
   gtest_dep = disabled
 endif
