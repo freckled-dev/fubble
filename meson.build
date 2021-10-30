@@ -117,7 +117,9 @@ else
       ]
   endif
 endif
-boost_dep_pkg = dependency('boost', modules : boost_dep_modules, static: true,
+boost_dep_pkg = dependency('boost',
+  modules : boost_dep_modules,
+  static : true,
   include_type : 'system'
   )
 boost_dep = declare_dependency(
