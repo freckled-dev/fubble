@@ -53,10 +53,9 @@ public:
   boost::future<void> secure_connection() {
     auto promise_copy = promise;
     // https://www.boost.org/doc/libs/1_73_0/doc/html/boost_asio/reference/ssl__host_name_verification.html
+    ssl_context.set_default_verify_paths();
 #if BOOST_OS_WINDOWS
     add_windows_root_certs(ssl_context);
-#else
-    ssl_context.set_default_verify_paths();
 #endif
 #if BOOST_OS_IOS
     connection_.set_verify_mode(boost::asio::ssl::verify_none);

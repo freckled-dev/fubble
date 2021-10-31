@@ -6,15 +6,45 @@
 #include <boost/beast/http.hpp>
 #include <boost/beast/ssl.hpp>
 #include <boost/beast/version.hpp>
+#include <boost/predef/os/windows.h>
 #include <cstdlib>
 #include <iostream>
 #include <string>
+#if BOOST_OS_WINDOWS
+#include <wincrypt.h>
+#endif
 
 namespace beast = boost::beast; // from <boost/beast.hpp>
 namespace http = beast::http;   // from <boost/beast/http.hpp>
 namespace net = boost::asio;    // from <boost/asio.hpp>
 namespace ssl = net::ssl;       // from <boost/asio/ssl.hpp>
 using tcp = net::ip::tcp;       // from <boost/asio/ip/tcp.hpp>
+
+#if BOOST_OS_WINDOWS
+void add_windows_root_certs(boost::asio::ssl::context &ctx) {
+  HCERTSTORE hStore = CertOpenSystemStore(0, "ROOT");
+  if (hStore == nullptr)
+    return;
+
+  X509_STORE *store = X509_STORE_new();
+  PCCERT_CONTEXT pContext = nullptr;
+  while ((pContext = CertEnumCertificatesInStore(hStore, pContext)) !=
+         nullptr) {
+    X509 *x509 =
+        d2i_X509(nullptr, (const unsigned char **)&pContext->pbCertEncoded,
+                 pContext->cbCertEncoded);
+    if (x509 == nullptr)
+      continue;
+    X509_STORE_add_cert(store, x509);
+    X509_free(x509);
+  }
+
+  CertFreeCertificateContext(pContext);
+  CertCloseStore(hStore, 0);
+
+  SSL_CTX_set_cert_store(ctx.native_handle(), store);
+}
+#endif
 
 // Performs an HTTP GET and prints the response
 int main(int argc, char **argv) {
@@ -42,6 +72,9 @@ int main(int argc, char **argv) {
     // This holds the root certificate used for verification
     // load_root_certificates(ctx);
     ctx.set_default_verify_paths();
+#if BOOST_OS_WINDOWS
+    add_windows_root_certs(ctx);
+#endif
 
     // Verify the remote server's certificate
     ctx.set_verify_mode(ssl::verify_peer);
