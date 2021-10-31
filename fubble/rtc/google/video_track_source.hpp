@@ -3,11 +3,12 @@
 
 #include "video_source.hpp"
 #include "video_track.hpp"
+#include <fubble/utils/export.hpp>
 #include <media/base/adapted_video_track_source.h>
 
 namespace rtc {
 namespace google {
-class video_track_source : public video_track {
+class FUBBLE_PUBLIC video_track_source : public video_track {
 public:
   class adapter : public rtc::AdaptedVideoTrackSource {
   public:
