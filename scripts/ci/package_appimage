@@ -4,7 +4,6 @@ current_dir="$PWD"
 cd "$(dirname "$0")"
 source ../environment
 
-export LD_LIBRARY_PATH=$(realpath $(dirname $(which qmake))/../lib)
 
 cd "$current_dir"
 curl -LO https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
@@ -14,6 +13,8 @@ curl -LO https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/
 chmod u+x linuxdeploy-x86_64.AppImage linuxdeploy-plugin-qt-x86_64.AppImage
 
 export QML_SOURCES_PATHS="${source_dir}/fubble/app"
+export LD_LIBRARY_PATH="$(realpath $(dirname $(which qmake))/../lib)"
+export LD_LIBRARY_PATH="${prefix_dir}/lib64:${LD_LIBRARY_PATH}" 
 
 mkdir -p appdir/usr
 cp -rv "${prefix_dir}/share" appdir/usr
