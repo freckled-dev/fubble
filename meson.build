@@ -237,7 +237,10 @@ google_webrtc_dep = declare_dependency(
 libssl_dep = dependency('libssl', include_type: 'system', required: true)
 libcrypto_dep = dependency('libcrypto', include_type: 'system', required: true)
 if host_machine.system() == 'windows'
-  ssl_dep = google_webrtc_dep
+  # ssl_dep = google_webrtc_dep
+  ssl_dep = declare_dependency(
+    dependencies: [libssl_dep, libcrypto_dep]
+    )
 else
   ssl_dep = declare_dependency(
     dependencies: [libssl_dep, libcrypto_dep]
