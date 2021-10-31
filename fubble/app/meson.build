@@ -74,7 +74,7 @@ if get_option('with_ui')
     client_gui = executable('fubble', client_gui_sources,
       dependencies: client_gui_dependencies,
       win_subsystem: 'windows',
-      link_args: ['/entry:mainCRTStartup']
+      link_args: ['/entry:mainCRTStartup'],
       install: true
       )
   else
