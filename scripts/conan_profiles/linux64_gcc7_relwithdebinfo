@@ -8,7 +8,7 @@ compiler.version=7
 compiler.libcxx=libstdc++11
 build_type=RelWithDebInfo
 [options]
-boost:asio_no_deprecated=True
+boost:asio_no_deprecated=False # needed by restino
 boost:bzip2=False
 boost:filesystem_no_deprecated=True
 # boost:layout=system
