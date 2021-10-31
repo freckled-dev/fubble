@@ -25,10 +25,9 @@ webrtc_google_peer = shared_library('webrtc_google_peer',
   )
 webrtc_google_peer_dep = declare_dependency(
   link_with: [webrtc_google_peer],
-  dependencies: [boost_dep, webrtc_peer_dep, 
-    # TODO don't expose this internal dependency!
-    google_webrtc_dep
-    ],
+  dependencies: [boost_dep, webrtc_peer_dep
+    # TODO remove, don't expose google-webrtc!
+    , google_webrtc_dep],
   )
 install_headers([
   'asio_signaling_thread.hpp', 'audio_devices.hpp',
@@ -71,7 +70,7 @@ test('webrtc_google_peer test',
 
 webrtc_google_asio_thread_test = executable('webrtc_google_asio_thread_test',
   ['asio_signaling_thread_test.cpp'],
-  dependencies: [gtest_dep, webrtc_google_peer_dep, fmt_dep],
+  dependencies: [gtest_dep, webrtc_google_peer_dep, fmt_dep, google_webrtc_dep],
   link_with: [google_webrtc_test_main]
   )
 test('asio_signaling_thread test',
