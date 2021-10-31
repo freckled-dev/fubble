@@ -70,15 +70,19 @@ if get_option('with_ui')
 
   rcc = find_program('rcc-qt5', 'rcc')
   client_gui_dependencies = [client_app_dep, ui_dep, video_layout_dep]
-  if host_machine.system() != 'windows'
+  if host_machine.system() == 'windows'
+    client_gui = executable('fubble', client_gui_sources,
+      dependencies: client_gui_dependencies, win_subsystem: 'windows', install: true)
+  else
     qt_dir = run_command('dirname', '--', rcc.full_path()).stdout().strip() / '..'
     # error(qt_dir)
     client_gui = executable('fubble', client_gui_sources,
-      dependencies: client_gui_dependencies, win_subsystem: 'windows', install: true,
-      build_rpath: qt_dir / 'lib')
-  else
-    client_gui = executable('fubble', client_gui_sources,
-      dependencies: client_gui_dependencies, win_subsystem: 'windows', install: true)
+      dependencies: client_gui_dependencies,
+      win_subsystem: 'windows',
+      install: true,
+      build_rpath: qt_dir / 'lib',
+      link_args: ['/entry:mainCRTStartup']
+      )
   endif
 
   # https://mesonbuild.com/Generating-sources.html
