@@ -1,6 +1,4 @@
-#!/bin/bash
-
-set -e
+#!/bin/bash -e
 
 current_dir="$PWD"
 cd "$(dirname "$0")"
