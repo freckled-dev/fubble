@@ -7,8 +7,7 @@ video_track_source::video_track_source(
     const rtc::scoped_refptr<webrtc::VideoTrackInterface> &track,
     const rtc::scoped_refptr<video_track_source::adapter> &source_adapter,
     const std::shared_ptr<video_source> &source)
-    : video_track(track), adapter_(source_adapter),
-      source(source), video_track_{track} {
+    : adapter_(source_adapter), source(source), video_track_{track} {
 
   BOOST_ASSERT(source);
   on_frame_connection = source->on_frame.connect(
@@ -16,6 +15,15 @@ video_track_source::video_track_source(
 }
 
 video_track_source::~video_track_source() = default;
+
+void video_track_source::set_enabled(bool enabled) {
+  video_track_->set_enabled(enabled);
+}
+
+rtc::scoped_refptr<webrtc::MediaStreamTrackInterface>
+video_track_source::native_track() const {
+  return video_track_;
+}
 
 void video_track_source::handle_frame(const webrtc::VideoFrame &frame) {
   adapter_->handle_frame(frame);

@@ -1,12 +1,12 @@
 #include "remote_participant.hpp"
-#include "fubble/client/factory.hpp"
-#include "fubble/client/peer.hpp"
-#include "fubble/client/peers.hpp"
-#include "fubble/client/tracks_adder.hpp"
-#include "fubble/matrix/user.hpp"
-#include "fubble/rtc/google/audio_track_sink.hpp"
-#include "fubble/rtc/google/video_track_sink.hpp"
 #include <fmt/format.h>
+#include <fubble/client/factory.hpp>
+#include <fubble/client/peer.hpp>
+#include <fubble/client/peers.hpp>
+#include <fubble/client/tracks_adder.hpp>
+#include <fubble/matrix/user.hpp>
+#include <fubble/rtc/google/audio_track_sink.hpp>
+#include <fubble/rtc/google/video_track_sink.hpp>
 
 using namespace client;
 

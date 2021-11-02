@@ -1,5 +1,5 @@
 #include "peer_creator.hpp"
-#include "fubble/rtc/google/factory.hpp"
+#include "fubble/rtc/factory.hpp"
 #include "fubble/signaling/client/client.hpp"
 #include "peer.hpp"
 

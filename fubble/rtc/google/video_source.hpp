@@ -1,8 +1,8 @@
 #ifndef RTC_GOOGLE_VIDEO_SOURCE_HPP
 #define RTC_GOOGLE_VIDEO_SOURCE_HPP
 
-#include <api/video/video_frame.h>
 #include <boost/signals2/signal.hpp>
+#include <fubble/rtc/google/google_webrtc_predecl.hpp>
 #include <fubble/rtc/video_source.hpp>
 
 namespace rtc {

@@ -30,6 +30,11 @@ public:
   enum class content_hint { none, fluid, detailed, text };
   void set_content_hint(const content_hint hint);
 
+  void set_enabled(bool enabled) override;
+
+  rtc::scoped_refptr<webrtc::MediaStreamTrackInterface>
+  native_track() const override;
+
 protected:
   void handle_frame(const webrtc::VideoFrame &frame);
 

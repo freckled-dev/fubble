@@ -19,11 +19,16 @@ public:
       const rtc::scoped_refptr<webrtc::VideoTrackInterface> &track);
   ~video_track_sink();
 
+  void set_enabled(bool enabled) override;
+  rtc::scoped_refptr<webrtc::MediaStreamTrackInterface>
+  native_track() const override;
+
 protected:
   void OnFrame(const webrtc::VideoFrame &frame) override;
   void OnDiscardedFrame() override;
 
   rtc::logger logger{"video_track_sink"};
+  const rtc::scoped_refptr<webrtc::VideoTrackInterface> native_track_;
   rtc::scoped_refptr<webrtc::VideoTrackInterface> video_track_delegate;
 };
 } // namespace google

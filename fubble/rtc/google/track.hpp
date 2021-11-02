@@ -1,21 +1,18 @@
 #ifndef RTC_GOOGLE_TRACK_HPP
 #define RTC_GOOGLE_TRACK_HPP
 
-#include "fubble/rtc/track.hpp"
-#include <api/media_stream_interface.h>
+#include <fubble/rtc/google/google_webrtc_predecl.hpp>
 
 namespace rtc {
 namespace google {
 class track {
 public:
-  track(rtc::scoped_refptr<webrtc::MediaStreamTrackInterface> native_track);
+  virtual ~track() = default;
 
-  rtc::scoped_refptr<webrtc::MediaStreamTrackInterface> native_track() const;
-
-  void set_enabled(bool);
+  virtual rtc::scoped_refptr<webrtc::MediaStreamTrackInterface>
+  native_track() const = 0;
 
 protected:
-  rtc::scoped_refptr<webrtc::MediaStreamTrackInterface> native_track_;
 };
 } // namespace google
 } // namespace rtc
