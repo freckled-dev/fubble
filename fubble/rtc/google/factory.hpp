@@ -33,7 +33,8 @@ public:
   std::unique_ptr<rtc::video_track>
   create_video_track(const std::shared_ptr<rtc::video_source> &source) override;
 
-  std::unique_ptr<audio_track> create_audio_track(audio_source &source);
+  std::unique_ptr<rtc::audio_track>
+  create_audio_track(rtc::audio_source &source) override;
 
   webrtc::PeerConnectionFactoryInterface &get_native() const;
 

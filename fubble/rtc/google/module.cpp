@@ -38,10 +38,10 @@ module::get_audio_device_creator() {
   return audio_device_creator;
 }
 
-std::shared_ptr<capture::audio::device> module::get_audio_device() {
-  if (!audio_device)
-    audio_device = get_audio_device_creator()->create();
-  return audio_device;
+std::shared_ptr<rtc::audio_device> module::get_audio_device() {
+  if (!audio_device_)
+    audio_device_ = get_audio_device_creator()->create();
+  return audio_device_;
 }
 
 std::shared_ptr<rtc::video_device_factory> module::get_video_device_creator() {

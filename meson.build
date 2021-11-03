@@ -71,11 +71,12 @@ else
     boost_dep_link_with += [
       '-lbacktrace',
       ]
-  elif dependency('boost', modules : ['stacktrace_addr2line'], static: true, required: false).found()
-    message('using boost_stacktrace_addr2line')
-    boost_dep_modules += [
-      'stacktrace_addr2line',
-      ]
+    # super slow
+    #elif dependency('boost', modules : ['stacktrace_addr2line'], static: true, required: false).found()
+    #  message('using boost_stacktrace_addr2line')
+    #  boost_dep_modules += [
+    #    'stacktrace_addr2line',
+    #    ]
   else
     message('using boost_stacktrace_basic')
     boost_dep_modules += [
@@ -234,18 +235,20 @@ google_webrtc_dep_fixme = dependency('google-webrtc', include_type : 'system')
 google_webrtc_dep = declare_dependency(
   dependencies: [google_webrtc_dep_fixme, google_webrtc_system_deps]
  )
-#libssl_dep = dependency('libssl', include_type: 'system', required: true)
-#libcrypto_dep = dependency('libcrypto', include_type: 'system', required: true)
+libssl_dep = dependency('libssl', include_type: 'system', required: true)
+libcrypto_dep = dependency('libcrypto', include_type: 'system', required: true)
 #if host_machine.system() == 'windows'
 #  ssl_dep = declare_dependency(
 #    dependencies: [libssl_dep, libcrypto_dep]
 #    )
 #else
-#  ssl_dep = declare_dependency(
-#    dependencies: [libssl_dep, libcrypto_dep]
-#    )
+ssl_dep = declare_dependency(
+  dependencies: [libssl_dep, libcrypto_dep]
+  )
 #endif
-ssl_dep = google_webrtc_dep
+#ssl_dep = google_webrtc_dep
+#ssl_dep = declare_dependency()
+
 rectangle_bin_pack_dep = dependency('rectanglebinpack', include_type: 'system', required: false, disabler: true)
 if host_machine.system() == 'linux'
   restinio_dep = dependency('restinio', include_type: 'system')

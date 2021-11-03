@@ -5,9 +5,9 @@
 #include <boost/thread/executors/executor.hpp>
 #include <fubble/client/logger.hpp>
 #include <fubble/rtc/audio_data.hpp>
+#include <fubble/rtc/audio_source.hpp>
 
 namespace rtc::google {
-class audio_source;
 class voice_detection;
 } // namespace rtc::google
 
@@ -18,10 +18,10 @@ namespace client {
 class audio_level_calculator {
 public:
   audio_level_calculator(boost::executor &main_thread,
-                         rtc::google::audio_source &audio_source_);
+                         rtc::audio_source &audio_source_);
   ~audio_level_calculator();
 
-  const rtc::google::audio_source &get_source() const;
+  const rtc::audio_source &get_source() const;
 
   // TODO refactor to 10
   boost::signals2::signal<void(double)> on_sound_level_30times_a_second;
@@ -34,7 +34,7 @@ protected:
 
   client::logger logger{"audio_level_calculator"};
   boost::executor &main_thread;
-  rtc::google::audio_source &audio_source;
+  rtc::audio_source &audio_source;
   std::unique_ptr<rtc::google::voice_detection> voice_detection_;
 
   static constexpr int audio_level_values_to_collect{100 / 10};
@@ -52,7 +52,7 @@ public:
       : main_thread(main_thread) {}
 
   std::unique_ptr<audio_level_calculator>
-  create(rtc::google::audio_source &audio_source_) {
+  create(rtc::audio_source &audio_source_) {
     return std::make_unique<audio_level_calculator>(main_thread, audio_source_);
   }
 

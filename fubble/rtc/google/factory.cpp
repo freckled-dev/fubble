@@ -8,6 +8,7 @@
 #include "video_source.hpp"
 #include "video_track.hpp"
 #include "video_track_source.hpp"
+#include "video_track_source_adapter.hpp"
 #include <api/audio_codecs/builtin_audio_decoder_factory.h>
 #include <api/audio_codecs/builtin_audio_encoder_factory.h>
 #include <api/audio_codecs/opus_audio_encoder_factory.h>
@@ -71,8 +72,8 @@ std::unique_ptr<rtc::connection> factory::create_connection() {
 std::unique_ptr<rtc::video_track>
 factory::create_video_track(const std::shared_ptr<rtc::video_source> &source) {
   auto label = uuid::generate();
-  rtc::scoped_refptr<video_track_source::adapter> source_adapter =
-      new rtc::RefCountedObject<video_track_source::adapter>;
+  rtc::scoped_refptr<video_track_source_adapter> source_adapter =
+      new rtc::RefCountedObject<video_track_source_adapter>;
   rtc::scoped_refptr<webrtc::VideoTrackInterface> native(
       factory_->CreateVideoTrack(label, source_adapter.get()));
   assert(native);
@@ -87,9 +88,11 @@ factory::create_video_track(const std::shared_ptr<rtc::video_source> &source) {
   return result;
 }
 
-std::unique_ptr<audio_track> factory::create_audio_track(audio_source &source) {
+std::unique_ptr<rtc::audio_track>
+factory::create_audio_track(rtc::audio_source &source) {
   auto label = uuid::generate();
-  webrtc::AudioSourceInterface &native_source = source.get_native();
+  auto casted = dynamic_cast<audio_source *>(&source);
+  webrtc::AudioSourceInterface &native_source = casted->get_native();
   rtc::scoped_refptr<webrtc::AudioTrackInterface> native =
       factory_->CreateAudioTrack(label, &native_source);
   BOOST_ASSERT(native->GetSource() == &native_source);

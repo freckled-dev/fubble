@@ -23,6 +23,7 @@ public:
   void link_to_webrtc(const connection::natives &natives);
 
   void set_enabled(bool) override;
+  void set_content_hint(content_hint hint) override;
 
 private:
   void initialise_gst();

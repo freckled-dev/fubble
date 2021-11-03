@@ -6,14 +6,15 @@ evaluation = executable('webrtc_google_peer_evaluation',
 
 webrtc_google_peer = shared_library('webrtc_google_peer',
   ['connection.cpp', 'factory.cpp', 'data_channel.cpp',
-    'video_track.cpp', 'video_track_source.cpp',
+    'video_track_source.cpp',
     'capture/video/enumerator.cpp',
     'capture/video/device.cpp', 'audio_source.cpp',
     'capture/audio/device_creator.cpp', 'capture/audio/device.cpp',
     'audio_track_source.cpp', 'audio_track_sink.cpp',
-    'video_track_source.cpp', 'video_track_sink.cpp', 'video_source.cpp',
+    'video_track_source.cpp', 'video_track_source_adapter.cpp',
+    'video_track_sink.cpp', 'video_source.cpp',
     'asio_signaling_thread.cpp', 'log_webrtc_to_logging.cpp',
-    'audio_devices.cpp', 'audio_track.cpp', 'track.cpp',
+    'audio_devices.cpp', 'audio_track.cpp',
     'voice_detection.cpp', 'capture/desktop/capturer.cpp',
     'capture/desktop/enumerator.cpp', 'module.cpp', 'settings.cpp',
     'video_encoder_factory_factory.cpp',
@@ -27,7 +28,8 @@ webrtc_google_peer_dep = declare_dependency(
   link_with: [webrtc_google_peer],
   dependencies: [boost_dep, webrtc_peer_dep
     # TODO remove, don't expose google-webrtc!
-    , google_webrtc_dep],
+    #, google_webrtc_dep
+    ],
   )
 install_headers([
   'asio_signaling_thread.hpp', 'audio_devices.hpp',

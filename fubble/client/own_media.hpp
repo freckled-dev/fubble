@@ -1,14 +1,11 @@
 #ifndef UUID_BE2C6F4A_FF34_4689_941A_8BF68E644DA1
 #define UUID_BE2C6F4A_FF34_4689_941A_8BF68E644DA1
 
-#include "fubble/client/own_video.hpp"
-#include "fubble/rtc/google/video_source_ptr.hpp"
 #include <boost/assert.hpp>
 #include <boost/signals2/signal.hpp>
-
-namespace rtc::google {
-class audio_track;
-}
+#include <fubble/client/own_video.hpp>
+#include <fubble/rtc/audio_track.hpp>
+#include <fubble/rtc/video_source.hpp>
 
 namespace client {
 class own_audio_track;
@@ -24,7 +21,7 @@ public:
   void set_own_video(const std::shared_ptr<own_video> &own_video_);
   void set_desktop_sharing(std::shared_ptr<desktop_sharing> desktop_sharing_);
 
-  rtc::google::audio_track *get_audio() const;
+  rtc::audio_track *get_audio() const;
   // may return nullptr!
   std::shared_ptr<own_video> get_videos() const;
   // may return nullptr!

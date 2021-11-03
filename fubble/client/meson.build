@@ -57,7 +57,7 @@ client_test_env = [ 'ASAN_OPTIONS=fast_unwind_on_malloc=0', suppr_option ]
 
 client_muted_deaf_communicator_test = executable('client_muted_deaf_communicator_test',
   ['mute_deaf_communicator_test.cpp'],
-  dependencies: [client_dep, gtest_dep, version_server_dep],
+  dependencies: [client_dep, gtest_dep, version_server_dep, google_webrtc_dep],
   link_with: [google_webrtc_test_main]
   )
 test('client muted_deaf_communicator test', client_muted_deaf_communicator_test,
@@ -65,7 +65,7 @@ test('client muted_deaf_communicator test', client_muted_deaf_communicator_test,
 
 client_room_test = executable('client_room_test',
   ['room_test.cpp'],
-  dependencies: [client_dep, gtest_dep, version_server_dep],
+  dependencies: [client_dep, gtest_dep, version_server_dep, google_webrtc_dep],
   link_with: [google_webrtc_test_main]
   )
 test('client room test', client_room_test, env: client_test_env)

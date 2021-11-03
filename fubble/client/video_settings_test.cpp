@@ -23,10 +23,8 @@ struct mock_video_device : rtc::google::capture::video::device {
               (const override));
 };
 struct mock_own_video : client::own_video {
-  MOCK_METHOD(void, add, (std::shared_ptr<rtc::google::video_source>),
-              (override));
-  MOCK_METHOD(void, remove, (std::shared_ptr<rtc::google::video_source>),
-              (override));
+  MOCK_METHOD(void, add, (std::shared_ptr<rtc::video_source>), (override));
+  MOCK_METHOD(void, remove, (std::shared_ptr<rtc::video_source>), (override));
   MOCK_METHOD(videos_type, get_all, (), (const override));
 };
 struct mock_tracks_adder : client::tracks_adder {};

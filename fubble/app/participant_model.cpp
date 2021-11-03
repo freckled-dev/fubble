@@ -7,7 +7,7 @@
 #include "fubble/client/own_participant.hpp"
 #include "fubble/client/participant.hpp"
 #include "fubble/client/video_settings.hpp"
-#include "fubble/rtc/google/audio_track.hpp"
+#include "fubble/rtc/audio_track.hpp"
 
 using namespace client;
 
@@ -96,8 +96,7 @@ void participant_model::set_name() {
   name_changed(name);
 }
 
-void participant_model::video_added(
-    std::shared_ptr<rtc::google::video_source> added) {
+void participant_model::video_added(std::shared_ptr<rtc::video_source> added) {
   BOOST_LOG_SEV(logger, logging::severity::debug)
       << __FUNCTION__ << ", added:" << added.get();
   // TODO support more than one video per client
@@ -112,7 +111,7 @@ void participant_model::video_added(
 }
 
 void participant_model::video_removed(
-    std::shared_ptr<rtc::google::video_source> removed) {
+    std::shared_ptr<rtc::video_source> removed) {
   BOOST_LOG_SEV(logger, logging::severity::debug)
       << __FUNCTION__ << ", removed:" << removed.get();
   BOOST_ASSERT(video);
@@ -127,7 +126,7 @@ void participant_model::video_removed(
   video_changed(video);
 }
 
-void participant_model::audio_added(rtc::google::audio_source &source) {
+void participant_model::audio_added(rtc::audio_source &source) {
   // only gets called if !own
   BOOST_ASSERT(
       !audio_level_calculator_); // TODO support more than one audio source per
@@ -139,7 +138,7 @@ void participant_model::audio_added(rtc::google::audio_source &source) {
       [this](auto detected) { on_voice_detected(detected); });
 }
 
-void participant_model::audio_removed(rtc::google::audio_source &remove) {
+void participant_model::audio_removed(rtc::audio_source &remove) {
   if (&audio_level_calculator_->get_source() != &remove)
     return;
   return audio_level_calculator_.reset();

@@ -1,5 +1,6 @@
 #include "device.hpp"
 #include <api/video/video_sink_interface.h>
+#include <fubble/rtc/google/video_frame.hpp>
 #include <fubble/rtc/google/video_source.hpp>
 #include <fubble/utils/exception.hpp>
 #include <modules/audio_device/include/audio_device.h>
@@ -21,7 +22,8 @@ public:
 #if 0
   BOOST_LOG_SEV(logger, logging::severity::debug) << "OnFrame()";
 #endif
-    on_frame(frame);
+    rtc::google::video_frame casted{frame};
+    on_frame(casted);
   }
 
   void OnDiscardedFrame() override {

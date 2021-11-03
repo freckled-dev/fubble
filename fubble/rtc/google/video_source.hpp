@@ -1,7 +1,6 @@
 #ifndef RTC_GOOGLE_VIDEO_SOURCE_HPP
 #define RTC_GOOGLE_VIDEO_SOURCE_HPP
 
-#include <boost/signals2/signal.hpp>
 #include <fubble/rtc/google/google_webrtc_predecl.hpp>
 #include <fubble/rtc/video_source.hpp>
 
@@ -12,7 +11,6 @@ namespace google {
 class video_source : public rtc::video_source {
 public:
   virtual ~video_source();
-  boost::signals2::signal<void(const webrtc::VideoFrame &)> on_frame;
 };
 
 class video_source_noop : public video_source {

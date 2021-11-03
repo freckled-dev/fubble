@@ -1,12 +1,12 @@
-#include "audio_settings_module.hpp"
-#include "fubble/client/audio_device_settings.hpp"
-#include "fubble/client/audio_tracks_volume.hpp"
-#include "fubble/client/loopback_audio.hpp"
-#include "fubble/client/own_audio_information.hpp"
-#include "fubble/client/own_microphone_tester.hpp"
-#include "fubble/rtc/google/audio_track.hpp"
-#include "fubble/rtc/google/capture/audio/device.hpp"
-#include "fubble/rtc/google/factory.hpp"
+#include <audio_settings_module.hpp>
+#include <fubble/client/audio_device_settings.hpp>
+#include <fubble/client/audio_tracks_volume.hpp>
+#include <fubble/client/loopback_audio.hpp>
+#include <fubble/client/own_audio_information.hpp>
+#include <fubble/client/own_microphone_tester.hpp>
+#include <fubble/rtc/audio_device.hpp>
+#include <fubble/rtc/audio_track.hpp>
+#include <fubble/rtc/factory.hpp>
 
 using namespace client;
 
@@ -59,15 +59,12 @@ audio_settings_module::get_audio_device_settings() {
 std::shared_ptr<loopback_audio>
 audio_settings_module::get_loopback_audio_test() {
   if (!loopback_audio_test) {
-    settings_audio_track =
-        std::dynamic_pointer_cast<rtc::google::factory>(
-            rtc_module->get_factory())
-            ->create_audio_track(rtc_module->get_audio_device()->get_source());
+    settings_audio_track = rtc_module->get_factory()->create_audio_track(
+        rtc_module->get_audio_device()->get_source());
     loopback_audio_test_factory =
         std::make_shared<client::loopback_audio_impl_factory>(
-            *std::dynamic_pointer_cast<rtc::google::factory>(
-                rtc_module->get_factory()),
-            settings_audio_track, executor_module->get_boost_executor());
+            *rtc_module->get_factory(), settings_audio_track,
+            executor_module->get_boost_executor());
     loopback_audio_test = std::make_shared<loopback_audio_noop_if_disabled>(
         *loopback_audio_test_factory);
   }

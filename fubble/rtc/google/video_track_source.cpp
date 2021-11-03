@@ -1,11 +1,13 @@
 #include "video_track_source.hpp"
+#include "video_frame.hpp"
+#include "video_track_source_adapter.hpp"
 #include <rtc_base/ref_counted_object.h>
 
 using namespace rtc::google;
 
 video_track_source::video_track_source(
     const rtc::scoped_refptr<webrtc::VideoTrackInterface> &track,
-    const rtc::scoped_refptr<video_track_source::adapter> &source_adapter,
+    const rtc::scoped_refptr<video_track_source_adapter> &source_adapter,
     const std::shared_ptr<video_source> &source)
     : adapter_(source_adapter), source(source), video_track_{track} {
 
@@ -25,31 +27,15 @@ video_track_source::native_track() const {
   return video_track_;
 }
 
-void video_track_source::handle_frame(const webrtc::VideoFrame &frame) {
-  adapter_->handle_frame(frame);
+void video_track_source::handle_frame(const rtc::video_frame &frame) {
+  auto casted = dynamic_cast<const rtc::google::video_frame *>(&frame);
+  BOOST_ASSERT(casted);
+  adapter_->handle_frame(casted->native());
 }
 
-void video_track_source::adapter::handle_frame(
-    const webrtc::VideoFrame &frame) {
-  OnFrame(frame);
-}
-
-rtc::scoped_refptr<video_track_source::adapter>
+rtc::scoped_refptr<video_track_source_adapter>
 video_track_source::source_adapter() const {
   return adapter_;
-}
-
-video_track_source::adapter::SourceState
-video_track_source::adapter::state() const {
-  return webrtc::MediaSourceInterface::kLive;
-}
-
-bool video_track_source::adapter::remote() const { return false; }
-
-bool video_track_source::adapter::is_screencast() const { return false; }
-
-absl::optional<bool> video_track_source::adapter::needs_denoising() const {
-  return {};
 }
 
 void video_track_source::set_content_hint(const content_hint hint) {

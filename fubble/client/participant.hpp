@@ -1,14 +1,12 @@
 #ifndef UUID_709FB41B_8B14_446F_B83F_E736A4371022
 #define UUID_709FB41B_8B14_446F_B83F_E736A4371022
 
-#include "fubble/rtc/google/video_source_ptr.hpp"
 #include <boost/signals2/signal.hpp>
 #include <boost/thread/future.hpp>
+#include <fubble/rtc/audio_track.hpp>
+#include <fubble/rtc/video_source.hpp>
 #include <memory>
 
-namespace rtc::google {
-class audio_track;
-}
 namespace matrix {
 class user;
 }
@@ -24,7 +22,7 @@ public:
   std::string get_name() const;
   boost::signals2::signal<void(const std::string &)> on_name_changed;
 
-  using video_ptr = std::shared_ptr<rtc::google::video_source>;
+  using video_ptr = std::shared_ptr<rtc::video_source>;
   using videos_type = std::vector<video_ptr>;
   virtual videos_type get_videos() const = 0;
   boost::signals2::signal<void(video_ptr)> on_video_added;
@@ -32,10 +30,10 @@ public:
 
   // when refactoring to shared_ptr, ensure
   // `audios.emplace_back(audio_track.get());` don't happen
-  using audios_type = std::vector<rtc::google::audio_track *>;
+  using audios_type = std::vector<rtc::audio_track *>;
   virtual audios_type get_audios() const = 0;
-  boost::signals2::signal<void(rtc::google::audio_track &)> on_audio_added;
-  boost::signals2::signal<void(rtc::google::audio_track &)> on_audio_removed;
+  boost::signals2::signal<void(rtc::audio_track &)> on_audio_added;
+  boost::signals2::signal<void(rtc::audio_track &)> on_audio_removed;
 
   virtual videos_type get_screens() const { return {}; }
   boost::signals2::signal<void(video_ptr)> on_screen_added;

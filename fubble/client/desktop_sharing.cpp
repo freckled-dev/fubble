@@ -1,12 +1,12 @@
 #include "desktop_sharing.hpp"
 #include "add_video_to_connection.hpp"
-#include "fubble/client/logger.hpp"
-#include "fubble/client/tracks_adder.hpp"
-#include "fubble/rtc/google/capture/desktop/enumerator.hpp"
-#include "fubble/rtc/google/video_track_source.hpp"
-#include "fubble/utils/timer.hpp"
 #include <boost/thread/executors/inline_executor.hpp>
 #include <chrono>
+#include <fubble/client/logger.hpp>
+#include <fubble/client/tracks_adder.hpp>
+#include <fubble/rtc/google/capture/desktop/enumerator.hpp>
+#include <fubble/rtc/video_track.hpp>
+#include <fubble/utils/timer.hpp>
 
 using namespace client;
 
@@ -242,17 +242,15 @@ public:
     pause_video();
     BOOST_ASSERT(video_source);
     video_adder = add_video_to_connection_factory_->create(video_source);
-    std::dynamic_pointer_cast<rtc::google::video_track_source>(
-        video_adder->get_video_track())
-        ->set_content_hint(
-            rtc::google::video_track_source::content_hint::detailed);
+    std::dynamic_pointer_cast<rtc::video_track>(video_adder->get_video_track())
+        ->set_content_hint(rtc::video_track::content_hint::detailed);
     set_capturer->start().then(executor,
                                [this](auto result) { on_stopped(result); });
     tracks_adder_->add(video_adder);
     on_added(get());
   }
 
-  std::shared_ptr<rtc::google::video_source> get() override {
+  std::shared_ptr<rtc::video_source> get() override {
     if (!set_capturer)
       return nullptr;
     return set_capturer->get_capturer().get_source();
@@ -316,7 +314,7 @@ protected:
 class desktop_sharing_noop final : public desktop_sharing {
 public:
   void set([[maybe_unused]] std::intptr_t id) override {}
-  std::shared_ptr<rtc::google::video_source> get() override { return nullptr; }
+  std::shared_ptr<rtc::video_source> get() override { return nullptr; }
   void reset() override {}
 };
 } // namespace

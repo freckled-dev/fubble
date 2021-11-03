@@ -1,13 +1,14 @@
 #include "capturer.hpp"
-#include "fubble/rtc/logger.hpp"
-#include "fubble/utils/exception.hpp"
-#include "fubble/utils/timer.hpp"
 #include <api/video/i420_buffer.h>
 #include <api/video/video_frame.h>
 #include <boost/assert.hpp>
 #include <boost/optional.hpp>
 #include <boost/thread/executors/inline_executor.hpp>
 #include <fmt/format.h>
+#include <fubble/rtc/google/video_frame.hpp>
+#include <fubble/rtc/logger.hpp>
+#include <fubble/utils/exception.hpp>
+#include <fubble/utils/timer.hpp>
 #include <libyuv.h>
 #include <modules/desktop_capture/desktop_and_cursor_composer.h>
 #include <modules/desktop_capture/desktop_capture_options.h>
@@ -71,7 +72,8 @@ protected:
     webrtc::VideoFrame casted_frame = builder.build();
     BOOST_LOG_SEV(logger, logging::severity::trace)
         << __FUNCTION__ << ", after convert to i420";
-    on_frame(casted_frame);
+    rtc::google::video_frame casted_again{casted_frame};
+    on_frame(casted_again);
     promise_reference->set_value();
   }
 

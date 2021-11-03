@@ -1,12 +1,9 @@
 #ifndef UUID_3AF1EB16_2810_4C69_9A46_59A98C68EAB5
 #define UUID_3AF1EB16_2810_4C69_9A46_59A98C68EAB5
 
-#include "fubble/client/logger.hpp"
 #include <boost/signals2/signal.hpp>
-
-namespace rtc::google {
-class audio_track;
-}
+#include <fubble/client/logger.hpp>
+#include <fubble/rtc/audio_track.hpp>
 
 namespace client {
 class loopback_audio;
@@ -24,7 +21,7 @@ public:
 
 protected:
   void set_loopback_audio(loopback_audio &audio);
-  void on_track(rtc::google::audio_track &);
+  void on_track(rtc::audio_track &);
 
   audio_level_calculator_factory &audio_level_calculator_factory_;
   std::unique_ptr<audio_level_calculator> audio_level_calculator_;

@@ -1,5 +1,5 @@
 #include "audio_level_calculator.hpp"
-#include "fubble/rtc/google/audio_source.hpp"
+#include "fubble/rtc/audio_source.hpp"
 #include "fubble/rtc/google/voice_detection.hpp"
 #include <numeric>
 
@@ -19,8 +19,8 @@ double average(const number_type *data, std::size_t count) {
 }
 } // namespace
 
-audio_level_calculator::audio_level_calculator(
-    boost::executor &main_thread, rtc::google::audio_source &audio_source)
+audio_level_calculator::audio_level_calculator(boost::executor &main_thread,
+                                               rtc::audio_source &audio_source)
     : main_thread(main_thread), audio_source(audio_source) {
   on_data_connection =
       audio_source.on_data.connect([this](auto data) { on_data(data); });
@@ -29,7 +29,7 @@ audio_level_calculator::audio_level_calculator(
 
 audio_level_calculator::~audio_level_calculator() = default;
 
-const rtc::google::audio_source &audio_level_calculator::get_source() const {
+const rtc::audio_source &audio_level_calculator::get_source() const {
   return audio_source;
 }
 

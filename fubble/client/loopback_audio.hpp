@@ -9,12 +9,9 @@
 
 namespace rtc {
 class connection;
-}
-namespace rtc::google {
 class audio_track;
-class audio_track_sink;
 class factory;
-} // namespace rtc::google
+} // namespace rtc
 
 namespace client {
 class loopback_audio {
@@ -23,20 +20,20 @@ public:
 
   virtual void enable_loopback(const bool enable) = 0;
   virtual bool get_enable_loopback() const = 0;
-  virtual std::shared_ptr<rtc::google::audio_track> get_track() = 0;
+  virtual std::shared_ptr<rtc::audio_track> get_track() = 0;
 
-  boost::signals2::signal<void(rtc::google::audio_track &)> on_track;
+  boost::signals2::signal<void(rtc::audio_track &)> on_track;
 
   static std::unique_ptr<loopback_audio>
-  create(rtc::google::factory &rtc_factory,
-         std::shared_ptr<rtc::google::audio_track> audio_source,
+  create(rtc::factory &rtc_factory,
+         std::shared_ptr<rtc::audio_track> audio_source,
          std::shared_ptr<boost::executor> defering_executor);
 };
 
 class loopback_audio_noop : public loopback_audio {
   void enable_loopback(const bool) override {}
   bool get_enable_loopback() const override { return false; }
-  std::shared_ptr<rtc::google::audio_track> get_track() override {
+  std::shared_ptr<rtc::audio_track> get_track() override {
     BOOST_ASSERT(false);
     return {};
   }
@@ -50,14 +47,13 @@ public:
 class loopback_audio_impl_factory : public loopback_audio_factory {
 public:
   loopback_audio_impl_factory(
-      rtc::google::factory &rtc_factory,
-      std::shared_ptr<rtc::google::audio_track> audio_source,
+      rtc::factory &rtc_factory, std::shared_ptr<rtc::audio_track> audio_source,
       std::shared_ptr<boost::executor> defering_executor);
   std::unique_ptr<loopback_audio> create() override;
 
 protected:
-  rtc::google::factory &rtc_factory;
-  std::shared_ptr<rtc::google::audio_track> audio_source;
+  rtc::factory &rtc_factory;
+  std::shared_ptr<rtc::audio_track> audio_source;
   std::shared_ptr<boost::executor> defering_executor;
 };
 class loopback_audio_noop_factory : public loopback_audio_factory {
@@ -72,7 +68,7 @@ public:
   void enable_loopback(const bool enable) override;
   bool get_enable_loopback() const override;
 
-  std::shared_ptr<rtc::google::audio_track> get_track() override;
+  std::shared_ptr<rtc::audio_track> get_track() override;
 
 protected:
   client::logger logger{"loopback_audio_noop_if_disabled"};

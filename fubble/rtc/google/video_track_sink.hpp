@@ -22,6 +22,7 @@ public:
   void set_enabled(bool enabled) override;
   rtc::scoped_refptr<webrtc::MediaStreamTrackInterface>
   native_track() const override;
+  void set_content_hint(content_hint hint) override;
 
 protected:
   void OnFrame(const webrtc::VideoFrame &frame) override;

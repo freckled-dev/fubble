@@ -3,20 +3,20 @@
 
 // TODO move to an impl file
 #include <api/media_stream_interface.h>
-#include <fubble/utils/export.hpp>
+#include <fubble/rtc/audio_device.hpp>
 
 namespace rtc {
 namespace google {
 class audio_source;
 namespace capture {
 namespace audio {
-class FUBBLE_PUBLIC device {
+class FUBBLE_PUBLIC device : public audio_device {
 public:
   using native_ptr = rtc::scoped_refptr<webrtc::AudioSourceInterface>;
   device(const native_ptr &native);
   ~device();
 
-  audio_source &get_source();
+  rtc::audio_source &get_source() override;
 
 protected:
   native_ptr native;

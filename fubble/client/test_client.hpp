@@ -24,7 +24,6 @@
 #include <fubble/matrix/factory.hpp>
 #include <fubble/matrix/testing.hpp>
 #include <fubble/rtc/data_channel.hpp>
-#include <fubble/rtc/google/asio_signaling_thread.hpp>
 #include <fubble/rtc/google/factory.hpp>
 #include <fubble/rtc/google/video_encoder_factory_factory.hpp>
 #include <fubble/signaling/client/client.hpp>
