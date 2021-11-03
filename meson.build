@@ -68,10 +68,12 @@ else
     boost_dep_modules += [
       'stacktrace_backtrace',
       ]
+    # needed?
     #backtrace_dep = dependency('backtrace')
-    #boost_dep_link_with += [
-    #  '-lbacktrace',
-    #  ]
+    boost_dep_link_with += [
+      # '-lbacktrace',
+      '-ldl',
+      ]
     # super slow
     #elif dependency('boost', modules : ['stacktrace_addr2line'], static: true, required: false).found()
     #  message('using boost_stacktrace_addr2line')

@@ -5,7 +5,6 @@
 #include <fubble/rtc/video_capability.hpp>
 #include <fubble/rtc/video_device_factory.hpp>
 #include <fubble/rtc/video_source.hpp>
-#include <fubble/utils/export.hpp>
 #include <vector>
 
 namespace rtc {
