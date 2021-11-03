@@ -1,8 +1,9 @@
 #ifndef UUID_4D2DAB75_A9D1_4415_8754_D7BFE834C262
 #define UUID_4D2DAB75_A9D1_4415_8754_D7BFE834C262
 
-#include "fubble/rtc/logger.hpp"
 #include <boost/asio/steady_timer.hpp>
+#include <fubble/rtc/logger.hpp>
+#include <fubble/utils/export.hpp>
 #include <rtc_base/thread.h>
 #include <thread>
 
@@ -10,7 +11,7 @@ namespace rtc {
 namespace google {
 // TODO refactor so it derives from `rtc::Thread` and must not get called in an
 // interval
-class asio_signaling_thread {
+class FUBBLE_PUBLIC asio_signaling_thread {
 public:
   asio_signaling_thread(boost::asio::io_context &asio_);
   ~asio_signaling_thread();

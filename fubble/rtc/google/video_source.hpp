@@ -3,12 +3,13 @@
 
 #include <fubble/rtc/google/google_webrtc_predecl.hpp>
 #include <fubble/rtc/video_source.hpp>
+#include <fubble/utils/export.hpp>
 
 namespace rtc {
 namespace google {
 // TODO do a `rtc::video_source`. before that, do a container for
 // `webrtc::VideoFrame`
-class video_source : public rtc::video_source {
+class FUBBLE_PUBLIC video_source : public rtc::video_source {
 public:
   virtual ~video_source();
 };

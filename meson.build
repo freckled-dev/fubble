@@ -43,6 +43,9 @@ if host_machine.system() == 'windows'
     add_project_arguments('/bigobj', language: 'cpp')
   endif
 endif
+if host_machine.system() == 'linux'
+    add_project_arguments('-fvisibility=hidden', language: 'cpp')
+endif
 
 boost_dep_modules = ['thread', 'program_options', 'regex', 'log', 'log_setup',
   'filesystem']
@@ -238,19 +241,11 @@ google_webrtc_dep_fixme = dependency('google-webrtc', include_type : 'system')
 google_webrtc_dep = declare_dependency(
   dependencies: [google_webrtc_dep_fixme, google_webrtc_system_deps]
  )
-libssl_dep = dependency('libssl', include_type: 'system', required: true)
-libcrypto_dep = dependency('libcrypto', include_type: 'system', required: true)
-#if host_machine.system() == 'windows'
-#  ssl_dep = declare_dependency(
-#    dependencies: [libssl_dep, libcrypto_dep]
-#    )
-#else
-ssl_dep = declare_dependency(
-  dependencies: [libssl_dep, libcrypto_dep]
-  )
-#endif
-#ssl_dep = google_webrtc_dep
-#ssl_dep = declare_dependency()
+if host_machine.system() == 'windows'
+  ssl_dep = dependency('openssl', include_type: 'system', required: true)
+else
+  ssl_dep = google_webrtc_dep
+endif
 
 rectangle_bin_pack_dep = dependency('rectanglebinpack', include_type: 'system', required: false, disabler: true)
 if host_machine.system() == 'linux'

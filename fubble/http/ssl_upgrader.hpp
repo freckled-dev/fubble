@@ -60,11 +60,6 @@ public:
 #if BOOST_OS_IOS
     connection_.set_verify_mode(boost::asio::ssl::verify_none);
 #else
-#if 0
-    // TODO remove this. I assume webrtc comes with a libssl, that includes a
-    // bunch of certs.
-    connection_.set_verify_mode(boost::asio::ssl::verify_none);
-#else
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << "set_verify_mode(boost::asio::ssl::verify_peer), server_.host:"
         << server_.host;
@@ -80,7 +75,6 @@ public:
       check_and_handle_error(error);
       return promise->get_future();
     }
-#endif
 #endif
     std::weak_ptr<boost::promise<void>> alive = promise;
     connection_.async_handshake(
