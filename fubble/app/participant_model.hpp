@@ -3,8 +3,8 @@
 
 #include "fubble/client/logger.hpp"
 #include "fubble/client/ui/frame_provider_google_video_frame.hpp"
-#include "fubble/rtc/google/audio_source_ptr.hpp"
-#include "fubble/rtc/google/video_source_ptr.hpp"
+#include "fubble/rtc/audio_source.hpp"
+#include "fubble/rtc/video_source.hpp"
 #include <QObject>
 
 namespace client {
@@ -69,11 +69,11 @@ signals:
 
 protected:
   void set_name();
-  void video_added(std::shared_ptr<rtc::google::video_source>);
-  void video_removed(std::shared_ptr<rtc::google::video_source>);
+  void video_added(std::shared_ptr<rtc::video_source>);
+  void video_removed(std::shared_ptr<rtc::video_source>);
   // TODO refactor to track
-  void audio_added(rtc::google::audio_source &);
-  void audio_removed(rtc::google::audio_source &);
+  void audio_added(rtc::audio_source &);
+  void audio_removed(rtc::audio_source &);
   void on_sound_level(double level);
   void on_voice_detected(bool detected);
   qreal get_volume() const;

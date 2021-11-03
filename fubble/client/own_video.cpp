@@ -6,7 +6,7 @@ using namespace client;
 
 namespace {
 class own_video_impl : public own_video {
-  void add(std::shared_ptr<rtc::google::video_source> video) override {
+  void add(std::shared_ptr<rtc::video_source> video) override {
     BOOST_ASSERT(std::find_if(videos.cbegin(), videos.cend(), [&](auto check) {
                    return check == video;
                  }) == videos.cend());
@@ -14,7 +14,7 @@ class own_video_impl : public own_video {
     on_added(video);
   }
 
-  void remove(std::shared_ptr<rtc::google::video_source> video) override {
+  void remove(std::shared_ptr<rtc::video_source> video) override {
     auto found = std::find_if(videos.cbegin(), videos.cend(),
                               [video](auto check) { return check == video; });
     if (found == videos.cend()) {

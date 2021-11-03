@@ -1,12 +1,12 @@
 #include "audio_tracks_volume.hpp"
-#include "fubble/client/add_audio_to_connection.hpp"
-#include "fubble/client/own_audio_track.hpp"
-#include "fubble/client/participant.hpp"
-#include "fubble/client/participants.hpp"
-#include "fubble/client/room.hpp"
-#include "fubble/client/rooms.hpp"
-#include "fubble/client/tracks_adder.hpp"
-#include "fubble/rtc/google/audio_track.hpp"
+#include <fubble/client/add_audio_to_connection.hpp>
+#include <fubble/client/own_audio_track.hpp>
+#include <fubble/client/participant.hpp>
+#include <fubble/client/participants.hpp>
+#include <fubble/client/room.hpp>
+#include <fubble/client/rooms.hpp>
+#include <fubble/client/tracks_adder.hpp>
+#include <fubble/rtc/audio_track.hpp>
 
 using namespace client;
 
@@ -166,7 +166,7 @@ protected:
       update_audio(id, *audio);
   }
 
-  void update_audio(const std::string &id, rtc::google::audio_track &audio) {
+  void update_audio(const std::string &id, rtc::audio_track &audio) {
     if (!room_)
       return;
     if (id == room_->get_own_id())

@@ -14,7 +14,8 @@ languages_model::languages_model(QObject *parent)
 
 int languages_model::rowCount(const QModelIndex &) const { return 3; }
 
-QVariant languages_model::data(const QModelIndex &index, int role) const {
+QVariant languages_model::data(const QModelIndex &index,
+                               [[maybe_unused]] int role) const {
   std::array<QString, 3> results;
   results[0] = tr("System Language");
   results[1] = tr("English");

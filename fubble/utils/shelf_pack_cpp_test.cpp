@@ -1,6 +1,6 @@
-#include <GuillotineBinPack.h>
 #include <gtest/gtest.h>
 #include <iostream>
+#include <rectanglebinpack/GuillotineBinPack.h>
 
 TEST(RectangleBinPack, GuillotineBinPack) {
   rbp::GuillotineBinPack test{200, 100};

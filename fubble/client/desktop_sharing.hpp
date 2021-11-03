@@ -1,20 +1,17 @@
 #ifndef UUID_F7A69AED_205D_4411_BD0C_BDC8A16E3D4D
 #define UUID_F7A69AED_205D_4411_BD0C_BDC8A16E3D4D
 
-#include "fubble/client/add_video_to_connection.hpp"
-#include "fubble/client/leaver.hpp"
-#include "fubble/client/tracks_adder.hpp"
-#include "fubble/client/video_settings.hpp"
-#include "fubble/rtc/google/capture/desktop/capturer.hpp"
 #include <boost/signals2/signal.hpp>
+#include <fubble/client/add_video_to_connection.hpp>
+#include <fubble/client/leaver.hpp>
+#include <fubble/client/tracks_adder.hpp>
+#include <fubble/client/video_settings.hpp>
+#include <fubble/rtc/google/capture/desktop/capturer.hpp>
 #include <functional>
 #include <memory>
 #include <string>
 #include <vector>
 
-namespace rtc::google::capture::desktop {
-class interval_capturer;
-}
 namespace utils {
 class timer_factory;
 }
@@ -50,7 +47,7 @@ public:
   virtual ~desktop_sharing() = default;
   enum class type { screen, window };
   virtual void set(std::intptr_t id) = 0;
-  using video_ptr = std::shared_ptr<rtc::google::video_source>;
+  using video_ptr = std::shared_ptr<rtc::video_source>;
   virtual video_ptr get() = 0;
   virtual void reset() = 0;
 

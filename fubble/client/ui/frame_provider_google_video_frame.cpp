@@ -8,40 +8,9 @@ namespace {
 
 class video_buffer_adapter : public QAbstractPlanarVideoBuffer {
 public:
-  video_buffer_adapter(const webrtc::VideoFrame &frame)
+  video_buffer_adapter(const rtc::video_frame &frame)
       : QAbstractPlanarVideoBuffer(NoHandle) {
-    // copy all data, because frame seems not to be thread safe. got problems on
-    // windows when destructing frame on ui thread
-    webrtc::VideoFrameBuffer *buffer = frame.video_frame_buffer().get();
-    const webrtc::I420BufferInterface *buffer_accessor{};
-    rtc::scoped_refptr<webrtc::I420BufferInterface> i420_reference;
-
-    if (buffer->type() == webrtc::VideoFrameBuffer::Type::kI420) {
-      buffer_accessor = buffer->GetI420();
-    } else {
-      i420_reference = buffer->ToI420();
-      buffer_accessor = i420_reference.get();
-    }
-    BOOST_ASSERT(buffer_accessor);
-    {
-      stride_y = buffer_accessor->StrideY();
-      auto size_y = stride_y * buffer_accessor->height();
-      auto data_ptr_y = buffer_accessor->DataY();
-      data_y.assign(data_ptr_y, data_ptr_y + size_y);
-    }
-    auto chroma_height = buffer_accessor->ChromaHeight();
-    {
-      stride_u = buffer_accessor->StrideU();
-      auto size_u = stride_u * chroma_height;
-      auto data_ptr_u = buffer_accessor->DataU();
-      data_u.assign(data_ptr_u, data_ptr_u + size_u);
-    }
-    {
-      stride_v = buffer_accessor->StrideV();
-      auto size_v = stride_v * chroma_height;
-      auto data_ptr_v = buffer_accessor->DataV();
-      data_v.assign(data_ptr_v, data_ptr_v + size_v);
-    }
+    frame.i420(data_y, stride_y, data_u, stride_u, data_v, stride_v);
   }
   ~video_buffer_adapter() = default;
 
@@ -85,7 +54,7 @@ frame_provider_google_video_source::~frame_provider_google_video_source() {
 }
 
 void frame_provider_google_video_source::set_source(
-    std::shared_ptr<rtc::google::video_source> source_) {
+    std::shared_ptr<rtc::video_source> source_) {
   BOOST_LOG_SEV(logger, logging::severity::debug)
       << "set_source, source_:" << source_;
   connection_on_frame.disconnect();
@@ -96,7 +65,7 @@ void frame_provider_google_video_source::set_source(
       source->on_frame.connect([this](const auto &frame) { on_frame(frame); });
 }
 
-std::shared_ptr<rtc::google::video_source>
+std::shared_ptr<rtc::video_source>
 frame_provider_google_video_source::get_source() const {
   return source;
 }
@@ -115,17 +84,11 @@ QAbstractVideoSurface *frame_provider_google_video_source::get_surface() const {
 }
 
 void frame_provider_google_video_source::on_frame(
-    const webrtc::VideoFrame &frame) {
-  auto frame_buffer = frame.video_frame_buffer();
-  [[maybe_unused]] webrtc::VideoFrameBuffer::Type type = frame_buffer->type();
-  BOOST_LOG_SEV(logger, logging::severity::trace)
-      << "frame, width:" << frame.width() << ", height:" << frame.height()
-      << ", type:" << static_cast<int>(type);
-  BOOST_ASSERT(type == webrtc::VideoFrameBuffer::Type::kI420);
+    const rtc::video_frame &frame) {
   // destruction happens through VideoFrame
   // https://doc.qt.io/qt-5/qabstractvideobuffer.html#release
   auto frame_buffer_casted = new video_buffer_adapter(frame);
-  QSize size{frame_buffer->width(), frame_buffer->height()};
+  QSize size{frame.width(), frame.height()};
   QVideoFrame frame_casted{frame_buffer_casted, size,
                            QVideoFrame::Format_YUV420P};
   post_to_object([frame_casted, this] { on_frame_ui_thread(frame_casted); },

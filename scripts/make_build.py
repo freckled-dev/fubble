@@ -13,7 +13,9 @@ parser.add_argument('--skip_remove', help='don\'t remove the build directory',
         action="store_true")
 parser.add_argument('--skip_install', help='don\'t run conan install',
         action="store_true")
-parser.add_argument('--skip_install_update', help='don\'t run conan install --update',
+parser.add_argument('--skip_install_webrtc', help='don\'t run `conan install google-webrtc`',
+        action="store_true")
+parser.add_argument('--skip_install_update', help='don\'t run `conan install --update`',
         action="store_true")
 parser.add_argument('--skip_build', help='don\'t run conan build',
         action="store_true")
@@ -68,30 +70,42 @@ if not args.skip_qt and platform.system() != "Windows":
     if platform.system() == "Darwin":
         subprocess.run("sed -i '' 's+/Users/qt/work/install+{}+g' {}/*".format(qt_install, qt_pkgconfig_dir), shell=True, check=True)
 
+def conan_profile_command_args():
+    result = []
+    if args.profile:
+        result += ['--profile', args.profile]
+    if args.profile_build:
+        result += ['--profile:build', args.profile_build]
+    if args.profile_host:
+        result += ['--profile:host', args.profile_host]
+    return result
+
 if not args.skip_install:
+    print('installing dependencies')
+    if not args.skip_install_webrtc:
+        # webrtc remote is very buggy, checkout https://gitlab.com/groups/gitlab-org/-/epics/6816 and
+        # remove the following hack as soon as gitlab-conan is production ready
+        subprocess.run(['conan', 'remote', 'add', '-f', 
+            'gitlab_google_webrtc', 'https://gitlab.com/api/v4/projects/19162728/packages/conan'],
+            check=True)
+        subprocess.run(['conan', 'install', 'google-webrtc/94@acof/stable',
+            '--remote', 'gitlab_google_webrtc',
+            ] + conan_profile_command_args(), check=True)
+        subprocess.run(['conan', 'remote', 'remove', 'gitlab_google_webrtc'], check=True)
+
+    # when the hack is fixed, just add it as a remote here
     conan_remotes = [
-            ('bincrafters', 'https://api.bintray.com/conan/bincrafters/public-conan'),
-            ('inexorgame', 'https://api.bintray.com/conan/inexorgame/inexor-conan'),
-            ('google_webrtc', 'https://api.bintray.com/conan/freckled/google-webrtc'),
-            ('rectangle_bin_pack', 'https://api.bintray.com/conan/freckled/RectangleBinPack')
+            #('gitlab_google_webrtc', 'https://gitlab.com/api/v4/projects/19162728/packages/conan'),
             ]
     for remote_name, remote_url in conan_remotes:
         subprocess.run(['conan', 'remote', 'add', '-f', remote_name, remote_url],
                 check=True)
-    subprocess.run(['conan', 'remote', 'add', '--insert', '0', '-f',
-        'fubble_dependencies', 'https://api.bintray.com/conan/freckled/fubble_dependencies'],
-        check=True)
 
     install_args = ['conan', 'install',
         '--build', 'missing',
         '--install-folder', paths.dependencies_dir,
         ]
-    if args.profile:
-        install_args += ['--profile', args.profile]
-    if args.profile_build:
-        install_args += ['--profile:build', args.profile_build]
-    if args.profile_host:
-        install_args += ['--profile:host', args.profile_host]
+    install_args += conan_profile_command_args()
     if platform.system() != "Windows":
         install_args += ['-o', 'fubble:qt_install={}'.format(qt_install)]
     if not args.skip_install_update:

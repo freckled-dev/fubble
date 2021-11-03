@@ -1,10 +1,10 @@
 #ifndef UUID_DA215727_927E_49D3_A600_CBD9C8E62A7F
 #define UUID_DA215727_927E_49D3_A600_CBD9C8E62A7F
 
-#include "fubble/client/audio_module.hpp"
-#include "fubble/client/session_module.hpp"
-#include "fubble/rtc/google/module.hpp"
-#include "fubble/utils/export.hpp"
+#include <fubble/client/audio_module.hpp>
+#include <fubble/client/session_module.hpp>
+#include <fubble/rtc/google/module.hpp>
+#include <fubble/utils/export.hpp>
 
 namespace rtc::google {
 class audio_track;
@@ -39,7 +39,7 @@ protected:
 
   // TODO adds audio_track_adder to tracks_adder - refactor!
   std::shared_ptr<audio_tracks_volume> audio_tracks_volume_;
-  std::shared_ptr<rtc::google::audio_track> settings_audio_track;
+  std::shared_ptr<rtc::audio_track> settings_audio_track;
   std::shared_ptr<loopback_audio_factory> loopback_audio_test_factory;
   std::shared_ptr<loopback_audio> loopback_audio_test;
   std::shared_ptr<own_microphone_tester> own_microphone_tester_;

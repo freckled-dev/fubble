@@ -49,3 +49,7 @@ void video_track::link_to_webrtc(const connection::natives &natives) {
 void video_track::set_enabled(bool) {
   BOOST_ASSERT(false && "not implemented");
 }
+
+void video_track::set_content_hint(content_hint) {
+  BOOST_ASSERT(false && "not implemented");
+}

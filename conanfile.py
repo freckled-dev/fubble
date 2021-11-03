@@ -21,7 +21,7 @@ class FubbleConan(ConanFile):
     # https://docs.conan.io/en/latest/reference/conanfile/attributes.html#default-options
     default_options = {"shared": False, "qt_install": None, "enable_ui": True,
             "meson_cross_file": None,
-            "nlohmann_json:multiple_headers": True, "restinio:asio": "boost",
+            "restinio:asio": "boost",
             # qt options
             # "qt:openssl": False, "qt:with_mysql": False, "qt:with_pq": False, "qt:with_odbc": False, "qt:widgets": False,
             # "qt:with_libalsa": False,
@@ -29,7 +29,7 @@ class FubbleConan(ConanFile):
             # "qt:qtsvg": True, "qt:qtmultimedia": True, "qt:qtquickcontrols2": True, "qt:qtcharts": True,
             "treat_warnings_as_errors": False, "sanatize": False}
     generators = "pkg_config"
-    exports_sources = "*", "!fubble/app/mock_qml_models*"
+    #exports_sources = "*", "!fubble/app/mock_qml_models*", "!.*"
     no_copy_source = True
 
     # https://docs.conan.io/en/latest/versioning/introduction.html
@@ -77,12 +77,14 @@ class FubbleConan(ConanFile):
 
     def requirements(self):
         self.requires("nlohmann_json/3.7.0")
-        self.requires("boost/1.73.0")
+        self.requires("boost/1.77.0")
         self.requires("gtest/1.10.0")
-        self.requires("fmt/7.0.3")
-        self.requires("google-webrtc/88")
+        self.requires("fmt/8.0.1")
+        self.requires("google-webrtc/94@acof/stable")
+        if self.settings.os == "Windows":
+            self.requires("openssl/1.1.1l")
         if not self._is_ios() and self.options.enable_ui:
-            self.requires("RectangleBinPack/1.0.2")
+            self.requires("rectanglebinpack/cci.20210901")
         if self.settings.os == "Linux":
             self.requires("restinio/0.6.11")
             # self.requires("qt/5.15.1@bincrafters/stable")
@@ -141,12 +143,12 @@ class FubbleConan(ConanFile):
         meson_options['b_pch'] = 'false'
         # meson_options['b_vscrt'] = 'mtd'
 
-        meson = Meson(self)
         with tools.environment_append({
                 "PATH": addtional_paths,
                 "BOOST_ROOT": boost_path,
                 "BOOST_INCLUDEDIR": boost_include_path,
-                "BOOST_LIBRARYDIR": boost_library_path}):
+                "BOOST_LIBRARYDIR": boost_library_path
+                }):
             pkg_config_paths = [self.install_folder]
             if self.options.qt_install:
                 pkg_config_paths += [os.path.join(str(self.options.qt_install), 'lib/pkgconfig')]
@@ -179,20 +181,59 @@ class FubbleConan(ConanFile):
                 self.run('ln -fs /home $SYSROOT || true')
                 self.run('ln -fs /root $SYSROOT || true')
 
-            # meson_args += ['--cross-file', os.path.join(self.install_folder, 'conan_meson_cross.ini')]
+            if self.settings.compiler == "Visual Studio":
+                self.output.info("using vcvars")
+                with tools.vcvars(self):
+                    self._build_meson(pkg_config_paths)
+            else:
+                self._build_meson(pkg_config_paths)
 
-            self.output.info("pkg_config_paths: %s" % pkg_config_paths)
-            meson.configure( build_folder="meson", defs=meson_options,
-                    args=meson_args,
-                    pkg_config_paths=pkg_config_paths
-                    )
-            build_args = []
-            ninja_jobs = os.getenv('FUBBLE_BUILD_NINJA_JOBS')
-            if ninja_jobs:
-                build_args += ['-j %s' % (ninja_jobs)]
-            # build_args += ['-k0']
-            # build_args += ['-v]
-            meson.build(args=build_args)
+    def _get_meson_build_type(self):
+        map = {
+            "RelWithDebInfo": "debugoptimized",
+            "Debug": "debug",
+            "Release": "release"
+        }
+        result = map[self._get_build_type()]
+        if result == None:
+            raise ConanInvalidConfiguration("unsupported buildtype: %s" % (self._get_build_type()))
+        return result
+
+
+    def _build_meson(self, pkg_config_paths):
+        # meson_args += ['--cross-file', os.path.join(self.install_folder, 'conan_meson_cross.ini')]
+
+        # does not work. will set CXXFLAGS with all include and link directories
+        # TODO issue!
+        # self.output.info("pkg_config_paths: %s" % pkg_config_paths)
+        # meson.configure( build_folder="meson", defs=meson_options,
+        #         args=meson_args,
+        #         pkg_config_paths=pkg_config_paths
+        #         )
+        with_tests = True
+        if self.settings.os == "Windows":
+            with_tests = False
+        with_servers = False
+        if self.settings.os == "Linux":
+            with_servers = True
+        self.run(['meson', 'setup',
+            os.path.join(self.build_folder, 'meson'),
+            self.source_folder,
+            '--pkg-config-path', ','.join(pkg_config_paths),
+            '--prefix', self.package_folder,
+            '-Dbackend=ninja',
+            '-Dbuildtype=%s' % self._get_meson_build_type(),
+            '-Ddefault_library=static',
+            '-Dcpp_std=c++17',
+            '-Db_ndebug=if-release',
+            '-Dwith_tests=%s' % with_tests,
+            '-Dwith_servers=%s' % with_servers,
+            '-Dwith_ui=%s' % self.options.enable_ui
+        ])
+        self.run(['meson', 'compile',
+            '-C', os.path.join(self.build_folder, 'meson'),
+        ])
+
 
     def package(self):
         meson = Meson(self)

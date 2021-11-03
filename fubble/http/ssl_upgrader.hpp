@@ -2,14 +2,14 @@
 #define UUID_FA86766A_7231_4254_9E64_C74DEBFFBAC7
 
 #include "add_windows_root_certs.hpp"
-#include "fubble/http/logger.hpp"
 #include "server.hpp"
 #include <boost/asio/error.hpp>
 #include <boost/asio/ssl.hpp>
 #include <boost/beast/core/error.hpp>
+#include <boost/predef/os/ios.h>
 #include <boost/predef/os/windows.h>
 #include <boost/thread/future.hpp>
-#include <boost/predef/os/ios.h>
+#include <fubble/http/logger.hpp>
 
 namespace http {
 namespace internal {
@@ -38,6 +38,11 @@ verbose_verification<Verifier> make_verbose_verification(Verifier verifier) {
   return verbose_verification<Verifier>(verifier);
 }
 } // namespace internal
+
+// TODO this class needs reftoring
+// TODO print all available certs
+// on error search check:
+// https://gitlab.com/acof/fubble/-/issues/410#note_722798603
 template <class connection_type> class ssl_upgrader {
 public:
   ssl_upgrader(const server &server_, connection_type &connection_,
@@ -53,24 +58,28 @@ public:
   boost::future<void> secure_connection() {
     auto promise_copy = promise;
     // https://www.boost.org/doc/libs/1_73_0/doc/html/boost_asio/reference/ssl__host_name_verification.html
+    ssl_context.set_default_verify_paths();
 #if BOOST_OS_WINDOWS
     add_windows_root_certs(ssl_context);
-#else
-    ssl_context.set_default_verify_paths();
 #endif
-#if !BOOST_OS_IOS
+#if BOOST_OS_IOS
+    connection_.set_verify_mode(boost::asio::ssl::verify_none);
+#else
+    BOOST_LOG_SEV(logger, logging::severity::debug)
+        << "set_verify_mode(boost::asio::ssl::verify_peer), server_.host:"
+        << server_.host;
     connection_.set_verify_mode(boost::asio::ssl::verify_peer);
     connection_.set_verify_callback(internal::make_verbose_verification(
         boost::asio::ssl::host_name_verification(server_.host)));
     if (!SSL_set_tlsext_host_name(connection_.native_handle(),
                                   server_.host.c_str())) {
+      BOOST_LOG_SEV(logger, logging::severity::debug)
+          << "!SSL_set_tlsext_host_name, server_.host:" << server_.host;
       boost::beast::error_code error{static_cast<int>(::ERR_get_error()),
                                      boost::asio::error::get_ssl_category()};
       check_and_handle_error(error);
       return promise->get_future();
     }
-#else
-    connection_.set_verify_mode(boost::asio::ssl::verify_none);
 #endif
     std::weak_ptr<boost::promise<void>> alive = promise;
     connection_.async_handshake(

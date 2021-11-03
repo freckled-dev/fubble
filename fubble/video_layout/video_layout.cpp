@@ -1,10 +1,10 @@
 #include "video_layout.hpp"
-#include <GuillotineBinPack.h>
 #include <QDebug>
 #include <cassert>
 #include <cmath>
 #include <iostream>
 #include <optional>
+#include <rectanglebinpack/GuillotineBinPack.h>
 #include <utility>
 
 #define ENABLE_LOGGING 0
@@ -31,8 +31,10 @@ std::optional<rects_type> try_pack(const QList<QQuickItem *> &children_,
   qDebug() << "packer_width:" << packer_width
            << ", packer_height:" << packer_height;
 #endif
-  rbp::GuillotineBinPack packer{static_cast<int>(packer_width), packer_height,
-                                false};
+  rbp::GuillotineBinPack packer{
+      static_cast<int>(packer_width),
+      packer_height,
+  };
   const bool merge{true};
   const auto choice = rbp::GuillotineBinPack::RectWorstShortSideFit;
   const auto split = rbp::GuillotineBinPack::SplitMinimizeArea;

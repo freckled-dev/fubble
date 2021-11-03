@@ -2,11 +2,11 @@
 
 using namespace rtc::google;
 
+#if 0
 audio_track::audio_track(
     const rtc::scoped_refptr<webrtc::AudioTrackInterface> &track_)
     : google::track(track_) {}
 
-#if 0
 audio_track::stats audio_track::get_stats() {
   stats result;
   webrtc::AudioTrackInterface &native = get_native_audio_track();

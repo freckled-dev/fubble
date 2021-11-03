@@ -1,17 +1,15 @@
-extern "C" {
-#include <gst/gst.h>
-#include <gst/gstpromise.h>
-#include <gst/sdp/sdp.h>
 #define GST_USE_UNSTABLE_API
-#include <gst/webrtc/webrtc.h>
-}
-#include <fubble/utils/logging/logger.hpp>
 #include <boost/assert.hpp>
 #include <boost/log/keywords/auto_flush.hpp>
 #include <boost/log/keywords/format.hpp>
 #include <boost/log/utility/setup/common_attributes.hpp>
 #include <boost/log/utility/setup/console.hpp>
 #include <fmt/format.h>
+#include <fubble/utils/logging/logger.hpp>
+#include <gst/gst.h>
+#include <gst/gstpromise.h>
+#include <gst/sdp/sdp.h>
+#include <gst/webrtc/webrtc.h>
 
 namespace {
 struct peer {
@@ -241,7 +239,7 @@ static void send_offer(GstWebRTCSessionDescription *offer) {
       << fmt::format("got an offer sdp: '{}'", sdp_text);
 
   GstSDPMessage *sdp{};
-  GstSDPResult result = gst_sdp_message_new(&sdp);
+  [[maybe_unused]] GstSDPResult result = gst_sdp_message_new(&sdp);
   BOOST_ASSERT(result == GstSDPResult::GST_SDP_OK);
   static_assert(sizeof(char) == sizeof(guint8));
   result = gst_sdp_message_parse_buffer(

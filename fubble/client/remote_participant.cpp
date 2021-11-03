@@ -1,12 +1,12 @@
 #include "remote_participant.hpp"
-#include "fubble/client/factory.hpp"
-#include "fubble/client/peer.hpp"
-#include "fubble/client/peers.hpp"
-#include "fubble/client/tracks_adder.hpp"
-#include "fubble/matrix/user.hpp"
-#include "fubble/rtc/google/audio_track_sink.hpp"
-#include "fubble/rtc/google/video_track_sink.hpp"
 #include <fmt/format.h>
+#include <fubble/client/factory.hpp>
+#include <fubble/client/peer.hpp>
+#include <fubble/client/peers.hpp>
+#include <fubble/client/tracks_adder.hpp>
+#include <fubble/matrix/user.hpp>
+#include <fubble/rtc/audio_track.hpp>
+#include <fubble/rtc/video_track.hpp>
 
 using namespace client;
 
@@ -48,12 +48,10 @@ remote_participant::audios_type remote_participant::get_audios() const {
 
 void remote_participant::on_track_added(rtc::track_ptr track) {
   BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
-  auto video_track =
-      std::dynamic_pointer_cast<rtc::google::video_source>(track);
+  auto video_track = std::dynamic_pointer_cast<rtc::video_source>(track);
   if (video_track)
     return on_video_track(video_track);
-  auto audio_track =
-      std::dynamic_pointer_cast<rtc::google::audio_track_sink>(track);
+  auto audio_track = std::dynamic_pointer_cast<rtc::audio_track>(track);
   if (audio_track)
     return on_audio_track(audio_track);
   BOOST_LOG_SEV(logger, logging::severity::warning) << "unhandled track";
@@ -62,12 +60,10 @@ void remote_participant::on_track_added(rtc::track_ptr track) {
 
 void remote_participant::on_track_removed(rtc::track_ptr track) {
   BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
-  auto video_track =
-      std::dynamic_pointer_cast<rtc::google::video_source>(track);
+  auto video_track = std::dynamic_pointer_cast<rtc::video_source>(track);
   if (video_track)
     return on_video_track_removed(video_track);
-  auto audio_track =
-      std::dynamic_pointer_cast<rtc::google::audio_track_sink>(track);
+  auto audio_track = std::dynamic_pointer_cast<rtc::audio_track>(track);
   if (audio_track)
     return on_audio_track_removed(audio_track);
   BOOST_LOG_SEV(logger, logging::severity::warning) << "unhandled track";
@@ -75,7 +71,7 @@ void remote_participant::on_track_removed(rtc::track_ptr track) {
 }
 
 void remote_participant::on_audio_track(
-    std::shared_ptr<rtc::google::audio_track_sink> audio_track) {
+    std::shared_ptr<rtc::audio_track> audio_track) {
   BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
 
   audios.emplace_back(audio_track.get());
@@ -83,7 +79,7 @@ void remote_participant::on_audio_track(
 }
 
 void remote_participant::on_audio_track_removed(
-    std::shared_ptr<rtc::google::audio_track_sink> audio_track) {
+    std::shared_ptr<rtc::audio_track> audio_track) {
   BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
   auto found = std::find_if(audios.cbegin(), audios.cend(), [&](auto check) {
     return check == audio_track.get();
@@ -92,15 +88,14 @@ void remote_participant::on_audio_track_removed(
   on_audio_removed(*audio_track);
 }
 
-void remote_participant::on_video_track(
-    rtc::google::video_source_ptr video_track) {
+void remote_participant::on_video_track(rtc::video_source_ptr video_track) {
   BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
   videos.push_back(video_track);
   on_video_added(video_track);
 }
 
 void remote_participant::on_video_track_removed(
-    rtc::google::video_source_ptr video_track) {
+    rtc::video_source_ptr video_track) {
   BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
   auto found = std::find_if(videos.cbegin(), videos.cend(),
                             [&](auto &check) { return check == video_track; });

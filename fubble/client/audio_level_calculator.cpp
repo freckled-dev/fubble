@@ -1,5 +1,5 @@
 #include "audio_level_calculator.hpp"
-#include "fubble/rtc/google/audio_source.hpp"
+#include "fubble/rtc/audio_source.hpp"
 #include "fubble/rtc/google/voice_detection.hpp"
 #include <numeric>
 
@@ -19,8 +19,8 @@ double average(const number_type *data, std::size_t count) {
 }
 } // namespace
 
-audio_level_calculator::audio_level_calculator(
-    boost::executor &main_thread, rtc::google::audio_source &audio_source)
+audio_level_calculator::audio_level_calculator(boost::executor &main_thread,
+                                               rtc::audio_source &audio_source)
     : main_thread(main_thread), audio_source(audio_source) {
   on_data_connection =
       audio_source.on_data.connect([this](auto data) { on_data(data); });
@@ -29,16 +29,16 @@ audio_level_calculator::audio_level_calculator(
 
 audio_level_calculator::~audio_level_calculator() = default;
 
-const rtc::google::audio_source &audio_level_calculator::get_source() const {
+const rtc::audio_source &audio_level_calculator::get_source() const {
   return audio_source;
 }
 
-void audio_level_calculator::on_data(const rtc::google::audio_data &data) {
+void audio_level_calculator::on_data(const rtc::audio_data &data) {
 #if 0
   BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
 #endif
   auto bits_per_sample = data.bits_per_sample;
-  auto audio_data = data.audio_data;
+  auto audio_data = data.data;
   auto number_of_frames = data.number_of_frames;
   double averaged = [&] {
     auto frame_count = number_of_frames; // * number_of_channels?
@@ -84,7 +84,7 @@ void audio_level_calculator::calculate_30times_a_second(double new_level) {
 }
 
 void audio_level_calculator::calculate_voice_detection(
-    const rtc::google::audio_data &data) {
+    const rtc::audio_data &data) {
   bool check = voice_detection_->detect(data);
   if (check == voice_detected)
     return;

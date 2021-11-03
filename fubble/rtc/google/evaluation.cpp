@@ -13,6 +13,7 @@
 #include <fmt/format.h>
 #include <media/base/adapted_video_track_source.h>
 #include <modules/video_capture/video_capture_factory.h>
+#include <mutex>
 #include <rtc_base/ssl_adapter.h>
 
 namespace {

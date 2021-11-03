@@ -22,7 +22,7 @@ struct audio_source::sink : webrtc::AudioTrackSinkInterface {
     source.RemoveSink(this);
   }
 
-  void OnData(const void *audio_data, int bits_per_sample, int sample_rate,
+  void OnData(const void *audio_data_, int bits_per_sample, int sample_rate,
               std::size_t number_of_channels, std::size_t number_of_frames,
               absl::optional<int64_t> absolute_capture_timestamp_ms) override {
     (void)absolute_capture_timestamp_ms;
@@ -31,7 +31,7 @@ struct audio_source::sink : webrtc::AudioTrackSinkInterface {
         << "OnData, number_of_frames:" << number_of_frames << ", this:" << this;
 #endif
     struct audio_data result;
-    result.audio_data = audio_data;
+    result.data = audio_data_;
     result.bits_per_sample = bits_per_sample;
     result.sample_rate = sample_rate;
     result.number_of_channels = number_of_channels;

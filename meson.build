@@ -38,10 +38,13 @@ if host_machine.system() == 'windows'
   add_project_arguments('-D_WIN32_WINNT=0x0601', language: 'cpp')
   # https://stackoverflow.com/questions/39689162/qt-project-in-visual-studio-2015-unresolved-external-symbol-wwinmain
   # TODO shall be only disabled on release
-  add_project_link_arguments('/entry:mainCRTStartup', language: 'cpp')
+  #add_project_link_arguments('/entry:mainCRTStartup', language: 'cpp')
   if is_debug
     add_project_arguments('/bigobj', language: 'cpp')
   endif
+endif
+if host_machine.system() == 'linux'
+    add_project_arguments('-fvisibility=hidden', language: 'cpp')
 endif
 
 boost_dep_modules = ['thread', 'program_options', 'regex', 'log', 'log_setup',
@@ -49,8 +52,6 @@ boost_dep_modules = ['thread', 'program_options', 'regex', 'log', 'log_setup',
 boost_dep_link_with = []
 boost_compile_args = [
   '-DBOOST_THREAD_VERSION=5',
-  '-DBOOST_ASIO_SEPARATE_COMPILATION',
-  '-DBOOST_BEAST_SEPARATE_COMPILATION',
   ]
 if host_machine.system() == 'windows'
   boost_dep_link_with += ['bcrypt.lib']
@@ -65,28 +66,32 @@ if host_machine.system() == 'windows'
     'dbgeng.lib',
     ]
 else
-  if cxx.has_header('backtrace.h')
+  #if cxx.has_header('backtrace.h')
     message('using boost_stacktrace_backtrace')
     boost_dep_modules += [
       'stacktrace_backtrace',
       ]
+    # needed?
+    #backtrace_dep = dependency('backtrace')
     boost_dep_link_with += [
-      '-lbacktrace',
+      # '-lbacktrace',
+      '-ldl',
       ]
-  elif dependency('boost', modules : ['stacktrace_addr2line'], static: true, required: false).found()
-    message('using boost_stacktrace_addr2line')
-    boost_dep_modules += [
-      'stacktrace_addr2line',
-      ]
-  else
-    message('using boost_stacktrace_basic')
-    boost_dep_modules += [
-       'stacktrace_basic',
-      ]
-  endif
-  boost_compile_args += [
-    '-DBOOST_STACKTRACE_LINK',
-    ]
+    # super slow
+    #elif dependency('boost', modules : ['stacktrace_addr2line'], static: true, required: false).found()
+    #  message('using boost_stacktrace_addr2line')
+    #  boost_dep_modules += [
+    #    'stacktrace_addr2line',
+    #    ]
+  #else
+  #  message('using boost_stacktrace_basic')
+  #  boost_dep_modules += [
+  #     'stacktrace_basic',
+  #    ]
+  #endif
+  #boost_compile_args += [
+  #  '-DBOOST_STACKTRACE_LINK',
+  #  ]
   if host_machine.system() == 'linux'
     if meson.get_compiler('cpp').get_id() == 'gcc'
       boost_compile_args += [
@@ -99,7 +104,8 @@ else
         ]
       boost_dep_link_with += [
         '-rdynamic',
-        '-no-pie'
+        # of set, shared libraries want to link `main`
+        #'-no-pie'
         ]
     endif
   endif
@@ -116,7 +122,9 @@ else
       ]
   endif
 endif
-boost_dep_pkg = dependency('boost', modules : boost_dep_modules, static: true,
+boost_dep_pkg = dependency('boost',
+  modules : boost_dep_modules,
+  static : true,
   include_type : 'system'
   )
 boost_dep = declare_dependency(
@@ -125,7 +133,12 @@ boost_dep = declare_dependency(
     link_args: boost_dep_link_with
     )
 if get_option('with_tests')
-  gtest_dep = dependency('gtest', include_type : 'system')
+  gtest_dep_pkg = dependency('gtest', include_type : 'system')
+  gmock_dep_pkg = dependency('gmock', include_type : 'system')
+  gtest_dep = declare_dependency(dependencies: [
+    gtest_dep_pkg,
+    gmock_dep_pkg
+    ])
 else
   gtest_dep = disabled
 endif
@@ -227,10 +240,14 @@ endif
 google_webrtc_dep_fixme = dependency('google-webrtc', include_type : 'system')
 google_webrtc_dep = declare_dependency(
   dependencies: [google_webrtc_dep_fixme, google_webrtc_system_deps]
-  )
-#ssl_dep = dependency('openssl', include_type: 'system', required: true)
-ssl_dep = google_webrtc_dep
-rectangle_bin_pack_dep = dependency('RectangleBinPack', include_type: 'system', required: false, disabler: true)
+ )
+if host_machine.system() == 'windows'
+  ssl_dep = dependency('openssl', include_type: 'system', required: true)
+else
+  ssl_dep = google_webrtc_dep
+endif
+
+rectangle_bin_pack_dep = dependency('rectanglebinpack', include_type: 'system', required: false, disabler: true)
 if host_machine.system() == 'linux'
   restinio_dep = dependency('restinio', include_type: 'system')
 else

@@ -7,6 +7,7 @@
 #include "users.hpp"
 #include <boost/signals2/signal.hpp>
 #include <boost/thread/executors/inline_executor.hpp>
+#include <chrono>
 
 namespace matrix {
 class client {

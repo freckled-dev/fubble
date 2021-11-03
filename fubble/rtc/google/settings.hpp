@@ -1,13 +1,14 @@
 #ifndef UUID_313BBDF4_E8A1_43F8_B822_CAB9749D6793
 #define UUID_313BBDF4_E8A1_43F8_B822_CAB9749D6793
 
+#include <fubble/utils/export.hpp>
 #include <istream>
 #include <ostream>
 
 namespace rtc {
 namespace google {
 // options taken from peer_connection_interface.h
-struct settings {
+struct FUBBLE_PUBLIC settings {
   bool use_ip_v6{true};
   bool disable_ipv6_on_wifi = false;
 
@@ -42,8 +43,10 @@ struct settings {
   audio audio_;
 };
 
-std::ostream &operator<<(std::ostream &out, settings::audio::layer print);
-std::istream &operator>>(std::istream &in, settings::audio::layer &set);
+FUBBLE_PUBLIC std::ostream &operator<<(std::ostream &out,
+                                       settings::audio::layer print);
+FUBBLE_PUBLIC std::istream &operator>>(std::istream &in,
+                                       settings::audio::layer &set);
 
 } // namespace google
 } // namespace rtc

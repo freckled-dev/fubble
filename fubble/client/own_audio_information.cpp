@@ -1,7 +1,7 @@
 #include "own_audio_information.hpp"
 #include "audio_level_calculator.hpp"
 #include "loopback_audio.hpp"
-#include "fubble/rtc/google/audio_track.hpp"
+#include <fubble/rtc/audio_track.hpp>
 
 using namespace client;
 
@@ -24,7 +24,7 @@ void own_audio_information::set_loopback_audio(loopback_audio &audio) {
   on_track(*track);
 }
 
-void own_audio_information::on_track(rtc::google::audio_track &track) {
+void own_audio_information::on_track(rtc::audio_track &track) {
   audio_level_calculator_ =
       audio_level_calculator_factory_.create(track.get_source());
   signal_connections.emplace_back(

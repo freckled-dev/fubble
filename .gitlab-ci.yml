@@ -27,7 +27,7 @@ build ubuntu_18.04 release:
     expire_in: 1 week
     when: always
 
-build mac release:
+.build mac release:
   tags:
     - macos
   stage: build
@@ -59,7 +59,7 @@ build mac release:
       - ./install*
       - ./meson-logs
 
-build ios debug:
+.build ios debug:
   <<: *build_ios
   variables:
     FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install_ios_debug
@@ -71,7 +71,7 @@ build ios debug:
       --skip_export
       --skip_qt
 
-build ios simulator debug:
+.build ios simulator debug:
   <<: *build_ios
   variables:
     FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install_ios_simulator_debug
@@ -83,7 +83,7 @@ build ios simulator debug:
       --skip_export
       --skip_qt
 
-build ios release:
+.build ios release:
   <<: *build_ios
   variables:
     FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install_ios_release
@@ -96,7 +96,7 @@ build ios release:
       --skip_qt
   when: manual
 
-build ios simulator release:
+.build ios simulator release:
   <<: *build_ios
   variables:
     FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install_ios_simulator_release
@@ -119,7 +119,7 @@ build ios simulator release:
     paths:
       - ./fubble.framework
 
-package ios debug:
+.package ios debug:
   <<: *bundle_ios
   needs:
     - build ios debug
@@ -182,6 +182,7 @@ build windows release:
       python scripts/make_build.py
       --profile scripts/conan_profiles/windows_release
       --skip_export
+      --skip_install_webrtc
 
 build windows debug:
   <<: *build_windows

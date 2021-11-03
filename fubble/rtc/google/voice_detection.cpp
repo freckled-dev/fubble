@@ -1,8 +1,8 @@
 #include "voice_detection.hpp"
-#include "fubble/rtc/google/audio_data.hpp"
-#include "fubble/rtc/logger.hpp"
 #include <boost/assert.hpp>
 #include <common_audio/vad/include/webrtc_vad.h>
+#include <fubble/rtc/audio_data.hpp>
+#include <fubble/rtc/logger.hpp>
 #include <modules/audio_processing/audio_buffer.h>
 #include <modules/audio_processing/include/audio_processing.h>
 #include <modules/audio_processing/voice_detection.h>
@@ -20,14 +20,13 @@ public:
 
   ~voice_detection_impl() { WebRtcVad_Free(instance); }
 
-  bool detect(const audio_data &data) override {
+  bool detect(const rtc::audio_data &data) override {
     // TODO what if there're two channels?
     BOOST_ASSERT(0 == WebRtcVad_ValidRateAndFrameLength(data.sample_rate,
                                                         data.number_of_frames));
-    int result =
-        WebRtcVad_Process(instance, data.sample_rate,
-                          static_cast<const std::int16_t *>(data.audio_data),
-                          data.number_of_frames);
+    int result = WebRtcVad_Process(instance, data.sample_rate,
+                                   static_cast<const std::int16_t *>(data.data),
+                                   data.number_of_frames);
     BOOST_ASSERT(result != -1);
 #if 0
     BOOST_LOG_SEV(logger, logging::severity::debug) << "result:" << result;

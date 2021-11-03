@@ -1,6 +1,6 @@
 #include "own_media.hpp"
 #include "fubble/client/desktop_sharing.hpp"
-#include "fubble/rtc/google/audio_track.hpp"
+#include "fubble/rtc/audio_track.hpp"
 #include "loopback_audio.hpp"
 #include "own_audio_track.hpp"
 
@@ -19,7 +19,7 @@ void own_media::set_own_video(
   own_video_ = own_video_parameter;
 }
 
-rtc::google::audio_track *own_media::get_audio() const {
+rtc::audio_track *own_media::get_audio() const {
   auto track = own_audio_track_->get_track();
   return track.get();
 }

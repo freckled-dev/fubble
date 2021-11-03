@@ -2,11 +2,12 @@
 #define UUID_3F71B506_929B_4811_AFB6_2C552E301C13
 
 #include <fubble/rtc/video_device.hpp>
+#include <fubble/utils/export.hpp>
 #include <memory>
 #include <string>
 
 namespace rtc {
-class video_device_factory {
+class FUBBLE_PUBLIC video_device_factory {
 public:
   virtual ~video_device_factory() = default;
 

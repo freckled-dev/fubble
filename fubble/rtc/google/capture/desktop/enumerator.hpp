@@ -2,6 +2,7 @@
 #define UUID_CD1D441F_1E79_4250_811E_F72162D8F634
 
 #include <cstdint>
+#include <fubble/utils/export.hpp>
 #include <memory>
 #include <string>
 #include <vector>
@@ -10,7 +11,7 @@ namespace rtc {
 namespace google {
 namespace capture {
 namespace desktop {
-class enumerator {
+class FUBBLE_PUBLIC enumerator {
 public:
   struct information {
     std::intptr_t id;
