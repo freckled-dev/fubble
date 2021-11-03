@@ -2,7 +2,6 @@
 #define UUID_FA86766A_7231_4254_9E64_C74DEBFFBAC7
 
 #include "add_windows_root_certs.hpp"
-#include "fubble/http/logger.hpp"
 #include "server.hpp"
 #include <boost/asio/error.hpp>
 #include <boost/asio/ssl.hpp>
@@ -10,6 +9,7 @@
 #include <boost/predef/os/ios.h>
 #include <boost/predef/os/windows.h>
 #include <boost/thread/future.hpp>
+#include <fubble/http/logger.hpp>
 
 namespace http {
 namespace internal {
@@ -38,6 +38,11 @@ verbose_verification<Verifier> make_verbose_verification(Verifier verifier) {
   return verbose_verification<Verifier>(verifier);
 }
 } // namespace internal
+
+// TODO this class needs reftoring
+// TODO print all available certs
+// on error search check:
+// https://gitlab.com/acof/fubble/-/issues/410#note_722798603
 template <class connection_type> class ssl_upgrader {
 public:
   ssl_upgrader(const server &server_, connection_type &connection_,

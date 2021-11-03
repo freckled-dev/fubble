@@ -99,10 +99,12 @@ public:
     BOOST_LOG_SEV(logger, logging::severity::trace)
         << __FUNCTION__ << ", size:" << size;
 #endif
-    // TODO here we r using a deprecated method
-    webrtc::EncodedImage encoded{
-        static_cast<std::uint8_t *>(const_cast<void *>(data)),
-        static_cast<std::size_t>(size), static_cast<std::size_t>(size)};
+    rtc::scoped_refptr<webrtc::EncodedImageBuffer> buffer =
+        webrtc::EncodedImageBuffer::Create(
+            static_cast<const std::uint8_t *>(data),
+            static_cast<std::size_t>(size));
+    webrtc::EncodedImage encoded{};
+    encoded.SetEncodedData(buffer);
     webrtc::CodecSpecificInfo info;
     webrtc::CodecSpecificInfoH264 codec_info;
     codec_info.packetization_mode =
