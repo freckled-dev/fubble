@@ -1,7 +1,15 @@
+# https://mesonbuild.com/Build-options.html
 option('with_servers', type: 'boolean', value: true,
   description: 'enable server components')
 option('with_tests', type: 'boolean', value: true,
   description: 'enable tests')
 option('with_ui', type: 'boolean', value: true,
   description: 'enable ui')
+# TODO https://www.boost.org/doc/libs/master/doc/html/stacktrace/configuration_and_build.html
+#option('stacktrace',
+#  type: 'combo',
+#  choices: ['windbg', 'basic', 'backtrace', 'addr2line', 'noop'],
+#  value: 'noop',
+#  description: 'stacktrace configuration'
+#  )
 
