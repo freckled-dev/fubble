@@ -63,29 +63,30 @@ if host_machine.system() == 'windows'
     'dbgeng.lib',
     ]
 else
-  if cxx.has_header('backtrace.h')
+  #if cxx.has_header('backtrace.h')
     message('using boost_stacktrace_backtrace')
     boost_dep_modules += [
       'stacktrace_backtrace',
       ]
-    boost_dep_link_with += [
-      '-lbacktrace',
-      ]
+    #backtrace_dep = dependency('backtrace')
+    #boost_dep_link_with += [
+    #  '-lbacktrace',
+    #  ]
     # super slow
     #elif dependency('boost', modules : ['stacktrace_addr2line'], static: true, required: false).found()
     #  message('using boost_stacktrace_addr2line')
     #  boost_dep_modules += [
     #    'stacktrace_addr2line',
     #    ]
-  else
-    message('using boost_stacktrace_basic')
-    boost_dep_modules += [
-       'stacktrace_basic',
-      ]
-  endif
-  boost_compile_args += [
-    '-DBOOST_STACKTRACE_LINK',
-    ]
+  #else
+  #  message('using boost_stacktrace_basic')
+  #  boost_dep_modules += [
+  #     'stacktrace_basic',
+  #    ]
+  #endif
+  #boost_compile_args += [
+  #  '-DBOOST_STACKTRACE_LINK',
+  #  ]
   if host_machine.system() == 'linux'
     if meson.get_compiler('cpp').get_id() == 'gcc'
       boost_compile_args += [

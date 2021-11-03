@@ -1,6 +1,8 @@
 #ifndef UUID_BE3B5C7E_9570_4F7C_A304_A12A219473C9
 #define UUID_BE3B5C7E_9570_4F7C_A304_A12A219473C9
 
+#include <vector>
+
 namespace rtc {
 class video_frame {
 public:
