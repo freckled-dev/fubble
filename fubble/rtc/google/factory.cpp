@@ -4,6 +4,7 @@
 #include "audio_source.hpp"
 #include "audio_track_source.hpp"
 #include "connection.hpp"
+#include "error_helper.hpp"
 #include "fubble/utils/uuid.hpp"
 #include "video_source.hpp"
 #include "video_track.hpp"
@@ -61,10 +62,9 @@ std::unique_ptr<rtc::connection> factory::create_connection() {
 #endif
   auto result = std::make_unique<connection>();
   webrtc::PeerConnectionDependencies dependencies{result.get()};
-  auto native =
-      factory_->CreatePeerConnection(configuration, std::move(dependencies));
-  if (!native)
-    throw std::runtime_error("!peer_connection");
+  auto native_or_error = factory_->CreatePeerConnectionOrError(
+      configuration, std::move(dependencies));
+  auto native = throw_on_error_or_value(std::move(native_or_error));
   result->initialise(native);
   return result;
 }

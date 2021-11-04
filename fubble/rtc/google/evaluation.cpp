@@ -317,10 +317,12 @@ struct connection {
     // sctp, dtls https://www.tutorialspoint.com/webrtc/webrtc_sctp
     // configuration.enable_dtls_srtp.emplace(false);
     webrtc::PeerConnectionDependencies peer_dependencies{&observer};
-    peer_connection = peer_connection_factory.CreatePeerConnection(
-        configuration, std::move(peer_dependencies));
-    if (!peer_connection)
-      throw std::runtime_error("!peer_connection");
+    auto peer_connection_or_error =
+        peer_connection_factory.CreatePeerConnectionOrError(
+            configuration, std::move(peer_dependencies));
+    BOOST_ASSERT(peer_connection_or_error.ok());
+    peer_connection = peer_connection_or_error.MoveValue();
+    BOOST_ASSERT(peer_connection);
     set_remote_description_observer_ =
         new rtc::RefCountedObject<set_remote_description_observer>();
   }
@@ -331,7 +333,10 @@ struct connection {
       create_session_description_observer_ =
           new rtc::RefCountedObject<create_session_description_observer>(
               signaling_client, peer_connection, offering);
-      data_channel = peer_connection->CreateDataChannel("funny", nullptr);
+      auto data_channel_or_error =
+          peer_connection->CreateDataChannelOrError("funny", nullptr);
+      BOOST_ASSERT(data_channel_or_error.ok());
+      data_channel = data_channel_or_error.MoveValue();
       data_channel_observer_.data_channel = data_channel;
       data_channel->RegisterObserver(&data_channel_observer_);
     }

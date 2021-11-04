@@ -2,6 +2,7 @@
 #include "fixture.hpp"
 #include "room_participant.hpp"
 #include "room_states.hpp"
+#include <boost/optional/optional_io.hpp>
 
 using namespace matrix;
 
