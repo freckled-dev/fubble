@@ -27,7 +27,11 @@ factory::factory(std::shared_ptr<video_encoder_factory_factory>
   instance_members();
 }
 
-factory::factory() : settings_{} { instance_members(); }
+factory::factory()
+    : settings_{}, video_encoder_factory_factory_{
+                       std::make_shared<video_encoder_factory_factory>()} {
+  instance_members();
+}
 
 factory::~factory() {
   if (!audio_device_module)
@@ -196,6 +200,7 @@ void factory::instance_audio_device_module() {
 
 void factory::instance_video() {
   BOOST_LOG_SEV(logger, logging::severity::trace) << "instance_video";
+  BOOST_ASSERT(video_encoder_factory_factory_);
   // WATCHOUT. `instance_factory` will video_encoder inside factory!
   // weird api design.
   video_encoder = video_encoder_factory_factory_->create();

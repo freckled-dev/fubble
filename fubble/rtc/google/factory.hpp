@@ -22,11 +22,11 @@ class audio_devices;
 class connection;
 class FUBBLE_PUBLIC factory : public rtc::factory {
 public:
+  // TODO remove default constructor
+  factory();
   explicit factory(std::shared_ptr<video_encoder_factory_factory>
                        video_encoder_factory_factory_,
                    const settings &settings_, rtc::Thread &signaling_thread);
-  // TODO remove default constructor
-  factory();
   ~factory();
 
   std::unique_ptr<rtc::connection> create_connection() override;
