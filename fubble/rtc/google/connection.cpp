@@ -1,6 +1,7 @@
 #include "connection.hpp"
 #include "audio_track_sink.hpp"
 #include "data_channel.hpp"
+#include "error_helper.hpp"
 #include "fubble/utils/uuid.hpp"
 #include "video_track_sink.hpp"
 #include <boost/assert.hpp>
@@ -248,7 +249,10 @@ rtc::data_channel_ptr connection::create_data_channel() {
   auto label = uuid::generate();
   BOOST_LOG_SEV(logger, logging::severity::info)
       << "create_data_channel, label:" << label;
-  auto native_data_channel = native->CreateDataChannel(label, nullptr);
+  auto native_data_channel_or_error =
+      native->CreateDataChannelOrError(label, nullptr);
+  auto native_data_channel =
+      throw_on_error_or_value(std::move(native_data_channel_or_error));
   auto result = std::make_shared<data_channel>(native_data_channel);
   data_channels.push_back(result);
   return result;
