@@ -142,6 +142,7 @@ if get_option('with_tests')
 else
   gtest_dep = disabled
 endif
+sigslot_dep = dependency('sigslot', include_type: 'system')
 fmt_dep = dependency('fmt', include_type: 'system')
 json_dep = dependency('nlohmann_json', include_type: 'system')
 gstreamer_webrtc_dep_pkg = dependency('gstreamer-webrtc-1.0',

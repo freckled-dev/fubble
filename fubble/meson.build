@@ -14,4 +14,5 @@ if get_option('with_ui')
 endif
 subdir('app')
 subdir('ssl_test')
+subdir('signals_test')
 

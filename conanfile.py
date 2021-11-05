@@ -78,6 +78,7 @@ class FubbleConan(ConanFile):
     def requirements(self):
         self.requires("nlohmann_json/3.7.0")
         self.requires("boost/1.77.0")
+        self.requires("sigslot/1.2.1")
         self.requires("gtest/1.11.0")
         self.requires("fmt/8.0.1")
         self.requires("google-webrtc/94@acof/stable")
