@@ -2,7 +2,7 @@
 #define UUID_D136BB60_81E5_4336_A54C_72FACE9EE23A
 
 #include "fubble/client/logger.hpp"
-#include <sigslot/signal.hpp>
+#include <fubble/utils/signal.hpp>
 #include <boost/thread/executors/inline_executor.hpp>
 #include <boost/thread/future.hpp>
 #include <deque>
@@ -30,7 +30,7 @@ public:
   chat &get_chat() const;
   participants &get_participants() const;
   users &get_users() const;
-  sigslot::signal<const std::string &> on_name_changed;
+  utils::signal::signal<const std::string &> on_name_changed;
 
   boost::optional<std::string> get_name() const;
   std::string get_own_id() const;

@@ -2,7 +2,7 @@
 #define UUID_5375F009_0AA1_485F_8486_FD064D17354F
 
 #include "fubble/client/logger.hpp"
-#include <sigslot/signal.hpp>
+#include <fubble/utils/signal.hpp>
 #include <boost/thread/executors/inline_executor.hpp>
 #include <boost/thread/future.hpp>
 
@@ -25,8 +25,8 @@ public:
   participant *get(const std::string &id) const;
   boost::future<void> close();
 
-  sigslot::signal<const std::vector<participant *> &> on_added;
-  sigslot::signal<std::vector<std::string>> on_removed;
+  utils::signal::signal<const std::vector<participant *> &> on_added;
+  utils::signal::signal<std::vector<std::string>> on_removed;
 
 protected:
   void on_matrix_room_participant_joins(
@@ -46,7 +46,7 @@ protected:
   participants_container participants_;
   users &users_;
   matrix::room &matrix_room;
-  sigslot::scoped_connection on_join_connection;
+  utils::signal::scoped_connection on_join_connection;
 };
 } // namespace client
 

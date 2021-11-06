@@ -1,7 +1,7 @@
 #ifndef UUID_B11D00BB_A04E_447C_BB07_ABF86DE333A2
 #define UUID_B11D00BB_A04E_447C_BB07_ABF86DE333A2
 
-#include <sigslot/signal.hpp>
+#include <fubble/utils/signal.hpp>
 
 namespace client {
 class room;
@@ -10,7 +10,7 @@ public:
   rooms();
   ~rooms();
 
-  sigslot::signal<> on_set;
+  utils::signal::signal<> on_set;
   void set(const std::shared_ptr<room> &set_);
   std::shared_ptr<room> get() const;
 

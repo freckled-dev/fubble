@@ -2,7 +2,7 @@
 #define UUID_10C55C77_A55C_4A79_B99E_96FD62EF44DE
 
 #include "logger.hpp"
-#include <sigslot/signal.hpp>
+#include <fubble/utils/signal.hpp>
 #include <boost/thread/executors/inline_executor.hpp>
 #include <boost/thread/future.hpp>
 #include <unordered_map>
@@ -40,7 +40,7 @@ public:
 
   boost::future<room_id> get_or_create_room_id(const room_name &name,
                                                const user_id &user_id_);
-  sigslot::signal<int> on_room_count_changed;
+  utils::signal::signal<int> on_room_count_changed;
   std::size_t get_room_count();
 
 protected:

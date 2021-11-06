@@ -1,7 +1,7 @@
 #ifndef UUID_3AF1EB16_2810_4C69_9A46_59A98C68EAB5
 #define UUID_3AF1EB16_2810_4C69_9A46_59A98C68EAB5
 
-#include <sigslot/signal.hpp>
+#include <fubble/utils/signal.hpp>
 #include <fubble/client/logger.hpp>
 #include <fubble/rtc/audio_track.hpp>
 
@@ -16,8 +16,8 @@ public:
       loopback_audio &own_audio_);
   ~own_audio_information();
 
-  sigslot::signal<double> on_sound_level_30times_a_second;
-  sigslot::signal<bool> on_voice_detected;
+  utils::signal::signal<double> on_sound_level_30times_a_second;
+  utils::signal::signal<bool> on_voice_detected;
 
 protected:
   void set_loopback_audio(loopback_audio &audio);
@@ -25,7 +25,7 @@ protected:
 
   audio_level_calculator_factory &audio_level_calculator_factory_;
   std::unique_ptr<audio_level_calculator> audio_level_calculator_;
-  std::vector<sigslot::scoped_connection> signal_connections;
+  std::vector<utils::signal::scoped_connection> signal_connections;
 };
 } // namespace client
 

@@ -7,7 +7,7 @@
 #include <api/media_stream_interface.h>
 #include <api/video/video_frame.h>
 #include <api/video/video_sink_interface.h>
-#include <sigslot/signal.hpp>
+#include <fubble/utils/signal.hpp>
 
 namespace rtc {
 namespace google {

@@ -1,7 +1,7 @@
 #ifndef RTC_CONNECTION_HPP
 #define RTC_CONNECTION_HPP
 
-#include <sigslot/signal.hpp>
+#include <fubble/utils/signal.hpp>
 #include <boost/thread/future.hpp>
 #include <fubble/rtc/data_channel_ptr.hpp>
 #include <fubble/rtc/ice_candidate.hpp>
@@ -32,14 +32,14 @@ public:
   virtual void close() = 0;
   using stats_callback = std::function<void(std::string)>;
   virtual void get_stats(const stats_callback &callback) = 0;
-  sigslot::signal<> on_negotiation_needed;
-  sigslot::signal<track_ptr> on_track_added;
-  sigslot::signal<track_ptr> on_track_removed;
-  sigslot::signal<track_ptr> on_video_track_added;
-  sigslot::signal<track_ptr> on_audio_track_added;
-  sigslot::signal<data_channel_ptr> on_data_channel;
-  sigslot::signal<ice_candidate> on_ice_candidate;
-  sigslot::signal<> on_closed;
+  utils::signal::signal<> on_negotiation_needed;
+  utils::signal::signal<track_ptr> on_track_added;
+  utils::signal::signal<track_ptr> on_track_removed;
+  utils::signal::signal<track_ptr> on_video_track_added;
+  utils::signal::signal<track_ptr> on_audio_track_added;
+  utils::signal::signal<data_channel_ptr> on_data_channel;
+  utils::signal::signal<ice_candidate> on_ice_candidate;
+  utils::signal::signal<> on_closed;
 };
 } // namespace rtc
 

@@ -292,7 +292,7 @@ protected:
   }
 
   signaling::logger logger{"reconnecting_client"};
-  std::vector<sigslot::scoped_connection> signal_connections;
+  std::vector<utils::signal::scoped_connection> signal_connections;
   factory &factory_;
   utils::one_shot_timer &timer;
   std::unique_ptr<client> delegate;

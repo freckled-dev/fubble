@@ -22,7 +22,7 @@ struct participants_waiter {
   client::room &room;
   int wait_until{2};
   boost::promise<void> promise;
-  sigslot::scoped_connection joins;
+  utils::signal::scoped_connection joins;
 
   participants_waiter(client::room &room) : room(room) {}
   boost::future<void> wait() {

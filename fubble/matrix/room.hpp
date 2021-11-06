@@ -3,8 +3,8 @@
 
 #include "fubble/http/client.hpp"
 #include "logger.hpp"
-#include <sigslot/signal.hpp>
-#include <sigslot/signal.hpp>
+#include <fubble/utils/signal.hpp>
+#include <fubble/utils/signal.hpp>
 #include <boost/thread/executors/inline_executor.hpp>
 #include <boost/thread/future.hpp>
 #include <string>
@@ -30,8 +30,8 @@ public:
   room_states &get_states() const;
 
   // TODO refactor to `on_added`
-  sigslot::signal<room_participant &> on_join;
-  sigslot::signal<const std::string &> on_name_changed;
+  utils::signal::signal<room_participant &> on_join;
+  utils::signal::signal<const std::string &> on_name_changed;
 
   void sync(const nlohmann::json &content);
 
@@ -45,7 +45,7 @@ protected:
   client &client_;
   const std::string id;
   std::unique_ptr<http::client> http_client;
-  sigslot::scoped_connection on_sync_connection;
+  utils::signal::scoped_connection on_sync_connection;
   using members_type = std::vector<std::unique_ptr<room_participant>>;
   members_type members;
   boost::optional<std::string> name;

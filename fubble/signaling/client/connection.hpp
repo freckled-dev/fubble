@@ -7,7 +7,7 @@
 #include "fubble/signaling/offer.hpp"
 #include "fubble/signaling/registration.hpp"
 #include "fubble/websocket/connection_ptr.hpp"
-#include <sigslot/signal.hpp>
+#include <fubble/utils/signal.hpp>
 #include <boost/thread/executors/inline_executor.hpp>
 #include <boost/thread/future.hpp>
 
@@ -29,11 +29,11 @@ public:
   void send_ice_candidate(const signaling::ice_candidate &candidate);
   void send_answer(const signaling::answer &answer_);
 
-  sigslot::signal<const signaling::offer &> on_offer;
-  sigslot::signal<const signaling::answer &> on_answer;
-  sigslot::signal<const signaling::ice_candidate &>
+  utils::signal::signal<const signaling::offer &> on_offer;
+  utils::signal::signal<const signaling::answer &> on_answer;
+  utils::signal::signal<const signaling::ice_candidate &>
       on_ice_candidate;
-  sigslot::signal<> on_create_offer;
+  utils::signal::signal<> on_create_offer;
 
   boost::future<void> run();
 

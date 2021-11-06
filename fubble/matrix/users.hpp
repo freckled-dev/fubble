@@ -3,7 +3,7 @@
 
 #include "logger.hpp"
 #include "user.hpp"
-#include <sigslot/signal.hpp>
+#include <fubble/utils/signal.hpp>
 #include <deque>
 #include <nlohmann/json_fwd.hpp>
 
@@ -17,7 +17,7 @@ public:
 
   using user_list = std::deque<std::unique_ptr<user>>;
   inline const user_list &get_all() const { return users_; }
-  sigslot::signal<client &> on_add;
+  utils::signal::signal<client &> on_add;
 
 protected:
   void on_sync(const nlohmann::json &content);
@@ -25,7 +25,7 @@ protected:
 
   matrix::logger logger{"users"};
   client &client_;
-  sigslot::scoped_connection on_sync_connection;
+  utils::signal::scoped_connection on_sync_connection;
   std::deque<std::unique_ptr<user>> users_;
 };
 } // namespace matrix

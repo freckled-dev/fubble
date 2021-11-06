@@ -3,7 +3,7 @@
 
 #include <fubble/v4l2_hw_h264/config.hpp>
 #include <memory>
-#include <sigslot/signal.hpp>
+#include <fubble/utils/signal.hpp>
 
 namespace fubble {
 namespace v4l2_hw_h264 {
@@ -15,7 +15,7 @@ public:
   virtual void set_bitrate(int bitrate) = 0;
   virtual void trigger_i_frame() = 0;
   virtual void mainloop() = 0;
-  sigslot::signal<const void *, int> on_data;
+  utils::signal::signal<const void *, int> on_data;
 
   static std::unique_ptr<reader> create(config config_);
   static std::unique_ptr<reader> create_shared(std::shared_ptr<reader>);

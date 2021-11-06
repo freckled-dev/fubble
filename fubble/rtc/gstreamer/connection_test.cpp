@@ -1,7 +1,7 @@
 #include "connection.hpp"
 #include "fubble/rtc/gstreamer/video_track.hpp"
 #include "fubble/utils/logging/logger.hpp"
-#include <sigslot/signal.hpp>
+#include <fubble/utils/signal.hpp>
 #include <boost/thread/executors/executor_adaptor.hpp>
 #include <fmt/format.h>
 #include <fmt/ostream.h>
@@ -78,7 +78,7 @@ struct GstreamerConnection : ::testing::Test {
 struct create_offer_and_set_local_description {
   GstreamerConnection &test;
   boost::promise<rtc::session_description> promise;
-  sigslot::scoped_connection negotiation_needed_connection;
+  utils::signal::scoped_connection negotiation_needed_connection;
   rtc::session_description result;
   create_offer_and_set_local_description(GstreamerConnection &test)
       : test(test) {

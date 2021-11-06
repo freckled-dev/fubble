@@ -1,7 +1,7 @@
 #ifndef UUID_0BAA8A31_4C07_49DD_873A_C04A04E2D4FC
 #define UUID_0BAA8A31_4C07_49DD_873A_C04A04E2D4FC
 
-#include <sigslot/signal.hpp>
+#include <fubble/utils/signal.hpp>
 #include <chrono>
 #include <nlohmann/json.hpp>
 #include <boost/optional.hpp>
@@ -64,7 +64,7 @@ public:
 
   virtual bool handle_event(const event::event_ptr &handle) = 0;
 
-  sigslot::signal<event::event_ptr> on_event;
+  utils::signal::signal<event::event_ptr> on_event;
 
   using events_container = std::vector<event::event_ptr>;
   virtual events_container get_events() const = 0;

@@ -19,7 +19,7 @@ public:
   enum participant_roles { participant_role = Qt::UserRole + 1 };
 
   boost::optional<participant_model *> get_own() const;
-  sigslot::signal<> on_own_changed;
+  utils::signal::signal<> on_own_changed;
 
   int rowCount(const QModelIndex &parent = QModelIndex()) const override;
   QVariant data(const QModelIndex &index, int role) const override;
@@ -38,7 +38,7 @@ protected:
   model_creator &model_creator_;
   room &room_;
   std::deque<participant_model *> participants;
-  std::vector<sigslot::scoped_connection> signal_connections;
+  std::vector<utils::signal::scoped_connection> signal_connections;
 };
 
 } // namespace client

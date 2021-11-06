@@ -146,7 +146,7 @@ protected:
   std::shared_ptr<desktop_sharing_previews> desktop_sharing_previews_;
   share_desktop_categories_model *categories{};
   bool active{};
-  std::vector<sigslot::scoped_connection> signal_connections;
+  std::vector<utils::signal::scoped_connection> signal_connections;
 };
 } // namespace client
 

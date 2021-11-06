@@ -10,20 +10,21 @@
 #include <boost/log/utility/setup/common_attributes.hpp>
 #include <boost/log/utility/setup/console.hpp>
 #include <fmt/format.h>
+#include <fubble/utils/signal.hpp>
 #include <media/base/adapted_video_track_source.h>
 #include <modules/video_capture/video_capture_factory.h>
 #include <mutex>
 #include <rtc_base/ssl_adapter.h>
-#include <sigslot/signal.hpp>
 
 namespace {
 class signaling {
 public:
-  sigslot::signal<const std::string & candidate, const std::string & sdp_mid,
-                  const int sdp_mline_index>
+  utils::signal::signal<const std::string & /*candidate*/,
+                        const std::string & /*sdp_mid*/,
+                        const int /*sdp_mline_index*/>
       on_ice_candidate;
-  sigslot::signal<std::string> on_offer;
-  sigslot::signal<std::string> on_answer;
+  utils::signal::signal<std::string> on_offer;
+  utils::signal::signal<std::string> on_answer;
 };
 
 class data_channel_observer : public webrtc::DataChannelObserver {

@@ -19,7 +19,7 @@ protected:
 
   matrix::client &matrix_client;
   temporary_room::logger logger{"matrix_rooms_factory_adapter"};
-  std::vector<sigslot::scoped_connection> signals_connections;
+  std::vector<utils::signal::scoped_connection> signals_connections;
 };
 } // namespace temporary_room::server
 

@@ -3,7 +3,7 @@
 
 #include "logger.hpp"
 #include "room.hpp"
-#include <sigslot/signal.hpp>
+#include <fubble/utils/signal.hpp>
 #include <deque>
 #include <nlohmann/json_fwd.hpp>
 
@@ -29,8 +29,8 @@ public:
   inline const room_list &get_rooms() const { return rooms_; }
   boost::optional<room *> get_room_by_id(const std::string &id) const;
 
-  sigslot::signal<room &> on_joined;
-  sigslot::signal<const std::string &> on_leave;
+  utils::signal::signal<room &> on_joined;
+  utils::signal::signal<const std::string &> on_leave;
 
 protected:
   void on_sync(const nlohmann::json &content);
@@ -42,7 +42,7 @@ protected:
   factory &factory_;
   client &client_;
   boost::inline_executor executor;
-  sigslot::scoped_connection on_sync_connection;
+  utils::signal::scoped_connection on_sync_connection;
   std::unique_ptr<http::client> http_client;
   room_list rooms_;
 };
