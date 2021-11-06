@@ -46,6 +46,7 @@ endif
 if host_machine.system() == 'linux'
     add_project_arguments('-fvisibility=hidden', language: 'cpp')
 endif
+#add_project_arguments('-ftime-trace', language: 'cpp')
 
 boost_dep_modules = ['thread', 'program_options', 'regex', 'log', 'log_setup',
   'filesystem']
