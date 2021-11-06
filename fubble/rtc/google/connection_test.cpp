@@ -93,7 +93,7 @@ TEST_F(GoogleConnection, SetLocalDescription) {
 TEST_F(GoogleConnection, IceCandidate) {
   wait_for_event waiter;
   test_peer peer{creator};
-  boost::signals2::connection signal_connection =
+  utils::signal::connection signal_connection =
       peer.instance->on_ice_candidate.connect([&](auto candidate) {
         signal_connection.disconnect();
         EXPECT_FALSE(candidate.sdp.empty());

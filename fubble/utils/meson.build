@@ -1,6 +1,7 @@
 utils_sources = ['executor_asio.cpp', 'logging/logger.cpp',
   'logging/initialser.cpp', 'exit_signals.cpp', 'uuid.cpp',
   'timer.cpp', 'executor_module.cpp', 'logging/severity.cpp',
+  'signal.cpp',
     ]
 # By default vcs_tag will output something using git describe such as
 # 0.33.0-22-g58359c8 which basically means 22 commits after the 0.33.0 tag,
@@ -24,7 +25,7 @@ utils_dep = declare_dependency(
 install_headers([
   'executor_asio.hpp', 'joined_thread.hpp', 'uuid.hpp', 'wait_for_event.hpp',
   'exit_signals.hpp', 'version.hpp', 'options_adder.hpp', 'exception.hpp',
-  'executor_module.hpp', 'timer.hpp', 'export.hpp',
+  'executor_module.hpp', 'timer.hpp', 'export.hpp', 'signal.hpp',
   ], subdir: 'fubble/utils')
 install_headers(['logging/logger.hpp', 'logging/initialser.hpp',
   'logging/severity.hpp',
@@ -35,7 +36,9 @@ test_main = static_library('test_main',
   dependencies: [gtest_dep, utils_dep, boost_dep])
 
 utils_test = executable('utils_test',
-  ['executor_asio_test.cpp', 'boost_thread_test.cpp'],
+  ['executor_asio_test.cpp', 'boost_thread_test.cpp',
+    #'signal_test.cpp',
+    ],
   dependencies: [gtest_dep, utils_dep],
   link_with: [test_main]
   )

@@ -2,7 +2,7 @@
 #define UUID_DE3E4714_AD73_44A4_9ED2_AA1F55903106
 
 #include <boost/optional.hpp>
-#include <boost/signals2/signal.hpp>
+#include <fubble/utils/signal.hpp>
 #include <fubble/client/logger.hpp>
 #include <fubble/client/own_video.hpp>
 #include <fubble/rtc/video_capability.hpp>
@@ -35,7 +35,7 @@ public:
 
   void pause(bool paused);
   bool get_paused() const;
-  boost::signals2::signal<void(bool)> on_paused;
+  utils::signal::signal<bool> on_paused;
 
   void change_to_device(const std::string &id);
   // means a video is instanced!
@@ -43,7 +43,7 @@ public:
   boost::optional<std::string> get_device_id() const;
 
   std::shared_ptr<rtc::video_source> get_video_source() const;
-  boost::signals2::signal<void()> on_video_source_changed;
+  utils::signal::signal<> on_video_source_changed;
 
 protected:
   void setup_initial_device();

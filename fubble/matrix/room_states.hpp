@@ -19,7 +19,7 @@ public:
   virtual ~room_states() = default;
   virtual boost::future<void> set_custom(const custom &set) = 0;
   virtual std::vector<custom> get_all_custom() const = 0;
-  boost::signals2::signal<void(const custom &)> on_custom;
+  utils::signal::signal<const custom &> on_custom;
 
   virtual bool sync_event(const event::room_state_event &event) = 0;
 

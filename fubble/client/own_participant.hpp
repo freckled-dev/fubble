@@ -20,7 +20,7 @@ protected:
   client::logger logger{"own_participant"};
   own_media &own_media_;
   const std::shared_ptr<desktop_sharing> desktop_sharing_;
-  std::vector<boost::signals2::scoped_connection> signal_connections;
+  std::vector<utils::signal::scoped_connection> signal_connections;
 };
 } // namespace client
 

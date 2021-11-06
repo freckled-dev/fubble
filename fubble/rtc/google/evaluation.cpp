@@ -9,8 +9,8 @@
 #include <boost/log/keywords/format.hpp>
 #include <boost/log/utility/setup/common_attributes.hpp>
 #include <boost/log/utility/setup/console.hpp>
-#include <boost/signals2/signal.hpp>
 #include <fmt/format.h>
+#include <fubble/utils/signal.hpp>
 #include <media/base/adapted_video_track_source.h>
 #include <modules/video_capture/video_capture_factory.h>
 #include <mutex>
@@ -19,12 +19,12 @@
 namespace {
 class signaling {
 public:
-  boost::signals2::signal<void(const std::string &candidate,
-                               const std::string &sdp_mid,
-                               const int sdp_mline_index)>
+  utils::signal::signal<const std::string & /*candidate*/,
+                        const std::string & /*sdp_mid*/,
+                        const int /*sdp_mline_index*/>
       on_ice_candidate;
-  boost::signals2::signal<void(std::string)> on_offer;
-  boost::signals2::signal<void(std::string)> on_answer;
+  utils::signal::signal<std::string> on_offer;
+  utils::signal::signal<std::string> on_answer;
 };
 
 class data_channel_observer : public webrtc::DataChannelObserver {

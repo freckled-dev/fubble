@@ -31,7 +31,7 @@ protected:
   const rtc::scoped_refptr<video_track_source_adapter> adapter_;
   const std::shared_ptr<video_source> source;
   const rtc::scoped_refptr<webrtc::VideoTrackInterface> video_track_;
-  boost::signals2::scoped_connection on_frame_connection;
+  utils::signal::scoped_connection on_frame_connection;
 }; // namespace google
 } // namespace google
 } // namespace rtc

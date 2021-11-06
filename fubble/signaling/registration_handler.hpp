@@ -4,7 +4,7 @@
 #include "connection_ptr.hpp"
 #include "logger.hpp"
 #include "fubble/signaling/device/device_ptr.hpp"
-#include <boost/signals2/connection.hpp>
+#include <fubble/utils/signal.hpp>
 #include <boost/thread/executors/executor.hpp>
 #include <boost/thread/future.hpp>
 #include <utility>
@@ -23,7 +23,7 @@ public:
   struct registered_connection {
     std::string key;
     std::array<device::device_ptr, 2> devices;
-    std::array<boost::signals2::scoped_connection, 2> on_close_handles;
+    std::array<utils::signal::scoped_connection, 2> on_close_handles;
   };
   using devices_type = std::vector<registered_connection>;
   const devices_type &get_registered() const;

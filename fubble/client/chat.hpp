@@ -2,7 +2,7 @@
 #define UUID_09E21F62_6DF5_44C5_A15F_EFBD87FDF840
 
 #include "logger.hpp"
-#include <boost/signals2/signal.hpp>
+#include <fubble/utils/signal.hpp>
 #include <chrono>
 #include <deque>
 #include <string>
@@ -24,7 +24,7 @@ public:
   };
   using messages = std::deque<message>;
   const messages &get_messages() const;
-  boost::signals2::signal<void(const message &)> on_message;
+  utils::signal::signal<const message &> on_message;
 
   void send_message(const std::string &message);
 
@@ -35,7 +35,7 @@ protected:
   matrix::chat &matrix_chat;
   messages messages_;
 
-  boost::signals2::scoped_connection on_message_connection;
+  utils::signal::scoped_connection on_message_connection;
 };
 } // namespace client
 

@@ -47,7 +47,8 @@ add_connection(signaling::registration_handler &handler,
 std::shared_ptr<mock_connection>
 add_offering_connection(signaling::registration_handler &handler) {
   auto connection = add_connection(handler);
-  connection->on_want_to_negotiate({});
+  const signaling::want_to_negotiate want_to_negotiate_;
+  connection->on_want_to_negotiate(want_to_negotiate_);
   return connection;
 }
 } // namespace

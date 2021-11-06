@@ -2,7 +2,7 @@
 #define UUID_93601485_1C7B_4CDE_9303_1CB02F7FBA15
 
 #include "fubble/client/logger.hpp"
-#include <boost/signals2/signal.hpp>
+#include <fubble/utils/signal.hpp>
 #include <boost/thread/executors/inline_executor.hpp>
 #include <boost/thread/future.hpp>
 
@@ -13,7 +13,7 @@ public:
   leaver(rooms &rooms_);
 
   boost::future<void> leave();
-  boost::signals2::signal<void()> on_about_to_leave;
+  utils::signal::signal<> on_about_to_leave;
 
 protected:
   void on_left(boost::future<void> &result);

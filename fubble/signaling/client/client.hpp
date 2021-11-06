@@ -7,7 +7,7 @@
 #include "fubble/signaling/ice_candidate.hpp"
 #include "fubble/signaling/logger.hpp"
 #include "fubble/signaling/offer.hpp"
-#include <boost/signals2/signal.hpp>
+#include <fubble/utils/signal.hpp>
 #include <boost/thread/future.hpp>
 
 namespace utils {
@@ -39,14 +39,14 @@ public:
   send_ice_candidate(const signaling::ice_candidate &candidate) = 0;
   virtual void send_want_to_negotiate() = 0;
 
-  boost::signals2::signal<void()> on_closed;
-  boost::signals2::signal<void()> on_registered;
-  boost::signals2::signal<void()> on_create_offer;
-  boost::signals2::signal<void(const signaling::offer &)> on_offer;
-  boost::signals2::signal<void(const signaling::answer &)> on_answer;
-  boost::signals2::signal<void(const signaling::ice_candidate &)>
+  utils::signal::signal<> on_closed;
+  utils::signal::signal<> on_registered;
+  utils::signal::signal<> on_create_offer;
+  utils::signal::signal<const signaling::offer &> on_offer;
+  utils::signal::signal<const signaling::answer &> on_answer;
+  utils::signal::signal<const signaling::ice_candidate &>
       on_ice_candidate;
-  boost::signals2::signal<void(const boost::system::system_error &)> on_error;
+  utils::signal::signal<const boost::system::system_error &> on_error;
 
   static std::unique_ptr<client>
   create(websocket::connector_creator &connector_creator,

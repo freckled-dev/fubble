@@ -2,7 +2,7 @@
 #define UUID_5FE653B5_2E7D_42EC_AD07_243EFF0B0EF2
 
 #include <QObject>
-#include <boost/signals2/signal.hpp>
+#include <fubble/utils/signal.hpp>
 #include <memory>
 #include <vector>
 
@@ -29,7 +29,7 @@ protected:
   std::shared_ptr<model_creator> model_creator_;
   room_model *room_{};
 
-  std::vector<boost::signals2::scoped_connection> signal_connections;
+  std::vector<utils::signal::scoped_connection> signal_connections;
 };
 } // namespace client
 

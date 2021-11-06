@@ -4,7 +4,7 @@
 #include "fubble/client/logger.hpp"
 #include <QAbstractItemModel>
 #include <QtCore/QDateTime>
-#include <boost/signals2/connection.hpp>
+#include <fubble/utils/signal.hpp>
 #include <deque>
 
 namespace client {
@@ -51,7 +51,7 @@ protected:
   participants &participants_;
   users &users_;
   std::deque<chat_message> messages;
-  std::vector<boost::signals2::scoped_connection> signal_connections;
+  std::vector<utils::signal::scoped_connection> signal_connections;
 };
 } // namespace client
 

@@ -46,6 +46,7 @@ endif
 if host_machine.system() == 'linux'
     add_project_arguments('-fvisibility=hidden', language: 'cpp')
 endif
+#add_project_arguments('-ftime-trace', language: 'cpp')
 
 boost_dep_modules = ['thread', 'program_options', 'regex', 'log', 'log_setup',
   'filesystem']
@@ -142,8 +143,6 @@ if get_option('with_tests')
 else
   gtest_dep = disabled
 endif
-fmt_dep = dependency('fmt', include_type: 'system')
-json_dep = dependency('nlohmann_json', include_type: 'system')
 gstreamer_webrtc_dep_pkg = dependency('gstreamer-webrtc-1.0',
   required : false, disabler : true)
 gstreamer_sdp_dep = dependency('gstreamer-sdp-1.0',
@@ -247,7 +246,12 @@ else
   ssl_dep = google_webrtc_dep
 endif
 
-rectangle_bin_pack_dep = dependency('rectanglebinpack', include_type: 'system', required: false, disabler: true)
+sigslot_dep = dependency('sigslot', include_type: 'system')
+fmt_dep = dependency('fmt', include_type: 'system')
+json_dep = dependency('nlohmann_json', include_type: 'system')
+rectangle_bin_pack_dep = dependency('rectanglebinpack',
+  include_type: 'system', required: false, disabler: true)
+
 if host_machine.system() == 'linux'
   restinio_dep = dependency('restinio', include_type: 'system')
 else

@@ -5,7 +5,7 @@
 #include "logger.hpp"
 #include <boost/asio/io_context.hpp>
 #include <boost/asio/ip/tcp.hpp>
-#include <boost/signals2/signal.hpp>
+#include <fubble/utils/signal.hpp>
 
 namespace websocket {
 class connection_creator;
@@ -18,7 +18,7 @@ public:
            const config &config_);
   void close();
   std::uint16_t get_port() const;
-  boost::signals2::signal<void(connection_ptr &)> on_connection;
+  utils::signal::signal<connection_ptr &> on_connection;
 
 private:
   void run();

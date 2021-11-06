@@ -2,7 +2,7 @@
 #define UUID_48B04D24_4E47_4D66_9D93_6D24AAC137EB
 
 #include "logger.hpp"
-#include <boost/signals2/signal.hpp>
+#include <fubble/utils/signal.hpp>
 #include <nlohmann/json_fwd.hpp>
 #include <boost/optional.hpp>
 
@@ -35,7 +35,7 @@ public:
   inline const std::string &get_display_name() const { return display_name; }
 
   // TODO optimise. on_update gets called more often than neccessary
-  boost::signals2::signal<void()> on_update;
+  utils::signal::signal<> on_update;
 
   void on_m_presence(const nlohmann::json &event);
 

@@ -2,7 +2,7 @@
 #define UUID_8BB23974_D591_472A_A225_ABDB2CC6DB2A
 
 #include "fubble/client/logger.hpp"
-#include <boost/signals2/signal.hpp>
+#include <fubble/utils/signal.hpp>
 
 namespace client {
 class add_audio_to_connection;
@@ -29,8 +29,8 @@ public:
   virtual void mute(std::string id, bool muted) = 0;
   virtual bool get_muted(std::string id) const = 0;
 
-  boost::signals2::signal<void(bool)> on_muted;
-  boost::signals2::signal<void(bool)> on_deafed;
+  utils::signal::signal<bool> on_muted;
+  utils::signal::signal<bool> on_deafed;
 };
 class audio_tracks_volume : public audio_volume {
 public:

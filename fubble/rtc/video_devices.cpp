@@ -30,7 +30,7 @@ protected:
   rtc::logger logger{"interval_video_devices"};
   std::shared_ptr<video_devices> delegate;
   utils::interval_timer &timer;
-  boost::signals2::scoped_connection enumerated_changed_connection;
+  utils::signal::scoped_connection enumerated_changed_connection;
 };
 } // namespace
 

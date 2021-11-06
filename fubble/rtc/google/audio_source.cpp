@@ -38,7 +38,7 @@ struct audio_source::sink : webrtc::AudioTrackSinkInterface {
     result.number_of_frames = number_of_frames;
     on_data(result);
   }
-  boost::signals2::signal<void(const audio_data &)> on_data;
+  utils::signal::signal<const audio_data &> on_data;
 
   rtc::logger logger{"audio_source::sink"};
   webrtc::AudioSourceInterface &source;

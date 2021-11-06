@@ -1,7 +1,7 @@
 #ifndef UUID_63CC2CDA_533D_43C1_A9E7_51D617CDC08C
 #define UUID_63CC2CDA_533D_43C1_A9E7_51D617CDC08C
 
-#include <boost/signals2/signal.hpp>
+#include <fubble/utils/signal.hpp>
 #include <boost/thread/executors/executor.hpp>
 #include <fubble/client/logger.hpp>
 #include <fubble/rtc/audio_data.hpp>
@@ -24,8 +24,8 @@ public:
   const rtc::audio_source &get_source() const;
 
   // TODO refactor to 10
-  boost::signals2::signal<void(double)> on_sound_level_30times_a_second;
-  boost::signals2::signal<void(bool)> on_voice_detected;
+  utils::signal::signal<double> on_sound_level_30times_a_second;
+  utils::signal::signal<bool> on_voice_detected;
 
 protected:
   void on_data(const rtc::audio_data &data);
@@ -43,7 +43,7 @@ protected:
 
   bool voice_detected{};
   std::shared_ptr<int> alive_check = std::make_shared<int>(42);
-  boost::signals2::scoped_connection on_data_connection;
+  utils::signal::scoped_connection on_data_connection;
 };
 
 class audio_level_calculator_factory {

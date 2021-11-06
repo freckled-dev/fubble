@@ -60,7 +60,7 @@ protected:
   participants_with_video_model *participants_with_video{};
   chat_model *chat{};
   int new_participants_count{};
-  std::vector<boost::signals2::scoped_connection> signal_connections;
+  std::vector<utils::signal::scoped_connection> signal_connections;
 };
 } // namespace client
 

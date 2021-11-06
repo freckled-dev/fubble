@@ -2,7 +2,7 @@
 #define UUID_BE2C6F4A_FF34_4689_941A_8BF68E644DA1
 
 #include <boost/assert.hpp>
-#include <boost/signals2/signal.hpp>
+#include <fubble/utils/signal.hpp>
 #include <fubble/client/own_video.hpp>
 #include <fubble/rtc/audio_track.hpp>
 #include <fubble/rtc/video_source.hpp>

@@ -56,8 +56,8 @@ protected:
   struct user_wrapper {
     std::string id;
     matrix::room_participant *participant{};
-    boost::signals2::scoped_connection update_connection;
-    boost::signals2::scoped_connection join_state_connection;
+    utils::signal::scoped_connection update_connection;
+    utils::signal::scoped_connection join_state_connection;
   };
   void on_join(matrix::room_participant &room_participant_) {
     auto &user = room_participant_.get_user();
@@ -117,7 +117,7 @@ protected:
       on_empty();
   }
 
-  std::vector<boost::signals2::scoped_connection> signals_connections;
+  std::vector<utils::signal::scoped_connection> signals_connections;
   std::vector<std::unique_ptr<user_wrapper>> users;
 };
 } // namespace
