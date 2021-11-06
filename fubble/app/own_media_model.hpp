@@ -3,7 +3,7 @@
 
 #include "fubble/client/logger.hpp"
 #include <QObject>
-#include <boost/signals2/connection.hpp>
+#include <sigslot/signal.hpp>
 #include <vector>
 
 namespace client {
@@ -76,7 +76,7 @@ protected:
   bool muted{};
   bool deafed{};
   ui::frame_provider_google_video_source *video{};
-  std::vector<boost::signals2::scoped_connection> signal_connections;
+  std::vector<sigslot::scoped_connection> signal_connections;
 };
 } // namespace client
 

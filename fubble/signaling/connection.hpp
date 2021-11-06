@@ -6,7 +6,7 @@
 #include "offer.hpp"
 #include "registration.hpp"
 #include "want_to_negotiate.hpp"
-#include <boost/signals2/signal.hpp>
+#include <sigslot/signal.hpp>
 #include <boost/thread/future.hpp>
 
 namespace signaling {
@@ -16,13 +16,13 @@ public:
   virtual ~connection() = default;
 
   // remove? instead make method remove. a pedon to add
-  boost::signals2::signal<void()> on_closed;
+  sigslot::signal<> on_closed;
 
-  boost::signals2::signal<void(const registration &)> on_registration;
-  boost::signals2::signal<void(const offer &)> on_offer;
-  boost::signals2::signal<void(const answer &)> on_answer;
-  boost::signals2::signal<void(const ice_candidate &)> on_ice_candidate;
-  boost::signals2::signal<void(const want_to_negotiate &)> on_want_to_negotiate;
+  sigslot::signal<const registration &> on_registration;
+  sigslot::signal<const offer &> on_offer;
+  sigslot::signal<const answer &> on_answer;
+  sigslot::signal<const ice_candidate &> on_ice_candidate;
+  sigslot::signal<const want_to_negotiate &> on_want_to_negotiate;
 
   virtual void close() = 0;
   // TODO all send methods shall return a future. #263. handle the fails

@@ -1,5 +1,5 @@
 #include "reader.hpp"
-#include <boost/signals2/connection.hpp>
+#include <sigslot/signal.hpp>
 #include <fmt/format.h>
 #include <fubble/rtc/logger.hpp>
 #include <fubble/utils/exception.hpp>
@@ -488,7 +488,7 @@ public:
 
 private:
   std::shared_ptr<reader> delegate;
-  boost::signals2::scoped_connection on_data_connection;
+  sigslot::scoped_connection on_data_connection;
 };
 } // namespace
 

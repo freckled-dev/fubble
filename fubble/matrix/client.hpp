@@ -5,7 +5,7 @@
 #include "fubble/http/client_factory.hpp"
 #include "rooms.hpp"
 #include "users.hpp"
-#include <boost/signals2/signal.hpp>
+#include <sigslot/signal.hpp>
 #include <boost/thread/executors/inline_executor.hpp>
 #include <chrono>
 
@@ -44,7 +44,7 @@ public:
   sync_till_stop(std::chrono::milliseconds timeout = default_sync_timeout);
   void stop_sync();
 
-  boost::signals2::signal<void(const nlohmann::json &)> on_sync;
+  sigslot::signal<const nlohmann::json &> on_sync;
 
 protected:
   void on_synced(const nlohmann::json &content);

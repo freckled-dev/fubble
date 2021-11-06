@@ -7,7 +7,7 @@
 #include <api/media_stream_interface.h>
 #include <api/video/video_frame.h>
 #include <api/video/video_sink_interface.h>
-#include <boost/signals2/signal.hpp>
+#include <sigslot/signal.hpp>
 
 namespace rtc {
 namespace google {

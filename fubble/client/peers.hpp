@@ -1,7 +1,7 @@
 #ifndef UUID_F6B4996F_8793_4480_BBA6_A14657BA6797
 #define UUID_F6B4996F_8793_4480_BBA6_A14657BA6797
 
-#include <boost/signals2/signal.hpp>
+#include <sigslot/signal.hpp>
 #include <memory>
 #include <vector>
 
@@ -16,8 +16,8 @@ public:
   std::vector<peer_ptr> get_all();
   void remove(const peer_ptr &remove_);
 
-  boost::signals2::signal<void(peer_ptr)> on_added;
-  boost::signals2::signal<void(peer_ptr)> on_removed;
+  sigslot::signal<peer_ptr> on_added;
+  sigslot::signal<peer_ptr> on_removed;
 
 protected:
   std::vector<peer_ptr> container;

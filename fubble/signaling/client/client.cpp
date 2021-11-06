@@ -99,7 +99,7 @@ protected:
     }
   }
 
-  void connect_signals(const connection_ptr &connection_) const {
+  void connect_signals(const connection_ptr &connection_) {
     connection_->on_create_offer.connect([this] { on_create_offer(); });
     connection_->on_offer.connect(
         [this](const auto &offer_) { on_offer(offer_); });
@@ -292,7 +292,7 @@ protected:
   }
 
   signaling::logger logger{"reconnecting_client"};
-  std::vector<boost::signals2::scoped_connection> signal_connections;
+  std::vector<sigslot::scoped_connection> signal_connections;
   factory &factory_;
   utils::one_shot_timer &timer;
   std::unique_ptr<client> delegate;

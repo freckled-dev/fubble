@@ -104,7 +104,7 @@ protected:
   ui::frame_provider_google_video_source *video{};
   bool voice_detected{};
   int audio_level{};
-  std::vector<boost::signals2::scoped_connection> signal_connections;
+  std::vector<sigslot::scoped_connection> signal_connections;
 };
 
 } // namespace client

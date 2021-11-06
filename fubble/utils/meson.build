@@ -19,7 +19,7 @@ utils_dep = declare_dependency(
   include_directories: ['../..'],
   link_with: [utils],
   link_whole: [utils],
-  dependencies: [boost_dep]
+  dependencies: [boost_dep, sigslot_dep]
   )
 install_headers([
   'executor_asio.hpp', 'joined_thread.hpp', 'uuid.hpp', 'wait_for_event.hpp',

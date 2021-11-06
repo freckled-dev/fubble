@@ -1,7 +1,7 @@
 #ifndef UUID_F7A69AED_205D_4411_BD0C_BDC8A16E3D4D
 #define UUID_F7A69AED_205D_4411_BD0C_BDC8A16E3D4D
 
-#include <boost/signals2/signal.hpp>
+#include <sigslot/signal.hpp>
 #include <fubble/client/add_video_to_connection.hpp>
 #include <fubble/client/leaver.hpp>
 #include <fubble/client/tracks_adder.hpp>
@@ -29,11 +29,11 @@ public:
   virtual previews get_all() = 0;
 #endif
   virtual previews get_screens() = 0;
-  boost::signals2::signal<void(preview)> on_screen_added;
-  boost::signals2::signal<void(preview)> on_screen_removed;
+  sigslot::signal<preview> on_screen_added;
+  sigslot::signal<preview> on_screen_removed;
   virtual previews get_windows() = 0;
-  boost::signals2::signal<void(preview)> on_window_added;
-  boost::signals2::signal<void(preview)> on_window_removed;
+  sigslot::signal<preview> on_window_added;
+  sigslot::signal<preview> on_window_removed;
 
   virtual void start() = 0;
   virtual void stop() = 0;
@@ -51,8 +51,8 @@ public:
   virtual video_ptr get() = 0;
   virtual void reset() = 0;
 
-  boost::signals2::signal<void(video_ptr)> on_added;
-  boost::signals2::signal<void(video_ptr)> on_removed;
+  sigslot::signal<video_ptr> on_added;
+  sigslot::signal<video_ptr> on_removed;
 
   static std::unique_ptr<desktop_sharing>
   create(const std::shared_ptr<utils::timer_factory> timer_factory,

@@ -8,7 +8,7 @@
 #include "fubble/signaling/offer.hpp"
 #include "fubble/signaling/want_to_negotiate.hpp"
 #include <boost/optional.hpp>
-#include <boost/signals2/connection.hpp>
+#include <sigslot/signal.hpp>
 #include <functional>
 #include <memory>
 #include <vector>
@@ -44,7 +44,7 @@ protected:
   // TODO remove weakptr to partner. partner shall be a ref. ownership shall
   // extrusive. or make it a shared_ptr
   device_wptr partner;
-  std::vector<boost::signals2::scoped_connection> callback_connections;
+  std::vector<sigslot::scoped_connection> callback_connections;
   bool wants_to_negotiate{};
   bool active_negotiating{};
   std::string token;

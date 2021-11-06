@@ -3,7 +3,7 @@
 
 #include "fubble/client/logger.hpp"
 #include "fubble/rtc/track_ptr.hpp"
-#include <boost/signals2/signal.hpp>
+#include <sigslot/signal.hpp>
 #include <boost/thread/executors/inline_executor.hpp>
 #include <boost/thread/future.hpp>
 
@@ -22,7 +22,7 @@ public:
   virtual bool get_enable_loopback() const = 0;
   virtual std::shared_ptr<rtc::audio_track> get_track() = 0;
 
-  boost::signals2::signal<void(rtc::audio_track &)> on_track;
+  sigslot::signal<rtc::audio_track &> on_track;
 
   static std::unique_ptr<loopback_audio>
   create(rtc::factory &rtc_factory,

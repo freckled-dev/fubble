@@ -2,6 +2,7 @@
 #define UUID_7B29F782_81B8_4FCF_A893_156036A0EAAD
 
 #include <api/video/video_frame.h>
+#include <boost/assert.hpp>
 #include <fubble/rtc/video_frame.hpp>
 
 namespace rtc {

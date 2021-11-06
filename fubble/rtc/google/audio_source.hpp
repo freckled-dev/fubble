@@ -1,7 +1,7 @@
 #ifndef UUID_6CC52509_B0C4_43D5_92AC_618EF31ECDCF
 #define UUID_6CC52509_B0C4_43D5_92AC_618EF31ECDCF
 
-#include <boost/signals2/signal.hpp>
+#include <sigslot/signal.hpp>
 #include <fubble/rtc/audio_source.hpp>
 #include <fubble/rtc/logger.hpp>
 #include <fubble/utils/export.hpp>

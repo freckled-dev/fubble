@@ -1,7 +1,7 @@
 #ifndef UUID_579F5792_D570_4034_9384_6879608D8624
 #define UUID_579F5792_D570_4034_9384_6879608D8624
 
-#include <boost/signals2/signal.hpp>
+#include <sigslot/signal.hpp>
 #include <fubble/rtc/video_source.hpp>
 #include <vector>
 
@@ -16,8 +16,8 @@ public:
   using videos_type = std::vector<std::shared_ptr<rtc::video_source>>;
   virtual videos_type get_all() const = 0;
 
-  boost::signals2::signal<void(std::shared_ptr<rtc::video_source>)> on_added;
-  boost::signals2::signal<void(std::shared_ptr<rtc::video_source>)> on_removed;
+  sigslot::signal<std::shared_ptr<rtc::video_source>> on_added;
+  sigslot::signal<std::shared_ptr<rtc::video_source>> on_removed;
 
   static std::unique_ptr<own_video> create();
 };

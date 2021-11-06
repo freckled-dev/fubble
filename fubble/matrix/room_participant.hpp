@@ -2,7 +2,7 @@
 #define UUID_9A5F9DB4_A585_471D_9A8C_641DE3A54DF9
 
 #include "logger.hpp"
-#include <boost/signals2/signal.hpp>
+#include <sigslot/signal.hpp>
 #include <chrono>
 
 namespace matrix {
@@ -20,7 +20,7 @@ public:
   void set_join_state(const join_state new_, const timestamp_type &timestamp);
   std::string get_id() const;
 
-  boost::signals2::signal<void()> on_join_state_changed;
+  sigslot::signal<> on_join_state_changed;
 
 protected:
   user &user_;

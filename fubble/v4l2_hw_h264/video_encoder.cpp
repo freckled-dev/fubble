@@ -16,7 +16,7 @@ public:
   webrtc::EncodedImageCallback *callback{};
   webrtc::Clock *const clock_{webrtc::Clock::GetRealTimeClock()};
   std::unique_ptr<reader> reader_;
-  boost::signals2::scoped_connection on_data_connection;
+  sigslot::scoped_connection on_data_connection;
   bool got_first_iframe{};
 
   video_encoder_impl(std::unique_ptr<reader> reader_move)

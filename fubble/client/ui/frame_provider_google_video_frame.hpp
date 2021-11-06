@@ -37,7 +37,7 @@ protected:
   std::shared_ptr<rtc::video_source> source;
   QVideoSurfaceFormat format;
   QSize current_frame_size;
-  boost::signals2::scoped_connection connection_on_frame;
+  sigslot::scoped_connection connection_on_frame;
 };
 } // namespace client::ui
 

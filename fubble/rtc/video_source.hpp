@@ -1,7 +1,7 @@
 #ifndef UUID_540C3C00_41CE_4548_8C0E_8191DC904C77
 #define UUID_540C3C00_41CE_4548_8C0E_8191DC904C77
 
-#include <boost/signals2/signal.hpp>
+#include <sigslot/signal.hpp>
 #include <fubble/rtc/video_frame.hpp>
 #include <memory>
 
@@ -10,7 +10,7 @@ class video_source {
 public:
   virtual ~video_source() = default;
 
-  boost::signals2::signal<void(const rtc::video_frame &)> on_frame;
+  sigslot::signal<const rtc::video_frame &> on_frame;
 };
 
 class video_source_noop : public video_source {
