@@ -28,6 +28,8 @@ boost::optional<gui_config> gui_options::parse(int argc, char *argv[]) {
     adder.add("log-severity", result.general_.log_severity,
               "the must-have log_severity for being handled. valid values are: "
               "[trace, debug, info, warning, error, fatal]");
+    adder.add("audio-layer", result.client_core.rtc_.audio_.layer_,
+              "choose the audio-layer to use. eg. linux_alsa or linux_pulse");
   }
   bpo::options_description options;
   options.add(general);

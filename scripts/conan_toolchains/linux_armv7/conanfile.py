@@ -6,6 +6,8 @@ class LinuxArmv7Conan(ConanFile):
     version = "1.0"
     settings = "os", "arch", "compiler", "build_type"
     no_copy_source = True
+    default_user = "acof"
+    default_channel = "stable"
     _sysroot_folder_name = "debian_sid_arm-sysroot"
 
     def source(self):

@@ -25,9 +25,10 @@ public:
     version::client_module::config version_;
     rtc::google::settings rtc_;
     session_module::config session_;
+
     config() = default;
-    config(const std::string &host, const std::string &service,
-           const bool use_ssl);
+    void set_default_servers(const std::string &host,
+                             const std::string &service, const bool use_ssl);
   };
   core_module(const config &config_);
   virtual ~core_module();
