@@ -2,9 +2,8 @@
 #define UUID_117B3F67_A885_4B3D_88AB_85BA3EC78A1B
 
 #include "core_module.hpp"
-#include "fubble/client/audio_module.hpp"
-#include "fubble/client/audio_settings_module.hpp"
-#include "fubble/utils/export.hpp"
+#include <fubble/client/audio_module.hpp>
+#include <fubble/client/audio_settings_module.hpp>
 #include <functional>
 
 namespace audio_client {

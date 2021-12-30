@@ -108,7 +108,14 @@ void frame_provider_google_video_source::on_frame_ui_thread(
   }
   set_format(frame.size());
   start_surface();
-  surface->present(frame);
+
+  bool present_result = surface->present(frame);
+  if (!present_result) {
+    BOOST_LOG_SEV(logger, logging::severity::error)
+        << __FUNCTION__
+        << ", could not present frame, error: " << surface->error();
+    BOOST_ASSERT(present_result);
+  }
 }
 
 void frame_provider_google_video_source::set_format(const QSize &set) {

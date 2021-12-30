@@ -23,6 +23,7 @@ bool parse_options(int argc, char *argv[],
             "the USB cameras that got h264 on board and the raspberry pi.");
   options.add(general);
   options.add(fubble::client::options::create(log_config));
+  options.add(fubble::client::options::create(config.core));
   options.add(fubble::client::options::create(config.v4l2_hw_h264_config));
   bpo::command_line_parser command_line_parser{argc, argv};
   bpo::variables_map vm;

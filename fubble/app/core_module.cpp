@@ -8,8 +8,9 @@
 
 using namespace client;
 
-core_module::config::config(const std::string &host, const std::string &service,
-                            const bool use_ssl) {
+void core_module::config::set_default_servers(const std::string &host,
+                                              const std::string &service,
+                                              const bool use_ssl) {
   signaling_.host = host;
   signaling_.secure = use_ssl;
   signaling_.service = service;

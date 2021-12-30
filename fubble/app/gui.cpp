@@ -27,14 +27,15 @@ int main(int argc, char *argv[]) {
   log_config.webrtc = config.general_.log_webrtc;
   client::log_module log_module_{log_config};
   client::ui::log_qt_to_logging qt_logger;
+  client::core_module::config core_config{};
+  core_config.set_default_servers(config.general_.host, config.general_.service,
+                                  config.general_.use_ssl);
   logging::logger logger{"main"};
 
   BOOST_LOG_SEV(logger, logging::severity::info)
       << "starting up, fubble_version:" << utils::version()
       << ", qt_version:" << qVersion();
 
-  client::core_module::config core_config{
-      config.general_.host, config.general_.service, config.general_.use_ssl};
   auto core_module_ = std::make_shared<client::core_module>(core_config);
 
   std::shared_ptr<client::crash_catcher> crash_catcher;

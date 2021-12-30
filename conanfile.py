@@ -185,9 +185,9 @@ class FubbleConan(ConanFile):
             if self.settings.compiler == "Visual Studio":
                 self.output.info("using vcvars")
                 with tools.vcvars(self):
-                    self._build_meson(pkg_config_paths)
+                    self._build_meson(pkg_config_paths, meson_args)
             else:
-                self._build_meson(pkg_config_paths)
+                self._build_meson(pkg_config_paths, meson_args)
 
     def _get_meson_build_type(self):
         map = {
@@ -201,7 +201,7 @@ class FubbleConan(ConanFile):
         return result
 
 
-    def _build_meson(self, pkg_config_paths):
+    def _build_meson(self, pkg_config_paths, meson_args):
         # meson_args += ['--cross-file', os.path.join(self.install_folder, 'conan_meson_cross.ini')]
 
         # does not work. will set CXXFLAGS with all include and link directories
@@ -234,7 +234,7 @@ class FubbleConan(ConanFile):
             '-Dwith_tests=%s' % with_tests,
             '-Dwith_servers=%s' % with_servers,
             '-Dwith_ui=%s' % self.options.enable_ui
-        ])
+        ] + meson_args)
         self.run(['meson', 'compile',
             '-C', os.path.join(self.build_folder, 'meson'),
         ])

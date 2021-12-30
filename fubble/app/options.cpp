@@ -18,6 +18,9 @@ options::create(::client::log_module::config &config) {
 boost::program_options::options_description
 options::create(::client::core_module::config &config) {
   boost::program_options::options_description result{"core"};
+  utils::option_adder adder{result};
+  adder.add("audio-layer", config.rtc_.audio_.layer_,
+            "choose the audio-layer to use. eg. linux_alsa or linux_pulse");
   return result;
 }
 
