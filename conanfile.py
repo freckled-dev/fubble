@@ -185,7 +185,7 @@ class FubbleConan(ConanFile):
             if self.settings.compiler == "Visual Studio":
                 self.output.info("using vcvars")
                 with tools.vcvars(self):
-                    self._build_meson(pkg_config_paths)
+                    self._build_meson(pkg_config_paths, meson_args)
             else:
                 self._build_meson(pkg_config_paths, meson_args)
 
