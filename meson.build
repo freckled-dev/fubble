@@ -1,7 +1,7 @@
 project('fubble', 'cpp',
   meson_version : '>=0.56.0',
   license: ['proprietary'],
-  default_options : ['cpp_std=c++17'])
+  default_options : ['cpp_std=c++17', 'b_ndebug=if-release', 'warning_level=3'])
 
 add_languages('c', native: false)
 

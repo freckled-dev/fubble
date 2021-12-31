@@ -25,7 +25,6 @@ parser.add_argument('--skip_qt', help='don\'t pull qt',
         action="store_true")
 parser.add_argument('--skip_export', help='don\'t export the package to conan',
         action="store_true")
-parser.add_argument('--profile', help='the conan profile to use', default=None)
 parser.add_argument('--profile_host', help='the conan profile:host to use', default=None)
 parser.add_argument('--profile_build', help='the conan profile:build to use', default=None)
 parser.add_argument('--use_asan', help='use address sanitizer \'memory,undefined\'', action="store_true")
@@ -72,8 +71,6 @@ if not args.skip_qt and platform.system() != "Windows":
 
 def conan_profile_command_args():
     result = []
-    if args.profile:
-        result += ['--profile', args.profile]
     if args.profile_build:
         result += ['--profile:build', args.profile_build]
     if args.profile_host:
@@ -101,9 +98,12 @@ if not args.skip_install:
         subprocess.run(['conan', 'remote', 'add', '-f', remote_name, remote_url],
                 check=True)
 
+    # https://github.com/conan-io/conan/issues/8964
     install_args = ['conan', 'install',
         '--build', 'missing',
-        '--install-folder', paths.dependencies_dir,
+        # TODO do an issue, when install-folder and build-folder differ, it can't find the `conan_meson_native.ini` file
+        # maybe issue does already exist: https://github.com/conan-io/conan/issues/8964
+        '--install-folder', paths.build_dir,
         ]
     install_args += conan_profile_command_args()
     if platform.system() != "Windows":
@@ -114,7 +114,9 @@ if not args.skip_install:
         install_args += ['-o', 'fubble:treat_warnings_as_errors=True']
     if args.use_asan:
         install_args += ['-o', 'fubble:sanatize=True']
-    subprocess.run(install_args + [paths.source_dir],
+    install_args += [paths.source_dir]
+    print(f'running: {install_args}')
+    subprocess.run(install_args,
         check=True
         )
 
@@ -124,7 +126,7 @@ if not args.skip_build:
        paths.source_dir,
         # '--build', 'missing',
         '--source-folder', paths.source_dir,
-        '--install-folder', paths.dependencies_dir,
+        '--install-folder', paths.build_dir,
         '--build-folder', paths.build_dir,
         '--package-folder', paths.prefix_dir,
         ], check=True)
@@ -133,7 +135,7 @@ if not args.skip_package:
     subprocess.run(['conan', 'package',
         paths.source_dir,
         '--source-folder', paths.source_dir,
-        '--install-folder', paths.dependencies_dir,
+        '--install-folder', paths.build_dir,
         '--build-folder', paths.build_dir,
         '--package-folder', paths.prefix_dir,
         ], check=True)

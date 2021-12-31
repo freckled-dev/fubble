@@ -255,6 +255,7 @@ void connection::on_gst_negotiation_needed(GstElement *webrtc,
   BOOST_LOG_SEV(self->logger, logging::severity::info)
       << "on_gst_negotiation_needed";
   self->executor.submit([self, webrtc] {
+    (void)webrtc;
     BOOST_ASSERT(self->webrtc == webrtc);
     BOOST_LOG_SEV(self->logger, logging::severity::info)
         << "on_negotiation_needed";
