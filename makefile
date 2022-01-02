@@ -5,7 +5,7 @@ all: build
 
 .PHONY: build
 build:
-	cmake --build ../fubble_build
+	cmake --build ../fubble_build/cmake
 
 .PHONY: clean
 clean:
