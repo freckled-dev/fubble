@@ -35,18 +35,20 @@ class LinuxArmv7Conan(ConanFile):
         self.env_info.STRIP = "llvm-strip"
         self.env_info.RANLIB = "llvm-ranlib"
         self.env_info.SYSROOT = sysroot_folder
+        self.env_info.CONAN_CMAKE_FIND_ROOT_PATH = sysroot_folder
+        self.env_info.CONAN_CMAKE_SYSROOT = sysroot_folder
         self.env_info.CFLAGS = '--sysroot="{}" -target {}'.format(sysroot_folder, target)
         self.env_info.CXXFLAGS = '--sysroot="{}" -target {}'.format(sysroot_folder, target)
-        self.env_info.LDFLAGS = '--sysroot="{}" -target {} -rpath-link {}'.format(sysroot_folder, target, '/lib/arm-linux-gnueabihf/')
+        self.env_info.LDFLAGS = '--sysroot="{}" -target {} -rpath {}'.format(sysroot_folder, target, '/lib/arm-linux-gnueabihf/')
 
         toolchain_file = os.path.join(self.package_folder, "toolchain.cmake")
         # https://cmake.org/cmake/help/book/mastering-cmake/chapter/Cross%20Compiling%20With%20CMake.html
-        toolchain_content = f"""
-            set(CMAKE_FIND_ROOT_PATH {sysroot_folder})
+        toolchain_content = """
+            set(CMAKE_FIND_ROOT_PATH {})
             set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
             set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
             set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
-            """
+            """.format(sysroot_folder)
         tools.save(toolchain_file, toolchain_content)
         self.conf_info["tools.cmake.cmaketoolchain:user_toolchain"] = toolchain_file
 
