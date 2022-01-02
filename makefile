@@ -5,7 +5,7 @@ all: build
 
 .PHONY: build
 build:
-	meson compile -C ../fubble_build/meson
+	cmake --build ../fubble_build
 
 .PHONY: clean
 clean:

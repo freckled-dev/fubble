@@ -115,7 +115,7 @@ if not args.skip_install:
     if args.use_asan:
         install_args += ['-o', 'fubble:sanatize=True']
     install_args += [paths.source_dir]
-    print(f'running: {install_args}')
+    #print(f'running: {install_args}')
     subprocess.run(install_args,
         check=True
         )

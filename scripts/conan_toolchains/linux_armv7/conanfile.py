@@ -1,14 +1,15 @@
 import os
-from conans import ConanFile
+from conans import ConanFile, tools
 
 class LinuxArmv7Conan(ConanFile):
     name = "linux_armv7"
     version = "1.0"
-    settings = "os", "arch", "compiler", "build_type"
+    settings = "os", "arch" 
     no_copy_source = True
     default_user = "acof"
     default_channel = "stable"
     _sysroot_folder_name = "debian_sid_arm-sysroot"
+    # exports_sources = "*cmake"
 
     def source(self):
         self.run('mkdir sysroot_scripts')
@@ -17,9 +18,13 @@ class LinuxArmv7Conan(ConanFile):
             self.run('curl -L https://chromium.googlesource.com/chromium/src/+/lkgr/build/linux/sysroot_scripts/{}?format=TEXT | base64 -d > sysroot_scripts/{}'.format(file, file))
         self.run('python3 sysroot_scripts/install-sysroot.py --arch arm')
 
+    def build(self):
+        pass
+
     def package(self):
         # Copy all the required files for your toolchain
         self.copy("*", dst=self._sysroot_folder_name, src=self._sysroot_folder_name, symlinks=True)
+        self.copy("*.cmake", dst='', src='')
 
     def package_info(self):
         sysroot_folder = os.path.join(self.package_folder, self._sysroot_folder_name)
@@ -32,5 +37,16 @@ class LinuxArmv7Conan(ConanFile):
         self.env_info.SYSROOT = sysroot_folder
         self.env_info.CFLAGS = '--sysroot="{}" -target {}'.format(sysroot_folder, target)
         self.env_info.CXXFLAGS = '--sysroot="{}" -target {}'.format(sysroot_folder, target)
-        self.env_info.LDFLAGS = '--sysroot="{}" -target {}'.format(sysroot_folder, target)
+        self.env_info.LDFLAGS = '--sysroot="{}" -target {} -rpath-link {}'.format(sysroot_folder, target, '/lib/arm-linux-gnueabihf/')
+
+        toolchain_file = os.path.join(self.package_folder, "toolchain.cmake")
+        # https://cmake.org/cmake/help/book/mastering-cmake/chapter/Cross%20Compiling%20With%20CMake.html
+        toolchain_content = f"""
+            set(CMAKE_FIND_ROOT_PATH {sysroot_folder})
+            set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+            set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+            set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+            """
+        tools.save(toolchain_file, toolchain_content)
+        self.conf_info["tools.cmake.cmaketoolchain:user_toolchain"] = toolchain_file
 
