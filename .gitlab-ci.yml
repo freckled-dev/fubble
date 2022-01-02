@@ -36,7 +36,8 @@ build ubuntu_18.04 release:
   script:
     - >
       python3 scripts/make_build.py
-      --profile scripts/conan_profiles/mac_release
+      --profile_host scripts/conan_profiles/mac_release
+      --profile_build scripts/conan_profiles/mac_release
       --skip_export
   after_script:
     - mv -v ../fubble_build/meson/meson-logs .
@@ -180,7 +181,8 @@ build windows release:
   script:
     - >
       python scripts/make_build.py
-      --profile scripts/conan_profiles/windows_release
+      --profile_host scripts/conan_profiles/windows_release
+      --profile_build scripts/conan_profiles/windows_release
       --skip_export
       --skip_install_webrtc
 
@@ -189,7 +191,8 @@ build windows debug:
   script:
     - >
       python scripts/make_build.py
-      --profile scripts/conan_profiles/windows_debug
+      --profile_host scripts/conan_profiles/windows_debug
+      --profile_build scripts/conan_profiles/windows_release
       --skip_export
   when: manual
 

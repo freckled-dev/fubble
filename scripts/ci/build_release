@@ -4,7 +4,8 @@ cd "$(dirname "$0")"
 source ../environment
 
 time ../make_build.py \
-    --profile ../conan_profiles/linux64_gcc7_relwithdebinfo \
+    --profile_host ../conan_profiles/linux64_gcc7_relwithdebinfo \
+    --profile_build ../conan_profiles/linux64_gcc7_relwithdebinfo \
     --skip_export || exit 1
 
 exit 0

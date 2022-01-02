@@ -103,7 +103,7 @@ if not args.skip_install:
         '--build', 'missing',
         # TODO do an issue, when install-folder and build-folder differ, it can't find the `conan_meson_native.ini` file
         # maybe issue does already exist: https://github.com/conan-io/conan/issues/8964
-        '--install-folder', paths.build_dir,
+        '--install-folder', paths.dependencies_dir,
         ]
     install_args += conan_profile_command_args()
     if platform.system() != "Windows":
@@ -126,8 +126,8 @@ if not args.skip_build:
        paths.source_dir,
         # '--build', 'missing',
         '--source-folder', paths.source_dir,
-        '--install-folder', paths.build_dir,
-        '--build-folder', paths.build_dir,
+        '--install-folder', paths.dependencies_dir,
+        '--build-folder', paths.build_sub_dir,
         '--package-folder', paths.prefix_dir,
         ], check=True)
 
@@ -135,8 +135,8 @@ if not args.skip_package:
     subprocess.run(['conan', 'package',
         paths.source_dir,
         '--source-folder', paths.source_dir,
-        '--install-folder', paths.build_dir,
-        '--build-folder', paths.build_dir,
+        '--install-folder', paths.dependencies_dir,
+        '--build-folder', paths.build_sub_dir,
         '--package-folder', paths.prefix_dir,
         ], check=True)
 
