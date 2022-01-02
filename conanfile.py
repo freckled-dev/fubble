@@ -65,17 +65,17 @@ class FubbleConan(ConanFile):
         # if self.settings.os == "Windows":
         #     # will not compile with less than visual studio 2019
         #     self.build_requires("qt/5.15.0@bincrafters/stable")
-        if not tools.which('meson'):
-            self.build_requires("meson/0.56.0")
         if os_info.is_macos: # maybe even for windows, instead of the pkgconfig-lite "hack"
-            self.build_requires("pkgconf/1.7.3")
+            self.tool_requires('pkgconf/1.7.3')
+        if not tools.which('cmake'):
+            self.tool_requires('cmake/[>1.15]')
 
     def requirements(self):
         self.requires("nlohmann_json/3.7.0")
         self.requires("boost/1.77.0")
-        self.requires("sigslot/1.2.1")
+        self.requires("sigslot/[>=1.2]")
         self.requires("gtest/1.11.0")
-        self.requires("fmt/8.0.1")
+        self.requires("fmt/[>=8.0]")
         self.requires("google-webrtc/94@acof/stable")
         if self.settings.os == "Windows":
             self.requires("openssl/1.1.1l")

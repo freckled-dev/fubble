@@ -51,14 +51,19 @@ if grep -i ubuntu /etc/os-release
     qt5-default qttools5-dev-tools qtquickcontrols2-5-dev qtmultimedia5-dev \
     qtdeclarative5-dev libqt5charts5-dev libqt5svg5-dev \
     qml-module-qtmultimedia qml-module-qtcharts \
-    pkg-config git cmake fuse \
+    pkg-config git fuse rsync rclone curl \
     libxdamage-dev libxcomposite-dev libxtst-dev libxrandr-dev \
-    rsync rclone curl \
     pulseaudio docker.io
   sudo pip3 install --upgrade pip
   sudo -H pip3 install conan meson docker-compose aqtinstall
   conan profile new default --detect
   conan profile update settings.compiler.libcxx=libstdc++11 default
+  # cmake
+  sudo apt-get -y install gpg wget
+  wget -O - "https://apt.kitware.com/keys/kitware-archive-latest.asc" 2>/dev/null | gpg --dearmor - | sudo tee /usr/share/keyrings/kitware-archive-keyring.gpg >/dev/null
+  echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] "https://apt.kitware.com/ubuntu/" bionic main' | sudo tee /etc/apt/sources.list.d/kitware.list >/dev/null
+  sudo apt-get update
+  sudo apt-get install -y cmake
 else
   echo "could not determine the operating system"
   cat /etc/os-release
