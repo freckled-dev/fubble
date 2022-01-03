@@ -31,6 +31,7 @@ target_compile_definitions(fubble_boost INTERFACE
 target_link_libraries(fubble_boost INTERFACE
   boost::log
   boost::log_setup
+  boost::program_options
   )
 add_library(fubble::boost ALIAS fubble_boost)
 
