@@ -26,16 +26,8 @@ target_link_libraries(fubble_google_webrtc INTERFACE PkgConfig::gio2)
 add_library(fubble::google-webrtc ALIAS fubble_google_webrtc)
 
 # boost
-#set(boost_components
-#  thread
-#  program_options
-#  regex
-#  log
-#  log_setup
-#  )
-#find_package(Boost REQUIRED
-#  COMPONENTS boost_components
-#  )
+#set(boost_components thread program_options regex log log_setup)
+#find_package(Boost REQUIRED COMPONENTS boost_components)
 add_library(fubble_boost INTERFACE)
 target_compile_definitions(fubble_boost INTERFACE
   "-DBOOST_THREAD_VERSION=5"
