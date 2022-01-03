@@ -37,6 +37,12 @@ class LinuxArmv7Conan(ConanFile):
         self.env_info.SYSROOT = sysroot_folder
         self.env_info.CONAN_CMAKE_FIND_ROOT_PATH = sysroot_folder
         self.env_info.CONAN_CMAKE_SYSROOT = sysroot_folder
+        self.env_info.PKG_CONFIG_SYSROOT_DIR = sysroot_folder
+        self.env_info.PKG_CONFIG_LIBDIR = [
+            '{}/usr/lib/pkgconfig'.format(sysroot_folder),
+            '{}/usr/share/pkgconfig'.format(sysroot_folder),
+            '{}/usr/lib/arm-linux-gnueabihf/pkgconfig'.format(sysroot_folder),
+        ]
         self.env_info.CFLAGS = '--sysroot="{}" -target {}'.format(sysroot_folder, target)
         self.env_info.CXXFLAGS = '--sysroot="{}" -target {}'.format(sysroot_folder, target)
         self.env_info.LDFLAGS = '--sysroot="{}" -target {} -rpath {}'.format(sysroot_folder, target, '/lib/arm-linux-gnueabihf/')
