@@ -45,7 +45,8 @@ class LinuxArmv7Conan(ConanFile):
         ]
         self.env_info.CFLAGS = '--sysroot="{}" -target {}'.format(sysroot_folder, target)
         self.env_info.CXXFLAGS = '--sysroot="{}" -target {}'.format(sysroot_folder, target)
-        self.env_info.LDFLAGS = '--sysroot="{}" -target {} -rpath {}'.format(sysroot_folder, target, '/lib/arm-linux-gnueabihf/')
+        self.env_info.LDFLAGS = '--sysroot="{}" -target {} -rpath {} -rpath {} -latomic'.format(
+            sysroot_folder, target, '/lib/arm-linux-gnueabihf/', '/usr/lib/arm-linux-gnueabihf/')
 
         toolchain_file = os.path.join(self.package_folder, "toolchain.cmake")
         # https://cmake.org/cmake/help/book/mastering-cmake/chapter/Cross%20Compiling%20With%20CMake.html

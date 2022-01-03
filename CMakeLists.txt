@@ -19,8 +19,7 @@ add_library(fubble_google_webrtc INTERFACE)
 find_package(X11 REQUIRED)
 target_link_libraries(fubble_google_webrtc INTERFACE google-webrtc::google-webrtc)
 target_link_libraries(fubble_google_webrtc INTERFACE
-  X11::X11 X11::Xtst X11::Xext X11::Xcomposite X11::Xfixes X11::Xdamage X11::Xrandr
-  )
+  X11::X11 X11::Xtst X11::Xext X11::Xcomposite X11::Xfixes X11::Xdamage X11::Xrandr)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(gio2 REQUIRED IMPORTED_TARGET gio-2.0)
 target_link_libraries(fubble_google_webrtc INTERFACE PkgConfig::gio2)
