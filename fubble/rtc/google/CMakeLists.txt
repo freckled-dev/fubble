@@ -2,6 +2,7 @@ add_executable(webrtc_google_peer_evaluation "evaluation.cpp")
 target_link_libraries(webrtc_google_peer_evaluation PRIVATE
   fubble::utils fubble::google-webrtc fmt::fmt)
 
+# TODO make `SHARED`?
 add_library(webrtc_google_peer
   "connection.cpp" "factory.cpp" "data_channel.cpp"
   "video_track_source.cpp" "capture/video/enumerator.cpp"
@@ -20,4 +21,24 @@ target_link_libraries(webrtc_google_peer PRIVATE
   fubble::google-webrtc fubble::webrtc_peer fmt::fmt)
 target_link_libraries(webrtc_google_peer PUBLIC fubble::webrtc_peer)
 add_library(fubble::webrtc_google_peer ALIAS webrtc_google_peer)
+
+add_library(google_webrtc_test_main STATIC
+  "test_main.cpp")
+target_link_libraries(google_webrtc_test_main PUBLIC gtest::gtest )
+target_link_libraries(google_webrtc_test_main PRIVATE  fubble::utils)
+add_library(fubble::google_webrtc_test_main ALIAS google_webrtc_test_main)
+
+add_executable(google_peer_test
+  "connection_test.cpp")
+target_link_libraries(google_peer_test PRIVATE
+  fubble::google_webrtc_test_main fubble::webrtc_google_peer fubble::google-webrtc fmt::fmt)
+
+add_executable(webrtc_google_asio_thread_test "asio_signaling_thread_test.cpp")
+target_link_libraries(webrtc_google_asio_thread_test PRIVATE
+  fubble::google_webrtc_test_main fubble::webrtc_google_peer fubble::google-webrtc)
+
+# TODO if NOT IOS
+add_executable(google_desktop_enumerator "capture/desktop/enumerator_app.cpp")
+target_link_libraries(google_desktop_enumerator PRIVATE
+  fubble::google_webrtc_test_main fubble::webrtc_google_peer fubble::google-webrtc fmt::fmt)
 
