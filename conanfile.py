@@ -101,9 +101,9 @@ class FubbleConan(ConanFile):
         # TODO refactor to conans qt
         if self.options.qt_install:
             qt_install = str(self.options.qt_install)
-            qt_cmake_dir = os.path.join(qt_install, 'lib/cmake/Qt5')
+            qt_cmake_dir = os.path.join(qt_install, 'lib', 'cmake', 'Qt5')
             self.output.info("qt_cmake_dir: %s" % (qt_cmake_dir))
-            tc.variables["Qt5_DIR"] = qt_cmake_dir
+            tc.variables["Qt5_DIR"] = qt_cmake_dir.replace('\\', '\\\\')
         tc.variables["BUILD_SERVERS"] = self.options.get_safe("enable_servers", default=False)
         tc.variables["BUILD_UI"] = self.options.get_safe("enable_ui", default=False)
         tc.generate()

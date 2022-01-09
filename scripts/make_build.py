@@ -54,7 +54,7 @@ if platform.system() == "Linux":
     qt_system = "linux"
     qt_target = "gcc_64"
 if platform.system() == "Windows":
-    paths.qt_dir = 'C:\\Qt'
+    paths.qt_dir = 'C:/Qt'
     qt_system = "windows"
     #qt_target = "win64_msvc2019_64"
     qt_target = "msvc2019_64"
