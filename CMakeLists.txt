@@ -2,13 +2,17 @@ cmake_minimum_required(VERSION 3.15)
 project(fubble 
   HOMEPAGE_URL "https://fubble.io"
   LANGUAGES C CXX)
+
+option(BUILD_UI "build ui" ON)
+option(BUILD_SERVERS "build servers" ON)
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 add_compile_definitions("BUILDING_FUBBLE")
-
-option(BUILD_UI "build ui" ON)
-option(BUILD_SERVERS "build servers" ON)
+if(MSVC)
+  add_compile_definitions("_WIN32_WINNT=0x0601")
+endif()
 
 find_package(GTest REQUIRED)
 find_package(sigslot REQUIRED)
