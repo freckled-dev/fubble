@@ -12,6 +12,7 @@ find_package(fmt REQUIRED)
 find_package(nlohmann_json REQUIRED)
 #find_package(rectanglebinpack REQUIRED)
 find_package(restinio REQUIRED)
+find_package(Git REQUIRED) # for `git describe` in version
 
 # google webrtc
 find_package(google-webrtc REQUIRED)
