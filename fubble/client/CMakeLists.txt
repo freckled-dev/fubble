@@ -17,7 +17,7 @@ add_library(fubble
   "desktop_sharing_module.cpp" "log_module.cpp"
   )
 target_link_libraries(fubble PRIVATE
-  fubble::signaling fubble::temporary_room_rooms
+  fubble::signaling_client fubble::temporary_room_rooms
   fubble::webrtc_google_peer fmt::fmt)
 target_link_libraries(fubble PUBLIC fubble::version_getter)
 add_library(fubble::fubble ALIAS fubble)
