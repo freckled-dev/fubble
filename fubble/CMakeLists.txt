@@ -6,7 +6,7 @@ add_subdirectory("signaling")
 add_subdirectory("rtc")
 add_subdirectory("temporary_room")
 add_subdirectory("version")
-#add_subdirectory("client")
+add_subdirectory("client")
 #if get_option("with_ui")
 #  add_subdirectory("video_layout")
 #endif
