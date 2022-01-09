@@ -4,7 +4,9 @@ add_library(websocket
   )
 target_link_libraries(websocket PUBLIC
   fubble::utils
-  fubble::ssl
+  )
+target_link_libraries(websocket PRIVATE
+  fubble::http
   fmt::fmt
   )
 add_library(fubble::websocket ALIAS websocket)

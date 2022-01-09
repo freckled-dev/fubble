@@ -22,7 +22,7 @@ add_library(signaling_client
   "client/client.cpp" "client/connection.cpp"
   "client/connection_creator.cpp" "client_module.cpp")
 target_link_libraries(signaling_client PRIVATE
-  fubble::websocket fubble::signaling)
+  fubble::websocket fubble::signaling fmt::fmt)
 target_link_libraries(signaling_client PUBLIC fubble::utils)
 add_library(fubble::signaling_client ALIAS signaling_client)
 add_executable(signaling_client_test "client/client_test.cpp")
@@ -34,12 +34,12 @@ add_library(signaling_server
   "server/server.cpp" "server/connection.cpp"
   "server/connection_creator.cpp" "server/application.cpp")
 target_link_libraries(signaling_server PRIVATE
-  fubble::websocket fubble::signaling)
+  fubble::websocket fubble::signaling fmt::fmt)
 target_link_libraries(signaling_server PUBLIC fubble::utils)
 add_library(fubble::signaling_server ALIAS signaling_server)
 add_executable(signaling_server_test "server/server_test.cpp")
 target_link_libraries(signaling_server_test PRIVATE
-  fubble::websocket fubble::signaling_server fubble::signaling_client fubble::test_main)
+  fubble::websocket fubble::signaling_server fubble::signaling_client fubble::test_main fmt::fmt)
 add_executable(signaling_server_exec "app/server.cpp")
 target_link_libraries(signaling_server_exec PRIVATE
   fubble::signaling_server fmt::fmt)
