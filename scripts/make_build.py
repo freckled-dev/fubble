@@ -53,8 +53,11 @@ if platform.system() == "Darwin":
 if platform.system() == "Linux":
     qt_system = "linux"
     qt_target = "gcc_64"
-# qt_system = "windows"
-# qt_target = "win64_msvc2019_64"
+if platform.system() == "Windows":
+    paths.qt_dir = 'C:\\Qt'
+    qt_system = "windows"
+    #qt_target = "win64_msvc2019_64"
+    qt_target = "msvc2019_64"
 qt_install = os.path.join(paths.qt_dir, qt_version, qt_target)
 if not args.skip_qt and platform.system() != "Windows":
     Path(paths.qt_dir).mkdir(parents=True, exist_ok=True)

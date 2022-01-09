@@ -48,8 +48,11 @@ class FubbleConan(ConanFile):
     def _get_qt_bin_paths(self):
         if self.settings.os != "Windows":
             return []
-        return ['C:\\Qt\\5.15.1\\msvc2019_64\\bin']
-        # return self.deps_cpp_info["qt"].bin_paths
+        if self.options.qt_install:
+            qt_install = str(self.options.qt_install)
+            qt_cmake_dir = os.path.join(qt_install, 'bin')
+            return [qt_cmake_dir]
+        return []
 
     def _is_ios(self):
             return self.settings.os == "iOS"
@@ -74,9 +77,6 @@ class FubbleConan(ConanFile):
     #    self.run("git clone git@gitlab.com:acof/fubble.git .")
 
     def build_requirements(self):
-        # if self.settings.os == "Windows":
-        #     # will not compile with less than visual studio 2019
-        #     self.build_requires("qt/5.15.0@bincrafters/stable")
         if os_info.is_macos: # maybe even for windows, instead of the pkgconfig-lite "hack"
             self.tool_requires('pkgconf/[>=1.7]')
         if not tools.which('cmake'):
@@ -98,7 +98,7 @@ class FubbleConan(ConanFile):
 
     def generate(self):
         tc = CMakeToolchain(self)
-        # TODO move to conans cmake
+        # TODO refactor to conans qt
         if self.options.qt_install:
             qt_install = str(self.options.qt_install)
             qt_cmake_dir = os.path.join(qt_install, 'lib/cmake/Qt5')
