@@ -109,8 +109,8 @@ if not args.skip_install:
         '--install-folder', paths.dependencies_dir,
         ]
     install_args += conan_profile_command_args()
-    if platform.system() != "Windows":
-        install_args += ['-o', 'fubble:qt_install={}'.format(qt_install)]
+    # qt
+    install_args += ['-o', 'fubble:qt_install={}'.format(qt_install)]
     if not args.skip_install_update:
         install_args += ['--update'] # Check updates exist from upstream remotes
     if args.treat_warnings_as_errors:
