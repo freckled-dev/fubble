@@ -67,13 +67,14 @@ add_library(fubble::boost ALIAS fubble_boost)
 # ssl
 find_package(OpenSSL REQUIRED)
 add_library(fubble_ssl INTERFACE)
-#if(TARGET fubble::google-webrtc)
-#  # google webrtc has ssl in it
-#  target_link_libraries(fubble_ssl INTERFACE fubble::google-webrtc)
-#  target_compile_definitions(fubble_ssl INTERFACE OPENSSL_IS_BORINGSSL)
-#else()
-  target_link_libraries(fubble_ssl INTERFACE OpenSSL::SSL OpenSSL::Crypto)
-#endif()
+# there seems to be a bug with conans ssl. on windows the target alias is lower-case!
+if (TARGET OpenSSL::SSL)
+  target_link_libraries(fubble_ssl INTERFACE OpenSSL::SSL)
+elseif(TARGET openssl::ssl)
+  target_link_libraries(fubble_ssl INTERFACE openssl::ssl)
+else()
+  message(FATAL_ERROR "no valid ssl target alias found")
+endif()
 add_library(fubble::ssl ALIAS fubble_ssl)
 
 add_subdirectory(fubble)
