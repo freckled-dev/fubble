@@ -21,13 +21,20 @@ find_package(Git REQUIRED) # for `git describe` in version
 # google webrtc
 find_package(google-webrtc REQUIRED)
 add_library(fubble_google_webrtc INTERFACE)
-find_package(X11 REQUIRED)
-target_link_libraries(fubble_google_webrtc INTERFACE google-webrtc::google-webrtc)
-target_link_libraries(fubble_google_webrtc INTERFACE
-  X11::X11 X11::Xtst X11::Xext X11::Xcomposite X11::Xfixes X11::Xdamage X11::Xrandr)
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(gio2 REQUIRED IMPORTED_TARGET gio-2.0)
-target_link_libraries(fubble_google_webrtc INTERFACE PkgConfig::gio2)
+if (UNIX AND NOT APPLE)
+  find_package(X11 REQUIRED)
+  target_link_libraries(fubble_google_webrtc INTERFACE google-webrtc::google-webrtc)
+  target_link_libraries(fubble_google_webrtc INTERFACE
+    X11::X11 X11::Xtst X11::Xext X11::Xcomposite X11::Xfixes X11::Xdamage X11::Xrandr)
+  find_package(PkgConfig REQUIRED)
+  pkg_check_modules(gio2 REQUIRED IMPORTED_TARGET gio-2.0)
+  target_link_libraries(fubble_google_webrtc INTERFACE PkgConfig::gio2)
+elif(WIN32)
+  # TODO is the `*.lib` needed?
+  target_link_libraries(fubble_google_webrtc INTERFACE "d3d11.lib" "dxgi.lib")
+else()
+  message(FATAL_ERROR "set webrtc dependencies for this platform")
+endif()
 add_library(fubble::google-webrtc ALIAS fubble_google_webrtc)
 
 # Qt5
