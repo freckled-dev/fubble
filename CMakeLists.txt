@@ -40,7 +40,7 @@ else()
 endif()
 add_library(fubble::google-webrtc ALIAS fubble_google_webrtc)
 
-# Qt5
+# Qt
 if (BUILD_UI)
   # set(CMAKE_AUTOMOC ON)
   find_package(Qt5 COMPONENTS Widgets Quick Multimedia QuickControls2 REQUIRED)

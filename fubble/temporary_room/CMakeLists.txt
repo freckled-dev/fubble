@@ -7,9 +7,11 @@ target_link_libraries(temporary_room_rooms PRIVATE nlohmann_json::nlohmann_json 
 target_link_libraries(temporary_room_rooms PUBLIC fubble::http)
 add_library(fubble::temporary_room_rooms ALIAS temporary_room_rooms)
 
-add_executable(temporary_room_server "server.cpp")
-target_link_libraries(temporary_room_server PRIVATE fubble::temporary_room_rooms)
-install(TARGETS temporary_room_server)
+if (BUILD_SERVERS)
+  add_executable(temporary_room_server "server.cpp")
+  target_link_libraries(temporary_room_server PRIVATE fubble::temporary_room_rooms)
+  install(TARGETS temporary_room_server)
+endif()
 
 add_executable(temporary_room_test
     "rooms/rooms_test.cpp" "server/server_test.cpp"
@@ -18,5 +20,4 @@ add_executable(temporary_room_test
 target_link_libraries(temporary_room_test PRIVATE
   fubble::temporary_room_rooms fubble::test_main
   )
-
 
