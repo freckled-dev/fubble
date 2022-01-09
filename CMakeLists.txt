@@ -25,9 +25,9 @@ find_package(Git REQUIRED) # for `git describe` in version
 # google webrtc
 find_package(google-webrtc REQUIRED)
 add_library(fubble_google_webrtc INTERFACE)
+target_link_libraries(fubble_google_webrtc INTERFACE google-webrtc::google-webrtc)
 if (UNIX AND NOT APPLE)
   find_package(X11 REQUIRED)
-  target_link_libraries(fubble_google_webrtc INTERFACE google-webrtc::google-webrtc)
   target_link_libraries(fubble_google_webrtc INTERFACE
     X11::X11 X11::Xtst X11::Xext X11::Xcomposite X11::Xfixes X11::Xdamage X11::Xrandr)
   find_package(PkgConfig REQUIRED)
