@@ -21,6 +21,7 @@ class FubbleConan(ConanFile):
         "sanatize": [True, False],
         "qt_install": "ANY",
         "enable_ui": [True, False],
+        "enable_servers": [True, False],
         "meson_cross_file": "ANY"}
     # https://docs.conan.io/en/latest/reference/conanfile/attributes.html#default-options
     default_options = {
@@ -28,6 +29,7 @@ class FubbleConan(ConanFile):
         "fPIC": True,
         "qt_install": None,
         "enable_ui": True,
+        "enable_servers": True,
         "meson_cross_file": None,
         "restinio:asio": "boost",
         # qt options
@@ -58,6 +60,7 @@ class FubbleConan(ConanFile):
     def config_options(self):
         if self.settings.os == "Windows":
             del self.options.sanatize
+            del self.options.build_servers
 
     def configure(self):
         if self._get_build_type() == "Release" and 'sanatize' in self.options:
@@ -91,8 +94,7 @@ class FubbleConan(ConanFile):
         if not self._is_ios() and self.options.enable_ui:
             self.requires("rectanglebinpack/cci.20210901")
         # self.requires("qt/5.15.2")
-        if self.settings.os == "Linux":
-            self.requires("restinio/0.6.11")
+        self.requires("restinio/0.6.11")
 
     def generate(self):
         tc = CMakeToolchain(self)
@@ -102,6 +104,8 @@ class FubbleConan(ConanFile):
             qt_cmake_dir = os.path.join(qt_install, 'lib/cmake/Qt5')
             self.output.info("qt_cmake_dir: %s" % (qt_cmake_dir))
             tc.variables["Qt5_DIR"] = qt_cmake_dir
+        tc.variables["BUILD_SERVERS"] = self.options.get_safe("enable_servers", default=False)
+        tc.variables["BUILD_UI"] = self.options.get_safe("enable_ui", default=False)
         tc.generate()
 
         cmake = CMakeDeps(self)

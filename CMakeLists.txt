@@ -8,6 +8,7 @@ set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 add_compile_definitions("BUILDING_FUBBLE")
 
 option(BUILD_UI "build ui" ON)
+option(BUILD_SERVERS "build servers" ON)
 
 find_package(GTest REQUIRED)
 find_package(sigslot REQUIRED)
