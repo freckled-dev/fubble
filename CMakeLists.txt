@@ -47,6 +47,11 @@ target_link_libraries(fubble_boost INTERFACE
   boost::log_setup
   boost::program_options
   )
+if (WIN32)
+  # TODO
+else()
+  target_link_libraries(fubble_boost INTERFACE boost::stacktrace_backtrace)
+endif()
 add_library(fubble::boost ALIAS fubble_boost)
 
 # other

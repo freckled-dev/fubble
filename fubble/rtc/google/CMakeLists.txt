@@ -20,6 +20,7 @@ target_link_libraries(webrtc_google_peer PRIVATE
   fubble::google-webrtc fubble::webrtc_peer fmt::fmt)
 target_link_libraries(webrtc_google_peer PUBLIC fubble::webrtc_peer)
 add_library(fubble::webrtc_google_peer ALIAS webrtc_google_peer)
+install(TARGETS webrtc_google_peer)
 
 add_library(google_webrtc_test_main STATIC
   "test_main.cpp")

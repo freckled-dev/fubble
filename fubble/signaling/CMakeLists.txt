@@ -44,4 +44,5 @@ add_executable(signaling_server_exec "app/server.cpp")
 target_link_libraries(signaling_server_exec PRIVATE
   fubble::signaling_server fmt::fmt)
 set_target_properties(signaling_server_exec PROPERTIES OUTPUT_NAME signaling_server)
+install(TARGETS signaling_server_exec)
 

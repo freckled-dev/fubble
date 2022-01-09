@@ -90,12 +90,18 @@ class FubbleConan(ConanFile):
             self.requires("openssl/1.1.1l")
         if not self._is_ios() and self.options.enable_ui:
             self.requires("rectanglebinpack/cci.20210901")
-            # self.requires("qt/5.15.2")
+        # self.requires("qt/5.15.2")
         if self.settings.os == "Linux":
             self.requires("restinio/0.6.11")
 
     def generate(self):
         tc = CMakeToolchain(self)
+        # TODO move to conans cmake
+        if self.options.qt_install:
+            qt_install = str(self.options.qt_install)
+            qt_cmake_dir = os.path.join(qt_install, 'lib/cmake/Qt5')
+            self.output.info("qt_cmake_dir: %s" % (qt_cmake_dir))
+            tc.variables["Qt5_DIR"] = qt_cmake_dir
         tc.generate()
 
         cmake = CMakeDeps(self)
