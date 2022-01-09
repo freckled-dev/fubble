@@ -10,7 +10,7 @@ add_library(http ${http_sources})
 target_link_libraries(http PUBLIC fubble::utils nlohmann_json::nlohmann_json)
 target_link_libraries(http PRIVATE fmt::fmt fubble::ssl)
 if (WIN32)
-  target_link_libraries(http PRIVATE crypto32)
+  target_link_libraries(http PRIVATE crypt32)
 endif()
 add_library(fubble::http ALIAS http)
 
