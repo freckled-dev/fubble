@@ -29,7 +29,7 @@ if (UNIX AND NOT APPLE)
   find_package(PkgConfig REQUIRED)
   pkg_check_modules(gio2 REQUIRED IMPORTED_TARGET gio-2.0)
   target_link_libraries(fubble_google_webrtc INTERFACE PkgConfig::gio2)
-elif(WIN32)
+elseif(WIN32)
   # TODO is the `*.lib` needed?
   target_link_libraries(fubble_google_webrtc INTERFACE "d3d11.lib" "dxgi.lib")
 else()
