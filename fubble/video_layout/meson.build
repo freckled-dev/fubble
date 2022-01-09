@@ -8,6 +8,7 @@ video_layout_dep = declare_dependency(
   dependencies: [utils_dep, webrtc_google_peer_dep, qt5_dep],
   )
 
+# TODO remove? can't find any references to it
 if host_machine.system() == 'linux'
   video_layout_plugin_sources = ['plugin.cpp'] + video_layout_sources
   video_layout_plugin_sources += qt5.preprocess(moc_headers: ['plugin.hpp'])

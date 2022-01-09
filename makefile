@@ -1,4 +1,4 @@
-BUILD=ninja -C ../fubble_build/meson
+BUILD=ninja -C ../fubble_build/cmake
 
 .PHONY: all
 all: build

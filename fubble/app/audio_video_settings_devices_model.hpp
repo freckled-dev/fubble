@@ -1,11 +1,11 @@
 #ifndef UUID_2C19AB1C_E61F_4B57_A0FA_7E028A3C62F3
 #define UUID_2C19AB1C_E61F_4B57_A0FA_7E028A3C62F3
 
-#include "fubble/client/audio_device_settings.hpp"
-#include "fubble/rtc/audio_devices.hpp"
-#include "fubble/rtc/google/capture/video/device.hpp"
-#include "fubble/rtc/google/capture/video/enumerator.hpp"
 #include <QAbstractItemModel>
+#include <fubble/client/audio_device_settings.hpp>
+#include <fubble/rtc/audio_devices.hpp>
+#include <fubble/rtc/google/capture/video/device.hpp>
+#include <fubble/rtc/google/capture/video/enumerator.hpp>
 
 namespace client {
 class devices_model : public QAbstractListModel {
@@ -25,6 +25,7 @@ protected:
   QHash<int, QByteArray> roleNames() const override;
   bool available{};
 };
+
 class video_devices_model : public devices_model {
   Q_OBJECT
 public:
@@ -74,6 +75,7 @@ public:
   std::shared_ptr<rtc::video_devices> enumerator;
   std::vector<rtc::google::capture::video::information> devices;
 };
+
 class audio_devices_model : public devices_model {
   Q_OBJECT
 public:

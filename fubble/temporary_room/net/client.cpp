@@ -2,6 +2,7 @@
 #include "fubble/http/client.hpp"
 #include <boost/thread/future.hpp>
 #include <fmt/format.h>
+#include <fmt/ostream.h>
 #include <nlohmann/json.hpp>
 
 using namespace temporary_room::net;

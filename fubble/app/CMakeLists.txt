@@ -1,0 +1,37 @@
+add_library(app_client "core_module.cpp" "options.cpp")
+target_link_libraries(app_client PUBLIC fubble::fubble)
+add_library(fubble::app_client ALIAS app_client)
+
+# TODO cli_client
+
+add_library(audio_client "audio_client.cpp")
+target_link_libraries(audio_client PRIVATE fmt::fmt)
+target_link_libraries(audio_client PUBLIC fubble::fubble)
+
+add_executable(audio_client_exec "audio_client_main.cpp")
+target_link_libraries(audio_client_exec PRIVATE
+  audio_client fubble::app_client)
+set_target_properties(audio_client_exec PROPERTIES OUTPUT_NAME audio_client)
+
+if(BUILD_UI)
+  add_executable(fubble_ui
+    "gui.cpp" "utils_model.cpp" "join_model.cpp"
+    "poll_asio_by_qt.cpp" "participants_model.cpp"
+    "gui_options.cpp" "error_model.cpp" "leave_model.cpp"
+    "participants_with_video_model.cpp" "chat_model.cpp"
+    "chat_messages_model.cpp" "share_desktop_model.cpp"
+    "participant_model.cpp" "room_model.cpp" "model_creator.cpp"
+    "language_settings_model.cpp" "ui_module.cpp" "rooms_model.cpp"
+    "audio_video_settings_model.cpp" "own_media_model.cpp"
+    "audio_video_settings_devices_model.cpp"
+    "qml.qrc" "resources.qrc"
+    )
+  set_property(TARGET fubble_ui PROPERTY AUTOMOC ON)
+  set_property(TARGET fubble_ui PROPERTY AUTORCC ON)
+  target_link_libraries(fubble_ui PRIVATE
+    fubble::app_client fubble::fubble fubble::ui fubble::video_layout
+    Qt5::Quick Qt5::QuickControls2 Qt5::Widgets
+    fmt::fmt)
+  install(TARGETS fubble_ui)
+endif()
+

@@ -38,6 +38,5 @@ target_link_libraries(client_room_test PRIVATE
   fubble::fubble fubble::google_webrtc_test_main fubble::google-webrtc
   fubble::version_server)
 
-# TODO
-# add_subdirectory(ui)
+add_subdirectory(ui)
 

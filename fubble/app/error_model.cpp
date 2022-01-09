@@ -1,14 +1,16 @@
 #include "error_model.hpp"
 #include <boost/exception/all.hpp>
 #include <fmt/format.h>
+#include <fmt/ostream.h>
 
 using namespace client;
 
 error_model::error_model(QObject *parent) : QObject(parent) {}
 
 void error_model::set_error(const type type_, const std::string technical_) {
-  BOOST_LOG_SEV(logger, logging::severity::debug) << fmt::format(
-      "{}, type:{}, technical:{}", __FUNCTION__, type_, technical_);
+  BOOST_LOG_SEV(logger, logging::severity::debug)
+      << fmt::format("{}, type:{}, technical:{}", __FUNCTION__,
+                     static_cast<int>(type_), technical_);
   technical = QString::fromStdString(technical_);
   technical_changed();
   text = type_to_string(type_);

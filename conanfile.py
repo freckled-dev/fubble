@@ -95,9 +95,7 @@ class FubbleConan(ConanFile):
             self.requires("restinio/0.6.11")
 
     def generate(self):
-        fu = os.getenv("CXXFLAGS")
-        #self.output.error(f"Error, should be red {fu}")
-        tc = CMakeToolchain(self, generator="Ninja")
+        tc = CMakeToolchain(self)
         tc.generate()
 
         cmake = CMakeDeps(self)

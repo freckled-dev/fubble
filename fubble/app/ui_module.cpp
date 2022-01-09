@@ -54,6 +54,7 @@ ui_module::ui_module(
   app->setApplicationName("Fubble");
 
   // load font
+#if 0
   QString font_path_share =
       QCoreApplication::applicationDirPath() + "/../share/fubble/resources.rcc";
   QString font_path_executable =
@@ -69,6 +70,7 @@ ui_module::ui_module(
     BOOST_LOG_SEV(logger, logging::severity::error)
         << "could not load external resources. This might lead to fatal "
            "errors!";
+#endif
 
   // applying material style
   QQuickStyle::setStyle("Material");

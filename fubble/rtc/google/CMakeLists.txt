@@ -2,8 +2,7 @@ add_executable(webrtc_google_peer_evaluation "evaluation.cpp")
 target_link_libraries(webrtc_google_peer_evaluation PRIVATE
   fubble::utils fubble::google-webrtc fmt::fmt)
 
-# TODO make `SHARED`?
-add_library(webrtc_google_peer
+add_library(webrtc_google_peer SHARED
   "connection.cpp" "factory.cpp" "data_channel.cpp"
   "video_track_source.cpp" "capture/video/enumerator.cpp"
   "capture/video/device.cpp" "audio_source.cpp"
@@ -25,7 +24,7 @@ add_library(fubble::webrtc_google_peer ALIAS webrtc_google_peer)
 add_library(google_webrtc_test_main STATIC
   "test_main.cpp")
 target_link_libraries(google_webrtc_test_main PUBLIC gtest::gtest )
-target_link_libraries(google_webrtc_test_main PRIVATE  fubble::utils)
+target_link_libraries(google_webrtc_test_main PRIVATE fubble::utils)
 add_library(fubble::google_webrtc_test_main ALIAS google_webrtc_test_main)
 
 add_executable(google_peer_test
