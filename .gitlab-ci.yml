@@ -17,9 +17,6 @@ build ubuntu_18.04 release:
     FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install
   script:
     - ./scripts/ci/build_release
-  after_script:
-    # - rm -r ./deploy/development/install
-    - mv -v ../fubble_build/meson/meson-logs .
   artifacts:
     untracked: true
     expire_in: 1 week
@@ -37,8 +34,6 @@ build ubuntu_18.04 release:
       --profile_host scripts/conan_profiles/mac_release
       --profile_build scripts/conan_profiles/mac_release
       --skip_export
-  after_script:
-    - mv -v ../fubble_build/meson/meson-logs .
   artifacts:
     untracked: true
     expire_in: 1 week
@@ -49,14 +44,11 @@ build ubuntu_18.04 release:
   tags:
     - macos
   stage: build
-  after_script:
-    - mv -v ../fubble_build/meson/meson-logs .
   artifacts:
     expire_in: 1 week
     when: always
     paths:
       - ./install*
-      - ./meson-logs
 
 .build ios debug:
   <<: *build_ios
@@ -167,8 +159,6 @@ appimage:
     - pip install --upgrade conan aqtinstall
     - python scripts/install_qt.py
     - conan --version
-  after_script:
-    - mv -v ../fubble_build/meson/meson-logs .
   artifacts:
     untracked: true
     expire_in: 1 week
