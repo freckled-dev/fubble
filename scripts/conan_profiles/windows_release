@@ -17,3 +17,7 @@ google-webrtc:use_h264=False
 [build_requires]
 
 [env]
+
+[conf]
+tools.cmake.cmaketoolchain:generator=Ninja
+

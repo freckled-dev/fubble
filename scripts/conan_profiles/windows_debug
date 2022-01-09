@@ -21,3 +21,6 @@ boost:layout=tagged
 
 [build_requires]
 [env]
+
+[conf]
+tools.cmake.cmaketoolchain:generator=Ninja
