@@ -11,7 +11,7 @@ add_library(fubble::version_server ALIAS version_server_lib)
 if (BUILD_SERVERS)
   add_executable(version_server "server_application.cpp")
   target_link_libraries(version_server PRIVATE fubble::version_server)
-  install(TARGETS version_server_exec)
+  install(TARGETS version_server)
 endif()
 
 add_executable(version_test "test.cpp")
