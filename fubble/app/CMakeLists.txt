@@ -4,14 +4,13 @@ add_library(fubble::app_client ALIAS app_client)
 
 # TODO cli_client
 
-add_library(audio_client "audio_client.cpp")
-target_link_libraries(audio_client PRIVATE fmt::fmt)
-target_link_libraries(audio_client PUBLIC fubble::fubble)
+add_library(audio_client_lib "audio_client.cpp")
+target_link_libraries(audio_client_lib PRIVATE fmt::fmt)
+target_link_libraries(audio_client_lib PUBLIC fubble::fubble)
 
-add_executable(audio_client_exec "audio_client_main.cpp")
-target_link_libraries(audio_client_exec PRIVATE
-  audio_client fubble::app_client)
-set_target_properties(audio_client_exec PROPERTIES OUTPUT_NAME audio_client)
+add_executable(audio_client "audio_client_main.cpp")
+target_link_libraries(audio_client PRIVATE
+  audio_client_lib fubble::app_client)
 
 if(BUILD_UI)
   add_executable(fubble_ui

@@ -27,23 +27,22 @@ target_link_libraries(signaling_client PUBLIC fubble::utils)
 add_library(fubble::signaling_client ALIAS signaling_client)
 
 # signaling server
-add_library(signaling_server
+add_library(signaling_server_lib
   "server/server.cpp" "server/connection.cpp"
   "server/connection_creator.cpp" "server/application.cpp")
-target_link_libraries(signaling_server PRIVATE
+target_link_libraries(signaling_server_lib PRIVATE
   fubble::websocket fubble::signaling fmt::fmt)
-target_link_libraries(signaling_server PUBLIC fubble::utils)
-add_library(fubble::signaling_server ALIAS signaling_server)
+target_link_libraries(signaling_server_lib PUBLIC fubble::utils)
+add_library(fubble::signaling_server ALIAS signaling_server_lib)
 add_executable(signaling_server_test "server/server_test.cpp")
 target_link_libraries(signaling_server_test PRIVATE
   fubble::websocket fubble::signaling_server fubble::signaling_client fubble::test_main fmt::fmt)
 
 if (BUILD_SERVERS)
-  add_executable(signaling_server_exec "app/server.cpp")
-  target_link_libraries(signaling_server_exec PRIVATE
+  add_executable(signaling_server "app/server.cpp")
+  target_link_libraries(signaling_server PRIVATE
     fubble::signaling_server fmt::fmt)
-  set_target_properties(signaling_server_exec PROPERTIES OUTPUT_NAME signaling_server)
-  install(TARGETS signaling_server_exec)
+  install(TARGETS signaling_server)
 endif()
 
 add_executable(signaling_client_test "client/client_test.cpp")
