@@ -63,7 +63,7 @@ class FubbleConan(ConanFile):
     def config_options(self):
         if self.settings.os == "Windows":
             del self.options.sanatize
-            del self.options.build_servers
+            del self.options.enable_servers
 
     def configure(self):
         if self._get_build_type() == "Release" and 'sanatize' in self.options:

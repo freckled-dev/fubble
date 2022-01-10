@@ -25,9 +25,8 @@ std::unique_ptr<mock_room> make_mock_room(room_id id, room_name name) {
   ON_CALL(*room_ptr_, get_room_name()).WillByDefault(::testing::Return(name));
   EXPECT_CALL(*room_ptr_, get_room_id).WillRepeatedly(::testing::Return(id));
   EXPECT_CALL(*room_ptr_, invite(::testing::_))
-      .WillRepeatedly([]([[maybe_unused]] auto user_id) {
-        return boost::make_ready_future();
-      });
+      .WillRepeatedly(
+          [](const user_id &) { return boost::make_ready_future(); });
   return room_ptr_;
 }
 

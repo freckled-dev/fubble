@@ -25,26 +25,28 @@ target_link_libraries(signaling_client PRIVATE
   fubble::websocket fubble::signaling fmt::fmt)
 target_link_libraries(signaling_client PUBLIC fubble::utils)
 add_library(fubble::signaling_client ALIAS signaling_client)
-add_executable(signaling_client_test "client/client_test.cpp")
-target_link_libraries(signaling_client_test PRIVATE
-  fubble::signaling_client fubble::signaling_server fubble::test_main)
 
 # signaling server
+add_library(signaling_server
+  "server/server.cpp" "server/connection.cpp"
+  "server/connection_creator.cpp" "server/application.cpp")
+target_link_libraries(signaling_server PRIVATE
+  fubble::websocket fubble::signaling fmt::fmt)
+target_link_libraries(signaling_server PUBLIC fubble::utils)
+add_library(fubble::signaling_server ALIAS signaling_server)
+add_executable(signaling_server_test "server/server_test.cpp")
+target_link_libraries(signaling_server_test PRIVATE
+  fubble::websocket fubble::signaling_server fubble::signaling_client fubble::test_main fmt::fmt)
+
 if (BUILD_SERVERS)
-  add_library(signaling_server
-    "server/server.cpp" "server/connection.cpp"
-    "server/connection_creator.cpp" "server/application.cpp")
-  target_link_libraries(signaling_server PRIVATE
-    fubble::websocket fubble::signaling fmt::fmt)
-  target_link_libraries(signaling_server PUBLIC fubble::utils)
-  add_library(fubble::signaling_server ALIAS signaling_server)
-  add_executable(signaling_server_test "server/server_test.cpp")
-  target_link_libraries(signaling_server_test PRIVATE
-    fubble::websocket fubble::signaling_server fubble::signaling_client fubble::test_main fmt::fmt)
   add_executable(signaling_server_exec "app/server.cpp")
   target_link_libraries(signaling_server_exec PRIVATE
     fubble::signaling_server fmt::fmt)
   set_target_properties(signaling_server_exec PROPERTIES OUTPUT_NAME signaling_server)
   install(TARGETS signaling_server_exec)
 endif()
+
+add_executable(signaling_client_test "client/client_test.cpp")
+target_link_libraries(signaling_client_test PRIVATE
+  fubble::signaling_client fubble::signaling_server fubble::test_main)
 
