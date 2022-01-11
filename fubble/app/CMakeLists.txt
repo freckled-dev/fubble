@@ -27,7 +27,7 @@ if(BUILD_UI)
     )
   set_property(TARGET fubble_ui PROPERTY AUTOMOC ON)
   set_property(TARGET fubble_ui PROPERTY AUTORCC ON)
-  set_property(TARGET fubble_ui OUTPUT_NAME fubble)
+  set_property(TARGET fubble_ui PROPERTY OUTPUT_NAME "fubble")
   target_link_libraries(fubble_ui PRIVATE
     fubble::app_client fubble::fubble fubble::ui fubble::video_layout
     Qt5::Quick Qt5::QuickControls2 Qt5::Widgets
