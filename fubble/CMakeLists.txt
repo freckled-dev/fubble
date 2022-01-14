@@ -13,6 +13,6 @@ endif()
 add_subdirectory("app")
 # TODO
 #add_subdirectory("v4l2_hw_h264")
-# add_subdirectory("ssl_test")
+add_subdirectory("ssl_test")
 # add_subdirectory("signals_test")
 
