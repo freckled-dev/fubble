@@ -43,5 +43,4 @@ gtest_discover_tests(webrtc_google_asio_thread_test)
 add_executable(google_desktop_enumerator "capture/desktop/enumerator_app.cpp")
 target_link_libraries(google_desktop_enumerator PRIVATE
   fubble::google_webrtc_test_main fubble::webrtc_google_peer fubble::google-webrtc fmt::fmt)
-gtest_discover_tests(google_desktop_enumerator)
 
