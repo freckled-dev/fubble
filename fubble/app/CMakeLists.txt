@@ -2,7 +2,11 @@ add_library(app_client "core_module.cpp" "options.cpp")
 target_link_libraries(app_client PUBLIC fubble::fubble)
 add_library(fubble::app_client ALIAS app_client)
 
-# TODO cli_client
+add_library(cli_client "cli_client.cpp")
+target_link_libraries(cli_client PUBLIC fubble::app_client)
+target_link_libraries(cli_client PRIVATE fubble::v4l2_hw_h264 fmt::fmt)
+add_executable(fubble_cli "cli_client_main.cpp")
+target_link_libraries(fubble_cli PRIVATE cli_client)
 
 add_library(audio_client_lib "audio_client.cpp")
 target_link_libraries(audio_client_lib PRIVATE fmt::fmt)
