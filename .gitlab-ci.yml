@@ -22,7 +22,7 @@ build ubuntu_18.04 release:
     expire_in: 1 week
     when: always
 
-build arm32v7:
+.build arm32v7:
   image: registry.gitlab.com/acof/fubble/ci/build_ubuntu_1804:v3
   stage: build
   variables:
