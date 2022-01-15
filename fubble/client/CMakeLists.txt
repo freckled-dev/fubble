@@ -1,4 +1,4 @@
-add_library(fubble
+add_library(fubble_lib
   "peer.cpp" "peer_creator.cpp" "p2p/negotiation/ice_candidates.cpp"
   "p2p/negotiation/offer_answer.cpp" "joiner.cpp" "peers.cpp"
   "add_video_to_connection.cpp" "room.cpp" "rooms.cpp"
@@ -16,11 +16,11 @@ add_library(fubble
   "audio_settings_module.cpp" "video_module.cpp" "session_module.cpp"
   "desktop_sharing_module.cpp" "log_module.cpp"
   )
-target_link_libraries(fubble PRIVATE
+target_link_libraries(fubble_lib PRIVATE
   fubble::signaling_client fubble::temporary_room_rooms
   fubble::webrtc_google_peer fmt::fmt)
-target_link_libraries(fubble PUBLIC fubble::version_getter)
-add_library(fubble::fubble ALIAS fubble)
+target_link_libraries(fubble_lib PUBLIC fubble::version_getter)
+add_library(fubble::fubble ALIAS fubble_lib)
 
 add_executable(client_video_settings_test "video_settings_test.cpp")
 target_link_libraries(client_video_settings_test PRIVATE
