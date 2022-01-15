@@ -11,7 +11,6 @@ build_type=RelWithDebInfo
 
 [options]
 fubble:enable_ui=False
-fubble:meson_cross_file=scripts/meson_cross/raspberry_pi_armv7
 boost:without_context=True
 boost:without_coroutine=True
 boost:without_graph_parallel=True

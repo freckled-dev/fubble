@@ -104,8 +104,6 @@ if not args.skip_install:
     # https://github.com/conan-io/conan/issues/8964
     install_args = ['conan', 'install',
         '--build', 'missing',
-        # TODO do an issue, when install-folder and build-folder differ, it can't find the `conan_meson_native.ini` file
-        # maybe issue does already exist: https://github.com/conan-io/conan/issues/8964
         '--install-folder', paths.dependencies_dir,
         ]
     install_args += conan_profile_command_args()

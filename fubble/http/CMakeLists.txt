@@ -10,9 +10,6 @@ add_library(http ${http_sources})
 # TODO refactor `fubble::ssl` to `PRIVATE`
 target_link_libraries(http PUBLIC fubble::utils nlohmann_json::nlohmann_json fubble::ssl)
 target_link_libraries(http PRIVATE fmt::fmt)
-if (WIN32)
-  target_link_libraries(http PRIVATE crypt32)
-endif()
 add_library(fubble::http ALIAS http)
 
 add_executable(http_test "client_test.cpp")

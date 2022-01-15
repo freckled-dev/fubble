@@ -1,10 +1,8 @@
 from conans import ConanFile, tools
-from six import StringIO
 from conans.errors import ConanInvalidConfiguration
 from conans.tools import os_info
 from conan.tools.cmake import CMakeToolchain, CMake, CMakeDeps
 import os
-import shutil
 
 class FubbleConan(ConanFile):
     name = "fubble"
@@ -22,7 +20,7 @@ class FubbleConan(ConanFile):
         "qt_install": "ANY",
         "enable_ui": [True, False],
         "enable_servers": [True, False],
-        "meson_cross_file": "ANY"}
+        }
     # https://docs.conan.io/en/latest/reference/conanfile/attributes.html#default-options
     default_options = {
         "shared": False,
@@ -30,13 +28,7 @@ class FubbleConan(ConanFile):
         "qt_install": None,
         "enable_ui": True,
         "enable_servers": True,
-        "meson_cross_file": None,
         "restinio:asio": "boost",
-        # qt options
-        # "qt:openssl": False, "qt:with_mysql": False, "qt:with_pq": False, "qt:with_odbc": False, "qt:widgets": False,
-        # "qt:with_libalsa": False,
-        # qt submodules https://github.com/bincrafters/conan-qt/blob/testing/5.15.1/qtmodules.conf
-        # "qt:qtsvg": True, "qt:qtmultimedia": True, "qt:qtquickcontrols2": True, "qt:qtcharts": True,
         "treat_warnings_as_errors": False,
         "sanatize": False}
     #exports_sources = "*", "!fubble/app/mock_qml_models*", "!.*"
@@ -72,9 +64,6 @@ class FubbleConan(ConanFile):
 
     def imports(self):
         self.copy("*.dll", dst="bin", keep_path=False)
-
-    #def source(self):
-    #    self.run("git clone git@gitlab.com:acof/fubble.git .")
 
     def build_requirements(self):
         if os_info.is_macos: # maybe even for windows, instead of the pkgconfig-lite "hack"
