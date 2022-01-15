@@ -80,7 +80,7 @@ endif()
 
 # ssl
 add_library(fubble_ssl INTERFACE)
-if (TARGET fubble::google-webrtc AND UNIX)
+if (TARGET fubble::google-webrtc)
   message(STATUS "using google webrtc for openssl")
   target_link_libraries(fubble_ssl INTERFACE fubble::google-webrtc)
 else()
