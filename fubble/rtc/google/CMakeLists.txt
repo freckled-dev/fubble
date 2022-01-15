@@ -32,13 +32,16 @@ add_executable(google_peer_test
   "connection_test.cpp")
 target_link_libraries(google_peer_test PRIVATE
   fubble::google_webrtc_test_main fubble::webrtc_google_peer fubble::google-webrtc fmt::fmt)
+gtest_discover_tests(google_peer_test)
 
 add_executable(webrtc_google_asio_thread_test "asio_signaling_thread_test.cpp")
 target_link_libraries(webrtc_google_asio_thread_test PRIVATE
   fubble::google_webrtc_test_main fubble::webrtc_google_peer fubble::google-webrtc)
+gtest_discover_tests(webrtc_google_asio_thread_test)
 
 # TODO if NOT IOS
 add_executable(google_desktop_enumerator "capture/desktop/enumerator_app.cpp")
 target_link_libraries(google_desktop_enumerator PRIVATE
   fubble::google_webrtc_test_main fubble::webrtc_google_peer fubble::google-webrtc fmt::fmt)
+gtest_discover_tests(google_desktop_enumerator)
 

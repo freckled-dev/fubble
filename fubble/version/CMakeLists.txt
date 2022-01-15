@@ -17,4 +17,5 @@ endif()
 add_executable(version_test "test.cpp")
 target_link_libraries(version_test PRIVATE
   fubble::test_main fubble::version_server fubble::version_getter)
+gtest_discover_tests(version_test)
 

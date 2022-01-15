@@ -20,4 +20,5 @@ add_executable(temporary_room_test
 target_link_libraries(temporary_room_test PRIVATE
   fubble::temporary_room_rooms fubble::test_main
   )
+gtest_discover_tests(temporary_room_test)
 

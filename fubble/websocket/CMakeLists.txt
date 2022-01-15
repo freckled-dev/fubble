@@ -15,3 +15,5 @@ add_library(fubble::websocket ALIAS websocket)
 add_executable(websocket_test "test.cpp")
 target_link_libraries(websocket_test PRIVATE
   fubble::websocket fubble::test_main)
+gtest_discover_tests(websocket_test)
+

@@ -25,18 +25,21 @@ add_library(fubble::fubble ALIAS fubble)
 add_executable(client_video_settings_test "video_settings_test.cpp")
 target_link_libraries(client_video_settings_test PRIVATE
   fubble::fubble fubble::google_webrtc_test_main)
+gtest_discover_tests(client_video_settings_test)
 
 add_executable(client_muted_deaf_communicator_test
   "mute_deaf_communicator_test.cpp")
 target_link_libraries(client_muted_deaf_communicator_test PRIVATE
   fubble::fubble fubble::google_webrtc_test_main fubble::google-webrtc
   fubble::version_server)
+gtest_discover_tests(client_muted_deaf_communicator_test)
 
 add_executable(client_room_test
   "room_test.cpp")
 target_link_libraries(client_room_test PRIVATE
   fubble::fubble fubble::google_webrtc_test_main fubble::google-webrtc
   fubble::version_server)
+gtest_discover_tests(client_room_test)
 
 add_subdirectory(ui)
 

@@ -16,7 +16,7 @@ install:
 	${BUILD} install
 
 .PHONY: test
-test:
+test: build
 	cmake --build ../fubble_build/cmake --target test
 
 .PHONY: run

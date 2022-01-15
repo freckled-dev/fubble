@@ -17,4 +17,5 @@ add_library(fubble::http ALIAS http)
 
 add_executable(http_test "client_test.cpp")
 target_link_libraries(http_test PRIVATE fubble::http fubble::test_main)
+gtest_discover_tests(http_test)
 
