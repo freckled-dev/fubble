@@ -28,7 +28,8 @@ build ubuntu_18.04 release:
   variables:
     FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install
   script:
-    - apt-get update; apt-get install -y clang
+    - apt-get update; apt-get install -y 
+      clang llvm gcc-arm-linux-gnueabihf
     - conan create scripts/conan_toolchains/linux_armv7/
     - ./scripts/make_build.py
       --skip_qt
