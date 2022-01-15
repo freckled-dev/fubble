@@ -21,7 +21,9 @@ find_package(GTest REQUIRED)
 find_package(sigslot REQUIRED)
 find_package(fmt REQUIRED)
 find_package(nlohmann_json REQUIRED)
-find_package(rectanglebinpack REQUIRED)
+if (BUILD_UI)
+  find_package(rectanglebinpack REQUIRED)
+endif()
 find_package(restinio REQUIRED)
 find_package(Git REQUIRED) # for `git describe` in version
 

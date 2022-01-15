@@ -55,6 +55,8 @@ class LinuxArmv7Conan(ConanFile):
             set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
             set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
             set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+            # https://cmake.org/cmake/help/latest/module/GoogleTest.html
+            set(CMAKE_GTEST_DISCOVER_TESTS_DISCOVERY_MODE PRE_TEST)
             """.format(sysroot_folder)
         tools.save(toolchain_file, toolchain_content)
         self.conf_info["tools.cmake.cmaketoolchain:user_toolchain"] = toolchain_file

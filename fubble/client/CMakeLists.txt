@@ -41,5 +41,7 @@ target_link_libraries(client_room_test PRIVATE
   fubble::version_server)
 gtest_discover_tests(client_room_test)
 
-add_subdirectory(ui)
+if (BUILD_UI)
+  add_subdirectory(ui)
+endif()
 

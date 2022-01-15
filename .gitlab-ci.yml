@@ -22,6 +22,23 @@ build ubuntu_18.04 release:
     expire_in: 1 week
     when: always
 
+build arm32v7:
+  image: registry.gitlab.com/acof/fubble/ci/build_ubuntu_1804:v3
+  stage: build
+  variables:
+    FUBBLE_PREFIX_DIR: ${CI_PROJECT_DIR}/install
+  script:
+    - conan create scripts/conan_toolchains/linux_armv7/
+    - ./scripts/make_build.py
+      --skip_qt
+      --profile_host scripts/conan_profiles/raspberry_pi_armv7
+      --profile_build scripts/conan_profiles/linux64_clang13_relwithdebinfo
+  artifacts:
+    untracked: true
+    expire_in: 1 week
+    when: always
+
+
 .build mac release:
   tags:
     - macos

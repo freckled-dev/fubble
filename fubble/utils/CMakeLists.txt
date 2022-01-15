@@ -42,11 +42,13 @@ target_link_libraries(utils_test PRIVATE
   )
 gtest_discover_tests(utils_test)
 
-add_executable(shelf_pack_cpp_test "shelf_pack_cpp_test.cpp")
-target_link_libraries(shelf_pack_cpp_test PRIVATE
-  rectanglebinpack::rectanglebinpack
-  fubble::utils
-  fubble::test_main
-  )
-gtest_discover_tests(shelf_pack_cpp_test)
+if (BUILD_UI)
+  add_executable(shelf_pack_cpp_test "shelf_pack_cpp_test.cpp")
+  target_link_libraries(shelf_pack_cpp_test PRIVATE
+    rectanglebinpack::rectanglebinpack
+    fubble::utils
+    fubble::test_main
+    )
+  gtest_discover_tests(shelf_pack_cpp_test)
+endif()
 
