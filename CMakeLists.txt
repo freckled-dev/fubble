@@ -13,6 +13,12 @@ add_compile_definitions("BUILDING_FUBBLE")
 if(MSVC)
   add_compile_definitions("_WIN32_WINNT=0x0601")
 endif()
+if(WIN32)
+  # so the executables find the shared libraries
+  set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+endif()
 
 include(CTest)
 include(GoogleTest)
@@ -80,7 +86,7 @@ endif()
 
 # ssl
 add_library(fubble_ssl INTERFACE)
-if (TARGET fubble::google-webrtc)
+if (TARGET fubble::google-webrtc AND UNIX)
   message(STATUS "using google webrtc for openssl")
   target_link_libraries(fubble_ssl INTERFACE fubble::google-webrtc)
   if (WIN32)

@@ -2,7 +2,7 @@ add_executable(webrtc_google_peer_evaluation "evaluation.cpp")
 target_link_libraries(webrtc_google_peer_evaluation PRIVATE
   fubble::utils fubble::google-webrtc fmt::fmt)
 
-add_library(webrtc_google_peer
+add_library(webrtc_google_peer SHARED
   "connection.cpp" "factory.cpp" "data_channel.cpp"
   "video_track_source.cpp" "capture/video/enumerator.cpp"
   "capture/video/device.cpp" "audio_source.cpp"
