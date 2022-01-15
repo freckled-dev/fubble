@@ -22,6 +22,11 @@ find_package(rectanglebinpack REQUIRED)
 find_package(restinio REQUIRED)
 find_package(Git REQUIRED) # for `git describe` in version
 
+# pkgconfig
+if (UNIX AND NOT APPLE)
+  find_package(PkgConfig REQUIRED)
+endif()
+
 # google webrtc
 find_package(google-webrtc REQUIRED)
 add_library(fubble_google_webrtc INTERFACE)
@@ -30,7 +35,6 @@ if (UNIX AND NOT APPLE)
   find_package(X11 REQUIRED)
   target_link_libraries(fubble_google_webrtc INTERFACE
     X11::X11 X11::Xtst X11::Xext X11::Xcomposite X11::Xfixes X11::Xdamage X11::Xrandr)
-  find_package(PkgConfig REQUIRED)
   pkg_check_modules(gio2 REQUIRED IMPORTED_TARGET gio-2.0)
   target_link_libraries(fubble_google_webrtc INTERFACE PkgConfig::gio2)
 elseif(WIN32)
@@ -42,7 +46,6 @@ add_library(fubble::google-webrtc ALIAS fubble_google_webrtc)
 
 # Qt
 if (BUILD_UI)
-  # set(CMAKE_AUTOMOC ON)
   find_package(Qt5 COMPONENTS Widgets Quick Multimedia QuickControls2 REQUIRED)
 endif()
 
@@ -65,7 +68,10 @@ else()
 endif()
 add_library(fubble::boost ALIAS fubble_boost)
 
-# other
+# gstreamer
+if (UNIX AND NOT APPLE)
+  pkg_check_modules(gstreamer IMPORTED_TARGET gstreamer-1.0)
+endif()
 
 # ssl
 add_library(fubble_ssl INTERFACE)
