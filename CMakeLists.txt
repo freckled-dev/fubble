@@ -14,6 +14,9 @@ if(MSVC)
   add_compile_definitions("_WIN32_WINNT=0x0601")
 endif()
 
+include(CTest)
+include(GoogleTest)
+
 find_package(GTest REQUIRED)
 find_package(sigslot REQUIRED)
 find_package(fmt REQUIRED)

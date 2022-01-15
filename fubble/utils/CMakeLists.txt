@@ -40,6 +40,13 @@ target_link_libraries(utils_test PRIVATE
   fubble::utils
   fubble::test_main
   )
+gtest_discover_tests(utils_test)
 
-# TODO do shelf_pack_cpp_test
+add_executable(shelf_pack_cpp_test "shelf_pack_cpp_test.cpp")
+target_link_libraries(shelf_pack_cpp_test PRIVATE
+  rectanglebinpack::rectanglebinpack
+  fubble::utils
+  fubble::test_main
+  )
+gtest_discover_tests(shelf_pack_cpp_test)
 

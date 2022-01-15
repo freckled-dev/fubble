@@ -17,7 +17,7 @@ install:
 
 .PHONY: test
 test:
-	meson test -C ../fubble_build/meson
+	cmake --build ../fubble_build/cmake --target test
 
 .PHONY: run
 run:
