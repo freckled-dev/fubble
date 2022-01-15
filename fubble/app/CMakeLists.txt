@@ -17,7 +17,7 @@ target_link_libraries(audio_client PRIVATE
   audio_client_lib fubble::app_client)
 
 if(BUILD_UI)
-  add_executable(fubble_ui
+  add_executable(fubble_ui WIN32
     "gui.cpp" "utils_model.cpp" "join_model.cpp"
     "poll_asio_by_qt.cpp" "participants_model.cpp"
     "gui_options.cpp" "error_model.cpp" "leave_model.cpp"

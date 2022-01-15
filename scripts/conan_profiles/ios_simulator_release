@@ -8,7 +8,6 @@ compiler.libcxx=libc++
 build_type=Release
 
 [options]
-fubble:meson_cross_file=scripts/meson_cross/ios_simulator
 boost:extra_b2_flags=visibility=global
 [build_requires]
 [env]
