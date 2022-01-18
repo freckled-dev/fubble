@@ -2,6 +2,7 @@
 #include "user.hpp"
 #include <fmt/chrono.h>
 #include <fmt/format.h>
+#include <fmt/ostream.h>
 
 using namespace matrix;
 

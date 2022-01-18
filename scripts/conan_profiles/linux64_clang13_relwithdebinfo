@@ -12,4 +12,8 @@ build_type=RelWithDebInfo
 [env]
 CC=clang
 CXX=clang++
+CMAKE_CXX_COMPILER_LAUNCHER=ccache
+CMAKE_C_COMPILER_LAUNCHER=ccache
+[conf]
+tools.cmake.cmaketoolchain:generator=Ninja
 

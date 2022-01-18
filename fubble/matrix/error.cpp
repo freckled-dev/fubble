@@ -1,6 +1,7 @@
 #include "error.hpp"
 #include <boost/throw_exception.hpp>
 #include <fmt/format.h>
+#include <fmt/ostream.h>
 #include <nlohmann/json.hpp>
 
 using namespace matrix::error;

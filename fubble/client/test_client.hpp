@@ -1,6 +1,7 @@
 #ifndef UUID_E783A63B_9395_477D_8767_422C504840CC
 #define UUID_E783A63B_9395_477D_8767_422C504840CC
 
+#include "test_executor.hpp"
 #include <fubble/client/factory.hpp>
 #include <fubble/client/joiner.hpp>
 #include <fubble/client/loopback_audio.hpp>
@@ -39,7 +40,6 @@
 #include <fubble/version/testing.hpp>
 #include <fubble/websocket/connection_creator.hpp>
 #include <fubble/websocket/connector.hpp>
-#include <test_executor.hpp>
 
 namespace client::testing {
 struct test_client {

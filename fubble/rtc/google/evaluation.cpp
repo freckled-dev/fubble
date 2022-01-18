@@ -10,6 +10,7 @@
 #include <boost/log/utility/setup/common_attributes.hpp>
 #include <boost/log/utility/setup/console.hpp>
 #include <fmt/format.h>
+#include <fmt/ostream.h>
 #include <fubble/utils/signal.hpp>
 #include <media/base/adapted_video_track_source.h>
 #include <modules/video_capture/video_capture_factory.h>
@@ -368,7 +369,7 @@ struct connection {
               "capability, width:{}, height:{}, maxFPS:{}, videoType:{}, "
               "interlaced:{}",
               capability.width, capability.height, capability.maxFPS,
-              capability.videoType, capability.interlaced);
+              static_cast<int>(capability.videoType), capability.interlaced);
         }
         devices.emplace_back(id);
       }

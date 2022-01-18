@@ -1,11 +1,11 @@
-BUILD=ninja -C ../fubble_build/meson
+BUILD=ninja -C ../fubble_build/cmake
 
 .PHONY: all
 all: build
 
 .PHONY: build
 build:
-	meson compile -C ../fubble_build/meson
+	cmake --build ../fubble_build/cmake
 
 .PHONY: clean
 clean:
@@ -16,8 +16,8 @@ install:
 	${BUILD} install
 
 .PHONY: test
-test:
-	meson test -C ../fubble_build/meson
+test: build
+	cmake --build ../fubble_build/cmake --target test
 
 .PHONY: run
 run:

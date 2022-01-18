@@ -23,7 +23,7 @@ class Paths:
         self.source_dir = get_first_line_of_subprocess_result(git_result)
         self.build_dir = os.path.join(self.source_dir, '..', 'fubble_build')
         self.build_dir = get_environment_variable_or('FUBBLE_BUILD_DIR', self.build_dir)
-        self.meson_dir = os.path.join(self.build_dir, 'meson')
+        self.build_sub_dir = os.path.join(self.build_dir, 'cmake')
         self.dependencies_dir = os.path.join(self.build_dir, 'dependencies')
         self.prefix_dir = os.path.join(self.build_dir, 'install')
         self.prefix_dir = get_environment_variable_or('FUBBLE_PREFIX_DIR', self.prefix_dir)

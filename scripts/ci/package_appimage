@@ -14,11 +14,13 @@ chmod u+x linuxdeploy-x86_64.AppImage linuxdeploy-plugin-qt-x86_64.AppImage
 
 export QML_SOURCES_PATHS="${source_dir}/fubble/app"
 export LD_LIBRARY_PATH="$(realpath $(dirname $(which qmake))/../lib):${LD_LIBRARY_PATH}"
+export LD_LIBRARY_PATH="${prefix_dir}/lib:${LD_LIBRARY_PATH}" 
 export LD_LIBRARY_PATH="${prefix_dir}/lib64:${LD_LIBRARY_PATH}" 
 export LD_LIBRARY_PATH="${prefix_dir}/lib/x86_64-linux-gnu:${LD_LIBRARY_PATH}" 
 
 mkdir -p appdir/usr
-cp -rv "${prefix_dir}/share" appdir/usr
+#cp -rv "${prefix_dir}/share" appdir/usr
+
 ./linuxdeploy-x86_64.AppImage \
     --executable "${prefix_dir}/bin/fubble" \
     --desktop-file="${source_dir}/fubble/app/fubble.desktop" \

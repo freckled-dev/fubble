@@ -11,7 +11,8 @@ class video_frame : public rtc::video_frame {
 public:
   video_frame(const webrtc::VideoFrame &frame) : frame{frame} {
     auto frame_buffer = frame.video_frame_buffer();
-    [[maybe_unused]] webrtc::VideoFrameBuffer::Type type = frame_buffer->type();
+    webrtc::VideoFrameBuffer::Type type = frame_buffer->type();
+    (void) type;
     BOOST_ASSERT(type == webrtc::VideoFrameBuffer::Type::kI420);
   }
 

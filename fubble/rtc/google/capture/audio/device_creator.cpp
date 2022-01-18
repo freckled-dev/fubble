@@ -1,6 +1,6 @@
 #include "device_creator.hpp"
 #include "device.hpp"
-#include "factory.hpp"
+#include <fubble/rtc/google/factory.hpp>
 
 using namespace rtc::google::capture::audio;
 
@@ -12,17 +12,21 @@ std::unique_ptr<device> device_creator::create() {
   cricket::AudioOptions options;
   // options.auto_gain_control = false;
   // options.noise_suppression = false;
-  const auto& settings_ = factory_.get_settings().audio_;
+  const auto &settings_ = factory_.get_settings().audio_;
   options.echo_cancellation = settings_.enable_echo_canceller;
   options.auto_gain_control = settings_.enable_gain_controller;
   options.highpass_filter = settings_.enable_high_pass_filter;
-  // options.voice_detection = settings_.enable_voice_detection; // TODO set to offer, for some reason
+  // TODO set to offer, for some reason
+  // options.voice_detection = settings_.enable_voice_detection;
   options.noise_suppression = settings_.enable_noise_suppression;
   options.typing_detection = settings_.enable_typing_detection;
-  options.audio_jitter_buffer_enable_rtx_handling = settings_.jitter_buffer_enable_rtx_handling;
+  options.audio_jitter_buffer_enable_rtx_handling =
+      settings_.jitter_buffer_enable_rtx_handling;
   options.audio_jitter_buffer_max_packets = settings_.jitter_buffer_max_packets;
-  options.audio_jitter_buffer_min_delay_ms = settings_.jitter_buffer_min_delay_ms;
-  options.audio_jitter_buffer_fast_accelerate = settings_.jitter_buffer_fast_accelerate;
+  options.audio_jitter_buffer_min_delay_ms =
+      settings_.jitter_buffer_min_delay_ms;
+  options.audio_jitter_buffer_fast_accelerate =
+      settings_.jitter_buffer_fast_accelerate;
 
   rtc::scoped_refptr<webrtc::AudioSourceInterface> native_source =
       peer_factory.CreateAudioSource(options);

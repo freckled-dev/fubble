@@ -51,4 +51,7 @@ boost:zlib=False
 boost:zstd=False
 [build_requires]
 [env]
-
+CMAKE_CXX_COMPILER_LAUNCHER=ccache
+CMAKE_C_COMPILER_LAUNCHER=ccache
+[conf]
+tools.cmake.cmaketoolchain:generator=Ninja

@@ -23,7 +23,7 @@ video_track_sink::native_track() const {
   return native_track_;
 }
 
-void video_track_sink::set_content_hint(content_hint hint) {
+void video_track_sink::set_content_hint(content_hint) {
   BOOST_ASSERT(false && "not implemented");
   // native_track_->set_content_hint();
 }

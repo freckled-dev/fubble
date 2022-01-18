@@ -9,6 +9,7 @@ compiler.runtime=MDd
 build_type=Debug
 # compiler.cppstd=17
 [options]
+fubble:enable_servers=False
 boost:shared=False
 boost:layout=tagged
 #qt:shared=True
@@ -21,3 +22,6 @@ boost:layout=tagged
 
 [build_requires]
 [env]
+
+[conf]
+tools.cmake.cmaketoolchain:generator=Ninja

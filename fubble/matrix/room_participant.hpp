@@ -2,13 +2,15 @@
 #define UUID_9A5F9DB4_A585_471D_9A8C_641DE3A54DF9
 
 #include "logger.hpp"
-#include <fubble/utils/signal.hpp>
 #include <chrono>
+#include <fubble/utils/signal.hpp>
 
 namespace matrix {
 class user;
+
 enum class join_state { join, leave, invite };
 std::ostream &operator<<(std::ostream &out, const join_state print);
+
 class room_participant {
 public:
   using timestamp_type = std::chrono::system_clock::time_point;
