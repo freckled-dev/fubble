@@ -33,7 +33,7 @@ struct fixture : ::testing::Test {
   };
   inline void run_context() {
     context.run();
-    context.reset();
+    context.restart();
   }
   inline std::unique_ptr<matrix::client> create_registered_client() {
     auto client_future = authentification_.register_anonymously();

@@ -49,7 +49,7 @@ struct WebsocketOpenConnection : Websocket {
       acceptor.close();
     });
     context.run();
-    context.reset();
+    context.restart();
   }
 };
 TEST_F(WebsocketOpenConnection, SendReceive) {

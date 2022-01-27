@@ -72,18 +72,18 @@ class FubbleConan(ConanFile):
             self.tool_requires('cmake/[>=1.15]')
 
     def requirements(self):
-        self.requires("nlohmann_json/3.7.0")
-        self.requires("boost/1.77.0")
+        self.requires("nlohmann_json/[>=3.10]")
+        self.requires("boost/1.78.0")
         self.requires("sigslot/[>=1.2]")
-        self.requires("gtest/1.11.0")
-        self.requires("fmt/[>=8.0]")
+        self.requires("gtest/[>=1.11]")
+        self.requires("fmt/[>=8.1]")
         self.requires("google-webrtc/94@acof/stable")
         if self.settings.os == "Windows":
             self.requires("openssl/1.1.1l")
         if not self._is_ios() and self.options.enable_ui:
             self.requires("rectanglebinpack/cci.20210901")
         # self.requires("qt/5.15.2")
-        self.requires("restinio/0.6.11")
+        self.requires("restinio/[>=0.6]")
 
     def generate(self):
         tc = CMakeToolchain(self)

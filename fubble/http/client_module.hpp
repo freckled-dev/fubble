@@ -1,7 +1,7 @@
 #ifndef UUID_72004F5E_4B91_4CA5_92E5_B704E9BBAF44
 #define UUID_72004F5E_4B91_4CA5_92E5_B704E9BBAF44
 
-#include "fubble/utils/executor_module.hpp"
+#include <fubble/utils/executor_module.hpp>
 
 namespace http {
 class connection_creator;
@@ -19,6 +19,7 @@ protected:
   std::shared_ptr<connection_creator> connection_creator_;
   std::shared_ptr<action_factory> action_factory_;
 };
+
 } // namespace http
 
 #endif

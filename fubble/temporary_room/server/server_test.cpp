@@ -49,7 +49,7 @@ struct test_client {
     auto matrix_client_future = matrix_authentification.register_as_guest();
     while (!matrix_client_future.is_ready()) {
       context.run_one();
-      context.reset();
+      context.restart();
     }
     matrix_client = matrix_client_future.get();
   }
@@ -92,7 +92,7 @@ struct Server : ::testing::Test {
 
   void run_context() {
     context.run();
-    context.reset();
+    context.restart();
   }
 };
 

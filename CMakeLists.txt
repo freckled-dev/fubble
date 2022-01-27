@@ -60,6 +60,7 @@ if (BUILD_UI)
   find_package(Qt5 COMPONENTS Widgets Quick Multimedia QuickControls2 REQUIRED)
 endif()
 
+
 # boost
 #set(boost_components thread program_options regex log log_setup)
 #find_package(Boost REQUIRED COMPONENTS boost_components)
@@ -68,14 +69,14 @@ target_compile_definitions(fubble_boost INTERFACE
   "-DBOOST_THREAD_VERSION=5"
   )
 target_link_libraries(fubble_boost INTERFACE
-  boost::log
-  boost::log_setup
-  boost::program_options
+  Boost::log
+  Boost::log_setup
+  Boost::program_options
   )
 if (WIN32)
   # TODO
 else()
-  target_link_libraries(fubble_boost INTERFACE boost::stacktrace_backtrace)
+  target_link_libraries(fubble_boost INTERFACE Boost::stacktrace_backtrace)
 endif()
 add_library(fubble::boost ALIAS fubble_boost)
 

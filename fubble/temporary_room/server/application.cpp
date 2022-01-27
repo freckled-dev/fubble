@@ -100,7 +100,7 @@ public:
     BOOST_ASSERT(!context.stopped());
     while (!check.is_ready()) {
       context.run_one();
-      context.reset();
+      context.restart();
     }
   }
 
