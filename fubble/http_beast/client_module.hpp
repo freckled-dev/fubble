@@ -4,6 +4,9 @@
 #include <fubble/http2/module.hpp>
 #include <fubble/utils/executor_module.hpp>
 
-namespace fubble::http_beast {} // namespace fubble::http_beast
+namespace fubble::http_beast {
+std::unique_ptr<http2::factory>
+create_factory(std::shared_ptr<utils::executor_module> executor);
+} // namespace fubble::http_beast
 
 #endif
