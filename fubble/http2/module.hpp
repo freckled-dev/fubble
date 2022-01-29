@@ -1,23 +1,27 @@
 #ifndef UUID_F73351DA_12E2_4994_A21C_3685AD20F415
 #define UUID_F73351DA_12E2_4994_A21C_3685AD20F415
 
-#include <boost/outcome.hpp>
 #include <fubble/utils/export.hpp>
+#include <fubble/utils/outcome.hpp>
 #include <functional>
 #include <nlohmann/json_fwd.hpp>
 #include <optional>
 
 namespace fubble::http2 {
 
+// https://www.boost.org/doc/libs/1_78_0/libs/outcome/doc/html/motivation/plug_error_code.html
+enum class error_code { success, could_not_parse_json, cancelled };
+FUBBLE_PUBLIC std::error_code make_error_code(error_code code);
+
 using response_code = int;
 struct FUBBLE_PUBLIC response {
-  response( response&&) = default;
+  response(response &&) = default;
   ~response();
   response_code code;
   std::unique_ptr<nlohmann::json> body;
 };
 
-using response_result = boost::outcome_v2::result<response>;
+using response_result = fubble::outcome::result<response>;
 
 class FUBBLE_PUBLIC request {
 public:
@@ -45,15 +49,15 @@ struct FUBBLE_PUBLIC server {
 };
 
 class FUBBLE_PUBLIC websocket_client {
-  public:
+public:
   virtual ~websocket_client() = default;
   virtual void
-      run(std::function<void(boost::outcome_v2::result<nlohmann::json>)>);
+      run(std::function<void(fubble::outcome::result<nlohmann::json>)>);
   virtual void write(nlohmann::json content);
 };
 
 class FUBBLE_PUBLIC factory {
-  public:
+public:
   virtual ~factory() = default;
   virtual std::unique_ptr<requester> create_requester(server server_) = 0;
   virtual std::unique_ptr<requester>
@@ -61,5 +65,9 @@ class FUBBLE_PUBLIC factory {
 };
 
 } // namespace fubble::http2
+
+namespace std {
+template <> struct is_error_code_enum<fubble::http2::error_code> : true_type {};
+} // namespace std
 
 #endif

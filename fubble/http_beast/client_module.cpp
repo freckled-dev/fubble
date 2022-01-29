@@ -1,41 +1,15 @@
 #include "client_module.hpp"
 #include <boost/asio/dispatch.hpp>
-#include <system_error>
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/beast.hpp>
 #include <nlohmann/json.hpp>
+#include <system_error>
 #include <thread>
-
-// TODO https://www.boost.org/doc/libs/1_78_0/libs/outcome/doc/html/motivation/plug_error_code.html
-enum class http2_error_code { success, could_not_parse_json, cancelled };
-struct error_category : std::error_category {
-  const char *name() const noexcept override { return "http errors"; }
-  std::string message(int ev) const override {
-
-    switch (static_cast<http2_error_code>(ev)) {
-    case http2_error_code::success:
-      return "success";
-    case http2_error_code::could_not_parse_json:
-      return "could not parse json";
-    case http2_error_code::cancelled:
-      return "destroyed before done";
-    }
-  }
-};
-error_category error_category_instance;
-namespace std
-{
-  template <> struct is_error_code_enum<http2_error_code> : true_type { };
-}
 
 using namespace fubble::http_beast;
 using namespace fubble;
 
 namespace {
-
-std::error_code make_http_error(http2_error_code code) {
-  return std::error_code{static_cast<int>(code), error_category_instance};
-}
 
 using tcp = boost::asio::ip::tcp;
 
@@ -73,12 +47,12 @@ public:
     if (error)
       return error;
     if (cancelled)
-      return make_http_error(http2_error_code::cancelled);
+      return http2::error_code::cancelled;
     stream.connect(results, error);
     if (error)
       return error;
     if (cancelled)
-      return make_http_error(http2_error_code::cancelled);
+      return http2::error_code::cancelled;
     boost::beast::http::request<boost::beast::http::string_body> req{
         verb, target, 11};
     req.set(boost::beast::http::field::host, local_server.host);
@@ -87,18 +61,18 @@ public:
     if (error)
       return error;
     if (cancelled)
-      return make_http_error(http2_error_code::cancelled);
+      return http2::error_code::cancelled;
     boost::beast::flat_buffer buffer;
     boost::beast::http::response<boost::beast::http::string_body> res;
     boost::beast::http::read(stream, buffer, res, error);
     if (error)
       return error;
     if (cancelled)
-      return make_http_error(http2_error_code::cancelled);
+      return http2::error_code::cancelled;
 
     auto json_body = nlohmann::json::parse(res.body(), nullptr, false);
     if (json_body.is_discarded())
-      return make_http_error(http2_error_code::could_not_parse_json);
+      return http2::error_code::could_not_parse_json;
     auto response =
         http2::response{static_cast<int>(res.result()),
                         std::make_unique<nlohmann::json>(std::move(json_body))};

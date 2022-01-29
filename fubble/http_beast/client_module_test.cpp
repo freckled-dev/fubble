@@ -1,6 +1,5 @@
 #include <fubble/http_beast/client_module.hpp>
 #include <gtest/gtest.h>
-#include <iostream>
 
 struct HttpBeastClient : public ::testing::Test {
   std::shared_ptr<utils::executor_module> executor =
@@ -17,7 +16,6 @@ TEST_F(HttpBeastClient, GetSync) {
   EXPECT_TRUE(response.has_error());
   EXPECT_TRUE(response.has_failure());
   EXPECT_FALSE(response.has_exception());
-  [[maybe_unused]] auto error = response.error();
-  std::cout << error.to_string() << std::endl;
-  EXPECT_EQ(error.value(), 1);
+  auto error = response.error();
+  EXPECT_EQ(error, fubble::http2::error_code::could_not_parse_json);
 }
