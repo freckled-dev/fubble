@@ -1,7 +1,7 @@
 #include "client_module.hpp"
 #include <boost/asio/dispatch.hpp>
-#include <boost/asio/ip/tcp.hpp>
 #include <boost/beast.hpp>
+#include <boost/beast/ssl.hpp>
 #include <nlohmann/json.hpp>
 #include <system_error>
 #include <thread>
@@ -13,19 +13,25 @@ namespace {
 
 using tcp = boost::asio::ip::tcp;
 
-class request_thread_safe : std::enable_shared_from_this<request_thread_safe>,
-                            http2::request {
+class request_thread_safe
+    : public std::enable_shared_from_this<request_thread_safe>,
+      public http2::request {
 public:
   request_thread_safe(std::shared_ptr<boost::asio::io_context> io_context,
                       http2::server server, boost::beast::http::verb verb,
                       std::string target)
       : io_context{io_context}, server{server}, verb{verb}, target{target} {}
 
+  ~request_thread_safe() {
+    if (run_thread.joinable())
+      run_thread.join();
+  }
+
   // TODO port to real async
   void
   async_run(std::function<void(http2::response_result)> callback_) override {
     BOOST_ASSERT(callback_);
-    std::thread thread{[this, callback_, thiz = shared_from_this()]() {
+    run_thread = std::thread{[this, callback_, thiz = shared_from_this()]() {
       auto result = run();
       // switch back to main thread
       boost::asio::dispatch(*io_context, [result = std::move(result), callback_,
@@ -35,40 +41,62 @@ public:
     }};
   }
 
+  std::error_code check_boost_error_and_cancelled(
+      const boost::system::error_code &error) const {
+    if (error)
+      return error;
+    if (cancelled)
+      return http2::error_code::cancelled;
+    return std::error_code{};
+  }
+
   http2::response_result run() override {
     // in the async variant the class may get destructed while `run` is getting
     // called. so keep local copies.
-    auto local_server = server;
     tcp::resolver resolver(*io_context);
     boost::beast::tcp_stream stream(*io_context);
+    boost::asio::ssl::context context{boost::asio::ssl::context::tlsv12};
+    using ssl_stream_type =
+        boost::beast::ssl_stream<boost::beast::tcp_stream &>;
     boost::beast::error_code error;
-    auto const results =
-        resolver.resolve(local_server.host, local_server.service, error);
-    if (error)
-      return error;
-    if (cancelled)
-      return http2::error_code::cancelled;
+    auto const results = resolver.resolve(server.host, server.service, error);
+    if (auto check = check_boost_error_and_cancelled(error); check)
+      return check;
     stream.connect(results, error);
-    if (error)
-      return error;
-    if (cancelled)
-      return http2::error_code::cancelled;
+    if (auto check = check_boost_error_and_cancelled(error); check)
+      return check;
+    std::unique_ptr<ssl_stream_type> ssl_stream;
+    if (server.secure)
+      ssl_stream = std::make_unique<ssl_stream_type>(stream, context);
+    if (ssl_stream) {
+      if (!SSL_set_tlsext_host_name(ssl_stream->native_handle(),
+                                    server.host.c_str())) {
+        return boost::beast::error_code{static_cast<int>(::ERR_get_error()),
+                                        boost::asio::error::get_ssl_category()};
+      }
+      ssl_stream->handshake(boost::asio::ssl::stream_base::client, error);
+      if (auto check = check_boost_error_and_cancelled(error); check)
+        return check;
+    }
+    const auto prefixed_target = server.target_prefix + target;
     boost::beast::http::request<boost::beast::http::string_body> req{
-        verb, target, 11};
-    req.set(boost::beast::http::field::host, local_server.host);
+        verb, prefixed_target, 11};
+    req.set(boost::beast::http::field::host, server.host);
     req.set(boost::beast::http::field::user_agent, BOOST_BEAST_VERSION_STRING);
-    boost::beast::http::write(stream, req, error);
-    if (error)
-      return error;
-    if (cancelled)
-      return http2::error_code::cancelled;
+    if (server.secure)
+      boost::beast::http::write(*ssl_stream, req, error);
+    else
+      boost::beast::http::write(stream, req, error);
+    if (auto check = check_boost_error_and_cancelled(error); check)
+      return check;
     boost::beast::flat_buffer buffer;
     boost::beast::http::response<boost::beast::http::string_body> res;
-    boost::beast::http::read(stream, buffer, res, error);
-    if (error)
-      return error;
-    if (cancelled)
-      return http2::error_code::cancelled;
+    if (server.secure)
+      boost::beast::http::read(*ssl_stream, buffer, res, error);
+    else
+      boost::beast::http::read(stream, buffer, res, error);
+    if (auto check = check_boost_error_and_cancelled(error); check)
+      return check;
 
     auto json_body = nlohmann::json::parse(res.body(), nullptr, false);
     if (json_body.is_discarded())
@@ -90,6 +118,7 @@ private:
   const boost::beast::http::verb verb;
   const std::string target;
   bool cancelled{};
+  std::thread run_thread;
 };
 
 class request : public http2::request {
@@ -102,12 +131,13 @@ public:
 
   void
   async_run(std::function<void(http2::response_result)> callback) override {
-    delegate->async_run(
-        [lifetime_check = std::weak_ptr<int>{lifetime}, callback](auto result) {
-          if (!lifetime_check.lock())
-            return;
-          callback(std::move(result));
-        });
+    delegate->async_run([delegate = delegate,
+                         lifetime_check = std::weak_ptr<int>{lifetime},
+                         callback](auto result) {
+      if (!lifetime_check.lock())
+        return;
+      callback(std::move(result));
+    });
   }
 
   http2::response_result run() override { return delegate->run(); };
