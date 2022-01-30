@@ -47,13 +47,15 @@ TEST_F(HttpBeastClient, GetSslAsync) {
   fubble::http2::server server{"fubble.io", "https", "/api/", true, {}};
   auto requester = factory->create_requester(server);
   auto request = requester->get("version/v0/");
-  bool called{};
-  request->async_run([&called](auto response) {
+  auto finished = boost::asio::make_work_guard(*executor->get_io_context());
+  bool ran{};
+  request->async_run([&finished, &ran](auto response) {
     EXPECT_TRUE(response.has_value());
     auto &body = *response.value().body;
     check_version_response(body);
-    called = true;
+    finished.reset();
+    ran = true;
   });
   executor->get_io_context()->run();
-  EXPECT_TRUE(called);
+  EXPECT_TRUE(ran);
 }
