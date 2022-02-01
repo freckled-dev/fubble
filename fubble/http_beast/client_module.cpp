@@ -19,8 +19,10 @@ class request_thread_safe
 public:
   request_thread_safe(std::shared_ptr<boost::asio::io_context> io_context,
                       http2::server server, boost::beast::http::verb verb,
-                      std::string target)
-      : io_context{io_context}, server{server}, verb{verb}, target{target} {}
+                      std::string target,
+                      std::optional<nlohmann::json> request_body)
+      : io_context{io_context}, server{server}, verb{verb}, target{target},
+        request_body{request_body} {}
 
   ~request_thread_safe() {
     if (run_thread.joinable())
@@ -83,6 +85,16 @@ public:
         verb, prefixed_target, 11};
     req.set(boost::beast::http::field::host, server.host);
     req.set(boost::beast::http::field::user_agent, BOOST_BEAST_VERSION_STRING);
+    req.set(boost::beast::http::field::accept, "application/json");
+    // TODO
+    /* if (fields_.auth_token) */
+    /*   request.set(boost::beast::http::field::authorization, */
+    /*               std::string("Bearer ") + fields_.auth_token.value()); */
+    if (request_body) {
+      const std::string request_body_string = request_body.value().dump();
+      req.body() = request_body_string;
+    }
+    req.prepare_payload();
     if (server.secure)
       boost::beast::http::write(*ssl_stream, req, error);
     else
@@ -117,6 +129,7 @@ private:
   const http2::server server;
   const boost::beast::http::verb verb;
   const std::string target;
+  const std::optional<nlohmann::json> request_body;
   bool cancelled{};
   std::thread run_thread;
 };
@@ -125,9 +138,9 @@ class request : public http2::request {
 public:
   request(std::shared_ptr<boost::asio::io_context> io_context,
           http2::server server, boost::beast::http::verb verb,
-          std::string target)
+          std::string target, std::optional<nlohmann::json> request_body)
       : delegate{std::make_shared<request_thread_safe>(io_context, server, verb,
-                                                       target)} {}
+                                                       target, request_body)} {}
 
   void
   async_run(std::function<void(http2::response_result)> callback) override {
@@ -155,18 +168,20 @@ public:
 
   std::unique_ptr<http2::request> get(std::string target) override {
     return std::make_unique<request>(io_context, server,
-                                     boost::beast::http::verb::get, target);
+                                     boost::beast::http::verb::get, target,
+                                     std::nullopt);
   }
 
   std::unique_ptr<http2::request> post(std::string target,
                                        nlohmann::json body) override {
-    BOOST_ASSERT(false);
-    return nullptr;
+    return std::make_unique<request>(
+        io_context, server, boost::beast::http::verb::post, target, body);
   }
+
   std::unique_ptr<http2::request> put(std::string target,
                                       nlohmann::json body) override {
-    BOOST_ASSERT(false);
-    return nullptr;
+    return std::make_unique<request>(
+        io_context, server, boost::beast::http::verb::put, target, body);
   }
 
 private:

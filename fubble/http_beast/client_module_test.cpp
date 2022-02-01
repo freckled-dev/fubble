@@ -3,6 +3,7 @@
 #include <gtest/gtest.h>
 #include <iostream>
 #include <nlohmann/json.hpp>
+#include <restinio/all.hpp>
 
 struct HttpBeastClient : public ::testing::Test {
   std::shared_ptr<utils::executor_module> executor =
@@ -58,4 +59,36 @@ TEST_F(HttpBeastClient, GetSslAsync) {
   });
   executor->get_io_context()->run();
   EXPECT_TRUE(ran);
+}
+
+TEST_F(HttpBeastClient, PostSync) {
+  int port{};
+  auto http_server = restinio::run_async(
+      restinio::own_io_context(),
+      restinio::server_settings_t{}
+          .acceptor_post_bind_hook([&port](auto &acceptor) {
+            port = acceptor.local_endpoint().port();
+          })
+          .request_handler([](restinio::request_handle_t request) {
+            EXPECT_EQ(request->header().method(), restinio::http_method_post());
+            auto request_body = request->body();
+            auto request_body_json = nlohmann::json::parse(request_body);
+            EXPECT_EQ(request_body_json["pi"], 3.141);
+            return request->create_response()
+                .set_body("{\"hello\":\"pi\"}")
+                .done();
+          }),
+      1);
+
+  fubble::http2::server server{
+      "localhost", std::to_string(port), "", false, {}};
+  auto requester = factory->create_requester(server);
+  nlohmann::json request_body = {{"pi", 3.141}};
+  auto request = requester->post("/", request_body);
+  auto response = request->run();
+  EXPECT_TRUE(response.has_value());
+  auto &response_value = response.value();
+  EXPECT_EQ(response_value.code, 200);
+  EXPECT_TRUE(response_value.body->contains("hello"));
+  EXPECT_EQ((*response_value.body)["hello"], "pi");
 }
