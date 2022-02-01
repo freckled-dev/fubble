@@ -87,9 +87,9 @@ public:
     req.set(boost::beast::http::field::user_agent, BOOST_BEAST_VERSION_STRING);
     req.set(boost::beast::http::field::accept, "application/json");
     // TODO
-    /* if (fields_.auth_token) */
-    /*   request.set(boost::beast::http::field::authorization, */
-    /*               std::string("Bearer ") + fields_.auth_token.value()); */
+    if (server.authentification)
+      req.set(boost::beast::http::field::authorization,
+              std::string("Bearer ") + server.authentification.value());
     if (request_body) {
       const std::string request_body_string = request_body.value().dump();
       req.body() = request_body_string;
