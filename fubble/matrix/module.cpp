@@ -25,15 +25,15 @@ std::shared_ptr<factory> module::get_factory() {
 
 std::shared_ptr<client_factory> module::get_client_factory() {
   if (!client_factory_)
-    client_factory_ = std::make_shared<client_factory>(
-        *get_factory(), *get_http_client_factory());
+    client_factory_ =
+        std::make_shared<client_factory>(*get_factory(), get_http2_factory());
   return client_factory_;
 }
 
 std::shared_ptr<authentification> module::get_authentification() {
   if (!authentification_)
     authentification_ = std::make_shared<authentification>(
-        *get_http_client_factory(), *get_client_factory());
+        get_http2_requester(), *get_client_factory());
   return authentification_;
 }
 

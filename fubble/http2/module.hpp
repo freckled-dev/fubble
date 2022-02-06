@@ -26,7 +26,7 @@ using response_result = fubble::outcome::result<response>;
 class FUBBLE_PUBLIC request {
 public:
   virtual ~request() = default;
-  virtual void async_run(std::function<void(response_result)>) = 0;
+  virtual void async_run(std::function<void(const response_result &)>) = 0;
   virtual response_result run() = 0;
 };
 

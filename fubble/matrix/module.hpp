@@ -1,7 +1,8 @@
 #ifndef UUID_CB55A92E_2D77_4D9A_A961_11E825878AB1
 #define UUID_CB55A92E_2D77_4D9A_A961_11E825878AB1
 
-#include "fubble/http/client_module.hpp"
+#include <fubble/http/client_module.hpp>
+#include <fubble/http2/module.hpp>
 #include <string>
 
 namespace http {
@@ -30,6 +31,8 @@ public:
   std::shared_ptr<client_factory> get_client_factory();
   std::shared_ptr<authentification> get_authentification();
   std::shared_ptr<http::client_factory> get_http_client_factory();
+  std::shared_ptr<fubble::http2::requester> get_http2_requester();
+  std::shared_ptr<fubble::http2::factory> get_http2_factory();
   std::shared_ptr<client_synchronizer> get_client_synchronizer();
 
 protected:

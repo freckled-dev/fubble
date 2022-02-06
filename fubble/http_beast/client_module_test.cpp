@@ -50,7 +50,7 @@ TEST_F(HttpBeastClient, GetSslAsync) {
   auto request = requester->get("version/v0/");
   auto finished = boost::asio::make_work_guard(*executor->get_io_context());
   bool ran{};
-  request->async_run([&finished, &ran](auto response) {
+  request->async_run([&finished, &ran](const auto &response) {
     EXPECT_TRUE(response.has_value());
     auto &body = *response.value().body;
     check_version_response(body);

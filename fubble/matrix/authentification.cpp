@@ -1,46 +1,28 @@
 #include "authentification.hpp"
 #include "error.hpp"
-#include "fubble/utils/uuid.hpp"
+#include <fubble/utils/uuid.hpp>
 #include <nlohmann/json.hpp>
 
 using namespace matrix;
 
-authentification::authentification(http::client_factory &http_client_creator,
-                                   client_factory &client_factory_)
-    : http_client_creator(http_client_creator),
-      client_factory_(client_factory_) {
-  http_client = http_client_creator.create();
-}
+authentification::authentification(
+    const std::shared_ptr<fubble::http2::requester> &http_requester,
+    client_factory &client_factory_)
+    : http_requester(http_requester), client_factory_(client_factory_) {}
 
-boost::future<authentification::client_ptr>
-authentification::register_as_guest() {
+authentification::client_ptr authentification::register_as_guest() {
   const std::string target = "register?kind=guest";
   auto register_ = nlohmann::json::object();
   auto auth = nlohmann::json::object();
   auth["type"] = "m.login.dummy";
   register_["auth"] = auth;
-  auto result =
-      http_client->post(target, register_).then(executor, [this](auto result) {
-        auto response = result.get();
-        if (response.first != boost::beast::http::status::ok)
-          error::check_matrix_response(response.first, response.second);
-        auto response_json = response.second;
-        BOOST_LOG_SEV(this->logger, logging::severity::info)
-            << "successfully registered as guest"
-#if 0
-            << ", response_json:" << response_json.dump(2)
-#endif
-            ;
-        client::information information;
-        information.access_token = response_json["access_token"];
-        information.user_id = response_json["user_id"];
-        information.device_id = response_json["device_id"];
-        return client_factory_.create(information);
-      });
-  return result;
+
+  auto post_request = http_requester->post(target, register_);
+  auto response = post_request->run();
+  return make_client_from_response(response);
 }
 
-boost::future<authentification::client_ptr>
+authentification::client_ptr
 authentification::register_(const user_information &information) {
   BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
   auto register_ = nlohmann::json::object();
@@ -54,8 +36,7 @@ authentification::register_(const user_information &information) {
   return register_as_user(register_);
 }
 
-boost::future<authentification::client_ptr>
-authentification::register_anonymously() {
+authentification::client_ptr authentification::register_anonymously() {
   BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
   auto register_ = nlohmann::json::object();
   auto auth = nlohmann::json::object();
@@ -65,7 +46,7 @@ authentification::register_anonymously() {
   return register_as_user(register_);
 }
 
-boost::future<authentification::client_ptr>
+authentification::client_ptr
 authentification::login(const user_information &information) {
   BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
   auto login_ = nlohmann::json::object();
@@ -80,37 +61,39 @@ authentification::login(const user_information &information) {
     login_["identifier"] = identifier;
   }
   const std::string target = "login";
-  return http_client->post(target, login_).then(executor, [this](auto result) {
-    return on_logged_in(result);
-  });
-}
 
-boost::future<authentification::client_ptr>
-authentification::register_as_user(const nlohmann::json &content) {
-  const std::string target = "register?kind=user";
-  return http_client->post(target, content).then(executor, [this](auto result) {
-    return on_registered(result);
-  });
+  auto post_request = http_requester->post(target, login_);
+  auto response = post_request->run();
+  return on_logged_in(response);
 }
 
 authentification::client_ptr
-authentification::on_registered(http::client::async_result_future &result) {
+authentification::register_as_user(const nlohmann::json &content) {
+  const std::string target = "register?kind=user";
+
+  auto post_request = http_requester->post(target, content);
+  auto response = post_request->run();
+  return on_registered(response);
+}
+
+authentification::client_ptr
+authentification::on_registered(fubble::http2::response_result &result) {
   return make_client_from_response(result);
 }
 
 authentification::client_ptr
-authentification::on_logged_in(http::client::async_result_future &result) {
+authentification::on_logged_in(fubble::http2::response_result &result) {
   return make_client_from_response(result);
 }
 
 authentification::client_ptr authentification::make_client_from_response(
-    http::client::async_result_future &result) {
-  auto response = result.get();
-  if (response.first != boost::beast::http::status::ok)
-    error::check_matrix_response(response.first, response.second);
-  auto response_json = response.second;
+    const fubble::http2::response_result &response_result) {
+  const auto &response = response_result.value();
+  if (response.code != 200)
+    error::check_matrix_response(response.code, *response.body);
+  const auto &response_json = *response.body;
   BOOST_LOG_SEV(this->logger, logging::severity::info)
-      << "successfully registered as user";
+      << "successfully registered as user or guest";
   client::information information;
   information.access_token = response_json["access_token"];
   information.user_id = response_json["user_id"];

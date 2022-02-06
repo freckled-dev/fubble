@@ -30,8 +30,8 @@ public:
   }
 
   // TODO port to real async
-  void
-  async_run(std::function<void(http2::response_result)> callback_) override {
+  void async_run(
+      std::function<void(const http2::response_result &)> callback_) override {
     BOOST_ASSERT(callback_);
     run_thread = std::thread{[this, callback_, thiz = shared_from_this()]() {
       auto result = run();
@@ -142,14 +142,14 @@ public:
       : delegate{std::make_shared<request_thread_safe>(io_context, server, verb,
                                                        target, request_body)} {}
 
-  void
-  async_run(std::function<void(http2::response_result)> callback) override {
+  void async_run(std::function<void(const http2::response_result &result)>
+                     callback) override {
     delegate->async_run([delegate = delegate,
                          lifetime_check = std::weak_ptr<int>{lifetime},
-                         callback](auto result) {
+                         callback](const auto &result) {
       if (!lifetime_check.lock())
         return;
-      callback(std::move(result));
+      callback(result);
     });
   }
 

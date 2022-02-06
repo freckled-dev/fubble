@@ -1,6 +1,7 @@
 #ifndef UUID_BEFED083_8CFB_495F_87DB_332DCD81E725
 #define UUID_BEFED083_8CFB_495F_87DB_332DCD81E725
 
+// TODO remove beast headers
 #include <boost/beast/http/status.hpp>
 #include <boost/exception/exception.hpp>
 #include <boost/thread/future.hpp>
@@ -26,6 +27,7 @@ void check_matrix_response(
     std::pair<boost::beast::http::status, nlohmann::json> &response_);
 void check_matrix_response(boost::beast::http::status code,
                            const nlohmann::json &response_);
+void check_matrix_response(int code, const nlohmann::json &response_);
 } // namespace matrix::error
 
 #endif

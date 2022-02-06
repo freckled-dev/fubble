@@ -4,6 +4,7 @@
 #include <fubble/utils/export.hpp>
 #include <functional>
 #include <memory>
+#include <utility>
 
 namespace fubble::lifetime {
 // TODO this class is NOT threadsafe. set a thread id and verify it!
@@ -14,9 +15,9 @@ public:
   checker(const checker &) = delete;
 
   template <class... Args, class Func>
-  std::function<void(Args...)> wrap(Func wrap_) {
+  std::function<void(Args...)> wrap(Func &&wrap_) const {
     return [lifetime_checker = std::weak_ptr<int>(lifetime_checker),
-            wrap_](Args... args) {
+            wrap_ = std::forward<Func>(wrap_)](Args... args) mutable {
       if (!lifetime_checker.lock())
         return; // owning class died
       wrap_(args...);
