@@ -11,7 +11,7 @@ set(utils_sources
   "executor_asio.cpp" "logging/logger.cpp"
   "logging/initialser.cpp" "exit_signals.cpp" "uuid.cpp"
   "timer.cpp" "executor_module.cpp" "logging/severity.cpp"
-  "signal.cpp" "version.cpp"
+  "signal.cpp" "version.cpp" "lifetime.cpp"
   )
 add_library(utils ${utils_sources})
 target_link_libraries(utils PUBLIC
@@ -33,8 +33,7 @@ target_link_libraries(test_main PUBLIC
 add_library(fubble::test_main ALIAS test_main)
 
 add_executable(utils_test
-  "executor_asio_test.cpp"
-  "boost_thread_test.cpp"
+  "executor_asio_test.cpp" "boost_thread_test.cpp" "lifetime_test.cpp"
   )
 target_link_libraries(utils_test PRIVATE
   fubble::utils
