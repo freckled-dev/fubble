@@ -10,7 +10,8 @@ authentification::authentification(
     client_factory &client_factory_)
     : http_requester(http_requester), client_factory_(client_factory_) {}
 
-authentification::client_ptr authentification::register_as_guest() {
+boost::future<authentification::client_ptr>
+authentification::register_as_guest() {
   const std::string target = "register?kind=guest";
   auto register_ = nlohmann::json::object();
   auto auth = nlohmann::json::object();
@@ -18,11 +19,23 @@ authentification::client_ptr authentification::register_as_guest() {
   register_["auth"] = auth;
 
   auto post_request = http_requester->post(target, register_);
-  auto response = post_request->run();
-  return make_client_from_response(response);
+
+  auto promise =
+      std::make_shared<boost::promise<authentification::client_ptr>>();
+  auto result = promise->get_future();
+  post_request->async_run(
+      lifetime_checker.wrap<const fubble::http2::response_result &>(
+          [this, promise](const auto &response) {
+            try {
+              promise->set_value(make_client_from_response(response));
+            } catch (...) {
+              promise->set_exception(boost::current_exception());
+            }
+          }));
+  return result;
 }
 
-authentification::client_ptr
+boost::future<authentification::client_ptr>
 authentification::register_(const user_information &information) {
   BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
   auto register_ = nlohmann::json::object();
@@ -36,7 +49,8 @@ authentification::register_(const user_information &information) {
   return register_as_user(register_);
 }
 
-authentification::client_ptr authentification::register_anonymously() {
+boost::future<authentification::client_ptr>
+authentification::register_anonymously() {
   BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
   auto register_ = nlohmann::json::object();
   auto auth = nlohmann::json::object();
@@ -46,7 +60,7 @@ authentification::client_ptr authentification::register_anonymously() {
   return register_as_user(register_);
 }
 
-authentification::client_ptr
+boost::future<authentification::client_ptr>
 authentification::login(const user_information &information) {
   BOOST_LOG_SEV(logger, logging::severity::debug) << __FUNCTION__;
   auto login_ = nlohmann::json::object();
@@ -63,26 +77,52 @@ authentification::login(const user_information &information) {
   const std::string target = "login";
 
   auto post_request = http_requester->post(target, login_);
-  auto response = post_request->run();
-  return on_logged_in(response);
+
+  auto promise =
+      std::make_shared<boost::promise<authentification::client_ptr>>();
+  auto result = promise->get_future();
+  post_request->async_run(
+      lifetime_checker.wrap<const fubble::http2::response_result &>(
+          [this, promise](const auto &response) {
+            try {
+              promise->set_value(on_logged_in(response));
+            } catch (...) {
+              promise->set_exception(boost::current_exception());
+            }
+          }));
+  return result;
 }
 
-authentification::client_ptr
+boost::future<authentification::client_ptr>
 authentification::register_as_user(const nlohmann::json &content) {
   const std::string target = "register?kind=user";
 
   auto post_request = http_requester->post(target, content);
-  auto response = post_request->run();
-  return on_registered(response);
+
+  auto promise =
+      std::make_shared<boost::promise<authentification::client_ptr>>();
+  auto result = promise->get_future();
+
+  post_request->async_run(
+      lifetime_checker.wrap<const fubble::http2::response_result &>(
+          [this, promise](const auto &response) {
+            try {
+              promise->set_value(on_registered(response));
+            } catch (...) {
+              promise->set_exception(boost::current_exception());
+            }
+          }));
+
+  return result;
 }
 
 authentification::client_ptr
-authentification::on_registered(fubble::http2::response_result &result) {
+authentification::on_registered(const fubble::http2::response_result &result) {
   return make_client_from_response(result);
 }
 
 authentification::client_ptr
-authentification::on_logged_in(fubble::http2::response_result &result) {
+authentification::on_logged_in(const fubble::http2::response_result &result) {
   return make_client_from_response(result);
 }
 
