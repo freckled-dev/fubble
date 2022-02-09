@@ -1,9 +1,9 @@
 #ifndef UUID_D676A18F_1B52_474C_970D_E000831069B9
 #define UUID_D676A18F_1B52_474C_970D_E000831069B9
 
-#include "events.hpp"
 #include <boost/thread/future.hpp>
-#include <memory>
+#include <fubble/http2/module.hpp>
+#include <fubble/matrix/events.hpp>
 #include <nlohmann/json.hpp>
 
 namespace matrix {

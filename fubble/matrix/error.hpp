@@ -5,6 +5,7 @@
 #include <boost/beast/http/status.hpp>
 #include <boost/exception/exception.hpp>
 #include <boost/thread/future.hpp>
+#include <fubble/http2/module.hpp>
 #include <nlohmann/json_fwd.hpp>
 
 namespace matrix::error {
@@ -28,6 +29,7 @@ void check_matrix_response(
 void check_matrix_response(boost::beast::http::status code,
                            const nlohmann::json &response_);
 void check_matrix_response(int code, const nlohmann::json &response_);
+void check_matrix_response(const fubble::http2::response_result &);
 } // namespace matrix::error
 
 #endif

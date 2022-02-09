@@ -5,9 +5,10 @@
 #include "fubble/http/client_factory.hpp"
 #include "rooms.hpp"
 #include "users.hpp"
-#include <fubble/utils/signal.hpp>
 #include <boost/thread/executors/inline_executor.hpp>
 #include <chrono>
+#include <fubble/http2/module.hpp>
+#include <fubble/utils/signal.hpp>
 
 namespace matrix {
 class client {
@@ -17,8 +18,8 @@ public:
     std::string access_token;
     std::string device_id;
   };
-  // TODO refactor to just taking a http::client?
-  client(factory &factory_, http::client_factory &http_factory,
+  client(factory &factory_,
+         const std::shared_ptr<fubble::http2::requester> &http_requester,
          const information &information_);
   ~client();
 
@@ -27,9 +28,9 @@ public:
   rooms &get_rooms() const;
 
   http::client &get_http_client();
-  // TODO make protected
-  std::unique_ptr<http::client> create_http_client();
   std::string create_transaction_id();
+
+  std::unique_ptr<fubble::http2::requester> create_http_client();
 
   boost::future<void> set_display_name(const std::string &name);
   boost::future<void> set_presence(presence set);
@@ -57,7 +58,7 @@ protected:
   matrix::logger logger;
   boost::inline_executor executor;
   factory &factory_;
-  http::client_factory &http_factory;
+  const std::shared_ptr<fubble::http2::requester> http_requester;
   // TODO move all sync_till_stop logic to own class or at least collect the
   // fields in its own struct
   std::unique_ptr<boost::promise<void>> sync_till_stop_promise;

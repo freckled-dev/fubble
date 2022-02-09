@@ -81,17 +81,28 @@ boost::future<room *> rooms::create_room(const create_room_fields &fields) {
   content["initial_state"] = initial_state;
   BOOST_LOG_SEV(logger, logging::severity::trace)
       << "content:" << content.dump(2);
-  return http_client->post("createRoom", content)
-      .then(executor, [this](auto result) {
-        auto response = result.get();
-        BOOST_LOG_SEV(this->logger, logging::severity::debug)
-            << __FUNCTION__ << ", created room";
-        auto response_json = response.second;
-        error::check_matrix_response(response.first, response_json);
-        const std::string room_id = response_json["room_id"];
-        auto &return_result = do_create_room(room_id);
-        return &return_result;
-      });
+
+  auto promise = std::make_shared<boost::promise<room *>>();
+
+  std::shared_ptr<fubble::http2::request> request =
+      http_client->post("createRoom", content);
+  request->async_run([this, promise, request](
+                         const fubble::http2::response_result &result) mutable {
+    try {
+      BOOST_LOG_SEV(this->logger, logging::severity::debug)
+          << __FUNCTION__ << ", created room";
+      error::check_matrix_response(result);
+      const auto &response = result.value();
+      auto &response_json = *response.body;
+      const std::string room_id = response_json["room_id"];
+      auto &return_result = do_create_room(room_id);
+      promise->set_value(&return_result);
+    } catch (...) {
+      promise->set_exception(boost::current_exception());
+    }
+  });
+
+  return promise->get_future();
 }
 
 boost::future<void> rooms::leave_room(const room &room_) {
@@ -101,26 +112,45 @@ boost::future<void> rooms::leave_room(const room &room_) {
 boost::future<void> rooms::leave_room_by_id(const std::string &id) {
   auto target = fmt::format("rooms/{}/leave", id);
   nlohmann::json content = nlohmann::json::object();
-  return http_client->post(target, content).then(executor, [](auto result) {
-    error::check_matrix_response(result);
+
+  std::shared_ptr<fubble::http2::request> request =
+      http_client->post(target, content);
+  auto promise = std::make_shared<boost::promise<void>>();
+  request->async_run([request, this, promise](const auto &result) mutable {
+    try {
+      error::check_matrix_response(result);
+    } catch (...) {
+      promise->set_exception(boost::current_exception());
+    }
   });
+  return promise->get_future();
 }
 
 boost::future<room *> rooms::join_room_by_id(const std::string &id) {
   auto target = fmt::format("rooms/{}/join", id);
   nlohmann::json content = nlohmann::json::object();
-  return http_client->post(target, content).then(executor, [this](auto result) {
-    BOOST_LOG_SEV(this->logger, logging::severity::debug)
-        << "joined room, result not validated yet";
-    auto response = result.get();
-    auto response_json = response.second;
-    error::check_matrix_response(response.first, response_json);
-    std::string room_id = response_json["room_id"];
-    auto room_ = factory_.create_room(client_, room_id);
-    auto return_result = room_.get();
-    on_room_created(std::move(room_));
-    return return_result;
+
+  std::shared_ptr<fubble::http2::request> request =
+      http_client->post(target, content);
+  auto promise = std::make_shared<boost::promise<room *>>();
+  request->async_run([this, request, promise = std::move(promise)](
+                         const auto &result) mutable {
+    try {
+      BOOST_LOG_SEV(this->logger, logging::severity::debug)
+          << "joined room, result not validated yet";
+      error::check_matrix_response(result);
+      auto &response_value = result.value();
+      auto &response_json = *response_value.body;
+      std::string room_id = response_json["room_id"];
+      auto room_ = factory_.create_room(client_, room_id);
+      auto return_result = room_.get();
+      on_room_created(std::move(room_));
+      promise->set_value(return_result);
+    } catch (...) {
+      promise->set_exception(boost::current_exception());
+    }
   });
+  return promise->get_future();
 }
 
 void rooms::on_room_created(std::unique_ptr<room> room_) {

@@ -3,6 +3,7 @@
 #include "error.hpp"
 #include <boost/algorithm/string/predicate.hpp>
 #include <fmt/format.h>
+#include <fubble/utils/lifetime.hpp>
 
 using namespace matrix;
 
@@ -10,10 +11,9 @@ namespace {
 class room_states_impl : public room_states {
 public:
   room_states_impl(client &client_, const std::string &room_id)
-      : client_(client_), room_id(room_id) {
-    http_client = client_.create_http_client();
-  }
+      : http_requester{client_.create_http_client()}, room_id(room_id) {}
 
+  // TODO stick to future?
   boost::future<void> set_custom(const custom &set) override {
     auto target =
         fmt::format("rooms/{}/state/{}/{}", room_id, set.type, set.key);
@@ -21,9 +21,18 @@ public:
     BOOST_LOG_SEV(logger, logging::severity::debug)
         << __FUNCTION__ << "setting custom state, target:" << target
         << ", data:" << set.data.dump();
-    return http_client->put(target, set.data).then(executor, [](auto result) {
-      return error::check_matrix_response(result);
+    auto request = http_requester->put(target, set.data);
+
+    auto promise = std::make_shared<boost::promise<void>>();
+    request->async_run([promise, this](const auto &response) {
+      try {
+        error::check_matrix_response(response);
+        promise->set_value();
+      } catch (...) {
+        promise->set_exception(boost::current_exception());
+      }
     });
+    return promise->get_future();
   }
 
   std::vector<custom> get_all_custom() const override {
@@ -64,16 +73,15 @@ public:
 
 protected:
   boost::inline_executor executor;
-  client &client_;
-  matrix::logger logger{
-      fmt::format("room_states_impl:{}", client_.get_user_id())};
+  const std::shared_ptr<fubble::http2::requester> http_requester;
+  matrix::logger logger{"room_states_impl"};
   const std::string room_id;
-  std::unique_ptr<http::client> http_client;
   struct custom_container {
     custom data;
     std::chrono::system_clock::time_point timestamp;
   };
   std::vector<custom_container> customs;
+  fubble::lifetime::checker lifetime_checker;
 };
 } // namespace
 

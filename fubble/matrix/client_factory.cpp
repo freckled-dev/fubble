@@ -9,6 +9,7 @@ client_factory::client_factory(
 
 std::unique_ptr<client>
 client_factory::create(const client::information &information) {
-  return std::make_unique<client>(room_factory_, http_client_factory,
-                                  information);
+  // TODO http_client_factory->create_requester();
+  std::shared_ptr<fubble::http2::requester> requester;
+  return std::make_unique<client>(room_factory_, requester, information);
 }

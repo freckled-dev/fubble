@@ -10,6 +10,7 @@ target_link_libraries(matrix PRIVATE
   )
 target_link_libraries(matrix PUBLIC
   fubble::utils
+  fubble::http2
   nlohmann_json::nlohmann_json
   )
 add_library(fubble::matrix ALIAS matrix)

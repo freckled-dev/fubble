@@ -1,10 +1,11 @@
 #ifndef UUID_F3BD90D4_472D_4BB3_9675_43C5F69083FA
 #define UUID_F3BD90D4_472D_4BB3_9675_43C5F69083FA
 
-#include "logger.hpp"
-#include "room.hpp"
-#include <fubble/utils/signal.hpp>
 #include <deque>
+#include <fubble/http2/module.hpp>
+#include <fubble/matrix/logger.hpp>
+#include <fubble/matrix/room.hpp>
+#include <fubble/utils/signal.hpp>
 #include <nlohmann/json_fwd.hpp>
 
 namespace matrix {
@@ -43,7 +44,7 @@ protected:
   client &client_;
   boost::inline_executor executor;
   utils::signal::scoped_connection on_sync_connection;
-  std::unique_ptr<http::client> http_client;
+  std::unique_ptr<fubble::http2::requester> http_client;
   room_list rooms_;
 };
 } // namespace matrix

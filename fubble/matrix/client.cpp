@@ -8,12 +8,12 @@
 
 using namespace matrix;
 
-client::client(factory &factory_, http::client_factory &http_factory,
+client::client(factory &factory_,
+               const std::shared_ptr<fubble::http2::requester> &http_requester,
                const information &information_)
     : logger{fmt::format("client:{}", information_.user_id)},
-      factory_(factory_), http_factory(http_factory),
+      factory_(factory_), http_requester{http_requester},
       information_(information_) {
-  http_client = create_http_client();
   users_ = factory_.create_users(*this);
   rooms_ = factory_.create_rooms(*this);
 }
@@ -34,12 +34,6 @@ users &client::get_users() const { return *users_; }
 rooms &client::get_rooms() const { return *rooms_; }
 
 http::client &client::get_http_client() { return *http_client; }
-
-std::unique_ptr<http::client> client::create_http_client() {
-  auto fields = http_factory.get_fields();
-  fields.auth_token = information_.access_token;
-  return http_factory.create(fields);
-}
 
 std::string client::create_transaction_id() {
   ++transaction_id_counter;
